@@ -1,0 +1,40 @@
+{
+  "allowed_binding_transitions": [],
+  "authorization_reuse_forbidden": true,
+  "campaign_id": "phase_9_2_multi_session_continuity_campaign_v1",
+  "capability_id": "PHASE_9_2_STEP_7_REPEATED_MULTI_SESSION_CONTINUITY_CAMPAIGN_V1",
+  "confirm_token_reuse_forbidden": true,
+  "contract_digest": "7e79ef037ce7e7584f56eb3c2e73864e7cd7fbf4964a15cbfb31da3411fae189",
+  "cross_session_state_continuity_must_be_explicitly_checked": true,
+  "expected_config_digest": "",
+  "expected_repository_sha": "",
+  "multi_session_requirement": {
+    "expression": ">1",
+    "note": "No invented governance minimum count. Campaign verifier requires strictly more than one governed session.",
+    "operand": 1,
+    "operator": ">"
+  },
+  "network_session_allowed_by_binding": false,
+  "no_permanent_unscoped_enable_flag": true,
+  "notes": [
+    "Campaign-state contract for later separately authorized Step-7 sessions.",
+    "This binding capability never starts a network session and never mints/consumes authorization or confirm tokens.",
+    "PHASE_9_2_STEP_7_STATUS remains OPEN until a later governed multi-session campaign verifier PASS.",
+    "PHASE_9_2_SESSION_LADDER_COMPLETE must remain false until explicit ladder closeout Owner-GO."
+  ],
+  "owner": "ops.phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.campaign_state_contract_v1",
+  "per_session_authorization_required": true,
+  "permanent_network_enable_forbidden": true,
+  "phase_9_2_session_ladder_complete": false,
+  "phase_9_2_step_7_status": "OPEN",
+  "reuses": {
+    "step3_restart": "ops.phase_9_2_step_3_governed_productive_real_network_restart_recovery_session_execution_v1",
+    "step4_reconnect": "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1",
+    "step6_stale_adverse": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.governed_injected_stale_data_fault_v1",
+    "wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1"
+  },
+  "schema_version": "phase_9_2_multi_session_continuity_campaign_state.v1",
+  "session_id_prefix": "phase_9_2_public_md_multi_session_continuity_session_v1",
+  "session_ladder_step": "MULTI_SESSION_CONTINUITY_CAMPAIGN",
+  "session_scope": "PHASE_9_2_MULTI_SESSION_CONTINUITY_CAMPAIGN"
+}

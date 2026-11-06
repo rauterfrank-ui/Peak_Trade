@@ -1,0 +1,38 @@
+{
+  "source_commit": "02b5fa9b32e56e891eca46c0ffe676c077eefd4d",
+  "historical_join_commit": "32171b35e",
+  "source_paths_sha256": {
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py": "ca74b2f8361ae527d409ae3037452c845c580ce3ae12044f003cab5ee3e71d49",
+    "tests/learning/test_mi_forecast_exact_outcome_end_v1.py": "1728804eb4ed7b328b08bdd38cf60efbf78f0673be887840c622836d2dff6b1c"
+  },
+  "tests": {
+    "before": "3 FAIL / 2 PASS",
+    "after": "27 PASS",
+    "downstream": "8 PASS",
+    "positive_output": "n=2/n=3 full join output/digest IDENTICAL"
+  },
+  "boundaries": [
+    "Numeric realized_direction still scenario input, no derived natural label",
+    "Instrument/selection identity and measurement-start equivalence not certified",
+    "U04/GAP-0370 deferred; no live operation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/mi_forecast_outcome_end_binding_v1_2026_11_04/README.md",
+      "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 180,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

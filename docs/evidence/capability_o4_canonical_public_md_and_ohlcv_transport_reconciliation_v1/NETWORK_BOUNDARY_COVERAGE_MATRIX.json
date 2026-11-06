@@ -1,0 +1,54 @@
+{
+  "authoritative_client_count": 2,
+  "authoritative_public_md_http_clients_must_consume_o1": true,
+  "blockers": [],
+  "capability_id": "CAPABILITY_O4_CANONICAL_PUBLIC_MD_AND_OHLCV_TRANSPORT_RECONCILIATION_V1",
+  "ok": true,
+  "rows": [
+    {
+      "classification": "AUTHORITATIVE",
+      "client_id": "okx_public_market_data_client_v1",
+      "consumes_o1_environment_contract": true,
+      "consumes_o1_proxy_contract": true,
+      "notes": "assert_http_client_proxy_env_clean_v1 on default fetcher construction.",
+      "starts_network_in_o4_tests": false,
+      "surface": "src/ops/okx_public_market_data_client_v1.py"
+    },
+    {
+      "classification": "AUTHORITATIVE",
+      "client_id": "eea_public_md_transport_v1",
+      "consumes_o1_environment_contract": true,
+      "consumes_o1_proxy_contract": true,
+      "notes": "validate_request_boundary_v1 + O1 proxy fail-closed guard.",
+      "starts_network_in_o4_tests": false,
+      "surface": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/eea_public_md_transport_v1.py"
+    },
+    {
+      "classification": "DERIVED",
+      "client_id": "okx_selected_instrument_ohlcv_readmodel_http",
+      "consumes_o1_environment_contract": true,
+      "consumes_o1_proxy_contract": true,
+      "notes": "Uses OkxPublicMarketDataClientV1; DERIVED dashboard materializer.",
+      "starts_network_in_o4_tests": false,
+      "surface": "src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py"
+    },
+    {
+      "classification": "LEGACY",
+      "client_id": "pre_economic_okx_readonly_telemetry",
+      "consumes_o1_environment_contract": true,
+      "consumes_o1_proxy_contract": true,
+      "notes": "Reuses OkxPublicMarketDataClientV1; non-authoritative telemetry.",
+      "starts_network_in_o4_tests": false,
+      "surface": "src/ops/pre_economic_zero_order_evidence_session_okx_readonly_telemetry_v1.py"
+    },
+    {
+      "classification": "LEGACY",
+      "client_id": "single_future_public_md_shadow_capture",
+      "consumes_o1_environment_contract": true,
+      "consumes_o1_proxy_contract": true,
+      "notes": "Shadow capture via OkxPublicMarketDataClientV1; non-authoritative.",
+      "starts_network_in_o4_tests": false,
+      "surface": "src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/public_md_capture_v1.py"
+    }
+  ]
+}

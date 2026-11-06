@@ -1,0 +1,397 @@
+{
+  "CAPABILITY_ID": "CAPABILITY_11_3_PRIVATE_READONLY_VENUE_INTEGRATION_AND_RECONCILIATION_V1",
+  "VERIFIER_RESULT": "PASS",
+  "call_graph_after": {
+    "activation": "not_activated",
+    "network_session": "forbidden",
+    "path": [
+      "Canonical Stateful Trading Core (unchanged)",
+      "Canonical Intent / Lifecycle Contracts (Cap 11.1 retained)",
+      "Credential / Authorization / Account-Identity Boundary (Cap 11.2 retained)",
+      "Private Read-Only Venue Integration Contracts (Cap 11.3)",
+      "PrivateReadonlyVenuePortDeclarationV1 (declared / unreachable)",
+      "VenueSessionStateRecordV1 (schema only; start forbidden)",
+      "ExchangeClockSyncRecordV1 (schema only; query forbidden)",
+      "PrivateAccountStateSnapshotV1 (fixture-only ingestion)",
+      "ReconciliationHierarchyContractV1 (layers/outcomes/gates)",
+      "VenueAdapterAntiCorruptionV1 (read-only responsibilities)",
+      "Mode-Specific Execution Boundary (Simulated sole reachable)",
+      "Accounting / Portfolio / Reconciliation / Evidence"
+    ],
+    "private_readonly_venue_port": "declared_unreachable_in_capability_11_3",
+    "reconciliation_hierarchy_contract": "bound_not_activated"
+  },
+  "call_graph_before": {
+    "network_session": "forbidden",
+    "path": [
+      "Canonical Stateful Trading Core",
+      "Canonical Intent / Lifecycle Contracts (Cap 11.1)",
+      "Credential / Authorization / Account-Identity Boundary (Cap 11.2)",
+      "Mode-Specific Execution Boundary (Simulated sole reachable)",
+      "Accounting / Portfolio / Reconciliation / Evidence"
+    ],
+    "private_readonly_venue_port": "absent",
+    "reconciliation_hierarchy_contract": "absent_as_phase11_capability"
+  },
+  "claims": {
+    "ACTIVATION_STATE": "not_activated",
+    "AUTHORIZATION_CONSUMPTION_ALLOWED": false,
+    "CAPABILITY_11_1_DEPENDENCY_SATISFIED": true,
+    "CAPABILITY_11_1_FAIL_CLOSED_RETAINED": true,
+    "CAPABILITY_11_1_IDEMPOTENCY_RETAINED": true,
+    "CAPABILITY_11_1_LIFECYCLE_RETAINED": true,
+    "CAPABILITY_11_1_UNKNOWN_SEMANTICS_RETAINED": true,
+    "CAPABILITY_11_2_ACCOUNT_IDENTITY_BOUNDARY_RETAINED": true,
+    "CAPABILITY_11_2_AUTHORIZATION_BOUNDARY_RETAINED": true,
+    "CAPABILITY_11_2_CREDENTIAL_BOUNDARY_RETAINED": true,
+    "CAPABILITY_11_2_DEPENDENCY_SATISFIED": true,
+    "CAPABILITY_ID": "CAPABILITY_11_3_PRIVATE_READONLY_VENUE_INTEGRATION_AND_RECONCILIATION_V1",
+    "CORE_LOGIC_CHANGE": false,
+    "CREDENTIAL_LOAD_PERFORMED_IN_CAPABILITY_11_3": false,
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+    "EXCHANGE_TRUTH_ADOPTION_REQUIRES_EXPLICIT_POLICY": true,
+    "LIVE_AUTHORIZED": false,
+    "LIVE_EXECUTION_REACHABLE": false,
+    "NETWORK_SESSION_STARTED": false,
+    "PREDECESSOR_CAPABILITY_ID_11_1": "CAPABILITY_11_1_EXECUTION_DOMAIN_AND_ORDER_LIFECYCLE_CONTRACTS_V1",
+    "PREDECESSOR_CAPABILITY_ID_11_2": "CAPABILITY_11_2_CREDENTIAL_AUTHORIZATION_AND_ACCOUNT_IDENTITY_BOUNDARY_V1",
+    "PRIVATE_READONLY_FETCH_PERFORMED_IN_CAPABILITY_11_3": false,
+    "PRIVATE_READONLY_GET_ONLY": true,
+    "PRIVATE_READONLY_NETWORK_REACHABLE": false,
+    "PRIVATE_READONLY_ORDER_MUTATION_FORBIDDEN": true,
+    "PRIVATE_READONLY_PORT_CONSTRUCTIBLE": false,
+    "PRIVATE_READONLY_PORT_DECLARED": true,
+    "PRIVATE_READONLY_VENUE_INTEGRATION_ACTIVATED": false,
+    "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+    "RECONCILIATION_BEFORE_ALPHA": true,
+    "RECONCILIATION_CONTINUOUS": true,
+    "SILENT_LOCAL_HISTORY_OVERWRITE_FORBIDDEN": true,
+    "TESTNET_AUTHORIZED": false,
+    "TESTNET_EXECUTION_REACHABLE": false,
+    "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": true,
+    "VENUE_ADAPTER_DECISION_AUTHORITY": false,
+    "VENUE_NATIVE_EVENT_NORMALIZED": true
+  },
+  "ok": true,
+  "proofs": {
+    "core_logic_parity": {
+      "CORE_LOGIC_CHANGE": false,
+      "CORE_LOGIC_PARITY_WITH_SIMULATED_EXECUTION_PORT": true,
+      "NUMERIC_MAX_AGE_EFFECT": "DIAGNOSTIC_ONLY",
+      "VOLATILITY_NUMERIC_MAX_AGE_ENFORCING": false,
+      "c1_c2_c3_mutated": false,
+      "double_play_mutated": false,
+      "dynamic_scope_mutated": false,
+      "exit_policy_mutated": false,
+      "master_v2_mutated": false,
+      "ok": true,
+      "predecessor": {
+        "CORE_LOGIC_CHANGE": false,
+        "CORE_LOGIC_PARITY_WITH_SIMULATED_EXECUTION_PORT": true,
+        "NUMERIC_MAX_AGE_EFFECT": "DIAGNOSTIC_ONLY",
+        "VOLATILITY_NUMERIC_MAX_AGE_ENFORCING": false,
+        "c1_c2_c3_mutated": false,
+        "double_play_mutated": false,
+        "dynamic_scope_mutated": false,
+        "exit_policy_mutated": false,
+        "master_v2_mutated": false,
+        "ok": true,
+        "predecessor": {
+          "CORE_LOGIC_CHANGE": false,
+          "CORE_LOGIC_PARITY_WITH_SIMULATED_EXECUTION_PORT": true,
+          "NUMERIC_MAX_AGE_EFFECT": "DIAGNOSTIC_ONLY",
+          "VOLATILITY_NUMERIC_MAX_AGE_ENFORCING": false,
+          "after": {
+            "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+            "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+            "PORT_KIND": "SIMULATED_EXECUTION_PORT_V1",
+            "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+            "has_submit_order": false
+          },
+          "before": {
+            "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+            "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+            "NO_REAL_SUBMIT_ORDER_INTERFACE_IN_NO_ORDER_HOST": true,
+            "ORDER_SIDE_EFFECT_OCCURRED": false,
+            "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+            "SIMULATED_EXECUTION_PORT_SEPARATE_FROM_REAL_EXECUTION_PORT": true,
+            "delegate": "ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1.apply_intended_action_via_canonical_accounting_v1",
+            "forbidden_call_hits": [],
+            "forbidden_import_hits": [],
+            "ok": true,
+            "port_kind": "SIMULATED_EXECUTION_PORT_V1",
+            "refuse_real_adapter": "refuse_real_execution_adapter_construction_v1"
+          },
+          "c1_c2_c3_mutated": false,
+          "double_play_mutated": false,
+          "dynamic_scope_mutated": false,
+          "exit_policy_mutated": false,
+          "master_v2_mutated": false,
+          "ok": true,
+          "risk_mutated": false,
+          "safety_mutated": false,
+          "thresholds_mutated": false
+        },
+        "risk_mutated": false,
+        "safety_mutated": false,
+        "thresholds_mutated": false
+      },
+      "risk_mutated": false,
+      "safety_mutated": false,
+      "thresholds_mutated": false
+    },
+    "dependency_11_1": {
+      "CAPABILITY_11_1_ANTI_CORRUPTION_RETAINED": true,
+      "CAPABILITY_11_1_AUDIT_CONTRACTS_RETAINED": true,
+      "CAPABILITY_11_1_DEPENDENCY_SATISFIED": true,
+      "CAPABILITY_11_1_FAIL_CLOSED_RETAINED": true,
+      "CAPABILITY_11_1_IDEMPOTENCY_RETAINED": true,
+      "CAPABILITY_11_1_JOURNALING_RETAINED": true,
+      "CAPABILITY_11_1_LIFECYCLE_RETAINED": true,
+      "CAPABILITY_11_1_UNKNOWN_SEMANTICS_RETAINED": true,
+      "CAPABILITY_11_1_VERIFIER_RESULT": "PASS",
+      "PREDECESSOR_CAPABILITY_ID": "CAPABILITY_11_1_EXECUTION_DOMAIN_AND_ORDER_LIFECYCLE_CONTRACTS_V1",
+      "ok": true
+    },
+    "dependency_11_2": {
+      "CAPABILITY_11_2_ACCOUNT_IDENTITY_BOUNDARY_RETAINED": true,
+      "CAPABILITY_11_2_AUTHORIZATION_BOUNDARY_RETAINED": true,
+      "CAPABILITY_11_2_CREDENTIAL_BOUNDARY_RETAINED": true,
+      "CAPABILITY_11_2_DEPENDENCY_SATISFIED": true,
+      "CAPABILITY_11_2_NO_AUTH_CONSUMPTION_RETAINED": true,
+      "CAPABILITY_11_2_NO_CREDENTIAL_LOAD_RETAINED": true,
+      "CAPABILITY_11_2_VERIFIER_RESULT": "PASS",
+      "PREDECESSOR_CAPABILITY_ID": "CAPABILITY_11_2_CREDENTIAL_AUTHORIZATION_AND_ACCOUNT_IDENTITY_BOUNDARY_V1",
+      "ok": true
+    },
+    "exchange_clock_sync": {
+      "EXCHANGE_CLOCK_QUERY_PERFORMED": false,
+      "EXCHANGE_CLOCK_SYNC_SCHEMA_BOUND": true,
+      "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "allowed_sync_statuses": [
+        "UNSYNCED",
+        "SYNCED",
+        "DRIFT_DETECTED",
+        "SYNC_FAILED"
+      ],
+      "ok": true,
+      "query_blocked": true,
+      "unknown_sync_status_blocked": true
+    },
+    "negative_reachability": {
+      "ACTIVATION_STATE": "not_activated",
+      "CORE_LOGIC_CHANGE": false,
+      "CREDENTIAL_LOAD_PERFORMED_IN_CAPABILITY_11_3": false,
+      "CREDENTIAL_PLAINTEXT_LOADED": false,
+      "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+      "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+      "LIVE_AUTHORIZED": false,
+      "LIVE_EXECUTION_REACHABLE": false,
+      "NETWORK_SESSION_STARTED": false,
+      "PRIVATE_READONLY_FETCH_PERFORMED_IN_CAPABILITY_11_3": false,
+      "PRIVATE_READONLY_NETWORK_REACHABLE": false,
+      "PRIVATE_READONLY_VENUE_INTEGRATION_ACTIVATED": false,
+      "REAL_CAPITAL_MOVEMENT_REACHABLE": false,
+      "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+      "TESTNET_AUTHORIZED": false,
+      "TESTNET_EXECUTION_REACHABLE": false,
+      "credential_load_blocked": true,
+      "forbidden_call_hits": [],
+      "live_construction_blocked": true,
+      "network_session_start_blocked": true,
+      "ok": true,
+      "predecessor_negative_reachability_ok": true,
+      "private_readonly_fetch_blocked": true,
+      "private_readonly_port_construction_blocked": true,
+      "real_adapter_construction_blocked": true,
+      "testnet_construction_blocked": true
+    },
+    "private_account_state_ingestion": {
+      "FIXTURE_ONLY_SOURCE_REQUIRED": true,
+      "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "PRIVATE_ACCOUNT_NETWORK_INGESTION_PERFORMED": false,
+      "PRIVATE_ACCOUNT_STATE_SCHEMA_BOUND": true,
+      "allowed_snapshot_kinds": [
+        "accounts",
+        "open_positions",
+        "open_orders",
+        "balances_equity_margin"
+      ],
+      "network_ingestion_blocked": true,
+      "non_fixture_blocked": true,
+      "ok": true,
+      "unknown_snapshot_kind_blocked": true
+    },
+    "private_readonly_venue_port": {
+      "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "PRIVATE_READONLY_FETCH_PERFORMED_IN_CAPABILITY_11_3": false,
+      "PRIVATE_READONLY_GET_ONLY": true,
+      "PRIVATE_READONLY_NETWORK_REACHABLE": false,
+      "PRIVATE_READONLY_ORDER_MUTATION_FORBIDDEN": true,
+      "PRIVATE_READONLY_PORT_CONSTRUCTIBLE": false,
+      "PRIVATE_READONLY_PORT_DECLARED": true,
+      "PRIVATE_READONLY_VENUE_INTEGRATION_ACTIVATED": false,
+      "allowed_get_endpoints": [
+        "accounts",
+        "open_positions",
+        "open_orders"
+      ],
+      "construction_blocked": true,
+      "fetch_blocked": true,
+      "forbidden_mutation_actions": [
+        "submit_order",
+        "cancel_order",
+        "amend_order",
+        "withdraw",
+        "transfer",
+        "sendorder",
+        "batchorder"
+      ],
+      "mutation_blocked": true,
+      "ok": true,
+      "unknown_endpoint_blocked": true
+    },
+    "reconciliation_hierarchy": {
+      "EXCHANGE_TRUTH_ADOPTION_REQUIRES_EXPLICIT_POLICY": true,
+      "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "POSITION_PROTECTION_REMAINS_ACTIVE_WHERE_SAFE": true,
+      "RECONCILIATION_BEFORE_ALPHA": true,
+      "RECONCILIATION_CONTINUOUS": true,
+      "SILENT_LOCAL_HISTORY_OVERWRITE_FORBIDDEN": true,
+      "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": true,
+      "adopt_without_policy_blocked": true,
+      "layers": [
+        "credential_and_account_identity",
+        "venue_instrument_and_contract_metadata",
+        "open_orders",
+        "recent_orders_and_trades",
+        "positions",
+        "balances_equity_and_available_margin",
+        "local_portfolio_and_accounting",
+        "risk_reservations",
+        "pending_commands",
+        "evidence_and_commit_cursors"
+      ],
+      "ok": true,
+      "outcomes": [
+        "MATCH",
+        "SAFE_REBUILD",
+        "SAFE_ADOPT_EXCHANGE_TRUTH",
+        "CANCEL_UNKNOWN_ORDERS",
+        "EXIT_ONLY",
+        "REDUCE_ONLY",
+        "CANCEL_ALL_AND_HALT",
+        "HARD_STOP_OWNER_REVIEW"
+      ],
+      "silent_overwrite_blocked": true,
+      "unknown_layer_blocked": true
+    },
+    "state_ownership": {
+      "EXCHANGE_CLOCK_SYNC_OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "PRIVATE_ACCOUNT_STATE_INGESTION_OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "PRIVATE_READONLY_PORT_OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "RECONCILIATION_HIERARCHY_OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "VENUE_ADAPTER_ANTI_CORRUPTION_OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "VENUE_SESSION_CONTRACT_OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "matrix": [
+        {
+          "classification": "EPHEMERAL_CONNECTION_STATE",
+          "field": "venue_session_and_connectivity_state",
+          "mutable_by_adapter": "false",
+          "owner": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1"
+        },
+        {
+          "classification": "EPHEMERAL_CONNECTION_STATE",
+          "field": "exchange_clock_offset_and_synchronization_state",
+          "mutable_by_adapter": "false",
+          "owner": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1"
+        },
+        {
+          "classification": "DURABLE_ECONOMIC_STATE",
+          "field": "private_account_state_snapshots",
+          "mutable_by_adapter": "false",
+          "owner": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1"
+        },
+        {
+          "classification": "DURABLE_CONTROL_STATE",
+          "field": "reconciliation_checkpoints",
+          "mutable_by_adapter": "false",
+          "owner": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1"
+        },
+        {
+          "classification": "DURABLE_CONTROL_STATE",
+          "field": "private_readonly_venue_port",
+          "mutable_by_adapter": "false",
+          "owner": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1"
+        },
+        {
+          "classification": "DURABLE_CONTROL_STATE",
+          "field": "venue_adapter_anti_corruption_boundary",
+          "mutable_by_adapter": "false",
+          "owner": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1"
+        },
+        {
+          "classification": "FORBIDDEN_TO_PERSIST",
+          "field": "plaintext_credentials",
+          "mutable_by_adapter": "false",
+          "owner": "none"
+        }
+      ],
+      "ok": true,
+      "owner": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1"
+    },
+    "venue_adapter_anti_corruption": {
+      "CAPABILITY_OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "ERROR_TAXONOMY_EXPLICIT": true,
+      "MIN_SIZE_AND_NOTIONAL_VALIDATED": true,
+      "ORDER_TYPE_SUPPORT_EXPLICIT": true,
+      "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "RATE_LIMIT_BUDGET_EXPLICIT": true,
+      "ROUNDING_AND_PRECISION_EXPLICIT": true,
+      "VENUE_ADAPTER_DECISION_AUTHORITY": false,
+      "VENUE_NATIVE_EVENT_NORMALIZED": true,
+      "allowed_responsibilities": [
+        "authentication_transport",
+        "venue_native_instrument_translation",
+        "request_signing",
+        "endpoint_and_rate_limit_handling",
+        "venue_event_normalization",
+        "exchange_clock_synchronization",
+        "idempotent_lookup_by_canonical_identifiers",
+        "private_readonly_account_state_normalization"
+      ],
+      "decision_authority_blocked": true,
+      "forbidden_authorities": [
+        "decision",
+        "alpha",
+        "master_v2",
+        "double_play",
+        "portfolio_strategy",
+        "risk_limit_policy",
+        "safety_policy",
+        "accounting_authority",
+        "autonomous_limit_changes",
+        "order_mutation"
+      ],
+      "ok": true,
+      "order_mutation_blocked": true,
+      "predecessor_anti_corruption_ok": true
+    },
+    "venue_session_and_connectivity": {
+      "NETWORK_SESSION_ALLOWED": false,
+      "NETWORK_SESSION_STARTED": false,
+      "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+      "allowed_connectivity_states": [
+        "DISCONNECTED",
+        "CONNECTING",
+        "CONNECTED",
+        "DEGRADED",
+        "HALTED"
+      ],
+      "ok": true,
+      "session_start_blocked": true,
+      "unknown_connectivity_blocked": true
+    }
+  }
+}

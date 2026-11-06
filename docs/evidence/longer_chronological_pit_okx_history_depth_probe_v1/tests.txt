@@ -1,0 +1,7 @@
+export PYENV_VERSION=3.11.14
+python -m pytest \
+  tests/research/test_longer_chronological_pit_okx_history_depth_probe_v1.py \
+  tests/research/test_longer_chronological_pit_acquisition_scaffold_v1.py \
+  -q --tb=short
+
+# Result: 32 passed

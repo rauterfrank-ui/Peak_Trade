@@ -1,0 +1,1 @@
+{"eligible":"true","open_authority_status":"RETIRED_NOT_CURRENT_PRODUCTIVE_AUTHORITY","raw_field":"acctLv","raw_rewritten":"false","raw_token":"2","reason_codes":["U01_ACCT_LV_2_MAPS_TO_FUTURES_MODE"],"runtime_fact_status":"MINTED_CURRENT_PRODUCTIVE_U01_ELIGIBILITY_FACT","semantic_token":"FUTURES_MODE","status":"ELIGIBLE"}

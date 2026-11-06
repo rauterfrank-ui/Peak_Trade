@@ -1,0 +1,18 @@
+{
+  "CAUSAL_CLOSURE_PROVEN": false,
+  "CURRENT_GRAPH_VERIFIED": false,
+  "CURRENT_ONLY_FILTER_APPLIED": false,
+  "CURRENT_ONLY_GRAPH": false,
+  "GLOBAL_NON_INTERFERENCE_PROVEN": false,
+  "GRAPH_AUTHORITY": "STRICT_CURRENT",
+  "GRAPH_MODE": "STRICT_CURRENT",
+  "SNAPSHOT_BINDING_VERIFIED": false,
+  "SOURCE_VALIDATION_PASS": false,
+  "authority": "NONE",
+  "errors": [
+    "census_source_baseline_head_mismatch: head=6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9 baseline=ae131a986e5f0106831b501203725cea7e30bc6c"
+  ],
+  "schema_version": "composed_forensic_graph.v1",
+  "snapshot_id": "4a8338cb292b89d566731abc647b0529",
+  "source_validation_pass": false
+}

@@ -1,0 +1,17 @@
+{
+  "artifact_class": "AUTHORIZED_PRODUCTIVE_PARAMETER_SEAM_DECISION_V1",
+  "workpackage_id": "M10_PRODUCTIVE_PARAMETER_LINEAGE_CLOSURE_V1",
+  "slice": "C_AUTHORIZED_PRODUCTIVE_PARAMETER_SEAM_V1",
+  "bound_origin_main_sha": "590256130cd9b2fa08fc6c115010686a48c3d4b8",
+  "normative_spec": "docs/ops/specs/AUTHORIZED_PRODUCTIVE_PARAMETER_SEAM_NORMATIVE_V1.md",
+  "predecessor_edge": "MATERIALIZED_GOVERNED_PRODUCTIVE_CONFIGURATION",
+  "parameter_seam_owner_module": "src/governance/authorized_productive_parameter_seam_v1.py",
+  "productive_target_id": "peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds/v1",
+  "policy_consumer_module": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+  "policy_evaluator_symbol": "evaluate_canonical_volatility_estimate_age_policy_v1",
+  "policy_resolver_symbol": "resolve_canonical_volatility_max_age_policy_for_evaluation_v1",
+  "seam_implies_enforcement": false,
+  "seam_implies_trading_decision_authority": false,
+  "seam_implies_runtime_apply": false,
+  "external_effect_authorized": false
+}

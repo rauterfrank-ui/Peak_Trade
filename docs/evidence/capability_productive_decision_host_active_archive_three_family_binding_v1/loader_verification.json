@@ -1,0 +1,13 @@
+{
+  "archive_readmodels_present": [
+    "canonical_decision_presentation_projection.v1.json",
+    "canonical_trading_decision_evidence.v1.json",
+    "dynamic_scope_presentation_projection.v1.json",
+    "dynamic_scope_state_v1.json",
+    "okx_selected_instrument_ohlcv_readmodel.v1.json",
+    "universe_selection_readmodel.v1.json"
+  ],
+  "canonical_decision_loader_ok": true,
+  "double_play_loader_ok": false,
+  "dynamic_scope_loader_ok": true
+}

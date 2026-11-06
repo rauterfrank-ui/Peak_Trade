@@ -1,0 +1,139 @@
+{
+  "activated": false,
+  "activation_eligible": false,
+  "automatic_backlog_selection_allowed": false,
+  "canonical_evidence": [
+    {
+      "provenance_note": "terminal_final_research_fleet_FAIL_closeout",
+      "relpath": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "schema_version": "post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary.v0",
+      "sha256": "e826cc924111b6ad9da896d60acf3344b34b1c9d6ea175e7e12f58e189ad26f1"
+    },
+    {
+      "provenance_note": "sealed_step29u_economic_validity_result_pr5553",
+      "relpath": "evidence/ops/step_29u_activation_evidence_economic_readiness/20260726T011500Z_local_pre_pr/economic_validity_result.json",
+      "schema_version": "v0",
+      "sha256": "1dadd61cb2e77e8ba2b6f98250ec4c84fbabb9749688dae597f74cddec9ba67a"
+    },
+    {
+      "provenance_note": "retirement_inventory_ssot",
+      "relpath": "config/research/step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.json",
+      "schema_version": "step_29u_terminal_unchanged_final_fleet_hypothesis_retirement.v0",
+      "sha256": "d76ce8f47e718a757148792c51f1976419418b8b35135e8e4a6666be6360e090"
+    },
+    {
+      "provenance_note": "governance_terminalization_and_next_material_boundary",
+      "relpath": "docs/governance/POST_PR4939_FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_V0.md",
+      "schema_version": "v0",
+      "sha256": null
+    }
+  ],
+  "capability_id": "STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0",
+  "economic_validity_proven": false,
+  "economic_validity_status": "FAIL",
+  "evaluator_valid": true,
+  "generated_at": "2026-07-25T23:49:27Z",
+  "historical_evidence_preserved": true,
+  "inputs": {
+    "closeout_economic_validity_status": "FAIL",
+    "closeout_status": "COMPLETE",
+    "fleet_closeout_digest": "e826cc924111b6ad9da896d60acf3344b34b1c9d6ea175e7e12f58e189ad26f1",
+    "fleet_closeout_relpath": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+    "retirement_config_digest": "d76ce8f47e718a757148792c51f1976419418b8b35135e8e4a6666be6360e090",
+    "retirement_config_relpath": "config/research/step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.json",
+    "sealed_economic_result_digest": "1dadd61cb2e77e8ba2b6f98250ec4c84fbabb9749688dae597f74cddec9ba67a",
+    "sealed_economic_result_relpath": "evidence/ops/step_29u_activation_evidence_economic_readiness/20260726T011500Z_local_pre_pr/economic_validity_result.json"
+  },
+  "next_research_candidate_selected": false,
+  "operator_selection_required_for_next_material_research": true,
+  "provenance": {
+    "no_activation": true,
+    "no_automatic_backlog_selection": true,
+    "no_historical_evidence_mutation": true,
+    "no_strategy_hypothesis_invention": true,
+    "package_marker": "STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0=true",
+    "producer_family": "ops.step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0",
+    "reuses_economic_failure_closeout": true,
+    "reuses_fleet_terminalization": true
+  },
+  "reasons": [
+    "OPERATOR_SELECTED_RECOVERY_OPTION=RETIRE_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESES",
+    "RETIREMENT_INVENTORY_COMPLETE=true",
+    "ECONOMIC_VALIDITY_STATUS=FAIL",
+    "ACTIVATION_ELIGIBLE=false",
+    "NEXT_RESEARCH_CANDIDATE_SELECTED=false",
+    "OPERATOR_SELECTION_REQUIRED_FOR_NEXT_MATERIAL_RESEARCH=true"
+  ],
+  "retired_hypothesis_count": 3,
+  "retired_hypothesis_ids": [
+    "trend_following/v1",
+    "bollinger_bands/v1",
+    "momentum_1h/v1"
+  ],
+  "retirement_inventory": [
+    {
+      "binding_digest": "583fa9a2f8b0de228300faee733589c0f3d5f4a3a56cb0cc6001167f3d2870d3",
+      "canonical_negative_evidence_ref": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "historical_evidence_preserved": true,
+      "hypothesis_id": "trend_following/v1",
+      "retirement_reason": "TERMINAL_ECONOMIC_FAILURE",
+      "retirement_status": "RETIRED",
+      "strategy_id": "trend_following",
+      "strategy_version": "v1",
+      "terminal_verdict": "FAIL",
+      "unchanged_repromotion_allowed": false,
+      "unchanged_rerun_allowed": false
+    },
+    {
+      "binding_digest": "2d4c529179d2d51ac9aa91e7e2d0f8b74cf1208db87b8722d3dd068d4907058d",
+      "canonical_negative_evidence_ref": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "historical_evidence_preserved": true,
+      "hypothesis_id": "bollinger_bands/v1",
+      "retirement_reason": "TERMINAL_ECONOMIC_FAILURE",
+      "retirement_status": "RETIRED",
+      "strategy_id": "bollinger_bands",
+      "strategy_version": "v1",
+      "terminal_verdict": "FAIL",
+      "unchanged_repromotion_allowed": false,
+      "unchanged_rerun_allowed": false
+    },
+    {
+      "binding_digest": "b91090d91af40b2ee76b4585f113f16b5e950607a051e6b9c47fc0bd8b5dd174",
+      "canonical_negative_evidence_ref": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "historical_evidence_preserved": true,
+      "hypothesis_id": "momentum_1h/v1",
+      "retirement_reason": "TERMINAL_ECONOMIC_FAILURE",
+      "retirement_status": "RETIRED",
+      "strategy_id": "momentum_1h",
+      "strategy_version": "v1",
+      "terminal_verdict": "FAIL",
+      "unchanged_repromotion_allowed": false,
+      "unchanged_rerun_allowed": false
+    }
+  ],
+  "retirement_inventory_complete": true,
+  "retirement_reason": "TERMINAL_ECONOMIC_FAILURE",
+  "retirement_scope": "UNCHANGED_FINAL_FLEET_ONLY",
+  "retirement_status": "COMPLETE",
+  "safety_facts": {
+    "ACTIVATION_ELIGIBLE": false,
+    "AUTOMATIC_BACKLOG_SELECTION_ALLOWED": false,
+    "BTC_EXCLUDED": true,
+    "ECONOMIC_VALIDITY_PROVEN": false,
+    "KRAKEN_LEGACY_EXCLUDED": true,
+    "NETWORK_USED": false,
+    "NEXT_RESEARCH_CANDIDATE_SELECTED": false,
+    "ORDERS_CREATED": false,
+    "ORDERS_SUBMITTED": false,
+    "RUNTIME_ACTIVATED": false,
+    "SCHEDULER_ACTIVATED": false,
+    "SPOT_EXCLUDED": true,
+    "STEP_29U_ACTIVATED": false
+  },
+  "schema_id": "ops.step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0",
+  "schema_version": "v0",
+  "selected_recovery_option": "RETIRE_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESES",
+  "status": "COMPLETE",
+  "unchanged_repromotion_allowed": false,
+  "unchanged_rerun_allowed": false
+}

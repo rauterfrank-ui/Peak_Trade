@@ -1,0 +1,37 @@
+---
+stand: "2026-11-05"
+autoritaet: "NONE"
+rolle: "Quellgebundene Rekonstruktion; vorhandene Ausführungsbelege begrenzt"
+---
+
+# Vier Bedeutungsumfänge auseinanderhalten
+
+## April 2026: Instrumentwissen für ein ausgewähltes Future
+
+Das Double-Play-Manifest fordert Volatilität, ATR/rolling range, intraday profile, Quotevolumen, Liquidität/Spread, Open Interest soweit verfügbar, Funding, Preisartenverfügbarkeit, Freshness, Trend/Chop und Provenienz. Diese Informationen sollen Scope, Trailing, Hysterese, Confirmation/Cooldown und Schutzbedingungen informieren. Es beschreibt einen fachlichen Entwurf mit noch offenen Metrikentscheidungen. Daraus folgt keine heutige Erlaubnis, Confirmation oder Scope zu verändern.
+
+Das damalige Übergabeschema ist ausdrücklich als mögliches späteres Objekt formuliert. Instrument Intelligence liefert Marktprofil und Kontext; Selector/AI handeln nicht. Das ist mehr als der heutige kleine Zahlenkern eines Rankingfeatures, aber kein Nachweis eines damals bereits vollständigen Profilproducers.
+
+Die gespeicherte Manifestfassung an f78e1c9de767346e52ae7f35df7681141d7ed645 wurde gegen das lokale Gitobjekt bytegleich verifiziert. Die Einführung gehört zu PR3034. Der Scope-Code aus PR3035 berechnet innerhalb Double Play bereits Volatilität×Mark, Clamp und Trailing; seine damalige Volatilitätsquelle bleibt ein zugelieferter Proxy. Nicht rückwirkend mit dem späteren PT1M/PT60M-Schätzer gleichsetzen.
+
+## Oktober 1: eng begrenzter Scope-Lieferant
+
+Die originale Ownernachricht verlangt Berechnung und kanonische Bereitstellung eines Dynamic-Scope-Werts für den bereits ausgewählten Future. Keine Auswahl-, Ranking-, Binding-, Bull/Bear-, Switch-, Confirmation-, Entry-/Exit-, Sizing-, Kapital- oder Sendhoheit für diese Fähigkeit. Gültiger Wert, Instrumentbezug, Epoche und kausaler Marktbezug sind zentrale Anforderungen.
+
+Diese datierte Präzisierung beschränkt den dort gemeinten Scope-Lieferanten. Sie macht nicht nachträglich alle historischen Scanner und Instrumentprofile zu einem einzigen nativen IU-Owner. Scopeformel und Scopekonfiguration bleiben im aktuellen Auftrag unverändert.
+
+## Oktober 7: breite Cap-/Feature-/Residency-Projektion
+
+Der wieder erschlossene Toolauftrag gruppiert Universe-Akquisition bis BoundInstrument in L00–L13 und führt acht laterale Planes. Ranking-, Selection- und Bindingbefugnisse verbleiben in diesem Dokument bei ihren jeweiligen ursprünglichen Ownermodulen. Die Sammeladresse IU ist keine zusätzliche Authority.
+
+Der historische Text behauptet Fixpoint und UNKNOWN=0. Diese Behauptungen sind keine neue Vollständigkeitsfeststellung. Das heutige Dossier prüft Quelle, Bedeutung und konkrete Consumer getrennt. Die acht lateralen Planes sind auch nicht die acht Sichtbereiche des äußeren Rings.
+
+## Heutige MI-Evidenceplane und intelligente Forschungsfähigkeiten
+
+MARKET_CONTEXT, Forecast, Outcomejoin, Kalibrierung, Inkrementalinformation, Representation und Attribution sind implementierte MI-/Learning-/Researchfunktionen. Ein Forecast-Record wird aus einem übergebenen probabilistic_payload gebaut. Das allein ist kein ausgeführtes Prognosemodell. Ein MI-angereichertes Experiment kann zulässige Evidence und Lineage erhalten, ohne seine numerischen Versuchsparameter aus dem Forecast abzuleiten.
+
+Die Governance-„intelligence superstructure“ ist nochmals eine komponierte Offlinekette bis M10 HARD STOP. Ihr Name macht sie weder zum ursprünglichen Instrumentuniversum noch zur produktiven Steuerzentrale.
+
+Quellen: [Aprilmanifest](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/ddo-pre-foundation-pr-lineage/april-double-play-manifest.md>) · [Originalnachricht Oktober 1](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/intelligent-universe-functional-origins/original-message-101096.txt>) · [build_forecast_evidence_v1](../../../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py#L91) · [run_ghv_referenced_intelligence_superstructure_offline_cycle_v1](../../../../../src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py#L91).
+
+[Zur IU-Übersicht](../vault_exact/00%20Systemindex/Intelligentes%20Universum/Intelligentes%20Universum%20rekonstruiert.md.json)

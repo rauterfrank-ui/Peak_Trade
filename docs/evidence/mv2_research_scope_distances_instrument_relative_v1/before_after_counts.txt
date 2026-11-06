@@ -1,0 +1,26 @@
+MEMBER=okx:linear_perpetual:1INCH:USDT:USDT:perp
+SOURCE=probe_summary.json (durable economic research archive)
+
+BEFORE (audit scope_event_noop_root_cause_audit_v1):
+  NOOP_COUNT=2893
+  THRESHOLD_MISS_COUNT=2893
+  BULL_CANDIDATE_COUNT=0
+  BEAR_CANDIDATE_COUNT=0
+  BULL_EVENT_COUNT=0
+  BEAR_EVENT_COUNT=0
+
+AFTER (this fix):
+  NOOP_COUNT=67
+  THRESHOLD_MISS_COUNT=100
+  BULL_CANDIDATE_COUNT=2
+  BEAR_CANDIDATE_COUNT=2791
+  BULL_EVENT_COUNT=2   # upscope_candidate=1 + upscope_confirmed=1
+  BEAR_EVENT_COUNT=0   # downscope_* (adverse_exit_candidate=2824 shadows downscope under legacy adverse<up)
+  ADVERSE_EXIT_CANDIDATE_COUNT=2824
+  LEGACY_ABSOLUTE_DISTANCE_SEEN=0
+  TRADES_OPENED=1  # not an acceptance criterion
+
+ACCEPTANCE:
+  NOOP_COUNT < 2893 → PASS
+  THRESHOLD_MISS_COUNT < 2893 → PASS
+  bull_or_bear_candidate → PASS (both)

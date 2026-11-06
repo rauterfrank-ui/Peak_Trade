@@ -1,0 +1,205 @@
+{
+  "schema": "n5_optional_completion_routing_probe_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "execution_head": "81a2be374614d8c9d397f8de57a63577f834c9a7",
+  "date": "2026-11-05",
+  "existing_source_finding": "N5-07",
+  "existing_source_finding_artifact_sha256": "3ca90f6ff1be96618e433485f9206f0b235d7c6676fc70d3f16bbe25ff9658b3",
+  "source_bindings": [
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "e258b72e0b72b443558677f6025a675dbcd91528aa604f43b4cc4049674b69b4",
+      "line_start": 311,
+      "line_end": 325,
+      "snippet_sha256": "33772c5732135503c049dc5fb00a97fd1c8fd1349c241b4b9db787cbfc19919a"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "e258b72e0b72b443558677f6025a675dbcd91528aa604f43b4cc4049674b69b4",
+      "line_start": 372,
+      "line_end": 424,
+      "snippet_sha256": "065c2869512fc1364c5dd85253feae23919b1478d2432402ecec23ef8eafb0c8"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "4f09717bdc0b6e708ff4b0f5a95bf42355879e5c2a5819d71855a39e59b73ce7",
+      "line_start": 449,
+      "line_end": 459,
+      "snippet_sha256": "e27cb57a10f304e6c3dc760777b62ef63e6cc0ebe17b5d77705fcb673676519b"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "2db8b7bec844162b216d592b2f9e1ea7135784b0995f6470ff58b89b7b35e473",
+      "line_start": 809,
+      "line_end": 837,
+      "snippet_sha256": "f0b6ea33953e4e510873174ef86e4278412a8e9665b0d33c6484320fc2160993"
+    }
+  ],
+  "tests": [
+    {
+      "name": "test_optional_completion_reenters_readiness_without_explicit_owner[False-1]",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_optional_completion_reenters_readiness_without_explicit_owner[False-5]",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_optional_completion_reenters_readiness_without_explicit_owner[True-1]",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_optional_completion_reenters_readiness_without_explicit_owner[True-5]",
+      "outcome": "PASS"
+    }
+  ],
+  "observations": [
+    {
+      "target_cardinality": 1,
+      "include_host_completion_rollup": false,
+      "readiness_calls": [
+        {
+          "lanes": [
+            "LANE_1"
+          ],
+          "portfolio_owner_supplied": true,
+          "owner_is_original": true
+        }
+      ],
+      "readiness_call_count": 1,
+      "original_portfolio_owner_only_in_first_call": true,
+      "actual_budget_effect_tested": false,
+      "actual_admission_validated": false,
+      "actual_governed_cycles_executed": false,
+      "actual_host_join_executed": false,
+      "io_owners_mocked": true,
+      "productive_runtime_sessions": 0,
+      "implementation_changed": false,
+      "scope": "Real outer control flow and real optional completion function; boundary dependencies mocked. No original shared adapter identified by this probe."
+    },
+    {
+      "target_cardinality": 1,
+      "include_host_completion_rollup": true,
+      "readiness_calls": [
+        {
+          "lanes": [
+            "LANE_1"
+          ],
+          "portfolio_owner_supplied": true,
+          "owner_is_original": true
+        },
+        {
+          "lanes": [
+            "LANE_1"
+          ],
+          "portfolio_owner_supplied": false,
+          "owner_is_original": false
+        }
+      ],
+      "readiness_call_count": 2,
+      "original_portfolio_owner_only_in_first_call": true,
+      "actual_budget_effect_tested": false,
+      "actual_admission_validated": false,
+      "actual_governed_cycles_executed": false,
+      "actual_host_join_executed": false,
+      "io_owners_mocked": true,
+      "productive_runtime_sessions": 0,
+      "implementation_changed": false,
+      "scope": "Real outer control flow and real optional completion function; boundary dependencies mocked. No original shared adapter identified by this probe."
+    },
+    {
+      "target_cardinality": 5,
+      "include_host_completion_rollup": false,
+      "readiness_calls": [
+        {
+          "lanes": [
+            "LANE_1",
+            "LANE_2",
+            "LANE_3",
+            "LANE_4",
+            "LANE_5"
+          ],
+          "portfolio_owner_supplied": true,
+          "owner_is_original": true
+        }
+      ],
+      "readiness_call_count": 1,
+      "original_portfolio_owner_only_in_first_call": true,
+      "actual_budget_effect_tested": false,
+      "actual_admission_validated": false,
+      "actual_governed_cycles_executed": false,
+      "actual_host_join_executed": false,
+      "io_owners_mocked": true,
+      "productive_runtime_sessions": 0,
+      "implementation_changed": false,
+      "scope": "Real outer control flow and real optional completion function; boundary dependencies mocked. No original shared adapter identified by this probe."
+    },
+    {
+      "target_cardinality": 5,
+      "include_host_completion_rollup": true,
+      "readiness_calls": [
+        {
+          "lanes": [
+            "LANE_1",
+            "LANE_2",
+            "LANE_3",
+            "LANE_4",
+            "LANE_5"
+          ],
+          "portfolio_owner_supplied": true,
+          "owner_is_original": true
+        },
+        {
+          "lanes": [
+            "LANE_1",
+            "LANE_2",
+            "LANE_3",
+            "LANE_4",
+            "LANE_5"
+          ],
+          "portfolio_owner_supplied": false,
+          "owner_is_original": false
+        }
+      ],
+      "readiness_call_count": 2,
+      "original_portfolio_owner_only_in_first_call": true,
+      "actual_budget_effect_tested": false,
+      "actual_admission_validated": false,
+      "actual_governed_cycles_executed": false,
+      "actual_host_join_executed": false,
+      "io_owners_mocked": true,
+      "productive_runtime_sessions": 0,
+      "implementation_changed": false,
+      "scope": "Real outer control flow and real optional completion function; boundary dependencies mocked. No original shared adapter identified by this probe."
+    }
+  ],
+  "actual_n5_admission_validated": false,
+  "actual_governed_cycles_executed": false,
+  "actual_host_activation_executed": false,
+  "actual_budget_arithmetic_executed": false,
+  "original_shared_adapter_identified": false,
+  "implementation_changed": false,
+  "interpretation": "Confirm actual outer orchestration and optional completion call route with mocked boundary owners: flag True repeats readiness and omits explicit first portfolio owner on the second call. No observed budget/position/cursor failure or N5 productive acceptance.",
+  "next_contract_choices": [
+    "If completion is a read-only rollup, reuse the first readiness projections and join them through the existing host-join function without rerunning cycles.",
+    "If a second invocation is intended, explicitly bind its owner/input identity, state lifetime and replay/idempotence contract. No such alternative has been adopted or implemented."
+  ],
+  "execution_artifacts": [
+    {
+      "path": "tests.xml",
+      "sha256": "34985a5a1d38d352da3af1caca582323a3fc7b4ff1b46093c7cb83d31e4594d8"
+    },
+    {
+      "path": "tests.log",
+      "sha256": "f3aaf044772e2ea65d1e046f21427bca3871f6fbbd3ed3cdfcb22383043fe149"
+    },
+    {
+      "path": "test_optional_completion_routing.py",
+      "sha256": "0eb4157f83d92f346800f81176f5e5884c1510ee3cb2173012f247829852e1b5"
+    }
+  ]
+}

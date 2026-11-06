@@ -1,0 +1,64 @@
+{
+  "EXISTING_SURFACE_CENSUS": [
+    {
+      "client_post_reachable": "true",
+      "current_main_invocable": "false",
+      "disposition": "REJECT_FOR_THIS_WP",
+      "endpoints": "/api/v5/account/config,/api/v5/account/balance",
+      "flags_mutated": "false",
+      "get_only_endpoints": "true",
+      "obsolete_expected_origin_main_sha": "6d25cd2ced346f760db26ca488183b45d19b3d73",
+      "owner_go_required": "true",
+      "path": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_gets_v1.py",
+      "submit_import": "false"
+    },
+    {
+      "client_post_reachable": "false",
+      "current_main_invocable": "false",
+      "disposition": "REJECT_FOR_THIS_WP",
+      "endpoints": "frozen P08 private GET pack",
+      "flags_mutated": "false",
+      "get_only_endpoints": "true",
+      "obsolete_expected_origin_main_sha": "ac2ea2d4_frozen_p08",
+      "owner_go_required": "true",
+      "path": "src/ops/section_11_13_5_p08_read_only_closure_v1/",
+      "submit_import": "false"
+    },
+    {
+      "client_post_reachable": "false",
+      "current_main_invocable": "false_incomplete_allowlist",
+      "disposition": "REUSE_PATTERN_NOT_INVOKE_CLI",
+      "endpoints": "/api/v5/account/config,/api/v5/account/balance,/api/v5/account/positions",
+      "flags_mutated": "false",
+      "get_only_endpoints": "true",
+      "obsolete_expected_origin_main_sha": "cli_execute_frozen",
+      "owner_go_required": "cli_execute_yes_http_client_no",
+      "path": "src/ops/section_11_13_2_live_private_read_only_v1/http_client_v1.py",
+      "submit_import": "false"
+    },
+    {
+      "client_post_reachable": "true",
+      "current_main_invocable": "false_forbidden_mixed_transport",
+      "disposition": "REJECT_FOR_THIS_WP",
+      "endpoints": "pretrade GET mixed with POST /api/v5/trade/order",
+      "flags_mutated": "false",
+      "get_only_endpoints": "false",
+      "obsolete_expected_origin_main_sha": "n/a",
+      "owner_go_required": "true",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+      "submit_import": "true"
+    },
+    {
+      "client_post_reachable": "true",
+      "current_main_invocable": "false_forbidden_mixed_client",
+      "disposition": "REJECT_FOR_THIS_WP",
+      "endpoints": "GET and POST",
+      "flags_mutated": "false",
+      "get_only_endpoints": "false",
+      "obsolete_expected_origin_main_sha": "n/a",
+      "owner_go_required": "n/a",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+      "submit_import": "true"
+    }
+  ]
+}

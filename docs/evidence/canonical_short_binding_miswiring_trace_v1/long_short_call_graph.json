@@ -1,0 +1,52 @@
+{
+  "first_route_divergence": {
+    "boundary": "map_decision_evidence_to_position_signal_v1 \u2192 legacy_BacktestEngine",
+    "long_route": "enter_long \u2192 +1 \u2192 open",
+    "note": "Decision authority remains symmetric through MV2/DP; first asymmetric routing is adapter encoding into long-only legacy consumer.",
+    "short_route": "enter_short \u2192 -1 \u2192 no-op when flat"
+  },
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "long": [
+    "strategy_signal_producer",
+    "canonical_market_context",
+    "master_v2_transition_state",
+    "double_play_composition",
+    "entry_exit_policy",
+    "integrated_offline_orchestrator",
+    "map_decision_evidence_to_position_signal_v1",
+    "legacy_BacktestEngine signal=+1 \u2192 Trade open",
+    "exit signal=-1 or EOD \u2192 roundtrip",
+    "materialize_trade_ledger_rows_v0",
+    "report_consumer"
+  ],
+  "none_flat": [
+    "entry_side=NONE or observe/blocked",
+    "resolve_agreement_bound_directional_cycle_v1 \u2192 None OR map \u2192 0",
+    "no engine open",
+    "fail_closed zero trades"
+  ],
+  "short": [
+    "strategy_signal_producer",
+    "canonical_market_context",
+    "master_v2_transition_state",
+    "double_play_composition",
+    "entry_exit_policy",
+    "integrated_offline_orchestrator",
+    "map_decision_evidence_to_position_signal_v1",
+    "legacy_BacktestEngine signal=-1 \u2192 NO open (flat no-op)",
+    "no roundtrip",
+    "ledger_count=0",
+    "report_trades=0"
+  ],
+  "unbound_short_capable_route": [
+    "strategy_signal_producer",
+    "canonical_market_context",
+    "master_v2_transition_state",
+    "double_play_composition",
+    "entry_exit_policy",
+    "integrated_offline_orchestrator",
+    "map_decision_evidence_to_position_signal_v1",
+    "pipeline_BacktestEngine signal=-1 \u2192 short open (UNBOUND by MV2 wiring)",
+    "roundtrip/ledger possible"
+  ]
+}

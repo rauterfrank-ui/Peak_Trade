@@ -1,0 +1,55 @@
+# Historische Bereichsregister: 17 → 20
+
+## Ergebnis
+
+Eine konkrete historische Map enthält am 25.09.2026 17 FIRST_CLASS-Einträge und 18 INTERMEDIATE-Einträge (35 insgesamt). Dieselbe Map enthält am lokal verfügbaren Vergleichsstand vom 24.10.2026 20 FIRST_CLASS- und 55 INTERMEDIATE-Einträge (75 insgesamt). Alle 17 IDs bleiben erhalten; drei kommen hinzu. Rollen und Verbindungen können sich trotzdem geändert haben.
+
+Das ist ein plausibler Anker für Franks Erinnerung, kein Beweis der endgültigen oder ursprünglich vollständigen Bereichszahl. FIRST_CLASS ist eine historische Map-Klassifikation. Die Datei deklariert map_authority=NONE und authority_effect=NONE. Selbst Treasury wird innerhalb dieses Tiers als Lifecycle-Subdomain beschrieben.
+
+## Benannte Einträge
+
+- **Futures-Universum / Eligibility** — `universe_cap21`; In beiden Vergleichsständen.
+- **Ranking** — `ranking_cap22`; In beiden Vergleichsständen.
+- **Selection** — `selection_cap23`; In beiden Vergleichsständen.
+- **Instrument- und Runtime-Bindung** — `runtime_binding_cap24`; In beiden Vergleichsständen.
+- **Master V2 / Double Play** — `mv2_double_play`; In beiden Vergleichsständen.
+- **Full Autonomy / Orchestrierung** — `full_autonomy_n5`; In beiden Vergleichsständen.
+- **Kapital / Risiko / Sizing** — `capital_risk_sizing`; In beiden Vergleichsständen.
+- **Treasury-Lifecycle** — `treasury_29p`; In beiden Vergleichsständen.
+- **Portfolio / Reservierung** — `portfolio_reservation`; In beiden Vergleichsständen.
+- **Safety** — `safety`; In beiden Vergleichsständen.
+- **Order Intent** — `order_intent`; In beiden Vergleichsständen.
+- **Execution / externe Wirkung** — `execution_external_effect`; In beiden Vergleichsständen.
+- **Learning / DDO** — `learning_ddo`; In beiden Vergleichsständen.
+- **Meta-Learning** — `meta_learning`; In beiden Vergleichsständen.
+- **Optimierungsuniversum** — `optimization_universe`; In beiden Vergleichsständen.
+- **Step 29M / ökonomische Auswertung** — `step29m`; In beiden Vergleichsständen.
+- **Präsentation / Readmodels** — `presentation_dashboard`; In beiden Vergleichsständen.
+- **Kontoeigenkapital-Autorität** — `governed_productive_account_equity_authority_v1`; Zusätzlich im späteren Vergleichsstand.
+- **Referenzpreis-Autorität** — `governed_productive_reference_price_authority_v1`; Zusätzlich im späteren Vergleichsstand.
+- **Instrumentmetadaten-Autorität** — `governed_productive_instrument_metadata_authority_v1`; Zusätzlich im späteren Vergleichsstand.
+
+## Primärbelege
+
+- Commit: `a0af5655c13d5d1713e268edfc3c9f49002a8f4a`
+  - a0af5655c13d5d1713e268edfc3c9f49002a8f4a · 2026-09-25T09:11:13+02:00 · Finalize CURRENT system interaction map representation.
+  - Git-Pfad: `config/governance/current_system_interaction_authority_map_v1/source_v1.json`
+  - Blob: `dac8edba0b9db1786ff550c20ae24c9a8031e274`; SHA256: `f740f0b8a78286c01cde2ab507bf7f66ec42d3683d01348a77331a092eb45da2`
+  - [Unveränderte JSON-Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/area-source-discovery/interaction-map-a0af5655c13d.source.json>)
+- Commit: `5d1c838c15369507c5247834db4dd0df25592169`
+  - 5d1c838c15369507c5247834db4dd0df25592169 · 2026-10-24T00:52:54+02:00 · feat: add an isolated K1 GET-only observation path (#7178)
+  - Git-Pfad: `config/governance/current_system_interaction_authority_map_v1/source_v1.json`
+  - Blob: `2030897ec3f21bf38c49d738f71d6e4c074944b0`; SHA256: `03e1a7de9f58afc21d93935c9d8d92c6174002ce64399f0b356e95f08084997e`
+  - [Unveränderte JSON-Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/area-source-discovery/interaction-map-5d1c838c1536.source.json>)
+
+## Weitere Suchanker und Grenzen
+
+Sechs Suchabfragen lieferten 1.653 unterschiedliche Indexeinträge, darunter 62 Dokumente mit möglichen Strukturüberschriften und 132 Zählformulierungen. Diese Treffer wurden nicht sämtlich vollständig gelesen. Vier übergreifende Strukturquellen sind separat gesichert: Architekturübersicht Dezember 2025, Projektübersicht Januar 2026, V1-Gesamtübersicht und Whole-System-Fitness-Matrix. Recovery-Originale wurden in diesem Suchschritt nicht erneut physisch eingelesen.
+
+Andere Zahlen meinen andere Einheiten: Der technische Census nennt 17 heuristische Import-Domänen, die Dezember-Übersicht 42 technische Subsysteme in acht Gruppen. Spätere fünf benannte Universen, unsere zwölf Arbeitsdossiers und 17 Vault-Registerzeilen sind wiederum andere Gliederungen. Sie werden nicht zu einer gemeinsamen Bereichszahl verrechnet.
+
+Die historischen Cursor-Belege ergänzen die Git-Quelle; ihre Statusmeldungen und damaligen Aufträge wurden nicht ausgeführt. Quellen-Hashes und Fundstellen stehen im JSON-Register.
+
+Offen bleiben die frühesten fachlichen Ursprünge, weitere historische Bereichsvarianten, vollständige innere Ebenen, Außenring und die Abdeckung aller ursprünglich geplanten Funktionen. Als nächster struktureller Schritt sind die benannten Registereinträge mit den älteren Übersichten abzugleichen; kein Vorziehen einzelner Formel- oder Fehleranalysen.
+
+Keine Produktänderung, kein Recovery-Scan, keine Laufwerksbeschreibung und kein Laufzeitnachweis.

@@ -1,0 +1,194 @@
+=== Makefile ===
+=== README.md ===
+=== README_REGISTRY.md ===
+=== archive ===
+PeakTradeRepo
+README.md
+full_files_stand_02.12.2025
+legacy_docs
+legacy_scripts
+=== audit.log ===
+=== config ===
+README.md
+config.test.toml
+config.toml
+default.toml
+execution_telemetry.toml
+live_policies.toml
+macro_regimes
+market_outlook
+markets
+portfolio_presets
+portfolio_recipes.toml
+portfolios
+promotion_loop_config.toml
+r_and_d_presets.toml
+regimes.toml
+risk_kill_switch_example.toml
+risk_layer_v1_example.toml
+risk_liquidity_gate_example.toml
+risk_liquidity_gate_paper.toml
+risk_stress_gate_example.toml
+=== config.toml ===
+=== data ===
+chroma_db
+=== docker ===
+README.md
+compose.yml
+docker-compose.obs.yml
+mlflow
+obs
+=== docs ===
+ARCHITECTURE.md
+ARCHITECTURE_OVERVIEW.md
+AUTONOMOUS_AI_WORKFLOW.md
+AUTONOMOUS_WORKFLOW_RELEASE_NOTES.md
+AUTO_PORTFOLIOS.md
+BACKTEST_ENGINE.md
+CASE_STUDY_REGIME_ANALYSIS_BTCUSDT.md
+CASE_STUDY_REGIME_BTCUSDT_V1.md
+CHANGELOG_OFFLINE_REALTIME_MA_CROSSOVER.md
+CLI_CHEATSHEET.md
+CONFIG_REGISTRY_USAGE.md
+CONTRACT_VERIFICATION_FINAL.md
+DEEP_RESEARCH_BACKOFFICE_OVERVIEW.md
+DEMO_SCRIPT_DASHBOARD_V11.md
+DEVELOPER_WORKFLOW_GUIDE.md
+DEV_GUIDE_ADD_EXCHANGE.md
+DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md
+DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md
+DEV_GUIDE_ADD_STRATEGY.md
+DEV_SETUP.md
+=== examples ===
+resilience
+=== live_runs ===
+20251221_220016_paper_ma_crossover_BTC-EUR_1m
+alerts
+sessions
+=== logs ===
+launchd
+obs
+scheduler_alerts.log
+telemetry_health_snapshots.jsonl
+=== notebooks ===
+r_and_d_experiment_analysis_template.py
+=== patches ===
+0001-feat-trigger-training-integrate-psychology-heatmap-i.patch
+0002-feat-reporting-add-psychology-heatmap-module-and-tem.patch
+COMPONENT_VAR_ROADMAP.patch
+=== policy_packs ===
+ci.yml
+live_adjacent.yml
+research.yml
+=== pyproject.toml ===
+=== pytest.ini ===
+=== reports ===
+audit
+audit_merge_time_vs_latest_20251226_185455.tsv
+audit_open_prs_analysis
+audit_runs_nonsuccess_20251226_184041.tsv
+audit_runs_nonsuccess_20251226_184111.tsv
+experiments
+obs
+ops
+quarto
+r_and_d
+rl_v0_1
+test_health
+=== requirements.txt ===
+=== results ===
+backtest_20251218_210854_45d0969f
+backtest_20251219_034007_64c566fd
+risk
+=== scripts ===
+__pycache__
+analyze_experiments.py
+analyze_regimes.py
+analyze_risk_profile.py
+audit
+automation
+build_auto_portfolios.py
+check_live_readiness.py
+check_live_risk_limits.py
+ci
+create_demo_trigger_training_session.py
+create_macro_event.py
+create_notebook_templates.py
+debug_signals.py
+demo_backtest_with_risk.py
+demo_complete_pipeline.py
+demo_config_env.py
+demo_config_registry.py
+demo_execution_backtest.py
+demo_knowledge_db.py
+=== src ===
+__init__.py
+__pycache__
+analytics
+autonomous
+backtest
+core
+data
+docs
+exchange
+execution
+execution_simple
+experiments
+features
+forward
+governance
+infra
+knowledge
+live
+live_eval
+macro_regimes
+=== templates ===
+bash
+ops
+peak_trade_dashboard
+quarto
+=== test_runs ===
+20251213_024642_testnet_ma_crossover_BTC-EUR_1m
+20251213_025229_testnet_ma_crossover_BTC-EUR_1m
+20251213_025939_testnet_ma_crossover_BTC-EUR_1m
+20251213_031144_testnet_ma_crossover_BTC-EUR_1m
+20251213_031254_testnet_ma_crossover_BTC-EUR_1m
+20251213_032352_testnet_ma_crossover_BTC-EUR_1m
+20251213_032513_testnet_ma_crossover_BTC-EUR_1m
+20251213_033325_testnet_ma_crossover_BTC-EUR_1m
+20251213_033456_testnet_ma_crossover_BTC-EUR_1m
+20251213_033552_testnet_ma_crossover_BTC-EUR_1m
+20251213_173634_testnet_ma_crossover_BTC-EUR_1m
+20251213_174055_testnet_ma_crossover_BTC-EUR_1m
+20251218_075837_testnet_ma_crossover_BTC-EUR_1m
+20251218_184002_testnet_ma_crossover_BTC-EUR_1m
+20251218_213247_testnet_ma_crossover_BTC-EUR_1m
+20251218_221334_testnet_ma_crossover_BTC-EUR_1m
+20251220_063108_testnet_ma_crossover_BTC-EUR_1m
+20251220_075441_testnet_ma_crossover_BTC-EUR_1m
+20251220_075829_testnet_ma_crossover_BTC-EUR_1m
+20251220_083024_testnet_ma_crossover_BTC-EUR_1m
+=== tests ===
+__init__.py
+__pycache__
+conftest.py
+data
+execution
+execution_simple
+fixtures
+governance
+live
+meta
+notifications
+obs
+ops
+reporting
+research
+risk
+risk_layer
+strategies
+test_alert_pipeline.py
+test_alert_storage.py
+=== tests.log ===
+=== uv.lock ===
+=== venv ===

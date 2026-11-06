@@ -1,0 +1,107 @@
+{
+  "contract_name": "system_audit_plan_closeout_ssot_v1",
+  "schema_version": "system_audit_plan_closeout_schema_v1",
+  "contract_version": "v1",
+  "ssot_doc": "docs/audits/Peak_Trade_Prioritaetenplan_Systemaudit_2026-07-17.md",
+  "inventory_date": "2026-07-17",
+  "generated_from_main_sha": "17febbfd677e8133ce529ddc8db6ad0fab1d0d58",
+  "markers": {
+    "SYSTEM_AUDIT_PLAN_CLOSEOUT_SSOT_V1": true,
+    "THIS_DOCUMENT_IS_THE_CANONICAL_PLAN_SSOT": true,
+    "SECOND_ACTIVE_TRUTH": false,
+    "PERMISSION_MODE": "docs_governance_only",
+    "TRADING_CORE_CHANGED": false,
+    "EXECUTION_SEMANTICS_CHANGED": false,
+    "GITHUB_SETTINGS_MUTATED": false,
+    "EXTERNAL_SYSTEM_MUTATIONS": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false
+  },
+  "priority_status": {
+    "p1_github_ssot": "DONE",
+    "p1_tombstone_documentation": "DONE",
+    "p1_surface_p_contract_drift": "DONE",
+    "p2_promotion_owner_inventory": "DONE",
+    "p2_risk_sizing_inventory": "DONE",
+    "p2_risk_sizing_consolidation": "NOT_STARTED",
+    "p2_legacy_order_intent_inventory": "INVENTORY_DONE",
+    "p2_legacy_order_intent_consolidation": "NOT_STARTED",
+    "p2_legacy_order_intent_decommission": "NOT_STARTED",
+    "p2_legacy_order_intent_authority_leak_detected": false,
+    "p3_aws": "PARTIAL_READ_ONLY_AUDIT",
+    "p3_okx": "PARTIAL_PASS_PRIVATE_NOT_VERIFIABLE",
+    "p3_monitoring": "DONE",
+    "p4_repository_hygiene": "DONE_READ_ONLY"
+  },
+  "repository_hygiene": {
+    "classic_branch_protection_effective": true,
+    "required_checks_ssot_match": true,
+    "required_checks_count": 11,
+    "disabled_ruleset_classification": "SUPERSEDED_REDUNDANT_HISTORICAL",
+    "local_workflow_count": 73,
+    "remote_workflow_api_count": 80,
+    "historical_remote_only_count": 7,
+    "actual_ruleset_drift_count": 0,
+    "actual_workflow_drift_count": 0,
+    "github_mutation_required": false
+  },
+  "residual_gap_counts": {
+    "confirmed_defect_count": 0,
+    "access_blocked_gap_count": 2,
+    "intentional_governance_debt_count": 3,
+    "optional_hygiene_count": 2,
+    "intentional_blocked_state_count": 6
+  },
+  "residual_gaps": {
+    "confirmed_defect": [],
+    "access_or_credential_blocked": [
+      "AWS_PRIVATE_RESOURCE_FULL_VERIFY",
+      "OKX_PRIVATE_AUTH_RECON_BALANCE"
+    ],
+    "intentional_governance_debt": [
+      "RISK_SIZING_OWNER_CONSOLIDATION",
+      "LEGACY_ORDER_INTENT_CONSOLIDATION",
+      "LEGACY_ORDER_INTENT_DECOMMISSION"
+    ],
+    "optional_hygiene": [
+      "HISTORICAL_REMOTE_WORKFLOW_API_RECORDS",
+      "DISABLED_HISTORICAL_RULESET_PEAK_TRADE"
+    ],
+    "intentional_blocked_state": [
+      "ECONOMIC_GATE_FAIL",
+      "PROMOTION_BLOCKED",
+      "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
+      "LIVE_BLOCKED",
+      "ORDERS_BLOCKED",
+      "RESEARCH_HOLD"
+    ]
+  },
+  "aws_notes": {
+    "canonical_account_id": "511913187493",
+    "canonical_profile": "peak-trade-prearm-v3-audit",
+    "fallback_profile": "peak-trade-operator-readonly-audit-user",
+    "dual_live_sts_claimed_in_durable_audit": false,
+    "secret_values_read": false,
+    "aws_mutations_performed": false,
+    "not_acute_trading_core_defect": true
+  },
+  "okx_notes": {
+    "public_rest_reachable": true,
+    "public_websocket_reachable": true,
+    "private_auth_verified": false,
+    "private_reconciliation": "static_fail_closed_only",
+    "not_confirmed_drift": true
+  },
+  "definition_of_done_reconciled": true,
+  "next_canonical_priority": "NONE_PENDING_OPERATOR_DECISION",
+  "related_detail_owners": [
+    "config/ci/required_status_checks.json",
+    "docs/governance/PROMOTION_OWNER_AND_GATE_INVENTORY_SSOT_V1.md",
+    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+    "docs/governance/LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md",
+    "docs/audits/AWS_INFRASTRUCTURE_READ_ONLY_AUDIT_2026-07-17.md",
+    "docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md",
+    "docs/audits/MONITORING_TOPOLOGY_READ_ONLY_AUDIT_2026-07-17.md"
+  ]
+}

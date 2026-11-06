@@ -1,0 +1,217 @@
+# Liquidity Gate Configuration - Paper Trading
+# =============================================
+#
+# Evaluates market liquidity conditions before order execution.
+# Blocks orders in illiquid market conditions to prevent excessive slippage.
+#
+# Position in Risk Layer: KillSwitch → VaR Gate → Stress Gate → Liquidity Gate → Order Validation
+#
+# Key Metrics:
+# - Bid-Ask Spread: Relative spread (bps) indicates market tightness
+# - Market Depth: Available liquidity at best bid/ask levels
+# - Slippage Risk: Expected slippage based on order size vs market depth
+# - Average Daily Volume (ADV): Order size relative to daily volume
+#
+# See docs/risk/LIQUIDITY_GATE_RUNBOOK.md for detailed documentation.
+
+# ==============================================================================
+# PAPER TRADING PROFILE: CRYPTO MODERATE
+# ==============================================================================
+# Balanced liquidity requirements for crypto paper trading
+# - Moderate spread tolerance
+# - Enforces micro metrics (signal quality validation)
+# - Suitable for BTC, ETH and major altcoins on Kraken
+
+[risk.liquidity_gate.paper]
+enabled = true
+require_micro_metrics = true    # ENFORCE: Order must have signal_quality metrics
+
+# Bid-Ask Spread Limits (basis points, 1 bp = 0.01%)
+max_spread_bps = 25.0           # BLOCK if spread > 25 bps (0.25%)
+warn_spread_bps = 15.0          # WARN if spread > 15 bps (0.15%)
+
+# Market Depth Requirements (EUR or base currency)
+min_depth_eur = 5000.0          # BLOCK if depth < 5000 EUR at best level
+warn_depth_eur = 10000.0        # WARN if depth < 10000 EUR at best level
+
+# Slippage Risk Limits (percentage)
+max_expected_slippage_pct = 0.01    # BLOCK if expected slippage > 1%
+warn_expected_slippage_pct = 0.005  # WARN if expected slippage > 0.5%
+
+# Average Daily Volume (ADV) Limits
+# Order size should not exceed X% of average daily volume
+max_order_size_pct_adv = 0.10   # BLOCK if order > 10% of ADV
+warn_order_size_pct_adv = 0.05  # WARN if order > 5% of ADV
+
+# Lookback period for volume calculation (days)
+adv_lookback_days = 30
+
+
+# ==============================================================================
+# EQUITY CONSERVATIVE (Traditional Markets)
+# ==============================================================================
+# Tighter liquidity requirements for equity markets
+# Use for: Stocks, ETFs, traditional markets
+
+[risk.liquidity_gate.equity_conservative]
+enabled = true
+require_micro_metrics = true
+
+# Tighter spreads for equities
+max_spread_bps = 10.0           # BLOCK if spread > 10 bps (0.10%)
+warn_spread_bps = 5.0           # WARN if spread > 5 bps (0.05%)
+
+# Higher depth requirements
+min_depth_eur = 10000.0         # BLOCK if depth < 10k EUR
+warn_depth_eur = 25000.0        # WARN if depth < 25k EUR
+
+# Conservative slippage tolerance
+max_expected_slippage_pct = 0.005   # BLOCK if slippage > 0.5%
+warn_expected_slippage_pct = 0.003  # WARN if slippage > 0.3%
+
+# Stricter ADV limits
+max_order_size_pct_adv = 0.05   # BLOCK if order > 5% of ADV
+warn_order_size_pct_adv = 0.02  # WARN if order > 2% of ADV
+
+adv_lookback_days = 30
+
+
+# ==============================================================================
+# CRYPTO AGGRESSIVE (High-Risk Tolerance)
+# ==============================================================================
+# Relaxed liquidity requirements for aggressive crypto trading
+# Use for: Smaller altcoins, higher volatility tolerance
+
+[risk.liquidity_gate.crypto_aggressive]
+enabled = true
+require_micro_metrics = true
+
+# Wider spreads tolerated
+max_spread_bps = 50.0           # BLOCK if spread > 50 bps (0.50%)
+warn_spread_bps = 30.0          # WARN if spread > 30 bps (0.30%)
+
+# Lower depth requirements
+min_depth_eur = 2000.0          # BLOCK if depth < 2k EUR
+warn_depth_eur = 5000.0         # WARN if depth < 5k EUR
+
+# Higher slippage tolerance
+max_expected_slippage_pct = 0.02    # BLOCK if slippage > 2%
+warn_expected_slippage_pct = 0.01   # WARN if slippage > 1%
+
+# Relaxed ADV limits
+max_order_size_pct_adv = 0.20   # BLOCK if order > 20% of ADV
+warn_order_size_pct_adv = 0.10  # WARN if order > 10% of ADV
+
+adv_lookback_days = 14          # Shorter lookback for crypto
+
+
+# ==============================================================================
+# RESEARCH PROFILE (Development & Testing)
+# ==============================================================================
+# Very permissive liquidity requirements for R&D
+# WARNING: Not suitable for production trading!
+
+[risk.liquidity_gate.research]
+enabled = true
+require_micro_metrics = false   # No micro metrics required for research
+
+# Very wide tolerance
+max_spread_bps = 100.0          # BLOCK only on extreme spreads (1%)
+# warn_spread_bps = (disabled)  # No warnings
+
+# Minimal depth requirements
+min_depth_eur = 500.0           # BLOCK if depth < 500 EUR
+# warn_depth_eur = (disabled)
+
+# High slippage tolerance
+max_expected_slippage_pct = 0.05    # BLOCK if slippage > 5%
+# warn_expected_slippage_pct = (disabled)
+
+# No ADV limits
+max_order_size_pct_adv = 0.50   # BLOCK only if order > 50% of ADV
+# warn_order_size_pct_adv = (disabled)
+
+adv_lookback_days = 7
+
+
+# ==============================================================================
+# DISABLED PROFILE (Emergency Override)
+# ==============================================================================
+# Completely disable liquidity gate
+# WARNING: Only use for troubleshooting or emergency situations!
+
+[risk.liquidity_gate.disabled]
+enabled = false
+require_micro_metrics = false
+
+
+# ==============================================================================
+# USAGE NOTES
+# ==============================================================================
+#
+# 1. SELECTING A PROFILE
+#    Copy the desired profile section to your main config file or reference it:
+#
+#    [risk.liquidity_gate]
+#    enabled = true
+#    require_micro_metrics = true
+#    max_spread_bps = 25.0
+#    # ... other parameters ...
+#
+# 2. MICRO METRICS REQUIREMENT
+#    When require_micro_metrics = true, orders MUST include:
+#    - signal_quality: Overall signal strength/quality metric
+#    - confidence: Confidence level in the signal
+#    - Additional strategy-specific metrics
+#
+#    This ensures only high-quality signals proceed to execution.
+#
+# 3. SPREAD CALCULATION
+#    spread_bps = (ask - bid) / mid_price * 10000
+#    - 10 bps = 0.10% (tight, liquid)
+#    - 25 bps = 0.25% (moderate)
+#    - 50+ bps = 0.50%+ (wide, illiquid)
+#
+# 4. MARKET DEPTH
+#    - Measured at best bid/ask level
+#    - Should cover at least 2-3x your typical order size
+#    - Use EUR or base currency equivalent
+#
+# 5. EXPECTED SLIPPAGE
+#    Estimated based on:
+#    - Order size vs available depth
+#    - Recent fill quality data (if available)
+#    - Market impact models
+#
+# 6. AVERAGE DAILY VOLUME (ADV)
+#    - Rolling average over lookback period
+#    - Order size as % of ADV indicates market impact risk
+#    - Keep orders < 5% of ADV for minimal impact
+#
+# 7. VENUE-SPECIFIC CONSIDERATIONS
+#    Kraken:
+#    - BTC/EUR: Typically tight spreads (5-15 bps)
+#    - ETH/EUR: Moderate spreads (10-25 bps)
+#    - Altcoins: Wide spreads (25-100+ bps)
+#
+#    Adjust profiles based on your specific trading venues.
+#
+# 8. TESTING NEW CONFIGS
+#    Always test with:
+#    pytest tests/risk_layer/test_liquidity_gate.py -v
+#
+# 9. MONITORING
+#    - Check audit logs: logs/risk_audit.jsonl
+#    - Look for "liquidity_gate" section in audit entries
+#    - Monitor violation codes: SPREAD_TOO_WIDE, INSUFFICIENT_DEPTH, etc.
+#    - Alert on high block rates (>5% of orders)
+#    - Track average spread/slippage metrics over time
+#
+# 10. PAPER TRADING RECOMMENDATIONS
+#    - Start with crypto_moderate profile (this file's default)
+#    - Monitor for 1-2 weeks before adjusting thresholds
+#    - Review blocked orders - were they legitimate blocks?
+#    - Gradually tighten thresholds based on observed market conditions
+#    - Always keep require_micro_metrics = true for production quality
+#
+# ==============================================================================

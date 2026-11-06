@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: kill_switch_adapter_migration_plan
+STATUS: plan_stub_ready
+BRANCH: feat/kill-switch-adapter-migration-plan
+MODE: paper_stability_guard
+
+GOAL
+- prepare one docs-only PR for kill-switch adapter migration planning
+
+OUTPUTS
+- docs/ops/reviews/kill_switch_adapter_migration_plan/PLAN.md
+- docs/ops/reviews/kill_switch_adapter_migration_plan/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- fill the plan with concrete migration findings and open one PR

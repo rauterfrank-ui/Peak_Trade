@@ -1,0 +1,48 @@
+{
+  "PRECONDITIONS_ALL_PROVEN": true,
+  "code_flags": {
+    "CREDENTIALS_AUTHORIZED": false,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_AUTHORIZED": false,
+    "PAPER_EXECUTION_AUTHORIZED": false,
+    "RUNTIME_BRIDGE_LIVE_ACTIVATED": false,
+    "TESTNET_AUTHORIZED": false
+  },
+  "execution_port_proof_ok": true,
+  "gaps": [],
+  "matrix": {
+    "C1_PRODUCTIVELY_BOUND": true,
+    "C2_PRODUCTIVELY_BOUND": true,
+    "C3_PRODUCTIVELY_BOUND": true,
+    "CONFIG_TRUTH_ALIGNED": true,
+    "CONFIRMATION_SESSION_ID_STABLE": true,
+    "CONFIRMATION_STATE_PERSISTED": true,
+    "DECISION_PATH_RESTART_PROVEN": true,
+    "DYNAMIC_SCOPE_STATE_PERSISTED": true,
+    "ENTRY_END_TO_END_EVIDENCE_PROVEN": true,
+    "EVIDENCE_VERIFIER_PASS": true,
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+    "EXIT_END_TO_END_EVIDENCE_PROVEN": true,
+    "EXIT_POLICY_PRODUCERS_BOUND": true,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+    "NONZERO_FEE_EVIDENCE_PROVEN": true,
+    "NONZERO_SLIPPAGE_EVIDENCE_PROVEN": true,
+    "PUBLIC_MD_PRIVATE_ENDPOINT_REACHABLE": false,
+    "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+    "RECONCILIATION_BEFORE_ALPHA": true
+  },
+  "network_proof_ok": true,
+  "ok": true,
+  "predecessor_binding": {
+    "PREDECESSOR_CAPABILITY_ID": "CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_EVIDENCE_V1",
+    "PREDECESSOR_DIGEST_BOUND": true,
+    "PREDECESSOR_EVIDENCE_VERIFIED": true,
+    "PREDECESSOR_MERGE_SHA": "1d447fcecc4886a690cd9e83da11c2c38995e43f",
+    "predecessor_evidence_digest": "e19001d4c3bc4f3bd9d5ab91c5d880a39df3c3a0edaea3dc2e3f200c7e62c13b",
+    "predecessor_evidence_present_on_baseline": true,
+    "predecessor_merge_sha_baseline": "1d447fcecc4886a690cd9e83da11c2c38995e43f",
+    "repository_sha_at_activation": "1d447fcecc4886a690cd9e83da11c2c38995e43f"
+  }
+}

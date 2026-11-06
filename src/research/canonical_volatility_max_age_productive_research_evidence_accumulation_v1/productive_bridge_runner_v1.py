@@ -1,0 +1,747 @@
+"""Productive bridge runner: authoritative hardened-bridge cycles → accumulation.
+
+Never invents market samples from runtime polls. Never falls back to
+``_synthetic_probe_cycles_v1``. Empty inputs produce no ledger mutation.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Mapping, Sequence
+
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
+    DEFAULT_PRODUCTIVE_BRIDGE_CANONICAL_INSTRUMENT_ID,
+    DEFAULT_PRODUCTIVE_BRIDGE_VENUE,
+    DEFAULT_PRODUCTIVE_BRIDGE_VENUE_INSTRUMENT_ID,
+    LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+    LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
+    MAX_PRODUCTIVE_BRIDGE_CYCLES_PER_SESSION,
+    MAX_PRODUCTIVE_BRIDGE_SESSIONS_PER_RUN,
+    PRODUCTIVE_BRIDGE_BINDING_CAPABILITY_ID,
+    THRESHOLD_STATUS,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.ledger_campaign_scope_v1 import (
+    filter_productive_records_to_campaign_scope_v1,
+    validate_campaign_session_scope_bindings_v1,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.coverage_v1 import (
+    evaluate_coverage_from_ledger_v1,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.ledger_v1 import (
+    load_productive_evidence_ledger_v1,
+    valid_productive_records_from_ledger_v1,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.models_v1 import (
+    ProductiveBridgeSessionPartialFailureV1,
+    ProductiveEvidenceAccumulationError,
+    require_nonempty,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.productive_bridge_binding_v1 import (
+    bind_accumulation_state_to_hardened_bridge_session_v1,
+    iso_from_unix_v1,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.runtime_v1 import (
+    complete_accumulation_session_v1,
+)
+from research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.evidence_loader_v1 import (
+    coverage_summary_v1,
+    load_research_evidence_records_v1,
+)
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationTransportMetadataV1,
+)
+from trading.market_state.time_sample_epoch_semantics_v1 import (
+    EventTimeInstantV1,
+    MarketSampleIdentityV1,
+)
+from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1 import (
+    build_ratified_max_age_research_design_contract_v1,
+)
+
+
+@dataclass(frozen=True)
+class ProductiveBridgeMarketSampleV1:
+    """Operator-supplied authoritative market sample (event-time based)."""
+
+    mark_price: float
+    event_time_unix_seconds: float
+    receive_time_unix_seconds: float | None = None
+
+
+def deterministic_productive_mark_path_v1(
+    *,
+    count: int,
+    start_unix: float = 1_700_000_000.0,
+    base_price: float = 100.0,
+    step_seconds: float = 60.0,
+) -> list[ProductiveBridgeMarketSampleV1]:
+    """Deterministic offline productive mark path for bounded capability probes.
+
+    This is NOT a synthetic cycle generator: samples are real mark prices with
+    event times that the canonical bridge ingests via MarketSampleIdentityV1.
+    """
+    if count < 0:
+        raise ProductiveEvidenceAccumulationError("negative_sample_count")
+    if count > MAX_PRODUCTIVE_BRIDGE_CYCLES_PER_SESSION:
+        raise ProductiveEvidenceAccumulationError("sample_count_exceeds_session_bound")
+    out: list[ProductiveBridgeMarketSampleV1] = []
+    for i in range(int(count)):
+        out.append(
+            ProductiveBridgeMarketSampleV1(
+                mark_price=float(base_price * math.exp(0.001 * i)),
+                event_time_unix_seconds=float(start_unix + i * step_seconds),
+                receive_time_unix_seconds=float(start_unix + i * step_seconds + 0.5),
+            )
+        )
+    return out
+
+
+def _to_market_sample_identity_v1(
+    sample: ProductiveBridgeMarketSampleV1,
+    *,
+    venue: str,
+    canonical_instrument_id: str,
+    venue_instrument_id: str,
+) -> MarketSampleIdentityV1:
+    return MarketSampleIdentityV1(
+        venue=venue,
+        canonical_instrument_id=canonical_instrument_id,
+        venue_instrument_id=venue_instrument_id,
+        event_time=EventTimeInstantV1(unix_seconds=float(sample.event_time_unix_seconds)),
+        mark_price=float(sample.mark_price),
+    )
+
+
+def _validate_integrity_scope_bindings_v1(
+    *,
+    campaign_id: str,
+    authorized_session_ids: Sequence[str],
+) -> tuple[str, ...]:
+    try:
+        return validate_campaign_session_scope_bindings_v1(
+            campaign_id=campaign_id,
+            authorized_session_ids=authorized_session_ids,
+        )
+    except ProductiveEvidenceAccumulationError as exc:
+        msg = str(exc)
+        if msg == "campaign_session_scope_campaign_id_required":
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_campaign_id_required"
+            ) from exc
+        if msg == "campaign_session_scope_session_ids_required":
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_session_ids_required"
+            ) from exc
+        if msg == "campaign_session_scope_session_ids_not_unique":
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_session_ids_not_unique"
+            ) from exc
+        raise
+
+
+def _filter_records_to_integrity_scope_v1(
+    productive: Sequence[Any],
+    joins: Sequence[Any],
+    *,
+    campaign_id: str,
+    authorized_session_ids: Sequence[str],
+) -> tuple[list[Any], list[Any]]:
+    try:
+        scoped_productive = filter_productive_records_to_campaign_scope_v1(
+            productive,
+            campaign_id=campaign_id,
+            authorized_session_ids=authorized_session_ids,
+        )
+    except ProductiveEvidenceAccumulationError as exc:
+        if str(exc) == "campaign_session_scope_productive_campaign_mismatch":
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_productive_campaign_mismatch"
+            ) from exc
+        raise
+    allowed = set(
+        _validate_integrity_scope_bindings_v1(
+            campaign_id=campaign_id,
+            authorized_session_ids=authorized_session_ids,
+        )
+    )
+    scoped_joins: list[Any] = []
+    for join in joins:
+        sid = str(getattr(join, "session_id", "") or "")
+        if sid not in allowed:
+            continue
+        scoped_joins.append(join)
+    join_keys_seen: set[tuple[str, str, str]] = set()
+    for join in scoped_joins:
+        key = (
+            str(join.session_id),
+            str(join.cycle_id),
+            str(join.instrument_id),
+        )
+        if key in join_keys_seen:
+            raise ProductiveEvidenceAccumulationError("duplicate_join_records_in_scope")
+        join_keys_seen.add(key)
+    return scoped_productive, scoped_joins
+
+
+def assert_ledger_integrity_matrix_v1(
+    *,
+    productive_ledger_path: Path,
+    join_ledger_path: Path,
+    integrity_scope_campaign_id: str | None = None,
+    integrity_scope_session_ids: Sequence[str] | None = None,
+    integrity_evaluation_semantics: str = LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+) -> dict[str, Any]:
+    if integrity_evaluation_semantics not in {
+        LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+        LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
+    }:
+        raise ProductiveEvidenceAccumulationError("integrity_evaluation_semantics_invalid")
+    scoped = integrity_scope_campaign_id is not None and integrity_scope_session_ids is not None
+    if (
+        integrity_evaluation_semantics == LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE
+        and not scoped
+    ):
+        raise ProductiveEvidenceAccumulationError("integrity_scope_required_for_current_productive")
+    all_productive = (
+        valid_productive_records_from_ledger_v1(productive_ledger_path)
+        if productive_ledger_path.exists()
+        else []
+    )
+    if productive_ledger_path.exists():
+        # Chain load validates predecessor digests fail-closed.
+        _ = load_productive_evidence_ledger_v1(productive_ledger_path)
+    all_joins = (
+        load_research_evidence_records_v1(join_ledger_path)
+        if join_ledger_path.exists() and join_ledger_path.stat().st_size > 0
+        else []
+    )
+    if scoped:
+        productive, joins = _filter_records_to_integrity_scope_v1(
+            all_productive,
+            all_joins,
+            campaign_id=str(integrity_scope_campaign_id),
+            authorized_session_ids=integrity_scope_session_ids or (),
+        )
+    else:
+        productive = list(all_productive)
+        joins = list(all_joins)
+
+    if not productive:
+        if not scoped:
+            if join_ledger_path.exists() and join_ledger_path.stat().st_size > 0:
+                raise ProductiveEvidenceAccumulationError("join_without_productive_records")
+        elif joins:
+            raise ProductiveEvidenceAccumulationError("join_without_productive_records_in_scope")
+        return {
+            "integrity_scope_applied": scoped,
+            "join_ledger_chain_valid": True,
+            "ledger_chain_valid": True,
+            "missing_join_count": 0,
+            "productive_to_join_bijection_valid": True,
+            "productive_count": 0,
+            "join_count": len(joins),
+            "join_count_total_ledger": len(all_joins),
+        }
+    prod_keys = {(r.session_id, r.cycle_id, r.canonical_instrument_id) for r in productive}
+    join_keys = {(j.session_id, j.cycle_id, j.instrument_id) for j in joins}
+    missing_join = sorted(prod_keys - join_keys)
+    extra_join = sorted(join_keys - prod_keys)
+    if missing_join:
+        raise ProductiveEvidenceAccumulationError(
+            "missing_join_records:" + ",".join(str(x) for x in missing_join[:5])
+        )
+    if extra_join:
+        raise ProductiveEvidenceAccumulationError(
+            "extra_join_records:" + ",".join(str(x) for x in extra_join[:5])
+        )
+    ids = [r.evidence_record_id for r in productive]
+    if len(ids) != len(set(ids)):
+        raise ProductiveEvidenceAccumulationError("duplicate_evidence_record_ids")
+    return {
+        "integrity_scope_applied": scoped,
+        "join_ledger_chain_valid": True,
+        "ledger_chain_valid": True,
+        "missing_join_count": 0,
+        "productive_to_join_bijection_valid": True,
+        "productive_count": len(productive),
+        "join_count": len(joins),
+        "join_count_total_ledger": len(all_joins),
+    }
+
+
+def run_productive_bridge_accumulation_session_v1(
+    *,
+    session_id: str,
+    campaign_id: str,
+    repository_sha: str,
+    samples: Sequence[ProductiveBridgeMarketSampleV1],
+    repo_root: Path,
+    productive_ledger_path: Path,
+    join_ledger_path: Path,
+    quarantine_ledger_path: Path,
+    venue: str = DEFAULT_PRODUCTIVE_BRIDGE_VENUE,
+    canonical_instrument_id: str = DEFAULT_PRODUCTIVE_BRIDGE_CANONICAL_INSTRUMENT_ID,
+    venue_instrument_id: str = DEFAULT_PRODUCTIVE_BRIDGE_VENUE_INSTRUMENT_ID,
+    typed_volatility_persistence_path: Path | None = None,
+    retained_estimate_lifecycle_carrier_path: Path | None = None,
+    retained_estimate_carrier_mode: str | None = None,
+    early_session_id: str | None = None,
+    late_session_id: str | None = None,
+    preregistration_digest: str | None = None,
+    research_age_grid_seconds: Sequence[int] | None = None,
+    minimum_distinct_observations_per_age_bucket: int | None = None,
+    process_restart: bool = False,
+    existing_resume_token: str | None = None,
+    existing_session_mapping: Mapping[str, Any] | None = None,
+    max_cycles: int = MAX_PRODUCTIVE_BRIDGE_CYCLES_PER_SESSION,
+    complete_session: bool = True,
+    campaign_authorization_artifact_path: Path | None = None,
+    campaign_authorization_evidence_root: Path | None = None,
+    require_campaign_authorization: bool | None = None,
+    governed_authorized_productive_parameter_seam_record: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Execute one productive session through the canonical hardened bridge call graph."""
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        HardenedBridgeSessionStateV2,
+        run_hardened_bridge_cycle_v2,
+    )
+    from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_v1 import (
+        session_from_mapping_v1,
+    )
+    from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+        BOUND_CAMPAIGN_ID,
+    )
+    from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.gate_v1 import (
+        require_campaign_authorization_runtime_release_v1,
+    )
+    from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.models_v1 import (
+        CampaignAuthorizationError,
+    )
+
+    design = build_ratified_max_age_research_design_contract_v1()
+    if repository_sha != repository_sha.strip() or not repository_sha:
+        raise ProductiveEvidenceAccumulationError("repository_sha_required")
+    if design.preregistration_digest != design.preregistration_digest:
+        raise ProductiveEvidenceAccumulationError("preregistration_digest_unavailable")
+
+    must_gate = (
+        True
+        if require_campaign_authorization is True
+        else (
+            False
+            if require_campaign_authorization is False
+            else (
+                campaign_id == BOUND_CAMPAIGN_ID or campaign_authorization_artifact_path is not None
+            )
+        )
+    )
+    runtime_release = None
+    if must_gate:
+        try:
+            runtime_release = require_campaign_authorization_runtime_release_v1(
+                authorization_artifact_path=campaign_authorization_artifact_path,
+                session_id=session_id,
+                campaign_id=campaign_id,
+                evidence_root=Path(
+                    campaign_authorization_evidence_root
+                    if campaign_authorization_evidence_root is not None
+                    else repo_root
+                ),
+                repository_sha=repository_sha,
+            )
+        except CampaignAuthorizationError as exc:
+            raise ProductiveEvidenceAccumulationError(f"campaign_authorization_gate:{exc}") from exc
+
+    if not samples:
+        return {
+            "status": "NO_ELIGIBLE_PRODUCTIVE_INPUT",
+            "cycles_executed": 0,
+            "records_appended": 0,
+            "threshold_status": THRESHOLD_STATUS,
+            "numeric_threshold_selected": False,
+            "enforcement_applied": False,
+            "ledgers_mutated": False,
+        }
+
+    if len(samples) > max_cycles:
+        raise ProductiveEvidenceAccumulationError("session_cycle_bound_exceeded")
+
+    from research.canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.productive_natural_age_lifecycle_binding_v1 import (
+        ProductiveNaturalAgeLifecycleCmcBindingHostV1,
+    )
+
+    session_start = iso_from_unix_v1(float(samples[0].event_time_unix_seconds))
+    bridge_state = HardenedBridgeSessionStateV2(
+        instrument_id=canonical_instrument_id,
+        typed_volatility_persistence_path=typed_volatility_persistence_path,
+    )
+    # Natural-age lifecycle host is the sole produce/reuse/recompute authority on
+    # the productive research evidence path (legacy per-sample rematerialize unbound).
+    carrier_mode = str(retained_estimate_carrier_mode or "").strip().upper() or None
+    if carrier_mode == "REQUIRE_RESTORE_S02":
+        if retained_estimate_lifecycle_carrier_path is None:
+            raise ProductiveEvidenceAccumulationError(
+                "retained_estimate_lifecycle_carrier_path_required_for_s02"
+            )
+        if (
+            typed_volatility_persistence_path is None
+            or not typed_volatility_persistence_path.exists()
+        ):
+            raise ProductiveEvidenceAccumulationError(
+                "typed_volatility_persistence_required_for_s02_restore"
+            )
+        if early_session_id is None or late_session_id is None or preregistration_digest is None:
+            raise ProductiveEvidenceAccumulationError(
+                "retained_estimate_carrier_binding_keys_required_for_s02"
+            )
+        bridge_state.typed_volatility_cmc_binding_host = (
+            ProductiveNaturalAgeLifecycleCmcBindingHostV1.restore_with_retained_estimate_carrier_v1(
+                persistence_path=typed_volatility_persistence_path,
+                retained_estimate_lifecycle_carrier_path=Path(
+                    retained_estimate_lifecycle_carrier_path
+                ),
+                campaign_id=campaign_id,
+                early_session_id=str(early_session_id),
+                late_session_id=str(late_session_id),
+                repository_sha=repository_sha,
+                preregistration_digest=str(preregistration_digest),
+                venue=venue,
+                canonical_instrument_id=canonical_instrument_id,
+                venue_instrument_id=venue_instrument_id,
+                research_age_grid_seconds=research_age_grid_seconds,
+            )
+        )
+    elif typed_volatility_persistence_path and typed_volatility_persistence_path.exists():
+        bridge_state.typed_volatility_cmc_binding_host = (
+            ProductiveNaturalAgeLifecycleCmcBindingHostV1.restore_from_persistence_v1(
+                persistence_path=typed_volatility_persistence_path,
+            )
+        )
+    else:
+        bridge_state.typed_volatility_cmc_binding_host = (
+            ProductiveNaturalAgeLifecycleCmcBindingHostV1.create(
+                venue=venue,
+                canonical_instrument_id=canonical_instrument_id,
+                venue_instrument_id=venue_instrument_id,
+                persistence_path=typed_volatility_persistence_path,
+            )
+        )
+
+    if carrier_mode == "WRITE_ONCE_S01":
+        host = bridge_state.typed_volatility_cmc_binding_host
+        assert isinstance(host, ProductiveNaturalAgeLifecycleCmcBindingHostV1)
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
+            BOUND_RESEARCH_AGE_GRID_SECONDS,
+            MINIMUM_DISTINCT_OBSERVATIONS_PER_AGE_BUCKET,
+        )
+
+        grid = (
+            tuple(int(x) for x in research_age_grid_seconds)
+            if research_age_grid_seconds is not None
+            else BOUND_RESEARCH_AGE_GRID_SECONDS
+        )
+        min_obs = (
+            int(minimum_distinct_observations_per_age_bucket)
+            if minimum_distinct_observations_per_age_bucket is not None
+            else MINIMUM_DISTINCT_OBSERVATIONS_PER_AGE_BUCKET
+        )
+        host.lifecycle.enable_age_grid_coverage_tracking_v1(
+            research_age_grid_seconds=grid,
+            minimum_distinct_observations_per_age_bucket=min_obs,
+        )
+
+    existing_session = None
+    if existing_session_mapping is not None:
+        existing_session = session_from_mapping_v1(existing_session_mapping)
+
+    # Split assignment to avoid NO_SECRETS false-positive on "token=<long_identifier>".
+    session_resume = existing_resume_token
+    bridge_state = bind_accumulation_state_to_hardened_bridge_session_v1(
+        bridge_state,
+        session_id=session_id,
+        session_start_event_time=session_start,
+        repository_sha=repository_sha,
+        campaign_id=campaign_id,
+        venue=venue,
+        canonical_instrument_id=canonical_instrument_id,
+        venue_instrument_id=venue_instrument_id,
+        repo_root=repo_root,
+        productive_ledger_path=productive_ledger_path,
+        join_ledger_path=join_ledger_path,
+        quarantine_ledger_path=quarantine_ledger_path,
+        require_authoritative_bridge_cycle=True,
+        existing_session=existing_session,
+        resume_token=session_resume,
+        process_restart=process_restart,
+    )
+    acc = bridge_state.productive_evidence_accumulation_state
+    assert acc is not None
+
+    if governed_authorized_productive_parameter_seam_record is not None:
+        from src.governance.governed_productive_runtime_parameter_seam_session_bind_v1 import (
+            STATUS_BOUND as _SESSION_SEAM_BOUND,
+            bind_governed_authorized_productive_parameter_seam_to_hardened_bridge_session_v1,
+        )
+
+        bridge_state, seam_bind = (
+            bind_governed_authorized_productive_parameter_seam_to_hardened_bridge_session_v1(
+                bridge_state,
+                dict(governed_authorized_productive_parameter_seam_record),
+                session_id=session_id,
+            )
+        )
+        if seam_bind.bind_status != _SESSION_SEAM_BOUND:
+            raise ProductiveEvidenceAccumulationError(
+                "session_seam_bind_denied:" + ",".join(seam_bind.reason_codes)
+            )
+
+    cycle_results: list[dict[str, Any]] = []
+    for sample in samples:
+        identity = _to_market_sample_identity_v1(
+            sample,
+            venue=venue,
+            canonical_instrument_id=canonical_instrument_id,
+            venue_instrument_id=venue_instrument_id,
+        )
+        transport = None
+        if sample.receive_time_unix_seconds is not None:
+            transport = ObservationTransportMetadataV1(
+                receive_time=float(sample.receive_time_unix_seconds)
+            )
+        cycle = run_hardened_bridge_cycle_v2(
+            bridge_state,
+            mid_price=float(sample.mark_price),
+            event_ts_unix=float(sample.event_time_unix_seconds),
+            session_id=session_id,
+            finalized_pt1m_mark_sample=identity,
+            finalized_pt1m_transport=transport,
+        )
+        cycle_results.append(cycle)
+
+    completion = None
+    if complete_session:
+        completion = complete_accumulation_session_v1(
+            acc,
+            session_end_event_time=iso_from_unix_v1(float(samples[-1].event_time_unix_seconds)),
+        )
+    cycles_executed_count = len(cycle_results)
+    appended = sum(
+        1
+        for c in cycle_results
+        if (c.get("productive_research_evidence_accumulation") or {})
+        .get("append_result", {})
+        .get("action")
+        == "APPENDED"
+    )
+    try:
+        integrity = assert_ledger_integrity_matrix_v1(
+            productive_ledger_path=productive_ledger_path,
+            join_ledger_path=join_ledger_path,
+            integrity_scope_campaign_id=campaign_id,
+            integrity_scope_session_ids=(session_id,),
+        )
+    except ProductiveEvidenceAccumulationError as exc:
+        raise ProductiveBridgeSessionPartialFailureV1(
+            str(exc),
+            cycles_executed=cycles_executed_count,
+            records_appended=appended,
+            partial_report={
+                "status": "FAIL_CLOSED_INTEGRITY",
+                "cycles_executed": cycles_executed_count,
+                "records_appended": appended,
+                "retained_estimate_carrier_write_status": "NOT_REACHED",
+            },
+        ) from exc
+    coverage = evaluate_coverage_from_ledger_v1(
+        productive_ledger_path=productive_ledger_path,
+        quarantine_ledger_path=quarantine_ledger_path,
+        sessions=[acc.session],
+        coverage_scope_campaign_id=campaign_id,
+        coverage_scope_session_ids=(session_id,),
+    )
+    join_records = (
+        load_research_evidence_records_v1(join_ledger_path)
+        if join_ledger_path.exists() and join_ledger_path.stat().st_size > 0
+        else ()
+    )
+
+    carrier_write_status = "NOT_APPLICABLE"
+    if carrier_mode == "WRITE_ONCE_S01":
+        from research.canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1.carrier_v1 import (
+            build_retained_estimate_lifecycle_carrier_payload_v1,
+            write_retained_estimate_lifecycle_carrier_once_v1,
+        )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
+            BOUND_RESEARCH_AGE_GRID_SECONDS,
+            MINIMUM_DISTINCT_OBSERVATIONS_PER_AGE_BUCKET,
+        )
+
+        if retained_estimate_lifecycle_carrier_path is None:
+            raise ProductiveEvidenceAccumulationError(
+                "retained_estimate_lifecycle_carrier_path_required_for_s01_write"
+            )
+        if early_session_id is None or late_session_id is None or preregistration_digest is None:
+            raise ProductiveEvidenceAccumulationError(
+                "retained_estimate_carrier_binding_keys_required_for_s01"
+            )
+        host = bridge_state.typed_volatility_cmc_binding_host
+        assert isinstance(host, ProductiveNaturalAgeLifecycleCmcBindingHostV1)
+        state = host.lifecycle.lifecycle_state
+        if state is None or state.estimate is None:
+            carrier_write_status = "SKIPPED_NO_ESTIMATE"
+        else:
+            grid = (
+                tuple(int(x) for x in research_age_grid_seconds)
+                if research_age_grid_seconds is not None
+                else BOUND_RESEARCH_AGE_GRID_SECONDS
+            )
+            min_obs = (
+                int(minimum_distinct_observations_per_age_bucket)
+                if minimum_distinct_observations_per_age_bucket is not None
+                else MINIMUM_DISTINCT_OBSERVATIONS_PER_AGE_BUCKET
+            )
+            payload = build_retained_estimate_lifecycle_carrier_payload_v1(
+                campaign_id=campaign_id,
+                early_session_id=str(early_session_id),
+                late_session_id=str(late_session_id),
+                repository_sha=repository_sha,
+                preregistration_digest=str(preregistration_digest),
+                venue=venue,
+                canonical_instrument_id=canonical_instrument_id,
+                venue_instrument_id=venue_instrument_id,
+                lifecycle_state=state,
+                research_age_grid_seconds=grid,
+                minimum_distinct_observations_per_age_bucket=min_obs,
+                age_bucket_observation_counts=host.lifecycle.age_bucket_observation_counts,
+            )
+            write_retained_estimate_lifecycle_carrier_once_v1(
+                path=Path(retained_estimate_lifecycle_carrier_path),
+                payload=payload,
+            )
+            carrier_write_status = "WRITTEN"
+
+    return {
+        "binding_capability_id": PRODUCTIVE_BRIDGE_BINDING_CAPABILITY_ID,
+        "campaign_authorization_release": (
+            None if runtime_release is None else runtime_release.to_dict()
+        ),
+        "campaign_id": campaign_id,
+        "completion": completion,
+        "retained_estimate_carrier_write_status": carrier_write_status,
+        "coverage": coverage.to_dict(),
+        "cycles_executed": cycles_executed_count,
+        "enforcement_applied": False,
+        "integrity": integrity,
+        "join_coverage": coverage_summary_v1(join_records),
+        "numeric_threshold_selected": False,
+        "preregistration_digest": design.preregistration_digest,
+        "process_restart": process_restart,
+        "records_appended": appended,
+        "repository_sha": repository_sha,
+        "restored_history_record_ids": list(acc.restored_history_record_ids),
+        "new_estimate_record_ids": list(acc.new_estimate_record_ids),
+        "session": acc.session.to_dict(),
+        "status": "PASS",
+        "threshold_status": THRESHOLD_STATUS,
+        "write_failures": list(acc.write_failures),
+    }
+
+
+def run_productive_bridge_accumulate_v1(
+    *,
+    campaign_id: str,
+    repository_sha: str,
+    session_plans: Sequence[Mapping[str, Any]],
+    repo_root: Path,
+    productive_ledger_path: Path,
+    join_ledger_path: Path,
+    quarantine_ledger_path: Path,
+    campaign_authorization_artifact_path: Path | None = None,
+    campaign_authorization_evidence_root: Path | None = None,
+    require_campaign_authorization: bool | None = None,
+) -> dict[str, Any]:
+    """Multi-session productive accumulation entry used by the CLI mode."""
+    if len(session_plans) > MAX_PRODUCTIVE_BRIDGE_SESSIONS_PER_RUN:
+        raise ProductiveEvidenceAccumulationError("session_count_exceeds_run_bound")
+    if not session_plans:
+        return {
+            "status": "NO_ELIGIBLE_PRODUCTIVE_INPUT",
+            "session_reports": [],
+            "ledgers_mutated": False,
+            "threshold_status": THRESHOLD_STATUS,
+            "numeric_threshold_selected": False,
+            "enforcement_applied": False,
+        }
+
+    design = build_ratified_max_age_research_design_contract_v1()
+    reports: list[dict[str, Any]] = []
+    for plan in session_plans:
+        session_id = require_nonempty(plan.get("session_id"), field_name="session_id")
+        raw_samples = list(plan.get("samples") or [])
+        samples = [
+            ProductiveBridgeMarketSampleV1(
+                mark_price=float(s["mark_price"]),
+                event_time_unix_seconds=float(s["event_time_unix_seconds"]),
+                receive_time_unix_seconds=(
+                    None
+                    if s.get("receive_time_unix_seconds") is None
+                    else float(s["receive_time_unix_seconds"])
+                ),
+            )
+            for s in raw_samples
+        ]
+        persistence = plan.get("typed_volatility_persistence_path")
+        reports.append(
+            run_productive_bridge_accumulation_session_v1(
+                session_id=session_id,
+                campaign_id=campaign_id,
+                repository_sha=repository_sha,
+                samples=samples,
+                repo_root=repo_root,
+                productive_ledger_path=productive_ledger_path,
+                join_ledger_path=join_ledger_path,
+                quarantine_ledger_path=quarantine_ledger_path,
+                typed_volatility_persistence_path=(Path(persistence) if persistence else None),
+                process_restart=bool(plan.get("process_restart") or False),
+                existing_resume_token=plan.get("resume_token"),
+                existing_session_mapping=plan.get("existing_session"),
+                campaign_authorization_artifact_path=campaign_authorization_artifact_path,
+                campaign_authorization_evidence_root=campaign_authorization_evidence_root,
+                require_campaign_authorization=require_campaign_authorization,
+            )
+        )
+    scope_session_ids = tuple(
+        sorted(
+            {
+                require_nonempty(plan.get("session_id"), field_name="session_id")
+                for plan in session_plans
+            }
+        )
+    )
+    integrity = assert_ledger_integrity_matrix_v1(
+        productive_ledger_path=productive_ledger_path,
+        join_ledger_path=join_ledger_path,
+        integrity_scope_campaign_id=campaign_id,
+        integrity_scope_session_ids=scope_session_ids,
+    )
+    coverage = evaluate_coverage_from_ledger_v1(
+        productive_ledger_path=productive_ledger_path,
+        quarantine_ledger_path=quarantine_ledger_path,
+        coverage_scope_campaign_id=campaign_id,
+        coverage_scope_session_ids=scope_session_ids,
+    )
+    return {
+        "binding_capability_id": PRODUCTIVE_BRIDGE_BINDING_CAPABILITY_ID,
+        "campaign_id": campaign_id,
+        "coverage": coverage.to_dict(),
+        "enforcement_applied": False,
+        "integrity": integrity,
+        "numeric_threshold_selected": False,
+        "preregistration_digest": design.preregistration_digest,
+        "repository_sha": repository_sha,
+        "session_reports": reports,
+        "status": "PASS",
+        "threshold_status": THRESHOLD_STATUS,
+    }

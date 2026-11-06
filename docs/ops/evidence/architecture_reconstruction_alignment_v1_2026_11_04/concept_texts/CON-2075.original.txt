@@ -1,0 +1,9 @@
+### CON-2075 — Fünf vorbereitete Lanes und zunächst N1
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Die Architektur unterstützt fünf isolierte N1-Lanes mit eigener Instrument-/Cursor-/Lock-/Evidence-Identität; ein dokumentierter sequentieller Fixture-Lauf erreichte fünf Master-V2-Aufrufe, alle HOLD_CLOSED und Reservierung 0. Produktive Control Plane bleibt bei Kardinalität 1; weitere Lanes sind eine Fähigkeit, keine Freigabe. Gemeinsame Mechanik bedeutet kein geteilter veränderlicher Core-Zustand.
+
+**Grenze:** Owner-kontrollierte Staffelung, Abnahmekriterien und vollständige Kapital-/Exit-/Restart-Nachweise für 2–5 sind später zu definieren. Fünf Auswertungsplätze oder Mitglieder sind nicht fünf autorisierte Positionen.
+
+Quellen: EVI-2206, EVI-2220, EVI-2221, EVI-2292.

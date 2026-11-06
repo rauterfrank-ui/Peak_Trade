@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "current_system_census_graph_v1",
+  "title": "CURRENT_SYSTEM_CENSUS_GRAPH_V1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "artifact_id",
+    "schema_version",
+    "authority",
+    "map_authority",
+    "runtime_authority",
+    "decision_authority",
+    "not_a_runtime_authority",
+    "not_a_universe_ratification",
+    "source_baseline_head",
+    "census_objects",
+    "semantic_edges",
+    "topology_domains",
+    "census_discrepancies",
+    "productive_terminal",
+    "websocket_topology",
+    "intelligence_topology"
+  ],
+  "properties": {
+    "artifact_id": { "const": "current_system_census_graph_v1" },
+    "schema_version": { "const": "1" },
+    "authority": { "const": "NONE" },
+    "map_authority": { "const": "NONE" },
+    "runtime_authority": { "const": "NONE" },
+    "decision_authority": { "const": "NONE" },
+    "not_a_runtime_authority": { "const": true },
+    "not_a_universe_ratification": { "const": true },
+    "canonical_universe_count_asserted": { "const": false },
+    "source_baseline_head": { "type": "string", "minLength": 40 },
+    "census_objects": {
+      "type": "array",
+      "minItems": 301,
+      "maxItems": 301,
+      "items": { "$ref": "#/$defs/census_object" }
+    },
+    "semantic_edges": {
+      "type": "array",
+      "minItems": 84,
+      "maxItems": 84,
+      "items": { "$ref": "#/$defs/semantic_edge" }
+    },
+    "census_discrepancies": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "object" }
+    }
+  },
+  "$defs": {
+    "primary_class": {
+      "enum": [
+        "POSITIVE_UNIVERSE_MEMBER",
+        "CROSS_UNIVERSE_BOUNDARY",
+        "SHARED_INFRASTRUCTURE",
+        "SUPPORT_INFRASTRUCTURE",
+        "OFFLINE_RESEARCH",
+        "PRESENTATION_ONLY",
+        "UNASSIGNED_CURRENT",
+        "UNKNOWN_MEMBERSHIP",
+        "CONFLICTING_MEMBERSHIP"
+      ]
+    },
+    "epistemic_status": {
+      "enum": [
+        "PROVEN_CURRENT",
+        "PARTIAL",
+        "UNKNOWN_CURRENT",
+        "CONFLICTING_CURRENT",
+        "RESEARCH_ONLY"
+      ]
+    },
+    "observed_kind": {
+      "enum": [
+        "DOMAIN_UNIVERSE",
+        "AUTHORITY_UNIVERSE",
+        "DATA_OBSERVATION_PLANE",
+        "ORCHESTRATION_PLANE",
+        "LEARNING_PLANE",
+        "OFFLINE_EVIDENCE_PLANE",
+        "PRESENTATION_PLANE",
+        "CROSS_UNIVERSE_BOUNDARY",
+        "UNKNOWN_TAXONOMY"
+      ]
+    },
+    "map_relationship": {
+      "enum": ["CODE_AND_MAP", "CODE_ONLY", "MAP_ONLY", "CONFLICTING"]
+    },
+    "census_object": {
+      "type": "object",
+      "required": [
+        "object_id",
+        "name",
+        "paths",
+        "object_type",
+        "current_status",
+        "primary_class",
+        "runtime_role",
+        "authority_effect",
+        "evidence_refs",
+        "epistemic_status"
+      ],
+      "properties": {
+        "object_id": { "type": "string" },
+        "primary_class": { "$ref": "#/$defs/primary_class" },
+        "canonical_universe": { "const": false },
+        "epistemic_status": { "$ref": "#/$defs/epistemic_status" }
+      },
+      "additionalProperties": true
+    },
+    "semantic_edge": {
+      "type": "object",
+      "required": [
+        "edge_id",
+        "source_object",
+        "target_object",
+        "flow_type",
+        "map_relationship",
+        "epistemic_status"
+      ],
+      "properties": {
+        "edge_id": { "type": "string" },
+        "map_relationship": { "$ref": "#/$defs/map_relationship" },
+        "epistemic_status": { "$ref": "#/$defs/epistemic_status" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

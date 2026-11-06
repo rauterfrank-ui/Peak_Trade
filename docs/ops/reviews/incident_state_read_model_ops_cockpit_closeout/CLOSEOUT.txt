@@ -1,0 +1,40 @@
+PROJECT: Peak_Trade
+TOPIC: incident_state_read_model_ops_cockpit_closeout
+STATUS: completed
+BRANCH: main baseline before repo closeout PR
+MODE: paper_stability_guard
+
+RESULT
+- incident-state read-model ops-cockpit wave is complete
+- ops cockpit now exposes:
+  - incident_stop_invoked
+  - incident_stop_source
+  - pt_force_no_trade
+  - pt_enabled
+  - pt_armed
+  - kill_switch_active
+  - kill_switch_source
+  - entry_permitted
+  - risk_gate_kill_switch_active
+  - operator_authoritative_state
+  - operator_state_reason
+- per-question authority is now visible without pretending full signal unification
+
+WAVE COMPONENTS
+- incident_state_read_model_contract
+- incident_state_read_model_usage_plan
+- incident_state_read_model_ops_cockpit_plan
+- incident_state_read_model_ops_cockpit_mapping_review
+- incident_state_read_model_ops_cockpit_implementation
+
+CURRENT POSITION
+- operator-facing incident-state visibility is materially improved
+- PT_* posture, incident-stop artifact state, and kill-switch state are now easier to interpret together
+- paper/shadow/testnet stability remained untouched during this wave
+
+NEXT DECISION
+- either hold this incident-state read-model block stable
+- or reopen only for a concrete follow-up need such as:
+  - additional operator surfaces
+  - explicit runtime signal unification
+  - read-model reuse outside ops cockpit

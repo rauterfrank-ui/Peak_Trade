@@ -1,0 +1,11 @@
+{
+  "accounting_state_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_runtime_v1_smoke_20260805T013408Z/runtime_state/v1/accounting",
+  "activation_state_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_runtime_v1_smoke_20260805T013408Z/runtime_state/v1/activation",
+  "canonical_decision_source_dir": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_runtime_v1_smoke_20260805T013408Z/runtime_state/v1/canonical_decision_source",
+  "confirmation_state_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_runtime_v1_smoke_20260805T013408Z/runtime_state/v1/confirmation",
+  "dynamic_scope_state_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_runtime_v1_smoke_20260805T013408Z/runtime_state/v1/dynamic_scope",
+  "evidence_session_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_runtime_v1_smoke_20260805T013408Z/evidence_session",
+  "layout_version": "v1",
+  "runtime_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_runtime_v1_smoke_20260805T013408Z",
+  "writer_lock_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_runtime_v1_smoke_20260805T013408Z/productive_decision_host_writer.lock"
+}

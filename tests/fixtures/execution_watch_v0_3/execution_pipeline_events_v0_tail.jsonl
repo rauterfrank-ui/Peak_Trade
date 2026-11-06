@@ -1,0 +1,5 @@
+{"schema":"execution_event_v0","run_id":"run_tail","correlation_id":"c_tail","ts":"2026-01-01T00:00:00Z","event_type":"started","order_id":null,"idempotency_key":"t0","payload":{"i":0}}
+{"schema":"execution_event_v0","run_id":"run_tail","correlation_id":"c_tail","ts":"2026-01-01T00:00:01Z","event_type":"accepted","order_id":"o1","idempotency_key":"t1","payload":{"i":1}}
+{"schema":"execution_event_v0","run_id":"run_tail","correlation_id":"c_tail","ts":"2026-01-01T00:00:02Z","event_type":"filled","order_id":"o1","idempotency_key":"t2","payload":{"i":2}}
+{"schema":"execution_event_v0","run_id":"run_tail","correlation_id":"c_tail","ts":"2026-01-01T00:00:03Z","event_type":"accepted","order_id":"o2","idempotency_key":"t3","payload":{"i":3}}
+{"schema":"execution_event_v0","run_id":"run_tail","correlation_id":"c_tail","ts":"2026-01-01T00:00:04Z","event_type":"filled","order_id":"o2","idempotency_key":"t4","payload":{"i":4}}

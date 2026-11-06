@@ -1,0 +1,18 @@
+{
+  "workpackage_id": "GOVERNED_F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_RATIFICATION_REAL_MECHANICAL_CONTINUATION_V1",
+  "owner_go": true,
+  "owner_wp_decision_config": "config/governance/governed_f1_m9_scoped_owner_threshold_value_ratification_wp_v1_owner_decision_v1.json",
+  "threshold_hot_path_ratified": true,
+  "ratified_threshold_numeric_max_age_seconds": 600,
+  "owner_threshold_record_digest_bound": "e556ea63f68df3651cf38ef4d49d675f94a0e20f67c5b72f9044f9492b9bf109",
+  "exact_value_authority_valid": true,
+  "f1_m9_value_binding_valid": true,
+  "real_p4_to_f1_m9_join_status": "REAL_P4_F1_M9_JOIN_NOT_CANONICAL",
+  "value_ratification_required_for_threshold_hot_path": false,
+  "productive_activation_authorized": false,
+  "component_b_activated": false,
+  "external_effect": false,
+  "earliest_unclosed_boundary": "PRODUCTIVE_ACTIVATION",
+  "next_genuine_blocker": "PRODUCTIVE_ACTIVATION_OR_EXTERNAL_ORDER_EFFECT",
+  "normative_spec": "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_RATIFICATION_REAL_MECHANICAL_CONTINUATION_V1.md"
+}

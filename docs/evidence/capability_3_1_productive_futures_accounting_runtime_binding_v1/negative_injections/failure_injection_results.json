@@ -1,0 +1,34 @@
+{
+  "CONFLICTING_WRITER": {
+    "code": "CONFLICTING_WRITER",
+    "ok": true
+  },
+  "DUPLICATE_FILL_IDEMPOTENT": {
+    "action_code": "IDEMPOTENT_REPLAY",
+    "ok": true
+  },
+  "INVALID_CONTRACT_METADATA": {
+    "code": "INVALID_CONTRACT_METADATA",
+    "ok": true
+  },
+  "MISSING_MARK": {
+    "code": "MISSING_MARK_PRICE",
+    "ok": true
+  },
+  "OVER_REDUCE_FLIP": {
+    "code": "OVER_REDUCE",
+    "ok": true
+  },
+  "PERSISTENCE_INTERRUPTION": {
+    "code": "PERSISTENCE_INTERRUPTION",
+    "ok": true
+  },
+  "REDUCE_ONLY_VIOLATION": {
+    "code": "REDUCE_ONLY_VIOLATION",
+    "ok": true
+  },
+  "ZERO_QUANTITY": {
+    "code": "ZERO_QUANTITY",
+    "ok": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "artifact_class": "META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_DECISION_V1",
+    "workpackage_id": "META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_V1",
+    "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+    "predecessor_slice": "META_LEARNING_OPTIMIZATION_UNIVERSE_GAP_TO_TARGET_V1",
+    "normative_spec": "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md",
+    "boundary_normative_spec": "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+    "optimization_universe_contract_id": "peak_trade.canonical_optimization_universe.v1",
+    "capability_registry_version": "optimization_universe_capability_registry_v1",
+    "learning_input_boundary_contract_id": "peak_trade.canonical_optimization_universe_learning_input.v1",
+    "learning_productive_authority": "NONE",
+    "optimization_productive_authority": "NONE",
+    "promotion_join_authorized": false,
+    "productive_optimization_join_authorized": false,
+    "external_effect_authorized": false,
+    "optimizable_envelope_defined": false,
+    "zero_authorized_productive_targets": true,
+    "auto_search_authorized": false,
+    "experiment_memory_bind_authorized": false
+}

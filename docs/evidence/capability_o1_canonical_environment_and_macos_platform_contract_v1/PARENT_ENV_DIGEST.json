@@ -1,0 +1,29 @@
+{
+  "parent_environment_digest": "ab6f32e913ede203f47da3e1f97f2cde166a392cfa5dab5af17ec6bab5842c6f",
+  "redacted_parent_env": {
+    "CURSOR_TRACE_ID": "should-strip",
+    "HOME": "sha256:1b49f8aaad3003382265aa1b0298eb5996321233ff319431611ce76d9fea9b90",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "MPLCONFIGDIR": "sha256:96d32815f23cab50fd0ccc638eebc53d5f80608f3efebb71b4633c457714fced",
+    "PATH": "sha256:ec1f3f84fccbb088a2bd9b9e301469aafc9541e1b357bcbbe00f889ae3c44179",
+    "PEAK_TRADE_AUTHORIZATION_ARTIFACT_PATH": "sha256:78b21d88ae66175a0f78481c9aa4c7e34d10511ab0a657ecb805e71c25e5a827",
+    "PEAK_TRADE_CONFIG_DIGEST": "deadbeef",
+    "PEAK_TRADE_CONFIG_PATH": "sha256:6fbdb03fcb005a7d0066803cc289a40eb52fc69bcee4006c62e958e9effb6e16",
+    "PEAK_TRADE_CONFIRM_TOKEN_FILE": "sha256:561d69b3fd557c35371996776e0aba53b08cd4dad8dd58304c84a1d73b5c73d4",
+    "PEAK_TRADE_ENVIRONMENT_POLICY_ID": "peak_trade.canonical_runtime_environment_policy_public_md_no_order_v1",
+    "PEAK_TRADE_EVIDENCE_ROOT": "sha256:7d8c6e332a6199515cdc9d1580b4cb11e5da7ccb946e6a47c11eb172a7bd670c",
+    "PEAK_TRADE_LOG_ROOT": "sha256:f9c4817dd8e9684cbdbfcc4e174d6ff7117a83631d0cd2d7ec86521a2fb748de",
+    "PEAK_TRADE_PSO_WALLCLOCK_ALLOW_REAL_NETWORK": "0",
+    "PEAK_TRADE_REPOSITORY_SHA": "7eaa3bd51669a9beefc1af432e263877db56a749",
+    "PEAK_TRADE_RUNTIME_MODE": "public_md_no_order",
+    "PEAK_TRADE_SESSION_ID": "o1-offline-evidence",
+    "PEAK_TRADE_STATE_ROOT": "sha256:499762b5a20ea6ab1afc0c63b8efd7fe0a154c18c21c681763547ace9bb677bb",
+    "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT": "sha256:80fa8e4be842ee8878d6f6c5e95e1df31d14bd2956fc34a8f59bbbb01222be8a",
+    "PYTHONPATH": "sha256:816fc349d3faebf805d1bed70fce7e14754cad5251c77dda31c414ee961a0bdd",
+    "PYTHONUNBUFFERED": "1",
+    "TMPDIR": "sha256:e9671acd244849c57167c658fa2f969752048f7ab184a3dcf5c46cb4d56ae124",
+    "TZ": "UTC",
+    "VSCODE_IPC_HOOK": "should-strip"
+  }
+}

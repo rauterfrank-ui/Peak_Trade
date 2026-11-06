@@ -1,0 +1,151 @@
+{
+  "id": "SL02",
+  "phase": 2,
+  "title": "Unveränderliches Experimentgedächtnis",
+  "introduction_commit": "e10f32f56fad0576cd250958401d13f044c5920d",
+  "introduction_date": "2026-08-17T18:38:47Z",
+  "commit_subject": "research: add immutable experiment memory v1 (#5929)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/e10f32f56fad0576cd250958401d13f044c5920d",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_experiment_memory_v1.py",
+  "code_blob": "9ada18a9bef5d2f8135ff21ba5a6788a301e14e6",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "c9e938747965d22e9886132656dab1b8aaa2e16f7805848e2d9644237627f7cf",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL02-canonical_experiment_memory_v1.source.py",
+  "source_lines": 611,
+  "module_docstring": "Phase 2 Immutable Experiment Memory v1 (research evidence only).\n\nAppend-only historical research truth for COMPLETE Canonical Experiment\nIdentity v1 records. This layer has no runtime, order, live, funding,\ncanary, promotion, or config-write authority.\n\nExisting tracking surfaces (``tracking/run_summary.py``,\n``live_session_registry.py``, Package N identity) remain incomplete\nhistorical projections and are not reinterpreted as COMPLETE memory.",
+  "public_functions": [
+    {
+      "name": "derive_experiment_id_v1",
+      "line": 170
+    },
+    {
+      "name": "build_canonical_experiment_memory_record_v1",
+      "line": 181
+    },
+    {
+      "name": "validate_canonical_experiment_memory_record_v1",
+      "line": 262
+    },
+    {
+      "name": "canonical_record_payload",
+      "line": 344
+    },
+    {
+      "name": "freeze_canonical_experiment_memory_record_v1",
+      "line": 348
+    }
+  ],
+  "classes": [
+    {
+      "name": "ExperimentMemoryValidationError",
+      "line": 122
+    },
+    {
+      "name": "ExperimentRecordConflictError",
+      "line": 126
+    },
+    {
+      "name": "ArtifactReferenceV1",
+      "line": 131
+    },
+    {
+      "name": "LineageReferenceV1",
+      "line": 139
+    },
+    {
+      "name": "CanonicalExperimentMemoryRecordRequestV1",
+      "line": 146
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 358,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 496,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "canonicalize_mapping",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_EXPERIMENT_MEMORY_V1.md",
+      "status": "added",
+      "sha": "8439e3c9fcdedfbbff98e69cc0104b81428f885a",
+      "additions": 89,
+      "deletions": 0,
+      "changes": 89
+    },
+    {
+      "filename": "src/experiments/canonical_experiment_memory_store_v1.py",
+      "status": "added",
+      "sha": "1e35af421190f3370739445b74682ae2134a04e8",
+      "additions": 203,
+      "deletions": 0,
+      "changes": 203
+    },
+    {
+      "filename": "src/experiments/canonical_experiment_memory_v1.py",
+      "status": "added",
+      "sha": "9ada18a9bef5d2f8135ff21ba5a6788a301e14e6",
+      "additions": 611,
+      "deletions": 0,
+      "changes": 611
+    },
+    {
+      "filename": "tests/experiments/test_canonical_experiment_memory_v1.py",
+      "status": "added",
+      "sha": "afd39035962349534a8ffea69ad42db0c11ee35b",
+      "additions": 450,
+      "deletions": 0,
+      "changes": 450
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_experiment_memory_v1.py",
+      "status": "added",
+      "sha": "afd39035962349534a8ffea69ad42db0c11ee35b",
+      "additions": 450,
+      "deletions": 0,
+      "changes": 450
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_experiment_memory_store_v1.py",
+      "status": "added",
+      "sha": "1e35af421190f3370739445b74682ae2134a04e8",
+      "additions": 203,
+      "deletions": 0,
+      "changes": 203
+    },
+    {
+      "filename": "src/experiments/canonical_experiment_memory_v1.py",
+      "status": "added",
+      "sha": "9ada18a9bef5d2f8135ff21ba5a6788a301e14e6",
+      "additions": 611,
+      "deletions": 0,
+      "changes": 611
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "e10f32f56fad0576cd250958401d13f044c5920d",
+      "date": "2026-08-17T18:38:47Z",
+      "subject": "research: add immutable experiment memory v1 (#5929)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/e10f32f56fad0576cd250958401d13f044c5920d",
+      "parents": [
+        "ecbe5b7b4f8a71d3a81443a65949fcce6a5de350"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

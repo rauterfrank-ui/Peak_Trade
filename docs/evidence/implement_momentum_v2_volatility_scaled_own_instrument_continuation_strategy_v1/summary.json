@@ -1,0 +1,15 @@
+{
+  "artifact_kind": "momentum_v2_vol_scaled_strategy_implementation_and_selection_evidence",
+  "base_sha": "123d565b559944b40b37b4ddeb7749fa5e8cae03",
+  "development_evaluation_executed": false,
+  "development_run_slot_available": true,
+  "frozen_measurement_contract_digest": "0820d94b306cf7b3240bccc2eee06484debdcd7ae1eb77d4a683425247a4c4ce",
+  "holdout_accessed": false,
+  "hypothesis_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "near_duplicate_verdict": "MATERIALLY_DISTINCT",
+  "run_slot_consumed": false,
+  "sealed_accessed": false,
+  "selection_authorized": true,
+  "status": "STRATEGY_IMPLEMENTATION_PRESENT",
+  "strategy_identity": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1"
+}

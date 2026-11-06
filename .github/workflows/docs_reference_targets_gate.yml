@@ -1,0 +1,58 @@
+name: Docs Reference Targets Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs_reference_targets_gate:
+    name: docs-reference-targets-gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Fetch origin
+        run: git fetch --prune origin
+
+      - name: Determine base ref
+        id: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${GITHUB_BASE_REF:-}" ]]; then
+            echo "base_ref=origin/${GITHUB_BASE_REF}" >> "$GITHUB_OUTPUT"
+          else
+            echo "base_ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for markdown changes
+        id: md_changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.base_ref }}"
+          changed="$(git diff --name-only "${base}...HEAD" -- '*.md' || true)"
+          if [[ -z "${changed}" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Docs Reference Targets: not applicable (no markdown changes)."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Markdown files changed:"
+            echo "${changed}"
+          fi
+
+      - name: Verify docs reference targets
+        if: steps.md_changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.base_ref }}"
+          ./scripts/ops/verify_docs_reference_targets.sh --changed --base "${base}"

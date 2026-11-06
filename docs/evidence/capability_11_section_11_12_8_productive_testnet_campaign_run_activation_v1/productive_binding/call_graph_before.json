@@ -1,0 +1,11 @@
+{
+  "cap_11_13": "not_started",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_8_ProductiveTestnetCampaignPath",
+    "Cap11_Section_11_12_8_ProductiveTestnetCampaignExecution",
+    "Cap11_Section_11_12_8_ProductiveTestnetCampaignRun",
+    "SimulatedExecutionPort"
+  ],
+  "productive_testnet_campaign_run_activation": "absent"
+}

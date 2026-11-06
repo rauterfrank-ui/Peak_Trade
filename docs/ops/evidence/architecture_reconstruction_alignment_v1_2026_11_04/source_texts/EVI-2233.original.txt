@@ -1,0 +1,127 @@
+# PeakTrade: Gesamtüberblick in der Breite — V1
+
+## Was diese Übersicht leistet
+
+Sie verbindet einen offenen Funktionskatalog mit versioniertem Bestand, technischen Einstiegskandidaten, historischen Ankern, ausgewählten bereits untersuchten Beziehungen und sichtbar verbleibenden Lücken. Sie ist eine Navigationsübersicht außerhalb der kanonischen Register. Kein fertiges Endsystem und kein vollständiger semantischer Kausalgraph.
+
+## Bestandsrahmen
+
+Git-Pin `5d1c838c15369507c5247834db4dd0df25592169`: 20500 versionierte Einträge. Davon wurden alle 6241 Python-Dateien unter src und scripts strukturell geparst. 1254 Skriptdateien, davon 1025 mit syntaktischem main-Guard; keine davon ausgeführt.
+
+Die 4987 src-Module verteilen sich auf 41 technische Verzeichnisse plus src/__init__.py. 33 überlappende Funktionsfelder sind Suchzugänge, keine Zahl von Universen. 799 Module treffen derzeit keine der offengelegten Pfadregeln. 1814 treffen mehrere. Kein daraus abgeleiteter Vollständigkeitsprozentsatz.
+
+Der technische Importindex berücksichtigt zusätzlich src-layout-Imports ohne src-Präfix. Er enthält 20453 Referenzdatensätze, davon 1771 mit solchem Alias. Das ergänzt den früheren engeren Index; die Zahlen sind wegen erweitertem Scope und Auflösung nicht unmittelbar vergleichbar. Dynamische und artefaktvermittelte Beziehungen bleiben unvollständig.
+
+## Funktionsfelder und übergreifende Fragen
+
+### Markt und Wissen
+
+- **F01 Datenzugang und Venue-Beobachtung:** Marktdaten und Beobachtungen beschaffen. Offene Frage: Welche Quelle, Venue, Datenklasse und Berechtigung gehören zu welchem Host?
+- **F02 Datenablage, Cache und Datensatzherkunft:** Datenbestände wiederfinden und Versionen unterscheiden. Offene Frage: Welche Datensatzidentität und Transformation trägt ein Ergebnis?
+- **F03 Instrumente, Kontrakte, Kalender und Roll:** Instrumentidentität und Markt-/Kontrakteigenschaften beschreiben. Offene Frage: Welche Marktmodelle sind Forschung, Historie oder operative Verwendung?
+- **F04 Zeit, Bars, Finalität und Freshness:** Zeitbezug und Gültigkeit von Beobachtungen unterscheiden. Offene Frage: Wo unterscheiden sich Marktzeit, Entscheidungszeit, Epoche und Wandzeit?
+- **F05 Features, Regime, Makro und Sentiment:** Beobachtungen zu fachlichen Merkmalen verdichten. Offene Frage: Welche Merkmale werden tatsächlich konsumiert und in welcher Einheit?
+- **F06 Volatilität, G17 und GGE:** Volatilitäts-/Geometriewerte und deren Herkunft bereitstellen. Offene Frage: Welche Größe wird an welchem Consumer frisch, wiederverwendet oder begrenzt?
+- **F07 Wissensspeicher, RAG und Market Intelligence:** Wissen/Forecasts erschließen und bewerten. Offene Frage: Wo bestehen nur Daten- oder Forschungswege und wo ein Entscheidungsanschluss?
+
+### Auswahl und Entscheidung
+
+- **F08 Universe und Eligibility:** Verfügbaren und zulässigen Kandidatenbestand bestimmen. Offene Frage: Welche Inklusions-/Ausschlussregeln gelten in welcher Variante?
+- **F09 Ranking, Auswahl und Instrument-Binding:** Kandidaten ordnen, auswählen und Identität weiterreichen. Offene Frage: Wo enden Rankingwerte und wo beginnen Auswahl-, Residency- und Bindungszustände?
+- **F10 Strategien, Survival und Suitability:** Strategie- und Richtungsbeurteilungen bereitstellen. Offene Frage: Welche Bewertungen beeinflussen die Composition und welche bleiben Diagnose?
+- **F11 Scope, Confirmation und Zustandswechsel:** Räumliche/zeitliche Bedingungen und Zustandswechsel verknüpfen. Offene Frage: Welche Zustandsmaschine, welcher Cursor und welche Bestätigung gelten je Host?
+- **F12 Master V2 und Double Play:** Komposition und Entry-/Exit-Entscheidungen verbinden. Offene Frage: Welche inneren Ebenen und externen Abhängigkeiten gehören zu welcher historischen Variante?
+
+### Kapital und Ausführung
+
+- **F13 Positionen und Reconciliation:** Beobachtete, lokale und entscheidungswirksame Positionszustände unterscheiden. Offene Frage: Wer erzeugt FLAT, offene Position oder UNKNOWN, und wer verwendet diese Aussage?
+- **F14 Portfolio und Kapitalreservierung:** Gemeinsame Ressourcen und Positionskontexte koordinieren. Offene Frage: Welche Reservierungen, Slot-Grenzen und Beobachtungsrückgaben sind hostübergreifend?
+- **F15 Treasury, Kapital und monetäre Umrechnung:** Kapitalbasis und vergleichbare monetäre Operanden bereitstellen. Offene Frage: Welche Währung, Kapitalart, Netto-/Bruttobedeutung und Aktualität gelten?
+- **F16 Risiko, Sizing und Mengenherkunft:** Risiko-/Kapitalgrenzen in nachvollziehbare Mengen übersetzen. Offene Frage: Welche Limits, Prozentkonventionen, Multiplikatoren, Rundungen und Overwrites wirken?
+- **F17 Order Intent, Plan und Execution:** Entscheidung, Mengen, Orderabsicht und Ausführungszustand unterscheiden. Offene Frage: Wo endet Planung, und welche separaten Bedingungen gelten für externe Wirkung?
+- **F18 Kill, Safety und Schutzpfade:** Schutzbedingungen, Sperren und Positionsabbau unterscheiden. Offene Frage: Welche Schutzpfade bleiben bei fehlenden Alpha-/Marktdaten verfügbar?
+- **F31 Account-Zustand, Kontomodus und Pretrade-Inputs:** Kontobeobachtungen und produktspezifische Voraussetzungen unterscheiden. Offene Frage: Welche Account-Felder, Modi und Beobachtungen liefern welche Zulassung?
+
+### Lernen und Forschung
+
+- **F19 Decision-/Outcome-Erfassung und Zurechnung:** Entscheidungen, Beobachtungen und Outcomes zuordnen. Offene Frage: Welche Identität, welcher Horizont und welche Art von Outcome werden bewiesen?
+- **F20 Lernzustand und Feedback:** Lernartefakte, Zustandsfortschritt und Rückgaben verfolgen. Offene Frage: Wo verändert Feedback Verhalten, und wo nur Evidenz oder Metadaten?
+- **F21 Optimierung, Vergleich und Meta-Learning:** Kandidaten und Experimente vergleichen und bewerten. Offene Frage: Welche Suche läuft, was ist synthetisch, und wie werden Ergebnisse rückgegeben?
+- **F22 Backtest, Replay und wirtschaftliche Forschung:** Historische/simulierte Abläufe und Forschungsfragen untersuchen. Offene Frage: Welche Kosten-, Daten-, Signal- und System-Replay-Verträge gelten?
+- **F23 Promotion, Patches und Apply:** Vorschlag, Freigabe, Materialisierung und Consumer-Wirkung unterscheiden. Offene Frage: Welche frühere Autorität wurde stillgelegt oder durch andere Mechanismen ergänzt?
+
+### Autorität und Betrieb
+
+- **F24 Governance, Admission und Policy-Verträge:** Zuständigkeiten und zulässige Übergänge beschreiben. Offene Frage: Welche Policy ist Dokument, Prüfer, Producer oder tatsächlich konsumierte Entscheidung?
+- **F25 Konfiguration und Betriebsarten:** Wirksame Einstellungen, Herkunft und Varianten bestimmen. Offene Frage: Welche Defaults, Overlays und Laufzeitauflösungen sind maßgeblich?
+- **F26 Persistenz, Recovery und Session-Kontinuität:** Zustände, Identität und Wiederanlauf über Prozesse hinweg erhalten. Offene Frage: Welche Dateien sind wirklich geschrieben und wieder gelesen, mit welcher Versions-/Epochengrenze?
+- **F27 Hosts, Scheduler und Orchestrierung:** Eintrittspunkte, Aufrufkontexte und Ablaufsteuerung erkennen. Offene Frage: Welche alternativen Hosts existieren, und welche Pfade verbinden sie tatsächlich?
+- **F30 Build, Deployment und Entwicklungswerkzeuge:** Ausführungsumgebung und technische Betriebsgrundlagen erfassen. Offene Frage: Welche Umgebung ist vorausgesetzt, installiert, tatsächlich gestartet oder nur beschrieben?
+- **F32 Menschliche Bestätigung und Berechtigungskanäle:** Menschliche Bestätigung, Kanalbindung und technische Berechtigungen erfassen. Offene Frage: Welche Bestätigung erlaubt welche begrenzte Wirkung, wie lange und auf welchem Kanal?
+- **F33 Transport, Netzwerk und Endpunkt-Bindung:** Beobachtungstransport, Endpunktidentität und externe Wirkungsgrenzen erkennen. Offene Frage: Welche Adapter sind verbunden, freigegeben oder nur als Möglichkeit vorhanden?
+
+### Nachweis und Oberfläche
+
+- **F28 Observability, Golden Vectors und Forensik:** Beobachtungen, Nachweise und Diagnoseartefakte erzeugen. Offene Frage: Was ist Messung, Aussage, Referenzslot oder tatsächlicher kausaler Beleg?
+- **F29 Reports, Operator und Benachrichtigungen:** Systemzustände für Menschen und andere Leser darstellen. Offene Frage: Welche Oberfläche enthält eigene Datenverträge, und was ist rein abgeleitete Darstellung?
+
+## Zusätzliche Bestände sichtbar halten
+
+Neben den bisher intensiv betrachteten Universen existieren unter anderem Module für Wissensdatenbanken/RAG, AI-Orchestrierung, CME-Kalender-/Kontraktlogik, Cache-/Datensatzherkunft, Operator-Reports, Build und Deployment. Das ist zunächst Bestand aus Pfaden und Modulbeschreibungen. Daraus folgen weder heutige operative Verwendung noch fachliche Passung oder ein Integrationsauftrag.
+
+## Verbindungen nach Wirkung unterscheiden
+
+- **Marktgeometrie → Scope-Zustand / Event-Distanzen:** Wert verändert Zustand und nachgelagerte Inputs. Belegklasse: Statische Funktionskörper am Pin. Grenze: Host-Erreichbarkeit und beobachtete Wirkung offen. [Nachweis](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/relationships/Beziehungen_und_Kausalitaet.md).
+- **Scope-Evidence → Adverse-Signal / Entry-Exit-Policy:** Parallele Signalableitung und priorisierte Entscheidung. Belegklasse: Statische Consumer-Kette am Pin. Grenze: Noch keine ausgeführte Order oder bewiesene Gesamtlogik. [Nachweis](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/decision-and-adaptation/Entscheidungen_und_Anpassung.md).
+- **Kapital / Stop / Metadaten → Sizing / Intent:** Mengenberechnung, Begrenzung und Weitergabe. Belegklasse: Ausgewählte statische Wege. Grenze: Monetäre Normalisierung, Varianten und finale Consumer nicht vollständig geprüft. [Nachweis](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/crosscutting-sizing/RiskSizing_Querschnittsrekonstruktion.md).
+- **Outcome / Learning-State → Offline-Ack / Pending CLOSED:** Export und persistierter Abschluss. Belegklasse: Ausgewählter Closure-Körper am Pin. Grenze: CLOSED ist kein Nachweis produktiv angewandten Lernens. [Nachweis](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/relationships/Beziehungen_und_Kausalitaet.md).
+- **Produktiver DDO-Export → G2-Primary-Ingress:** Ausdrückliche Ablehnung dieser Quellklasse. Belegklasse: Evaluator und Decision-Config am Pin. Grenze: Andere Primärquellen und globale Host-Abdeckung getrennt. [Nachweis](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/relationships/Beziehungen_und_Kausalitaet.md).
+- **Meta-/Optimierungsfeedback → Nächster Offline-Evidence-Cycle:** Weitergetragene Metadaten. Belegklasse: Ausgewählte statische Cycle-Körper. Grenze: Keine automatische Parameteränderung aus dieser Verbindung ableiten. [Nachweis](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/relationships/Beziehungen_und_Kausalitaet.md).
+- **Promotion-Vorschlag → Override-Datei / Config-Loader:** Historisch mögliche Dateiwirkung, später absichtlich stillgelegt. Belegklasse: Historischer Code + Änderung + damaliger Auftrag. Grenze: Zwei unterschiedliche Formate/Pfade; kein Wiederherstellungsauftrag. [Nachweis](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/decision-and-adaptation/Entscheidungen_und_Anpassung.md).
+- **Runtime-Cycle → Forensischer Lineage-Trace:** Bedingtes Protokollieren. Belegklasse: Statischer Recorder-Aufruf. Grenze: Darstellungsfehler bei negativem Referenzcheck; kein unabhängiger Gesamtbeweis. [Nachweis](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/relationships/Beziehungen_und_Kausalitaet.md).
+
+Diese Beispiele sind Ausschnitte. Sie dürfen nicht zu einer einzigen Pipeline zusammengezogen werden. Die übrigen technischen Importverweise bleiben Navigationskandidaten.
+
+## Historische Orientierung
+
+Die gespeicherten historischen Anker reichen über ursprüngliche Projekt-/Manifeststände, Promotion und Meta/InfoStream bis zu DDO und späteren Kompatibilitätsänderungen. Ihre vollständigen Commit-IDs, Datumsangaben und begrenzten Scopes stehen in breadth-overview.json. Ein Hinzufügungscommit beweist nicht automatisch die erste fachliche Idee. Monatliche Commitzahlen zeigen nur die Verteilung erreichbarer Metadaten, keine Entwicklungsreife oder abgeschlossene Epoche.
+
+## Offene Abdeckung
+
+- Funktionsfelder sind vorläufige Suchzugänge. Trefferzahlen sind keine semantischen Abdeckungsprozente.
+- Unzugeordnete Dateien bleiben sichtbar; sie sind weder irrelevant noch nachgewiesene Orphans.
+- Importverweise sind statische technische Beziehungen. Sie beweisen keinen Wertfluss, keine Erreichbarkeit und keine Laufzeit.
+- Config-, Datei-, Store-, Registry- und Nachrichtenverbindungen sind im Importgraph nicht vollständig sichtbar.
+- Die verschiedenen Runtime-Hosts und Checkouts dürfen nicht als ein einziger durchgehender Pfad zusammengezogen werden.
+- Vorhandene Implementierung, absichtlich ersetztes/gesperrtes Verhalten, historischer Wunsch und echter Verlust benötigen unterschiedliche Belege.
+- Die erreichbare Git-Historie ist shallow. Historische Anker sind keine Garantie vollständiger Ursprünge.
+- Cursor-Texte, Recovery-Markdown und Archivregister sind erschlossen, aber nicht vollständig fachlich ausgewertet.
+- Nicht versionierte lokale Daten, Archive und aktuelle Runtime-Zustände werden durch das Git-Inventar nicht abgedeckt.
+- Historische Ebenenmodelle und heutige Ordner sind keine automatisch richtige Architektur des Endsystems.
+
+## Dateien und nächster Überblicksschritt
+
+- `breadth-overview.json`: gesamte strukturierte Übersicht mit Funktionskandidaten, Gruppen, Quellenebenen und Lücken.
+- `function-facets.json` und `path-facet-candidates.jsonl`: nachvollziehbare, überlappende Pfadregeln; keine normative Domainzuordnung.
+- `unassigned-src-modules.jsonl`: vollständige Restmenge ohne Treffer; bleibt im Untersuchungsumfang.
+- `committed-file-inventory.jsonl`: gesamter versionierter Bestand am Pin.
+- `script-entry-candidates.jsonl`: syntaktische main-/CLI-Kandidaten.
+- `imports-with-src-layout-aliases.jsonl`: technische Importnavigation einschließlich Namensraumvarianten.
+
+Nächster breiter Schritt: die unzugeordneten Bestände und Artefakt-/Config-/Store-Verbindungen anhand der vorhandenen historischen Register und Dokumente einordnen. Historische Varianten je Funktionsfeld verknüpfen, bevor neue Detailketten priorisiert werden. Keine weitere Tiefenprüfung von Double Play allein durch diese Übersicht gestartet.
+
+
+## Restmenge und Qualität der Übersicht
+
+Die vollständige Restmenge umfasst aktuell 799 Python-Module ohne Treffer der offengelegten Pfadregeln. Sie ist zusätzlich nach physischen Familien gruppiert in unassigned-family-triage.json. Die Regeln wurden nach einer ersten Sichtung um Account-Zustand, menschliche Bestätigungskanäle und Transport ergänzt; dadurch wird keine neue Funktionsprüfung oder semantische Vollständigkeit behauptet.
+
+Inventarzahlen, Treffer-/Restmengen und Git-Blob-Verweise wurden rechnerisch abgeglichen. Alle 33 Felder haben reale Quellpfad-Kandidaten. Noch nicht vollständig geleistet sind die fachliche Bestätigung dieser Zuordnung, die Verknüpfung historischer Varianten für jeden Baustein und die Gesamtheit artefaktvermittelter Beziehungen.
+
+
+## Bewertungsregel: historischer Nutzen und systemweite semantische Folgen
+
+Historisch, entfernt oder zur heutigen Architektur inkompatibel bedeutet nicht automatisch fachlich überholt. Vor einer negativen Bewertung werden ursprünglicher Zweck, heutiger Nutzen und die Folgen von Verzicht, Ersatz oder Anpassung getrennt untersucht. Direkte und mittelbare Abhängigkeiten, Zustände und Rückkopplungen gehören dazu.
+
+Für jeden Verzicht muss sichtbar werden, welche Bedeutung, Invariante, Information oder Fähigkeit entfällt und ob ein tatsächlich belegter Ersatz sie erhält. Eine ähnliche Datei oder Ausgabe genügt nicht als Ersatznachweis. Ist die Grundidee wertvoll, bleiben sowohl eine neue Implementierung als auch eine Weiterentwicklung der heutigen Architektur mögliche Wege.
+
+Bewusste fachliche Änderungen sind möglich, werden aber als Semantikänderung mit ihren Folgen dokumentiert. Unklare Ursprünge oder unvollständige Abhängigkeiten führen zu offener Bewertung, nicht zu behaupteter Überflüssigkeit. Daraus entsteht keine automatische Änderungs- oder Aktivierungsfreigabe. Die vollständigen Kriterien sind in reconstruction-status.json festgehalten.

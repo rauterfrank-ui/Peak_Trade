@@ -1,0 +1,126 @@
+{
+  "$id": "productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Machine-readable execution surface for EXECUTE_SURFACE_B_REGIME_COVERAGE_AND_CLOSE_DASHBOARD_INPUT_GAP_V1. Does not authorize campaign start, INPUT_AUTHORITY, RUNTIME_IMPLEMENTED, dashboard authority, productive regime emission, or orders.",
+  "properties": {
+    "campaign_id": {
+      "type": "null"
+    },
+    "campaign_id_required": {
+      "const": false
+    },
+    "campaign_start": {
+      "const": false
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_REGIME_COVERAGE_AND_DASHBOARD_INPUT_GAP_CLOSEOUT"
+    },
+    "dashboard_authority_effect": {
+      "const": "NONE"
+    },
+    "dashboard_logic_change": {
+      "const": false
+    },
+    "document_type": {
+      "const": "SURFACE_B_REGIME_COVERAGE_AND_DASHBOARD_INPUT_GAP_CLOSEOUT_EXECUTION_MANIFEST"
+    },
+    "execute_regime_coverage_producer": {
+      "const": true
+    },
+    "fail_closed": {
+      "const": true
+    },
+    "input_authority": {
+      "const": false
+    },
+    "input_authority_flip": {
+      "const": false
+    },
+    "next_step_id": {
+      "const": "EXECUTE_SURFACE_B_REGIME_COVERAGE_AND_CLOSE_DASHBOARD_INPUT_GAP_V1"
+    },
+    "observation_pack_digest": {
+      "const": "268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676"
+    },
+    "orders_testnet_live": {
+      "const": false
+    },
+    "overall_topic_closeout_verdict": {
+      "const": "SURFACE_B_REGIME_COVERAGE_INPUT_GAP_CLOSED_DASHBOARD_PRESENTATION_GAP_UNCHANGED"
+    },
+    "owner_go_base_sha": {
+      "const": "13d9a12ed45cdf82ed93c38154a425a9fd8ca752"
+    },
+    "productive_emission": {
+      "const": false
+    },
+    "regime_coverage_producer_available": {
+      "const": false
+    },
+    "regime_coverage_status": {
+      "const": "SEMANTICALLY_UNRESOLVED"
+    },
+    "require_canonical_binding": {
+      "const": true
+    },
+    "require_missing_source_delta_report": {
+      "const": true
+    },
+    "require_regime_coverage_counts": {
+      "const": true
+    },
+    "require_regime_coverage_instance": {
+      "const": true
+    },
+    "require_topic_closeout_verdict": {
+      "const": true
+    },
+    "runtime_implemented": {
+      "const": false
+    },
+    "runtime_implemented_flip": {
+      "const": false
+    },
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout/v1"
+    },
+    "status": {
+      "const": "OWNER_STA_SURFACE_B_REGIME_COVERAGE_EXECUTED_PACK_INPUT_GAP_CLOSED_DASHBOARD_PRESENTATION_GAP_UNCHANGED"
+    },
+    "trading_logic_change": {
+      "const": false
+    },
+    "use_canonical_merged_pack": {
+      "const": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "next_step_id",
+    "owner_go_base_sha",
+    "observation_pack_digest",
+    "use_canonical_merged_pack",
+    "execute_regime_coverage_producer",
+    "require_regime_coverage_counts",
+    "require_regime_coverage_instance",
+    "require_canonical_binding",
+    "require_missing_source_delta_report",
+    "require_topic_closeout_verdict",
+    "campaign_start",
+    "input_authority_flip",
+    "runtime_implemented_flip",
+    "dashboard_logic_change",
+    "dashboard_authority_effect",
+    "trading_logic_change",
+    "orders_testnet_live",
+    "fail_closed",
+    "overall_topic_closeout_verdict",
+    "execution_proofs"
+  ],
+  "title": "Surface-B regime coverage + dashboard input gap closeout execution v1",
+  "type": "object"
+}

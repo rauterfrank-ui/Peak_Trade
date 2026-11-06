@@ -1,0 +1,47 @@
+{
+  "LIVE_ORDER_PLAN_OBSERVED": false,
+  "adjudicated_value": true,
+  "admissibility_rule": "LIVE_PRIVATE_READ_ONLY_PROVEN is true iff every bound constituent is proven on current origin/main: LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE are already true; current authenticated private GET /api/v5/account/config and GET /api/v5/account/balance each return HTTP 200 and OKX code 0 with parseable account data; both methods are GET; no POST; no redirect. A single reachability GET, historical \u00a711.13.2 proof, credential presence alone, fixture/testnet/sim sources, and \u00a711.13.2 TRADE=false owner attestation are each insufficient. True does not promote LIVE_ORDER_PLAN_OBSERVED, submit authorization, POST, or any later ladder field.",
+  "canonical_definition": "LIVE_PRIVATE_READ_ONLY_PROVEN is the third \u00a711.14 Live proof-claim field. It is true iff LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE are already true and current authenticated private GET /api/v5/account/config and GET /api/v5/account/balance each return HTTP 200 and OKX code 0 with parseable account data, both methods are GET, no POST occurs, and no redirect is followed. A single reachability GET, historical \u00a711.13.2 LIVE_PRIVATE_READ_ONLY_PROVEN, credential presence alone, fixture/testnet/sim sources, and the \u00a711.13.2 TRADE=false owner attestation are each insufficient. True does not promote LIVE_ORDER_PLAN_OBSERVED, submit authorization, POST, Live-gate mutation, or any later ladder field.",
+  "conjunction": {
+    "adjudication": "TRUE_CURRENT_PRIVATE_READ_ONLY",
+    "admissibility_predicate": "LIVE_PRIVATE_READ_ONLY_PROVEN is true iff every bound constituent is proven on current origin/main: LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE are already true; current authenticated private GET /api/v5/account/config and GET /api/v5/account/balance each return HTTP 200 and OKX code 0 with parseable account data; both methods are GET; no POST; no redirect. A single reachability GET, historical \u00a711.13.2 proof, credential presence alone, fixture/testnet/sim sources, and \u00a711.13.2 TRADE=false owner attestation are each insufficient. True does not promote LIVE_ORDER_PLAN_OBSERVED, submit authorization, POST, or any later ladder field.",
+    "canonical_definition": "LIVE_PRIVATE_READ_ONLY_PROVEN is the third \u00a711.14 Live proof-claim field. It is true iff LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE are already true and current authenticated private GET /api/v5/account/config and GET /api/v5/account/balance each return HTTP 200 and OKX code 0 with parseable account data, both methods are GET, no POST occurs, and no redirect is followed. A single reachability GET, historical \u00a711.13.2 LIVE_PRIVATE_READ_ONLY_PROVEN, credential presence alone, fixture/testnet/sim sources, and the \u00a711.13.2 TRADE=false owner attestation are each insufficient. True does not promote LIVE_ORDER_PLAN_OBSERVED, submit authorization, POST, Live-gate mutation, or any later ladder field.",
+    "claim_value": true,
+    "constituents": {
+      "BOTH_METHODS_GET": true,
+      "CURRENT_PRIVATE_GET_BALANCE_HTTP_200_OKX_0": true,
+      "CURRENT_PRIVATE_GET_CONFIG_HTTP_200_OKX_0": true,
+      "NO_POST": true,
+      "NO_REDIRECT": true,
+      "PARSEABLE_ACCOUNT_BALANCE_DATA": true,
+      "PARSEABLE_ACCOUNT_CONFIG_DATA": true,
+      "PREDECESSOR_LIVE_EXECUTION_CODE_EXISTS": true,
+      "PREDECESSOR_LIVE_EXECUTION_PATH_REACHABLE": true
+    },
+    "false_required": [],
+    "later_ladder_fields_promoted": false,
+    "reason": "FULL_CONJUNCTION_PROVEN",
+    "source_kind": "GOVERNED_CURRENT_PRIVATE_GET",
+    "submit_authorization_inferred": false,
+    "unobserved_required": []
+  },
+  "constituent_values": {
+    "BOTH_METHODS_GET": true,
+    "CURRENT_PRIVATE_GET_BALANCE_HTTP_200_OKX_0": true,
+    "CURRENT_PRIVATE_GET_CONFIG_HTTP_200_OKX_0": true,
+    "NO_POST": true,
+    "NO_REDIRECT": true,
+    "PARSEABLE_ACCOUNT_BALANCE_DATA": true,
+    "PARSEABLE_ACCOUNT_CONFIG_DATA": true,
+    "PREDECESSOR_LIVE_EXECUTION_CODE_EXISTS": true,
+    "PREDECESSOR_LIVE_EXECUTION_PATH_REACHABLE": true
+  },
+  "contradiction_check": "NO_CONTRADICTION. Single reachability GET is not this field. \u00a711.13.2 historical proof is not this field. LIVE_ORDER_PLAN_OBSERVED remains false.",
+  "evidence_paths": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_predicate_v1.py"
+  ],
+  "observed_repo_fact": "CONFIG_OK=true;BALANCE_OK=true;POST_USED=false;CONJUNCTION=FULL_CONJUNCTION_PROVEN",
+  "reason": "FULL_CONJUNCTION_PROVEN"
+}

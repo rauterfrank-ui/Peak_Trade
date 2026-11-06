@@ -1,0 +1,34 @@
+{
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+  "fee": "0.09940994000",
+  "fill_id": "fill_c30493a9fe63f0c174ac8c53",
+  "forced_fixture_economic_metrics_excluded": true,
+  "forced_fixture_wallclock_reachable": false,
+  "forced_wiring_fixture_pass": true,
+  "ok": true,
+  "productive_authorization": false,
+  "slippage": "0.0497000",
+  "verification": {
+    "blockers": [],
+    "call_graph_complete": true,
+    "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+    "expected_equity": "99502.80119006000",
+    "expected_fees": "0.09940994000",
+    "notes": [
+      "final_portfolio_hash=4448aaea55670fa5ac85b0058b55d45153cefabf0bc6e2b5551b9e5be213a26a",
+      "gross_pnl=-0.0497000",
+      "net_pnl=-0.14910994000",
+      "exposure=497.0497000",
+      "cycles=4",
+      "reconstructed_fills=1",
+      "PRIVATE_API_ABSENT_ASSERTED",
+      "ORDER_ROUTING_UNREACHABLE_ASSERTED",
+      "ORDERS_FALSE_ASSERTED"
+    ],
+    "ok": true,
+    "reconstructed_equity": "99502.80119006000",
+    "reconstructed_fees": "0.09940994000",
+    "reconstructed_fill_count": 1,
+    "verifier_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.full_economic_reconstruction_verifier_v2"
+  }
+}

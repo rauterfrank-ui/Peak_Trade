@@ -1,0 +1,147 @@
+{
+  "CANONICAL_BOUND_FILL_KIND": "LIVE_IDENTITY_BOUND_VENUE_FILL",
+  "DOCUMENT_CLASS": "SECTION_11_14_CAPTURE_INPUT_PRECONDITION_CENSUS_V1",
+  "FORBIDDEN_BOUND_FILL_KINDS": [
+    "FILL_SZ_COPY",
+    "ORDER_ACK",
+    "POSITION_OBSERVATION",
+    "REPLAY_FILL",
+    "SIMULATED_FILL",
+    "UNBOUND_VENUE_FILL",
+    "VENUE_ACK",
+    "VENUE_GET_POS"
+  ],
+  "INPUT_PRECONDITION_CENSUS_COMPLETE": true,
+  "REQUIRED_HANDOFF_FIELDS": [
+    "clOrdId",
+    "ordId",
+    "instId",
+    "posSide",
+    "pos"
+  ],
+  "TEST_FIXTURE_IS_NOT_PRODUCTIVE_PROVENANCE": true,
+  "rows": [
+    {
+      "EXTERNAL_DATA_REQUIRED": true,
+      "INPUT": "authoritative bound fill",
+      "NOTE": "TEST_FIXTURE is structurally constructible and not productive provenance.",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": true,
+      "SOURCE": "LIVE_IDENTITY_BOUND_VENUE_FILL",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "AT_VENUE_FILL_THEN_PARAMETERIZED"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": true,
+      "INPUT": "clOrdId",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": true,
+      "SOURCE": "bound_fill_identity.clOrdId",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "AT_SUBMIT"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": true,
+      "INPUT": "ordId",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": true,
+      "SOURCE": "bound_fill_identity.ordId",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "AT_SUBMIT_ACK"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": true,
+      "INPUT": "instId",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": true,
+      "SOURCE": "bound_fill_identity.instId",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "AT_ORDER_PLAN_OR_SUBMIT"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": true,
+      "INPUT": "posSide",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": true,
+      "SOURCE": "bound_fill_identity.posSide",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "AT_SUBMIT"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": true,
+      "INPUT": "pos / fillSz",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": true,
+      "SOURCE": "Peak_Trade-owned S05 qty Decimal-equal to fillSz",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "AT_BOUND_FILL"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": false,
+      "INPUT": "timestamps",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": true,
+      "SOURCE": "bound_fill_proven_at, capture_started_at, captured_at_utc",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "CONTEMPORANEOUS_WITH_WINDOW"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": false,
+      "INPUT": "lifecycle_id / attempt_identity",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": true,
+      "SOURCE": "runtime owner of the bound-fill lifecycle",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "AT_LIFECYCLE_START"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": false,
+      "INPUT": "capture destination",
+      "OFFLINE_CREATABLE": true,
+      "PRODUCTIVE_ONLY": false,
+      "REQUIRED_FOR_CAPTURE": true,
+      "REQUIRED_FOR_VALID_PROVENANCE": false,
+      "SOURCE": "storage_root / durable pre-restart path",
+      "STRUCTURALLY_CONSTRUCTIBLE": true,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "AT_WRITER"
+    },
+    {
+      "EXTERNAL_DATA_REQUIRED": true,
+      "INPUT": "historical BOUND_* identity",
+      "NOTE": "Historical identity is not the current producer and is not contemporaneous.",
+      "OFFLINE_CREATABLE": false,
+      "PRODUCTIVE_ONLY": true,
+      "REQUIRED_FOR_CAPTURE": false,
+      "REQUIRED_FOR_VALID_PROVENANCE": false,
+      "SOURCE": "fill_observed_identity_v1 / restart_reconstructed_identity_v1",
+      "STRUCTURALLY_CONSTRUCTIBLE": false,
+      "VALID_CONTEMPORANEOUS_PRODUCTIVE_PROVENANCE": false,
+      "WHEN_CREATED": "HISTORICAL_LIVE_POST_AND_FILL"
+    }
+  ]
+}

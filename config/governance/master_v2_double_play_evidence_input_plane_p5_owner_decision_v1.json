@@ -1,0 +1,12 @@
+{
+  "baseline_sha": "ae63905816c2d4033c0674587b87bbf823477e19",
+  "direct_producer_to_b_bypass": false,
+  "direct_producer_to_dp_bypass": false,
+  "external_effect_authorized": false,
+  "l6_semantic_authority": "UNCHANGED",
+  "p5_producer_integration_introduced": true,
+  "producer_trading_authority": "NONE",
+  "productive_activation_authorized": false,
+  "schema_version": "master_v2_double_play_evidence_input_plane_p5_owner_decision/v1",
+  "workpackage_id": "P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1"
+}

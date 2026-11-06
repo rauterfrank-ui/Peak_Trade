@@ -1,0 +1,50 @@
+{
+  "base": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+  "reachable_commit_count": 8825,
+  "historical_source_path_count": 1200,
+  "history_shallow": true,
+  "shallow_boundary": "2dba1355c9907c57fa330aed01a4072faeaf048f",
+  "second_checkout_shares_git_common_directory": true,
+  "no_fetch_performed": true,
+  "no_deleted_independent_path_globally_claimed_absent": true,
+  "commands": {
+    "forecast-history": [
+      "git",
+      "log",
+      "--all",
+      "--follow",
+      "--format=%H %aI %s",
+      "--",
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py"
+    ],
+    "measurement-history": [
+      "git",
+      "log",
+      "--all",
+      "--follow",
+      "--format=%H %aI %s",
+      "--",
+      "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py"
+    ],
+    "join-history": [
+      "git",
+      "log",
+      "--all",
+      "--follow",
+      "--format=%H %aI %s",
+      "--",
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py"
+    ],
+    "typed-return-history": [
+      "git",
+      "log",
+      "--all",
+      "--follow",
+      "--format=%H %aI %s",
+      "--",
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py"
+    ]
+  },
+  "pr_metadata_source": "READ_ONLY_GITHUB_API_VIA_GH_AFTER_CONNECTOR_UNKNOWN_TOOL",
+  "historical_tests_executed": false
+}

@@ -1,0 +1,15 @@
+{
+  "config_digest": "84464b5d5beb82a911ac1b20f90685447d1db5d890bb4873cb887c7e35ae10dd",
+  "dataset_digest": "NOT_RESOLVED_UNPAIRABLE_ENTRY_NO_EXIT",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_volatility_decay_breakout_with_explicit_decay_exit_development_v1",
+  "holdout_accessed": false,
+  "hypothesis_id": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_NON_BITCOIN_PERPETUALS_V1",
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "schema_version": "evaluate_volatility_decay_breakout_with_explicit_decay_exit_run_slot_claim.v1",
+  "slot_consumption_boundary": "PRODUCTIVE_EVALUATOR_BEGAN_ON_MATERIALIZED_DEVELOPMENT_PANEL",
+  "strategy_identity": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
+  "strategy_params_digest": "6267ddf1e25d92b0206661dffbdc0ad32504274c3cb1975c9815b8a0100925a0"
+}

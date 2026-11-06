@@ -1,0 +1,41 @@
+{
+  "BOUND_ORIGIN_MAIN_SHA": "415b3146867d8be1284105639a31bd2dc1e1ca2c",
+  "PARENT_CENSUS": "docs/ops/specs/DIRECTIONAL_SCOPE_ANCHOR_AND_SIDE_SWITCH_SEMANTICS_CENSUS_V1.md",
+  "PARENT_STATE_SWITCH_CONTRACT": "docs/ops/specs/FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md",
+  "PARENT_MODEL_C_FORMULA": "docs/ops/specs/MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md",
+  "MINIMUM_ATOMIC_RUNTIME_REPAIR_SET": "SHORT_REVERSAL_EVENT_POLARITY_PLUS_PENDING_GENERATOR_ORIENTATION_PLUS_DIRECT_CONTRACT_AND_BEHAVIOR_TESTS",
+  "PRODUCTIVE_TABLE_OWNER": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:scope_direction_from_side_state_v1",
+  "SWITCH_OWNER": "src/trading/master_v2/double_play_state.py:transition_state",
+  "STATIC_MARKER_TEST": "tests/ops/test_master_v2_state_switch_contract_static_v0.py",
+  "STATE_SWITCH_MARKER": "UPSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG",
+  "CORE_CO_CHANGE": [
+    "src/trading/master_v2/double_play_state.py:transition_state",
+    "ScopeEvent/SM expectations",
+    "Short-to-Long tests",
+    "docs/ops/specs/FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md",
+    "tests/ops/test_master_v2_state_switch_contract_static_v0.py",
+    "MARKER UPSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG"
+  ],
+  "PENDING_PROJECTION": {
+    "owner": "scope_direction_from_side_state_v1",
+    "SWITCH_LONG_TO_SHORT_PENDING_TARGET_DIRECTION": "LONG",
+    "SWITCH_SHORT_TO_LONG_PENDING_TARGET_DIRECTION": "SHORT",
+    "CURRENT_SWITCH_LONG_TO_SHORT_PENDING_DIRECTION": "SHORT",
+    "CURRENT_SWITCH_SHORT_TO_LONG_PENDING_DIRECTION": "LONG"
+  },
+  "PARALLEL_OWNERS_DO_NOT_SILENTLY_REPAIR": [
+    "wallclock bridges (PENDING still *_ACTIVE for Entry/Exit; scope_direction_state from composition selected_side)",
+    "composition selected_side projection",
+    "scenario adapter active_side_to_scope_direction_v0",
+    "Entry/Exit mappings"
+  ],
+  "PARALLEL_WALLCLOCK_OVERLAY": [
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py"
+  ],
+  "RESEARCH_CONSUMER": "src/backtest/mv2_research_wiring_v1.py",
+  "SCENARIO_ACTIVE_SIDE_MAP": "src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:active_side_to_scope_direction_v0",
+  "ARMED_RESIDUAL_AMBIGUITY": "ARMED_REQUIRES_ADDITIONAL_HISTORY_SUCH_AS_LAST_ACTIVE_SIDE_IF_FULL_DEPARTING_AUTHORITY_IS_LATER_REQUIRED",
+  "LAST_ACTIVE_SIDE_BINDING_AUTHORIZED": false,
+  "RUNTIME_BIND_IMPLEMENTED": false
+}

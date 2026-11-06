@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_start_here_page
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-start-here-page
+MODE: paper_stability_guard
+
+GOAL
+- create one default re-entry page for future bounded / acceptance work
+
+OUTPUT
+- docs/ops/reviews/bounded_acceptance_start_here_page/START_HERE.md
+
+NEXT SUGGESTED STEP
+- use START_HERE.md as the default entrypoint for future bounded / acceptance sessions

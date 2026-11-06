@@ -1,0 +1,59 @@
+from __future__ import annotations
+
+
+def test_double_play_default_off_is_noop():
+    from src.ops.double_play.specialists import evaluate_double_play
+
+    d = evaluate_double_play(context={})
+    assert d.enabled is False
+    assert d.active_specialist in ("bull", "bear")
+
+
+def test_double_play_enabled_does_not_switch_on_negative_score_projection_only():
+    from src.ops.double_play.specialists import evaluate_double_play
+
+    d = evaluate_double_play(
+        context={
+            "double_play_enabled": True,
+            "switch_gate": {
+                "score": -1.0,
+                "state": {"active": "bull", "hold_remaining": 0, "cooldown_remaining": 0},
+                "cfg": {"hysteresis": 0.1, "min_hold_steps": 0, "cooldown_steps": 0},
+            },
+        }
+    )
+    assert d.enabled is True
+    # Fail-closed quarantine: score must not authorize a bull→bear switch.
+    assert d.active_specialist == "bull"
+    assert d.details["switch_gate_invoked"] is False
+
+
+def test_double_play_enabled_stays_bull_in_hysteresis_band():
+    from src.ops.double_play.specialists import evaluate_double_play
+
+    d = evaluate_double_play(
+        context={
+            "double_play_enabled": True,
+            "switch_gate": {
+                "score": 0.05,
+                "state": {"active": "bull", "hold_remaining": 0, "cooldown_remaining": 0},
+                "cfg": {"hysteresis": 0.2, "min_hold_steps": 0, "cooldown_steps": 0},
+            },
+        }
+    )
+    assert d.active_specialist == "bull"
+
+
+def test_live_gates_integration_details_contain_double_play():
+    """LiveGateResult.details includes double_play (SAFE DEFAULT OFF)."""
+    from src.live.live_gates import check_strategy_live_eligibility
+
+    result = check_strategy_live_eligibility("rsi_reversion", context={})
+    assert "double_play" in result.details
+    dp = result.details["double_play"]
+    assert "enabled" in dp
+    assert dp.get("active_specialist") in ("bull", "bear")
+    assert dp["authority_boundary"]["ops_evaluate_double_play_authority"] == (
+        "LEGACY_NON_AUTHORITATIVE"
+    )
+    assert dp["authority_boundary"]["authority_role"] == "PROJECTION_DIAGNOSTIC_ONLY"

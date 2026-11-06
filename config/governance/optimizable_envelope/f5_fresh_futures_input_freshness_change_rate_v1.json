@@ -1,0 +1,12 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_CHANGE_RATE_V1",
+  "schema_version": "canonical_f5_fresh_futures_input_freshness_change_rate/v1",
+  "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+  "max_parameters_changed_per_research_cycle": 1,
+  "max_grid_points_per_research_cycle": 8,
+  "self_deploy_forbidden": true,
+  "productive_default_mutation_forbidden": true,
+  "live_config_mutation_forbidden": true,
+  "input_authority_mutation_forbidden": true,
+  "freshness_state_admission_mutation_forbidden": true
+}

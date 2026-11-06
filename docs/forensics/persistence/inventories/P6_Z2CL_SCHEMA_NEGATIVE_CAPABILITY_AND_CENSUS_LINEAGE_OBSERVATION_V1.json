@@ -1,0 +1,463 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "OBSERVATION_IDENTITY": "P6_Z2CL_SCHEMA_NEGATIVE_CAPABILITY_AND_CENSUS_LINEAGE_OBSERVATION_V1",
+  "PROPOSED_ALIAS": "A-OBS-Z2CL-SCHEMA-NC-CENSUS-LINEAGE",
+  "OWNER_GO": "PEAK_TRADE_SCHEMA_NEGATIVE_CAPABILITY_AND_CENSUS_LINEAGE_PERSISTENCE_V1",
+  "SOURCE_READ_ONLY_OWNER_GO": "PEAK_TRADE_SCHEMA_ONTOLOGY_COUNT_SEMANTICS_ARCHAEOLOGY_READ_ONLY_V1",
+  "SOURCE_READ_ONLY_OWNER_GO_LINEAGE": "PEAK_TRADE_CENSUS_48_SOURCE_BOUND_LINEAGE_RECONCILIATION_READ_ONLY_V1",
+  "CHAT_REPORT_IS_NOT_SSOT": true,
+  "PERSISTENCE_IS_NOT_CANONIZATION": true,
+  "PERSISTENCE_IS_NOT_ADJUDICATION": true,
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "STRUCTURING_IS_CANONIZATION": false,
+  "PERSISTING_UNRESOLVED_STATE_IS_NOT_RESOLUTION": true,
+  "PERSISTING_NEGATIVE_CAPABILITY_IS_NOT_CLOSURE": true,
+  "SCHEMA_EXISTENCE_IS_NOT_BINDING": true,
+  "HISTORICAL_SCHEMA_IS_NOT_CURRENT_SCHEMA": true,
+  "HISTORICAL_SCHEMA_DESIGN_IS_NOT_CURRENT_BINDING_SCHEMA": true,
+  "DESIGN_DOCUMENT_IS_NOT_IMPLEMENTED_CONTRACT": true,
+  "ONTOLOGY_PROPOSAL_IS_NOT_ADJUDICATED_ONTOLOGY": true,
+  "OBSERVATION_IS_CANONICAL": false,
+  "OBSERVATION_IS_POLICY": false,
+  "OBSERVATION_IS_EXECUTION_GRANT": false,
+  "OBSERVATION_IS_UNIVERSE_CLOSURE": false,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_PREMERGE_INV_AUDIT": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_HARDEN": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_RT_PROOF": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_OFFLINE_SEM": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_UNIVERSE_RECON": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_ID_HDR_GAP": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CK_BLK": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_P3C": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_P3D": true,
+  "A_OBS_Z2CL_UNIVERSE_RECON_MUTATED": false,
+  "A_OBS_Z2CL_ID_HDR_GAP_MUTATED": false,
+  "SOURCE_IDENTITY_COLLAPSED": false,
+  "SOURCE_IDENTITY_COLLAPSE_ALLOWED": false,
+  "BYTE_IDENTICAL_DOES_NOT_MERGE_SOURCE_IDENTITY": true,
+  "ABSENCE_IMPLIES_NEGATIVE_FACT": false,
+  "INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF": true,
+  "HISTORICAL_REWRITE_COUNT": 0,
+  "bound_origin_main_sha": "ac02fc3e7bcf71e3d5beb78d7cdd6f226b994d40",
+  "SOURCE_CLASS": "REPO_INTERNAL",
+  "SOURCE_SURFACE_ID": "SS-03",
+  "NETWORK_USED": false,
+  "EXCHANGE_GET_PERFORMED": false,
+  "AUTHENTICATED_POST_PERFORMED": false,
+  "TRADING_PERFORMED": false,
+  "FLATTEN_EXECUTE_PERFORMED": false,
+  "CLASS_D_CONSUMED": false,
+  "Z2AP_CONSUMED": false,
+  "EXECUTION_READY": false,
+  "OPTION_A_SELECTED": false,
+  "OPTION_B_SELECTED": false,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_ONTOLOGY_CREATED": false,
+  "NEW_RELATION_TYPE_CREATED": false,
+  "NEW_U_RF_ID_CREATED": false,
+  "NEW_CN_ID_CREATED": false,
+  "NEW_UC_ID_CREATED": false,
+  "NEW_SET_ID_CREATED": false,
+  "NEW_SCHEMA_CREATED": false,
+  "UC_MEMBER_LIST_CREATED": false,
+  "UC_ONTOLOGY_CREATED": false,
+  "SECRET_VALUES_INCLUDED": false,
+  "U_RF_ID_IS_PERSISTENCE_ID": false,
+  "CN_IDENTITY_COLLAPSE_WITH_C01_C16_ALLOWED": false,
+  "SOURCE_WORDING_AND_NORMALIZED_SEMANTIC_MUST_REMAIN_DISTINCT": true,
+  "ARITHMETIC_MATCH_IS_NOT_SEMANTIC_PROOF": true,
+  "R3_IS_INVALID": false,
+  "R3_HAS_NO_VALUE": false,
+  "EXISTING_SCHEMA_CAN_REPRESENT_DELTA": true,
+  "NEW_SCHEMA_REQUIRED": false,
+  "chronology": {
+    "FOLLOWS": "A-OBS-Z2CL-ID-HDR-GAP",
+    "DOES_NOT_COLLAPSE_ONTO": [
+      "A-OBS-Z2CL",
+      "A-OBS-Z2CL-PREMERGE-INV-AUDIT",
+      "A-OBS-Z2CL-HARDEN",
+      "A-OBS-Z2CL-RT-PROOF",
+      "A-OBS-Z2CL-OFFLINE-SEM",
+      "A-OBS-Z2CL-UNIVERSE-RECON",
+      "A-OBS-Z2CL-ID-HDR-GAP",
+      "A-OBS-Z2CK-BLK",
+      "A-OBS-P3C",
+      "A-OBS-P3D",
+      "A-TR-R3",
+      "IO-R3",
+      "IO-SWR002",
+      "IO-FSS",
+      "IO-R0R1R2",
+      "A-PER-SETS"
+    ]
+  },
+  "source_layers": {
+    "LAYER_1": "origin/main",
+    "LAYER_2": "local committed HEAD",
+    "LAYER_3": "dirty worktree",
+    "LAYER_4": "repo forensic persistence",
+    "LAYER_5": "external forensic material",
+    "LAYER_6": "canonical authority",
+    "LAYER_7": "historical chat/transcript evidence",
+    "LAYER_1_SHA": "ac02fc3e7bcf71e3d5beb78d7cdd6f226b994d40",
+    "LAYER_2_SHA_OF_OPERATOR_WORKTREE_AT_READ": "75be51bedb3ed22145749a66b10fed9ee9a47d95",
+    "LAYER_3_IS_NOT_COMMITTED_SOURCE": true,
+    "DIRTY_WORKTREE_IS_NOT_ORIGIN_MAIN": true,
+    "PERSISTENCE_IS_NOT_CANONICAL": true,
+    "EXTERNAL_FORENSIC_MATERIAL_IS_NOT_CANONICAL": true,
+    "LAYER_7_PREDECESSOR_ALIAS": "A-OBS-Z2CL-ID-HDR-GAP",
+    "LAYER_7_PREDECESSOR_LOCATOR": "docs/forensics/persistence/inventories/P6_Z2CL_IDENTITY_AND_HEADER_GAP_ADJUDICATION_OBSERVATION_V1.json",
+    "LAYER_7_LINEAGE_CHAT": "agent-transcripts/72e556ae-4dca-4931-ac89-8f8541f43ead assistant jsonl line 16",
+    "LAYER_7_R3_CHAT": "A-TR-R3 forensic/.../transcripts/90a346c4-5419-436a-9d7f-e2a893c4aad5.jsonl assistant line 25",
+    "THIS_ARTIFACT_LAYER": "LAYER_4"
+  },
+  "count_hard_block_preserved_open": {
+    "AUDIT_DECLARED_UNIVERSE_CENSUS_COUNT": 48,
+    "SOURCE_BOUND_LINEAGE_FOR_48": "UNPROVEN",
+    "EXACT_SOURCE_DOMAIN_OF_48": "UNPROVEN",
+    "EXACT_MEMBER_SET_OR_COUNT_FORMULA_FOR_48": "UNPROVEN",
+    "EXACT_RELATION_BETWEEN_48_AND_UC_LABELS": "UNPROVEN",
+    "COUNT_SEMANTIC_DISCONTINUITY": "HARD_BLOCK",
+    "COUNT_HARD_BLOCK_REMAINS_OPEN": true,
+    "RECONCILIATION_HARD_BLOCK": true,
+    "COMPLETE_INVENTORY_WITHIN_KNOWN_SOURCES": false,
+    "CLOSED_UNIVERSE_PROVEN": false,
+    "SOURCE_UNIVERSE_EXHAUSTED": false,
+    "CAN_CLOSED_WORLD_ADJUDICATION_NOW_PROCEED": "PROVEN_FALSE",
+    "UNIVERSE_CLOSURE": false,
+    "CLOSED_WORLD_ADJUDICATION": false,
+    "AUDIT_DECLARED_UNIVERSE_CENSUS_COUNT_NOT_REWRITTEN": true,
+    "RECONCILED_CENSUS_COUNT_STATUS_NOT_NORMALIZED": true,
+    "THIS_FILE_DOES_NOT_MINT_UC_IDS": true,
+    "THIS_FILE_DOES_NOT_RECOMPUTE_CLASSIFICATION_COUNTS": true,
+    "THIS_FILE_DOES_NOT_RESOLVE_COUNT_HARD_BLOCK": true
+  },
+  "nc_01_r3_negative_capability": {
+    "FINDING_ID": "NC-01",
+    "R3_SCHEMA_FOUND": true,
+    "R3_SCHEMA_STATUS": "DESIGNED_ONLY_NOT_INSTANTIATED_NOT_EXECUTED",
+    "SCHEMA_ID": "LEVEL_2_EPISTEMIC_SCHEMA",
+    "R3_AUTHORITY": "NONE",
+    "R3_DIMENSION_COUNT": 11,
+    "DIMENSIONS": "D0 DISCOURSE_FRAME; D1 CONTENT_FORM; D2 PROVENANCE_CLASS; D3 PRESERVATION_CLASS; D4 TEMPORAL_STATUS; D5 AUTHORITY_STATUS; D6 ASSERTION_STATUS; D7 OPERATIONAL_STATUS; D8 SCOPE_CLASS; D9 SOURCE_BINDING_STATUS; D10 CONFLICT_STATUS",
+    "DESIGN_OR_IMPLEMENTATION": "DESIGN_ONLY",
+    "CURRENT_OR_HISTORICAL": "HISTORICAL_CHAT",
+    "IMPLEMENTATION_STATUS": "no schema.json",
+    "R3_DEFINES_MEMBERSHIP": "PROVEN_FALSE",
+    "R3_DEFINES_COUNT_SEMANTICS": "PROVEN_FALSE",
+    "R3_DEFINES_CLOSED_WORLD": "PROVEN_FALSE",
+    "R3_CANNOT_BE_USED_AS_UC_CENSUS_CONTRACT": "PROVEN_TRUE",
+    "R3_IS_INVALID": false,
+    "R3_HAS_NO_VALUE": false,
+    "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+    "SOURCE_REFERENCES": [
+      {
+        "ALIAS": "A-TR-R3",
+        "LOCATOR": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/90a346c4-5419-436a-9d7f-e2a893c4aad5.jsonl",
+        "SOURCE_BINDING": "assistant jsonl line 25 LEVEL_2_EPISTEMIC_SCHEMA_DESIGN READ-ONLY",
+        "SOURCE_SHA256_OF_REPORT": "2c9618b176f8059d7e254f63f27e8638d7b11415a88ee90c288039e80698141a",
+        "L2_SUBJECT": "IO-R3",
+        "L2_STATUS": "DESIGNED_ONLY in A-TR-R3; not instantiated as schema.json; not executed"
+      }
+    ]
+  },
+  "nc_02_sw_r_002_negative_capability": {
+    "FINDING_ID": "NC-02",
+    "SW_R_002_FOUND": true,
+    "SW_R_002_STATUS": "OPEN_NO_TYPE_ONTOLOGY",
+    "OWNER_DECISIONS_ANSWERED": 0,
+    "TYPE_ONTOLOGY_CREATED": false,
+    "TYPE_ONTOLOGY_BINDING_CONTRACT_EXISTS": false,
+    "SW_R_002_DEFINES_MEMBERSHIP": "PROVEN_FALSE",
+    "SW_R_002_DEFINES_COUNT_SEMANTICS": "PROVEN_FALSE",
+    "SW_R_002_CANNOT_BE_USED_AS_EXISTING_UC_TYPE_ONTOLOGY": "PROVEN_TRUE",
+    "OPEN_CHOICE_DECIDED": false,
+    "ONTOLOGY_CREATED_RETROACTIVELY": false,
+    "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+    "SOURCE_REFERENCES": [
+      {
+        "ALIAS": "A-SWR-PRES",
+        "LOCATOR": "docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+        "SOURCE_BINDING": "header SW_R_002_STATUS=OPEN_NO_TYPE_ONTOLOGY; OWNER_DECISIONS_ANSWERED=0; TYPE_ONTOLOGY_CREATED=false"
+      },
+      {
+        "ALIAS": "A-SWR-WS",
+        "LOCATOR": "docs/forensics/working_state/PEAK_TRADE_SW_R_002_WORKING_STATE.md",
+        "SOURCE_BINDING": "TYPE_ONTOLOGY_CREATION=false; THIS_ARTIFACT_MUST_NOT_BE_USED_AS_TYPE_ONTOLOGY_AUTHORITY=true"
+      },
+      {
+        "ALIAS": "IO-SWR002",
+        "LOCATOR": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+        "SOURCE_BINDING": "CURRENT_KNOWN_STATUS=OPEN_NO_TYPE_ONTOLOGY; OWNER_DECISIONS_ANSWERED=0; TYPE_ONTOLOGY_CREATED=false"
+      }
+    ]
+  },
+  "nc_03_structural_sidecar_negative_capability": {
+    "FINDING_ID": "NC-03",
+    "STRUCTURAL_SIDECAR_SCHEMA_FOUND": true,
+    "STRUCTURAL_SCHEMA_IS_SEMANTIC_ONTOLOGY": "PROVEN_FALSE",
+    "STRUCTURAL_SCHEMA_DEFINES_MEMBERSHIP": "PROVEN_FALSE",
+    "STRUCTURAL_SCHEMA_DEFINES_COUNT_SEMANTICS": "PROVEN_FALSE",
+    "STRUCTURAL_RANGE_IS_UNIVERSE_RANGE": "PROVEN_FALSE",
+    "RECORD_COUNT_IS_DOMAIN_COUNT": "PROVEN_FALSE",
+    "STRUCTURAL_SIDECAR_CANNOT_SUPPLY_UC_MEMBERSHIP_OR_CENSUS_COUNT": "PROVEN_TRUE",
+    "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+    "SOURCE_REFERENCES": [
+      {
+        "ALIAS": "A-EXT-SIDECAR",
+        "LOCATOR": "P5 derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.structure-v1.json",
+        "SHA256": "6f2928e67d45de2162df1589de77ea530061652181ba6efd9a0f528ca7e6ad6e",
+        "L2_SUBJECT": "IO-R0R1R2",
+        "SOURCE_BINDING": "INSTANTIATED_STRUCTURAL; ADJUDICATION_STATUS=MECHANICAL; L4 Instantiated structural is not R3 execution"
+      },
+      {
+        "ALIAS": "A-FSS-NOTE",
+        "LOCATOR": "docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1.md",
+        "SOURCE_BINDING": "SEMANTIC_BINDING_PERFORMED=false; 15 dimensions; only OCCURRENCE_IDENTITY classify/disqualify executed; AUTHORITY=NONE"
+      },
+      {
+        "ALIAS": "FB-NC-01",
+        "LOCATOR": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+        "TYPE": "PROVES_NON_EQUIVALENCE",
+        "SOURCE_BINDING": "IO-R3 PROVES_NON_EQUIVALENCE IO-FSS; R3 DESIGNED_ONLY vs FSS PARTIAL_EXECUTION"
+      }
+    ]
+  },
+  "nc_04_navigation_negative_capability": {
+    "FINDING_ID": "NC-04",
+    "L0_IS_UNIVERSE_CENSUS": false,
+    "INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF": true,
+    "GLOBAL_SOURCE_UNIVERSE_EXHAUSTION_PROVEN": false,
+    "NAVIGATION_OR_INDEX_COUNTS_CANNOT_BE_PROMOTED_TO_CENSUS_MEMBERSHIP": "PROVEN_TRUE",
+    "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+    "SOURCE_REFERENCES": [
+      {
+        "ALIAS": "L0",
+        "LOCATOR": "docs/forensics/persistence/registries/FEDERATED_SOURCE_SURFACE_REGISTRY_V1.md",
+        "SOURCE_BINDING": "prose This is not a universe census; INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true; GLOBAL_SOURCE_UNIVERSE_EXHAUSTION_PROVEN=false; KNOWN_SOURCE_SURFACE_COUNT_SEMANTIC=enumerated_required_surfaces_SS-01_through_SS-14_from_prior_architecture_report;_not_a_closed_global_universe"
+      },
+      {
+        "ALIAS": "L2",
+        "LOCATOR": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+        "SOURCE_BINDING": "INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true; NEW_DOMAIN_ONTOLOGY_CREATED=false"
+      },
+      {
+        "ALIAS": "L4",
+        "LOCATOR": "docs/forensics/persistence/registries/CURRENT_STATE_PROJECTION_V1.md",
+        "SOURCE_BINDING": "PROJECTION_IS_NOT_CANONICAL=true; INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true; PROJECTED_SUBJECT_COUNT_SEMANTIC=required_projection_set_this_persist;_not_a_closed_universe"
+      }
+    ]
+  },
+  "nc_05_p6_5189_set_register_domain_boundary": {
+    "FINDING_ID": "NC-05",
+    "SET_REGISTER_HAS_SCOPED_MEMBERSHIP_RULES": true,
+    "SET_REGISTER_HAS_SCOPED_MEMBER_COUNTS": true,
+    "COUNT_VALUES_NORMALIZED": false,
+    "THIS_REGISTER_IS_NOT_A_CLOSED_UNIVERSE": true,
+    "ALL_RELEVANT_SET_CLOSED_UNIVERSE_PROVEN": false,
+    "SET_REGISTER_EXPLAINS_CHAT_CENSUS_48": false,
+    "SET_NODE_COUNT": 20,
+    "P6_5189_SET_SEMANTICS_ARE_DOMAIN_SCOPED_AND_DO_NOT_EXPLAIN_DECLARED_48": "PROVEN_TRUE",
+    "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+    "SOURCE_REFERENCES": [
+      {
+        "ALIAS": "A-PER-SETS",
+        "LOCATOR": "docs/forensics/persistence/registries/P6_5189_SET_AND_UNIVERSE_REGISTER_V1.json",
+        "SOURCE_BINDING": "SET_NODE_COUNT=20; COUNT_VALUES_NORMALIZED=false; THIS_REGISTER_IS_NOT_A_CLOSED_UNIVERSE=true; each of 20 sets closed_universe_proven=false; P6_HISTORICAL_5189_TOKEN count_semantic=census_claim_without_persisted_member_list; no binding of named sets onto chat-UC census 48"
+      }
+    ]
+  },
+  "nc_06_r4_r5_fss_execution_status": {
+    "FINDING_ID": "NC-06",
+    "R4_EXECUTED": false,
+    "R5_EXECUTED": false,
+    "FSS_DIMENSION_COUNT": 15,
+    "FSS_EXECUTED_DIMENSION": "OCCURRENCE_IDENTITY classify/disqualify only",
+    "FSS_REMAINING_DIMENSIONS_NOT_EXECUTED": 14,
+    "UNEXECUTED_SCHEMA_SURFACES_CANNOT_BE_TREATED_AS_COMPLETED_SEMANTIC_CLASSIFICATION": "PROVEN_TRUE",
+    "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+    "SOURCE_REFERENCES": [
+      {
+        "ALIAS": "IO-R4",
+        "LOCATOR": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+        "SOURCE_BINDING": "CURRENT_KNOWN_STATUS=NOT_EXECUTED_ON_EXAMINED_SURFACES; ADJUDICATION_STATUS=NOT_AUTHORIZED_IN_R3_GO"
+      },
+      {
+        "ALIAS": "IO-R5",
+        "LOCATOR": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+        "SOURCE_BINDING": "CURRENT_KNOWN_STATUS=NOT_EXECUTED; not equal to P6_5189 ledger"
+      },
+      {
+        "ALIAS": "IO-FSS",
+        "LOCATOR": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+        "SOURCE_BINDING": "CURRENT_KNOWN_STATUS=IMPLEMENTED; only OCCURRENCE_IDENTITY classify/disqualify executed; 14 dims NOT_EXECUTED"
+      },
+      {
+        "ALIAS": "A-FSS-NOTE",
+        "LOCATOR": "docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1.md",
+        "SOURCE_BINDING": "Dimension model 15 first-class dimensions; only OCCURRENCE_IDENTITY executed"
+      }
+    ]
+  },
+  "cl_01_census_48_lineage": {
+    "FINDING_ID": "CL-01",
+    "AUDIT_DECLARED_UNIVERSE_CENSUS_COUNT": 48,
+    "SOURCE_BOUND_LINEAGE_FOR_48": "UNPROVEN",
+    "EXACT_SOURCE_DOMAIN_OF_48": "UNPROVEN",
+    "EXACT_MEMBER_SET_OR_COUNT_FORMULA_FOR_48": "UNPROVEN",
+    "EXACT_RELATION_BETWEEN_48_AND_UC_LABELS": "UNPROVEN",
+    "ORIGINATING_ASSERTION": {
+      "SOURCE_ID": "72e556ae-4dca-4931-ac89-8f8541f43ead",
+      "SOURCE_BINDING": "assistant jsonl line 16",
+      "SOURCE_LAYER": "L7 / SS-12 chat synthesis",
+      "AUTHORITY_STATUS": "NONE",
+      "ASSERTION_FORM": "Literal Q1=48 = HOW_MANY_DISTINCT_UNIVERSE_OR_SET_CONCEPTS_FOUND=48 = UNIVERSE_CENSUS_COUNT=48",
+      "COUNT_FORMULA_EXPLICIT": false,
+      "MEMBER_LIST_EXPLICIT": false,
+      "DERIVED_OR_LITERAL": "LITERAL_IN_REPORT_WITHOUT_DECLARED_DERIVATION",
+      "REPEATED_ASSERTION_IS_NOT_INDEPENDENT_PROOF": true,
+      "INDEPENDENT_SOURCES_SUPPORTING_48": 0
+    },
+    "PREDECESSOR_PRESERVATION": {
+      "ALIAS": "A-OBS-Z2CL-ID-HDR-GAP",
+      "LOCATOR": "docs/forensics/persistence/inventories/P6_Z2CL_IDENTITY_AND_HEADER_GAP_ADJUDICATION_OBSERVATION_V1.json",
+      "SOURCE_BINDING": "AUDIT_DECLARED_UNIVERSE_CENSUS_COUNT_NOT_REWRITTEN=true; COUNT_HARD_BLOCK_REMAINS_OPEN=true; does not restate the integer 48 as a membership rule"
+    }
+  },
+  "cl_02_no_existing_schema_bridge": {
+    "FINDING_ID": "CL-02",
+    "CAN_ANY_EXISTING_SCHEMA_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+    "SEPARATE_SOURCE_BOUND_CHECKS": [
+      {
+        "SURFACE": "R3",
+        "ALIAS": "A-TR-R3",
+        "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+        "REASON": "epistemic dimension spec; no membership, count, or closed-world rule"
+      },
+      {
+        "SURFACE": "SW_R_002",
+        "ALIAS": "A-SWR-PRES",
+        "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+        "REASON": "OPEN_NO_TYPE_ONTOLOGY; no type-ontology binding contract"
+      },
+      {
+        "SURFACE": "Structural Sidecar/FSS",
+        "ALIAS": "A-EXT-SIDECAR",
+        "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+        "REASON": "structural/occurrence schema; range is not universe range; record count is not domain count"
+      },
+      {
+        "SURFACE": "L0/navigation",
+        "ALIAS": "L0",
+        "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+        "REASON": "explicit non-census; index counts are not completeness proofs"
+      },
+      {
+        "SURFACE": "P6_5189 SET register",
+        "ALIAS": "A-PER-SETS",
+        "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+        "REASON": "scoped per-set membership/count for 20 named P6_5189 sets; COUNT_VALUES_NORMALIZED=false; no binding onto chat-UC census 48"
+      },
+      {
+        "SURFACE": "GFU / research closed-world schemas",
+        "ALIAS": "A-CAP21-SPEC",
+        "CAN_IT_SOURCE_BOUND_EXPLAIN_DECLARED_48": "PROVEN_FALSE",
+        "REASON": "explicitly different domain: Master Runbook §4.5 Governed Futures Universe chain and research CANDIDATE_SCHEMA_CLOSED_WORLD enum are not forensic UC-census membership"
+      }
+    ]
+  },
+  "non_binding_hypotheses": {
+    "ARITHMETIC_MATCH_IS_NOT_SEMANTIC_PROOF": true,
+    "CANDIDATES_REMAIN_UNPROVEN": [
+      {
+        "FORMULA": "42+6=48",
+        "STATUS": "UNPROVEN",
+        "KIND": "HYPOTHESIS",
+        "FILLS_EXACT_MEMBER_SET_OR_COUNT_FORMULA_FOR_48": false
+      },
+      {
+        "FORMULA": "21+7+20=48",
+        "STATUS": "UNPROVEN",
+        "KIND": "HYPOTHESIS",
+        "FILLS_EXACT_MEMBER_SET_OR_COUNT_FORMULA_FOR_48": false
+      },
+      {
+        "FORMULA": "32+12+4=48",
+        "STATUS": "UNPROVEN",
+        "KIND": "HYPOTHESIS",
+        "FILLS_EXACT_MEMBER_SET_OR_COUNT_FORMULA_FOR_48": false
+      },
+      {
+        "FORMULA": "UC-01..UC-48 truncation candidate",
+        "STATUS": "UNPROVEN",
+        "KIND": "HYPOTHESIS",
+        "FILLS_EXACT_MEMBER_SET_OR_COUNT_FORMULA_FOR_48": false
+      },
+      {
+        "FORMULA": "UC-22..UC-38 sequential SET mapping",
+        "STATUS": "UNPROVEN",
+        "KIND": "HYPOTHESIS",
+        "NOTE": "sequential SET-to-UC-22..38 mapping is CONTRADICTED as interpretation by UC-31 vs HISTORICAL_SOURCE_SET vs P6_HISTORICAL_5189_TOKEN; still not a census derivation",
+        "FILLS_EXACT_MEMBER_SET_OR_COUNT_FORMULA_FOR_48": false,
+        "UC_22_TO_38_EXPANDED": false
+      }
+    ]
+  },
+  "gfu_and_research_closed_world_explicitly_different_domain": {
+    "MASTER_RUNBOOK_SECTION": "4.5 Universe, ranking and selection authority",
+    "GFU_CHAIN": "Governed Futures Universe → Productive Ranking → Persisted Single Selected Future → Native Instrument Binding → Runtime Consumer",
+    "GFU_IS_FORENSIC_UC_CENSUS": false,
+    "RESEARCH_CLOSED_WORLD_LOCATOR": "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_CONTRACT_HARDENING_V1.md",
+    "CANDIDATE_SCHEMA_CLOSED_WORLD_IS_FORENSIC_UC_CENSUS": false
+  },
+  "negative_capability_finding_count": 6,
+  "census_lineage_finding_count": 2,
+  "federated_relation": {
+    "BINDING_ID": "FB-P3D-11",
+    "FROM": "A-OBS-Z2CL-ID-HDR-GAP",
+    "TYPE": "INPUT_TO",
+    "TO": "A-OBS-Z2CL-SCHEMA-NC-CENSUS-LINEAGE",
+    "TYPE_REUSED": true,
+    "NEW_RELATION_TYPE_CREATED": false,
+    "EVIDENCE": "same FB-P3D INPUT_TO chain; this observation FOLLOWS A-OBS-Z2CL-ID-HDR-GAP additively; predecessor locators and payload remain unrewritten; negative-capability meaning is represented in observation fields not as a new relation TYPE; existing FB-NC-01..03 PROVES_NON_EQUIVALENCE remain the schema non-equivalence bindings"
+  },
+  "maintenance_contract": {
+    "SUBJECT_IMPACT_CHECK": "PERFORMED",
+    "IMPACTED_INFORMATION_OBJECT_IDS": [
+      "IO-CAN-NEXT",
+      "IO-FLATTEN",
+      "IO-R3",
+      "IO-SWR002",
+      "IO-FSS",
+      "IO-R0R1R2",
+      "IO-R4",
+      "IO-R5",
+      "IO-P6GRAPH"
+    ],
+    "SUBJECT_SUPPLEMENTED": true,
+    "SUBJECT_SUPERSEDED": false,
+    "SUBJECT_NEWLY_ADJUDICATED": false,
+    "SUBJECT_NEW_EVIDENCE_ADDED": true,
+    "SUBJECT_RESIDUAL_STATUS_CHANGED": false,
+    "SUBJECT_OWNER_DECISION_STATUS_CHANGED": false,
+    "SUBJECT_NEW_ARTIFACT_LOCATOR_INTRODUCED": true,
+    "L0_UPDATE_REQUIRED": false,
+    "L0_NO_CHANGE_REASON": "new inventory file remains under already registered SS-03; no new source surface or source-identity class; L0 SS-01 Z2CI finish-sequence note left unoverwritten",
+    "L2_UPDATE_REQUIRED": true,
+    "L2_UPDATE_REASON": "new alias A-OBS-Z2CL-SCHEMA-NC-CENSUS-LINEAGE; IO-CAN-NEXT/IO-FLATTEN/IO-R3/IO-SWR002/IO-FSS/IO-R0R1R2/IO-R4/IO-R5/IO-P6GRAPH supporting locator; FB-P3D-11 INPUT_TO without rewriting A-OBS-Z2CL-ID-HDR-GAP, without minting U-RF/CN/UC/SET IDs, without creating a relation type, and without universe or census closure",
+    "L4_UPDATE_REQUIRED": true,
+    "L4_UPDATE_REASON": "project additive schema negative-capability and census-lineage observation; R3 remains DESIGNED_ONLY; SW_R_002 remains OPEN_NO_TYPE_ONTOLOGY; structural sidecar/FSS remain non-semantic for census membership; SET register remains domain-scoped; census 48 lineage remains UNPROVEN; count HARD_BLOCK remains OPEN",
+    "FEDERATED_ENTRYPOINT_UPDATE_NOT_REQUIRED": false,
+    "FEDERATED_ENTRYPOINT_NO_CHANGE_PROOF": "",
+    "FEDERATED_ENTRYPOINT_INSUFFICIENT": false,
+    "MISSING_INFORMATION_TYPE": "",
+    "HISTORICAL_OBSERVATION_REWRITE_COUNT": 0
+  }
+}

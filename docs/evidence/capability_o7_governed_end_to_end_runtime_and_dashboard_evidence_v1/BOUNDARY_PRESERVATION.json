@@ -1,0 +1,43 @@
+{
+  "authorization_consumed": false,
+  "config_digest_bound": "9ebccd30c8b4413fa8dc2fdd553060b663e1e0f201fc04374f3d96a2d01919c7",
+  "confirm_token_minted": false,
+  "credentials_used": 0,
+  "dashboard_trading_authority": false,
+  "network_session_started": false,
+  "orders_submitted": 0,
+  "parallel_authorities_created": false,
+  "production_surfaces_reused": [
+    "canonical_runtime_environment_contract_v1",
+    "canonical_local_launcher_and_process_supervision_v1",
+    "secure_confirm_token_family_and_hidden_input_handoff_v1",
+    "canonical_public_md_and_ohlcv_transport_reconciliation_v1",
+    "canonical_read_model_and_market_dashboard_rebuild_v1",
+    "runtime_health_recovery_and_failure_injection_closure_v1"
+  ],
+  "repository_sha_bound": "fe3e2f65aa0c4c84ceac46fabc7b2587fd6f3d10",
+  "safety_invariants": {
+    "AUTHORIZATION_CONSUMPTION_ALLOWED": false,
+    "CONFIG_CHANGE_ALLOWED": false,
+    "CONFIRM_TOKEN_MINT_ALLOWED": false,
+    "CORE_LOGIC_CHANGE_ALLOWED": false,
+    "DASHBOARD_TRADING_AUTHORITY": false,
+    "EXCHANGE_CREDENTIAL_USE_ALLOWED": false,
+    "LIVE_TRADING_ALLOWED": false,
+    "NETWORK_SESSION_ALLOWED": false,
+    "NOTION_MUTATION_ALLOWED": false,
+    "O8_DEAUTHORIZATION_FORBIDDEN": true,
+    "ORDERS_ALLOWED": false,
+    "PAPER_EXCHANGE_ORDERS_ALLOWED": false,
+    "PARALLEL_HEALTH_MODEL_FORBIDDEN": true,
+    "PARALLEL_LAUNCHER_FORBIDDEN": true,
+    "PARALLEL_OHLCV_PRODUCER_FORBIDDEN": true,
+    "PARALLEL_READ_MODEL_AUTHORITY_FORBIDDEN": true,
+    "PARALLEL_RECOVERY_MODEL_FORBIDDEN": true,
+    "PARALLEL_SUPERVISOR_FORBIDDEN": true,
+    "PHASE_9_2_SUBSTITUTION_FORBIDDEN": true,
+    "REAL_CAPITAL_MOVEMENT_ALLOWED": false,
+    "RULESET_MUTATION_ALLOWED": false,
+    "TESTNET_ALLOWED": false
+  }
+}

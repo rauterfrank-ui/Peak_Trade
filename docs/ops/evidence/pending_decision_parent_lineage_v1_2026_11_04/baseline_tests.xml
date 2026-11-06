@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="15" skipped="0" tests="16" time="0.225" timestamp="2026-11-04T02:36:30.479924+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_actual_capture_generic_unknown_parent_is_valid" time="0.006" /><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected[cycle_id-another-cycle]" time="0.005"><failure message="AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED)">tests/ops/test_pending_decision_parent_lineage_v1.py:76: in test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected
+    assert out.reason == "PENDING_DECISION_LINEAGE_UNBOUND" and not out.created
+E   AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED)</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected[correlation_id-ddo.corr.other]" time="0.005"><failure message="AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED)">tests/ops/test_pending_decision_parent_lineage_v1.py:76: in test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected
+    assert out.reason == "PENDING_DECISION_LINEAGE_UNBOUND" and not out.created
+E   AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED)</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected[event_time_utc-2026-11-04T09:00:00Z]" time="0.004"><failure message="AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED)">tests/ops/test_pending_decision_parent_lineage_v1.py:76: in test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected
+    assert out.reason == "PENDING_DECISION_LINEAGE_UNBOUND" and not out.created
+E   AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED)</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected[producer_id-wrong-producer]" time="0.004"><failure message="AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED)">tests/ops/test_pending_decision_parent_lineage_v1.py:76: in test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected
+    assert out.reason == "PENDING_DECISION_LINEAGE_UNBOUND" and not out.created
+E   AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED)</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected[authority_owner-wrong-owner]" time="0.004"><failure message="AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED)">tests/ops/test_pending_decision_parent_lineage_v1.py:76: in test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected
+    assert out.reason == "PENDING_DECISION_LINEAGE_UNBOUND" and not out.created
+E   AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED)</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected[decision_type-NO_ENTRY]" time="0.004"><failure message="AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED)">tests/ops/test_pending_decision_parent_lineage_v1.py:76: in test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected
+    assert out.reason == "PENDING_DECISION_LINEAGE_UNBOUND" and not out.created
+E   AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED)</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected[decision_result-NO_ACTION]" time="0.004"><failure message="AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED)">tests/ops/test_pending_decision_parent_lineage_v1.py:76: in test_valid_ledger_with_foreign_or_contradictory_parent_is_rejected
+    assert out.reason == "PENDING_DECISION_LINEAGE_UNBOUND" and not out.created
+E   AssertionError: assert ('CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED)</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_missing_parent_is_rejected" time="0.003"><failure message="AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED">tests/ops/test_pending_decision_parent_lineage_v1.py:83: in test_missing_parent_is_rejected
+    assert maybe_create_natural_enter_pending_outcome_v1(**args).reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_corrupt_owner_ledger_is_rejected_without_repair" time="0.003"><failure message="AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED">tests/ops/test_pending_decision_parent_lineage_v1.py:90: in test_corrupt_owner_ledger_is_rejected_without_repair
+    assert maybe_create_natural_enter_pending_outcome_v1(**args).reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_context_cannot_be_paired_with_different_pending_inputs[native_id-other]" time="0.003"><failure message="AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED">tests/ops/test_pending_decision_parent_lineage_v1.py:99: in test_context_cannot_be_paired_with_different_pending_inputs
+    assert maybe_create_natural_enter_pending_outcome_v1(**args).reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_context_cannot_be_paired_with_different_pending_inputs[canonical_instrument_id-other]" time="0.003"><failure message="AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED">tests/ops/test_pending_decision_parent_lineage_v1.py:99: in test_context_cannot_be_paired_with_different_pending_inputs
+    assert maybe_create_natural_enter_pending_outcome_v1(**args).reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_context_cannot_be_paired_with_different_pending_inputs[decision_reference_price-999.0]" time="0.003"><failure message="AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED">tests/ops/test_pending_decision_parent_lineage_v1.py:99: in test_context_cannot_be_paired_with_different_pending_inputs
+    assert maybe_create_natural_enter_pending_outcome_v1(**args).reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_context_cannot_be_paired_with_different_pending_inputs[decision_timestamp_unix-1793786402.0]" time="0.003"><failure message="AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED">tests/ops/test_pending_decision_parent_lineage_v1.py:99: in test_context_cannot_be_paired_with_different_pending_inputs
+    assert maybe_create_natural_enter_pending_outcome_v1(**args).reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_context_cannot_be_paired_with_different_pending_inputs[market_context_ref-other]" time="0.003"><failure message="AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED">tests/ops/test_pending_decision_parent_lineage_v1.py:99: in test_context_cannot_be_paired_with_different_pending_inputs
+    assert maybe_create_natural_enter_pending_outcome_v1(**args).reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED</failure></testcase><testcase classname="tests.ops.test_pending_decision_parent_lineage_v1" name="test_report_side_cannot_override_exact_producer" time="0.003"><failure message="AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'&#10;  &#10;  - PENDING_DECISION_LINEAGE_UNBOUND&#10;  + CREATED">tests/ops/test_pending_decision_parent_lineage_v1.py:105: in test_report_side_cannot_override_exact_producer
+    assert maybe_create_natural_enter_pending_outcome_v1(**args).reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert 'CREATED' == 'PENDING_DECI...NEAGE_UNBOUND'
+E     
+E     - PENDING_DECISION_LINEAGE_UNBOUND
+E     + CREATED</failure></testcase></testsuite></testsuites>

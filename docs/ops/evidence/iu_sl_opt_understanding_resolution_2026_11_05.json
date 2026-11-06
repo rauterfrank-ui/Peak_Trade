@@ -1,0 +1,273 @@
+{
+  "schema": "peaktrade.iu_sl_opt.concrete_origin_trace_index.v1",
+  "source_head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+  "document": "docs/ops/evidence/IU_SL_OPT_UNDERSTANDING_RESOLUTION_2026_11_05.md",
+  "document_sha256": "2207afeb2b6ace25b10eae892ed11782ba56014b988ff5419bfc691009ad924f",
+  "trace": "docs/ops/evidence/iu_sl_opt_concrete_origin_trace_2026_11_05/trace.json",
+  "trace_sha256": "8e28cd5c4e39097fd7d1ef645691c0100777f5c3b2a27c6f8e29469f6ef6489b",
+  "bound_sources": {
+    "tests/ops/_bounded_system_episode_fixture_v1.py": {
+      "path": "tests/ops/_bounded_system_episode_fixture_v1.py",
+      "sha256": "c00c1da83cd40bd321315a0fefd915d6e39dc417e22e55ab959c22f6164697f6",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "research_episode": {
+          "line": 438,
+          "end_line": 617
+        },
+        "outcome_episode": {
+          "line": 323,
+          "end_line": 435
+        }
+      }
+    },
+    "tests/ops/test_bounded_offline_all_purpose_consumers_v1.py": {
+      "path": "tests/ops/test_bounded_offline_all_purpose_consumers_v1.py",
+      "sha256": "b7a453cf1a79aa6221d16acfe1a94ab35fc5beb9c750ce05c1d04428f1768bbb",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "_profiles": {
+          "line": 21,
+          "end_line": 127
+        }
+      }
+    },
+    "tests/backtest/test_parameter_sensitivity_split_observation_v1.py": {
+      "path": "tests/backtest/test_parameter_sensitivity_split_observation_v1.py",
+      "sha256": "eff58bd761f6237ad6a644a4767ca0e9e1472968a0a26439b202c9c59e0c795b",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "_inputs": {
+          "line": 14,
+          "end_line": 44
+        }
+      }
+    },
+    "tests/backtest/test_mv2_research_wiring_v1.py": {
+      "path": "tests/backtest/test_mv2_research_wiring_v1.py",
+      "sha256": "4e4935b7b0b48a29f130affd3f7bff0a834bc2c6262a64b1e02bf7977eedb878",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "_bars": {
+          "line": 48,
+          "end_line": 70
+        },
+        "_cfg": {
+          "line": 25,
+          "end_line": 45
+        }
+      }
+    },
+    "src/experiments/canonical_native_research_measurements_v1.py": {
+      "path": "src/experiments/canonical_native_research_measurements_v1.py",
+      "sha256": "dbefcd3ce569971bd15dce4a3acccefe8b26852a6adb719bb4c1d1ca0fd5cead",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "measure_native_research_candidate_v1": {
+          "line": 197,
+          "end_line": 381
+        }
+      }
+    },
+    "src/backtest/mv2_research_wiring_v1.py": {
+      "path": "src/backtest/mv2_research_wiring_v1.py",
+      "sha256": "b2df222d48e08c10a88737b1dd3e9a2a5ff4bec5c00849bd80d575c927925f7d",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "run_mv2_research_backtest_wiring_v1": {
+          "line": 2313,
+          "end_line": 3136
+        }
+      }
+    },
+    "src/strategies/ma_crossover.py": {
+      "path": "src/strategies/ma_crossover.py",
+      "sha256": "eedb2570d8c01c8f179942d91da0767650859a96f92ba3ec3f2b5b5561a208ef",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "MACrossoverStrategy": {
+          "line": 20,
+          "end_line": 188
+        }
+      }
+    },
+    "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py": {
+      "path": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py",
+      "sha256": "49a989fd033544aefaed39a0288283603148e3eb611b44bbc08f63d8f153ccac",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "normalize_strategy_signal_to_suitability_agreement_material_v1": {
+          "line": 213,
+          "end_line": 320
+        }
+      }
+    },
+    "src/trading/master_v2/suitability_binding_v1.py": {
+      "path": "src/trading/master_v2/suitability_binding_v1.py",
+      "sha256": "cba6a5ddd05c14da93279cd0727d36cad54cd4c9818253b9d6394965f084a950",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "derive_effective_strategy_side_agreement_v1": {
+          "line": 448,
+          "end_line": 497
+        }
+      }
+    },
+    "src/backtest/stats.py": {
+      "path": "src/backtest/stats.py",
+      "sha256": "db28d27f6ed42d6fae0aa46638c38198be08dba8ba7d40ad84457e63446bc12a",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "compute_sharpe_ratio": {
+          "line": 118,
+          "end_line": 149
+        }
+      }
+    },
+    "src/experiments/canonical_robustness_suite_v1.py": {
+      "path": "src/experiments/canonical_robustness_suite_v1.py",
+      "sha256": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "_oos_gate": {
+          "line": 1301,
+          "end_line": 1333
+        }
+      }
+    },
+    "src/experiments/canonical_meta_learning_v1.py": {
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "sha256": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "_question_repeated_overfit": {
+          "line": 746,
+          "end_line": 780
+        }
+      }
+    },
+    "src/experiments/canonical_advanced_search_v1.py": {
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "_priority_from_signals": {
+          "line": 1226,
+          "end_line": 1258
+        },
+        "_assign_proposal_budget": {
+          "line": 788,
+          "end_line": 798
+        }
+      }
+    },
+    "tests/experiments/test_measured_meta_next_trial_v1.py": {
+      "path": "tests/experiments/test_measured_meta_next_trial_v1.py",
+      "sha256": "27dfaa47d5b54011fea4953685e6649569da39b2c56c3287cf29dd64e6fac0d0",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "test_measured_policy_intervention_changes_next_native_trial_with_unrelated_control": {
+          "line": 24,
+          "end_line": 133
+        }
+      }
+    },
+    "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py": {
+      "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "sha256": "886607ce405fd19f7233fb83d2b68cac524b6cba9d77f763a59838cfe0872b21",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "materialize_real_outcome_horizon_supplier_input_v1": {
+          "line": 199,
+          "end_line": 346
+        }
+      }
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+      "sha256": "94fae7b7516630a99f18f33f253b9301bfeaf46f3d93fe845fe98f6f70359b74",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "build_calibration_evidence_v1": {
+          "line": 78,
+          "end_line": 208
+        }
+      }
+    },
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py": {
+      "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py",
+      "sha256": "1a150c36da85304fa71acd4a35bf823652166efeb7d1230af725fd792f9892ad",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "_consume": {
+          "line": 632,
+          "end_line": 746
+        }
+      }
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+      "sha256": "bcfc10d0aa2aa4aba6f87e053ff0d2bbcf41a54b718af0382031a1c30336618c",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "freeze_existing_intelligence_forecast_v1": {
+          "line": 98,
+          "end_line": 236
+        }
+      }
+    },
+    "tests/learning/test_intelligence_forecast_measurement_integration_v1.py": {
+      "path": "tests/learning/test_intelligence_forecast_measurement_integration_v1.py",
+      "sha256": "7f19c1d647f49acc74301f909a5d642856dc12ae731e96c0af52e95a9ae691a3",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "setup": {
+          "line": 37,
+          "end_line": 111
+        }
+      }
+    },
+    "src/backtest/backtest_engine_position_feedback_adapter_v1.py": {
+      "path": "src/backtest/backtest_engine_position_feedback_adapter_v1.py",
+      "sha256": "86da4cad48278f5e4b46c496a23a17c0a4fefbbc72a2d07df179f6e83ac2907f",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "step_legacy_realistic_bar_v1": {
+          "line": 284,
+          "end_line": 409
+        }
+      }
+    },
+    "src/backtest/engine.py": {
+      "path": "src/backtest/engine.py",
+      "sha256": "2a0afea369ebd168f9d4e34c6d095bd88288cc4bc80f6301a5529a42c57d7440",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {}
+    },
+    "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py": {
+      "path": "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py",
+      "sha256": "b8a3e0b178cc14089718c53e902bb16cfc0a2e5d2f353a6c0993b13132cfdf7c",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "strong_uptrend_closes_v1": {
+          "line": 205,
+          "end_line": 208
+        }
+      }
+    },
+    "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py": {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "sha256": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d",
+      "head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "symbols": {
+        "_derive_next_cycle_economic_score_label_v1": {
+          "line": 126,
+          "end_line": 130
+        }
+      }
+    }
+  },
+  "product_files_changed": 0,
+  "new_engine_or_training_runs": 0,
+  "scope": "Two concrete numeric corridors with retained current-run witnesses and causal consumer probes; not global architecture completeness."
+}

@@ -1,0 +1,139 @@
+{
+  "schema": "self_learning_native_resume_contract_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "date": "2026-11-05",
+  "evidence_class": "STATIC_SOURCE_REVIEW_ONLY",
+  "product_code_changed": false,
+  "product_tests_executed": false,
+  "runtime_authorization_effect": "NONE",
+  "findings": [
+    {
+      "id": "NRC01",
+      "title": "Failure-basierte Suchvermeidung, Archiv-Replay und erneute Ausführung derselben Experimentidentität sind verschiedene Wiederanlauffälle",
+      "source_observed_effect": "Session lädt Failure-/Gap-Stores vor Search; der Searchrequest enthält keinen Bestand erfolgreicher Experiment-Memory-IDs. Falls dieselbe Experimentidentität erneut PROPOSED wird, misst der native Provider vor dem Phase10-Speicheraufruf erneut. Experiment-ID folgt der kanonischen Identität, während der Memory-Datensatz created_at enthält. Der Store akzeptiert identischen Inhalt idempotent und weist abweichenden Inhalt für dieselbe ID ab. Damit kann eine erneute Ausführung derselben Identität mit neuer Zeit erst nach der Messung in einen Memory-Konflikt laufen.",
+      "semantics": "Frühe Vermeidung bekannter Fehler ist kein allgemeiner Vorab-Wiederverwendungsnachweis aller bereits erfolgreichen Experimente. Archiv-Replay liest vorhandene Zahlen ohne neue Messung; ein neuer Versuch benötigt einen eigenen fachlich passenden Identitäts-/Retestvertrag. retest_reason ist kein neuer Bestandteil der Experimentidentität und umgeht keinen unveränderlichen Memory-Eintrag. Identische Zeit allein garantiert ebenfalls keine Idempotenz, wenn weitere Payloadfelder abweichen.",
+      "limit": "Bedingte statische Funktionskette: vorausgesetzt derselbe Kandidat wird erneut vorgeschlagen und erreicht den Store. Kein erneuter Lauf oder Storezugriff ausgeführt und kein beobachteter Konflikt. Schutz vor divergentem Überschreiben bleibt erwünscht. Existierender Resume-Test verwendet eine explizit geänderte Seed-Identität; damit wird dieser bedingte Gleichidentitätsfall nicht durch genau diesen Test abgedeckt. Keine pauschale Aussage über alle anderen Tests.",
+      "source_bindings": [
+        {
+          "path": "src/experiments/canonical_native_research_session_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "7c952bd685cea83d5e685e7fed04c1d88a4c4da6924ac3cf7e676b977b93ba0b",
+          "line_start": 283,
+          "line_end": 374,
+          "snippet_sha256": "d2bd5e771f8568a8a5242d5953af21d7d9d364c7c974b9a8009057714fe7e5e7"
+        },
+        {
+          "path": "src/experiments/canonical_advanced_search_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840",
+          "line_start": 284,
+          "line_end": 307,
+          "snippet_sha256": "4d96ef803599088f151cee90fb96fae35f709541a824671541fdaeac812f938e"
+        },
+        {
+          "path": "src/experiments/canonical_advanced_search_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840",
+          "line_start": 801,
+          "line_end": 827,
+          "snippet_sha256": "5c49f28c37bf30bbda0f94feee6ccd8117a4a7cc654bdded0933d754b30330ca"
+        },
+        {
+          "path": "src/experiments/canonical_native_research_measurements_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "19ebfcb6bb5e8347e053606faf45300f8f4673e77188f369939020e366a0907a",
+          "line_start": 407,
+          "line_end": 529,
+          "snippet_sha256": "3e6db068c922adea21cd36db5aca5c18eb78caa756aa0f98d1e0c3d29778b1fe"
+        },
+        {
+          "path": "src/experiments/canonical_search_candidate_research_execution_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "a124840cd2a97de2318f478ea205775862d10b731c48f4dfbe9e69ff0f5584be",
+          "line_start": 87,
+          "line_end": 166,
+          "snippet_sha256": "d4f94d10ba411b32c82b1f8a83af30bb49f5d4f12e456c24100c8952e04641fa"
+        },
+        {
+          "path": "src/experiments/canonical_experiment_memory_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c9e938747965d22e9886132656dab1b8aaa2e16f7805848e2d9644237627f7cf",
+          "line_start": 181,
+          "line_end": 259,
+          "snippet_sha256": "a2c72b85f51d44bb464b496814296e998314dd3b69ed0aac702c3a2a6b4b5867"
+        },
+        {
+          "path": "src/experiments/canonical_experiment_memory_store_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "459f73dc2d975d6cd3c5e446d0fcaf89f2dd2487db100fda42afffe28ae9fd99",
+          "line_start": 49,
+          "line_end": 83,
+          "snippet_sha256": "9b370309b9c7b9104f7261b65c13c8636ed2c4db156cafdd01ae610d52879ff6"
+        },
+        {
+          "path": "tests/experiments/test_canonical_native_research_session_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fb7838e877c1cc17f9008392795230319017060d3feffe96fb49d719da1b0569",
+          "line_start": 163,
+          "line_end": 191,
+          "snippet_sha256": "3ec5ed91ce5557936e8a01ae8b6085b6ba3737a8b75c2ff05b2eb14eebb30829"
+        },
+        {
+          "path": "src/experiments/canonical_native_research_session_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "7c952bd685cea83d5e685e7fed04c1d88a4c4da6924ac3cf7e676b977b93ba0b",
+          "line_start": 222,
+          "line_end": 258,
+          "snippet_sha256": "9b9f96b37b78ac1d62a7fc0dac575d03e9e1c1e576560596bcfe479f0dba58db"
+        },
+        {
+          "path": "tests/experiments/test_canonical_native_research_session_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fb7838e877c1cc17f9008392795230319017060d3feffe96fb49d719da1b0569",
+          "line_start": 226,
+          "line_end": 262,
+          "snippet_sha256": "bc01940c9de3a236ec72314a81b11e5fb18b5292a4b0b66696d77be23eab3d00"
+        }
+      ],
+      "evidence_class": "BOUNDED_PINNED_SOURCE_REVIEW_NOT_OBSERVED_RUNTIME",
+      "product_change": false
+    }
+  ],
+  "existing_context": {
+    "path": "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md",
+    "sha256": "518581a250008f23a9e7e54d5175449b71b19cdfd0b77ef86655102593440ff4",
+    "observation": "Spätes Scheitern des Archivs bei bereits bestehenden Ownerrecords ist dort ausdrücklich als Grenze dokumentiert; hier kein neu entdeckter Verlustfall."
+  },
+  "future_acceptance_criteria": [
+    {
+      "id": "NRC-T01",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Vorhandenes identisches Archivpaket lesend wiederverwenden: keine erneute Engine-Messung als vermeintliches Replay."
+    },
+    {
+      "id": "NRC-T02",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Gleiche Experimentidentität mit neuer Ausführungszeit und ohne blockierenden Failure-Kontext: gewünschtes Wiederverwendungs-/Ablehnungsverhalten vor der Messung festlegen und am Sessionconsumer prüfen."
+    },
+    {
+      "id": "NRC-T03",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Expliziter retest_reason umgeht weder kanonische Experimentidentität noch den Schutz gegen divergente Memory-Payloads."
+    },
+    {
+      "id": "NRC-T04",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Fachlich neue Seed-/Dataset-/Parameter-/Lineage-Identität getrennt behandeln; keine bloße ID-Änderung zur Umgehung einer Duplikatsperre erfinden."
+    },
+    {
+      "id": "NRC-T05",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Abbruch zwischen Owner-Persistenz und Archivierung: bestehende Originalrecords erhalten und den unvollständig archivierten Schritt ausdrücklich klassifizieren; keinen erfolgreichen Sessionabschluss behaupten."
+    },
+    {
+      "id": "NRC-T06",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Keine vorgeschlagene neue Kandidatenregion: NO_PROPOSED_CANDIDATE ohne erzwungene Wiederholungsmessung erhalten."
+    }
+  ]
+}

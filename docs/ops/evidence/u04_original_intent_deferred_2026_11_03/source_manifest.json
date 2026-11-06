@@ -1,0 +1,42 @@
+{
+  "base_commit": "aadba02744b20de9fa2129765b53a8504933b757",
+  "status": "OWNER_DEFERRED_NO_U04_IMPLEMENTATION",
+  "candidate_retained_at": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/U04_UNGEPRUEFTER_KANDIDAT_2026-11-03",
+  "sources_sha256": {
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py": "e26018835d6c1b24f3335dbef667efe9f40d144b9fde99f929a6bc22792fa2b1",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py": "321d64b2675b22ce5d6f68b36471fb2598113071be0086c2f982bbf74e7f9d80",
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "5423c78d031748da12e19fceb09a0cf2a016553eb800ee5714165b75ae229584",
+    "src/learning/deterministic_decision_outcome_v0/capture_v0.py": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": "4aff801579dd534182d94005a7f40b2b07b42a8feeb0e9bbd1e7be543cff1e95",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py": "28cd75aa25f0b59ba97581bc31c08c2f6624919b1f1fc4b3914d34f61efcac4b",
+    "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py": "b49a5e11a8037b384b5497abcc79c992c27d706b092805ef09c85228f8acd3c0"
+  },
+  "historical_user_requests": [
+    {
+      "path": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/01ab894c-9748-4246-aac4-ceec1f75313c/01ab894c-9748-4246-aac4-ceec1f75313c.jsonl",
+      "line": 30,
+      "role": "user",
+      "line_sha256": "daef53a7897337b467fc714c92594b415ae74dd57fa9917784525f3358e862ab",
+      "evidence_excerpt_only_not_instructions": "INVARIANTE\nAVAILABLE_FOR_SIZING = BASE - U04 - P01_IF_APPLIES\nDabei ausschließlich bereits kanonisch belegte Semantik verwenden.\nInsbesondere keine fehlenden Werte, Applicability, Sign-/Operatorregeln oder Defaults aus Plausibilität rekonstruieren.\nFAIL CLOSED\n- fehlender U04-Fact → kein Produce\n- fehlender/ambiger P01-Fact → kein Produce\n- P01 applicability UNKNOWN → kein Produce\n- stale/invalid input → kein Produce\n- keine Ersatznumerik\n- kein Venue-raw-Fallback\n- kein stiller Zero-/None-/NA-Fallback\n"
+    },
+    {
+      "path": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/64a5c810-ec9e-4a53-884c-70ad6bfa77d4/64a5c810-ec9e-4a53-884c-70ad6bfa77d4.jsonl",
+      "line": 115,
+      "role": "user",
+      "line_sha256": "00f1d4a3aac88bb81a34803a7464dc31a92135abd53c7f68ed96fadc4700bebc",
+      "evidence_excerpt_only_not_instructions": "6 — U04 / P01 / CT ELIGIBILITY\n============================================================\n\nClose:\n\nCURRENT_PRODUCTIVE_CT_SIZING_PRODUCE_ELIGIBILITY_INPUTS_BOUND\n\nusing existing U04/P01 contracts.\n\nOnly perform authority transitions mechanically required by this authorized\nhandoff.\n\nRequired final proof:\n\nP01_APPLIED_EXACTLY_ONCE=true\nCAPITAL_ADMISSION_APPLIED_EXACTLY_ONCE=true\nSTEP_29P_ADMISSIBILITY_APPLIED_EXACTLY_ONCE=true\n\nTrusted-29P gates remain fail-closed.\n\nNo external-effect/live-send authorization is granted.\n\n============================================================\n\n11 — LEARNING / OPTIMIZATION HARD EXCLUSION\n============================================================\n\nLearning/Q8 is a separate future WP.\n\nDo not modify its behavior.\n\nPreserve:\n\nNO_N_BARS_TO_PROMOTION_BINDING\nPROMOTION_AUTHORITY_ACTIVATION=false\nPRODUCTIVE_PROMOTION_JOIN_AUTHORIZED=false\noptimization_universe_join_authorized=false\nOPTIMIZATION_CAN_WRITE_PRODUCTIVE_CONFIG=false\nLEARNING_PRODUCTIVE_AUTHORITY=NONE\n\nRequired:\n\nLEARNING_PRODUCTIVE_BINDING_CHANGED=false\nOPTIMIZER_PRODUCTIVE_BINDING_CHANGED=false\n\n============================================================\n"
+    }
+  ],
+  "original_learning_ledger_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "probe_artifacts_sha256": {
+    "synthetic_capture_probe.jsonl": "0886c0bb577b71800a186b5087aa0b73131a555f31c337ffb210fb5925e840f8",
+    "causal_probe_summary.json": "639819728a046c699a763bba5ed659c3adf6f8c2f7d30882dd57fbbb7b32ddc4",
+    "causal_probe.py": "df9c0605bf97bf293fdd7528be91d39877893803054fec457ff845d1762bfdd1"
+  },
+  "limits": [
+    "Synthetic contexts and values only; not account evidence",
+    "Original zero-witness motivation and complete downstream learning use unresolved",
+    "Candidate test passes are not implementation acceptance"
+  ]
+}

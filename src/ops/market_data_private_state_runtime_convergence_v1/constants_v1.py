@@ -1,0 +1,35 @@
+"""MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1 — WP-C closure (no new authority)."""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1"
+PACKAGE_MARKER = "MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1=true"
+SCHEMA_VERSION = "market_data_private_state_runtime_convergence.v1"
+OWNER = "ops.market_data_private_state_runtime_convergence_v1"
+
+POLICY_CONFIG_RELATIVE = (
+    "config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json"
+)
+
+WP_A_OWNER = "ops.peak_trade_public_market_data_runtime_v1"
+WP_B_OWNER = "ops.okx_eea_private_account_state_runtime_v1"
+
+PUBLIC_MARKET_DATA_SELECTION_AUTHORITY = "NONE"
+PRIVATE_STATE_STRATEGY_AUTHORITY = "NONE"
+
+CAP_2_3_SELECTION_OWNER = "ops.single_selected_future_policy_v1"
+CAP_2_3_SELECTION_OWNER_STATUS = "UNCHANGED"
+MV2_DP_AUTHORITY_STATUS = "UNCHANGED"
+PRETRADE_AUTHORITY_STATUS = "UNCHANGED"
+EXECUTION_AUTHORITY_STATUS = "UNCHANGED"
+WIRE_BOUNDARY_STATUS = "UNCHANGED"
+
+ACCOUNT_EQUITY_SIZING_AUTHORITY_NOT_ACQUIRED_BY_WP_C = True
+
+K2_STATUS = "ABSENT"
+
+PRIVATE_WS_ORDER_SEND_AUTHORIZED = False
+REST_POST_PERMIT_CHANGE = False
+LIVE_EXTERNAL_EFFECT_AUTHORIZED = False
+MULTI_FUTURE_RUNTIME_AUTHORIZED = False
+MAX_POSITIONS_EFFECTIVE = 1

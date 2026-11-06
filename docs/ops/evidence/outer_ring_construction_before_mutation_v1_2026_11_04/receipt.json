@@ -1,0 +1,36 @@
+{
+  "source_commit": "b32648481b493e703b4b2ae283f541e3a74b1614",
+  "source_paths_sha256": {
+    "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py": "3fea28d9fb3ba72514121edcd7a65409066bcfce591c950fdb30704d3d3812f2",
+    "src/experiments/canonical_optimization_universe_experiment_plane_v1.py": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e",
+    "src/experiments/canonical_optimization_experiment_evidence_v1.py": "f0cd43a0e3c83f81096de0c75ff1dde20061a2a7e5845545bd1a58a60fc7b301",
+    "src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py": "6d003847797858ecae8a510ef0c6a4a617519706babe34d4c82c15048f76ad61",
+    "docs/ops/specs/OPTIMIZATION_META_M8_DETERMINISTIC_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md": "2a5b99f8082a00529a8afd4da55b5d0277334039bcfed5d32039ba205b3e5748",
+    "config/governance/optimization_meta_m8_offline_replay_v1_decision_v1.json": "1e6955a5ba5b678e461ceea677294cbd23fdd3f76d1bb2373b48d0ed2fdea66b"
+  },
+  "tests": "No new test claim. Candidate behavior probes preserved separately; runtime source restored exactly to HEAD.",
+  "ruff_status": "NOT_APPLICABLE_NO_CHANGED_PYTHON",
+  "boundaries": [
+    "Whole construction and individual earlier changes not yet fully intent-audited",
+    "Distinct M8/M4 port identity contract unresolved; no new equality assumption",
+    "Historical bounded replay is not later full adaptive-loop proof; broad outer ring not fixed layer count"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/outer_ring_construction_before_mutation_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 198,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_NO_CHANGED_PYTHON",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "lb_rec_001_phase1_v1",
+  "id": "netted_flat_empty_external",
+  "notes": "LB-REC-001 Phase 5: BUY then SELL same symbol to net flat; ledger keeps BTC/EUR row at qty 0; external omits symbol (empty positions map). Expect zero diffs — exercises flat row vs missing external key, no production baseline claim.",
+  "as_of_time": "2026-04-08T12:00:00+00:00",
+  "internal": {
+    "initial_cash": "200000.00",
+    "fills": [
+      {
+        "fill_id": "lbrec_fill_p5_nf_a",
+        "client_order_id": "lbrec_co_p5_nf_a",
+        "exchange_order_id": "lbrec_ex_p5_nf_a",
+        "symbol": "BTC/EUR",
+        "side": "BUY",
+        "quantity": "1.0",
+        "price": "50000.00",
+        "fee": "5.00"
+      },
+      {
+        "fill_id": "lbrec_fill_p5_nf_b",
+        "client_order_id": "lbrec_co_p5_nf_b",
+        "exchange_order_id": "lbrec_ex_p5_nf_b",
+        "symbol": "BTC/EUR",
+        "side": "SELL",
+        "quantity": "1.0",
+        "price": "50100.00",
+        "fee": "3.00"
+      }
+    ]
+  },
+  "external": {
+    "positions": {},
+    "cash_balance": { "mode": "match_internal" }
+  },
+  "expect": {
+    "diff_count": 0,
+    "min_fail": 0
+  }
+}

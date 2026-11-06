@@ -1,0 +1,40 @@
+# FIX_MV2_RESEARCH_SCOPE_DISTANCES_INSTRUMENT_RELATIVE_V1
+
+git fetch origin
+git checkout main
+git pull --ff-only origin main
+test "$(git rev-parse HEAD)" = "a55c4000f33269a98107fd1294b1c9ba82433cad"
+git checkout -b fix/mv2-research-scope-distances-instrument-relative-v1
+
+# implement + tests
+# ruff
+/Users/frnkhrz/.pyenv/versions/3.11.14/bin/python -m ruff format \
+  src/backtest/mv2_research_wiring_v1.py \
+  tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py \
+  docs/evidence/mv2_research_scope_distances_instrument_relative_v1/e2e_probe_v1.py
+/Users/frnkhrz/.pyenv/versions/3.11.14/bin/python -m ruff check \
+  src/backtest/mv2_research_wiring_v1.py \
+  tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py \
+  docs/evidence/mv2_research_scope_distances_instrument_relative_v1/e2e_probe_v1.py
+
+# tests (9 new + 70 prior domain)
+PYTHONPATH=src:. /Users/frnkhrz/.pyenv/versions/3.11.14/bin/python -m pytest \
+  tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py \
+  tests/backtest/test_canonical_chain_zero_trade_blocker_v1.py \
+  tests/backtest/test_mv2_composition_directional_asymmetry_wiring_repair_v1.py \
+  tests/backtest/test_obl_b07_bollinger_event_only_semantic_contract_v1.py \
+  tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py \
+  tests/trading/master_v2/test_double_play_composition_matrix_v1.py \
+  -q --tb=line
+
+git diff --check
+
+# e2e archive probe
+PYTHONPATH=src:. /Users/frnkhrz/.pyenv/versions/3.11.14/bin/python \
+  docs/evidence/mv2_research_scope_distances_instrument_relative_v1/e2e_probe_v1.py
+
+# selector
+python scripts/ops/ci_test_selection_v1.py --files \
+  src/backtest/mv2_research_wiring_v1.py \
+  tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py \
+  docs/evidence/mv2_research_scope_distances_instrument_relative_v1/README.md

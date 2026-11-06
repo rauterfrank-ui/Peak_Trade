@@ -1,0 +1,17 @@
+{
+  "schema_version": "acquire_and_seal_okx_independent_dev_panel_quality.v1",
+  "gaps_found": 0,
+  "duplicates_found": 0,
+  "ordering_errors": 0,
+  "lifecycle_clipping_valid": true,
+  "full_series_gap_audit": true,
+  "total_bars": 486956,
+  "total_pages": 4876,
+  "requests_used_seal": 1566,
+  "requests_used_acquire": 4876,
+  "public_endpoints_only": true,
+  "credentials_used": false,
+  "forward_fill_used": false,
+  "interpolation_used": false,
+  "economic_metrics_computed": false
+}

@@ -1,0 +1,125 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_16_CMC_NON_PRICE_CENSUS_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_16_CMC_NON_PRICE_CENSUS_V1",
+  "authorized_baseline_sha": "b9237c675f415f1c0b050b194d8f14ea26c4eebc",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_16_CMC_NON_PRICE_CENSUS_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.py",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_16_cmc_census_status": "PROVEN_COMPLETE",
+  "cmc_census_closure_status": "CLOSED",
+  "earliest_blocker_before_phase_17": "NORMATIVE_NON_PRICE_CMC_CONTRACT_OWNER_DECISION",
+  "blocker_status_at_census_close": "OWNER_DECISION_REQUIRED",
+  "authority_invariants": {
+    "canonical_market_facts_remain_ssot": true,
+    "cmc_does_not_create_second_market_truth": true,
+    "mv2_canonical_market_context_is_trading_input_not_mi_compositional_owner": true,
+    "mi_market_context_v1_not_started_on_main_at_census": true,
+    "n_bars_backbone_unchanged": true,
+    "cross_market_context_only_required": true,
+    "microstructure_proxy_l2_must_not_collapse": true,
+    "unknown_mixed_ownership_fail_closed": true,
+    "ws_transport_redesign_forbidden": true,
+    "mv2_dp_sole_trading_decision_authority": true
+  },
+  "census_rows": [
+    {
+      "row_id": "cmc_trading_runtime_canonical_market_context_v1",
+      "surface_class": "TRADING_CMC_INPUT",
+      "producer_owner": "trading.master_v2.canonical_market_context_v1",
+      "mi_non_price_compositional_owner": false,
+      "trading_decision_authority": false,
+      "selection_authority": false,
+      "evidence_refs": [
+        "src/trading/master_v2/canonical_market_context_v1.py",
+        "tests/trading/master_v2/test_canonical_market_context_v1.py",
+        "tests/trading/test_s01_cmc_identity_trust_fail_closed_conformance_v1.py"
+      ]
+    },
+    {
+      "row_id": "cmc_feature_contract_layer_pointer",
+      "surface_class": "FEATURE_CONTRACT_POINTER",
+      "producer_owner": "features.canonical_feature_data_contract_layer_v1",
+      "mi_non_price_compositional_owner": false,
+      "trading_decision_authority": false,
+      "evidence_refs": [
+        "config/governance/canonical_feature_data_contract_layer_v1.json",
+        "src/features/canonical_feature_data_contract_layer_v1/catalog_v1.py",
+        "tests/features/test_canonical_feature_data_contract_layer_v1.py"
+      ]
+    },
+    {
+      "row_id": "i25_typed_volatility_estimate",
+      "surface_class": "JUSTIFIED_PRODUCER",
+      "producer_owner": "trading.master_v2.canonical_volatility_estimate_feature_contract_v1",
+      "mi_non_price_compositional_owner": false,
+      "regime_classifier_authority": false,
+      "evidence_refs": [
+        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py",
+        "tests/trading/master_v2/test_canonical_volatility_productive_runtime_cmc_typed_binding_v1.py"
+      ]
+    },
+    {
+      "row_id": "wp_a_public_market_facts",
+      "surface_class": "CANONICAL_MARKET_FACTS_SSOT",
+      "producer_owner": "ops.peak_trade_public_market_data_runtime_v1",
+      "mi_non_price_compositional_owner": false,
+      "second_market_truth": false,
+      "evidence_refs": [
+        "docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md",
+        "tests/ops/test_peak_trade_public_market_data_runtime_v1.py"
+      ]
+    },
+    {
+      "row_id": "i04_sentiment_news_onchain",
+      "surface_class": "RESEARCH_FEEDER_UNWIRED",
+      "producer_owner": "unwired",
+      "producer_ownership": "UNKNOWN",
+      "mi_non_price_compositional_owner": false,
+      "fail_closed_without_owner": true,
+      "evidence_refs": [
+        "src/features/canonical_feature_data_contract_layer_v1/catalog_v1.py"
+      ]
+    },
+    {
+      "row_id": "i05_orderbook_tick",
+      "surface_class": "RESEARCH_FEEDER_UNWIRED",
+      "producer_owner": "unwired",
+      "producer_ownership": "UNKNOWN",
+      "mi_non_price_compositional_owner": false,
+      "fail_closed_without_owner": true,
+      "evidence_refs": [
+        "src/features/canonical_feature_data_contract_layer_v1/catalog_v1.py"
+      ]
+    },
+    {
+      "row_id": "microstructure_proxy_vs_l2_separation",
+      "surface_class": "GOVERNED_SCOPE_SEPARATION",
+      "producer_owner": "research.bouchaud_microstructure_ohlcv_proxy_v1",
+      "proxy_semantics": true,
+      "true_tick_l2_microstructure": false,
+      "evidence_refs": [
+        "config/research/bouchaud_microstructure_ohlcv_proxy_v1_scope_separation_contract_v0.json"
+      ]
+    },
+    {
+      "row_id": "mi_forecast_information_set_ref",
+      "surface_class": "MI_LEARNING_INFORMATION_PATH",
+      "producer_owner": "learning.market_intelligence_forecast_calibration_offline_stack_v1",
+      "mi_non_price_compositional_owner": false,
+      "market_context_v1_owner_at_census": "NOT_IMPLEMENTED",
+      "evidence_refs": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py"
+      ]
+    }
+  ],
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_16_CMC_NON_PRICE_CENSUS_NORMATIVE_V1.md",
+    "config/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.json",
+    "src/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.py",
+    "tests/governance/test_unified_blueprint_phase_16_cmc_non_price_census_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "NORMATIVE_NON_PRICE_CMC_CONTRACT_OWNER_DECISION then Unified Blueprint Phase 17 MARKET_CONTEXT_V1 contract implementation",
+  "next_implementation_boundary": "Owner decision ratification + Phase 17 bounded MARKET_CONTEXT_V1 contract under MI/Learning path only"
+}

@@ -1,0 +1,9 @@
+# Object Storage (S3-compatible) — exporter write credentials (DO NOT COMMIT REAL VALUES)
+# Store on Data Node as /etc/peaktrade/exporter.env (chmod 600)
+
+PT_S3_ENDPOINT=
+PT_S3_BUCKET=
+PT_S3_PREFIX=exports/policy_telemetry_real
+PT_S3_ACCESS_KEY_ID=
+PT_S3_SECRET_ACCESS_KEY=
+PT_S3_REGION=

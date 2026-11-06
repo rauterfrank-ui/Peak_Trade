@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "required_contexts": [
+    "test-check"
+  ],
+  "ignored_contexts": [],
+  "notes": "Test config for good case"
+}

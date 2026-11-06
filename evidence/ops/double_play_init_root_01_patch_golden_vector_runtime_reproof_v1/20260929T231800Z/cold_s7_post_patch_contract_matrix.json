@@ -1,0 +1,50 @@
+[
+  {
+    "seq": 1,
+    "init_contract_id": "INIT_OBS_BUILDER_LIVE",
+    "layer": "BOOTSTRAP",
+    "classification": "CURRENT_EQUIVALENT",
+    "live_value": "finalized_closes 1m grid via _layered_core_initialization_observations_v1",
+    "forensic_success_value": "finalized_closes grid (historical 23dccab)",
+    "productive_reachable": true,
+    "root_cause": false,
+    "source_evidence": "productive_cycle_bind_seam_v1.py INIT_ROOT_01 patch"
+  },
+  {
+    "seq": 2,
+    "init_contract_id": "INIT_L3_DIRECTION_GATE",
+    "layer": "LAYERED_INIT",
+    "classification": "CURRENT_EQUIVALENT",
+    "live_value": "BULL/BEAR when close grid directional; NEUTRAL otherwise",
+    "required_semantics": "no forced direction",
+    "productive_reachable": true,
+    "root_cause": false
+  },
+  {
+    "seq": 3,
+    "init_contract_id": "CMC_MECHANICAL_M_T",
+    "layer": "CMC_BINDING",
+    "classification": "PRESERVED",
+    "live_value": "mark_price_m_t unchanged for mechanical step / provenance",
+    "productive_reachable": true,
+    "root_cause": false
+  },
+  {
+    "seq": 4,
+    "init_contract_id": "BOOTSTRAP_MARK_PAYLOAD",
+    "layer": "EXTERNAL_INPUT",
+    "classification": "ROOT_WIRING_01_EQUIVALENT",
+    "live_value": "real public mark GET in LiveFreshC1.poll",
+    "productive_reachable": true,
+    "root_cause": false
+  },
+  {
+    "seq": 5,
+    "init_contract_id": "COLD_S7_COMPOSE",
+    "layer": "S7",
+    "classification": "CURRENT_EQUIVALENT",
+    "live_value": "bootstrap_s8 + episode restore OK (test + runtime)",
+    "productive_reachable": true,
+    "root_cause": false
+  }
+]

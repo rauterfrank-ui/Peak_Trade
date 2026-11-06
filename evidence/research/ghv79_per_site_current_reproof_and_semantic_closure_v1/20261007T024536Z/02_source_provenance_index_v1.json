@@ -1,0 +1,21 @@
+{
+  "CURRENT_AUTHORITY_SHA": "620cd9da6f925fc29c69be3311e0c3288ab674a4",
+  "DOSSIER_TS": "20261007T024536Z",
+  "GHV79_SEED_DIR": "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1",
+  "GHV_AUTHORITY": "NONE",
+  "GHV_ROLE": "REFERENCE_ONLY",
+  "HEAD_SHA": "9b9b4968db50842d01bef78bda1b758b29022342",
+  "HISTORICAL_R4_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+  "INPUTS": [
+    "05_global_node_registry_v1.json",
+    "06_global_edge_registry_v1.json",
+    "10_global_authority_matrix_v1.json",
+    "22_unknown_and_gap_registry_v1.json",
+    "25_master_metrics_dashboard_v1.json",
+    "29_integration_fixpoint_v1.json",
+    "61_ghv79_site_inventory_v1.json",
+    "62_ghv79_placement_registry_v1.jsonl"
+  ],
+  "INTEGRATED_DOSSIER": "evidence/research/current_proven_system_evidence_integration_and_transitive_closure_dossier_v1/20261007T021703Z",
+  "WORK_PACKAGE": "GHV79_PER_SITE_CURRENT_REPROOF_AND_SEMANTIC_CLOSURE_V1"
+}

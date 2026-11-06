@@ -1,0 +1,28 @@
+import json
+from dataclasses import asdict
+from src.evaluation.golden_vectors.runner.generic_runner_v1 import GenericRunnerV1,GvefRunRequestV1,evidence_complete
+from src.evaluation.golden_vectors.integration.whole_system_v1 import whole_system_runner_v1
+from src.evaluation.golden_vectors.evaluators.productive_trading_path_v1 import ProductiveTradingPathEvaluatorV1
+from src.evaluation.golden_vectors.evaluators.ranking_universe_v1 import RankingUniverseEvaluatorV1
+from src.evaluation.golden_vectors.evaluators.optimization_universe_v1 import OptimizationUniverseEvaluatorV1
+from src.evaluation.golden_vectors.evaluators.self_learning_v1 import SelfLearningEvaluatorV1
+from src.evaluation.golden_vectors.evaluators.market_intelligence_v1 import MarketIntelligenceEvaluatorV1
+from tests.evaluation.golden_vectors.evaluator_fixtures_v1 import ptp_context,ru_context,opt_context,sl_context,mi_context
+from tests.evaluation.golden_vectors.test_gvef_domain_evaluators_bwp3_v1 import _runner_deps
+from src.evaluation.golden_vectors.contracts.validation import parse_domain_evaluation_context_v1
+from src.evaluation.golden_vectors.runner.states import RunnerState
+from pathlib import Path
+out=[]
+for factory,cls in [(ptp_context,ProductiveTradingPathEvaluatorV1),(ru_context,RankingUniverseEvaluatorV1),(opt_context,OptimizationUniverseEvaluatorV1),(sl_context,SelfLearningEvaluatorV1),(mi_context,MarketIntelligenceEvaluatorV1)]:
+ ctx=factory();record=GenericRunnerV1().execute(GvefRunRequestV1(ctx),_runner_deps(cls()))
+ assert record.state is RunnerState.REGISTERED and evidence_complete(record)
+ assert record.promotion_envelope is None
+ out.append({'evaluator':cls.__name__,'input_source':'EXISTING_SYNTHETIC_FIXTURE_TRACE','state':record.state.value,'state_history':[x.value for x in record.state_history],'evidence_complete':evidence_complete(record),'baseline':record.baseline_result.model_dump(mode='json'),'candidate':record.candidate_result.model_dump(mode='json'),'evidence_bundle':record.evidence_bundle.model_dump(mode='json'),'promotion_envelope':None})
+ctx=ru_context().model_dump(mode='json');ctx['replay_trace']['entries'][0]['claims_cap23_ownership']=True
+negative=whole_system_runner_v1().execute(GvefRunRequestV1(parse_domain_evaluation_context_v1(ctx)),_runner_deps(RankingUniverseEvaluatorV1()))
+assert negative.state is RunnerState.FAILED
+assert negative.failure_classification.value=='AUTHORITY_FAILURE'
+assert negative.fan_out_evaluation_class.value=='WHOLE_SYSTEM_REPROOF'
+summary={'source':'Actual existing GenericRunner/evaluator calls with deterministic test doubles for replay/gates/comparator/delta/evidence builder and in-memory registry; not actual productive owners or market observations','domains':out,'integrated_ranking_authority_negative':{'failure':negative.failure_classification.value,'fan_out':negative.fan_out_evaluation_class.value,'registry_ref':negative.registry_ref},'scope_algorithm_called_by_this_probe':False,'automatic_multi_domain_composition_proven':False,'evidence_registration_is_productive_promotion':False}
+Path('/tmp/peaktrade_gvef_relationship_probe.json').write_text(json.dumps(summary,indent=2,sort_keys=True)+'\n')
+print(json.dumps({'domains':len(out),'registered':[x['evaluator'] for x in out],'authority_failure_fanout':negative.fan_out_evaluation_class.value}))

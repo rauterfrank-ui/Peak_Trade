@@ -1,0 +1,243 @@
+# Portfolio Recipes & Presets
+# ============================
+#
+# Vordefinierte Portfolio-Konfigurationen für Research-CLI.
+# Diese Rezepte können per --portfolio-preset geladen werden.
+#
+# Verwendung:
+#   python scripts/research_cli.py portfolio \
+#     --config config/config.toml \
+#     --portfolio-preset rsi_reversion_balanced
+
+[portfolio_recipes.rsi_reversion_balanced]
+id = "rsi_reversion_balanced"
+portfolio_name = "RSI Reversion Balanced v1"
+description = "3x RSI-Reversion Top-Konfigurationen mit moderaten Gewichten."
+
+sweep_name = "rsi_reversion_basic"
+top_n = 3
+weights = [0.4, 0.3, 0.3]
+
+run_montecarlo = true
+mc_num_runs = 1000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.2
+
+format = "both"
+risk_profile = "moderate"
+tags = ["rsi", "reversion", "balanced"]
+
+# ============================================================================
+# PHASE 53: STRATEGY & PORTFOLIO LIBRARY PUSH
+# ============================================================================
+# Neue Portfolio-Recipes mit direkten Strategienamen und expliziten
+# Risk-Profilen (conservative, moderate, aggressive).
+# ============================================================================
+
+# --- RSI Reversion Portfolios ---
+
+[portfolio_recipes.rsi_reversion_conservative]
+id = "rsi_reversion_conservative"
+portfolio_name = "RSI Reversion Conservative"
+description = "Konservatives RSI-Reversion-Portfolio auf BTC und ETH (1h, längere Lookbacks, breitere Stops)"
+
+strategies = [
+  "rsi_reversion_btc_conservative",
+  "rsi_reversion_eth_conservative",
+]
+weights = [0.6, 0.4]
+
+run_montecarlo = true
+mc_num_runs = 2000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.2
+
+format = "both"
+risk_profile = "conservative"
+tags = ["rsi", "reversion", "conservative", "btc", "eth"]
+
+[portfolio_recipes.rsi_reversion_moderate]
+id = "rsi_reversion_moderate"
+portfolio_name = "RSI Reversion Moderate"
+description = "Balanciertes RSI-Reversion-Portfolio BTC/ETH (1h, balanced Parameter)"
+
+strategies = [
+  "rsi_reversion_btc_moderate",
+  "rsi_reversion_eth_moderate",
+]
+weights = [0.5, 0.5]
+
+run_montecarlo = true
+mc_num_runs = 2000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.25
+
+format = "both"
+risk_profile = "moderate"
+tags = ["rsi", "reversion", "moderate", "btc", "eth"]
+
+[portfolio_recipes.rsi_reversion_aggressive]
+id = "rsi_reversion_aggressive"
+portfolio_name = "RSI Reversion Aggressive"
+description = "Aggressives RSI-Reversion-Portfolio BTC/ETH (15m, höhere Trade-Frequenz)"
+
+strategies = [
+  "rsi_reversion_btc_aggressive",
+  "rsi_reversion_eth_aggressive",
+]
+weights = [0.5, 0.5]
+
+run_montecarlo = true
+mc_num_runs = 3000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.3
+
+format = "both"
+risk_profile = "aggressive"
+tags = ["rsi", "reversion", "aggressive", "btc", "eth"]
+
+# --- Multi-Style Portfolios ---
+
+[portfolio_recipes.multi_style_moderate]
+id = "multi_style_moderate"
+portfolio_name = "Multi-Style Moderate"
+description = "Mixed-Style BTC/ETH Portfolio (Trend + Mean-Reversion, moderate Risk-Profil)"
+
+strategies = [
+  "rsi_reversion_btc_moderate",
+  "rsi_reversion_eth_moderate",
+  "ma_trend_btc_moderate",
+  "trend_following_eth_moderate",
+]
+weights = [0.25, 0.25, 0.25, 0.25]
+
+run_montecarlo = true
+mc_num_runs = 3000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.25
+
+format = "both"
+risk_profile = "moderate"
+tags = ["multi-style", "trend", "reversion", "moderate", "btc", "eth"]
+
+[portfolio_recipes.multi_style_aggressive]
+id = "multi_style_aggressive"
+portfolio_name = "Multi-Style Aggressive"
+description = "Aggressives Multi-Style BTC/ETH Portfolio (Trend + Mean-Reversion, aggressive Varianten)"
+
+strategies = [
+  "rsi_reversion_btc_aggressive",
+  "rsi_reversion_eth_aggressive",
+  "ma_trend_btc_aggressive",
+  "trend_following_eth_aggressive",
+]
+weights = [0.25, 0.25, 0.25, 0.25]
+
+run_montecarlo = true
+mc_num_runs = 5000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.35
+
+format = "both"
+risk_profile = "aggressive"
+tags = ["multi-style", "trend", "reversion", "aggressive", "btc", "eth"]
+
+# ============================================================================
+# PHASE 75: v1.1 CURATED PORTFOLIO PRESETS
+# ============================================================================
+# Offizielle v1.1 Portfolio-Presets mit kuratierten Strategien.
+# Verwenden NUR v1.1-offizielle Strategien aus src/strategies/.
+# ============================================================================
+
+# --- v1.1 Conservative Portfolio ---
+
+[portfolio_recipes.conservative_v11]
+id = "conservative_v11"
+portfolio_name = "Conservative Portfolio v1.1"
+description = "Konservatives v1.1 Portfolio mit Fokus auf Stabilitaet und niedriger Volatilitaet. Nutzt bewaehrte Trend- und Mean-Reversion-Strategien mit konservativen Parametern."
+
+strategies = [
+  "ma_crossover",
+  "mean_reversion",
+  "bollinger_bands",
+  "trend_following",
+]
+weights = [0.30, 0.25, 0.25, 0.20]
+
+run_montecarlo = true
+mc_num_runs = 2000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike", "gap_down_open"]
+stress_severity = 0.2
+
+format = "both"
+risk_profile = "conservative"
+max_drawdown_target = 0.10
+tags = ["v1.1", "conservative", "stable", "low-risk"]
+
+# --- v1.1 Moderate Portfolio ---
+
+[portfolio_recipes.moderate_v11]
+id = "moderate_v11"
+portfolio_name = "Moderate Portfolio v1.1"
+description = "Balanciertes v1.1 Portfolio mit ausgewogenem Risiko/Return-Profil. Kombiniert Trend-Following und Mean-Reversion fuer verschiedene Marktphasen."
+
+strategies = [
+  "rsi_reversion",
+  "breakout",
+  "trend_following",
+  "macd",
+]
+weights = [0.25, 0.25, 0.25, 0.25]
+
+run_montecarlo = true
+mc_num_runs = 3000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike", "drawdown_extension"]
+stress_severity = 0.25
+
+format = "both"
+risk_profile = "moderate"
+max_drawdown_target = 0.15
+tags = ["v1.1", "moderate", "balanced", "diversified"]
+
+# --- v1.1 Aggressive Portfolio ---
+
+[portfolio_recipes.aggressive_v11]
+id = "aggressive_v11"
+portfolio_name = "Aggressive Portfolio v1.1"
+description = "Aggressives v1.1 Portfolio mit hoeherem Risiko fuer potentiell hoehere Returns. Staerkere Gewichtung von Breakout und Momentum."
+
+strategies = [
+  "breakout",
+  "momentum_1h",
+  "rsi_reversion",
+  "macd",
+]
+weights = [0.35, 0.30, 0.20, 0.15]
+
+run_montecarlo = true
+mc_num_runs = 5000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike", "gap_down_open", "drawdown_extension"]
+stress_severity = 0.30
+
+format = "both"
+risk_profile = "aggressive"
+max_drawdown_target = 0.25
+tags = ["v1.1", "aggressive", "high-risk", "high-return"]

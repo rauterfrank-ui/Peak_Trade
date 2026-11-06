@@ -1,0 +1,17 @@
+{
+  "authority_effect": "NONE",
+  "consumption_class": "POST_SELECTION_OUTPUT_ONLY",
+  "contract_version": "step29m_current_single_selected_future_dynamic_binding_v1",
+  "dataset_ingest_selection_authority": false,
+  "evaluation_config_template_path": "config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json",
+  "live_authorized": false,
+  "n_bars_authority_ref": "config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json#economic_evaluation_v1.walk_forward",
+  "order_effect": false,
+  "owner": "backtest.step29m_current_single_selected_future_dynamic_binding_v1",
+  "ranking_universe_consumption_forbidden": true,
+  "required_selection_state": "SELECTED_ACTIVE",
+  "runtime_effect": false,
+  "selection_authority_owner": "ops.single_selected_future_policy_v1",
+  "selection_artifact_filename": "single_selected_future_selection_v1.json",
+  "step29m_selection_authority": false
+}

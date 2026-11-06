@@ -1,0 +1,443 @@
+[
+  {
+    "cycle": 3,
+    "estimate_present": false,
+    "history_digest": "51595fb56d4fc885eaca05a3f038a2fd2f0300edadc44e53586ebd652e50c251",
+    "minute": 1,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 5,
+    "estimate_present": false,
+    "history_digest": "9a45fe3fb826f1be8d63381540b94360fabd0c9a5d4eab4246e56dddc6241eef",
+    "minute": 2,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 7,
+    "estimate_present": false,
+    "history_digest": "a9331f16c1bd9d666b3bc443172781221f1539d04c130c72716495aa049f5fa7",
+    "minute": 3,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 9,
+    "estimate_present": false,
+    "history_digest": "93d78716dd6a1e001b0d0e5ab77e7e7f0d3d60c45933db9f9f178b644a24b7b0",
+    "minute": 4,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 11,
+    "estimate_present": false,
+    "history_digest": "f3b88261728752d8d88d38f95788f42a14ef6eb3e06e02bf5ffae7e0a76fb45a",
+    "minute": 5,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 13,
+    "estimate_present": false,
+    "history_digest": "3b7d8479faa3c0e6d51e45adb9d0a322e47d06a547f62e11beb891375d5f9477",
+    "minute": 6,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 15,
+    "estimate_present": false,
+    "history_digest": "9e423de9a6bac5820618a3dc0fc657a2d5d1a958182258bd5f82d348d1a9aae7",
+    "minute": 7,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 17,
+    "estimate_present": false,
+    "history_digest": "c9828bc04f0796f074de590584e1b429312ca0617a5003ed722af5c19c8ed71f",
+    "minute": 8,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 19,
+    "estimate_present": false,
+    "history_digest": "3dba0aa7ff1164fa8d179194578159eded96751f79ba74a3e3dfe966ce3e9127",
+    "minute": 9,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 21,
+    "estimate_present": false,
+    "history_digest": "aeb1d53f1bb211dc6e834f0780c202ca0b1aaf9cbb3dcf9c9fcaa687a554c0d9",
+    "minute": 10,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 23,
+    "estimate_present": false,
+    "history_digest": "3fb4980a53c635975b4bd27491ce8ace2215087a9787c9611283000efd7bfe06",
+    "minute": 11,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 25,
+    "estimate_present": false,
+    "history_digest": "8853acb18c675d7c7c84a0fc98d018b0ae2c8591a6369fdadd2f9493513a390b",
+    "minute": 12,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 27,
+    "estimate_present": false,
+    "history_digest": "7ff95fcd1c64fd64ed20881db61523b7ff5ddacc763c80b07e7354d829b2e246",
+    "minute": 13,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 29,
+    "estimate_present": false,
+    "history_digest": "88d9e5ec314eec5195b328902941faaad0ebf16d5a348c0a982708c680c12cef",
+    "minute": 14,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 31,
+    "estimate_present": false,
+    "history_digest": "9a05feef7510e3ab3c6b8a244d4e06fb4dbebdcf07a7feaaa016953ab62b3ae0",
+    "minute": 15,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 33,
+    "estimate_present": false,
+    "history_digest": "ed3eebd435733afbe65bcbf69ac55e9d18d8b0525c53ee82198ce8e83f542316",
+    "minute": 16,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 35,
+    "estimate_present": false,
+    "history_digest": "2562db89f66e0de85dec6fbb90e397e588bc27865ed1c9d58bee3a0604cf4e6b",
+    "minute": 17,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 37,
+    "estimate_present": false,
+    "history_digest": "86b9d633d824a1e3d516e808c840f69dae905510b2d8959ed3f45b0f0563c0ce",
+    "minute": 18,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 39,
+    "estimate_present": false,
+    "history_digest": "ba221fc55ea386bf0aeb06795be679f4cda2ceac72da39eef8e4eb38ce94ad8a",
+    "minute": 19,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 41,
+    "estimate_present": false,
+    "history_digest": "fd7a05e6c7757c50e77b7bc48188eb62f84cda604c9e53d21869c461ffc8003f",
+    "minute": 20,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 43,
+    "estimate_present": false,
+    "history_digest": "1404bc1123f3f7bae84776b2de54163041ac09914b41762e68f9ea83cbc7a671",
+    "minute": 21,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 45,
+    "estimate_present": false,
+    "history_digest": "e12fa918eb6a4769176f73972d872b72332fd27e2c86681011d6d9c5d6172ed6",
+    "minute": 22,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 47,
+    "estimate_present": false,
+    "history_digest": "519d5e7c645a514844f6debe069effb81914f7193bbe43bdce1a5ac993615e87",
+    "minute": 23,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 49,
+    "estimate_present": false,
+    "history_digest": "933b13c35464bfe13ef63529a7b7bd82fbba19a8bcc520ee492dcd8e76efdc89",
+    "minute": 24,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 51,
+    "estimate_present": false,
+    "history_digest": "01eb804edd2a11492ee985a18cf27fda0aadc00e7e5cdf60c11369cc460e3813",
+    "minute": 25,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 53,
+    "estimate_present": false,
+    "history_digest": "4074bd2fc62b92a21c839934b708af7c5d9cde0f104e596c53c9bc3252e2e553",
+    "minute": 26,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 55,
+    "estimate_present": false,
+    "history_digest": "3cb1a495291244d92f85049607c8753908b24a86d6d6dbe1750357664295bf4b",
+    "minute": 27,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 57,
+    "estimate_present": false,
+    "history_digest": "885066bbbbdc4d6478992160b3807ba5dc485fc013a178a319a882666c20a4f6",
+    "minute": 28,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 59,
+    "estimate_present": false,
+    "history_digest": "014c32abf89158a86cb54a9c79af3ad21621efd6c6e8610b6b15292e5ced1de9",
+    "minute": 29,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 61,
+    "estimate_present": false,
+    "history_digest": "2529f028ea80a08a7845d280f8f9ead13f2574955e7adbdbb76447e2513d445c",
+    "minute": 30,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 63,
+    "estimate_present": false,
+    "history_digest": "0ade3ce3508f37e7e07db74459efe9c75c79fb276b90250d9625bb022ec1ee1a",
+    "minute": 31,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 65,
+    "estimate_present": false,
+    "history_digest": "e1241ab3cb84ddc2c9fd04e7b9edff514aa28cfb2dafb0b3ef46a0e18ad4d956",
+    "minute": 32,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 67,
+    "estimate_present": false,
+    "history_digest": "5aac4eec7fb4aa3ecfd0fe6e6663b01571eb2f41a8152aefe686c0f1c5c703ae",
+    "minute": 33,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 69,
+    "estimate_present": false,
+    "history_digest": "d56adee51655e5dd8544d054f833ba5e3d9eaef0d6a4e33b479ce27b9ec18ac4",
+    "minute": 34,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 71,
+    "estimate_present": false,
+    "history_digest": "38d5be1d8983eab6e684b2dae42ab00645eef281ef77320d8100e51bb517d9ba",
+    "minute": 35,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 73,
+    "estimate_present": false,
+    "history_digest": "6b94ba76385a474e7ce264282f84439d049d610f06a657b1efe059a95dfe67be",
+    "minute": 36,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 75,
+    "estimate_present": false,
+    "history_digest": "69e0f9e8d94eee55cf4b5cc127d1cdc32d64a69cc3770787978be03094a310c5",
+    "minute": 37,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 77,
+    "estimate_present": false,
+    "history_digest": "71c08acfab20482f73322a23d868ff20db4ecd289ab37d09170ad8f483f54e83",
+    "minute": 38,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 79,
+    "estimate_present": false,
+    "history_digest": "445eff790ec95f89ad682b17248f61d5ba5b06c3613ebb2ce3513ce87453ca3f",
+    "minute": 39,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 81,
+    "estimate_present": false,
+    "history_digest": "5763a97c27f3b6984fe0bdc76f50169804e89869df4c59132f18c0363d54ea35",
+    "minute": 40,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 83,
+    "estimate_present": false,
+    "history_digest": "5a507f43c553a7e4c3e0dd1e93765834f23cfbd4f205d3fb5395b06cc4781b63",
+    "minute": 41,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 85,
+    "estimate_present": false,
+    "history_digest": "134e6652fd61474146d4a942c9ce2e6db08b63d38e2daef5d4ed8bd778f9f762",
+    "minute": 42,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 87,
+    "estimate_present": false,
+    "history_digest": "88e2ac43e9ffdbcb202118e4e10a84e1edbaaeffcf9416e9b9077cf661a96c4a",
+    "minute": 43,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 89,
+    "estimate_present": false,
+    "history_digest": "150f7dcd9f9add46f4b9adb7d6f9f2c78880c544f7b8abf95b3b34b25e6792ac",
+    "minute": 44,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 91,
+    "estimate_present": false,
+    "history_digest": "9484c6e1bae5de9057c513d43bdc16f8a1f8263d4ade83893eec1f7181e8a4b4",
+    "minute": 45,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 93,
+    "estimate_present": false,
+    "history_digest": "5337f52bee5f5f19832dd0897b7c3de1c3d445bbcef1575c459d824eccab4784",
+    "minute": 46,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 95,
+    "estimate_present": false,
+    "history_digest": "e6e77dd450ff42ffbecee088ca53add46cbf4b400c80980df58ef0faff81a0f9",
+    "minute": 47,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 97,
+    "estimate_present": false,
+    "history_digest": "6395a25978803ede960967425cdc8000a0031f20129752610baa6fe7d716c7bf",
+    "minute": 48,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 99,
+    "estimate_present": false,
+    "history_digest": "c722bcf79de0ae3822de2500acdb58ada9e54db89ebca010a9e4ea93ce959faf",
+    "minute": 49,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 101,
+    "estimate_present": false,
+    "history_digest": "38eb00297c399d96e3d4384102bef225428be1f4a9586b0fdbbaaee8cee89ecd",
+    "minute": 50,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 103,
+    "estimate_present": false,
+    "history_digest": "26eb08c9fcdf15c381fe189ba80ec859cb05efac4d5c8ae55b20cb60113b01cb",
+    "minute": 51,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 105,
+    "estimate_present": false,
+    "history_digest": "fa091fa573e235c8f55ca2d08076a4b2f3956ebd2e94ee5dd8b5797847d81aad",
+    "minute": 52,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 107,
+    "estimate_present": false,
+    "history_digest": "ea4aa020c43231c205a7c3607ebdf460921f3342a35d64a5a7b85cd8e61a42ff",
+    "minute": 53,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 109,
+    "estimate_present": false,
+    "history_digest": "d4d534086e899ae1d42cbf938a873734a1c028a8aa314ffdc144b3b9318f1c83",
+    "minute": 54,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 111,
+    "estimate_present": false,
+    "history_digest": "5403c4e4aa6d7d19c5dc339857ccc3aceb6f40097b824fb4f53739c767c85777",
+    "minute": 55,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 113,
+    "estimate_present": false,
+    "history_digest": "c8a5a1c1b9be8cc9e5e630f24e82702c3c2151be6b00dd4010999d356e68e9cd",
+    "minute": 56,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 115,
+    "estimate_present": false,
+    "history_digest": "b952d9e81de26c0cf453b8c3c9885a18d127af344dbfb85eadc80cc9c701389e",
+    "minute": 57,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 117,
+    "estimate_present": false,
+    "history_digest": "a7f328c1db75e418377748bfbfbe89d5e964869a442fbc9ce95e98250996f4a4",
+    "minute": 58,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 119,
+    "estimate_present": false,
+    "history_digest": "36ba2b9324df05f012fbe8442b93d19b74df38f56e918d50a7004b76c5451f0b",
+    "minute": 59,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 121,
+    "estimate_present": false,
+    "history_digest": "8ce0141a8a49f88d69a4348c72cf07df588d652b812dee29f567e87c28811c93",
+    "minute": 60,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 123,
+    "estimate_present": true,
+    "history_digest": "0ae09e2c118a1c31290db3f4889acf34fb3483bde60ac26baa65500c5cf7abca",
+    "minute": 61,
+    "producer_outcome": "PRODUCED"
+  },
+  {
+    "cycle": 125,
+    "estimate_present": true,
+    "history_digest": "c6fa17e2d95aed9906a418dbf7746de7a4ab5a177dfbf0d1c08319336e9f043f",
+    "minute": 62,
+    "producer_outcome": "PRODUCED"
+  },
+  {
+    "cycle": 127,
+    "estimate_present": true,
+    "history_digest": "35a0b1ef44cc9b5d77a314036a3261c7fab29283fc88b05702f8ead77b6fd3c1",
+    "minute": 63,
+    "producer_outcome": "PRODUCED"
+  }
+]

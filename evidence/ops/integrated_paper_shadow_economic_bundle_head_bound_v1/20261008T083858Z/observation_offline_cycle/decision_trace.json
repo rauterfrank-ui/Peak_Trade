@@ -1,0 +1,1 @@
+{"decision_result":"hold","direction":"HOLD","instrument_id":"ETH-USD_UM_XPERP-310404","reason_codes":["shadow_no_order_mode","canonical_okx_futures_binding","hold_no_submission","OBSERVATION_SIMULATED_PORTFOLIO"],"venue":"okx_europe"}

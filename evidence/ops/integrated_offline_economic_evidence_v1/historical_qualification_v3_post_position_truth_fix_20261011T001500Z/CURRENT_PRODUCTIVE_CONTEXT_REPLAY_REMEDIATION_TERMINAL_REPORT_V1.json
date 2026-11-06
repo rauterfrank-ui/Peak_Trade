@@ -1,0 +1,69 @@
+{
+  "adjudicated": {
+    "adjudication_id": "ops.integrated_offline_economic_validity_adjudication_v1",
+    "authority_effect": "NONE",
+    "blockers": [],
+    "economic_validity_evaluated": true,
+    "economic_validity_pass": false,
+    "failure_reasons": [
+      "ECONOMIC_ZERO_OR_INSUFFICIENT_TRADES"
+    ],
+    "monte_carlo_policy_pass": true,
+    "monte_carlo_verified": true,
+    "offline_economic_evidence_complete": true,
+    "operator_ratification_required": true,
+    "promotion_pass": false,
+    "stress_policy_pass": true,
+    "stress_verified": true,
+    "walk_forward_monte_carlo_stress_requirements_met": true,
+    "walk_forward_policy_pass": true,
+    "walk_forward_verified": true
+  },
+  "binding_report": {
+    "cap61_binding_complete": true,
+    "capital_context_binding_complete": true,
+    "confirmation_binding_complete": true,
+    "crs_boundary_bound": true,
+    "double_play_binding_complete": true,
+    "f1_m9_blocker": "",
+    "g17_binding_complete": true,
+    "g17_blocker": "",
+    "host_confirmation_binding_complete": true,
+    "productive_context_complete": true,
+    "risk_context_binding_complete": true,
+    "safety_binding_complete": true,
+    "scope_gge_binding_complete": true,
+    "sizing_binding_complete": true,
+    "suitability_binding_complete": true
+  },
+  "blocking_node_counts": {
+    "CAPITAL_RISK_SIZING": 5,
+    "DOUBLE_PLAY_COMPOSITION": 1963973,
+    "NONE": 25562
+  },
+  "comparison_rows": 1989540,
+  "de_verified": true,
+  "productive_context_complete": true,
+  "productive_context_preflight_pass": true,
+  "productive_decision_equivalence_verified": true,
+  "stats": {
+    "blocked_count": 0,
+    "canonical_order_intent_present_count": 1,
+    "decision_epochs": 1989540,
+    "enter_long_count": 1,
+    "enter_short_count": 0,
+    "execution_eligible_count": 0,
+    "exit_count": 0,
+    "hold_count": 24963,
+    "no_action_count": 1948602,
+    "observations_accepted": 1989540,
+    "observations_total": 1989600,
+    "observe_count": 6,
+    "order_intent_count": 2,
+    "reduce_count": 15968,
+    "safety_reject_count": 0,
+    "simulated_economic_action_admitted_count": 2
+  },
+  "terminal_class": "INSUFFICIENT_TRADES_UNDER_CURRENT",
+  "verified": true
+}

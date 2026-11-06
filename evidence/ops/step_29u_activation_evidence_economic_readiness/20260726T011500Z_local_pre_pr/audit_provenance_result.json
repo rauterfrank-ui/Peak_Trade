@@ -1,0 +1,96 @@
+{
+  "audit_provenance_complete": true,
+  "blockers": [],
+  "capability_id": "STEP_29U_AUDIT_PROVENANCE_V0",
+  "evaluated_main_sha": "4d0b98820e3918a06e705aa793d86ca72bd6260c",
+  "generated_at": "2026-07-25T23:18:16Z",
+  "links": [
+    {
+      "details": {},
+      "digest": "12abd4119aff2528c72921a6048fc23a892d8ec5afda74ccfcf15a0e9b8ec4b7",
+      "link_id": "binding_runbook",
+      "path": "docs/ops/runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md",
+      "reason_code": "BINDING_RUNBOOK_TRACKED",
+      "status": "COMPLETE"
+    },
+    {
+      "details": {
+        "producer": "ops.step_29u_offline_capability_v0",
+        "source_git_sha": "237cfe07850d9a579f73f596bb4df18adddfbe69"
+      },
+      "digest": "bd2264282d756ca63757c57bd828c3aa69c352d2e86d663bc6bbf35b8a3c4aa0",
+      "link_id": "offline_capability_evidence",
+      "path": "evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle",
+      "reason_code": "OFFLINE_EVIDENCE_VERIFIED",
+      "status": "COMPLETE"
+    },
+    {
+      "details": {
+        "offline_link": "evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle"
+      },
+      "digest": "db4a83770d38fe13d01198e54250675310db67791b867b123ac0856a65778a03",
+      "link_id": "canonical_binding_evidence",
+      "path": "evidence/ops/step_29u_canonical_shadow_binding/2026-07-26_capability_v0",
+      "reason_code": "BINDING_LINKS_OFFLINE_EVIDENCE",
+      "status": "COMPLETE"
+    },
+    {
+      "details": {
+        "tested_head": "cd6d465c83c6c65733e5d85238aa223d4bffd548"
+      },
+      "digest": "176ec1076301d4ded635e47803d9cac84df72f8d74aa7e1b13f7afd3cb2dabdc",
+      "link_id": "post_merge_soak_evidence",
+      "path": "evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z",
+      "reason_code": "SOAK_EVIDENCE_VERIFIED",
+      "status": "COMPLETE"
+    },
+    {
+      "details": {
+        "runbook": "docs/ops/runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md"
+      },
+      "digest": "da063067a1627eb38c821bb703d8204b9cb2647a3706f56a4a41ea6e61de4bab",
+      "link_id": "activation_inventory_owner",
+      "path": "src/ops/step_29u_activation_eligibility_inventory_v0.py",
+      "reason_code": "INVENTORY_OWNER_TRACKED_AND_LINKED",
+      "status": "COMPLETE"
+    },
+    {
+      "details": {
+        "superseded_markers_checked": [
+          "evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak"
+        ]
+      },
+      "digest": null,
+      "link_id": "supersession_guard",
+      "path": "evidence/ops/step_29u_post_merge_shadow_soak/",
+      "reason_code": "CANONICAL_SOAK_NOT_SUPERSEDED_MARKER",
+      "status": "COMPLETE"
+    }
+  ],
+  "provenance": {
+    "binding_evidence_relpath": "evidence/ops/step_29u_canonical_shadow_binding/2026-07-26_capability_v0",
+    "expected_offline_source_git_sha": "237cfe07850d9a579f73f596bb4df18adddfbe69",
+    "expected_soak_tested_head_sha": "cd6d465c83c6c65733e5d85238aa223d4bffd548",
+    "offline_capability_relpath": "evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle",
+    "package_marker": "STEP_29U_AUDIT_PROVENANCE_V0=true",
+    "producer_family": "ops.step_29u_audit_provenance_v0",
+    "soak_evidence_relpath": "evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z"
+  },
+  "safety_facts": {
+    "ACTIVATION_ELIGIBLE": false,
+    "NETWORK_USED": false,
+    "OPERATOR_GO_INFERRED": false,
+    "STEP_29U_ACTIVATED": false
+  },
+  "schema_id": "ops.step_29u_audit_provenance_v0",
+  "schema_version": "v0",
+  "status": "COMPLETE",
+  "traversal_order": [
+    "binding_runbook",
+    "offline_capability_evidence",
+    "canonical_binding_evidence",
+    "post_merge_soak_evidence",
+    "activation_inventory_owner",
+    "supersession_guard"
+  ]
+}

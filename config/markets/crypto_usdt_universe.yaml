@@ -1,0 +1,51 @@
+version: "1.0"
+universe_id: MARKET_UNIVERSE_CRYPTO_USDT_V1
+
+markets:
+  - symbol: BTCUSDT
+    base: BTC
+    quote: USDT
+    tier: 1
+    liquidity_score: 5
+    volatility_score: 4
+    enabled: true
+
+  - symbol: ETHUSDT
+    base: ETH
+    quote: USDT
+    tier: 1
+    liquidity_score: 5
+    volatility_score: 4
+    enabled: true
+
+  - symbol: SOLUSDT
+    base: SOL
+    quote: USDT
+    tier: 2
+    liquidity_score: 4
+    volatility_score: 5
+    enabled: true
+
+  - symbol: ADAUSDT
+    base: ADA
+    quote: USDT
+    tier: 2
+    liquidity_score: 4
+    volatility_score: 4
+    enabled: true
+
+  - symbol: XRPUSDT
+    base: XRP
+    quote: USDT
+    tier: 2
+    liquidity_score: 4
+    volatility_score: 4
+    enabled: true
+
+  - symbol: LTCUSDT
+    base: LTC
+    quote: USDT
+    tier: 2
+    liquidity_score: 4
+    volatility_score: 4
+    enabled: true

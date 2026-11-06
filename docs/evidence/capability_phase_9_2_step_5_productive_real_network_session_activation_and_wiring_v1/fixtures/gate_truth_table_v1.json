@@ -1,0 +1,6 @@
+{
+  "default_without_go": false,
+  "env_cannot_enable": true,
+  "fetcher_once_on_simulated_gate": true,
+  "full_simulated_gate": true
+}

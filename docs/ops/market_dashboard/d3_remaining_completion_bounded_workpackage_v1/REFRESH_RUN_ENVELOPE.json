@@ -1,0 +1,27 @@
+{
+  "wp_id": "D3_REMAINING_COMPLETION_BOUNDED_WORKPACKAGE_V1",
+  "command": "refresh-okx-market-dashboard",
+  "archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "venue": "okx",
+  "market_type": "swap",
+  "settle_ccy": "USDT",
+  "exclude_underlying": "BTC",
+  "bar": "PT1M",
+  "dry_run": false,
+  "authenticated_fetch": false,
+  "orders": false,
+  "runtime_activation": false,
+  "status": "OK",
+  "producer": {
+    "bundle_id": "okx_governed_20260921T122223Z_5b8635f8bbdd",
+    "manifest_verify_rc": 0,
+    "eligible_count": 470,
+    "selected_symbol": "SATS-USDT-SWAP",
+    "selected_venue": "okx"
+  },
+  "intake_accepted": true,
+  "universe_selection_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/universe_selection_readmodel.v1.json",
+  "selected_instrument": "SATS-USDT-SWAP",
+  "manifest_verify_rc": 0,
+  "git_sha_at_run": "a0113e539d7cf05e8681422d605c60e9b8a5789d"
+}

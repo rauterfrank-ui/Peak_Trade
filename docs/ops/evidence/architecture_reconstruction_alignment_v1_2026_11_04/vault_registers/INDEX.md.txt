@@ -1,0 +1,340 @@
+# INDEX
+
+> [!danger] 🔴 Pin: Semantik bis zu den Lernergebnissen später prüfen
+> **OFFEN / bewusst zurückgestellt** (Owner 2026-11-03): Double Play → äußere Budget-Policy → Kapital/Sizing/Reservierung → Order/Fill/Position → verifizierte Lernergebnisse kausal und semantisch abgleichen. Fiktives E2E-Kapital ausschließlich im getrennten Testaufbau; kein Testprofil am Double-Play-Kern. [Vollständiger angepinnter Hinweis](README.md) · [kanonischer Befund](</Users/frnkhrz/Peak_Trade/docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#offen-semantik-bis-zu-den-lernergebnissen>). Die Budget-Policy erledigt diesen Punkt nicht; kein neuer Lauf.
+
+> [!danger] 🔴 Pin: vollständiger Datennachweis später prüfen
+> **OFFEN / bewusst zurückgestellt** (Owner 2026-11-02): echte Herkunft, Instrumentbezug und Aktualität der Adapterwerte einschließlich vorhandener Ersatzwerte nachweisen. GAP-0370 / EVI-2376; [Befund und konkrete Felder](RUNS/RUN-0093/RUN-0093.md). Kein neuer Lauf und keine automatische Erinnerung.
+
+Einstieg in den Reconstruction Knowledge Ledger.
+Schema: `V0.9-INIT-1`. Navigation fortgeschrieben: 2026-11-02; historische Registerstände bleiben erhalten.
+Letzter COMMITTED-RUN: `RUN-0093`. Aktiver Lauf: keiner.
+
+[README](README.md) · [Schema](MAPS/system_map.md#schema-v09-init-1) · [Systemkarte](MAPS/system_map.md) · [Fixture, nur DEMO](MAPS/visualization_fixture.md)
+[Rekonstruktions-Atlas](MAPS/PEAK_TRADE_RECONSTRUCTION_ATLAS.md) · abgeleitete Coverage-Sicht · ATLAS_AUTHORITY=NONE
+
+## Dateikarte
+
+| Pfad | Rolle | Instanzen |
+|---|---|---|
+| [README.md](README.md) | Stand, Pin, Safety, nächster Schritt | keine Befunde |
+| [PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_15_MULTI_LAYER_SYSTEM_DOCUMENTATION.md](PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_15_MULTI_LAYER_SYSTEM_DOCUMENTATION.md) | kanonische Blueprint, Pin im README | keine Befunde |
+| [PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_14_MULTI_LAYER_SYSTEM_DOCUMENTATION.md](PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_14_MULTI_LAYER_SYSTEM_DOCUMENTATION.md) | historische Blueprint, vorheriger Pin, nicht der aktive Pin | keine Befunde |
+| [PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_13_SYSTEM_WIDE_DOCUMENTATION_SEQUENCE.md](PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_13_SYSTEM_WIDE_DOCUMENTATION_SEQUENCE.md) | historische Blueprint, nicht der aktive Pin | keine Befunde |
+| [PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_12_COVERAGE_BOUNDARY_AND_BWP.md](PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_12_COVERAGE_BOUNDARY_AND_BWP.md) | historische Blueprint, nicht der aktive Pin | keine Befunde |
+| [PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_11_DOMAIN_RECONSTRUCTION.md](PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_11_DOMAIN_RECONSTRUCTION.md) | historische Blueprint, nicht der aktive Pin | keine Befunde |
+| [REGISTERS/evidence.md](REGISTERS/evidence.md) | Evidenz | `EVI-0001`–`EVI-1593`; getrennt `EVI-1594`–`EVI-1633`; `EVI-1634`–`EVI-1676`; `EVI-1677`–`EVI-1714`; `EVI-1715`–`EVI-1752`; `EVI-1753`–`EVI-1791`; `EVI-1792`–`EVI-1826`; `EVI-1827`–`EVI-1870`; `EVI-1871`–`EVI-1905`; `EVI-1906`–`EVI-1945`; `EVI-1946`–`EVI-1981`; `EVI-1982`–`EVI-2016`; `EVI-2017`–`EVI-2057`; getrennt `EVI-2058`–`EVI-2074`; getrennt `EVI-2075`–`EVI-2084`; getrennt `EVI-2085`–`EVI-2092`; getrennt `EVI-2093`–`EVI-2099`; getrennt `EVI-2100`–`EVI-2106`; getrennt `EVI-2107`–`EVI-2112`; getrennt `EVI-2113`–`EVI-2120`; getrennt `EVI-2121`–`EVI-2124`; getrennt `EVI-2125`–`EVI-2128`; getrennt `EVI-2129`–`EVI-2131`; getrennt `EVI-2132`–`EVI-2135`; getrennt `EVI-2136`–`EVI-2141`; getrennt `EVI-2142`–`EVI-2146`; getrennt `EVI-2147`–`EVI-2151`; getrennt `EVI-2152`–`EVI-2155`; getrennt `EVI-2156`–`EVI-2161`; getrennt `EVI-2162`–`EVI-2166`; getrennt `EVI-2167`; getrennt `EVI-2168`; getrennt `EVI-2169`; getrennt `EVI-2170`–`EVI-2173`; getrennt `EVI-2174`; getrennt `EVI-2175`; getrennt `EVI-2176`–`EVI-2180`; getrennt `EVI-2181`–`EVI-2182`; getrennt `EVI-2183`; getrennt `EVI-2184`–`EVI-2186`; getrennt `EVI-2187`–`EVI-2200` |
+| [REGISTERS/domains_layers.md](REGISTERS/domains_layers.md) | Domänen und Ebenen | `DOM-0001`–`DOM-0017`, `LYR-0001`–`LYR-0344` |
+| [REGISTERS/contracts_edges.md](REGISTERS/contracts_edges.md) | Verträge, Kanten, Zustände, Übergänge | `CON-0001`–`CON-2063`, `EDG-0001`–`EDG-0006`, `STA-0001`–`STA-0019`, `TRN-0001`–`TRN-0007` |
+| [REGISTERS/anchors_evolution.md](REGISTERS/anchors_evolution.md) | Historische Änderungen | keine `EVT-` |
+| [REGISTERS/concepts.md](REGISTERS/concepts.md) | Zielkonzepte | `CPT-0001`–`CPT-0007`; `CPT-0007` untrusted |
+| [REGISTERS/gaps_decisions.md](REGISTERS/gaps_decisions.md) | Lücken und Owner-Entscheidungen | `GAP-0001`–`GAP-0349` |
+| [MAPS/system_map.md](MAPS/system_map.md) | Abgeleitete Sicht und Schema | Sicht aus den Registern |
+| [MAPS/visualization_fixture.md](MAPS/visualization_fixture.md) | Synthetische Teststruktur | nur DEMO, keine Erkenntnis |
+| `RUNS/` | Originalberichte | `RUN-0001` bis `RUN-0076` |
+| `BLUEPRINT/` | Reservierter Pin-Bereich | leer, keine Kopie |
+
+## RUN-Index
+
+| RUN_ID | Status | Originalbericht | Betroffene IDs |
+|---|---|---|---|
+| `RUN-0001` | `COMMITTED` | [RUN-0001.md](RUNS/RUN-0001/RUN-0001.md) | `EVI-0001`–`EVI-0020`, `DOM-0001`, `LYR-0001`–`LYR-0004`, `CON-0001`–`CON-0013`, `STA-0001`, `STA-0002`, `TRN-0001`, `GAP-0001`–`GAP-0003` |
+| `RUN-0002` | `COMMITTED` | [RUN-0002.md](RUNS/RUN-0002/RUN-0002.md) | `EVI-0021`–`EVI-0043`, `LYR-0005`–`LYR-0007`, `CON-0014`–`CON-0032`, `EDG-0001`–`EDG-0003`, `STA-0003`–`STA-0005`, `TRN-0002`–`TRN-0005`, `CPT-0001`, `GAP-0004`–`GAP-0006` |
+| `RUN-0003` | `COMMITTED` | [RUN-0003.md](RUNS/RUN-0003/RUN-0003.md) | `EVI-0044`–`EVI-0068`, `DOM-0002`–`DOM-0008`, `LYR-0008`–`LYR-0016`, `CON-0033`–`CON-0057`, `STA-0006`, `STA-0007`, `CPT-0002`–`CPT-0004`, `GAP-0007`, `GAP-0008` |
+| `RUN-0004` | `COMMITTED` | [RUN-0004.md](RUNS/RUN-0004/RUN-0004.md) | `EVI-0069`–`EVI-0093`, `DOM-0009`–`DOM-0013`, `LYR-0017`–`LYR-0032`, `CON-0058`–`CON-0082`, `EDG-0004`, `STA-0008`, `STA-0009`, `TRN-0006`, `TRN-0007`, `CPT-0005`, `GAP-0009`, `GAP-0010` |
+| `RUN-0005` | `COMMITTED` | [RUN-0005.md](RUNS/RUN-0005/RUN-0005.md) | `EVI-0094`–`EVI-0135`, `DOM-0014`, `LYR-0033`–`LYR-0038`, `CON-0083`–`CON-0124`, `CPT-0006`, `GAP-0011`–`GAP-0014` |
+| `RUN-0006` | `COMMITTED` | [RUN-0006.md](RUNS/RUN-0006/RUN-0006.md) | `EVI-0136`–`EVI-0182`, `LYR-0039`–`LYR-0043`, `CON-0125`–`CON-0168`, `GAP-0015`–`GAP-0018` |
+| `RUN-0007` | `COMMITTED` | [RUN-0007.md](RUNS/RUN-0007/RUN-0007.md) | `EVI-0183`–`EVI-0231`, `LYR-0044`–`LYR-0056`, `CON-0169`–`CON-0214`, `GAP-0019`–`GAP-0024` |
+| `RUN-0008` | `COMMITTED` | [RUN-0008.md](RUNS/RUN-0008/RUN-0008.md) | `EVI-0232`–`EVI-0278`, `LYR-0057`–`LYR-0061`, `CON-0215`–`CON-0258`, `GAP-0025`–`GAP-0029` |
+| `RUN-0009` | `COMMITTED` | [RUN-0009.md](RUNS/RUN-0009/RUN-0009.md) | `EVI-0279`–`EVI-0324`, `LYR-0062`–`LYR-0065`, `CON-0259`–`CON-0301`, `GAP-0030`–`GAP-0035` |
+| `RUN-0010` | `COMMITTED` | [RUN-0010.md](RUNS/RUN-0010/RUN-0010.md) | `EVI-0325`–`EVI-0369`, `LYR-0066`–`LYR-0069`, `CON-0302`–`CON-0344`, `GAP-0036`–`GAP-0041` |
+| `RUN-0011` | `COMMITTED` | [RUN-0011.md](RUNS/RUN-0011/RUN-0011.md) | `EVI-0370`–`EVI-0416`, `LYR-0070`–`LYR-0073`, `CON-0345`–`CON-0391`, `GAP-0042`–`GAP-0046` |
+| `RUN-0012` | `COMMITTED` | [RUN-0012.md](RUNS/RUN-0012/RUN-0012.md) | `EVI-0417`–`EVI-0462`, `LYR-0074`–`LYR-0078`, `CON-0392`–`CON-0437`, `GAP-0047`–`GAP-0052` |
+| `RUN-0013` | `COMMITTED` | [RUN-0013.md](RUNS/RUN-0013/RUN-0013.md) | `EVI-0463`–`EVI-0532`, `LYR-0079`–`LYR-0082`, `CON-0438`–`CON-0507`, `GAP-0053`–`GAP-0055` |
+| `RUN-0014` | `COMMITTED` | [RUN-0014.md](RUNS/RUN-0014/RUN-0014.md) | `EVI-0533`–`EVI-0580`, `LYR-0083`–`LYR-0087`, `CON-0508`–`CON-0555`, `GAP-0056`–`GAP-0060` |
+| `RUN-0015` | `COMMITTED` | [RUN-0015.md](RUNS/RUN-0015/RUN-0015.md) | `EVI-0581`–`EVI-0626`, `LYR-0088`–`LYR-0091`, `CON-0556`–`CON-0601`, `GAP-0061`–`GAP-0070` |
+| `RUN-0016` | `COMMITTED` | [RUN-0016.md](RUNS/RUN-0016/RUN-0016.md) | `EVI-0627`–`EVI-0670`, `LYR-0092`–`LYR-0097`, `CON-0602`–`CON-0645`, `GAP-0071`–`GAP-0083` |
+| `RUN-0017` | `COMMITTED` | [RUN-0017.md](RUNS/RUN-0017/RUN-0017.md) | `EVI-0671`–`EVI-0718`, `LYR-0098`–`LYR-0104`, `CON-0646`–`CON-0693`, `GAP-0084`–`GAP-0098` |
+| `RUN-0018` | `COMMITTED` | [RUN-0018.md](RUNS/RUN-0018/RUN-0018.md) | `EVI-0719`–`EVI-0765`, `LYR-0105`–`LYR-0109`, `CON-0694`–`CON-0740`, `GAP-0099`–`GAP-0109` |
+| `RUN-0019` | `COMMITTED` | [RUN-0019.md](RUNS/RUN-0019/RUN-0019.md) | `EVI-0766`–`EVI-0813`, `LYR-0110`–`LYR-0114`, `CON-0741`–`CON-0788`, `GAP-0110`–`GAP-0126` |
+| `RUN-0020` | `COMMITTED` | [RUN-0020.md](RUNS/RUN-0020/RUN-0020.md) | `EVI-0814`–`EVI-0860`, `LYR-0115`–`LYR-0120`, `CON-0789`–`CON-0835`, `GAP-0127`–`GAP-0140` |
+| `RUN-0021` | `COMMITTED` | [RUN-0021.md](RUNS/RUN-0021/RUN-0021.md) | `EVI-0861`–`EVI-0906`, `LYR-0121`–`LYR-0126`, `CON-0836`–`CON-0881`, `GAP-0141`–`GAP-0155` |
+| `RUN-0022` | `COMMITTED` | [RUN-0022.md](RUNS/RUN-0022/RUN-0022.md) | `EVI-0907`–`EVI-0955`, `LYR-0127`–`LYR-0133`, `CON-0882`–`CON-0930`, `GAP-0156`–`GAP-0167` |
+| `RUN-0023` | `COMMITTED` | [RUN-0023.md](RUNS/RUN-0023/RUN-0023.md) | `EVI-0956`–`EVI-1003`, `LYR-0134`–`LYR-0142`, `CON-0931`–`CON-0978`, `GAP-0168`–`GAP-0178` |
+| `RUN-0024` | `COMMITTED` | [RUN-0024.md](RUNS/RUN-0024/RUN-0024.md) | `EVI-1004`–`EVI-1052`, `LYR-0143`–`LYR-0149`, `CON-0979`–`CON-1027`, `GAP-0179`–`GAP-0190` |
+| `RUN-0025` | `COMMITTED` | [RUN-0025.md](RUNS/RUN-0025/RUN-0025.md) | `EVI-1053`–`EVI-1101`, `LYR-0150`–`LYR-0155`, `CON-1028`–`CON-1076`, `GAP-0191`–`GAP-0198` |
+| `RUN-0026` | `COMMITTED` | [RUN-0026.md](RUNS/RUN-0026/RUN-0026.md) | `EVI-1102`–`EVI-1147`, `LYR-0156`–`LYR-0161`, `CON-1077`–`CON-1122`, `GAP-0199`–`GAP-0204` |
+| `RUN-0027` | `COMMITTED` | [RUN-0027.md](RUNS/RUN-0027/RUN-0027.md) | `EVI-1148`–`EVI-1193`, `LYR-0162`–`LYR-0167`, `CON-1123`–`CON-1168`, `GAP-0205`–`GAP-0211` |
+| `RUN-0028` | `COMMITTED` | [RUN-0028.md](RUNS/RUN-0028/RUN-0028.md) | `EVI-1194`–`EVI-1240`, `LYR-0168`–`LYR-0172`, `CON-1169`–`CON-1215`, `GAP-0212`–`GAP-0218` |
+| `RUN-0029` | `COMMITTED` | [RUN-0029.md](RUNS/RUN-0029/RUN-0029.md) | `EVI-1241`–`EVI-1285`, `LYR-0173`–`LYR-0178`, `CON-1216`–`CON-1260`, `GAP-0219`–`GAP-0227` |
+| `RUN-0030` | `COMMITTED` | [RUN-0030.md](RUNS/RUN-0030/RUN-0030.md) | `EVI-1286`–`EVI-1331`, `LYR-0179`–`LYR-0183`, `CON-1261`–`CON-1306`, `GAP-0228`–`GAP-0233` |
+| `RUN-0031` | `COMMITTED` | [RUN-0031.md](RUNS/RUN-0031/RUN-0031.md) | `EVI-1332`–`EVI-1377`, `LYR-0184`–`LYR-0188`, `CON-1307`–`CON-1352`, `GAP-0234`–`GAP-0240` |
+| `RUN-0032` | `COMMITTED` | [RUN-0032.md](RUNS/RUN-0032/RUN-0032.md) | `EVI-1378`–`EVI-1424`, `LYR-0189`–`LYR-0200`, `CON-1353`–`CON-1399`, `GAP-0241`–`GAP-0254` |
+| `RUN-0033` | `COMMITTED` | [RUN-0033.md](RUNS/RUN-0033/RUN-0033.md) | `EVI-1425`–`EVI-1473`, `LYR-0201`–`LYR-0209`, `CON-1400`–`CON-1448`, `GAP-0255`–`GAP-0270` |
+| `RUN-0034` | `COMMITTED` | [RUN-0034.md](RUNS/RUN-0034/RUN-0034.md) | `EVI-1474`–`EVI-1513`, `LYR-0210`–`LYR-0213`, `CON-1449`–`CON-1488`, `GAP-0271`–`GAP-0277` |
+| `RUN-0035` | `COMMITTED` | [RUN-0035.md](RUNS/RUN-0035/RUN-0035.md) | `EVI-1514`–`EVI-1555`, `LYR-0214`–`LYR-0218`, `CON-1489`–`CON-1530`, `GAP-0278`–`GAP-0285` |
+| `RUN-0036` | `COMMITTED` | [RUN-0036.md](RUNS/RUN-0036/RUN-0036.md) | `EVI-1556`–`EVI-1593`, `LYR-0219`–`LYR-0224`, `CON-1531`–`CON-1568`, `GAP-0286`–`GAP-0296` |
+| `RUN-0037` | `COMMITTED` | [RUN-0037.md](RUNS/RUN-0037/RUN-0037.md) | `EVI-1594`–`EVI-1633`, `CPT-0007`; keine neue `LYR`, `CON`, `EDG`, `GAP` |
+| `RUN-0038` | `COMMITTED` | [RUN-0038.md](RUNS/RUN-0038/RUN-0038.md) | `EVI-1634`–`EVI-1676`, `LYR-0225`–`LYR-0231`, `CON-1569`–`CON-1611`, `GAP-0297`–`GAP-0304` |
+| `RUN-0039` | `COMMITTED` | [RUN-0039.md](RUNS/RUN-0039/RUN-0039.md) | `EVI-1677`–`EVI-1714`, `LYR-0232`–`LYR-0239`, `CON-1612`–`CON-1649`, `GAP-0305`–`GAP-0312` |
+| `RUN-0040` | `COMMITTED` | [RUN-0040.md](RUNS/RUN-0040/RUN-0040.md) | `EVI-1715`–`EVI-1752`, `LYR-0240`–`LYR-0245`, `CON-1650`–`CON-1687`, `GAP-0313`–`GAP-0315` |
+| `RUN-0041` | `COMMITTED` | [RUN-0041.md](RUNS/RUN-0041/RUN-0041.md) | `EVI-1753`–`EVI-1791`, `LYR-0246`–`LYR-0250`, `CON-1688`–`CON-1726`, `GAP-0316`–`GAP-0319` |
+| `RUN-0042` | `COMMITTED` | [RUN-0042.md](RUNS/RUN-0042/RUN-0042.md) | `EVI-1792`–`EVI-1826`, `LYR-0251`–`LYR-0253` |
+| `RUN-0043` | `COMMITTED` | [RUN-0043.md](RUNS/RUN-0043/RUN-0043.md) | `EVI-1827`–`EVI-1870`, `LYR-0254`–`LYR-0259`, `CON-1762`–`CON-1805`, `GAP-0320`–`GAP-0322` |
+| `RUN-0044` | `COMMITTED` | [RUN-0044.md](RUNS/RUN-0044/RUN-0044.md) | `EVI-1871`–`EVI-1905`, `LYR-0260`–`LYR-0267`, `CON-1806`–`CON-1840`, `GAP-0323`–`GAP-0326` |
+| `RUN-0045` | `COMMITTED` | [RUN-0045.md](RUNS/RUN-0045/RUN-0045.md) | `EVI-1906`–`EVI-1945`, `LYR-0268`–`LYR-0275`, `CON-1841`–`CON-1880`, `GAP-0327`–`GAP-0329` |
+| `RUN-0046` | `COMMITTED` | [RUN-0046.md](RUNS/RUN-0046/RUN-0046.md) | `EVI-1946`–`EVI-1981`, `LYR-0276`–`LYR-0283`, `CON-1881`–`CON-1916`, `GAP-0330`–`GAP-0333` |
+| `RUN-0047` | `COMMITTED` | [RUN-0047.md](RUNS/RUN-0047/RUN-0047.md) | `EVI-1982`–`EVI-2016`, `LYR-0284`–`LYR-0292`, `CON-1917`–`CON-1951`, `GAP-0334`–`GAP-0337` |
+| `RUN-0048` | `COMMITTED` | [RUN-0048.md](RUNS/RUN-0048/RUN-0048.md) | `EVI-2017`–`EVI-2057`, `LYR-0293`–`LYR-0300`, `CON-1952`–`CON-1992`, `GAP-0338`–`GAP-0342` |
+| `RUN-0049` | `COMMITTED` | [RUN-0049.md](RUNS/RUN-0049/RUN-0049.md) | `EVI-2058`–`EVI-2074`; keine neue `LYR`, `CON`, `EDG`, `GAP`, `CPT` |
+| `RUN-0050` | `COMMITTED` | [RUN-0050.md](RUNS/RUN-0050/RUN-0050.md) | `EVI-2075`–`EVI-2084`; keine neue `LYR`, `CON`, `EDG`, `GAP`, `CPT` |
+| `RUN-0051` | `COMMITTED` | [RUN-0051.md](RUNS/RUN-0051/RUN-0051.md) | `EVI-2085`–`EVI-2092`; keine neue `LYR`, `CON`, `EDG`, `GAP`, `CPT` |
+| `RUN-0052` | `COMMITTED` | [RUN-0052.md](RUNS/RUN-0052/RUN-0052.md) | `EVI-2093`–`EVI-2099`; keine neue `LYR`, `CON`, `EDG`, `GAP`, `CPT` |
+| `RUN-0053` | `COMMITTED` | [RUN-0053.md](RUNS/RUN-0053/RUN-0053.md) | `EVI-2100`–`EVI-2106`; keine neue `LYR`, `CON`, `EDG`, `GAP`, `CPT` |
+| `RUN-0054` | `COMMITTED` | [RUN-0054.md](RUNS/RUN-0054/RUN-0054.md) | `EVI-2107`–`EVI-2112`; keine neue `LYR`, `CON`, `EDG`, `GAP`, `CPT` |
+| `RUN-0055` | `COMMITTED` | [RUN-0055.md](RUNS/RUN-0055/RUN-0055.md) | `EVI-2113`–`EVI-2120`, `DOM-0015`, `LYR-0301`–`LYR-0304`, `CON-1993`; keine neue `EDG`, `STA`, `TRN`, `GAP`, `CPT` |
+| `RUN-0056` | `COMMITTED` | [RUN-0056.md](RUNS/RUN-0056/RUN-0056.md) | `EVI-2121`–`EVI-2124`, `LYR-0305`, `CON-1994`; keine neue `EDG`, `STA`, `TRN`, `GAP`, `CPT` |
+| `RUN-0057` | `COMMITTED` | [RUN-0057.md](RUNS/RUN-0057/RUN-0057.md) | `EVI-2125`–`EVI-2128`, `LYR-0306`, `CON-1995`; keine neue `EDG`, `STA`, `TRN`, `GAP`, `CPT` |
+| `RUN-0058` | `COMMITTED` | [RUN-0058.md](RUNS/RUN-0058/RUN-0058.md) | `EVI-2129`–`EVI-2131`, `DOM-0016`, `LYR-0307`–`LYR-0328`, `CON-1996`; Namenscensus, Kohärenz `UNPROVEN`; keine neue `EDG` |
+| `RUN-0059` | `COMMITTED` | [RUN-0059.md](RUNS/RUN-0059/RUN-0059.md) | `EVI-2132`–`EVI-2135`, `LYR-0329`, `CON-1997`; statische Decision-Kette, keine neue `EDG` |
+| `RUN-0060` | `COMMITTED` | [RUN-0060.md](RUNS/RUN-0060/RUN-0060.md) | `EVI-2136`–`EVI-2141`, `CON-1998`–`CON-2003`; fünf Inhaltsbereiche `PARTIAL`, keine neue `EDG` |
+| `RUN-0061` | `COMMITTED` | [RUN-0061.md](RUNS/RUN-0061/RUN-0061.md) | `EVI-2142`–`EVI-2146`, `CON-2004`–`CON-2008`; fünf weitere Inhaltsbereiche `PARTIAL`, keine neue `EDG` |
+| `RUN-0062` | `COMMITTED` | [RUN-0062.md](RUNS/RUN-0062/RUN-0062.md) | `EVI-2147`–`EVI-2151`, `CON-2009`–`CON-2013`; drei Census-Bereiche neu `PARTIAL`, keine neue `EDG` |
+| `RUN-0063` | `COMMITTED` | [RUN-0063.md](RUNS/RUN-0063/RUN-0063.md) | `EVI-2152`–`EVI-2155`, `CON-2014`–`CON-2017`; Modellprüfung und drei Census-Bereiche `PARTIAL`, keine neue `EDG` |
+| `RUN-0064` | `COMMITTED` | [RUN-0064.md](RUNS/RUN-0064/RUN-0064.md) | `EVI-2156`–`EVI-2161`, `CON-2018`–`CON-2023`; sechs Census-Bereiche `PARTIAL`, `CENSUS_AREAS_TOUCHED=22/22`, `SEMANTIC_COMPLETENESS=UNPROVEN` |
+| `RUN-0065` | `COMMITTED` | [RUN-0065.md](RUNS/RUN-0065/RUN-0065.md) | `EVI-2162`–`EVI-2166`, `CON-2024`–`CON-2028`, `STA-0010`–`STA-0016`; Zustandsmodelle getrennt, keine neue `EDG` |
+| `RUN-0066` | `COMMITTED` | [RUN-0066.md](RUNS/RUN-0066/RUN-0066.md) | `EVI-2167`, `CON-2029`; Körper von `transition_state`, keine neue `TRN` |
+| `RUN-0067` | `COMMITTED` | [RUN-0067.md](RUNS/RUN-0067/RUN-0067.md) | `EVI-2168`, `CON-2030`; Körper von `_both_active_invariant_ok`, keine neue `TRN` |
+| `RUN-0068` | `COMMITTED` | [RUN-0068.md](RUNS/RUN-0068/RUN-0068.md) | `EVI-2169`, `CON-2031`; Körper von `envelope_valid`, keine neue `TRN` |
+| `RUN-0069` | `COMMITTED` | [RUN-0069.md](RUNS/RUN-0069/RUN-0069.md) | `EVI-2170`–`EVI-2173`, `CON-2032`–`CON-2035`, `STA-0017`–`STA-0019`; Double-Play-Entscheidung, keine neue `TRN` |
+| `RUN-0070` | `COMMITTED` | [RUN-0070.md](RUNS/RUN-0070/RUN-0070.md) | `EVI-2174`, `CON-2036`; Import ohne Klassifikationskörper, keine neue `TRN` |
+| `RUN-0071` | `COMMITTED` | [RUN-0071.md](RUNS/RUN-0071/RUN-0071.md) | `EVI-2175`, `CON-2037`; Leer-Rückgabe `MATCH` / `NO_POSITION_CLEAN`, keine neue `TRN` |
+| `RUN-0072` | `COMMITTED` | [RUN-0072.md](RUNS/RUN-0072/RUN-0072.md) | `EVI-2176`–`EVI-2180`, `CON-2038`–`CON-2042`; Gate-Klasse ohne Reason, keine neue `TRN` |
+| `RUN-0073` | `COMMITTED` | [RUN-0073.md](RUNS/RUN-0073/RUN-0073.md) | `EVI-2181`, `EVI-2182`, `CON-2043`, `CON-2044`; injizierte Occupancy, keine neue `TRN` |
+| `RUN-0074` | `COMMITTED` | [RUN-0074.md](RUNS/RUN-0074/RUN-0074.md) | `EVI-2183`, `CON-2045`; fünf Hard-Stop-Mitglieder, keine neue `TRN` |
+| `RUN-0075` | `COMMITTED` | [RUN-0075.md](RUNS/RUN-0075/RUN-0075.md) | `EVI-2184`–`EVI-2186`, `CON-2046`–`CON-2048`; statische Occupancy-Bindung, keine neue `TRN` |
+| `RUN-0076` | `COMMITTED` | [RUN-0076.md](RUNS/RUN-0076/RUN-0076.md) | `EVI-2187`–`EVI-2200`, `DOM-0017`, `LYR-0330`–`LYR-0344`, `CON-2049`–`CON-2063`, `EDG-0005`, `EDG-0006`, `GAP-0343`–`GAP-0349`; historischer Commit `f8929523`, Scope `HISTORY` |
+
+`RUN-0001` bis `RUN-0076` sind `COMMITTED`. `WP-0001`, `WP-0002`, `WP-0003`, `WP-0004`, `WP-0005` und `WP-0006` sind gestoppt. `WP-0007` ist `CLOSED` (Visualisierungs-BWP; kein Discovery-Slice) — [CLOSE](RUNS/WP-0007/CLOSE.md). `WP-0008` ist `STOPPED` (3D Galaxy; Budget-Gate) — [CLOSE](RUNS/WP-0008/CLOSE.md). `WP-0009` ist `CLOSED` (lokaler 3D-Viewer) — [CLOSE](RUNS/WP-0009/CLOSE.md), Viewer [VIEWERS/3d_architecture_galaxy](VIEWERS/3d_architecture_galaxy/README.md). `WP-0010` ist `CLOSED` (Interactive Explorer) — [CLOSE](RUNS/WP-0010/CLOSE.md). `WP-0011` ist `CLOSED` (Visibility Fix) — [CLOSE](RUNS/WP-0011/CLOSE.md). `WP-0012` ist `CLOSED` (Visual Balance) — [CLOSE](RUNS/WP-0012/CLOSE.md). `WP-0013` ist `CLOSED` (Multidimensional Semantic Galaxy) — [CLOSE](RUNS/WP-0013/CLOSE.md). Weitere IDs werden nicht still wiederverwendet. Die Batchgröße 50 bleibt der Owner-Standard der Markdown-Discovery. `RUN-0013` ist ein Pilot mit 75 Gruppen und ändert diesen Standard nicht. `RUN-0037`, `RUN-0049`, `RUN-0050`, `RUN-0051`, `RUN-0052`, `RUN-0053`, `RUN-0054`, `RUN-0055`, `RUN-0056`, `RUN-0057`, `RUN-0058`, `RUN-0059`, `RUN-0060`, `RUN-0061`, `RUN-0062`, `RUN-0063`, `RUN-0064`, `RUN-0065`, `RUN-0066`, `RUN-0067`, `RUN-0068`, `RUN-0069`, `RUN-0070`, `RUN-0071`, `RUN-0072`, `RUN-0073`, `RUN-0074`, `RUN-0075` und `RUN-0076` sind keine Discovery-Slices und ändern den Cursor `UNREAD_SHA256_ASCENDING_V1` nicht. Jeder weitere Lauf braucht ein eigenes Owner-GO.
+
+## Produktive Aussagen
+
+Stand nach `RUN-0076`, Status `COMMITTED`.
+Scope der IDs: `HISTORY`, außer `CPT-0001` bis `CPT-0004` mit Scope `TARGET` und außer `EVI-2113` bis `EVI-2186`, `DOM-0015`, `DOM-0016`, `LYR-0301` bis `LYR-0329`, `CON-1993` bis `CON-2048` und `STA-0010` bis `STA-0019` mit Scope `CURRENT`. `CURRENT` ist dort Herkunft im Pin, kein Funktionsnachweis. `CURRENT_PROVEN=false`. `SEMANTIC_COMPLETENESS=UNPROVEN`. `CPT-0005`, `CPT-0006` und `CPT-0007` haben Scope `HISTORY`.
+Getrennt und ebenfalls Scope `HISTORY`, Commit `f8929523`, nicht der Pin `5d1c838c`: `EVI-2187` bis `EVI-2200`, `DOM-0017`, `LYR-0330` bis `LYR-0344`, `CON-2049` bis `CON-2063`, `EDG-0005`, `EDG-0006`, `GAP-0343` bis `GAP-0349`. `CURRENT_VORHANDEN=UNKNOWN`. `RUNTIME=UNPROVEN`.
+`CPT-0007` ist untrusted und `UNPROVEN`.
+Keine `CURRENT_VERIFIZIERT`-Aussage.
+`CURRENT_PROVEN` ist nicht vergeben.
+
+| ID-Bereich | Register |
+|---|---|
+| `EVI-0001`–`EVI-1593` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1594`–`EVI-1633` | [evidence.md](REGISTERS/evidence.md), Sammlung `UNTRUSTED`, nicht im Recovery-Cursor |
+| `EVI-1634`–`EVI-1676` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1677`–`EVI-1714` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1715`–`EVI-1752` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1753`–`EVI-1791` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1792`–`EVI-1826` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1827`–`EVI-1870` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1871`–`EVI-1905` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1906`–`EVI-1945` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1946`–`EVI-1981` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-1982`–`EVI-2016` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-2017`–`EVI-2057` | [evidence.md](REGISTERS/evidence.md) |
+| `EVI-2058`–`EVI-2074` | [evidence.md](REGISTERS/evidence.md), Sammlung `UNTRUSTED`, M2DATA, nicht im Recovery-Cursor |
+| `EVI-2075`–`EVI-2084` | [evidence.md](REGISTERS/evidence.md), Sammlung `UNTRUSTED`, Cap21–Cap24-Lesung an `EVI-2062`, nicht im Recovery-Cursor |
+| `EVI-2085`–`EVI-2092` | [evidence.md](REGISTERS/evidence.md), Sammlung `UNTRUSTED`, funktionale M2DATA-Lesung, nicht im Recovery-Cursor |
+| `EVI-2093`–`EVI-2099` | [evidence.md](REGISTERS/evidence.md), Sammlung `UNTRUSTED`, funktionale M2DATA-Lesung WP02, nicht im Recovery-Cursor |
+| `EVI-2100`–`EVI-2106` | [evidence.md](REGISTERS/evidence.md), Sammlung `UNTRUSTED`, funktionale M2DATA-Lesung WP03, nicht im Recovery-Cursor |
+| `EVI-2107`–`EVI-2112` | [evidence.md](REGISTERS/evidence.md), Sammlung `UNTRUSTED`, funktionale M2DATA-Lesung WP04, nicht im Recovery-Cursor |
+| `EVI-2113`–`EVI-2120` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT`, lokaler `origin/main`-Ref ohne Fetch, nicht die Arbeitskopie |
+| `EVI-2121`–`EVI-2124` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT`, statische Aufrufkette, keine `EDG` |
+| `EVI-2125`–`EVI-2128` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT`, Startkette und Übergaben, keine `EDG` |
+| `EVI-2129`–`EVI-2131` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, Namenscensus, Kohärenz `UNPROVEN` |
+| `EVI-2132`–`EVI-2135` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, statische Decision-Kette, keine `EDG` |
+| `EVI-2136`–`EVI-2141` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, fünf Inhaltsbereiche `PARTIAL`, keine `EDG` |
+| `EVI-2142`–`EVI-2146` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, fünf weitere Inhaltsbereiche `PARTIAL`, keine `EDG` |
+| `EVI-2147`–`EVI-2151` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, Safety, Policy, Startup, Selection-Writer, Drawdown, keine `EDG` |
+| `EVI-2152`–`EVI-2155` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, Modellprüfung und drei Funktionen `PARTIAL`, keine `EDG` |
+| `EVI-2156`–`EVI-2161` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, sechs Census-Bereiche `PARTIAL`, keine `EDG`, `SEMANTIC_COMPLETENESS=UNPROVEN` |
+| `EVI-2162`–`EVI-2166` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, Zustandsmodelle getrennt, keine `EDG`, `DATAFLOW_PROVEN` nicht vergeben |
+| `EVI-2167` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, Körper von `transition_state`, keine `TRN` |
+| `EVI-2168` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, Körper von `_both_active_invariant_ok`, keine `TRN` |
+| `EVI-2169` | [evidence.md](REGISTERS/evidence.md), Scope `CURRENT` als Herkunft, Körper von `envelope_valid`, keine `TRN` |
+| `DOM-0001`–`DOM-0014`, `LYR-0001`–`LYR-0300` | [domains_layers.md](REGISTERS/domains_layers.md), Scope `HISTORY` |
+| `DOM-0015`, `LYR-0301`–`LYR-0306` | [domains_layers.md](REGISTERS/domains_layers.md), Scope `CURRENT` als Herkunft |
+| `DOM-0016`, `LYR-0307`–`LYR-0328` | [domains_layers.md](REGISTERS/domains_layers.md), Scope `CURRENT` als Herkunft, Evidenzstatus `UNPROVEN` |
+| `LYR-0329` | [domains_layers.md](REGISTERS/domains_layers.md), Scope `CURRENT` als Herkunft, statische Folge `PARTIAL`, zusätzlich Cycle-Fenster `EVI-2141` und Exit-Aufruf `EVI-2142`, keine Systemkohärenz |
+| `LYR-0307` bis `LYR-0328` | [domains_layers.md](REGISTERS/domains_layers.md), Scope `CURRENT` als Herkunft, jede Census-Zeile `PARTIAL` nur für die gelesene Funktion oder Wiederverwendung, `SEMANTIC_COMPLETENESS=UNPROVEN` |
+| `CON-0001`–`CON-1992`, `EDG-0001`–`EDG-0004`, `STA-0001`–`STA-0009`, `TRN-0001`–`TRN-0007` | [contracts_edges.md](REGISTERS/contracts_edges.md), Scope `HISTORY` |
+| `CON-1993`–`CON-2023` | [contracts_edges.md](REGISTERS/contracts_edges.md), Scope `CURRENT` als Herkunft, keine `EDG` |
+| `CON-2024`–`CON-2028`, `STA-0010`–`STA-0016` | [contracts_edges.md](REGISTERS/contracts_edges.md), Scope `CURRENT` als Herkunft, keine `EDG`, keine `TRN` |
+| `CON-2029` | [contracts_edges.md](REGISTERS/contracts_edges.md), Scope `CURRENT` als Herkunft, Quelltextzweige, keine `TRN` |
+| `CON-2030` | [contracts_edges.md](REGISTERS/contracts_edges.md), Scope `CURRENT` als Herkunft, ein `side`, keine `TRN` |
+| `CON-2031` | [contracts_edges.md](REGISTERS/contracts_edges.md), Scope `CURRENT` als Herkunft, Envelope-Vergleiche, keine `TRN` |
+| `EVI-2187`–`EVI-2200` | [evidence.md](REGISTERS/evidence.md), Scope `HISTORY`, Commit `f8929523`, keine Gleichsetzung mit dem Pin |
+| `DOM-0017`, `LYR-0330`–`LYR-0344` | [domains_layers.md](REGISTERS/domains_layers.md), Scope `HISTORY`, Ablage ohne Wirkungskante |
+| `CON-2049`–`CON-2059`, `EDG-0005`, `EDG-0006` | [contracts_edges.md](REGISTERS/contracts_edges.md), Scope `HISTORY`, zwei statische Kanten |
+| `CON-2060`–`CON-2063` | [contracts_edges.md](REGISTERS/contracts_edges.md), Scope `HISTORY`, vier Konflikte, `DISPUTED` |
+| `CPT-0001`–`CPT-0007` | [concepts.md](REGISTERS/concepts.md) |
+| `GAP-0001`–`GAP-0342` | [gaps_decisions.md](REGISTERS/gaps_decisions.md) |
+| `GAP-0343`–`GAP-0349` | [gaps_decisions.md](REGISTERS/gaps_decisions.md), Scope `HISTORY`, ungelesene Anschlüsse |
+
+`DEMO-*` bleibt ausgeschlossen und steht nur in der Fixture.
+
+Rückverfolgung für das Schema selbst:
+
+`MAPS/system_map.md` → Registerkonvention → keine RUN-ID → Blueprint-Datei in der Workspace-Wurzel.
+Der Pin und der SHA256 stehen im [README](README.md).
+
+## DEMO-Ausschluss
+
+Die folgenden IDs existieren nur in [MAPS/visualization_fixture.md](MAPS/visualization_fixture.md).
+Sie sind Testdaten. Sie sind keine Registereinträge und keine Peak-Trade-Befunde.
+
+| ID | Fixture-Rolle |
+|---|---|
+| `DEMO-DOM-001` | Beispieldomäne |
+| `DEMO-LYR-001` | äußere Ebene |
+| `DEMO-LYR-002` | innere Ebene |
+| `DEMO-LYR-003` | offener Endpunkt |
+| `DEMO-CON-001` | synthetische Guard-Regel |
+| `DEMO-LED-010` | Strukturkante `CONTAINS` |
+| `DEMO-LED-011` | Strukturkante `CONTAINS` |
+| `DEMO-LED-001` | einzige Verbindung mit `DEMO_PROVEN` |
+| `DEMO-LED-002` | unbewiesene Verbindung |
+| `DEMO-LED-003` | Konfliktanteil `EXTENDS` |
+| `DEMO-LED-004` | Konfliktanteil `REPLACES` |
+| `DEMO-STA-001` | Ausgangszustand |
+| `DEMO-STA-002` | Folgezustand |
+| `DEMO-TRN-001` | Übergang mit Guard |
+| `DEMO-EVI-001` | synthetische Evidenzreferenz |
+| `DEMO-GAP-001` | synthetischer Konflikt |
+| `DEMO-GAP-002` | offener Endpunkt |
+
+## Unveränderte externe Dateien
+
+Nicht dupliziert:
+
+- [PEAK_TRADE_MD_RECOVERY_ERKENNTNISSE_MASTER.md](PEAK_TRADE_MD_RECOVERY_ERKENNTNISSE_MASTER.md) ist für die §3C-Konzepterfassung gelesen. SHA256 `a224bcafb70282d5de0948e46092e263a22d974eeed6b02dc40ad2d1cc659c59`. Keine neue `CPT`. Keine globale Vollständigkeit.
+- [MD_RECOVERY_INVENTORY_2026-10-29.csv](MD_RECOVERY_INVENTORY_2026-10-29.csv) bleibt in diesem Paket nicht bewertet.
+- [PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_9_OBSIDIAN_INTEGRATION.md](PEAK_TRADE_RECONSTRUCTION_PILOT_BLUEPRINT_V0_9_OBSIDIAN_INTEGRATION.md)
+
+
+## RUN-0077 — Dokumentationsabgleich (COMMITTED)
+
+[Gesamtkonstrukt und gesamte bisherige Erkenntnisse](MAPS/GESAMTKONSTRUKT_ABGLEICH_2026_11_02.md) · [Originalbericht](RUNS/RUN-0077/RUN-0077.md) · [Status](RUNS/RUN-0077/STATUS.md) · [Manifest](RUNS/RUN-0077/MANIFEST.md).
+
+EVI-2201–EVI-2299: 99 datierte lokale Berichtsquellen; CON-2064–CON-2107: 36 Themenfortschreibungen und acht semantische Ableitungen; GAP-0350–GAP-0357: offene Querschnittsfragen. Keine neue DOM/LYR/EDG/LED/STA/TRN/CPT, kein neues CURRENT_PROVEN. Schema unverändert; Recovery-Cursor unverändert.
+
+
+## RUN-0078 — Double-Play-Fachvertrag
+
+[Double-Play-Fachvertrag](MAPS/DOUBLE_PLAY_FACHVERTRAG.md) · [Originalbericht](RUNS/RUN-0078/RUN-0078.md) · [Status](RUNS/RUN-0078/STATUS.md) · [Manifest](RUNS/RUN-0078/MANIFEST.md).
+
+CON-2108–CON-2127; EVI-2300–EVI-2304; GAP-0358–GAP-0363. Keine neuen Kanten/Zustände/Domänen oder Schemaänderung.
+
+Abschluss RUN-0078: COMMITTED als begrenzter Dokumentations-/Rekonstruktionsstand; Double-Play-Fachvertrag noch offen, keine neue Zielratifikation.
+
+
+## RUN-0079 — Owner-Regel zur konsekutiven Confirmation
+
+[Owner-Festlegung](RUNS/RUN-0079/RUN-0079.md) · [Status](RUNS/RUN-0079/STATUS.md) · [Manifest](RUNS/RUN-0079/MANIFEST.md). EVI-2305 und CON-2128; Revision GAP-0360; keine neue GAP/EDG/LYR/DOM/STA/TRN/CPT.
+
+
+## RUN-0080 — Beobachtung, Richtung und Confirmation
+
+[Originalbericht](RUNS/RUN-0080/RUN-0080.md) · [Status](RUNS/RUN-0080/STATUS.md) · [Manifest](RUNS/RUN-0080/MANIFEST.md). EVI-2306–EVI-2314, CON-2129–CON-2140, GAP-0364–GAP-0366. Neue CURRENT-Aussagen nur Statik; keine neue TARGET-Regel.
+
+RUN-0080 COMMITTED als begrenzter statischer Vertragsabgleich; Double Play insgesamt weiterhin offen.
+
+
+## RUN-0081 — Signalstärke und Policybindung
+
+[Originalbericht](RUNS/RUN-0081/RUN-0081.md) · [Status](RUNS/RUN-0081/STATUS.md) · [Manifest](RUNS/RUN-0081/MANIFEST.md). CON-2141–CON-2152, EVI-2315–EVI-2321, GAP-0367–GAP-0368; additive Revision GAP-0364/0365.
+
+RUN-0081 COMMITTED; fachlicher Gesamtvertrag und produktive E2E-Wirkung weiter unbewiesen.
+
+
+## RUN-0082 — Zweifachregel nur für den Einstieg
+
+[Originalbericht](RUNS/RUN-0082/RUN-0082.md) · [Status](RUNS/RUN-0082/STATUS.md) · [Manifest](RUNS/RUN-0082/MANIFEST.md). EVI-2322, CON-2153/CON-2154; Scope-Revision bestehender Regeln/Gaps, keine neue GAP-/Zustands-/Kanteninstanz.
+
+RUN-0082 COMMITTED als Owner-Präzisierung; Gesamtvertrag/-funktion weiterhin nicht abgenommen.
+
+
+## RUN-0083 — Ebenenkonfiguration und historische Phasentrennung
+
+[Originalbericht mit L1–L10 und Bedeutungsabgleich](RUNS/RUN-0083/RUN-0083.md) · [Quellen und Revisionen](RUNS/RUN-0083/SOURCE_MANIFEST.json). CON-2155–CON-2160, EVI-2323–EVI-2345, GAP-0369. Initialisierung ist keine ausgeführte Entry-Order; L10-Geometrie und spätere C3-Zulässigkeitsvariante getrennt. Laufende Nulllinie und feste L5-Basis nicht gleichsetzen. Historischer Switch-Stale-Bezug gefunden, keine eindeutige heutige Identität. Aktuelle Owner-Regeln CON-2153/CON-2154 unverändert; keine Runtime-/E2E-Abnahme.
+
+RUN-0083 COMMITTED als begrenzter Quellen-/Dokumentationsabgleich; keine Gesamtfunktionsabnahme.
+
+
+## RUN-0084 — Nulllinie und C3-Rolle
+
+[Owner-Präzisierung und verständliche C3-Einordnung](RUNS/RUN-0084/RUN-0084.md): Nulllinie eindeutig laufender tatsächlicher Marktpreis mit fortlaufender Darstellung (CON-2161/EVI-2346). Feste L5-Anfangspreisbasis separat. C3 liefert im gelesenen Code einen konsumierten Bestätigungs-/Richtungsinput für die Entscheidungsprüfung; zusätzliche Lernconsumer offen. Kein Beweis bereits durchgängiger Anzeige oder Gesamtintegration.
+
+RUN-0084 COMMITTED als Owner-Präzisierung und begrenzte Rollenklärung; Funktionsnachweis offen.
+
+
+## RUN-0085 — C3 genau erklärt
+
+[Ursprung, Eingänge, Rechnung, Gedächtnis und Entscheidungsconsumer](RUNS/RUN-0085/RUN-0085.md). CON-2162/EVI-2347–EVI-2349 ergänzen die Primärherkunft; frühere Current-Belege wiederverwendet. C3 integriert Richtungsbewertung und Bestätigungsfortschritt; konkrete Entscheidungskette getrennt von L10-Geometrie. Schlusskurspfad-Qualifikation nicht automatisch zweimal laufende Marktrichtung. Zusätzliche Lernconsumer und heutige Gesamtwirkung nicht vollständig belegt.
+
+RUN-0085 COMMITTED als begrenzte C3-Funktionsrekonstruktion; keine Runtime-/Gesamtabnahme.
+
+
+## RUN-0086 — Äußere Halteschnittstelle
+
+[Owner-Klarstellung](RUNS/RUN-0086/RUN-0086.md): C3 dient Auswertung/Abgleich; der separate Hold liegt laut Owner außerhalb Master V2 und Ranking Universe (CON-2163/EVI-2350). Konkrete Implementierung und Consumerbindung noch offen. Keine Gleichsetzung C3=Hold.
+
+RUN-0086 COMMITTED als Owner-Klarstellung; technische Integration unbewiesen.
+
+
+## RUN-0087 — Codierter äußerer Hold-/Auswertungspfad
+
+[Ursprung, konkrete Übergaben und M2-Codefund](RUNS/RUN-0087/RUN-0087.md): Top20 Opportunity Evaluation Residency & Scheduling, PR7022/d62eb64c, 02.10.2026. CON-2164–CON-2167/EVI-2351–EVI-2355. Instrument-/Admission-Kontext bleibt zur Evaluation erhalten; C3 wird im nachgelagerten Corepfad verwendet, Auswertungs-Witness kommt separat zurück. Evaluation COMPLETED kann HOLD bedeuten. Aktuelle Betriebsaktivierung und Identität mit weiterem Berechnungs-Hold nicht bewiesen.
+
+RUN-0087 COMMITTED als begrenzter Quellen-/Codeabgleich; keine Gesamtfunktion oder Aktivierung bewiesen.
+
+
+## RUN-0088 — Aktuelle Definition: Sicherheitsprüfung vor GGE
+
+[Maßgebliche Owner-Präzisierung](RUNS/RUN-0088/RUN-0088.md), CON-2168/EVI-2356: Hold wartet auf keinerlei Einstieg. Sicherheitsbewertung: unsicher verwerfen; sicher an **GGE** weitergeben; Entry erst später. Gefundene Residency belegt noch nicht diese vollständige Sicherheits-/GGE-Schnittstelle. Technische Identität nun ausdrücklich GAP-0370 offen.
+
+RUN-0088 COMMITTED als fachliche Präzisierung; technische Identifikationsaufgabe nicht abgeschlossen.
+
+
+## RUN-0089 — Frühe Prüfung und Bedeutung von C3
+
+[Konkrete Prüfkriterien, Consumer und C3-Beispiel](RUNS/RUN-0089/RUN-0089.md). CON-2169/CON-2170, EVI-2357–EVI-2361. Älterer Readiness-Prüfer codiert und extern erhalten; vollständiger Sicherheits-Hold mit Verwerfen/GGE-Weitergabe weiterhin GAP-0370. C3 CONFIRMED ist qualifizierter Richtungs-/Fortschrittsstatus; keine allgemeine Sicherheit oder Entry-Erfolg. Keine Produktänderung/Runtime.
+
+RUN-0089 COMMITTED als begrenzter Quellenabgleich; gesuchte technische Sicherheitsintegration weiter offen.
+
+
+## RUN-0090 — A/B und Sicherheits-GGE-Spur
+
+[Prüfgegenstand, Ablehnung und tatsächlicher L6-Verbrauch](RUNS/RUN-0090/RUN-0090.md), CON-2171/EVI-2362–EVI-2363. A/B prüft/bindet Evidence; tatsächlicher Future-Sicherheitsproducer und Ausschluss/GGE-Consumer weiterhin GAP-0370. A/B kann Teil der Schutzkette sein, vollständige Gleichsetzung nicht bewiesen.
+
+RUN-0090 COMMITTED als begrenzter A/B-Abgleich; vollständige gesuchte Sicherheitsintegration offen.
+
+
+## RUN-0091 — Vor A und hinter B
+
+[Konkrete Producer, Quality-Score und Consumerwirkung](RUNS/RUN-0091/RUN-0091.md), CON-2172–CON-2174/EVI-2364–EVI-2365. Analytische Evidencezulassung und Materialisierung konkret belegt; tatsächlicher Future-Sicherheits-/Kandidatenausschluss-/GGE-Weg weiterhin GAP-0370. Mechanische Konstanten und configuration_applied=False ausdrücklich von produktiver Wertwirkung getrennt.
+
+RUN-0091 COMMITTED als begrenzter Anschlussabgleich; ursprüngliche technische Sicherheitsidentifikation offen.
+
+
+## RUN-0092 — Zeitmodell entfernt; Sicherheitsanschluss abgegrenzt
+
+[Originalbericht](RUNS/RUN-0092/RUN-0092.md) · [Patch, JUnit, Quellen/Hashes](RUNS/RUN-0092/SOURCE_MANIFEST.json) · [Status](RUNS/RUN-0092/STATUS.md) · [Manifest](RUNS/RUN-0092/MANIFEST.md).
+
+COMMITTED als begrenzter Dokumentations-/Änderungsnachweis: EVI-2366–EVI-2373, CON-2175–CON-2177, Fortschreibung GAP-0370. Residency-Duration/Deadline/Ablaufcode lokal entfernt; Adapter-/Vergleichs-/Persistenzdaten erhalten. 102 Offline-Prüfungen bestanden, 1 wegen fehlender historischer Evidence übersprungen. Lokaler uncommitteter Code gegen HEAD242b7974 ist getrennt vom unveränderten Ledger-Pin5d1c838c. Keine Gesamtfunktionsabnahme oder Aktivierung. Vorhandene alte Residency-Zustände werden unverändert abgewiesen, nicht automatisch migriert. Vollständige WS→Sicherheitsprüfung→GGE-Integration bleibt offen. Nächster fachlicher Schritt: diese konkrete Daten-/Consumer-Verbindung schließen; kein automatischer Discovery-Folgelauf, keine neue Recovery, keine Live-/Orderfreigabe.
+
+
+## RUN-0093 — Sofort verwerfen oder unverändert weitergeben
+
+[Originalbericht](RUNS/RUN-0093/RUN-0093.md) · [Source/JUnit/Hashes](RUNS/RUN-0093/SOURCE_MANIFEST.json) · [Status](RUNS/RUN-0093/STATUS.md) · [Manifest](RUNS/RUN-0093/MANIFEST.md).
+
+COMMITTED als begrenzter lokaler Änderungs-/Dokumentationsnachweis. EVI-2374–EVI-2376, CON-2178–CON-2180; GAP-0370 bleibt offen. Fehlende/ungültige erforderliche Daten verwerfen Kandidaten vor GGE; bestandene Daten gehen unverändert weiter. Keine eigene WS-Anbindung/kein WAIT. Drei Cold/Warm-Resultate mit/ohne Abgleich vollständig identisch; 64 Prüfungen PASS, zwei bereits am Vorherstand reproduzierte Fehler separat dokumentiert. Keine Core-Policyänderung, keine Aktivierung und keine Gesamtgarantie. Beobachtungshelper enthält weiterhin feste Ersatzwerte: echte Feldherkunft/Missing-Semantik bleibt der nächste konkrete Prüfpunkt. Ledger-Pin5d1c838c unverändert, lokale uncommittete Codebasis242b7974 getrennt. Vorherige Berichte unverändert; kein automatischer Discovery-/Recovery-/Runtime-Folgelauf.

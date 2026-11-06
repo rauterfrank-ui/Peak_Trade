@@ -1,0 +1,22 @@
+BYPASS_FILE=src/backtest/engine.py
+BYPASS_SYMBOL=BacktestEngine.run_realistic
+BYPASS_CLASSIFICATION=LEGACY_QUARANTINED
+BYPASS_SECOND_AUTHORITY=false
+BYPASS_USES_TRANSITION_STATE=false
+BYPASS_USES_COMPOSITION_MATRIX=false
+BYPASS_CAN_REACH_ORDER_INTENT=false
+BYPASS_CAN_REACH_EXECUTION=false
+CLASSIC_LONG_IS_CANONICAL=false
+CLASSIC_LONG_PROPAGATES_TO_INTEGRATED=false
+
+--- engine markers ---
+498:    def run_realistic(
+654:            if signal == 1 and current_trade is None:
+655:                # LONG ENTRY
+835:            elif signal == -1 and current_trade is not None:
+
+--- prior audit disposition ---
+2:VERDICT=Classic BacktestEngine.run_realistic LONG bypass is LEGACY_QUARANTINED; under OPTION_D it cannot set ENTRY_SIDE or reach canonical order intent — keep OPTION_D.
+9:BYPASS_CLASSIFICATION=LEGACY_QUARANTINED
+17:BYPASS_SECOND_AUTHORITY=false
+23:NEXT_RECOMMENDED_ACTION=KEEP_OPTION_D

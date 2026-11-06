@@ -1,0 +1,13 @@
+# Safety attestation — CSHRVF v1 preregistration
+
+- `HOLDOUT_ACCESSED=false`
+- `EVALUATION_EXECUTED=false`
+- `STRATEGY_IMPLEMENTED=false`
+- `RUNTIME_AUTHORIZED=false`
+- `SHADOW_AUTHORIZED=false`
+- `TESTNET_AUTHORIZED=false`
+- `LIVE_AUTHORIZED=false`
+- `ORDERS=false`
+- Dataset binding only; no panel load
+
+docs_token: DOCS_TOKEN_PREREGISTER_CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_HYPOTHESIS_V1_SAFETY

@@ -1,0 +1,127 @@
+{
+  "MANIFEST_ID": "WHOLE_SYSTEM_CONFIGURATION_INJECTION_MANIFEST_V1",
+  "WORK_PACKAGE_ID": "WSFC-GHV-STATIC-WHOLE-SYSTEM-CARTOGRAPHY-BWP-02",
+  "SUBSLICE": "BWP02-R-FINAL-CONFIGURATION-FIXPOINT",
+  "AUTHORITY": "NONE",
+  "APPLICATION_AUTHORIZED": false,
+  "DERIVED_FROM": [
+    "WHOLE_SYSTEM_CONTROL_AND_COHERENCE_BWP02_Q_V1.json",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "src/ops/full_core_live_path_composition_root_v1/",
+    "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py"
+  ],
+  "ATOMIC_CHANGE_SETS": [
+    {
+      "ATOMIC_SET_ID": "ATOMIC-01",
+      "TITLE": "F1/M9 per-cycle gate binds to lane G17 market context",
+      "MUST_APPLY_TOGETHER": true,
+      "CHANGE_IDS": ["INJ-001"],
+      "RATIONALE": "Cycle admission gate must not use frozen test CanonicalMarketContext while S5/S7 uses live G17 producer"
+    },
+    {
+      "ATOMIC_SET_ID": "ATOMIC-02",
+      "TITLE": "Scoped residency CLI coalesce (default remains OFF)",
+      "MUST_APPLY_TOGETHER": true,
+      "CHANGE_IDS": ["INJ-002"],
+      "RATIONALE": "When scoped flags used, integrated eval config must coalesce; default productive path unchanged"
+    },
+    {
+      "ATOMIC_SET_ID": "ATOMIC-03",
+      "TITLE": "B10 input2 max-age ratification (Owner policy; no numeric default)",
+      "MUST_APPLY_TOGETHER": true,
+      "CHANGE_IDS": ["INJ-003"],
+      "RATIONALE": "Separate Owner ratification; until then UNRATIFIED is coherent target"
+    }
+  ],
+  "INJECTION_DEPENDENCY_DAG": [
+    {"from": "INJ-003", "to": "INJ-002", "relation": "optional_ordering_only"},
+    {"from": "INJ-002", "to": "INJ-001", "relation": "independent"},
+    {"from": "INJ-001", "to": "RUNTIME_PROOF_NE", "relation": "proof_after_wiring"}
+  ],
+  "CHANGES": [
+    {
+      "CHANGE_ID": "INJ-001",
+      "ATOMIC_SET": "ATOMIC-01",
+      "CONTROL_IDS": ["CTRL-F1M9-SEAM-001"],
+      "FILES": ["scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py"],
+      "SYMBOLS": ["_build_f1_m9_evaluator", "f1_m9_cycle_evaluator"],
+      "CURRENT": "evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1 with tests._bound_context(tests._valid_estimate()) frozen per run",
+      "TARGET": "Per-cycle market_context + eligibility derived from same LANE G17 typed-vol producer passed to run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1 (prepare/bind parity with current_productive_fresh_runtime G17 join)",
+      "RATIONALE": "CONF-001 static resolution; governance wiring is production-capable but cycle gate decoupled from G17",
+      "CANONICAL_AUTHORITY": "docs/ops/specs/PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1.md; f1_m9_productive_runtime_threshold_consumer_wiring_v1 NORMATIVE_SPEC",
+      "IMPLEMENTATION_TYPE": "WIRING",
+      "DEPENDENCIES": [],
+      "GHV_NODES": ["CMP-M01", "CMP-B07", "CMP-E04", "CMP-G04"],
+      "GHV_EDGES": ["GHV-E-CMP-CMP-B07-CMP-E01", "GHV-E-FIT-binding_to_mv2"],
+      "EXPECTED_EFFECT": "F1/M9 cycle gate semantics align with per-cycle typed-vol on MV2/DP path",
+      "MUST_NOT_CHANGE": ["RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS=600", "require_governed_seam=True", "POST_ALLOWED=false"],
+      "STATIC_ACCEPTANCE_CRITERIA": "No imports from tests.* in M01 default evaluator path; evaluator closure reads producer output for bound instrument",
+      "LATER_RUNTIME_PROOF_REQUIRED": true
+    },
+    {
+      "CHANGE_ID": "INJ-002",
+      "ATOMIC_SET": "ATOMIC-02",
+      "CONTROL_IDS": ["CTRL-RES-ENABLE-001", "CTRL-RES-GATE-001", "CTRL-RES-COALESCE-001"],
+      "FILES": [
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py"
+      ],
+      "SYMBOLS": ["scoped_residency_integrated_evaluation", "enable-scoped-top20-evaluation-residency-v1", "enable-cap23-residency-eligibility-gate-v1"],
+      "CURRENT": "M01 sets scoped_integrated_eval=None even when residency/gate flags on; cap21 coalesce path exists but runner handoff incomplete",
+      "TARGET": "Default OFF unchanged; when scoped flags ON, pass coalesced ScopedResidencyIntegratedEvaluationConfigV1 OR fail-closed before persist",
+      "RATIONALE": "CFG-SET-01 = FIX_PROPAGATION_WITHOUT_ACTIVATION + BIND_DEFAULT_OFF_COHERENTLY",
+      "CANONICAL_AUTHORITY": "Master Runbook Cap2.3 residency gate; scoped_residency_integrated_evaluation_propagation_v1",
+      "IMPLEMENTATION_TYPE": "PROPAGATION",
+      "DEPENDENCIES": [],
+      "GHV_NODES": ["CMP-C03", "CMP-C04", "CMP-C07", "CMP-M01"],
+      "EXPECTED_EFFECT": "No silent partial residency activation; default productive config unchanged",
+      "MUST_NOT_CHANGE": ["TOP20_EVALUATION_RESIDENCY_ENABLED=false default", "CAP23_RESIDENCY_ELIGIBILITY_GATE_ENABLED=false default"],
+      "STATIC_ACCEPTANCE_CRITERIA": "With flags off, byte-equivalent behavior to current; with flags on, coalesce invoked or fail-closed",
+      "LATER_RUNTIME_PROOF_REQUIRED": true
+    },
+    {
+      "CHANGE_ID": "INJ-003",
+      "ATOMIC_SET": "ATOMIC-03",
+      "CONTROL_IDS": ["CTRL-B10-INPUT2-001"],
+      "FILES": [
+        "src/ops/peak_trade_ranking_matrix_policy_v1.py",
+        "docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md"
+      ],
+      "SYMBOLS": ["INPUT2_MAX_AGE_SECONDS", "INPUT2_MAX_AGE_SECONDS_RATIFIED"],
+      "CURRENT": "INPUT2_MAX_AGE_SECONDS=UNRATIFIED; INPUT2_MAX_AGE_SECONDS_RATIFIED=false",
+      "TARGET": "Remain UNRATIFIED until Owner ratification BWP; then numeric value from ratified policy only",
+      "RATIONALE": "B10 backlog; coherent CURRENT is explicit non-ratification",
+      "CANONICAL_AUTHORITY": "Master Runbook UNRATIFIED_POLICY_GAP_INPUT2_MAX_AGE_SECONDS; PEAK_TRADE_RANKING_MATRIX_POLICY_V1",
+      "IMPLEMENTATION_TYPE": "CONFIGURATION",
+      "DEPENDENCIES": ["Owner policy ratification"],
+      "GHV_NODES": ["CMP-C02", "CMP-B04"],
+      "EXPECTED_EFFECT": "Ranking input-2 age semantics become explicit when ratified",
+      "MUST_NOT_CHANGE": ["Cap23 selection authority", "fail-closed when UNRATIFIED"],
+      "STATIC_ACCEPTANCE_CRITERIA": "Ratification sets RATIFIED=true and finite seconds; until then witnesses show UNRATIFIED",
+      "LATER_RUNTIME_PROOF_REQUIRED": false
+    },
+    {
+      "CHANGE_ID": "INJ-DOC-001",
+      "ATOMIC_SET": null,
+      "CONTROL_IDS": ["CTRL-SYN-ENTER-001"],
+      "IMPLEMENTATION_TYPE": "DOCUMENTATION",
+      "CURRENT": "CLI flags documented",
+      "TARGET": "Runner ops doc: synthetic flags must not be used for productive natural-enter proof",
+      "LATER_RUNTIME_PROOF_REQUIRED": false
+    }
+  ],
+  "NO_CHANGE_CONTROLS_SUMMARY": {
+    "COUNT": 88,
+    "EXAMPLES": [
+      "CTRL-SAFE-POST-001",
+      "CTRL-MAXPOS-001",
+      "CTRL-CAP23-OWNER-001",
+      "CTRL-CAP24-BIND-001",
+      "CTRL-S5-POST-001",
+      "CTRL-LEARN-AUTH-001"
+    ]
+  },
+  "RESIDENCY_TARGET_STATE": "OFF",
+  "CFG_SET_01_CLASSIFICATION": "FIX_PROPAGATION_WITHOUT_ACTIVATION"
+}

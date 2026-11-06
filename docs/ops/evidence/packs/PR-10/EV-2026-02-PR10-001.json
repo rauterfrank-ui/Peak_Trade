@@ -1,0 +1,24 @@
+{
+  "evidence_id": "EV-2026-02-PR10-001",
+  "pr_id": "PR-10",
+  "component": "telemetry_escalation_network_gate",
+  "claim": "Outbound escalation (PagerDuty/Telemetry allow_network=true) is deterministically gated behind config-based live safety flags and confirm token; default config blocks network escalation.",
+  "level": "E2",
+  "status": "enforced",
+  "artifacts": [
+    { "type": "code", "path": "src/infra/escalation/network_gate.py" },
+    { "type": "code", "path": "src/infra/escalation/providers.py" },
+    { "type": "test", "path": "tests/infra/test_network_escalation_gate.py" },
+    { "type": "config", "path": "config/telemetry_alerting.toml" }
+  ],
+  "how_to_verify": {
+    "commands": [
+      "python3 -m pytest -q tests/infra/test_network_escalation_gate.py"
+    ],
+    "expected": [
+      "exit_code=0",
+      "3 passed"
+    ]
+  },
+  "notes": "Gate is enforced before urllib.request.urlopen() in PagerDuty provider. Default allow_network=false remains safe. When allow_network=true, config must satisfy enable_live_trading=true, live_mode_armed=true and confirm_token==LIVE_CONFIRM_TOKEN (if require_confirm_token=true)."
+}

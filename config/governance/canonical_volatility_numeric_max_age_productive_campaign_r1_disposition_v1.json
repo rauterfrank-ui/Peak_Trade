@@ -1,0 +1,15 @@
+{
+  "abandoned_repository_sha": "b9f3ddcc5cb0f79160d20fb74e5cf4c77834c4da",
+  "artifact_digest": "b77ec5582782326e4f95152ae12e6223daec8ee9423cf8df4cd9a2495eab5d24",
+  "campaign_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe",
+  "completion_allowed": false,
+  "disposition": "ABANDONED_INCOMPLETE_NON_AUTHORITATIVE",
+  "owner_policy": "R1_ABANDON_OLD_CAMPAIGN_AND_START_NEW_CAMPAIGN_FROM_FRESH_S01",
+  "reactivation_allowed": false,
+  "schema_version": "canonical_volatility_numeric_max_age_productive_campaign_r1_disposition/v1",
+  "session_ids": [
+    "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s01_8a97f48c839c",
+    "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s02_c02312c99747"
+  ],
+  "session_reuse_allowed": false
+}

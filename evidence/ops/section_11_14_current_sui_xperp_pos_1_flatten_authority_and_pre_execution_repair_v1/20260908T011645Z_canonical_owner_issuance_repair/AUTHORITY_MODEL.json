@@ -1,0 +1,28 @@
+{
+  "AUTHORITY_IS_SINGLE_USE": true,
+  "CHAT_IS_NOT_AUTHORITY": true,
+  "CLI_FLAG_IS_NOT_AUTHORITY": true,
+  "ENV_IS_NOT_AUTHORITY": true,
+  "EVALUATOR_IS_NOT_ISSUER": true,
+  "PRODUCER": "issue_owner_flatten_authority_v1",
+  "VERIFIER": "evaluate_flatten_go_candidate_v1/verify_owner_flatten_issuance_v1",
+  "authority_id_fields": [
+    "schema_version",
+    "authority_type",
+    "section",
+    "purpose",
+    "action",
+    "origin_main_sha",
+    "exact_envelope_id",
+    "instrument_id",
+    "expected_signed_position",
+    "order_side",
+    "order_qty",
+    "order_qty_unit",
+    "reduce_only",
+    "single_use"
+  ],
+  "authority_source_required": "CANONICAL_OWNER_ISSUANCE",
+  "authority_type": "OWNER_FLATTEN_ISSUANCE_V1",
+  "schema_version": "owner_flatten_issuance.v1"
+}

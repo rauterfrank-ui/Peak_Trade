@@ -1,0 +1,32 @@
+{
+  "review_id": "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1",
+  "work_package": "GHOSV_EXECUTION_LIFECYCLE_CORRECTION_AND_PROOF_V1",
+  "status": "PASS",
+  "confirmed_defect_count": 0,
+  "unresolved_blocking_risk_count": 0,
+  "remediated_prior_defects": [
+    {
+      "id": "LIFECYCLE_POST_SUBMISSION_FALSE_POSITIVE",
+      "class": "GHOSV_OBSERVATION_GAP",
+      "fix": "adjudicate_confirmed_venue_post_submission_v1 requires post_occurred=true or G004 submit confirmation"
+    }
+  ],
+  "checks": {
+    "false_post_submission_positive": false,
+    "missing_post_count_treated_as_zero": false,
+    "conflicting_post_witnesses_fail_closed": true,
+    "cross_file_identity_mismatch_inconsistent": true,
+    "incorrect_lifecycle_precedence": false,
+    "g004_confirmed_filled_not_standalone_fill": true,
+    "venue_ack_not_fill": true,
+    "synthetic_event_inference": false,
+    "incomplete_evidence_false_green": false,
+    "false_green_traffic": false,
+    "safety_authority_leakage": false
+  },
+  "accepted_limitations": [
+    "Operator-supplied trade_id for S02 grouping unchanged",
+    "CROSS_FILE_SNAPSHOT_GUARANTEE=NONE",
+    "No productive venue POST evidence in CURRENT runs scanned"
+  ]
+}

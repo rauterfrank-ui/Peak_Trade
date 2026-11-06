@@ -1,0 +1,19 @@
+name: Good Dispatch Example
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Mode"
+        required: true
+        default: "dry-run"
+      target:
+        description: "Target"
+        required: false
+        default: "all"
+
+jobs:
+  example:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        run: echo "mode=${{ github.event.inputs.mode }} target=${{ github.event.inputs['target'] }}"

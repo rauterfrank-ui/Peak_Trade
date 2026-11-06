@@ -1,0 +1,9 @@
+{"class": "entry", "cycle_index": 2, "decision_outcome": "enter_long", "intended_quantity": "0.10", "intended_side": "BUY", "intent_action": "ENTER_LONG", "reason_codes": ["entry_long_eligible"]}
+{"class": "exit", "cycle_index": 5, "decision_outcome": "exit", "intended_quantity": "0.10", "intended_side": "SELL", "intent_action": "SIZING::exit", "reason_codes": ["profit_protection_exit", "profit_lock"]}
+{"class": "entry", "cycle_index": 6, "decision_outcome": "enter_long", "intended_quantity": "0.04", "intended_side": "BUY", "intent_action": "ENTER_LONG", "reason_codes": ["entry_long_eligible"]}
+{"class": "entry", "cycle_index": 2, "decision_outcome": "enter_short", "intended_quantity": "0.12", "intended_side": "SELL", "intent_action": "ENTER_SHORT", "reason_codes": ["entry_short_eligible"]}
+{"class": "reduce", "cycle_index": 4, "decision_outcome": "reduce", "intended_quantity": "0.12", "intended_side": "BUY", "intent_action": "NONE", "reason_codes": ["adverse_scope_exit", "adverse_scope_exit_matched", "CANONICAL_DECISION_NOT_ACTIONABLE"]}
+{"class": "entry", "cycle_index": 2, "decision_outcome": "enter_long", "intended_quantity": "0.10", "intended_side": "BUY", "intent_action": "ENTER_LONG", "reason_codes": ["entry_long_eligible"]}
+{"class": "reduce", "cycle_index": 4, "decision_outcome": "reduce", "intended_quantity": "0.10", "intended_side": "SELL", "intent_action": "SIZING::reduce", "reason_codes": ["adverse_scope_exit", "adverse_scope_exit_matched"]}
+{"class": "entry", "cycle_index": 2, "decision_outcome": "enter_long", "intended_quantity": "0.10", "intended_side": "BUY", "intent_action": "ENTER_LONG", "reason_codes": ["entry_long_eligible"]}
+{"class": "exit", "cycle_index": 4, "decision_outcome": "exit", "intended_quantity": "0.10", "intended_side": "SELL", "intent_action": "SIZING::exit", "reason_codes": ["time_exit", "time_limit"]}

@@ -1,0 +1,29 @@
+{
+  "after": [
+    "Step-5 Execution CLI",
+    "Step-5 Activation + Wiring gate",
+    "ephemeral NETWORK_SESSION_GO (parameter-only, default false)",
+    "SHA / session-contract / binding-config digest binding",
+    "capability + authorization + confirm-token scope binding",
+    "Step-4-pattern authorization adapter (validate; consume deferred)",
+    "Step-4-pattern hidden-PTY confirm-token adapter (validate; consume deferred)",
+    "canonical Public-MD fetcher factory wired",
+    "bounded prolonged Public-MD executor (later session only)",
+    "Public-MD GET-only boundary",
+    "evidence + verifier",
+    "process cleanup"
+  ],
+  "before": [
+    "Step-5 Execution CLI execute-governed-session",
+    "digest/auth/token validate-only",
+    "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+    "NETWORK_SESSION_ALLOWED_FALSE",
+    "REAL_NETWORK_FETCHER_NOT_WIRED_IN_THIS_CAPABILITY",
+    "FAIL_CLOSED_NO_NETWORK_NO_CONSUME"
+  ],
+  "missing_edges_before": [
+    "REAL_PUBLIC_MD_FETCHER_WIRE_INTO_STEP5_EXECUTOR",
+    "EPHEMERAL_NETWORK_SESSION_GO_GATE",
+    "STEP4_PATTERN_ACTIVATION_PERMIT_FOR_STEP5"
+  ]
+}

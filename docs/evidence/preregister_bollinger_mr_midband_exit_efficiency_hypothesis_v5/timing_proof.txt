@@ -1,0 +1,3 @@
+TIMING_PROOF_NOT_REQUIRED_JUSTIFIED
+REASON=definition_only_preregistration_no_evaluation_runner_no_panel_load
+SELECTOR_SCOPE=focused_non_evaluation_contract_tests_only

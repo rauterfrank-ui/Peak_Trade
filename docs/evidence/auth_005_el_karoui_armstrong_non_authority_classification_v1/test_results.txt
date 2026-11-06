@@ -1,0 +1,74 @@
+FOCUSED_TESTS=auth005+armstrong+el_karoui+combi+research_strategies+registry_consolidation
+RESULT=341 passed
+LINT=PASS (ruff format --check + ruff check on touched py files)
+---
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 341 items
+
+tests/strategies/test_auth_005_el_karoui_armstrong_non_authority_classification_v1.py . [  0%]
+..........                                                               [  3%]
+tests/strategies/test_r_and_d_armstrong_el_karoui_safety.py ......       [  4%]
+tests/strategies/armstrong/test_armstrong_cycle_strategy.py ............ [  8%]
+...................................                                      [ 18%]
+tests/strategies/armstrong/test_cycle_model.py ......................... [ 26%]
+..                                                                       [ 26%]
+tests/strategies/el_karoui/test_el_karoui_volatility_strategy.py ....... [ 28%]
+...........................................                              [ 41%]
+tests/strategies/el_karoui/test_vol_model.py ........................... [ 49%]
+...................................................                      [ 64%]
+tests/test_armstrong_elkaroui_combi_experiment.py ...................... [ 70%]
+..................                                                       [ 75%]
+tests/test_research_strategies.py ...................................... [ 87%]
+.                                                                        [ 87%]
+tests/strategies/test_strategy_registry_consolidation_v1.py ............ [ 90%]
+...............................                                          [100%]
+
+=============================== warnings summary ===============================
+tests/strategies/test_strategy_registry_consolidation_v1.py::test_36_research_entry_uses_registry
+  /Users/frnkhrz/Peak_Trade/tests/strategies/test_strategy_registry_consolidation_v1.py:268: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/frnkhrz/Peak_Trade/scripts/research_run_strategy.py' mode='r' encoding='UTF-8'>
+    src = open(mod.__file__).read()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/strategies/test_strategy_registry_consolidation_v1.py::test_37_backtest_entry_uses_registry
+  /Users/frnkhrz/Peak_Trade/tests/strategies/test_strategy_registry_consolidation_v1.py:276: ResourceWarning: unclosed file <_io.TextIOWrapper name='/Users/frnkhrz/Peak_Trade/scripts/run_backtest.py' mode='r' encoding='UTF-8'>
+    src = open(mod.__file__).read()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 341 passed, 2 warnings in 2.87s ========================
+---RUFF---
+All checks passed!
+
+=== PR_BOUNDED_FULL_SELECTOR_TARGETS ===
+SELECTOR_MODE=PR_BOUNDED_FULL
+SELECTOR_REASON=category_central_src_requires_full
+TIMING_WALLCLOCK_SECONDS=45.30
+TIMING_TARGET_MAX_SECONDS=840
+TIMING_HARD_STOP_SECONDS=900
+RESULT=716 passed
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:209: PytestCollectionWarning: cannot collect test class 'TestownerRuntimeEvidence' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:217
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:217: PytestCollectionWarning: cannot collect test class 'TestownerRuntimeReport' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:431
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:431: PytestCollectionWarning: cannot collect test class 'TestownerCategoryProvenanceReport' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534: PytestCollectionWarning: cannot collect test class 'TestownerBudgetInventoryRow' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 716 passed, 5 warnings in 44.92s =======================
+real 45.30
+user 37.05
+sys 7.12

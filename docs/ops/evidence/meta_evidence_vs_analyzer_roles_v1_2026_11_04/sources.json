@@ -1,0 +1,38 @@
+{
+  "source_commit": "ff9d113804e2b383592ebf1e6741180376bdfac2",
+  "sources": [
+    {
+      "path": "docs/ops/specs/CANONICAL_META_LEARNING_V1.md",
+      "sha256": "fb398cfd2db6101625fac595962b0b96dc25754ce0777c81c6d45fb669bb4a23"
+    },
+    {
+      "path": "docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452"
+    },
+    {
+      "path": "docs/ops/specs/META_TO_OPTIMIZATION_M7_RESEARCH_FEEDBACK_NORMATIVE_V1.md",
+      "sha256": "29001de6fa0fd2c38465b7b79dfbac307a3f7dd2698abba1e0ef3ff1ee6bce86"
+    },
+    {
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "sha256": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e"
+    },
+    {
+      "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+      "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16"
+    },
+    {
+      "path": "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "sha256": "c964b2c077017d249736d4563f84bc094685284111b23fc9897b974fc6801155"
+    },
+    {
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840"
+    },
+    {
+      "path": "docs/ops/evidence/m4_explicit_meta_priority_join_v1_2026_11_04/README.md",
+      "sha256": "63248cb677875fa56b93263730d88d9db70df71447179698437ff6c85c4bfdfc"
+    }
+  ],
+  "coverage": "focused contracts, DTOs, collectors, projection and supplied-priority path; no whole-file certification"
+}

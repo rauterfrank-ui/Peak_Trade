@@ -1,0 +1,75 @@
+{
+  "DOCUMENT_CLASS": "PREDECESSOR_GATE44_MANIFEST_VERIFICATION_SECTION_11_13_1_V1",
+  "FILES_OK": 11,
+  "FILES_TOTAL": 11,
+  "MANIFEST_VERIFY_RC": 0,
+  "PREDECESSOR_EVIDENCE_ROOT": "evidence/ops/section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1/20260811T133046Z/",
+  "ROWS": [
+    {
+      "actual": "ffd6ead9aef1b3a264e057d2c05b09b931eedd0b4af1692c98dc268458a2b268",
+      "expected": "ffd6ead9aef1b3a264e057d2c05b09b931eedd0b4af1692c98dc268458a2b268",
+      "ok": true,
+      "path": "ACCEPTANCE_MATRIX.json"
+    },
+    {
+      "actual": "e58408e189b7904bfbd16db3798e34c83ec2bdd9880ce7df65a92766dc45e39f",
+      "expected": "e58408e189b7904bfbd16db3798e34c83ec2bdd9880ce7df65a92766dc45e39f",
+      "ok": true,
+      "path": "MACHINE_READABLE_EVALUATION.json"
+    },
+    {
+      "actual": "254852b6cf90e19e15d2e973d1236989bece13b163459f99917e1ae2327ab5e5",
+      "expected": "254852b6cf90e19e15d2e973d1236989bece13b163459f99917e1ae2327ab5e5",
+      "ok": true,
+      "path": "PRE_LIVE_CYBERSECURITY_GATE_PASS_REPORT.md"
+    },
+    {
+      "actual": "71ae8772ec316fd64a37514ca443968caf6f3ed7a82e818ddaabe6f5f30c22ff",
+      "expected": "71ae8772ec316fd64a37514ca443968caf6f3ed7a82e818ddaabe6f5f30c22ff",
+      "ok": true,
+      "path": "PROVENANCE_INDEX.json"
+    },
+    {
+      "actual": "1019570b5dff14de91fc617e0b1d78187c3126e9bf8131073caabbcdcd26aa0c",
+      "expected": "1019570b5dff14de91fc617e0b1d78187c3126e9bf8131073caabbcdcd26aa0c",
+      "ok": true,
+      "path": "SANITIZED_FINAL_REPORT.json"
+    },
+    {
+      "actual": "fb6073e48215c5dba7a751f0338c6690ab3984906b879413aa5fa461f430a901",
+      "expected": "fb6073e48215c5dba7a751f0338c6690ab3984906b879413aa5fa461f430a901",
+      "ok": true,
+      "path": "proofs/BASELINE_GIT_AND_TOOLING.json"
+    },
+    {
+      "actual": "82ea7b6bb475373169b1084e0630373a33ac4b885ff512d1ae5c67eeca819f0c",
+      "expected": "82ea7b6bb475373169b1084e0630373a33ac4b885ff512d1ae5c67eeca819f0c",
+      "ok": true,
+      "path": "proofs/PRE_LIVE_GATE_CHAIN_VERIFICATION.json"
+    },
+    {
+      "actual": "285b709135788188e4c3b82c6bbed5026a8ca6baf28260b9ebc79968ed1de1c8",
+      "expected": "285b709135788188e4c3b82c6bbed5026a8ca6baf28260b9ebc79968ed1de1c8",
+      "ok": true,
+      "path": "proofs/PRE_LIVE_GATE_FINDINGS_REGISTER.json"
+    },
+    {
+      "actual": "0b397bbfe2014d46ba1c3685c0cc30d87695e63abafefee83a27c0af12251b5d",
+      "expected": "0b397bbfe2014d46ba1c3685c0cc30d87695e63abafefee83a27c0af12251b5d",
+      "ok": true,
+      "path": "proofs/PRE_LIVE_GATE_OWNER_RESULTS.json"
+    },
+    {
+      "actual": "a8aaa709b0eac461a9e8d3c1b6404e86ccd0e63beca08fad3dcaa1e0fd11bf8c",
+      "expected": "a8aaa709b0eac461a9e8d3c1b6404e86ccd0e63beca08fad3dcaa1e0fd11bf8c",
+      "ok": true,
+      "path": "proofs/PRE_LIVE_GATE_PRIOR_CRITERIA_MATRIX.json"
+    },
+    {
+      "actual": "693fb086e360639a9a34fc1a57a8e607fb74ae586d1339bccbb0415a48fe6999",
+      "expected": "693fb086e360639a9a34fc1a57a8e607fb74ae586d1339bccbb0415a48fe6999",
+      "ok": true,
+      "path": "proofs/PRE_LIVE_GATE_REQUIREMENTS_MATRIX.json"
+    }
+  ]
+}

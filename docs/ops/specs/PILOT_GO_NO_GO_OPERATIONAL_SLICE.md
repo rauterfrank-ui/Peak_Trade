@@ -1,0 +1,51 @@
+# Pilot Go/No-Go Operational Slice
+
+status: DRAFT
+last_updated: 2026-04-20
+owner: Peak_Trade
+purpose: Operator-facing mapping from PILOT_GO_NO_GO_CHECKLIST to evidence sources (Ops Cockpit, Runbooks, Config)
+docs_token: DOCS_TOKEN_PILOT_GO_NO_GO_OPERATIONAL_SLICE
+
+## Intent
+This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the concrete evidence sources an operator can use to answer the question. It makes the go/no-go material operator-usable without adding execution authority.
+
+## Relationship
+- Companion to `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
+- References Ops Cockpit payload structure from `src/webui/ops_cockpit.py`
+- No direct activation authority; read-only operator guidance
+- Optional docs-only pointer metadata for externally retained go/no-go **eval** captures (bounded pilot L2; no payloads in git): [`MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md)
+
+## Checklist → Evidence Mapping
+
+| # | Area | Question | Evidence Source | Where to Look |
+|---|------|----------|-----------------|---------------|
+| 1 | Safety Gates | enabled/armed/confirm-token/dry-run explicit? | Ops Cockpit | `policy_state`, `operator_state`, `guard_state` (enabled, armed, dry_run, confirm_token_required) |
+| 2 | Kill Switch | posture visible and clear? | Ops Cockpit | `policy_state.kill_switch_active`, `incident_state.kill_switch_active`; `data&#47;kill_switch&#47;state.json` |
+| 3 | Policy Posture | current policy action visible? | Ops Cockpit | `policy_state.action` (NO_TRADE / TRADE_READY), `policy_state.summary` |
+| 4 | Operator Visibility | blocked vs allowed quickly identifiable? | Ops Cockpit | `policy_state.blocked`, `incident_state.requires_operator_attention`, Executive Summary |
+| 5 | Pilot Caps | bounded caps defined and documented? | Ops Cockpit + Config | `exposure_state.caps_configured` (from `live_risk` in config.toml) |
+| 6 | Treasury Separation | trading vs treasury explicit? | Ops Cockpit | `guard_state.treasury_separation` = enforced; `src/ops/treasury_separation_gate.py` |
+| 7 | Fee/Slippage Realism | conservative assumptions documented? | Assumptions Doc + Edge Case Matrix | `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`, `PILOT_EXECUTION_EDGE_CASE_MATRIX` Fee/slippage row |
+| 8 | Partial Fill Handling | bounded and understood? | Specs + Engine | `PILOT_EXECUTION_EDGE_CASE_MATRIX`, `ReconciliationEngine` (position/cash recon) |
+| 9 | Stale State Handling | stale balance/order/position handled safely? | Ops Cockpit | `stale_state` (balance, position, order, exposure); `exposure_state.stale` |
+| 10 | Restart / Replay | restart and replay semantics safe? | Edge Case Matrix + Runbook | `PILOT_EXECUTION_EDGE_CASE_MATRIX` Restart mid-session, Replay ambiguity; `RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION` |
+| 11 | Incident Runbooks | critical incident paths exist? | Runbooks | `RUNBOOK_PILOT_INCIDENT_*` (Exchange Degraded, Telemetry Degraded, Reconciliation Mismatch, Transfer Ambiguity, Session End Mismatch, Unexpected Exposure, Restart Mid-Session) |
+| 12 | Evidence Continuity | evidence/audit trail sufficient? | Ops Cockpit | `evidence_state` (summary, audit_trail, telemetry_evidence) |
+| 13 | Dependency Degradation | degraded exchange/telemetry explicit? | Ops Cockpit | `dependencies_state` (exchange, telemetry, market_data_cache, degraded) |
+| 14 | Human Supervision | pilot explicitly operator-supervised? | Ops Cockpit + Specs | `human_supervision_state` (status, mode, summary); `PILOT_GO_NO_GO_CHECKLIST`, `PILOT_READY_EXECUTION_REVIEW_SPEC` |
+| 15 | Ambiguity Rule | ambiguity → NO_TRADE / safe stop? | Ops Cockpit + Specs | `policy_state`, `incident_state`; `RECONCILIATION_FLOW_SPEC` |
+
+## Ops Cockpit Entry Point
+- Payload: `build_ops_cockpit_payload()` in `src/webui/ops_cockpit.py`
+- HTML: `render_ops_cockpit_html()` for operator dashboard view
+
+## Known Gaps (Follow-up)
+- ~~Fee/slippage: dedicated conservative-assumptions document~~ (done: `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`)
+- ~~Restart mid-session: dedicated runbook~~ (done: `RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION`)
+- ~~Human supervision: explicit cockpit surface (optional)~~ (done: `human_supervision_state` in Ops Cockpit)
+- ~~Go/No-Go script: automated checklist evaluation against cockpit/config (future)~~ (done: `scripts/ops/pilot_go_no_go_eval_v1.py`)
+
+## Explicit Non-Goals
+- no direct activation authority
+- no replacement for operator judgment
+- no claim of pilot readiness

@@ -1,0 +1,43 @@
+{
+  "source_commit": "619f9d47aa0d50645e48322c387471929f78a90a",
+  "queries": [
+    {
+      "argv": [
+        "rg",
+        "-n",
+        "IncrementalStageResearchRequestV1\\(|run_phase_22_incremental_research_closure_v1\\(|run_incremental_stage_research_v1\\(",
+        "src",
+        "scripts",
+        "tests"
+      ],
+      "exit_code": 0,
+      "stdout": "tests/learning/test_phase_22_incremental_research_evidence_v1.py:54:    result = run_incremental_stage_research_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:55:        IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:68:    result = run_incremental_stage_research_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:69:        IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:96:    b1 = run_incremental_stage_research_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:97:        IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:105:    b2 = run_incremental_stage_research_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:106:        IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:122:    b0 = run_incremental_stage_research_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:123:        IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:132:    b1 = run_incremental_stage_research_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:133:        IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:161:    closure = run_phase_22_incremental_research_closure_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:163:            IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:170:            IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:185:    first = run_incremental_stage_research_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:186:        IncrementalStageResearchRequestV1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:194:    second = run_incremental_stage_research_v1(\ntests/learning/test_phase_22_incremental_research_evidence_v1.py:195:        IncrementalStageResearchRequestV1(\ntests/learning/test_incremental_immediate_predecessor_binding_v1.py:12:    return IncrementalStageResearchRequestV1(stage_id=stage, source_market_context=_full_source_context(),\ntests/learning/test_incremental_immediate_predecessor_binding_v1.py:18:    b0 = run_incremental_stage_research_v1(_request(\"B0\"))\ntests/learning/test_incremental_immediate_predecessor_binding_v1.py:20:        run_incremental_stage_research_v1(_request(\"B2\", dict(b0)))\ntests/learning/test_incremental_immediate_predecessor_binding_v1.py:25:        run_phase_22_incremental_research_closure_v1(stage_requests=[_request(\"B0\"), _request(\"B2\")])\ntests/learning/test_incremental_immediate_predecessor_binding_v1.py:30:        run_phase_22_incremental_research_closure_v1(stage_requests=[_request(\"B0\"), _request(\"B0\")])\ntests/learning/test_incremental_immediate_predecessor_binding_v1.py:34:    result = run_phase_22_incremental_research_closure_v1(stage_requests=[_request(\"B0\"), _request(\"B1\")])\ntests/learning/test_incremental_immediate_predecessor_binding_v1.py:42:    result = run_incremental_stage_research_v1(_request(\"B1\"))\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py:321:def run_incremental_stage_research_v1(\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py:538:def run_phase_22_incremental_research_closure_v1(\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py:551:        merged = IncrementalStageResearchRequestV1(\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py:564:        stage_result = dict(run_incremental_stage_research_v1(merged))\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "rg",
+        "-n",
+        "CanonicalAutomatedOfflineResearchLoopRequestV1\\(|run_canonical_automated_offline_research_loop_v1\\(",
+        "src",
+        "scripts"
+      ],
+      "exit_code": 0,
+      "stdout": "src/experiments/canonical_automated_offline_research_loop_v1.py:216:def run_canonical_automated_offline_research_loop_v1(\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "rg",
+        "-n",
+        "run_loop_c_representation_feedback_closure_v1|next_learning_evidence",
+        "src",
+        "scripts"
+      ],
+      "exit_code": 0,
+      "stdout": "src/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.py:95:            \"next_learning_evidence_generation_proven\",\nsrc/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.py:120:        \"def run_loop_c_representation_feedback_closure_v1\",\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py:106:def run_loop_c_representation_feedback_closure_v1(\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py:184:        \"next_learning_evidence\": dict(next_evidence),\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py:225:    \"run_loop_c_representation_feedback_closure_v1\",\n",
+      "stderr": ""
+    }
+  ],
+  "limits": "exact symbols in tracked checkout src/scripts/tests; aliases, external hosts, dynamic imports and other revisions not ruled out"
+}

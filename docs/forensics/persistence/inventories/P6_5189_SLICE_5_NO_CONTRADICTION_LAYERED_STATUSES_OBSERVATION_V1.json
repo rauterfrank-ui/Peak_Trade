@@ -1,0 +1,397 @@
+{
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "SIDECAR_AUTHORITY": "NONE",
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "THIS_RECORD_IS_NOT_CANONICAL_AUTHORITY": true,
+  "NOT_CANONICAL": true,
+  "SECOND_SSOT": false,
+  "SEMANTIC_AUTHORITY": false,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "STRUCTURING_IS_CANONIZATION": false,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "GAP_CLOSURE_PRESENT": false,
+  "GAP_CLOSED": false,
+  "HISTORICAL_P6_SOURCE_SET_BOUND": false,
+  "ALL_P6_RELEVANCE_COMPLETE": false,
+  "P2_SOURCE_RESOLVED": false,
+  "OBSERVATIONAL_UNRESOLVED_ZERO_IS_NOT_ALL_P6_RELEVANCE_COMPLETE": true,
+  "COMPLETENESS_ADJUDICATION_NOT_PERFORMED_IN_THIS_PERSIST": true,
+  "ABSENCE_IMPLIES_NEGATIVE_FACT": false,
+  "ARTIFACTS_NEVER_EXISTED_NOT_CLAIMED": true,
+  "SOURCE_IDENTITY_MERGED": false,
+  "SOURCE_IDENTITY_COLLAPSE_ALLOWED": false,
+  "SOURCE_IDENTITY_COLLAPSE_PRESENT": false,
+  "HISTORICAL_VARIANT_COLLAPSE_ALLOWED": false,
+  "HISTORICAL_VARIANT_COLLAPSE_PRESENT": false,
+  "LOCATOR_COLLAPSE_PRESENT": false,
+  "CLASSIFICATION_CONFLICT_PRESENT": false,
+  "ADJUDICATION_CONFLICT_PRESENT": false,
+  "AUTHORITY_LEAK_PRESENT": false,
+  "CURRENT_SHA_IS_NOT_HISTORICAL_5189_SHA": true,
+  "IDENTITY_COPY_CREATED": false,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_CANONICAL_SEMANTICS_CREATED": false,
+  "NEW_GATE_OR_DEPENDENCY_CREATED": false,
+  "AUTHORITY_ESCALATION_PRESENT": false,
+  "NO_AUTOMATIC_CLOSURE": true,
+  "REQUIREMENT_STATUS_CHANGE_FROM_THIS_PERSIST": "NONE",
+  "EXACT_ALLOWED_STATUS_CHANGE": "NONE",
+  "PRESERVATION_RELEVANCE_CLASS_REWRITE_PERFORMED": false,
+  "OBSERVATIONAL_VERDICT_REWRITE_PERFORMED": false,
+  "HISTORICAL_OBSERVATIONAL_STATE_REWRITE_PERFORMED": false,
+  "OWNER_GO": "P6_5189_SLICE_5_NO_CONTRADICTION_LAYERED_STATUSES_PERSIST_V1",
+  "SOURCE_READ_ONLY_STEP": "P6_5189_SLICE_5_PRESERVATION_RELEVANCE_ADJUDICATION_READ_ONLY_V1",
+  "PERSISTENCE_STEP": "P6_5189_SLICE_5_NO_CONTRADICTION_LAYERED_STATUSES_PERSIST_V1",
+  "INPUT_READ_ONLY_OWNER_GO": "P6_5189_SLICE_5_PRESERVATION_RELEVANCE_ADJUDICATION_READ_ONLY_V1",
+  "bound_origin_main_sha": "a84158cfd8cdeb55b11ffd033db60dbd780d6df2",
+  "bound_origin_main_sha_contains_pr_6083": true,
+  "observation_role": "ADDITIVE_SLICE_5_NO_CONTRADICTION_LAYERED_STATUSES_OBSERVATION_INVENTORY_ONLY",
+  "THIS_FILE_RECORDS_PRIOR_READ_ONLY_CONTRADICTION_FINDING": true,
+  "THIS_RECORD_DOES_NOT_CREATE_A_RECLASSIFICATION": true,
+  "THIS_RECORD_IS_NOT_CANONICAL_ADJUDICATION_AUTHORITY": true,
+  "THIS_FILE_IS_NOT_A_HISTORICAL_CENSUS_REWRITE": true,
+  "THIS_FILE_IS_NOT_A_DISCOVERY_SNAPSHOT": true,
+  "THIS_FILE_DOES_NOT_MUTATE_PRESERVATION_MAP": true,
+  "THIS_FILE_DOES_NOT_IMPORT_JSONL_IDENTITY_COPIES": true,
+  "THIS_FILE_DOES_NOT_REWRITE_PRECEDING_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_SYNTHESIS_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_SCOPED_TWO_SHA_OWNER_ADJUDICATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_FINAL_4_OR_FINAL_2_OR_FINAL_1_OBSERVATION": true,
+  "THIS_OBSERVATION_DOES_NOT_RECLASSIFY_PRESERVATION_MEMBERSHIP": true,
+  "THIS_PERSIST_IS_NOT_A_NEW_RECOVERY_ROUND": true,
+  "THIS_PERSIST_IS_NOT_P2_RESOLUTION": true,
+  "THIS_PERSIST_IS_NOT_CANONIZATION": true,
+  "THIS_PERSIST_IS_NOT_GAP_CLOSURE": true,
+  "NEW_EVIDENCE_SEARCH_PERFORMED": false,
+  "PREIMAGE_SEARCH_PERFORMED": false,
+  "ARCHIVE_SEARCH_PERFORMED": false,
+  "SQLITE_REQUERY_PERFORMED": false,
+  "P2_SEARCH_PERFORMED": false,
+  "preceding_observation_locator": "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+  "preceding_observation_owner_go": "P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_ACCEPT_TWO_FULL_SHA_PREIMAGES_ON_EXAMINED_IDENTIFIED_SURFACES_PERSIST_V1",
+  "preceding_observation_pr": 6083,
+  "P2_SOURCE_STATUS_BEFORE_THIS_STEP": "NOT_UNIQUELY_RESOLVED",
+  "P2_SOURCE_STATUS_NOT_ADJUDICATED_IN_THIS_PERSIST": true,
+  "P2_UNRESOLVED_IS_NOT_P2_EMPTY": true,
+  "SCOPED_OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": true,
+  "SCOPED_TWO_SHA_ACCEPTANCE_IS_ORTHOGONAL_TO_SLICE_5": true,
+  "SCOPED_TWO_SHA_ACCEPTANCE_IS_NOT_SLICE_5_PROOF": true,
+  "slice_5_contradiction_finding": {
+    "SLICE_5_TRUE_CONTRADICTION_PRESENT": false,
+    "SLICE_5_CLASSIFICATION_CONFLICT_COUNT": 0,
+    "SLICE_5_DIFFERENT_PREDICATE_COUNT": 4,
+    "SLICE_5_STATUS_MODEL": "layered_non_merged_statuses",
+    "SLICE_5_EXACT_RECORDS_BOUND": true,
+    "SLICE_5_RECORD_COUNT": 4,
+    "EXACT_ALLOWED_STATUS_CHANGE": "NONE",
+    "statement": "The four preservation-map records and their later observational verdicts address different predicates, scopes, temporal references, and source roles. No classification conflict on the same predicate is present. Statuses remain layered and are not merged.",
+    "NOT_ALLOWED_IMPLICATION_PROVEN_NOT_RELEVANT_IMPLIES_PRESERVATION_NOT_RELEVANT": true,
+    "NOT_ALLOWED_IMPLICATION_FORENSIC_RELEVANCE_UNRESOLVED_IMPLIES_OBSERVATIONAL_VERDICT_INVALID": true,
+    "NOT_ALLOWED_IMPLICATION_LATER_OBSERVATIONAL_RESULT_IMPLIES_PRESERVATION_MAP_HISTORICALLY_FALSE": true,
+    "NOT_ALLOWED_IMPLICATION_PRESERVATION_CAPTURE_TIME_STATUS_IMPLIES_LATER_OBSERVATIONAL_RESULT_INVALID": true,
+    "PRECEDING_SCOPED_TWO_SHA_RECORD_SLICE_5_OPEN_LEFT_UNCHANGED": true,
+    "THIS_FINDING_IS_NOT_PRESERVATION_MEMBERSHIP_RECLASSIFICATION": true,
+    "STATUS_MODEL_SOURCE": "existing synthesis language layered non-merged statuses; CLASSIFICATION_CONFLICT_PRESENT=false already persisted; not a new relevance ontology"
+  },
+  "records": [
+    {
+      "record_n": 1,
+      "SOURCE_ID": "211f1cfd-25bc-4092-8701-7d73c83ad2df",
+      "SOURCE_IDENTITY": "P6_PARENT_JSONL; classification_snapshot_id=P6_5189; preservation_map.outside_proven_relevant_preservation_set_unresolved; parent_subagent_class=PARENT; SOURCE_CLASS=P6_CURSOR_AGENT_TRANSCRIPT; not_imported",
+      "SOURCE_LOCATOR": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/211f1cfd-25bc-4092-8701-7d73c83ad2df/211f1cfd-25bc-4092-8701-7d73c83ad2df.jsonl",
+      "PRESERVATION_LOCATOR": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+      "PRESERVATION_RECORD_IDENTITY": "outside_proven_relevant_preservation_set_unresolved[source_uuid=211f1cfd-25bc-4092-8701-7d73c83ad2df]",
+      "PRESERVED_BYTES_LOCATOR": null,
+      "OBSERVATIONAL_LOCATORS": [
+        "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json"
+      ],
+      "PRESERVATION_STATUS": "FORENSIC_RELEVANCE_UNRESOLVED",
+      "OBSERVATIONAL_STATUS": "PROVEN_NOT_RELEVANT",
+      "historical_observational_states": [
+        {
+          "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+          "VERDICT": "PROVEN_NOT_RELEVANT"
+        }
+      ],
+      "LATEST_OBSERVATIONAL_VERDICT_IS_NOT_COLLAPSE_OF_HISTORY": true,
+      "observational_CURRENT_SHA256_as_recorded_in_FINAL_4": "c1d27478b1e10e99a2de8f8f336a74e22531c305c39b41cc00b244add1e83608",
+      "preservation_map_content_identity": "ABSENT_NOT_IMPORTED",
+      "preservation_capture_time_predicate": "this preservation GO did not classify this source as relevant or not-relevant; registered outside the proven-relevant set; NOT_IMPORTED; RAW_NOT_ADJUDICATED_BY_COPY",
+      "observational_verdict_predicate": "executed work of this source as recorded in FINAL_4 is positively identified as not a bound P6 preservation function; additive coverage; no ingest; does not reclassify preservation membership",
+      "SAME_PREDICATE": false,
+      "SAME_SCOPE": false,
+      "SAME_TEMPORAL_REFERENCE": false,
+      "SAME_SOURCE_ROLE": false,
+      "CONFLICT_CLASS": "layered_non_merged_statuses",
+      "TRUE_CLASSIFICATION_CONFLICT": false,
+      "STATUS_REWRITE_ALLOWED": false
+    },
+    {
+      "record_n": 2,
+      "SOURCE_ID": "32a829c1-ae4b-4067-bd1f-5edcaa319142",
+      "SOURCE_IDENTITY": "P6_PARENT_JSONL; classification_snapshot_id=P6_5189; preservation_map.outside_proven_relevant_preservation_set_unresolved; parent_subagent_class=PARENT; SOURCE_CLASS=P6_CURSOR_AGENT_TRANSCRIPT; not_imported",
+      "SOURCE_LOCATOR": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/32a829c1-ae4b-4067-bd1f-5edcaa319142/32a829c1-ae4b-4067-bd1f-5edcaa319142.jsonl",
+      "PRESERVATION_LOCATOR": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+      "PRESERVATION_RECORD_IDENTITY": "outside_proven_relevant_preservation_set_unresolved[source_uuid=32a829c1-ae4b-4067-bd1f-5edcaa319142]",
+      "PRESERVED_BYTES_LOCATOR": null,
+      "OBSERVATIONAL_LOCATORS": [
+        "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json"
+      ],
+      "PRESERVATION_STATUS": "FORENSIC_RELEVANCE_UNRESOLVED",
+      "OBSERVATIONAL_STATUS": "PROVEN_NOT_RELEVANT",
+      "historical_observational_states": [
+        {
+          "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+          "VERDICT": "PROVEN_NOT_RELEVANT"
+        }
+      ],
+      "LATEST_OBSERVATIONAL_VERDICT_IS_NOT_COLLAPSE_OF_HISTORY": true,
+      "observational_CURRENT_SHA256_as_recorded_in_FINAL_4": "0e6a71a3a7055894bfc6c849b3aa86abd9b4046e8898e3ae905afac432862546",
+      "preservation_map_content_identity": "ABSENT_NOT_IMPORTED",
+      "preservation_capture_time_predicate": "this preservation GO did not classify this source as relevant or not-relevant; registered outside the proven-relevant set; NOT_IMPORTED; RAW_NOT_ADJUDICATED_BY_COPY",
+      "observational_verdict_predicate": "executed work of this source as recorded in FINAL_4 is positively identified as not a bound P6 preservation function; additive coverage; no ingest; does not reclassify preservation membership",
+      "SAME_PREDICATE": false,
+      "SAME_SCOPE": false,
+      "SAME_TEMPORAL_REFERENCE": false,
+      "SAME_SOURCE_ROLE": false,
+      "CONFLICT_CLASS": "layered_non_merged_statuses",
+      "TRUE_CLASSIFICATION_CONFLICT": false,
+      "STATUS_REWRITE_ALLOWED": false
+    },
+    {
+      "record_n": 3,
+      "SOURCE_ID": "5bff9224-6741-4c45-9f99-449863b0bd3a",
+      "SOURCE_IDENTITY": "P6_PARENT_JSONL; classification_snapshot_id=P6_5189; preservation_map.outside_proven_relevant_preservation_set_unresolved; parent_subagent_class=PARENT; SOURCE_CLASS=P6_CURSOR_AGENT_TRANSCRIPT; not_imported",
+      "SOURCE_LOCATOR": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/5bff9224-6741-4c45-9f99-449863b0bd3a/5bff9224-6741-4c45-9f99-449863b0bd3a.jsonl",
+      "PRESERVATION_LOCATOR": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+      "PRESERVATION_RECORD_IDENTITY": "outside_proven_relevant_preservation_set_unresolved[source_uuid=5bff9224-6741-4c45-9f99-449863b0bd3a]",
+      "PRESERVED_BYTES_LOCATOR": null,
+      "OBSERVATIONAL_LOCATORS": [
+        "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_FINAL_2_UNRESOLVED_RECOVERY_OBSERVATION_V1.json"
+      ],
+      "additional_observational_evidence_locators_not_merged_into_source_identity": [
+        "/Users/frnkhrz/Library/Application Support/Cursor/User/globalStorage/state.vscdb"
+      ],
+      "PRESERVATION_STATUS": "FORENSIC_RELEVANCE_UNRESOLVED",
+      "OBSERVATIONAL_STATUS": "PROVEN_NOT_RELEVANT",
+      "historical_observational_states": [
+        {
+          "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+          "VERDICT": "REMAINS_UNRESOLVED"
+        },
+        {
+          "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_2_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+          "VERDICT": "PROVEN_NOT_RELEVANT"
+        }
+      ],
+      "LATEST_OBSERVATIONAL_VERDICT_IS_NOT_COLLAPSE_OF_HISTORY": true,
+      "HISTORICAL_OBSERVATIONAL_STATES_PRESERVED": true,
+      "observational_CURRENT_SHA256_as_recorded_in_FINAL_4_and_FINAL_2": "27ad1aca923defdbbdea2997df859d8daf42de32ad0e4f346c611cd8cbd5f6b5",
+      "preservation_map_content_identity": "ABSENT_NOT_IMPORTED",
+      "preservation_capture_time_predicate": "this preservation GO did not classify this source as relevant or not-relevant; registered outside the proven-relevant set; NOT_IMPORTED; RAW_NOT_ADJUDICATED_BY_COPY",
+      "observational_verdict_predicate": "executed 15-file payload set as recorded in FINAL_2 is positively identified as not a bound P6 preservation function; FINAL_4 REMAINS_UNRESOLVED remains a historical observational state",
+      "SAME_PREDICATE": false,
+      "SAME_SCOPE": false,
+      "SAME_TEMPORAL_REFERENCE": false,
+      "SAME_SOURCE_ROLE": false,
+      "CONFLICT_CLASS": "layered_non_merged_statuses",
+      "TRUE_CLASSIFICATION_CONFLICT": false,
+      "STATUS_REWRITE_ALLOWED": false
+    },
+    {
+      "record_n": 4,
+      "SOURCE_ID": "7b1f435d-606f-41a9-8ac7-c5b01c99db3d",
+      "SOURCE_IDENTITY": "P6_PARENT_JSONL; classification_snapshot_id=P6_5189; preservation_map.outside_proven_relevant_preservation_set_unresolved; parent_subagent_class=PARENT; SOURCE_CLASS=P6_CURSOR_AGENT_TRANSCRIPT; not_imported",
+      "SOURCE_LOCATOR": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/7b1f435d-606f-41a9-8ac7-c5b01c99db3d/7b1f435d-606f-41a9-8ac7-c5b01c99db3d.jsonl",
+      "PRESERVATION_LOCATOR": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+      "PRESERVATION_RECORD_IDENTITY": "outside_proven_relevant_preservation_set_unresolved[source_uuid=7b1f435d-606f-41a9-8ac7-c5b01c99db3d]",
+      "PRESERVED_BYTES_LOCATOR": null,
+      "OBSERVATIONAL_LOCATORS": [
+        "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_FINAL_2_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json"
+      ],
+      "additional_observational_evidence_locators_not_merged_into_source_identity": [
+        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops_local/cursor_recovery_state_backups_clean_20260606T140415/cursor_full_state_backup_20260606T135828/Cursor/User/globalStorage/state.vscdb",
+        "/Users/frnkhrz/Library/Application Support/Cursor/User/globalStorage/state.vscdb",
+        "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/9de52f3a-ba2f-458a-b481-f4e2407fdd30/9de52f3a-ba2f-458a-b481-f4e2407fdd30.jsonl"
+      ],
+      "unbound_same_basename_candidate_not_merged": {
+        "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/9de52f3a-ba2f-458a-b481-f4e2407fdd30/9de52f3a-ba2f-458a-b481-f4e2407fdd30.jsonl",
+        "EVIDENCE_BINDING_TO_TARGET": "NOT_PROVEN",
+        "SOURCE_IDENTITY_MERGED": false,
+        "ADJUDICATION_USABLE": false
+      },
+      "PRESERVATION_STATUS": "FORENSIC_RELEVANCE_UNRESOLVED",
+      "OBSERVATIONAL_STATUS": "PROVEN_NOT_RELEVANT",
+      "historical_observational_states": [
+        {
+          "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+          "VERDICT": "REMAINS_UNRESOLVED"
+        },
+        {
+          "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_2_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+          "VERDICT": "REMAINS_UNRESOLVED"
+        },
+        {
+          "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+          "VERDICT": "PROVEN_NOT_RELEVANT"
+        }
+      ],
+      "LATEST_OBSERVATIONAL_VERDICT_IS_NOT_COLLAPSE_OF_HISTORY": true,
+      "HISTORICAL_OBSERVATIONAL_STATES_PRESERVED": true,
+      "observational_CURRENT_SHA256_as_recorded_in_FINAL_4_FINAL_2_and_FINAL_1": "3adca7d7fb4e06763055651876779cc976a1a9c1b49fecbd00b7d1840ce6e183",
+      "preservation_map_content_identity": "ABSENT_NOT_IMPORTED",
+      "preservation_capture_time_predicate": "this preservation GO did not classify this source as relevant or not-relevant; registered outside the proven-relevant set; NOT_IMPORTED; RAW_NOT_ADJUDICATED_BY_COPY",
+      "observational_verdict_predicate": "source inventory as recorded in FINAL_1 is positively identified as not a bound P6 preservation function; FINAL_4 and FINAL_2 REMAINS_UNRESOLVED remain historical observational states",
+      "SAME_PREDICATE": false,
+      "SAME_SCOPE": false,
+      "SAME_TEMPORAL_REFERENCE": false,
+      "SAME_SOURCE_ROLE": false,
+      "CONFLICT_CLASS": "layered_non_merged_statuses",
+      "TRUE_CLASSIFICATION_CONFLICT": false,
+      "STATUS_REWRITE_ALLOWED": false
+    }
+  ],
+  "predicate_comparison": {
+    "preservation_capture_time_status_layer": "FORENSIC_RELEVANCE_UNRESOLVED means this preservation GO did not classify the source as relevant or not-relevant and did not import it",
+    "observational_verdict_layer": "PROVEN_NOT_RELEVANT is a later additive coverage VERDICT that the executed work or payload set is not a bound P6 preservation function; observational files forbid reclassification of preservation membership",
+    "SAME_PREDICATE_ALL_FOUR": false,
+    "SAME_SCOPE_ALL_FOUR": false,
+    "SAME_TEMPORAL_REFERENCE_ALL_FOUR": false,
+    "SAME_SOURCE_ROLE_ALL_FOUR": false,
+    "layers_merged": false
+  },
+  "scope_comparison": {
+    "preservation_scope": "capture-time membership registration in outside_proven_relevant_preservation_set_unresolved under OWNER_GO P6_PROVEN_RELEVANT_LOSSLESS_PRESERVATION_PREPARE_AND_EXECUTE_V1",
+    "observational_scope": "later additive coverage observations FINAL_4 then FINAL_2 then FINAL_1; current-source JSONL plus separately located cursorDiskKV evidence where recorded; not exact 5189 byte state",
+    "scopes_merged": false
+  },
+  "conflict_adjudication": {
+    "TRUE_CLASSIFICATION_CONFLICT_PRESENT": false,
+    "SLICE_5_CLASSIFICATION_CONFLICT_COUNT": 0,
+    "CONFLICT_CLASS": "layered_non_merged_statuses",
+    "HISTORICAL_STATE_SUPERSEDED_BY_LATER_ADJUDICATION": false,
+    "INSUFFICIENT_EVIDENCE_TO_COMPARE": false,
+    "STATUS_REWRITE_ALLOWED": false
+  },
+  "non_implications": {
+    "PROVEN_NOT_RELEVANT_DOES_NOT_IMPLY_PRESERVATION_NOT_RELEVANT": true,
+    "FORENSIC_RELEVANCE_UNRESOLVED_DOES_NOT_IMPLY_OBSERVATIONAL_VERDICT_INVALID": true,
+    "LATER_OBSERVATIONAL_RESULT_DOES_NOT_IMPLY_PRESERVATION_MAP_HISTORICALLY_FALSE": true,
+    "PRESERVATION_CAPTURE_TIME_STATUS_DOES_NOT_IMPLY_LATER_OBSERVATIONAL_RESULT_INVALID": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-A1_AS_PREIMAGE_PROOF": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-A2": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-B2": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-B4": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-B5_AS_ENUMERATION": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-D2": true,
+    "THIS_PERSIST_DOES_NOT_CLOSE_SLICE_6": true,
+    "THIS_PERSIST_DOES_NOT_RESOLVE_PREFIX_60164328": true,
+    "THIS_PERSIST_DOES_NOT_NORMALIZE_COUNT_DRIFT_3946_VS_3951": true,
+    "THIS_PERSIST_DOES_NOT_RESOLVE_P2": true,
+    "THIS_PERSIST_DOES_NOT_BOUND_HISTORICAL_P6_SOURCE_SET": true,
+    "THIS_PERSIST_DOES_NOT_MAKE_ALL_P6_RELEVANCE_COMPLETE": true,
+    "THIS_PERSIST_DOES_NOT_CLOSE_GAP": true,
+    "SCOPED_TWO_SHA_ACCEPTANCE_NOT_USED_AS_SLICE_5_PROOF": true
+  },
+  "still_unresolved": {
+    "HISTORICAL_P6_SOURCE_SET_BOUND": false,
+    "ALL_P6_RELEVANCE_COMPLETE": false,
+    "P2_SOURCE_RESOLVED": false,
+    "GAP_CLOSED": false,
+    "SLICE_6": "OPEN",
+    "RESOLUTION_PREFIX_60164328": "OPEN",
+    "COUNT_DRIFT_3946_VS_3951": "UNADJUDICATED",
+    "P2": "UNRESOLVED",
+    "R-A1_AS_PREIMAGE_PROOF": "UNCHANGED",
+    "R-A2": "UNCHANGED",
+    "R-B2": "UNCHANGED",
+    "R-B5_AS_ENUMERATION": "UNCHANGED",
+    "R-D2": "UNCHANGED",
+    "preservation_relevance_class_of_the_four": "FORENSIC_RELEVANCE_UNRESOLVED"
+  },
+  "referenced_existing_persistence_records_not_rewritten": [
+    {
+      "locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+      "sha256_at_this_persist": "c93569d35226459fdceb3b67c184e16f79e55515297525eeb5ea868a260ca4ea",
+      "bytes_at_this_persist": 430583,
+      "PRESERVATION_MAP_MUTATED": false
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "3a6226c632f0e9448b485e4d922bb5459d9d628850dd8d82d11a779eda380ec8",
+      "bytes_at_this_persist": 8950
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_2_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "57b6cb2276e67afd4c7db8d31d01f309691d11103175baa49459c13bed42e580",
+      "bytes_at_this_persist": 13545
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "265b0c9672aac02d55c2062f7385d7bc0940a4b0c43f5f7dfb0300cc4c9530d1",
+      "bytes_at_this_persist": 25217
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "6b17ff348980ac1c0f791f05c2347b1e8991a657091bd94071d556d9e47d0cfa",
+      "bytes_at_this_persist": 46363
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "3f1a135bdb130d52df2ab79c845cbe783e233c2b54d9c6821cebb416605a9b39",
+      "bytes_at_this_persist": 19150
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+      "sha256_at_this_persist": "877eed243bf0050b74911a26d9ab8a859858fe4487c141e6ed39a8fe42caa693",
+      "bytes_at_this_persist": 16041,
+      "SLICE_5_OPEN_LEFT_UNCHANGED": true
+    }
+  ],
+  "adversarial_revalidation": {
+    "FORENSIC_RELEVANCE_UNRESOLVED_ALTERED": false,
+    "PROVEN_NOT_RELEVANT_ALTERED": false,
+    "REMAINS_UNRESOLVED_HISTORY_REMOVED_OR_OVERWRITTEN": false,
+    "DIFFERENT_PREDICATES_MERGED": false,
+    "DIFFERENT_SCOPES_MERGED": false,
+    "DIFFERENT_TEMPORAL_REFERENCES_MERGED": false,
+    "SOURCE_IDS_DEDUPLICATED": false,
+    "LOCATORS_COLLAPSED": false,
+    "IDENTICAL_CONTENT_EQUATED_WITH_IDENTICAL_SOURCE_IDENTITY": false,
+    "NEW_PRESERVATION_RELEVANCE_RULE_INVENTED": false,
+    "PERSISTENCE_TREATED_AS_DOMAIN_RECLASSIFICATION": false,
+    "SLICE_6_ALTERED": false,
+    "PREFIX_60164328_ALTERED": false,
+    "COUNT_3946_VS_3951_NORMALIZED": false,
+    "P2_ALTERED": false,
+    "P6_COMPLETENESS_SUGGESTED": false,
+    "GAP_CLOSED_SUGGESTED": false,
+    "NEW_AUTHORITY_CREATED": false,
+    "FINAL_SEMANTIC_REVALIDATION": "PASS"
+  },
+  "mutation_boundary": {
+    "PRESERVATION_MAP_MUTATED": false,
+    "FINAL_4_OBSERVATION_MUTATED": false,
+    "FINAL_2_OBSERVATION_MUTATED": false,
+    "FINAL_1_OBSERVATION_MUTATED": false,
+    "SYNTHESIS_OBSERVATION_MUTATED": false,
+    "RESIDUAL_FRONTIER_OBSERVATION_MUTATED": false,
+    "SCOPED_TWO_SHA_OWNER_ADJUDICATION_MUTATED": false,
+    "EXTERNAL_FORENSIC_MD_MUTATED": false,
+    "CANONICAL_SOURCE_MUTATED": false,
+    "P1_HISTORICAL_INVENTORY_MUTATED": false,
+    "SQLITE_REQUERY_PERFORMED_IN_THIS_PERSIST": false,
+    "ARCHIVE_SEARCH_PERFORMED_IN_THIS_PERSIST": false,
+    "P2_SEARCH_PERFORMED_IN_THIS_PERSIST": false
+  }
+}

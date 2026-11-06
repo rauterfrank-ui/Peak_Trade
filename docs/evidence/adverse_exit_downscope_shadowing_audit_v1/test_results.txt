@@ -1,0 +1,13 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.1, cov-7.1.0
+collected 18 items
+
+tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py . [  5%]
+........                                                                 [ 50%]
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py . [ 55%]
+........                                                                 [100%]
+
+============================== 18 passed in 1.14s ==============================

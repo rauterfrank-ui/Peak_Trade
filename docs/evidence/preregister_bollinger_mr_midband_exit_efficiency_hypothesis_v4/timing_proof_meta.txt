@@ -1,0 +1,3 @@
+slice=preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v4
+evaluation_executed=false
+holdout_data_accessed=false

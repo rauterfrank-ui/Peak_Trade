@@ -1,0 +1,9 @@
+{
+  "exit_intent_count": 0,
+  "exit_policy_evaluated_count": 10,
+  "exit_policy_triggered_count": 0,
+  "open_position_cycles": 10,
+  "reduce_intent_count": 0,
+  "risk_reduce_count": 0,
+  "safety_exit_count": 0
+}

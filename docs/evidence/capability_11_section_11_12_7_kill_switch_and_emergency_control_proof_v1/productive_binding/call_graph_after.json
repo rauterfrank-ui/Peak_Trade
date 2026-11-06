@@ -1,0 +1,31 @@
+{
+  "activation": "not_activated",
+  "cap_11_5_adapter": "not_activated",
+  "cap_11_5_kill_switch_and_emergency_control_contract": "reused_fixture_only",
+  "commands_bound": [
+    "BLOCK_NEW_ENTRY",
+    "EXIT_ONLY",
+    "REDUCE_ONLY",
+    "CANCEL_ALL",
+    "HALT_AFTER_CANCEL",
+    "PERSISTENT_KILL"
+  ],
+  "kill_switch_contract": "not_activated",
+  "network_effect": "NONE",
+  "network_writes": "unauthorized",
+  "next_consumer": "CAPABILITY_11_SECTION_11_12_8_LONG_RUNNING_AUTONOMOUS_TESTNET_CAMPAIGN_V1",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_6_RestartWithOpenOrderAndOpenPosition",
+    "Cap11_Section_11_12_7_KillSwitchAndEmergencyControlProof",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled",
+  "path_class": "KILL_SWITCH_AND_EMERGENCY_CONTROL_PROOF",
+  "risk_increase": "forbidden",
+  "runtime_clear": "forbidden",
+  "section_11_12_7": "productive_kill_switch_and_emergency_control_proof_bound",
+  "section_11_12_8": "not_started",
+  "side_effect_bypass": "forbidden",
+  "testnet_kill_switch_proven": false
+}

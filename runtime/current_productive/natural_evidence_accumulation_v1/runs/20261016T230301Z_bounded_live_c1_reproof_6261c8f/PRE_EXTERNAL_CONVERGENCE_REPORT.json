@@ -1,0 +1,112 @@
+{
+  "BASELINE_SHA": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": "false",
+  "CYCLE_COUNT": 12,
+  "DPO": {
+    "cycle_id": "persistent-natural-enter-live-c1:s5:LANE_1:LANE_1:cycle:14",
+    "decision_event_ref": "ddo.dec:52d8096b9fab3ccc18cf196a",
+    "decision_outcome": "no_action",
+    "dpo_ref": "ddo.dpo:c99821dbdc7be9d46a2b8594",
+    "execution_eligible": "",
+    "s5_cycle_index": "48",
+    "selected_side": "none",
+    "trading_epoch": "14"
+  },
+  "EFFECTIVE_MAX_CYCLES": 12,
+  "EFFECTIVE_MAX_RUN_DURATION_SECONDS": 900.0,
+  "ENTER_SIDE": "",
+  "EVIDENCE_ROOT": "/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/runs/20261016T230301Z_bounded_live_c1_reproof_6261c8f",
+  "EXECUTION_HEAD_SHA": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "EXTERNAL_EFFECT_COUNT": 0,
+  "FINALIZATION_ELAPSED_SECONDS": 0.007863,
+  "FIRST_GENUINE_BLOCKER": "MAX_CYCLES_PER_RUN",
+  "GET_REQUEST_COUNT": 275,
+  "LIVE_PUBLIC_C1_GET_EXECUTED": "true",
+  "MAX_RUN_DURATION_SECONDS_SCOPE": "S6_OBSERVATION_SEQUENCER_ONLY",
+  "NATIVE_ID": "DNA-USDT-SWAP",
+  "NATURAL_ENTER_OBSERVED": "false",
+  "NATURAL_PRE_EXTERNAL_REACHED": "false",
+  "OWNER_GO_FRESH_C1_GET_CONSUMPTION_COUNT": 132,
+  "PENDING_OUTCOME_CREATED": "false",
+  "PENDING_OUTCOME_CREATION_REASON": "NOT_GENUINE_NATURAL_ENTER",
+  "PENDING_OUTCOME_ID": "",
+  "PERMIT_CREATED": "false",
+  "POST_COUNT": 0,
+  "PREFLIGHT_ELAPSED_SECONDS": 357.06627,
+  "PRE_EXTERNAL_REACHED": "false",
+  "REPORTING_S5_CYCLE_INDEX": "12",
+  "REPORTING_S5_DISPOSITION": "HOLD_CLOSED",
+  "REQUESTED_MAX_CYCLES": 12,
+  "REQUESTED_MAX_RUN_DURATION_SECONDS": 900.0,
+  "RUNTIME_DURATION_CLOCK": "monotonic",
+  "RUNTIME_DURATION_TRANSPARENCY_SCHEMA_VERSION": "v1",
+  "RUN_ID": "d729f73d6ffc42b4",
+  "S5_CYCLE_SUMMARIES": [
+    {
+      "c1_venue_event_time": 1792192080.0,
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192140.0,
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192200.0,
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192260.0,
+      "cycle_index": 4,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192320.0,
+      "cycle_index": 5,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192380.0,
+      "cycle_index": 6,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192440.0,
+      "cycle_index": 7,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192500.0,
+      "cycle_index": 8,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192560.0,
+      "cycle_index": 9,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192620.0,
+      "cycle_index": 10,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192680.0,
+      "cycle_index": 11,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1792192740.0,
+      "cycle_index": 12,
+      "s5_disposition": "HOLD_CLOSED"
+    }
+  ],
+  "S5_TERMINAL_CLASS": "MAX_CYCLES_BOUND",
+  "SEQUENCER_ELAPSED_SECONDS": 668.587601,
+  "SYNTHETIC_ENTER_COUNT": 0,
+  "SYNTHETIC_ENTER_OBSERVED": "false",
+  "TERMINAL_DISPOSITION": "MAX_CYCLES_BOUND_STOP",
+  "TOTAL_WALLCLOCK_SECONDS": 1027.710962
+}

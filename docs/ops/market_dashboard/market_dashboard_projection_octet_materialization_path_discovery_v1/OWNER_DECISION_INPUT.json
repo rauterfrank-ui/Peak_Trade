@@ -1,0 +1,74 @@
+{
+  "schema_name": "market_dashboard_projection_octet_materialization_path_discovery_owner_decision_input.v1",
+  "schema_version": 1,
+  "generated_at": "2026-08-04T19:54:24Z",
+  "repository_head_sha": "8aa5606fc08419d5e436a1e4db414deb680e9f71",
+  "origin_main_sha": "8aa5606fc08419d5e436a1e4db414deb680e9f71",
+  "prior_batch": {
+    "batch_id": "B2_PROJECTION_OCTET_RUNTIME_VERIFY",
+    "merge_sha": "8aa5606fc08419d5e436a1e4db414deb680e9f71",
+    "artifacts_present": 0,
+    "artifacts_missing": 8,
+    "materializer_executed": false
+  },
+  "discovery_batch_id": "PROJECTION_OCTET_MATERIALIZATION_PATH_DISCOVERY_V1",
+  "b3_authorized": false,
+  "b3_authorization_reason": "ACTIVE_DOUBLE_PLAY_PROJECTION_ABSENT; blocker field contract not proven on real artifact; template blockers remain hardcoded NOT_BOUND per prior INVENTORY_RECONCILE",
+  "materializer_executed_this_batch": false,
+  "active_archive_written_this_batch": false,
+  "runtime_changed": false,
+  "producer_changed": false,
+  "canonical_readmodel_changed": false,
+  "trading_logic_changed": false,
+  "dashboard_role": "PURE_CONSUMER",
+  "dashboard_authority_effect": "NONE",
+  "summary_counts": {
+    "families_analyzed": 8,
+    "materializers_proven": 8,
+    "source_siblings_present": 0,
+    "source_siblings_missing": 7,
+    "safety_authority_durable_sibling_loader": false,
+    "existing_automatic_paths": 0,
+    "existing_manual_paths": 0,
+    "test_only_paths": 8,
+    "implemented_not_invoked_operationally": 8,
+    "config_or_gate_blocked": 0,
+    "no_invocation_path_proven": 0
+  },
+  "octet_path_classification": "EIGHT_INDEPENDENT_PATHS_PROVEN",
+  "operational_reachability_classification": "NO_OPERATIONAL_PATH_PROVEN",
+  "owner_decision_recommendation": "D",
+  "owner_decision_recommendation_label": "MIXED_BLOCKERS_REQUIRE_BOUNDED_FAMILY_PLAN",
+  "owner_decision_rationale": [
+    "All eight presentation materializers are implemented as library entrypoints and proven only via tmp_path tests (AST non-test call sites = 0).",
+    "No CLI, ops script, LaunchAgent, session, O-series, or dashboard path invokes any octet materializer.",
+    "Active archive lacks all seven durable source siblings and all eight presentation projections; safety_authority has no durable sibling loader and requires a caller object.",
+    "Therefore blockers are mixed: upstream source-sibling / caller-input work AND missing operational invocation path.",
+    "A single common octet operational materializer does not exist; any later authorized materialization requires a bounded family plan (and separate OWNER_GO), not an implied common run.",
+    "This recommendation does not authorize execution of any materializer."
+  ],
+  "rejected_recommendations_with_reason": [
+    {
+      "option": "A",
+      "label": "EXISTING_READ_ONLY_OR_OPERATIONAL_MATERIALIZATION_PATH_READY_FOR_SEPARATE_OWNER_GO",
+      "rejected_because": "No operational/manual path proven ready; only TEST_ONLY_PATH."
+    },
+    {
+      "option": "B",
+      "label": "SOURCE_SIBLINGS_MISSING_UPSTREAM_WORK_REQUIRED",
+      "rejected_because": "True but incomplete: even with siblings present, no operational invocation wiring exists and generated_at remains caller-required; safety has no sibling loader."
+    },
+    {
+      "option": "C",
+      "label": "MATERIALIZERS_IMPLEMENTED_BUT_OPERATIONAL_INVOCATION_MISSING",
+      "rejected_because": "True but incomplete: active archive also lacks source siblings / caller inputs required for successful materialize."
+    },
+    {
+      "option": "E",
+      "label": "INSUFFICIENT_EVIDENCE_STOP",
+      "rejected_because": "Repository evidence is sufficient to classify materializers, paths, schemas, loaders, and active-archive absence."
+    }
+  ],
+  "next_owner_decision_required": "OWNER_BOUNDED_FAMILY_PLAN_GO_OR_STOP; no materialization, no B3, no runtime/producer mutation authorized by this discovery",
+  "non_authorization_statement": "This discovery artifact authorizes neither materializer execution, active-archive write, B3 implementation, dashboard mutation, producer mutation, nor trading-logic mutation."
+}

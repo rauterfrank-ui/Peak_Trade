@@ -1,0 +1,123 @@
+{
+  "FAILURE_INJECTION_TESTS_PASS": true,
+  "PHASE_9_2_STEP_6_STATUS": "OPEN",
+  "PHASE_9_2_STEP_7_STATUS": "OPEN",
+  "cases": [
+    {
+      "case": "implementation_proof_no_network",
+      "network_session_started": false,
+      "ok": true
+    },
+    {
+      "blockers": [
+        "OWNER_GO_REQUIRED"
+      ],
+      "case": "no_owner_go_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "NETWORK_SESSION_GO_REQUIRED"
+      ],
+      "case": "no_network_session_go_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "HIDDEN_PTY_STDIN_NOT_TTY",
+        "REAL_TTY_REQUIRED"
+      ],
+      "case": "no_real_tty_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "CONFIRM_TOKEN_INVALID",
+        "HIDDEN_CONFIRM_CHANNEL_MISSING",
+        "HIDDEN_CONFIRM_HANDOFF_UNREACHABLE"
+      ],
+      "case": "no_hidden_confirm_channel_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "REPOSITORY_SHA_MISMATCH"
+      ],
+      "case": "wrong_repository_sha_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "CONFIG_DIGEST_MISMATCH"
+      ],
+      "case": "config_mismatch_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "PRIVATE_ENDPOINT_REACHABLE_FORBIDDEN"
+      ],
+      "case": "private_endpoint_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "AUTH_HEADER_PRESENT_FORBIDDEN",
+        "CREDENTIAL_PATH_REACHABLE_FORBIDDEN"
+      ],
+      "case": "auth_header_credential_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "ORDER_SIDE_EFFECT_REACHABLE_FORBIDDEN"
+      ],
+      "case": "order_reachability_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "CONFIRM_TOKEN_DIGEST_MISMATCH",
+        "CONFIRM_TOKEN_INVALID",
+        "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY",
+        "REAL_NETWORK_SIDE_EFFECTS_FORBIDDEN_IN_BINDING_CAPABILITY"
+      ],
+      "case": "binding_only_cannot_be_productive_session",
+      "ok": true
+    },
+    {
+      "case": "productive_path_alone_cannot_start_session",
+      "ok": true,
+      "path_alone": {
+        "blockers": [
+          "REAL_NETWORK_SIDE_EFFECTS_FORBIDDEN_IN_THIS_IMPLEMENTATION_CAPABILITY"
+        ],
+        "notes": [
+          "PRODUCTIVE_PATH_ALONE_CANNOT_START_SESSION=true",
+          "SESSION_OWNER_REQUIRED_FOR_INVOKE=true"
+        ],
+        "ok": true,
+        "path_may_start_with_request_real_network": false,
+        "path_side_effects_forbidden": true
+      }
+    },
+    {
+      "case": "stale_control_and_failure_injection_reachable",
+      "ok": true,
+      "wiring_ok": true
+    },
+    {
+      "case": "full_go_may_start_but_implementation_does_not_start_network",
+      "may_start": true,
+      "ok": true,
+      "started": false
+    },
+    {
+      "case": "verifier_and_step_status_open",
+      "ok": true
+    }
+  ],
+  "confirm_token_minted": false,
+  "network_session_started": false,
+  "ok": true
+}

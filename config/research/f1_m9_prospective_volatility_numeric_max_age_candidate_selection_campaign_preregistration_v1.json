@@ -1,0 +1,80 @@
+{
+  "abort_block_criteria": [
+    "REPOSITORY_SHA_DRIFT",
+    "PREREGISTRATION_DIGEST_DRIFT",
+    "OWNER_SELECTION_POLICY_DIGEST_DRIFT",
+    "CAMPAIGN_ID_REUSE_WITH_DIFFERENT_POLICY",
+    "UNAUTHORIZED_SESSION_START",
+    "NETWORK_ACCESS_BEFORE_SEPARATE_AUTHORIZATION",
+    "EVIDENCE_WRITE_BEFORE_SEPARATE_AUTHORIZATION",
+    "PRE_PREREGISTRATION_EVIDENCE_USED_FOR_SELECTION",
+    "HISTORICAL_COUNTERFACTUAL_EVIDENCE_USED_FOR_SELECTION",
+    "ENFORCEMENT_ACTIVATION",
+    "PRODUCTIVE_APPLY",
+    "PARAMETER_PROMOTION_WITHOUT_SEPARATE_AUTHORIZATION",
+    "ALPHA_STATE_COMPOSITION_MUTATION"
+  ],
+  "artifact_class": "F1_M9_PROSPECTIVE_CANDIDATE_SELECTION_CAMPAIGN_PREREGISTRATION_V1",
+  "authority_state": "PREREGISTERED_UNEXECUTED",
+  "bound_origin_main_sha": "16fdb6a6b1f87d8e68874c9a35c296f285d9d2f8",
+  "campaign_execution_authorized": false,
+  "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+  "campaign_purpose": "Prospective REAL public-MD evidence campaign for F1/M9 governed candidate proposal selection only under a frozen owner selection policy. Threshold selection is authorized only within this preregistration and only via the precommitted deterministic selection rule. Does not authorize productive enforcement, apply, or promotion.",
+  "campaign_termination_rules": {
+    "no_auto_productive_apply_on_selection": true,
+    "terminal_on_fail_closed_abort": true,
+    "terminal_on_selection_outcome_or_no_selection": true
+  },
+  "capability_id": "F1_M9_PROSPECTIVE_VOLATILITY_NUMERIC_MAX_AGE_CANDIDATE_SELECTION_CAMPAIGN_PREREGISTRATION_V1",
+  "created_at_utc": "2026-09-24T21:00:00Z",
+  "decision_making_evidence_constraints": {
+    "evidence_must_bind_new_preregistration_digest": true,
+    "evidence_timestamp_or_run_id_must_be_downstream_of_preregistration": true,
+    "historical_counterfactual_campaign_evidence_decision_forbidden": true,
+    "historical_counterfactual_campaign_id": "cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f",
+    "historical_preregistration_digest": "59769afb0da30b4f00282dcb13c0c8f7cd45c9c65a944b7bc1b42b4565f80b75",
+    "pre_preregistration_evidence_decision_forbidden": true
+  },
+  "enforcement_activation_authorized": false,
+  "evidence_write_authorized": false,
+  "expected_durable_campaign_root": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+  "frozen_at_utc": "2026-09-24T21:00:00Z",
+  "network_authorized": false,
+  "non_promotion_invariants": {
+    "AUTO_PROMOTION_ALLOWED": false,
+    "COUNTERFACTUAL_ONLY": false,
+    "ENFORCEMENT_APPLIED": false,
+    "PRODUCTIVE_NUMERIC_MUTATION_FORBIDDEN": true,
+    "SELECTION_OUTCOME_IS_PROPOSAL_ONLY": true,
+    "THRESHOLD_SELECTION_WITHIN_CAMPAIGN_ONLY": true
+  },
+  "owner_selection_policy_config": "config/governance/f1_m9_productive_candidate_selection_policy_v1.json",
+  "owner_selection_policy_digest": "2bab88a8289fb0322ea2e9d1f0133d05543f9a899d2ba7602a4509c4a184d2a1",
+  "owner_selection_policy_id": "f1_m9_volatility_numeric_max_age_productive_candidate_selection_policy_v1",
+  "parameter_decision_authorized": false,
+  "parameter_ids": {
+    "source_candidate_parameter": "max_age_seconds",
+    "target_policy_parameter": "numeric_max_age_seconds"
+  },
+  "planned_sessions_minimum": 2,
+  "preregistration_digest": "44971151bc41b124bfa3642d38cba0bc43919160fec2e2d74df4f9e135101b0c",
+  "preregistration_id": "F1_M9_PROSPECTIVE_VOLATILITY_NUMERIC_MAX_AGE_CANDIDATE_SELECTION_CAMPAIGN_PREREGISTRATION_V1",
+  "productive_apply_authorized": false,
+  "promotion_authorized": false,
+  "research_age_grid_seconds": [
+    60,
+    120,
+    300,
+    600,
+    900,
+    1800,
+    3600,
+    7200
+  ],
+  "schema_version": "f1_m9_prospective_candidate_selection_campaign_preregistration/v1",
+  "selection_rule_binding": "F1_M9_ROBUST_REGION_UNIQUE_SURVIVOR_POINT_V1",
+  "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+  "target_consumer_module": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+  "threshold_selection_authorized": true,
+  "workpackage_id": "F1_M9_PRODUCTIVE_CANDIDATE_SELECTION_POLICY_AND_PROSPECTIVE_CAMPAIGN_V1"
+}

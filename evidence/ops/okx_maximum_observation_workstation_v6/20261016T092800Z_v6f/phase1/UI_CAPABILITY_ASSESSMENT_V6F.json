@@ -1,0 +1,48 @@
+{
+  "phase": "PHASE_1_UI_CAPABILITY_V6F",
+  "timestamp_utc": "2026-10-16T07:35:00Z",
+  "method": "Read-only DOM + verified UI probes (no order-form interaction)",
+  "capabilities": {
+    "hide_order_form_right_column": {
+      "verdict": "SUPPORTED",
+      "ui_path": "Rechte Workspace-Leiste → Schaltfläche mit Icon okx-trading-expand-left (button.index_expandIconBox__EebsE) klappt Handeln/Order-Spalte ein; stattdessen Workspace-Manager (Vorlagen/Widgets) sichtbar",
+      "verified": true,
+      "evidence_screenshot": "screenshots/OPT_expand_icon_click.png"
+    },
+    "hide_bottom_limit_market_order_bar": {
+      "verdict": "UNSUPPORTED",
+      "ui_path": "Flexlayout-Close auf Handeln-Tabset entfernt nicht zuverlässig die untere Limit|Market-Leiste; Widget-Toggle „Order und Positionen“ erfordert präzisen Klick im Widget-Panel",
+      "verified": true
+    },
+    "collapse_right_trading_column_generic": {
+      "verdict": "SUPPORTED",
+      "ui_path": "flexlayout Close (X) auf Tabsets „Handeln“ und „Futures-Modus“ — reduziert Spalten, lässt Order-Eingabe aber oft in unterem Bereich",
+      "verified": "partial"
+    },
+    "orderbook_and_time_sales_parallel": {
+      "verdict": "UNSUPPORTED",
+      "ui_path": "Market-Tabset nur Tabs Orderbuch | Letzte Trades (exklusiv)",
+      "verified": true
+    },
+    "panel_drag_resize": {
+      "verdict": "SUPPORTED",
+      "ui_path": "flexlayout Splitter zwischen Chart / Markt / Account",
+      "verified": true
+    },
+    "native_pure_observation_preset": {
+      "verdict": "UNKNOWN",
+      "ui_path": "Vorlagen (Standard, Erweitert, Chart-Handel, …) vorhanden; kein explizites „Nur Beobachtung“-Preset verifiziert",
+      "verified": false
+    },
+    "layout_templates_and_widgets": {
+      "verdict": "SUPPORTED",
+      "ui_path": "Einstellungen (Sidebar) oder expand-left → Verwalten von Arbeitsplatz 2 → Vorlagen / Widgets (Diagramm, Orderbuch, Kontomodus, …)",
+      "verified": true
+    },
+    "positions_pnl_persistent_visible": {
+      "verdict": "SUPPORTED",
+      "ui_path": "Unteres Account-Tabset + optional Futures-Modus/Kontomodus-Widget",
+      "verified": true
+    }
+  }
+}

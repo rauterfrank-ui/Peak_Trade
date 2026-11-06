@@ -1,0 +1,35 @@
+{
+  "schema_version": "branch_ruleset_enforcement_contract_v1",
+  "capability_id": "BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1",
+  "canonical_protected_branch": "main",
+  "canonical_ref_include": ["refs/heads/main"],
+  "ruleset": {
+    "expected_name": "peak_trade",
+    "expected_id": 11192468,
+    "expected_target": "branch",
+    "expected_enforcement": "active",
+    "required_rule_types": [
+      "deletion",
+      "non_fast_forward",
+      "pull_request",
+      "required_status_checks"
+    ],
+    "pull_request": {
+      "required_approving_review_count": 0,
+      "dismiss_stale_reviews_on_push": true,
+      "require_code_owner_review": false,
+      "require_last_push_approval": true,
+      "required_review_thread_resolution": true,
+      "allowed_merge_methods": ["merge", "rebase", "squash"]
+    },
+    "required_status_checks": {
+      "strict_required_status_checks_policy": true,
+      "contexts_ssot": "config/ci/required_status_checks.json"
+    },
+    "bypass_actors_allowed": [],
+    "broad_bypass_forbidden": true,
+    "force_push_allowed": false,
+    "branch_deletion_allowed": false
+  },
+  "notes": "Canonical required-check names are owned by config/ci/required_status_checks.json (no parallel check SSOT). Approval count 0 preserves the existing solo-operator PR-flow policy while enabling stale-dismissal, latest-push approval flag, and conversation resolution."
+}

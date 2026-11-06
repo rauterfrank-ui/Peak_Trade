@@ -1,0 +1,150 @@
+---
+title: "Intelligenz-Universum"
+stand: "2026-11-05"
+rolle: "Fachlicher PeakTrade-Systemindex"
+authoritaet: "NONE"
+tags: [aktuell, systemindex]
+---
+
+# Intelligenz-Universum
+
+> [!info] Vertiefung vom 06.11.2026
+> [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/10 Innere Ebenen der aktuellen Anschlussmodule|Identität, Informationszeit, Einheiten, Freeze und numerische Measurement]]. [[00 Systemindex/Repoabgleich/Standabgleich mit dem Repository|Standbindung und Reichweite des Abgleichs]].
+
+> [!info] Aktueller Implementierungsstand nach dem Entwurf
+> [[00 Systemindex/Intelligentes Universum/Integration/10 Implementierungsstand|Drei lokale Implementierungscommits und ihre belegten Grenzen]]. Teilintegration; ursprüngliche Entwurfs-/E6-Quellenbindungen bleiben historisch.
+
+
+
+<!-- enforcement-view:v1:INT -->
+> [!info] Produktiver Referenzpfad · EVIDENCE
+> Kontext, Forecast, Kalibrierung und Information bleiben begrenzte Inputs; kein autonomer Decision- oder Sendowner.
+> Dokumentrolle, keine Aktivierungsfreigabe. [[00 Systemindex/Produktiver Pfad und Enforcement|Pfad, Gates und ausgeschlossene Kurzschlüsse]].
+<!-- /enforcement-view:v1:INT -->
+
+**Typ:** Universum im fachlichen Index. **Rubrik:** Universen.
+Marktkontext, Forecast, Kalibrierung, inkrementelle Information und attributierbare Analyse-/Representationevidence bereitstellen.
+
+## Äußerste fachliche Grenze
+**Gehört bis zur Grenze hinein:** Market-Intelligence-Kontextfamilien, Forecast-/Horizonbindung, N_BARS-Outcomejoin, Kalibrierung, MI-Researchrecords und originaler Forecast-/Calibration-/Research-Triadenstore; Abgabe vor der gesonderten SL-Learningaufnahme sowie vor OPT-Researchaufnahme; B0–B5-Inkrementalprüfung und Phase25-Attribution als vorhandene benannte Zweige. Die in diesem Paket abgelegte Phase24-Representationkomposition ist für P24 als SL-interner Verarbeitungskreis abgegrenzt. AI/RAG/Advisory sind optionale Analyseäste; sie werden nicht als im E6-Profil ausgeführt dargestellt.
+
+**Erster eigener Prüf-/Verarbeitungspunkt:** Beginnt an der Annahme eigener gebundener Markt-/Contextfamilien oder eines Forecastrequests. Rohquellen und Transport bleiben im Datenbereich; die spätere originale Outcomemessung kommt aus SL.
+
+**Letzter eigener Zustand / Output / Entscheidungsumfang:** Endet am typisierten Forecast-/Calibration-/MI-Research-/Learningexport bzw. einem ausdrücklich gerouteten Adaptation-/Researchinput. Ein Advice-/Kontextwert wird dadurch nicht zum Core-, Risk- oder Applyowner.
+
+**Liegt ausdrücklich jenseits dieser Grenze:** Der numerische Research-Meta-Analyzer gehört als Capability in OPT; M6-Self-Learning-Projektion bleibt SL. GGE-Preisgeometrie bleibt CORE. Keine eigenständige Trading-, Selection-, Execution- oder Promotionhoheit.
+
+[[00 Systemindex/Karten/INT.canvas|Bereich mit tatsächlicher Innen-/Außengrenze und Nachbarn öffnen]]
+
+## Innere Architektur und sämtliche benannten Stufen
+Diese 7 Funktionsstufen sind eine quellengestützte Gliederung der vorhandenen Konstruktion. Sie werden nicht als neue universelle Runtime-Layernummern eingeführt. Die nativen zehn mechanischen Corelayer bleiben gesondert vollständig sichtbar.
+- [[00 Systemindex/Innenebenen/INT-01|Marktkontext und Familien]] — Vorhandene Familien mit Herkunft und Missingsemantik komponieren.
+- [[00 Systemindex/Innenebenen/INT-02|Forecast]] — ForecastEvidence mit Zeit-/Zielbindung bauen.
+- [[00 Systemindex/Innenebenen/INT-03|Outcomejoin und Kalibrierung]] — Intervalle/Instrument/Originalmeasurement prüfen; Fehler kalibrieren.
+- [[00 Systemindex/Innenebenen/INT-04|Evidence Store und Export]] — Originalrecords speichern und passende Projektionen exportieren.
+- [[00 Systemindex/Innenebenen/INT-05|B0–B5 Inkrementalzweig]] — Vorhandenen Stufenvergleich prüfen.
+- Das bestehende Inventar [[00 Systemindex/Innenebenen/INT-06|Representation / Loop C]] beschreibt Paketablage und Funktionen; die aktuelle SL/OPT-Außenhülle führt diese Verarbeitung als [[00 Systemindex/Grenzen/P24|SL-intern]], nicht als eigene INT-Aufnahme. Keine Änderung der inneren Implementierung.
+- [[00 Systemindex/Innenebenen/INT-07|Attribution und optionale Advisoryäste]] — Zuordnung abfragen bzw. gebundene Adviceausgabe erzeugen.
+
+## Eingangsgrenzen: hier beginnt unsere Verantwortung
+- [[00 Systemindex/Grenzen/P60|P60 · Vorhandene kanonische Facts in MI-Kontextfamilien]] — von [[00 Systemindex/Aussenbereiche/DATA|Datenebene und Quellenadmission]]. **Erste eigene Prüfung:** [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py). Erwartet Originalfactgebundene Marketcontext-/Familienprojektion über bestehenden MI-Bridgevertrag. Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+
+## Ausgangsgrenzen: hier beginnt die fremde Verantwortung
+- [[00 Systemindex/Grenzen/P37|P37 · Intelligenz-Universum an originalen Domain-Evaluator]] — an [[00 Systemindex/Aussenbereiche/EVAL|Evaluation GVEF und Qualitätsnachweise]]. **Eigener Producer endet:** [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py). **Erster fremder Consumer:** [src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py](file:///Users/frnkhrz/Peak_Trade/src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py). Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+
+## Kausale Teilketten und Rechenrichtung
+- DATA/gebundener Context → Forecast vor Zielende; SL/P17 → exakte spätere Originalmessung → Target-/Zeit-/Instrumentjoin → Kalibrierung → eigener MI-Store.
+- MI-Triade → P20/SL zur eigenen Composer-/Learningstoreaufnahme oder P21/OPT zur ersten Researchinputvalidation. Optionaler Legacy-DDO-Export ist ein anderer Kompatibilitätszweig, kein automatischer DDO-Reducerwrite.
+- P24 ist SL-interner Router-/Adaptations-/Plan-/Evaluationskreis. Die MI-Paketablage erzeugt keinen INT-Eingang und keine INT-Forecast-/Calibrationmutation. Inkrementalstufen und optionales AI/RAG bleiben eigene Zweige.
+
+Rückwärts wird vom erwarteten Consumerfeld über genau denselben Port zum Producer und dessen Originalinput verfolgt. Das ist Quellen-/Abhängigkeitsnavigation, keine nachträgliche Neuberechnung mit Zukunftswissen. Aufrufrichtung und Datenrichtung können entgegengesetzt sein und sind pro Port getrennt erklärt.
+
+## Zustandsowner und vollständige Feldverträge
+Versionierte MarketContexts/InformationSets, ForecastEvidence, CalibrationEvidence, MI-Researchevidence und originaler Triadenstore; der gesonderte MiLearningEvidenceStore am P20-Empfang ist SL-Lernzustand, inkrementelle Vorgänger-/Dataset-/Planlineage und Decisionattributionreferenzen. Loop-C-Lineage ist im Paket auffindbar, gehört an P24 aber zum eigenen SL-Researchrecord.
+
+[[00 Systemindex/Zustaende/INT|Deklarierte konkrete Zustands-/DTO-/Enumfelder mit Codezeilen]].
+
+## Semantik innerhalb dieses Bereichs und über seine Grenze
+Der Indexname Intelligenz-Universum beschreibt den fachlichen Bereich. Die bestehende Autoritätslandkarte klassifiziert MI als Offline-/Evidenceplane, nicht als neue Handelsautorität. Forecast ≠ Decision; TRUE_L2 ≠ OHLCV-Proxy; zusätzliche Familie ≠ bewiesener Informationsnutzen. Fehlende Familien bleiben fehlend; B5 ist optional/deferred je Vertrag.
+
+## Originalbausteine Runner Bridges und Vektoren
+[[00 Systemindex/Zuordnung/INT|Alle diesem Bereich zugeordneten heutigen Implementierungs-/Unterlagenpfade]]. Die fachliche Grenze folgt den hier erklärten Ownerrollen; eine Namespacezuordnung allein ist kein Beweis ihrer semantischen Vollständigkeit.
+
+## Quellen und eingeschränkter Wirkungsnachweis
+- [src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py](file:///Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py)
+
+E3/E6 belegen die konkrete numerische Kalibrierung und den Packetreadback im Offlineprofil. Die gesamte Inkremental-/Representation-/AI-/RAG-Superstruktur ist damit nicht als natürlicher wirksamer Gesamtpfad abgenommen.
+
+[[PeakTrade-Systemindex|PeakTrade-Systemindex]] · [[00 Systemindex/Grenzregister|Alle Grenzübergaben]] · [[00 Systemindex/Belegstand|Belegstand und offene Grenzen]]
+
+## Weitere vorhandene Owner-/Kartenanschlüsse
+Diese ergänzende Liste erhält auch Quer-/Neben-/Kontrollkanten aus den vorhandenen Karten. Sie ist keine zweite Definition der Bereichsgrenze und übernimmt keine früheren PROVEN-Labels.
+- Ausgang: [[07 Verbindungen/Uebergaben/H061 mi_offline_compose_ddo_n_bars_outcome|mi_offline_compose_ddo_n_bars_outcome]] · [[00 Systemindex/Universen/INT|Intelligenz-Universum]] → [[00 Systemindex/Universen/SL|Selbstlern-Universum]].
+- intern: [[07 Verbindungen/Uebergaben/H062 mi_offline_durable_evidence_store_loop_b|mi_offline_durable_evidence_store_loop_b]] · [[00 Systemindex/Universen/INT|Intelligenz-Universum]] → [[00 Systemindex/Universen/INT|Intelligenz-Universum]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H063 mi_offline_to_multi_cycle_m5_m8_replay|mi_offline_to_multi_cycle_m5_m8_replay]] · [[00 Systemindex/Universen/INT|Intelligenz-Universum]] → [[00 Systemindex/Universen/OPT|Optimierungs-Universum]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H064 mi_offline_to_optimization_research_input|mi_offline_to_optimization_research_input]] · [[00 Systemindex/Universen/INT|Intelligenz-Universum]] → [[00 Systemindex/Universen/OPT|Optimierungs-Universum]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H065 mi_offline_typed_export_to_learning_path|mi_offline_typed_export_to_learning_path]] · [[00 Systemindex/Universen/INT|Intelligenz-Universum]] → [[00 Systemindex/Universen/SL|Selbstlern-Universum]].
+
+[[00 Systemindex/Owner und Kartenabgleich|Vollständigen Abgleich aller 75 Domänen/113 Kanten ansehen]].
+
+## Semantische Bezugsebenen über die Bereichsgrenze hinweg
+
+- [[00 Systemindex/Semantik/S01|Fachsemantik im ursprünglichen Owner]]
+- [[00 Systemindex/Semantik/S02|Innere Lernsemantik: Entscheidung zu Outcome und Wissen]]
+- [[00 Systemindex/Semantik/S05|Gemeinsame Meta-Evidence- und Rückkopplungsebene SL–OPT]]
+- [[00 Systemindex/Semantik/S06|Marktkontext Forecast und Kalibrierung – Loop A]]
+- [[00 Systemindex/Semantik/S07|Repräsentations- und Informationsnutzen – Loop C und B0–B5]]
+- [[00 Systemindex/Semantik/S09|Unabhängige Evaluation und Reproof – GVEF]]
+
+[[00 Systemindex/Semantische Ebenen|Alle semantischen Ebenen im Gesamtzusammenhang]] · [[00 Systemindex/Aussenring - acht Sichtbereiche|Achtteilige Außenringsicht]]
+
+## Externe Eingänge und Executionvarianten
+
+- [[00 Systemindex/Signalstroeme/E02|Öffentliche WS Trades und Flow]]
+- [[00 Systemindex/Signalstroeme/E03|Best Bid Ask und Books5]]
+- [[00 Systemindex/Signalstroeme/E06|Funding Open Interest und Derivatekontext]]
+- [[00 Systemindex/Signalstroeme/E07|Cross Market Kontext und weitere Informationsfamilien]]
+- [[00 Systemindex/Signalstroeme/E23|Forschungsdaten CSV Parquet und versionierte Datasets]]
+- [[00 Systemindex/Signalstroeme/E27|Wissensdokumente Query Vektorstore und RAG Kontext]]
+- [[00 Systemindex/Signalstroeme/E28|AI Modellbefunde und Switch Eingänge]]
+- [[00 Systemindex/Signalstroeme/E29|TestHealth CI Reports und InfoStream]]
+- [[00 Systemindex/Signalstroeme/E33|Manuelle Macro GeoRisk und Kalenderinformation]]
+- [[00 Systemindex/Signalstroeme/E34|Externe Modellantwort Replaytranskript und AI Orchestration]]
+- [[00 Systemindex/Signalstroeme/E35|Timeseries Datenbank und Parquet Queryrückgaben]]
+
+[[00 Systemindex/Execution und Betriebsarten|Execution und Betriebsarten im Zusammenhang]] · [[00 Systemindex/Externe Signalstroeme|Systemweite externe Eingänge]]
+
+## Orientierung Fall und Änderung
+
+[[00 Systemindex/System Cockpit|Cockpit]] · [[00 Systemindex/Fallverlaeufe|Fälle]] · [[00 Systemindex/Aenderungsauswirkungen|Auswirkungen]] · [[00 Systemindex/Entscheidungen und Widersprueche|Entscheidungen]]
+
+## Historische IU-Konstruktionen und tatsächliche Wirkungsgrenzen
+
+[[00 Systemindex/Intelligentes Universum/Intelligentes Universum rekonstruiert|Ursprüngliches Instrumentwissen, enge Scopefähigkeit, rekonstruierte14er-Cap-Projektion und heutige MI-Consumer]]. Diese vorhandene INT-Seite ist die heutige MI-Fachansicht; sie definiert nicht rückwirkend jeden historischen IU-Bedeutungsumfang.
+
+
+## Anschlussentwurf des intelligenten Universums
+
+[[00 Systemindex/Intelligentes Universum/Integration/Integrationskonstrukt Intelligentes Universum|Zusammenhängenden Integrationsentwurf öffnen]] — 14 Ports mit Feld-/Zeit-/Einheiten-/Recoveryvertrag, 16 Befunde, vier Umsetzungspakete und sechs offene Entscheidungen. Dokumentationsarbeit; keine implementierte Integration oder Produktivfreigabe.
+
+## Korrigierte Anschlussseite für SL und OPT
+
+[[00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT|Architektonische Außengrenzen SL und OPT]] bestimmt ausschließlich die hier betroffenen Anschlussrollen. Andere Nachbarfunktionen dieser Seite wurden nicht neu abgegrenzt.
+
+## Datenanschlüsse
+
+- [[00 Systemindex/Grenzen/P17|P17 · SL-Messartefakte in MI-Targetjoin/Kalibrierung]] — **Eingang: SL → INT**. `STATISCH_KONKRET`. [materialize_real_outcome_horizon_supplier_input_v1](/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py:199) → [prepare_explicit_measured_return_v1](/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py:49).
+- [[00 Systemindex/Grenzen/P20|P20 · MI-Originaltriade in gesonderte Learningaufnahme]] — **Ausgang: INT → SL**. `ORIGINALPORT_MIT_LOKALEM_INTEGRATIONSKANDIDATEN`. [_readback](/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py:330) → [compose_mi_to_learning_evidence_v1](/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py:95).
+- [[00 Systemindex/Grenzen/P21|P21 · MI-ResearchEvidence in OPT-Inputvalidation]] — **Ausgang: INT → OPT**. `STATISCH_KONKRET`. [project_market_intelligence_research_evidence_v1](/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py:24) → [validate_market_intelligence_optimization_research_input_v1](/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py:44).
+
+
+<!-- Vollständige Leserprojektion; Original: system:00 Systemindex/Universen/INT.md; SHA256: a082fdba1cc41ffeb4df641c072cffa606df923e4b55498b14d458cb75eccc08. Native Wikilinks beziehen sich auf den ursprünglichen Vault. -->

@@ -1,0 +1,8 @@
+{
+  "number": 6469,
+  "title": "feat(full-core): bind the ratified today initial-stock as the OPTION_D anchor",
+  "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/6469",
+  "merged_at": "2026-09-14T19:16:36Z",
+  "merge_commit_sha": "6ed70553db02d0fe1ca7567e02169e1fbde038a4",
+  "body": "## Summary\n- Bind exactly the Owner-ratified candidate `GOVERNED_TODAY_CANDIDATE_5d6c32292e0cb733` as the OPTION_D Today Initial Stock Anchor. Candidate \u2260 Ratification \u2260 Anchor; equity remains the exact lexical string `2.290727894593913` with provenance via candidate digest and ratification digest.\n- KIND_SET stays `EMPTY_FAIL_CLOSED`. Membership requires a later Owner-GO. Venue `eq` remains reconciliation target only; zero GET/POST; protected surfaces unchanged.\n- New immutable evidence pack `evidence/ops/full_core_live_equity_stock_today_initial_stock_anchor_wp1/2026-09-14T205500Z` plus Master Runbook \u00a711.2.1.BV persist.\n\n## Test plan\n- [x] Owner tests: `tests/ops/test_full_core_live_equity_stock_today_initial_stock_anchor_wp1.py` plus existing Declaration/Ratification/Source-Kind tests (81 passed)\n- [x] Ruff format --check / ruff check\n- [x] Docs token policy and docs reference targets\n- [x] Atlas validate (`ATLAS_VALIDATE_OK`, no regen required)\n- [x] Selector `PR_BOUNDED_FULL` (`category_central_src_requires_full`); path-equivalent pytest 744 passed in 37.57s\n- [ ] GitHub required checks on this PR (do not merge)\n\n\nMade with [Cursor](https://cursor.com)"
+}

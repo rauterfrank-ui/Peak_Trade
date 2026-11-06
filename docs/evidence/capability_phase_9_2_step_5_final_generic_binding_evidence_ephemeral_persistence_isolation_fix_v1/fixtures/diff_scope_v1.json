@@ -1,0 +1,10 @@
+{
+  "authorization_semantics_changed": false,
+  "config_changed": false,
+  "confirm_token_semantics_changed": false,
+  "core_logic_changed": false,
+  "global_cleanup_used_as_primary_fix": false,
+  "network_start_semantics_changed": false,
+  "replay_protection_changed": false,
+  "single_use_semantics_changed": false
+}

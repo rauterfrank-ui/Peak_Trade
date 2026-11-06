@@ -1,0 +1,16 @@
+{
+  "workpackage_id": "POST_6940_AUTHORITY_MAP_ATLAS_GUIDED_LIVE_READINESS_CONVERGENCE_V1",
+  "normative_spec": "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_LIVE_READINESS_CONVERGENCE_FROM_POST_6940_MAIN_V1.md",
+  "baseline_sha": "ad99257a7e0922192ca32d27f0acf029e9efae83",
+  "paper_status": "PARKED",
+  "partial_paper_artifacts_class": "ABORTED_INCOMPLETE_NON_QUALIFYING_BOUNDED_OBSERVATION_PARTIAL_ARTIFACTS",
+  "g2_ingress_from_partial_paper": false,
+  "pre_external_reached_under_synthetic_e2e": true,
+  "live_readiness_mechanically_complete_pre_external_boundary": true,
+  "first_real_blocker": "EXTERNAL_EFFECT_AUTHORIZATION",
+  "exact_next_edge": "intent_to_execution",
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "venue_post_count": 0,
+  "real_external_effect_count": 0
+}

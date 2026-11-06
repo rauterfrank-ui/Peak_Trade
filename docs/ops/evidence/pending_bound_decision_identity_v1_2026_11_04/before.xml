@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.190" timestamp="2026-11-04T02:52:48.454896+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.ops.test_pending_bound_decision_identity_v1" name="test_pending_uses_verified_parent_correlation_instead_of_cycle_name_guess" time="0.006"><failure message="AssertionError: assert 'ddo.corr.per...LANE_1:LANE_1' == 'ddo.corr.test'&#10;  &#10;  - ddo.corr.test&#10;  + ddo.corr.persistent-natural-enter-live-c1:s5:LANE_1:LANE_1">tests/ops/test_pending_bound_decision_identity_v1.py:15: in test_pending_uses_verified_parent_correlation_instead_of_cycle_name_guess
+    assert result.record.correlation_id == parent["correlation_id"]
+E   AssertionError: assert 'ddo.corr.per...LANE_1:LANE_1' == 'ddo.corr.test'
+E     
+E     - ddo.corr.test
+E     + ddo.corr.persistent-natural-enter-live-c1:s5:LANE_1:LANE_1</failure></testcase><testcase classname="tests.ops.test_pending_bound_decision_identity_v1" name="test_pending_records_existing_exact_policy_decision_id" time="0.004"><failure message="AssertionError: assert '' == '80e81f81b654...e7d1adb7008f4'&#10;  &#10;  - 80e81f81b654f803fe9e7d1adb7008f4">tests/ops/test_pending_bound_decision_identity_v1.py:23: in test_pending_records_existing_exact_policy_decision_id
+    assert result.record.decision_id == producer["policy_decision_id"]
+E   AssertionError: assert '' == '80e81f81b654...e7d1adb7008f4'
+E     
+E     - 80e81f81b654f803fe9e7d1adb7008f4</failure></testcase><testcase classname="tests.ops.test_pending_bound_decision_identity_v1" name="test_conflicting_caller_decision_id_is_rejected" time="0.004"><failure message="AssertionError: assert (not True)&#10; +  where True = NaturalEnterPendingCreationResultV1(created=True, skipped=False, reason='CREATED', pending_outcome_id='neo.pending.91a...t_utc='2026-11-04T01:52:48.643464Z', updated_at_utc='2026-11-04T01:52:48.643464Z', closure_refs={}, failure_reason='')).created">tests/ops/test_pending_bound_decision_identity_v1.py:30: in test_conflicting_caller_decision_id_is_rejected
+    assert not result.created and result.reason == "PENDING_DECISION_LINEAGE_UNBOUND"
+E   AssertionError: assert (not True)
+E    +  where True = NaturalEnterPendingCreationResultV1(created=True, skipped=False, reason='CREATED', pending_outcome_id='neo.pending.91a...t_utc='2026-11-04T01:52:48.643464Z', updated_at_utc='2026-11-04T01:52:48.643464Z', closure_refs={}, failure_reason='')).created</failure></testcase></testsuite></testsuites>

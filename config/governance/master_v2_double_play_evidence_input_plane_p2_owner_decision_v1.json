@@ -1,0 +1,15 @@
+{
+  "a_dp_state_mutation_authority": "NONE",
+  "a_input_binding_authority": "NONE",
+  "a_runtime_implementation_authorized": false,
+  "a_runtime_implemented": true,
+  "a_runtime_reachable": false,
+  "a_trading_authority": "NONE",
+  "baseline_sha": "ae9da6bcb96ae2332e3399585a8eb6337f315a8a",
+  "b_runtime_implemented": false,
+  "external_effect_authorized": false,
+  "productive_activation_authorized": false,
+  "productive_l6_binding_authorized": false,
+  "schema_version": "master_v2_double_play_evidence_input_plane_p2_owner_decision/v1",
+  "workpackage_id": "P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1"
+}

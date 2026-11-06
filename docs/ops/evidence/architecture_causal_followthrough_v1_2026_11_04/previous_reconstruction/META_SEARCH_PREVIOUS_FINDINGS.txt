@@ -1,0 +1,126 @@
+{
+  "date": "2026-11-02",
+  "pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "findings": [
+    [
+      "F01",
+      "Der reale M4-Aufrufer liefert keine Meta-Signale",
+      "Der einzige namentlich gefundene externe Source-Caller von Advanced Search baut seinen Request ohne meta_learning_signals, meta_learning_identity, failure_records oder reality_gap_records. Die Defaults bleiben leer.",
+      "Plane Request 105–123; Advanced-Search-Aufruf 194–216.",
+      "Bei Erreichen dieser Stelle wird die Suchfunktion verwendet, ihr Meta-Eingang aber nicht versorgt. Dynamic-/Alias-/externe Caller bleiben außerhalb des Suchbefunds."
+    ],
+    [
+      "F02",
+      "Parameterräume werden auf beiden Seiten anders adressiert",
+      "Meta verwendet einen digest-domain-gebundenen Hash des vollständigen Parameter-Mappings. Search vergleicht den target-Text mit Einzelwerten oder key=value.",
+      "Meta 741–782, 1270–1284; Search 1260–1280.",
+      "Fachlich passender Parameterbereich kann daher für den Consumer unsichtbar bleiben. Belegt für die gelesene Standarddarstellung; nicht jeder denkbare Stringbereich ist ausgeschlossen."
+    ],
+    [
+      "F03",
+      "Familienpriorität ist noch keine andere Versuchsauswahl",
+      "Eine Search-Anfrage hat genau eine strategy_family, hypothesis_kind und search_space_id. Ein darauf passendes Signal addiert für alle geeigneten Kandidaten dieselbe Konstante.",
+      "Search 337–398, 1225–1257; Test 373–386.",
+      "(s_i+c)-(s_j+c)=s_i-s_j. Bei gleichbleibender Eligibility, Budget und Kandidaten-IDs bleibt die Reihenfolge und Budgetaufnahme unverändert. Ein äußerer Request-Planer könnte solche Family-Werte anders verwenden, ist hier aber nicht belegt."
+    ],
+    [
+      "F04",
+      "Priorität wirkt hier auf Budgetaufnahme, nicht auf exportierte Reihenfolge",
+      "_assign_proposal_budget sortiert eine neue Referenzliste eligible; das ursprüngliche candidates bleibt in kanonischer Kombinationsfolge. Nur Status und Request werden für überzählige Kandidaten verändert.",
+      "Search 395–400, 787–797, 876–889; Plane 219–238.",
+      "Die exportierte proposed-Folge bleibt gefilterte Originalreihenfolge. Plane nimmt proposed[0]. Bei Budget >1 ist das kein gesonderter Max-Priority-Selektor. M4 liefert aktuell ohnehin keine Meta-Signale."
+    ],
+    [
+      "F05",
+      "Erkenntnisinhalt wird beim Consumer verdichtet",
+      "Meta-Proposals enthalten claim_type und referenzieren den Forschungsbefund. Die Suchprojektion führt kind/target/reason/IDs, aber nicht claim_type/findings mit; die Scorefunktion nutzt den kind und das Matching.",
+      "Meta 1400–1438; Search 1121–1179 und 1225–1257.",
+      "Nicht automatisch fehlerhaft: priorisierendes Proposal und wissenschaftlicher Befund sind verschiedene Verträge. Aussagekraft muss über Provenienz verfügbar bleiben; dieser Consumer berechnet sie nicht neu."
+    ]
+  ],
+  "targets": [
+    [
+      "strategy_family",
+      "Strategiefamilienname",
+      "Expliziter Vergleich mit request.strategy_family.",
+      "Bei Treffer einheitlicher Zuschlag für die geeigneten Kandidaten derselben Anfrage; kein Familienvergleich über mehrere Requests."
+    ],
+    [
+      "hypothesis_kind",
+      "Hypothesentyp",
+      "Expliziter Vergleich mit request.hypothesis_kind.",
+      "Einheitlicher Zuschlag innerhalb dieser Anfrage."
+    ],
+    [
+      "search_space",
+      "Search-Space-ID",
+      "Kein expliziter search_space-Zweig, aber Fallback vergleicht auch search_space_id.",
+      "Kann passen, ebenfalls einheitlicher Zuschlag für den aktuellen Suchraum."
+    ],
+    [
+      "parameter_region",
+      "Digest des vollständigen Parameter-Mappings",
+      "Vergleich mit einzelnen Wertstrings oder key=value-Strings; kein Digest des Mappings.",
+      "Bei numerischem Bereich wie fast=10/slow=50 kein fachlich passender Treffer des Producer-Digests."
+    ],
+    [
+      "cost_model",
+      "Kostenmodell-Digest",
+      "Nur generischer Fallback auf Family/Space/Hypothesentyp.",
+      "Kein Kostenmodell-Digest-Vergleich; dieser Consumer setzt die fachliche Kostenuntersuchung nicht spezifisch um."
+    ],
+    [
+      "robustness_test",
+      "Test-ID",
+      "Nur generischer Fallback auf Family/Space/Hypothesentyp.",
+      "Kein Test-ID-Consumer in diesem Matcher."
+    ],
+    [
+      "backtest_metric",
+      "Metrikname",
+      "Nur generischer Fallback auf Family/Space/Hypothesentyp.",
+      "Kein spezifischer Metrik-Consumer."
+    ],
+    [
+      "regime",
+      "Research-Regimename",
+      "Nur generischer Fallback; request.regime wird dem Matcher nicht übergeben.",
+      "Kein spezifischer Regimevergleich an dieser Grenze."
+    ],
+    [
+      "research_path",
+      "Forschungspfad-ID",
+      "Nur generischer Fallback auf Family/Space/Hypothesentyp.",
+      "Kein spezifischer Forschungsweg-Consumer."
+    ]
+  ],
+  "flow": [
+    [
+      "Forschungsversuche / Beobachtungen",
+      "Meta-Units, Failure-/Gap-Records werden von außen geliefert.",
+      "Kein hier belegter automatischer Memory→Meta-Loader."
+    ],
+    [
+      "Meta-Frage / Kohorte",
+      "Vergleichbare Versuche werden zu begrenzten Findings und Proposals.",
+      "Kein Kausalclaim und keine Trading-Autorität."
+    ],
+    [
+      "Proposal → Search-Signal",
+      "Ziel muss zur Sprache des Consumers passen.",
+      "Parameter-Digest und Parameterwert sind verschiedene Adressen."
+    ],
+    [
+      "Suchpriorität → Budgetaufnahme",
+      "Geeignete Kandidaten werden nach Score/ID für das explizite Budget berücksichtigt.",
+      "Ein einheitlicher Score-Zuschlag ändert relative Auswahl nicht."
+    ],
+    [
+      "Output → nächste Ausführung",
+      "Offline-Requests tragen executed=false und loop_started=false.",
+      "Request-Erzeugung ist noch keine Experimentausführung."
+    ]
+  ],
+  "proof_kind": "pinned source reading and algebraic/control-flow derivation; no product execution",
+  "scope": "August meta/search source contracts and later M4 call site; not global learning loop"
+}

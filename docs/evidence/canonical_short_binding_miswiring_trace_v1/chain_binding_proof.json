@@ -1,0 +1,31 @@
+{
+  "authority_effect": "NONE",
+  "canonical_engine_signal_source": "mv2_decision_replay_series",
+  "capability_gate_present": false,
+  "capability_gate_tokens_in_wiring": [],
+  "classic_bypass_callers_sampled": [
+    "scripts/run_backtest.py",
+    "scripts/research_run_strategy.py",
+    "scripts/demo_execution_backtest.py"
+  ],
+  "engine_default_use_execution_pipeline": true,
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "intended_consumer_if_short_symmetry_claimed": "BacktestEngine(use_execution_pipeline=True) / ExecutionPipeline",
+  "legacy_exits_on_minus_one_if_open": true,
+  "legacy_opens_on_plus_one": true,
+  "live_authorized": false,
+  "map_enter_short_to_minus_one": true,
+  "non_authoritative_marker": true,
+  "orders": false,
+  "partial_reduction_false": true,
+  "pipeline_entry_short_order_reason": true,
+  "pipeline_has_is_entry_short": true,
+  "predecessor_pr": 5344,
+  "runtime_bridge_status": "BOUND_NOT_ACTIVATED",
+  "runtime_effect": "NONE",
+  "selected_consumer_on_canonical_path": "BacktestEngine(use_execution_pipeline=False)",
+  "unbound_short_capable_consumer": "BacktestEngine(use_execution_pipeline=True) / ExecutionPipeline",
+  "wiring_calls_integrated_replay": true,
+  "wiring_use_execution_pipeline_false_count": 2,
+  "wiring_use_execution_pipeline_true_count": 0
+}

@@ -1,0 +1,16 @@
+timestamp_utc=2026-07-20T17:34:56Z
+branch=feat/longer-chronological-pit-acquisition-scaffold-v1
+HEAD=b242db1b3b16582ff5b63153f647e980f1469e4a
+origin_main=b242db1b3b16582ff5b63153f647e980f1469e4a
+BASE_SHA=b242db1b3b16582ff5b63153f647e980f1469e4a
+worktree_clean=true
+stash_count=3
+untracked_count=2
+LIVE_AUTHORIZED=false
+ORDERS=false
+NETWORK_USED=false
+MASS_DOWNLOAD_STARTED=false
+ECONOMIC_GATE_OPENED=false
+PROMOTION_ELIGIBLE=false
+PR5351_STATE=OPEN_REFERENCE_ONLY
+PROPOSED_DATASET_ID=pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1

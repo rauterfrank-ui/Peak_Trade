@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: treasury_balance_incident_runbook
+STATUS: docs_draft_ready
+BRANCH: feat/treasury-balance-incident-runbook
+MODE: paper_stability_guard
+
+GOAL
+- provide a docs-first incident runbook for treasury / balance ambiguity and mismatch handling
+
+OUTPUTS
+- docs/ops/runbooks/TREASURY_BALANCE_INCIDENT_RUNBOOK.md
+- docs/ops/reviews/treasury_balance_incident_runbook/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- code_level_balance_model_boundary_audit

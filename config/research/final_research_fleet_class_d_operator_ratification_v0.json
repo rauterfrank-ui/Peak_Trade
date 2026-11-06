@@ -1,0 +1,21 @@
+{
+  "authority_effect": "NONE",
+  "bitcoin_direction_allowed": false,
+  "economic_evaluation_authorized": false,
+  "final_research_fleet": "trend_following,bollinger_bands,momentum_1h",
+  "futures_only": true,
+  "generated_at_utc": "2026-07-04T20:56:20Z",
+  "historical_blocked_completion_digest": "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1",
+  "live_authorized": false,
+  "operator_ratification_ref": "final_research_fleet_class_d_operator_ratification_v0_20260704T205300Z",
+  "order_effect": "NONE",
+  "ratification_class": "D",
+  "ratification_class_name": "NEW_VERSIONED_RESEARCH_SCOPE",
+  "ratification_id": "final_research_fleet_class_d_operator_ratification_v0",
+  "ratification_status": "RATIFIED_BY_OPERATOR",
+  "ratified_scope_id": "FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0",
+  "repo_head_binding": "7a6933fd3078ef4453d74c6088fc592b4ab40115",
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "schema_version": "final_research_fleet_class_d_versioned_bindings_and_offline_economic_evaluation_scope.v0"
+}

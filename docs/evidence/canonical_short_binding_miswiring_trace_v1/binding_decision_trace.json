@@ -1,0 +1,38 @@
+{
+  "decision_steps": [
+    {
+      "action": "MV2/DP may emit enter_short",
+      "authority": true,
+      "step": 1
+    },
+    {
+      "action": "map_decision_evidence_to_position_signal_v1 \u2192 -1",
+      "authority": false,
+      "semantic": "short_entry_encoding",
+      "step": 2
+    },
+    {
+      "action": "wiring constructs BacktestEngine(use_execution_pipeline=False)",
+      "authority": false,
+      "selected_consumer": "legacy_long_only",
+      "step": 3,
+      "unbound_alternative": "pipeline_short_capable"
+    },
+    {
+      "action": "no capability gate",
+      "authority": false,
+      "step": 4
+    },
+    {
+      "action": "legacy treats -1 as exit-only \u2192 silent no-op if flat",
+      "authority": false,
+      "step": 5
+    },
+    {
+      "action": "value loss observed at backtest_engine_fill_or_roundtrip_ledger",
+      "authority": false,
+      "step": 6
+    }
+  ],
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1"
+}

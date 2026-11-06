@@ -1,0 +1,14 @@
+{
+  "NETWORK_ACCESS_OCCURRED": true,
+  "NO_LIVE_ORDER_PATH": true,
+  "NO_ORDER_PATH": true,
+  "NO_PAPER_ORDER_PATH": true,
+  "NO_TESTNET_ORDER_PATH": true,
+  "ORDERS_ATTEMPTED": false,
+  "PRIVATE_API_USED": false,
+  "PUBLIC_MD_NETWORK_ONLY": true,
+  "RUNTIME_ACTIVATED": false,
+  "hard_forbidden_token_hits": [],
+  "ok": true,
+  "owner": "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1"
+}

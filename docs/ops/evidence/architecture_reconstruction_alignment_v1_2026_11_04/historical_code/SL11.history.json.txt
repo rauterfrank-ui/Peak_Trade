@@ -1,0 +1,165 @@
+{
+  "id": "SL11",
+  "phase": 11,
+  "title": "Meta-Learning",
+  "introduction_commit": "fc059d1285be55e433a9ca59e89ce187e7a4b363",
+  "introduction_date": "2026-08-18T13:38:33Z",
+  "commit_subject": "research: add canonical meta-learning v1 (#5939)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/fc059d1285be55e433a9ca59e89ce187e7a4b363",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_meta_learning_v1.py",
+  "code_blob": "9a02aada501ff89f7010acc57fe0386b24dfccac",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL11-canonical_meta_learning_v1.source.py",
+  "source_lines": 1641,
+  "module_docstring": "Phase 11 Canonical Meta-Learning v1 (research evidence only).\n\nAnalyzes existing Phase 1-7 research evidence to describe recurrent or\nassociative properties of the research process. This layer does not invent\nidentity, robustness, comparability, failure, or reality-gap truth. It does\nnot mutate historical records, write config, promote, fund, or submit orders.",
+  "public_functions": [
+    {
+      "name": "canonical_meta_learning_policy_v1",
+      "line": 240
+    },
+    {
+      "name": "build_canonical_meta_learning_v1",
+      "line": 250
+    },
+    {
+      "name": "derive_meta_learning_identity_v1",
+      "line": 370
+    },
+    {
+      "name": "canonical_record_payload_v1",
+      "line": 385
+    },
+    {
+      "name": "validate_canonical_meta_learning_v1",
+      "line": 389
+    }
+  ],
+  "classes": [
+    {
+      "name": "MetaLearningValidationError",
+      "line": 186
+    },
+    {
+      "name": "MetaLearningLaterOutcomeV1",
+      "line": 191
+    },
+    {
+      "name": "MetaLearningExperimentUnitV1",
+      "line": 199
+    },
+    {
+      "name": "MetaLearningPolicyV1",
+      "line": 220
+    },
+    {
+      "name": "CanonicalMetaLearningRequestV1",
+      "line": 229
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 1466,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "ComparisonCandidateV1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 489,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 567,
+      "imported_module": "src.experiments.canonical_failure_memory_v1",
+      "called_symbol": "validate_canonical_failure_memory_record_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 591,
+      "imported_module": "src.experiments.canonical_reality_gap_store_v1",
+      "called_symbol": "validate_canonical_reality_gap_record_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 1525,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 615,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "build_canonical_comparison_result_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 616,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "CanonicalComparisonRequestV1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_META_LEARNING_V1.md",
+      "status": "added",
+      "sha": "15aa879e17c8638cd98bf201b891832df62e4e6d",
+      "additions": 171,
+      "deletions": 0,
+      "changes": 171
+    },
+    {
+      "filename": "src/experiments/canonical_meta_learning_v1.py",
+      "status": "added",
+      "sha": "9a02aada501ff89f7010acc57fe0386b24dfccac",
+      "additions": 1641,
+      "deletions": 0,
+      "changes": 1641
+    },
+    {
+      "filename": "tests/experiments/test_canonical_meta_learning_v1.py",
+      "status": "added",
+      "sha": "391a1aec9c2cc0ec46341962a39dfb9f93d30a74",
+      "additions": 602,
+      "deletions": 0,
+      "changes": 602
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_meta_learning_v1.py",
+      "status": "added",
+      "sha": "391a1aec9c2cc0ec46341962a39dfb9f93d30a74",
+      "additions": 602,
+      "deletions": 0,
+      "changes": 602
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_meta_learning_v1.py",
+      "status": "added",
+      "sha": "9a02aada501ff89f7010acc57fe0386b24dfccac",
+      "additions": 1641,
+      "deletions": 0,
+      "changes": 1641
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "fc059d1285be55e433a9ca59e89ce187e7a4b363",
+      "date": "2026-08-18T13:38:33Z",
+      "subject": "research: add canonical meta-learning v1 (#5939)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/fc059d1285be55e433a9ca59e89ce187e7a4b363",
+      "parents": [
+        "7c36858bb6b9ed036bba901170d370b61a805110"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

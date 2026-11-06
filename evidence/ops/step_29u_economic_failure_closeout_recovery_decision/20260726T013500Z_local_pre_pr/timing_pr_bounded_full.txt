@@ -1,0 +1,56 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/.peak_trade_worktrees/step-29u-economic-failure-closeout-recovery-v0
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 784 items
+
+tests/ops/test_step_29u_economic_failure_closeout_recovery_decision_v0.py . [  0%]
+............                                                             [  1%]
+tests/ops/test_step_29u_economic_validity_readiness_v0.py .............  [  3%]
+tests/ops/test_step_29u_activation_eligibility_inventory_v0.py ......... [  4%]
+.....................                                                    [  7%]
+tests/ci/test_ci_diff_aware_test_selection_v1.py ....................... [ 10%]
+........................................................................ [ 19%]
+........................................................................ [ 28%]
+........................................................................ [ 37%]
+........................................................................ [ 46%]
+........................................................................ [ 55%]
+........................................................................ [ 65%]
+........................                                                 [ 68%]
+tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py ..... [ 68%]
+.............................................................            [ 76%]
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py ..... [ 77%]
+...........................................................              [ 84%]
+tests/ci/test_pr_head_sha_required_checks_liveness_guard.py ..........   [ 86%]
+tests/ci/test_required_checks_config.py ....                             [ 86%]
+tests/ci/test_required_checks_hygiene.py ............                    [ 88%]
+tests/ci/test_workflows_no_pull_request_target_contract_v0.py .........  [ 89%]
+tests/test_data_contracts.py .................                           [ 91%]
+tests/test_error_taxonomy.py ..............................              [ 95%]
+tests/test_resilience.py .............................                   [ 98%]
+tests/test_stability_smoke.py ........                                   [100%]
+
+=============================== warnings summary ===============================
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:49
+  /Users/frnkhrz/.peak_trade_worktrees/step-29u-economic-failure-closeout-recovery-v0/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:49: PytestCollectionWarning: cannot collect test class 'TestLayer' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    class TestLayer(StrEnum):
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:209
+  /Users/frnkhrz/.peak_trade_worktrees/step-29u-economic-failure-closeout-recovery-v0/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:209: PytestCollectionWarning: cannot collect test class 'TestownerRuntimeEvidence' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:217
+  /Users/frnkhrz/.peak_trade_worktrees/step-29u-economic-failure-closeout-recovery-v0/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:217: PytestCollectionWarning: cannot collect test class 'TestownerRuntimeReport' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:431
+  /Users/frnkhrz/.peak_trade_worktrees/step-29u-economic-failure-closeout-recovery-v0/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:431: PytestCollectionWarning: cannot collect test class 'TestownerCategoryProvenanceReport' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534
+  /Users/frnkhrz/.peak_trade_worktrees/step-29u-economic-failure-closeout-recovery-v0/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534: PytestCollectionWarning: cannot collect test class 'TestownerBudgetInventoryRow' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 784 passed, 5 warnings in 46.31s =======================

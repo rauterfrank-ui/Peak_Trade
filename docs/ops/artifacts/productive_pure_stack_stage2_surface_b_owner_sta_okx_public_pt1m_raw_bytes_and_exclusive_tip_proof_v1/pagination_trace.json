@@ -1,0 +1,22 @@
+[
+  {
+    "series": "/api/v5/market/history-candles",
+    "page_index": 0,
+    "pagination_cursor": "",
+    "limit": "300",
+    "http_status": 200,
+    "raw_response_sha256": "e1da39436377d5c9eeae2470b7b21041e7894276e0fb32d9e96e2a60b826c739",
+    "raw_row_count": 300,
+    "note": "SINGLE_PAGE_CANONICAL_LIMIT_300_NO_AFTER_CURSOR_REQUIRED"
+  },
+  {
+    "series": "/api/v5/market/history-mark-price-candles",
+    "page_index": 0,
+    "pagination_cursor": "",
+    "limit": "300",
+    "http_status": 200,
+    "raw_response_sha256": "1a2a9d48dea7fe44663cc9b3f7a422a0ade9e9f19ca4ae6c0c5effab23aec610",
+    "raw_row_count": 300,
+    "note": "SINGLE_PAGE_CANONICAL_LIMIT_300_NO_AFTER_CURSOR_REQUIRED"
+  }
+]

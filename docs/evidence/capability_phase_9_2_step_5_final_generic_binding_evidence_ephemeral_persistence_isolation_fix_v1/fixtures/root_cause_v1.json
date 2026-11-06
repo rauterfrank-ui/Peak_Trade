@@ -1,0 +1,11 @@
+{
+  "committed_evidence_used_as_mutable_persistence": false,
+  "defect": "materialize_step5_final_generic_binding_evidence_v1 hardcoded shared persistence_root",
+  "effect": "happy_path_once failed on rematerialize; FAILURE_INJECTION_OK=false; summary.ok=false",
+  "failure_mode": [
+    "AUTHORIZATION_ALREADY_CONSUMED",
+    "AUTHORIZATION_REPLAY_REJECTED"
+  ],
+  "productive_step5_network_path_affected": false,
+  "shared_persistence_root_before": "var/tmp/step5_final_generic_failure_injection"
+}

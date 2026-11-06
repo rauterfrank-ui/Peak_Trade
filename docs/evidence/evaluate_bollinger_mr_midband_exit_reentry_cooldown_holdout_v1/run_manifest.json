@@ -1,0 +1,18 @@
+{
+  "base_sha": "4e766d0c47082a8c0342165e5b4c84c31110a405",
+  "economic_gate_opened": false,
+  "evaluation_run_id": "evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1",
+  "exit_code": 0,
+  "exit_status": "COMPLETED",
+  "holdout_accessed": true,
+  "holdout_run_count": 1,
+  "holdout_run_limit": 1,
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_HOLDOUT_V1",
+  "no_retry": true,
+  "orders_sent": false,
+  "promotion_eligible": false,
+  "reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+  "result_class": "FAIL",
+  "runtime_activated": false,
+  "schema_version": "evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_run_manifest.v1"
+}

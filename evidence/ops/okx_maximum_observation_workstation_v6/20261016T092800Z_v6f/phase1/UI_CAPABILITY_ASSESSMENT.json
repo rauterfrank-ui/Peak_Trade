@@ -1,0 +1,37 @@
+{
+  "phase": "PHASE_1_UI_CAPABILITY_READ_ONLY",
+  "timestamp_utc": "2026-10-16T07:30:00Z",
+  "workspace": "WS2_only",
+  "capabilities": {
+    "hide_order_form": {
+      "verdict": "SUPPORTED",
+      "evidence": "flexlayout tabset tabs [Handeln|Tools] with native Close-tabset (X) toolbar; visual collapse chevrons on right rail (>>) in BEFORE screenshot",
+      "reversible": "LIKELY — reopen via layout reset or workspace restore"
+    },
+    "collapse_right_trading_column": {
+      "verdict": "SUPPORTED",
+      "evidence": "Right-edge collapse controls and flexlayout splitters (5 splitters detected)"
+    },
+    "orderbook_and_time_sales_parallel": {
+      "verdict": "UNSUPPORTED",
+      "evidence": "Single Market tabset with mutually exclusive tabs Orderbuch | Letzte Trades; only one pane visible in BEFORE screenshot",
+      "note": "Both tab labels visible in DOM but not simultaneous content panes"
+    },
+    "panel_drag_resize": {
+      "verdict": "SUPPORTED",
+      "evidence": "flexlayout__splitter elements; drag-drop on bottom account tabs (Orders anzeigen und sortieren)"
+    },
+    "native_pure_observation_layout": {
+      "verdict": "UNKNOWN",
+      "evidence": "No explicit Beobachtungsmodus label found in Phase-1 DOM scan; Anzeige/Tools tabs not opened during read-only phase"
+    },
+    "positions_pnl_persistent_visible": {
+      "verdict": "SUPPORTED",
+      "evidence": "Bottom Account tabset (Offene Positionen, Orders, PnL via Futures-Modus tab); persists in layout JSON PlaceOrder+Account+AccountRisk components"
+    },
+    "integrate_funding_oi_without_handelsdaten_tab": {
+      "verdict": "SUPPORTED",
+      "evidence": "Contract header strip shows Finanzierungsrate countdown and Open Int. (USD) on BEFORE screenshot"
+    }
+  }
+}

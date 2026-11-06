@@ -1,0 +1,16 @@
+{
+    "artifact_class": "OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_DECISION_V1",
+    "workpackage_id": "OPTIMIZATION_UNIVERSE_M4_EXPERIMENT_PLANE_V1",
+    "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+    "predecessor_slice": "OPTIMIZABLE_ENVELOPE_V1_CONTRACT_AND_RESOLVER",
+    "normative_spec": "docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md",
+    "experiment_plane_contract_id": "peak_trade.canonical_optimization_universe_experiment_plane.v1",
+    "learning_productive_authority": "NONE",
+    "optimization_productive_authority": "NONE",
+    "authorized_productive_surfaces": 0,
+    "zero_authorized_productive_targets": true,
+    "external_effect_authorized": false,
+    "proposal_not_authority": true,
+    "search_productive_join_authorized": false,
+    "promotion_join_authorized": false
+}

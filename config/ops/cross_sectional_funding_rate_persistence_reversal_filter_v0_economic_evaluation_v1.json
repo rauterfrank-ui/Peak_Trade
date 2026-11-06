@@ -1,0 +1,91 @@
+{
+  "binding_digest": "4355f213e0325c7e5ec87013693c91ea693b1bee5325959c1380888b7a31a533",
+  "config_digest": "1e976e14c43a0d2a62efb7cfff65eebcdd1b10d0ec0cd9713aef90ae1ff37583",
+  "config_schema_version": "cross_sectional_funding_rate_persistence_reversal_filter_v0_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "cross_sectional_evaluation_binding_v1": {
+    "binding_digest": "4355f213e0325c7e5ec87013693c91ea693b1bee5325959c1380888b7a31a533",
+    "candidate_binding_ref": "config/research/cross_sectional_funding_rate_persistence_reversal_filter_v0_versioned_research_binding_v0.json",
+    "candidate_id": "cross_sectional_funding_rate_persistence_reversal_filter/v0",
+    "config_digest": "1e976e14c43a0d2a62efb7cfff65eebcdd1b10d0ec0cd9713aef90ae1ff37583",
+    "data_contract_digest": "fe2cb0975f73a4c115ce14d230e74869155afeaaff973c22dbb89175bfa5137f",
+    "data_digest": "fe2cb0975f73a4c115ce14d230e74869155afeaaff973c22dbb89175bfa5137f",
+    "dataset_binding": {
+      "bar_interval": "PT1H",
+      "binding_version": "v0",
+      "credential_access_forbidden": true,
+      "dataset_extension": "extended_chronological_with_funding_v1",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "dataset_version": "v1",
+      "duplicate_bars_policy": "fail_closed",
+      "funding_fields": [
+        "funding_rate"
+      ],
+      "funding_usage": "funding_rate_for_persistence_reversal_computation",
+      "instrument_key": "instrument_id",
+      "missing_bars_policy": "exclude_non_selected_for_epoch",
+      "narrow_adapter": "pit_okx_pt1h_panel_funding_field_materialization.v0",
+      "network_access_forbidden": true,
+      "ohlcv_fields": [
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "out_of_order_bars_policy": "fail_closed",
+      "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+      "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+      "panel_funding_dataset_manifest_ref": "pit_okx_pt1h_panel_funding_dataset_v1:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:extended_chronological_with_funding_v1",
+      "panel_schema": "pit_okx_pt1h_panel_funding_dataset_manifest_v1",
+      "price_usage": "close_for_execution_reference_only",
+      "timestamp_key": "timestamp_utc",
+      "timezone": "UTC",
+      "warmup_bars": 8
+    },
+    "hypothesis_id": "CROSS_SECTIONAL_FUNDING_RATE_PERSISTENCE_REVERSAL_FILTER_NON_BITCOIN_PERPETUALS_V0",
+    "implementation_digest": "f50d5f6df63f5021afe9714923aac04d146d42aa722943e64cdbef7c5e1bb680",
+    "parameter_binding": {
+      "absolute_funding_delta_forbidden": true,
+      "binding_version": "v0",
+      "funding_level_spread_forbidden": true,
+      "funding_observation_field": "funding_rate",
+      "funding_signal_lag": 1,
+      "operator_decision_digest": "18e31de48959165baab69cd4ec4c324af6950681e33f2e1ba8efa7e9a7995314",
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "adverse_reversal_threshold": 5e-05,
+        "decay_stability_min_ratio": 0.6,
+        "max_bar_staleness_bars": 1,
+        "min_eligible_members_for_rank": 5,
+        "min_persistence_epochs": 3,
+        "min_persistence_score_for_entry": 0.5,
+        "persistence_lookback_k": 4,
+        "rebalance_interval_bars": 1,
+        "reversal_risk_lookback_k": 2,
+        "signal_lag_bars": 1,
+        "switch_entry_delay_epochs": 1
+      },
+      "persistence_lookback_k": 4,
+      "rank_delta_forbidden": true,
+      "reversal_risk_lookback_k": 2,
+      "score_formula_expression": "persistence_score = max_consecutive_same_sign_epochs / window_length; decay_stability = 1 - min(1, std(abs(funding))/max(mean(abs(funding)), epsilon)); combined_score = persistence_score * decay_stability; reversal_blocked if sign flip with |delta| > adverse_reversal_threshold; long_leg = highest combined_score among negative mean funding instruments; short_leg = highest combined_score among positive mean funding instruments; single_slot selects leg with higher combined_score",
+      "score_formula_version": "cross_sectional_funding_rate_persistence_reversal_filter_v0",
+      "unchanged_retry_of_failed_bindings_forbidden": true
+    },
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1"
+  },
+  "fail_closed_contract": {
+    "economic_evaluation_executed_must_be_false_for_recovery": true,
+    "forbid_parameter_search": true,
+    "forbid_runtime_or_order_effect": true,
+    "require_bound_data_digest_match": true
+  },
+  "implementation_digest": "f50d5f6df63f5021afe9714923aac04d146d42aa722943e64cdbef7c5e1bb680",
+  "strategy_id": "cross_sectional_funding_rate_persistence_reversal_filter",
+  "strategy_version": "v0",
+  "timeout_contract": {
+    "max_runtime_seconds": 1500,
+    "timeout_policy": "fail_closed"
+  }
+}

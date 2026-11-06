@@ -1,0 +1,9 @@
+### CON-2087 — Persistenz, Rotation und Wiederanlauf
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Lane-Checkpoint, Confirmation-Cursor, Core-Durable-State, Kill-Journal, Pending-Outcome und Kapitalreservierung speichern unterschiedliche Wahrheiten. Positions-Custody kann Instrumentbetreuung über den Rankingverlust hinaus erhalten. Atomare Einzeldatei oder vorhandene Lock-Klasse beweist keinen konsistenten Gesamtrestart.
+
+**Grenze:** Nach Reset/Rotation/Restore müssen Episode, Instrument, Pending-Order, offene Position und Reservierung zusammenpassen. Lernzustand wird nicht mit Trading- oder Kill-Zustand zusammengeführt.
+
+Quellen: EVI-2292, EVI-2293, EVI-2221, EVI-2214, EVI-2234.

@@ -1,0 +1,310 @@
+SIGNALFLÜSSE, ÜBERGABEPUNKTE UND ANSCHLUSSENTWURF
+02.11.2026 – Read-only-Untersuchung für den späteren Umbau
+
+ERGEBNIS
+Es gibt mehrere fachlich sinnvolle Berührungspunkte in vorhandenen Verträgen.
+Der beste gemeinsame Einstieg für passende Forschungsbefunde ist die vorhandene
+identitätsgebundene Offline-Beobachtung samt Experiment Memory. Für Laufbefunde
+existiert zusätzlich die G2-Projektion. DDO und MI besitzen eigene Herkunfts-
+und Bewertungswege. Gemeinsamkeiten im Format erlauben noch keine Vermischung.
+
+Zwischen Evidence-Annahme, Meta-Feedback und tatsächlicher Parameterverwendung
+liegen mehrere nicht geschlossene fachliche Übergaben. Manche „Verbindungen“
+transportieren nur Referenzen oder administrative Datensätze; andere beeinflussen
+bereits einen eng begrenzten Consumer. Der Umbau sollte diese vorhandenen Owner
+verbinden und fehlende Feldinhalte gezielt ergänzen, statt eine globale neue
+Registry oder ein pauschales gemeinsames Signal zu erfinden.
+
+1. UMFANG, PIN UND METHODE
+Untersuchte Stränge: Research-/Forward-Ergebnisse und Registry; kanonische
+Experimentidentität/-beobachtung/-speicherung; Paper/Shadow/Testnet-Primärevidenz
+und G2; MV2-DDO-Capture/Outcome/Learning; MI-Forecast/Outcome/Calibration;
+M4–M8-Meta-Rücklauf; P5/A/P3/P4/L6; Governance-Proposal/Materialisierung;
+separater F1/M9-Parameter-Consumer; Safety-/Execution-Grenzen als Randbedingungen.
+Dies ist ein nachvollziehbarer Übergabecensus dieser besprochenen Stränge,
+kein Beweis, dass jede dynamische oder unbekannte Kante des Gesamtrepositorys
+vollständig erfasst ist. Ranking, Treasury und Venue-Execution wurden hier nicht
+erneut vollständig von innen rekonstruiert. Ihre Schnittstellengrenzen bleiben erhalten.
+
+GitHub main erneut abgefragt:
+5d1c838c15369507c5247834db4dd0df25592169.
+Hauptarbeitskopie HEAD 242b7974fc93f0bdb47706556101bd6f0c497414 mit unverändert
+vorhandener uncommitteter Arbeit. Deshalb beziehen sich neue Befunde auf gespeicherte
+Git-Quellkopien am genannten main-Pin, nicht auf die dirty Arbeitsdateien.
+
+19 zusätzliche Quellen: source-manifest.json. Frühere exakte Quellmanifeste zur
+Learning-/Safety-/Research-Rekonstruktion sind referenziert, nicht zur Produkt-SSOT
+erhoben: referenced-earlier-manifests.json. Ausgewählte aktuelle Textreferenzen
+unter src/scripts: scoped-reference-search.json. Definition, Import und Aufruf
+sind darin nicht dasselbe; ein Nulltreffer wäre kein vollständiger Nichtexistenzbeweis.
+Ausgewählte Entstehungsgeschichte: selected-git-evolution.txt.
+
+Keine Produktimporte, Test-/Trading-/Lernläufe, Netzwerk-Orders, Aktivierung,
+Zustandsabfrage, Credential-Lesung oder Codeänderung. Keine neue Recovery-Suche.
+Der vollständige Laufzeitbeweis bleibt wie vereinbart nach dem Umbau.
+
+2. FORSCHUNGSBEFUNDE: ALTER ERZEUGER UND HEUTIGER PASSENDER EMPFÄNGER
+
+F01 Research/Sweep/Forward → historische Experiment-CSV
+Belegt am historischen Commit f8929523 und gezielt am heutigen Pin gegengeprüft.
+Liefert je nach Logger UUID, Strategiebezug, Symbol, Kennzahlen und Metadaten.
+Problem: mehrere IDs und Forward-Typnamen; der Evaluator schreibt forward_eval
+ohne strategy_key, der Selection-Consumer erwartet Forward-Werte pro strategy_key.
+Die Auswahltabelle verdichtet Run-Details. Eine solche Tabelle ersetzt kein
+vollständiges einzelnes Experiment- oder Beobachtungsartefakt.
+Anschlussklasse: nicht direkt kompatibel; Identitäts-/Inhaltsprojektion benötigt.
+
+F02 OfflineExperimentObservationsV1 → identitätsgebundene Beobachtung
+Vorhandener Berührungspunkt:
+src/experiments/canonical_identity_bound_offline_observation_binding_v1.py,
+bind_canonical_identity_bound_offline_observation_v1.
+Input: metrics, robustness_results, regime_results, artifacts und vollständige
+kanonische Phase-1-Experimentidentität plus Hypothesen-/Familienbezug.
+Prüft Identitäts-/Experiment-ID, Elternlineage und ggf. Daten-/Kosten-/Risiko-/
+Portfolio-Digests. Baut einen Experiment-Memory-Datensatz; optionaler Store-Append.
+Ein neuer Store wird durch die Untersuchung nicht erzeugt.
+Wirkung: Forschungsbefund ist einer konkreten Experimentidentität zugeordnet.
+Keine Promotion oder produktive Konfigurationsänderung.
+
+F03 Vollständige Identität → kanonische Beobachtung/Memory
+Die Identität enthält unter anderem Code/Dirty-Provenienz, Strategie/Parameter,
+Dataset, Feature-Pipeline, Gebühren/Slippage/Funding, Risikopolicy, Portfolio,
+Split-Policy, Seed und Trading-Core-Komponentenbindung.
+Der Binder lehnt eine als vollständig ausgegebene Legacy-/Package-N-Projektion
+sowie behauptete ID-Neuinterpretationen ausdrücklich ab.
+Folgerung: Eine alte CSV-Zeile darf nicht durch neue erfundene Hashes COMPLETE
+werden. Für neue passende Experimente müssen die tatsächlichen Identitäten bei
+der Erzeugung vorliegen. Historische Resultate ohne diese Belege bleiben als
+historisch/unvollständig klassifiziert oder benötigen einen eigens begründeten
+Vertrag; sie passen nicht einfach unverändert durch diesen Complete-Identity-Binder.
+
+F04 Kanonische Beobachtung/Memory → Automated Offline Research Loop
+Der vorhandene Research-Loop bindet Beobachtungen über denselben Binder und prüft
+Experimentidentität/Owner. Er verarbeitet ausdrücklich gewählte Hypothesen,
+Caller-Beobachtungen und Champion-/Challenger-Scores, Robustheit, Vergleich,
+Fehlergedächtnis und Reality-Gap-Befunde. Seine Oberfläche ist kein pauschaler
+automatischer Datensammler für alte CSVs. Ein externer Aufrufer aus dem produktiven
+Handels-Host wurde in der eingegrenzten Referenzsuche nicht nachgewiesen.
+Anschlussklasse: guter vorhandener Forschungsconsumer; Producer-Adapter offen.
+
+3. LAUFBEFUNDE UND G2
+
+F05 Paper/Shadow/Testnet → dauerhafte Primärevidenz
+Vorhandene bounded Adapter und primary_evidence_retention_v0 definieren
+Pflichtdateien, Review und Manifest. Owner-Kopie/Index sind Navigation/Persistenz,
+keine fachliche Lernentscheidung. Canary folgt eigenem Speicher-/Discovery-Vertrag.
+Anschlussklasse: verwendbarer vorhandener Producer-Vertrag, sofern echte
+vollständige Run-Bundles vorhanden sind; kein Start eines Runs in diesem Auftrag.
+
+F06 Primärevidenz → G2-Offline-Beobachtung
+GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1 validiert Modus,
+dauerhafte Dateien, Manifest und Identität und benutzt F02.
+Es reicht tatsächlich Review-Metriken/Metadaten und Artefaktverweise weiter.
+Viele Order-/Fill-/Kosten-/Risk-/Kill-Slots zeigen auf denselben Review-Nachweis.
+Robustheits-/Regime-Ergebnisse sind in dieser Projektion leer; einige Identitäten
+werden mechanisch aus denselben Metadaten übernommen.
+Anschlussklasse: bestehender Adapter mit fachlich partieller Payload.
+Offen: je gewünschtem Feld tatsächlicher Ereignis-/Messwertproducer, Einheiten,
+Zeitfenster und Simulation-/Venue-Bedeutung. Zusätzlich gilt die bereits belegte
+Repo-relative Artefaktgrenze gegenüber Owner-Home-Quellen.
+
+F07 G2-Observation → runtime_to_learning_input
+Vertrag transportiert Quellen-/Performance-/Kosten-/Ausführungs-/Risikoreferenzen
+und Qualitätsstatus. Im gelesenen G2-Aufbau bleiben mehrere Fachref-Listen leer.
+Annahme ist ein Vertrags-/Herkunftsergebnis, kein Training oder Parameterupdate.
+Anschlussklasse: mechanisch vorhanden, Inhaltsabdeckung partiell.
+
+F08 runtime_to_learning_input → canonical Optimization Learning Input
+Vorhandener, tatsächlich aufgerufener Binder:
+bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1.
+Er erzeugt eine runtime-abgeleitete learning_evidence_record_v1 und Research-ACK.
+Konkrete Belegung: economic_score_label = g2.review.<Review-Verdict>, ein
+laufartbezogener Horizon-Token, state_version=1, digest-abgeleitete Referenzen;
+decision_score_label/safety_score_label=None, code_sha/config_hash=UNKNOWN.
+source_learning_state_record_ref ist hier eine abgeleitete Lineage-Referenz,
+kein Beweis, dass derselbe State im DDO-Ledger fortgeschrieben wurde.
+Anschlussklasse: gemeinsamer typisierter Research-Eingang bei anderer Semantik.
+Die Review-Annahme nicht als gemessenen wirtschaftlichen Vorteil interpretieren.
+
+4. DDO-VERHALTENSBEOBACHTUNG UND ERGEBNISZEIT
+
+F09 MV2-Replay → DDO-Capture
+Der aktuelle Capture-Join beobachtet Producer-Ergebnisse und ruft danach
+record_productive_cycle_capture_v0 auf. Bei aktivierter Binding-Konfiguration
+werden Referenzen festgehalten. Capture darf die autoritative Entscheidung nicht
+ändern; sein Ausfall ist daher anders zu behandeln als ein Safety-Veto.
+Anschlussklasse: vorhandene Beobachtungsseite, keine zweite Trading-Autorität.
+
+F10 Decision + O4/N_BARS-Nachweise → EvaluationObservation
+Der Real-Horizon-Host verlangt validierte Decision und governte Snapshot-/Supplier-
+Nachweise. Instrument, tatsächliche Bar-/Outcome-Herkunft und Ereigniszeit sind
+hier zentral. Ein zukünftiger Horizont darf nicht durch ältere Bars plus neu
+vergebene Zukunftszeitstempel als schon beobachtet gelten.
+Der ältere Capture-to-Export-Handoff enthält eine Hilfsfunktion, die übergebene
+Closes an decision-relative Stundenmarken seedet. Dies ist bei Wiederverwendung
+gegen die tatsächliche Barzeit zu prüfen, nicht ungeprüft als reale Zukunftsevidenz
+zu übernehmen. Die späteren Pending-/Cross-Session-Pfade sind als eigene Producer
+zu bewerten; sie wurden hier nicht erneut vollständig von innen geprüft.
+Anschlussklasse: fachlich sinnvoller gemeinsamer Outcome-Empfänger, strenge Zeitbindung.
+
+F11 EvaluationBundle → Learning State → Learning Evidence
+Outcome, Attribution und Counterfactual werden über Referenzen, Fingerprint,
+Zeitfolge und Provenienz geprüft. Der State wächst append-only und idempotent.
+Export trägt Outcome-/State-/Horizont-Referenzen, Herkunftsklasse und Score-Labels.
+Das ist nicht derselbe Inhalt wie G2-Review-Labels trotz gemeinsamem Exportformat.
+Anschlussklasse: belegter typed Research-Eingang, keine pauschale Pool-Vermischung.
+
+F12 Learning State → nächster Bewertungszyklus
+Vorhandener Consumer übernimmt nur next_cycle_economic_score_label als opaques
+Label in den Bridge-Zustand. Keine belegte numerische Kalibrierung oder Änderung
+der Master-V2-/Double-Play-Handelslogik an dieser Stelle.
+Anschlussklasse: wirksame, eng begrenzte Label-Rückgabe.
+
+5. MARKET INTELLIGENCE ALS WEITERER BERÜHRUNGSPUNKT
+
+F13 Forecast + derselbe N_BARS-Outcome + Calibration → MI-Learning-Evidence
+compose_mi_to_learning_evidence_v1 prüft zeitliche und Instrument-Zuordnung.
+Ohne Outcome bleibt ein unvollständiger Datensatz; vorzeitig/unfertig evaluierte
+Outcomes werden nicht als final angenommen. Bei finalem Outcome werden Join,
+Calibration-Evaluability/-Methode und Nachweisdigests gebunden. Der DDO-Input
+bleibt unverändert. Forecast bleibt von Trading-Decision getrennt.
+Anschlussklasse: konkreter vorhandener fachlicher Join über Outcome-/Instrument-/Zeitidentität.
+Nicht alle Forecast-/Calibration-Producer wurden hier auf aktuelle Runtime überprüft.
+
+F14 MI-Research-Evidence + Learning Evidence → MI-angereicherte M4-Plane
+Vorhandener Intake validiert beide Eingänge und verlangt dieselbe Learning-
+Evidence im übergebenen plane_request. Er ruft diese plane_request unverändert
+auf und hängt MI-Lineage an das Ergebnis.
+Anschlussklasse: mechanischer Join/Provenienz belegt. Ein kausaler Einfluss der
+MI-Fachwerte auf Suchraum, Zielgröße oder Kandidatenbewertung folgt daraus noch nicht.
+Geeignete nächste Frage: Welcher konkrete M4-Consumer verwendet welche MI-Metrik?
+
+6. RESEARCH-/META-RÜCKLAUF
+
+F15 Learning Evidence → M4 → M5 Experiment Evidence
+Vorhandene Plane erzeugt Research-Kandidaten, Challenger-/Robustheits- und
+Fehlernachweise. M5 verdichtet sechs Evidence-Familien.
+Der konkrete G2-Demonstrationsaufbau liefert weiterhin synthetischen Suchraum,
+festes Budget und feste Champion-/Challenger-Scores. Quellen-Lineage allein
+macht daraus keinen aus realen Laufmetriken berechneten Forschungsvorteil.
+Anschlussklasse: bestehende Orchestrierung; echte Evaluator-/Metrikbindung offen.
+
+F16 M5 + akzeptierter Return-ACK → M6 Meta-Evidence
+Vorhandener Ingest prüft Plane-/Evidence-Digests und erzeugt typisierten Rücklauf.
+Der Standardprojektor kopiert/verpackt Disposition/Fehlerzahl, lässt Familie,
+Suchmethode, Features und Unsicherheit aber UNKNOWN_UNAVAILABLE. Kein Aufruf des
+kanonischen Meta-Analyzers in diesem Standardpfad.
+Anschlussklasse: Transport/Projektion vorhanden, ursprüngliches Meta-Erkenntnisziel partiell.
+
+F17 M6 → M7 → nächste M8-Forschungsrunde
+Vorhandene Vorschläge betreffen Research-Priorität/-Budget/-Suchmethode/-Hypothese.
+Replay führt vorherige Feedback-Identität und N+1-Semantik mit. Die nächste
+plane_request wird im untersuchten Consumer vom Caller übernommen und dort
+nicht aufgrund des Feedbacks umgebaut.
+Anschlussklasse: möglicher Scheduler-/Research-Consumer-Übergabepunkt.
+Erforderlich: nachvollziehbare tatsächliche Auswahländerung innerhalb zugelassener
+Forschungsflächen; Metadaten allein sind keine adaptive Forschungssteuerung.
+
+7. EVIDENCE-ANNAHME, PRODUKTIVE GRENZE UND PARAMETERWIRKUNG
+
+F18 M5/M6 → P5 → Evidence Adjudicator A
+Vorhandene Bridges binden Originaldigests an Marktkontext, Instrument, Zeit/Epoch.
+Die P5-Payload ist überwiegend eine typisierte Referenzhülle; fachliche Ergebnisse
+verbleiben im Originalartefakt. ADMIT ist Evidence-Annahme, keine Autorisierung
+eines Kandidatenwerts und kein Direktpfad in Double Play.
+Anschlussklasse: nutzbare Evidence-Grenze, keine fachliche Umdeutung der Payload.
+
+F19 A-ADMIT → P3-Bindung → P4/L6
+Vorhandene Orchestrierung nutzt die vorausgehende A-Entscheidung, validiert
+Lineage und bindet typisierte Evidence an L6.
+Entscheidender konkreter Consumer:
+invoke_l6_passthrough_after_admission_v1 liest proposed_d_t NICHT aus Evidence.
+Er verarbeitet optional einen separat vom Caller gelieferten mechanical_proposed_d_t.
+Im untersuchten Real-Continuation-Prüfpfad sind 0.01 und Null-Linie 1000.0 fest
+vorgegeben. Das ist kein aus M5/M6 gelerntes Scope-Ergebnis.
+Anschlussklasse: vorhandene Aufnahme-/Mechanikgrenze. Fehlend ist ein fachlich
+autorisierter, quellengebundener Wertproducer, sofern hier tatsächlich ein
+adaptiver Scope-/Policy-Input vorgesehen sein soll. Keine solche Änderung autorisiert.
+
+F20 P4/L6 → Runtime-Apply-Materialisierung
+Vorhandener Vertrag übernimmt P4-/P3-/A-/Envelope-Digests und Lineage. Er erzeugt
+einen kontrollierten Materialisierungsdatensatz; configuration_applied bleibt
+False. Der Input besitzt keinen eigentlichen Parametername/-wert als Fachpayload.
+„configuration_materialized=True“ belegt in diesem Strang daher keinen bereits
+produktiven Parameterwechsel. Optimizer/Meta/P5/Component-B-Caller werden an
+dieser Apply-Grenze zurückgewiesen.
+Anschlussklasse: administrative Herkunfts-/Freigabegrenze, kein vollständiger Value-to-Consumer-Pfad.
+
+F21 Candidate + Evidence → Governance-Proposal → M10
+Vorhandener Proposal-Ingress nimmt explizite Parameterdeltas und Surface-/Evidence-
+Bindung entgegen; die October-7-Offline-Komposition endet bei M10 HARD STOP ohne
+explizite Owner-Autorisierung. Hier sollte ein konkreter Kandidatenwert samt
+Ziel/Constraints ankommen, statt nur ein akzeptierter Evidence-Digest.
+Anschlussklasse: geeignete fachliche Freigabegrenze, bewusst kein Self-Deploy.
+
+F22 Separater F1/M9-Parameterpfad → konkreter MV2-Consumer
+Vorhandener enger Strang führt ratifizierte 600 Sekunden für das zulässige
+Volatilitätsalter über kontrollierte Parameter-/Ledgerbindung an den Consumer.
+Er kann Alpha-Entry-Zulässigkeit bei veraltetem Input begrenzen. Das beweist die
+Art einer konkreten Parameterwirkung, nicht die autonome Ermittlung dieses Werts
+aus der allgemeinen Research-/Meta-Schleife.
+Der Real-P4→F1/M9-Join bleibt ausdrücklich NOT_CANONICAL/join_permitted=False.
+Anschlussklasse: vorhandenes Muster für einen echten werttragenden Consumer;
+keine Freigabe, die getrennten Ebenen während dieser Untersuchung zu verbinden.
+
+F23 Safety/Runtime → Ereignisbeobachtung; Rückwirkung durch Safety begrenzt
+Akute Sperre, Reduce-/Exit-Erlaubnis und PreSend-Gates bleiben bei ihren Ownern.
+Kill-/Risk-/Reconciliation-/Health-Ereignisse sind als Learning-Beobachtungsslots
+vorgesehen; deren bisher teilweise pauschale Review-Befüllung braucht echte
+Ereignisproducer. Learning-ACK oder guter Research-Score darf keine Sperre resetten,
+Risk-Grenze ändern oder eine Venue-Handlung erlauben.
+Anschlussklasse: Beobachtungsabzweig und unveränderte Enforcement-Grenze.
+
+8. ANSCHLUSSENTWURF – KONKRETE PRIORITÄTEN FÜR DEN UMBAU
+Dies ist eine aus den Quellen abgeleitete Empfehlung, keine behauptete historische
+Originalimplementierung und keine Aktivierungsfreigabe.
+
+P1 – Prospektive Forschungsbefunde an vorhandene Identität/Memory binden.
+Producer mit tatsächlicher kanonischer Identität und OfflineExperimentObservationsV1
+→ bestehender Identity-Binder → bestehende Experiment-/Failure-Memory/Research-
+Consumer. Alte Run-ID als Herkunftsreferenz erhalten; nichts als COMPLETE erfinden.
+Das ist der stärkste allgemeine Berührungspunkt für Research-Ergebnisse.
+
+P2 – Lauf-/Safety-Beobachtung fachlich befüllen.
+Bestehende G2-/DDO-Empfänger behalten, aber je Kosten-/Fill-/Risk-/Kill-/Recon-Feld
+eigene Quelle, Einheit, Zeitfenster, Modus, Konto/Instrument und Qualitätsstatus
+belegen. Fehlendes bleibt fehlend, statt durch Paketdigest oder Review-PASS ersetzt.
+Repo-relative und Owner-Home-Referenzen mit einem passenden Vertrag auflösen.
+
+P3 – Outcome gemeinsam referenzieren, Zustände getrennt halten.
+DDO-Outcome und MI-Forecast-/Calibration-Join über dieselbe belegte Outcome-,
+Instrument- und Horizontidentität verwenden. Kein gemeinsamer State nur wegen
+ähnlicher Feldnamen. G2-Review-Label, DDO-Economic-Label und echtes Marktresultat
+als unterschiedliche Inhalte erhalten.
+
+P4 – Aus Research-Befunden tatsächliche nächste Research-Wahl machen.
+M5/M6 mit echten Evaluator-/Familien-/Such-/Fehlerdaten füllen. M7-Ausgabe an
+konkreten Scheduler/Research-Request-Builder anschließen, der die nächste zulässige
+plane_request nachvollziehbar ändert. Originale und Vorher/Nachher-Identitäten
+erhalten; keine Trading-Instrumentauswahl daraus ableiten.
+
+P5 – Einen werttragenden produktiven Pfad separat schließen.
+Eine ausdrücklich erlaubte Surface und einen realen Consumer auswählen.
+Candidate-Wert + Mess-/Vergleichsevidence → Governance/Risk → Autorisierung →
+typed Parameterbinding → genau dieser Consumer. P4/L6-Aufnahme oder ein
+Materialisierungslabel reicht dafür nicht. Das bestehende F1/M9-Muster hilft
+bei der Konstruktion, ist aber keine pauschale Authority für andere Parameter.
+
+9. WAS DIESE UNTERSUCHUNG ABSCHLIESST – UND WAS OFFEN BLEIBT
+Für die besprochenen Hauptstränge wurden die 23 aufgeführten Übergaben
+zugeordnet, konkrete Consumer gelesen und die wichtigsten fachlichen Brüche
+benannt. source-manifest.json und die früheren Detailmanifeste binden die Quellen.
+Sinnvolle Berührungspunkte sind damit gefunden; ein vollständiger verbundener
+Systembetrieb wurde nicht behauptet oder ausgeführt.
+
+Offen bleiben unbekannte/dynamische Caller, vollständige Runtime-Produktion
+aller Fachfelder, historische Datenverfügbarkeit, die spätere konkret gewählte
+Parameterfläche sowie die Wirkung nach dem Umbau. Zur Vollabnahme gehören dann
+echte Feld-/Identitäts-/Zeitnachweise und die vollständige Kette einschließlich
+Safety, Fehlerfällen und Wiederanlauf. Reine Dateiexistenz, AST-Ähnlichkeit,
+Labels, gespeicherte PASS-Flags und grüne Einzeltests ersetzen das nicht.

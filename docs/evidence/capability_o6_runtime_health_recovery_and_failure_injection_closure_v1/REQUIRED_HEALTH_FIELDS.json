@@ -1,0 +1,17 @@
+{
+  "fields": [
+    "process_alive",
+    "heartbeat_time",
+    "last_success_time",
+    "last_error_time",
+    "error_class",
+    "restart_count",
+    "input_lag",
+    "output_lag",
+    "state_commit_position",
+    "evidence_cursor",
+    "session_id",
+    "repository_sha",
+    "config_digest"
+  ]
+}

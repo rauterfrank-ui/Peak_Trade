@@ -1,0 +1,21 @@
+{
+  "acquisition_executed": true,
+  "archive_manifest_hash": null,
+  "archive_size_bytes": null,
+  "common_panel_duration_days": 381.75347222222223,
+  "common_panel_end": "2024-09-01T00:00:00Z",
+  "common_panel_start": "2023-08-16T05:55:00Z",
+  "duplicates_found": 0,
+  "economic_reevaluation_ready": true,
+  "full_series_gap_audit": true,
+  "gaps_found": 0,
+  "instrument_count_acquired": 65,
+  "lifecycle_clipping_valid": true,
+  "ordering_errors": 0,
+  "rate_limit_events": 0,
+  "request_failures": 0,
+  "requests_used": 5980,
+  "retries_exhausted": 0,
+  "total_bars": 595530,
+  "total_pages": 5980
+}

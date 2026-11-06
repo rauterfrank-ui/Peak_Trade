@@ -1,0 +1,194 @@
+[
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "c1_observation_acceptance_state",
+    "owner": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+    "reason": "epoch/cursor continuity requires durable C1 state",
+    "state_root": "confirmation",
+    "writer": "ConfirmationStateSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "c2_c3_confirmation_side_carrier",
+    "owner": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+    "reason": "candidate/confirmed continuity across restart",
+    "state_root": "confirmation",
+    "writer": "ConfirmationStateSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "confirmation_session_id",
+    "owner": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+    "reason": "stable session identity; silent reinit forbidden",
+    "state_root": "confirmation",
+    "writer": "ConfirmationStateSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "runtime_scope_state",
+    "owner": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+    "reason": "trailing/envelope SSOT restore",
+    "state_root": "dynamic_scope",
+    "writer": "DynamicScopeStateSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "canonical_scope_snapshot",
+    "owner": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+    "reason": "scope continuity; no silent None reset",
+    "state_root": "dynamic_scope",
+    "writer": "DynamicScopeStateSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "master_v2_double_play_carrier_required",
+    "owner": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+    "reason": "only RuntimeScopeState / CanonicalScopeSnapshot; no new MV2 domain",
+    "state_root": "dynamic_scope",
+    "writer": "DynamicScopeStateSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "decision_runtime_config_digest",
+    "owner": "CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1",
+    "reason": "config digest bind + mismatch fail-closed",
+    "state_root": "decision_config",
+    "writer": "ops.decision_config_ownership_and_consumer_closure_v1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "portfolio_accounting_state",
+    "owner": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+    "reason": "economic continuity; no portfolio rollback",
+    "state_root": "accounting_portfolio",
+    "writer": "ProductiveFuturesAccountingSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "fill_ledger_idempotency",
+    "owner": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+    "reason": "duplicate fill prevention",
+    "state_root": "accounting_portfolio",
+    "writer": "ProductiveFuturesAccountingSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "selection_state_reference",
+    "owner": "ops.single_selected_future_runtime_binding_v1",
+    "reason": "reference only; Cap 2.4 remains sole selection authority",
+    "state_root": "selection_ref",
+    "writer": "selection_binding_writer"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "reconciliation_state_reference",
+    "owner": "ops.productive_reconciliation_startup_gate_v1",
+    "reason": "reconciliation-before-alpha after restart",
+    "state_root": "reconciliation_ref",
+    "writer": "reconciliation_writer"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "volatility_state_reference",
+    "owner": "typed_volatility_persistence_where_configured",
+    "reason": "reference digest only; no parallel volatility model",
+    "state_root": "volatility_ref",
+    "writer": "volatility_writer"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "runtime_commit_position",
+    "owner": "ops.full_decision_path_atomic_restart_closure_v1",
+    "reason": "coordinator commit marker / sequence",
+    "state_root": "decision_path_atomic",
+    "writer": "DecisionPathAtomicSingleWriterV1"
+  },
+  {
+    "classification": "PERSIST_DIRECTLY",
+    "field": "pending_evidence_cursor",
+    "owner": "ops.full_decision_path_atomic_restart_closure_v1",
+    "reason": "evidence durability separate from economic commit",
+    "state_root": "decision_path_atomic",
+    "writer": "DecisionPathAtomicSingleWriterV1"
+  },
+  {
+    "classification": "REBUILD_DETERMINISTICALLY",
+    "field": "feature_vectors",
+    "owner": "feature_pipeline",
+    "reason": "rebuilt from persisted mid/price path + observations",
+    "state_root": "derived",
+    "writer": "none"
+  },
+  {
+    "classification": "REBUILD_DETERMINISTICALLY",
+    "field": "regime_derived",
+    "owner": "regime_pipeline",
+    "reason": "deterministic from features",
+    "state_root": "derived",
+    "writer": "none"
+  },
+  {
+    "classification": "REBUILD_DETERMINISTICALLY",
+    "field": "unrealized_pnl",
+    "owner": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+    "reason": "derived from position + mark",
+    "state_root": "derived",
+    "writer": "none"
+  },
+  {
+    "classification": "REBUILD_DETERMINISTICALLY",
+    "field": "immutable_config_rule_objects",
+    "owner": "CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1",
+    "reason": "loaded from typed config owner by digest",
+    "state_root": "derived",
+    "writer": "none"
+  },
+  {
+    "classification": "EPHEMERAL_ONLY",
+    "field": "transport_metadata",
+    "owner": "market_data_transport",
+    "reason": "never distinctness or decision authority",
+    "state_root": "ephemeral",
+    "writer": "none"
+  },
+  {
+    "classification": "EPHEMERAL_ONLY",
+    "field": "in_memory_cycle_scratch",
+    "owner": "bridge_session",
+    "reason": "host scratch; not restart authority",
+    "state_root": "ephemeral",
+    "writer": "none"
+  },
+  {
+    "classification": "EVIDENCE_ONLY",
+    "field": "capability_evidence_artifacts",
+    "owner": "ops.full_decision_path_atomic_restart_closure_v1",
+    "reason": "claims/manifests; not trading-state authority",
+    "state_root": "evidence",
+    "writer": "evidence_materializer"
+  },
+  {
+    "classification": "FORBIDDEN_TO_PERSIST",
+    "field": "master_v2_full_decision_blob",
+    "owner": "none",
+    "reason": "MASTER_V2_NEW_PERSISTENCE_DOMAIN_MODEL_ALLOWED=false",
+    "state_root": "forbidden",
+    "writer": "none"
+  },
+  {
+    "classification": "FORBIDDEN_TO_PERSIST",
+    "field": "double_play_parallel_domain",
+    "owner": "none",
+    "reason": "DOUBLE_PLAY_NEW_PERSISTENCE_DOMAIN_MODEL_ALLOWED=false",
+    "state_root": "forbidden",
+    "writer": "none"
+  },
+  {
+    "classification": "FORBIDDEN_TO_PERSIST",
+    "field": "forced_intent_or_fill_injection",
+    "owner": "none",
+    "reason": "FORCED_INTENT/DIRECT_FILL_INJECTION forbidden",
+    "state_root": "forbidden",
+    "writer": "none"
+  }
+]

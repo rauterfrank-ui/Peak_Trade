@@ -1,0 +1,130 @@
+# Semantische Rekonstruktion — erster Prüfstein Self-Learning
+
+Stand: 1. November 2026. Reine Quellenuntersuchung. Keine Rekonstruktionsprogramme ausgeführt, keine Produktimporte, Tests, Aktivierungen oder Änderungen am Repository, Obsidian-Ledger oder Architekturarchiv.
+
+## Zweck
+
+Franks Ziel ist die Wiedergewinnung des fachlichen Kerns, der inneren Ebenen, ihrer kausalen Zusammenarbeit und der Bedeutung über Bereichsgrenzen hinweg. Das heutige System ist Vergleichsbasis, kein endgültiges Sollmodell. Historische analytische Darstellungen werden nicht automatisch zu ursprünglichen Architekturvorgaben erklärt. Dieser Pilot ersetzt keine bestehenden Register und keinen Whole-System-Master.
+
+## 1. Der ursprüngliche Lernzweck war weiter als bloßes Reporting
+
+**Belegstand:** Historischer Auftrag belegt; Umsetzung nicht dadurch bewiesen.
+
+Der Benutzerauftrag vom 19. September 2026 verlangt productive evidence → evaluation → durable typed learning evidence → persistent learning state → bounded update semantics → next learning cycle. Die nachfolgende A+C-Entscheidung unterscheidet Evidence-Ingress von Zustand/Transition und verlangt fachlich belegte Update-Semantik.
+
+**Quelle:** Cursor 0de4346c-079c-4eef-9e2e-d272226bf8f1, Zeilen 51 und 74; Index-IDs 245747 und 245770.
+
+**Grenze:** Historischer Auftrag ist keine aktuelle Ausführungsfreigabe und kein Runtime-Beweis. Spätere Eingrenzungen und abweichende Begriffsverwendungen müssen zeitlich danebenstehen.
+
+## 2. Ein konkreter Zustands- und Feedback-Vertrag ist heute lesbar
+
+**Belegstand:** Vertrag und statische Codebindung belegt.
+
+Die S2B-Tabelle im Normativvertrag erlaubt Version/Sequenz, Provenienz und ein opakes next_cycle_economic_score_label. Regime/Modellgüte bleiben unbekannt, numerische Kalibrierung ist schema-only, Fehlerwerte sind observation-only. Der Reducer kopiert economic_score in das Label und erhöht bei neuem Ingest die Version. Der Host setzt daraus ddo_n_bars_economic_score; die Cycle-Bridge reicht dieses Feld als economic_score weiter.
+
+**Quelle:** Normativvertrag; learning_state_record_v0.py; learning_outcome_evidence_ingest_v1.py; ddo_learning_outcome_evidence_ingest_host_binding_v1.py; decision_economics_cycle_bridge_v1.py am Pin 5d1c838c.
+
+**Grenze:** Diese konkrete v1-Verbindung beweist weder eine adaptive Modell-/Parameteränderung noch alle übrigen Lernfähigkeiten. Statische Calls sind keine beobachtete erfolgreiche Mehrzyklus-Ausführung.
+
+## 3. Das 14-Ebenen-IU-Modell hat eine andere ausdrücklich deklarierte Domäne
+
+**Belegstand:** Ursprünglicher Untersuchungsinput direkt lesbar.
+
+Das Inline-Programm vom 7. Oktober deklariert DOMAIN_ID=UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN und DOMAIN_ALIAS=INTELLIGENT_UNIVERSE. Es enthält 14 explizit eingetragene layers-Zeilen von Ingress bis Binding und behandelt DDO als parallele Ebene. Das ist keine eigenständige Definition des gesamten Selbstlern-Universums.
+
+**Quelle:** Cursor 962dd5c9-7680-4c10-b896-5554b595b8fe, Zeile 94, historische Tool-Eingabe Shell.
+
+**Grenze:** Die explizite Tabelle ist eine historische analytische Darstellung. Ihre Einträge und PROVEN_CURRENT-Labels müssen gegen die damaligen Quellen geprüft werden; sie sind kein unabhängiger Beweis einer ursprünglichen Sollarchitektur oder aller Kanten.
+
+## 4. Ursprüngliche Untersuchungsprogramme sind als Eingaben erhalten
+
+**Belegstand:** Provenienz der Eingaben belegt; Originalausgaben nicht vollständig geprüft.
+
+Im Transkript stehen der vollständige GVEF-Emitter-Write-Input mit 63.478 Zeichen und der IU-Inline-Shell-Input mit 41.788 Zeichen, beide mit Baseline 0316e9e2. Ihre SHA-256-Werte sind erfasst. GVEF arbeitet auf src/config/tests für golden_vectors; der IU-Input beschreibt eine andere Domäne.
+
+**Quelle:** Cursor 962dd5c9-7680-4c10-b896-5554b595b8fe, Zeilen 67 und 94; evidence.json.
+
+**Grenze:** Erhaltene Eingabe ist nicht gleich erhaltene damalige Ausgabedatei. Die vier geprüften Original-Zielverzeichnisse in Haupt- und CURRENT-Checkout fehlen; kein vollständiger Dateifund über alle Archive wird behauptet. Kein Programm wurde neu ausgeführt.
+
+## 5. Meta-Learning war als Schnittstelle zwischen getrennten Bereichen beschrieben
+
+**Belegstand:** Datierte historische Owner-Vorgabe belegt.
+
+Der Auftrag vom 20. Oktober unterscheidet Self-Learning und Optimization als eigene Universen; Meta-Learning verbindet beide und wird ausdrücklich nicht als drittes Universum behandelt. GHV, Current Causal Graph und GHOSV sind dort drei zu prüfende Werkzeuge, nicht automatisch drei fachliche Ebenen des Lernens.
+
+**Quelle:** Cursor d01217ce-10b0-4ae4-8dfa-28821d63fb8b, Zeile 25; Index-ID 348016.
+
+**Grenze:** Die damalige Klassifikation belegt noch keinen tatsächlich ausführbaren oder semantisch vollständigen Handoff. Sie ist nicht stillschweigend eine neue heutige Zielratifikation.
+
+## 6. Vorhandene Rekonstruktionsstände enthalten bereits offene Gegenbefunde
+
+**Belegstand:** Archivtexte gelesen; ihre Aussagen nicht pauschal übernommen.
+
+Die vorhandene IU_SELF_LEARNING_CROSS_UNIVERSE_LINE und Funktionslandkarte melden keine nachgewiesene verlorene produktive Verbindung. Die frühere globale Rekonstruktion hält Konfigurationsnamensräume und Kantenzahlen getrennt. Diese Befunde stehen neben ursprünglichen Zielwünschen und späteren Varianten.
+
+**Quelle:** Bestehendes AEV3-ORIGINAL-WHOLE-SYSTEM-ARCHITECTURE-RECONSTRUCTION-V1 sowie Cursor a8ae8a1e-cc6b-4595-99ae-88cac045e46e und 22c7af7a-7172-4801-b541-1352551350ff.
+
+**Grenze:** Eine Suche nach einem bestimmten Symbol wie learning_state_record_ref schließt anders benannte Feedback-Felder nicht aus. Die heutige geprüfte Label-Verbindung darf deshalb nicht mit einem beliebigen Archiv-Abwesenheitssatz gleichgesetzt werden.
+
+## 7. Frühe Konstruktion reicht bis Dezember 2025 zurück
+
+**Belegstand:** Konkrete frühe Git-Anker und Datenmodelle gelesen.
+
+PR #31 vom 13. Dezember 2025 enthält PromotionCandidate, PromotionDecision, PromotionProposal und den Promotion-Engine-Code. PR #32 vom selben Tag enthält ConfigPatch und PatchStatus im Meta-/Learning-Loop. Januar ergänzt den Apply-Runner, März Emitter und Bridge, Juni Lineage-Verträge und September DDO. Das sind unterscheidbare Entwicklungsstränge, nicht automatisch eine einzige ursprüngliche Kette.
+
+**Quelle:** origin-anchors.json; c8096ad4f; 66f06b149; 5bc2624f8; 42242c808; c0681f800; c8bebe87a; 29b1ad5104.
+
+**Grenze:** Früheste hier erreichbare Anker dieser Komponenten sind kein vollständiger Ursprung des gesamten Selbstlern-Universums. Die lokale Git-Historie ist weiterhin shallow.
+
+## 8. Ein Teil der frühen inneren Modelle ist heute noch direkt erkennbar
+
+**Belegstand:** Namens- und AST-Abgleich, kein Funktionsnachweis.
+
+ConfigPatch/PatchStatus und die vier Promotion-Datenmodelle aus Dezember sind am heutigen Vergleichspin mit identischer AST-Struktur vorhanden. Die untersuchten ursprünglichen Emitter-/Bridge-Funktionen aus März sind ebenfalls AST-identisch vorhanden. Filter-, Apply- und Runner-Teile haben dagegen Änderungen.
+
+**Quelle:** origin-anchors.json, source_comparisons; Vergleichpin 5d1c838c.
+
+**Grenze:** AST-Gleichheit beweist weder unveränderte importierte Abhängigkeiten noch erreichbare, autorisierte oder erfolgreiche Laufzeit. Geänderte Teile brauchen einen separaten semantischen Diff und Consumer-Nachweise.
+
+## 9. Eine frühe Fertig-Aussage ist nicht mit Implementierungsstand gleichzusetzen
+
+**Belegstand:** Historische Dokumentaussage und konkrete Dateizugänge unterschieden.
+
+Die Architekturdatei am Januar-Pin trägt einen Vollständig-implementiert-und-getestet-Kopf, kennzeichnet Bridge und Emitter im selben Text jedoch als planned. Die konkreten bridge.py-/emitter.py-Pfade werden in den gefundenen März-Commits hinzugefügt.
+
+**Quelle:** 5bc2624f8:docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md; 42242c808; c0681f800.
+
+**Grenze:** Das ist ein begrenzter Hinweis auf unterschiedliche Reifegrade und Zeitstände, kein Beweis, dass jede damalige Aussage falsch war oder vorher kein anders implementierter Teilpfad existierte.
+
+## Verbindliche Untersuchungsreihenfolge vor dem Endsystem
+
+Pro Bereich zunächst ursprüngliche fachliche Konstruktion und Varianten rekonstruieren, dann die tatsächliche Umsetzung an konkreten Revisionen nachweisen, danach die heutige Semantik und Kausalität einschließlich Fehler-/Restartfällen prüfen. Endsystem- oder Integrationsvorschläge werden erst daraus abgeleitet. Fehlende Belege bleiben ausdrücklich offen; ältere Architektur wird nicht ungeprüft zur Zielvorgabe.
+
+## Eine konkrete Verbindung, deren Bedeutung unterscheidbar ist
+
+Im geprüften Code wird `outcome.economic_score` als Zeichenfolge übernommen, unter `next_cycle_economic_score_label` im Lernzustand gehalten und über `apply_learning_state_feedback_to_next_cycle_v1` nach `state.ddo_n_bars_economic_score` kopiert. Die Cycle-Bridge reicht das Feld an den Horizon-Host als `economic_score` weiter. Der Normativvertrag benennt genau diese Wirkung als opakes Bewertungslabel.
+
+Das ist eine konkrete statische Zustands-/Datenverbindung. Ob ein Modell seine Parameter ändert, eine Kalibrierung angepasst wird oder ein fachlicher Regimezustand aus neuen Ergebnissen gelernt wird, ist eine andere Behauptung mit anderen erforderlichen Belegen. Auch ein Record-Feld `runtime_reachability=false` ist nicht automatisch ein Nachweis, dass kein Host die Daten transportiert: Record-Autorität, Code-Aufruf und tatsächlich beobachtete Laufzeit müssen getrennt geprüft werden.
+
+## Übertragbare Untersuchungsfragen
+
+- **Fachlicher Kern:** Welche Fähigkeit sollte der Bereich liefern und was bedeutete seine Ausgabe für den nächsten Bereich?
+- **Historische Varianten:** Welche ursprünglichen Entwürfe, spätere Eingrenzungen und Umbauten sind jeweils datiert belegt?
+- **Innere Ebenen:** Sind Ebenen echte Zustands-/Verarbeitungsschritte, analytische Sichten, Werkzeuge oder nur Namen?
+- **Semantik:** Welche Bedeutung, Einheiten, Zeitbezüge, Identitäten und mathematischen Regeln tragen Ein- und Ausgaben?
+- **Kausale Verbindung:** Welcher konkrete Consumer verwendet welche Producer-Ausgabe, unter welchen Bedingungen und mit welcher nachweisbaren Wirkung?
+- **Lernen und Rückkopplung:** Was ändert sich nach Evidence N tatsächlich, und welche Wirkung hat der geänderte Zustand in Zyklus N+1?
+- **Cross-Universe:** Wo wird Bedeutung über eine Grenze übertragen, geprüft oder verändert? Welche Autorität bleibt getrennt?
+- **Erhaltungs-/Entwicklungsweg:** Was ist vorhanden, verloren, nur geplant oder ungeklärt? Alten Baustein anpassen oder heutige Architektur weiterentwickeln?
+
+## Was der nächste vertiefte Untersuchungsschritt beantworten muss
+
+Die genannten Quellen zunächst an ihren jeweiligen historischen Pins zusammenführen. Pro behaupteter Ebene und Kante Bedeutung und Wirkung anhand des konkreten damaligen Codes, Vertrags und vorhandener Ausführungsnachweise prüfen. Insbesondere das gewünschte adaptive Lernverhalten von Versionierung, Evidence-Verarbeitung, Bewertungslabels und bloßen Architekturbeschreibungen trennen. Fehlende Semantik nicht aus einem Pfeil, einem PROVEN-Label, einer erfolgreichen Skriptausführung oder dem Namen eines Universums ableiten. Noch keine Wiederherstellung oder Neudefinition von Zielverträgen.
+
+## Urteil dieses Piloten
+
+Die Quellenlage trägt eine deutlich präzisere Untersuchung als reine Dateisuche. Sie trägt noch keine vollständige Rekonstruktion der Urstruktur des Selbstlern-Universums oder aller Cross-Universe-Kanten. Ein zentrales Ergebnis des Piloten ist die belegte Unterscheidung zwischen ursprünglichem Lernziel, engem Zustand-/Label-Vertrag, analytischem IU-Ranking-Modell und Architektur-Prüfwerkzeugen.
+
+**Vergleichspin:** `5d1c838c15369507c5247834db4dd0df25592169`. Alle sieben geprüften Code-/Vertragsquellen sind in der CURRENT-Arbeitskopie bytegleich zu diesem Pin. Das ist kein Gesamtstatus des Systems und kein Laufzeitbeweis. Die Git-Kopie bleibt shallow.
+
+Details, Quellpfade, Git-Blob-IDs, Zeilen und Hashes: `evidence.json`; frühe Entwicklungsanker und Modell-/Funktionsvergleiche: `origin-anchors.json`. Rohquellen bleiben an ihren ursprünglichen Orten.

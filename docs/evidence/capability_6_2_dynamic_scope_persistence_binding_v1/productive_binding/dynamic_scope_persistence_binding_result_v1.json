@@ -1,0 +1,594 @@
+{
+  "CORE_LOGIC_CHANGE": false,
+  "DYNAMIC_SCOPE_PRODUCTIVELY_BOUND": true,
+  "DYNAMIC_SCOPE_RESTART_PROVEN": true,
+  "DYNAMIC_SCOPE_STATE_PERSISTED": true,
+  "RUNTIME_ACTIVATED": false,
+  "authority_inventory": {
+    "canonical_scope_snapshot_owner": "trading.master_v2.canonical_scope_initialization_v1.CanonicalScopeSnapshotV1",
+    "composition_bypass_allowed": false,
+    "confirmation_binding_owner": "ops.stateful_confirmation_and_c1_productive_binding_v1",
+    "core_logic_changed": false,
+    "decision_authority": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+    "direct_fill_injection_allowed": false,
+    "double_play_bypass_allowed": false,
+    "dynamic_scope_binding_authority": "ops.dynamic_scope_persistence_binding_v1",
+    "forced_intent_allowed": false,
+    "master_v2_bypass_allowed": false,
+    "parallel_double_play_persistence_domain_created": false,
+    "parallel_master_v2_persistence_domain_created": false,
+    "parallel_scope_domain_model_created": false,
+    "productive_host": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+    "productive_scope_authority": "trading.master_v2.double_play_state.RuntimeScopeState",
+    "risk_bypass_allowed": false,
+    "runtime_scope_state_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+    "safety_bypass_allowed": false,
+    "scope_boundary_owner": "trading.master_v2.double_play_state.update_dynamic_boundaries",
+    "scope_transition_owner": "trading.master_v2.double_play_state.transition_state",
+    "serialization_adapter_has_decision_authority": false
+  },
+  "call_graph_after": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "distinct_market_observation_acceptor",
+    "observation_acceptance_result",
+    "feature_pipeline",
+    "regime_pipeline",
+    "directional_confirmation_progress",
+    "directional_assessment_confirmation_integration",
+    "previous_canonical_runtime_scope_state",
+    "master_v2_double_play_integrated_offline_replay",
+    "dynamic_scope_transition",
+    "canonical_confirmation_state_commit",
+    "canonical_dynamic_scope_state_commit",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "call_graph_before": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "distinct_market_observation_acceptor",
+    "observation_acceptance_result",
+    "feature_pipeline",
+    "regime_pipeline",
+    "directional_confirmation_progress",
+    "directional_assessment_confirmation_integration",
+    "master_v2_double_play_integrated_offline_replay",
+    "canonical_confirmation_state_commit",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "capability_id": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+  "claims": {
+    "AUTHORIZATION_NOT_CONSUMED": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CONFIRMATION_SCOPE_HANDOFF_PROVEN": true,
+    "CORE_LOGIC_CHANGE": false,
+    "CORE_LOGIC_UNCHANGED": true,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DETERMINISTIC_REPLAY_PROVEN": true,
+    "DUPLICATE_OBSERVATION_SCOPE_ADVANCE": false,
+    "DUPLICATE_OBSERVATION_SCOPE_ADVANCE_FALSE": true,
+    "DYNAMIC_SCOPE_PRODUCTIVELY_BOUND": true,
+    "DYNAMIC_SCOPE_RESTART_PROVEN": true,
+    "DYNAMIC_SCOPE_STATE_PERSISTED": true,
+    "EVENT_TIME_CONTINUITY_PROVEN": true,
+    "EVIDENCE_VERIFIED": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "FAILURE_INJECTION_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "INSTRUMENT_ISOLATION": true,
+    "NO_LIVE_ORDER_PATH": true,
+    "NO_NETWORK_ACCESS": true,
+    "NO_SAMPLE_SCOPE_ADVANCE": false,
+    "NO_SAMPLE_SCOPE_ADVANCE_FALSE": true,
+    "NO_TESTNET_ORDER_PATH": true,
+    "RISK_PARITY_PROVEN": true,
+    "RUNTIME_ACTIVATED": false,
+    "RUNTIME_NOT_ACTIVATED": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "SCOPE_REINITIALIZATION_ONLY_WHEN_SEMANTICALLY_VALID": true,
+    "SILENT_DYNAMIC_SCOPE_REINITIALIZATION": false,
+    "SILENT_DYNAMIC_SCOPE_REINITIALIZATION_FALSE": true,
+    "SINGLE_WRITER_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "capability_id": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+    "instrument_id": "ETH-USD_UM_XPERP-310404",
+    "venue": "OKX"
+  },
+  "domain_to_persistence_matrix": [
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.anchor_price",
+      "reason": "trailing envelope SSOT restore"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.current_upscope_boundary",
+      "reason": "canonical scope boundary restore"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.current_downscope_boundary",
+      "reason": "canonical scope boundary restore"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.current_hysteresis_band",
+      "reason": "hysteresis band continuity"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.last_switch_tick",
+      "reason": "cooldown bookkeeping"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.now_tick",
+      "reason": "event-time ownership via tick cursor"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.scope_stability_ticks",
+      "reason": "stability continuity"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.switches_in_window",
+      "reason": "switch-window continuity"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.window_start_tick",
+      "reason": "switch-window continuity"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.last_completed_side_switch_tick",
+      "reason": "cooldown continuity"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "runtime_scope_state.chop_latched",
+      "reason": "CHOP scope policy latch"
+    },
+    {
+      "canonical_owner": "trading.master_v2.canonical_scope_initialization_v1.CanonicalScopeSnapshotV1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "existing_scope CanonicalScopeSnapshotV1",
+      "reason": "identity / evidence snapshot continuity"
+    },
+    {
+      "canonical_owner": "ops.stateful_confirmation_and_c1_productive_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "confirmation_session_id",
+      "reason": "Cap 6.1 confirmation linkage"
+    },
+    {
+      "canonical_owner": "ops.stateful_confirmation_and_c1_productive_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "market_observation_epoch",
+      "reason": "event-time / observation continuity"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "position_context",
+      "reason": "position-open / flat linkage for restart"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "scope_direction_state",
+      "reason": "directional context restore"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "side_state",
+      "reason": "directional / active-side cursor for trailing continuity"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "host_trading_epoch",
+      "reason": "host epoch cursor for restart continuity"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "price_path_tail",
+      "reason": "minimal feature rebuild input for restart continuity"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "config_digest",
+      "reason": "config binding integrity"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "state_version",
+      "reason": "schema version gate"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "PERSIST_DIRECTLY",
+      "domain_field": "previous_state_digest",
+      "reason": "predecessor commit reference"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_state.update_dynamic_boundaries",
+      "classification": "REBUILD_DETERMINISTICALLY",
+      "domain_field": "DynamicScopeRules",
+      "reason": "rebuilt from snapshot + frozen policy"
+    },
+    {
+      "canonical_owner": "trading.master_v2.deterministic_scope_event_generator_v1",
+      "classification": "REBUILD_DETERMINISTICALLY",
+      "domain_field": "ScopeEventEvidence",
+      "reason": "derived per cycle from trailing envelope"
+    },
+    {
+      "canonical_owner": "feature_pipeline",
+      "classification": "REBUILD_DETERMINISTICALLY",
+      "domain_field": "feature_vectors",
+      "reason": "rebuild from market observations"
+    },
+    {
+      "canonical_owner": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+      "classification": "EPHEMERAL",
+      "domain_field": "cycle_local_mark_price",
+      "reason": "cycle input only"
+    },
+    {
+      "canonical_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "classification": "FORBIDDEN_TO_PERSIST",
+      "domain_field": "MasterV2_internal_decision_dto",
+      "reason": "no parallel Master V2 persistence domain"
+    },
+    {
+      "canonical_owner": "trading.master_v2.double_play_composition_matrix_v1",
+      "classification": "FORBIDDEN_TO_PERSIST",
+      "domain_field": "DoublePlay_internal_decision_dto",
+      "reason": "no parallel Double Play persistence domain"
+    },
+    {
+      "canonical_owner": "ops.dynamic_scope_persistence_binding_v1",
+      "classification": "EVIDENCE_ONLY",
+      "domain_field": "evidence_ledgers",
+      "reason": "claim surfaces only"
+    }
+  ],
+  "evidence_digest": "4c46729a5e065660fe09a8a814e5f7f07b8ef0654e59d7431451e97d71f42a73",
+  "ok": true,
+  "preexisting_evidence_fingerprint": {
+    "actual_head": "7beeba1ce93013461d45773a0390d7c9148571c8",
+    "actual_origin_main": "7beeba1ce93013461d45773a0390d7c9148571c8",
+    "branch": "main",
+    "entries": [
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/MANIFEST.sha256",
+        "sha256": "33a270f239f951c2eaf59a0ef02110c49969fbf657e1556fed7dda7305b33644",
+        "size": 1419,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/SUMMARY.json",
+        "sha256": "d2fb8f42fc5724594ee020dd86d8ebe900cb2b11242b6011a29b94c4e4cba64b",
+        "size": 3344,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/MANIFEST.sha256",
+        "sha256": "79944a8d614b431c3826a836d8b3adba33dbd6052702553aaf28b9bfa80878d4",
+        "size": 242,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/ranking/MANIFEST.sha256",
+        "sha256": "519b52ec4c5892703d666068aeee8357bacefcca625a13391906b45f1306b85b",
+        "size": 220,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/ranking/productive_futures_ranking_evidence_v1.json",
+        "sha256": "ea6a409f5e92ad9d1211954fd26aaaece4f68a2c544eb8f802bce025c6b6c49f",
+        "size": 54,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/selection/MANIFEST.sha256",
+        "sha256": "7467eb48bf164aa80d0a30ca6dcbd4dfb44d428b6bad5448d05c1b000dc86855",
+        "size": 223,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/selection/single_selected_future_selection_evidence_v1.json",
+        "sha256": "19d6ae44571b14d0cebb57b7df995216900b25ead5b9337a63af44e1885abc8c",
+        "size": 6781,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/single_selected_future_runtime_binding_evidence_v1.json",
+        "sha256": "d1be09db3d74d203178fea19b03fda0ed4d451b5d2dfd6677679739fa9b34392",
+        "size": 4378,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/single_selected_future_runtime_binding_result_v1.json",
+        "sha256": "fa8d93c6898d2c311dc74c225334c67beddfb8c49fede586d5572883d69e83e9",
+        "size": 27349,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/universe/MANIFEST.sha256",
+        "sha256": "33f55d0a8e876be8c6fd98d112123270417011c1844b8559995ebe29c4b9dadd",
+        "size": 218,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/universe/governed_futures_universe_evidence_v1.json",
+        "sha256": "6fa7a7803d370195b51468a8c9a7ea75efe4dc1e3ef4f5e2acb0b987738a1a0b",
+        "size": 54,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "scripts/ops/generate_capability_5_1_evidence_v1.py",
+        "sha256": "3afc0386af819be46b6847f3c4fb203dfd9bf6d2733648d33ab289fa606402b9",
+        "size": 14478,
+        "status": " M"
+      },
+      {
+        "kind": "file",
+        "path": "scripts/ops/run_single_future_canonical_runtime_deterministic_offline_evidence_v1.py",
+        "sha256": "d40f8a0c6a5b76da3e9fca2f47fe3886a90c59bdedafc5747a9102f01ad09c6d",
+        "size": 6161,
+        "status": " M"
+      },
+      {
+        "file_count": 26,
+        "files": [
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/authorization/additional_evidence_session_authorization_v2.json",
+            "sha256": "b0eea32ebc7e8e7ce6fc91a27960c4847d8595d3c95e71fb104f1a14cf91b3cf",
+            "size": 2524
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/authorization/consumption_ledger.jsonl",
+            "sha256": "f0f85c068bf19e35a0300ea63399d757a07b70a6c23c8fa28fd6b80dcca94601",
+            "size": 490
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/authorization/revocation_ledger.jsonl",
+            "sha256": "983bb0c167b96c868f62ba5681575d8f6be49ce55b0810274c6540ff02287b51",
+            "size": 1480
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/connectivity_events.jsonl",
+            "sha256": "75792192a333d14eeb1ee4b4037d0e2c81f1d1d08f5d101495abf04c5fcf88e2",
+            "size": 218667
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/counterfactual_decisions.jsonl",
+            "sha256": "c3e7244c0e38e18418cd8212ddf4e8900bba83be7e6387bd6da0eab89b73e1f1",
+            "size": 283410
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/decision_sensitivity.jsonl",
+            "sha256": "e9bfb5d29d4dfed64b3e4f732d8fdc14fea4752568930146e127732a89c5a033",
+            "size": 258311
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/exit_risk_safety_independence.jsonl",
+            "sha256": "a2b47248921eb12c392341068f8ab7603b164f2af7f110db9348d9211a66d83f",
+            "size": 361355
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/heartbeat.jsonl",
+            "sha256": "291a774c890bc2553c68e8b256e8df580c814112ced04b218253553a6673af40",
+            "size": 223084
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/integrity_manifest.json",
+            "sha256": "238f66a64b429c40ff26a2ce24073e8e788cbf6eb52b098c92d7a16c00056d7a",
+            "size": 2531
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/market_samples.jsonl",
+            "sha256": "dbe417fa1b5ebb4656271bbb1bd1a0c51f7b576fcd4bc2a8ae896308a7002ebc",
+            "size": 273782
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/session_metadata.json",
+            "sha256": "5cff1155ec7447b229e1cb7e76d51abb892e21f6e97486982290ef68dbd6b8f1",
+            "size": 1248
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/terminal_verdict.json",
+            "sha256": "99b753f2e945319f274033bd23aae938c37da9e3d2e421648e8202b42cf22a52",
+            "size": 1639
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/volatility_drift_comparisons.jsonl",
+            "sha256": "7064cc037052632f56603e7bd7ffc22679c65f7a8aa5b7e046d1ea3a998a7fd0",
+            "size": 265225
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_additional_evidence_campaign_v2_8312cd8d1b71c65b/sessions/S03/volatility_records.jsonl",
+            "sha256": "acd5e3b489d5698c66dba634be0baf9b64f753dcb0581549e30fe6cb5aba5a81",
+            "size": 325927
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/authorization/campaign_authorization.json",
+            "sha256": "5e0ff5a7e1c1db4346e4f8b523d12611b79b0f0eb74e4259453fd181c257788b",
+            "size": 2777
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/authorization/campaign_authorization_repo_9b99ffc2859cc3b48badf4830c76305f56f1c1ad.json",
+            "sha256": "10d6ab08334f3735b7ddb2093bf560c7c9ac1b2ef07281a9cb58a3bd19efb611",
+            "size": 2777
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/authorization/campaign_authorization_repo_ccbc381f46441a21ebebbbcf74641b79e35b2682.json",
+            "sha256": "a208e14410a960061d162972edee1c29725bc05e3018201083bab43d490c6cd3",
+            "size": 2777
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/authorization/consumption_ledger.jsonl",
+            "sha256": "1a040c89e9958b8bc43b4436ea898bf29a6a3f45b01b2bfd3f5c128340e17d35",
+            "size": 1074
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/authorization/consumption_ledger.jsonl.lock",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/authorization/revocation_ledger.jsonl",
+            "sha256": "c3227df71d163cc622834c3e971eab9947f3d1cad7af9ce51eb925c0498b8d7d",
+            "size": 930
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_01_manifest.json",
+            "sha256": "86bef8ab2ba642543e1e856e315ee2314ecd38d19bb6a10f10978fa16ebfa93f",
+            "size": 8833
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_01_manifest.json.lock",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_02_manifest.json",
+            "sha256": "4005c4398c6b62af8ecedb70cbbc4fb83f199eccaace0964300d6da235f1d47c",
+            "size": 155163
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_02_manifest.json.lock",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/typed_volatility_persistence.jsonl",
+            "sha256": "4acf94f7b212c232b945ab1ea68d248fcfd8ff2478272c6a9e7a6cfe7436ce37",
+            "size": 91231
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/productive_research_evidence_ledger.jsonl",
+            "sha256": "542ea4f4ac80bfd44b0cc2b6e71fa677c0227d02baf55b682e7ef0f199e42190",
+            "size": 349776
+          }
+        ],
+        "kind": "dir",
+        "path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1",
+        "status": "??",
+        "tree_sha256": "2c777ca476a6b61cfd0f996540cc741baa2f2ce3e9d3047c5842fc6361d61cc5"
+      },
+      {
+        "file_count": 4,
+        "files": [
+          {
+            "path": "docs/evidence/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_v1_quarantine/revoked_operator_worktree_sync_overlapping_scope_20260801T190823Z/quarantine_manifest.json",
+            "sha256": "a8470da21770976d75e5e2f6789a67363a229860c69bb28933e3b1adc671aab7",
+            "size": 1623
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_v1_quarantine/revoked_operator_worktree_sync_overlapping_scope_20260801T190823Z/revoked_additional_evidence_session_preregistration_v1.json",
+            "sha256": "abf626ee4100876b905f301d49f1d8f7666cb08f068785a86c1edcdec8a82b82",
+            "size": 2787
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_v1_quarantine/revoked_repository_sha_mismatch_20260801T180021Z/quarantine_manifest.json",
+            "sha256": "b57e242a9b0376f1af10e2d46e2771add6d90e488c37fa6509cd10fd7820c23d",
+            "size": 1780
+          },
+          {
+            "path": "docs/evidence/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_v1_quarantine/revoked_repository_sha_mismatch_20260801T180021Z/revoked_additional_evidence_session_preregistration_v1.json",
+            "sha256": "fb7aa91e505cfaffb3c5cb5bf3ec8312e5e29ac95917b22a6d9e1898b32f1e1b",
+            "size": 2787
+          }
+        ],
+        "kind": "dir",
+        "path": "docs/evidence/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_v1_quarantine",
+        "status": "??",
+        "tree_sha256": "1f6e3f39ad3ae88b8edead473270ccfdb63eed90a704895c07c14fd693131aa4"
+      },
+      {
+        "file_count": 1,
+        "files": [
+          {
+            "path": "docs/evidence/canonical_volatility_numeric_max_age_research_evidence_ledger_v1/research_evidence_ledger.jsonl",
+            "sha256": "497a50f3325949f9e5501ff00ac34836fbf5ebbc97a83423fcb77f87e150beab",
+            "size": 103278
+          }
+        ],
+        "kind": "dir",
+        "path": "docs/evidence/canonical_volatility_numeric_max_age_research_evidence_ledger_v1",
+        "status": "??",
+        "tree_sha256": "55cda6595b7a70b78eb3554b35f5ad05c32356222083e2809796b232e6346d0b"
+      }
+    ],
+    "expected_origin_main_sha": "7beeba1ce93013461d45773a0390d7c9148571c8",
+    "unknown": [],
+    "unknown_count": 0
+  },
+  "repository_sha": "7beeba1ce93013461d45773a0390d7c9148571c8"
+}

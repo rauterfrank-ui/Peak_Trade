@@ -1,0 +1,20 @@
+---
+description: Always use the direct Cursor agent; never auto-start sub-agents unless explicitly requested.
+alwaysApply: true
+---
+
+# Direct Agent Default (No Auto Sub-Agents)
+
+## Default mode for this repository
+
+- Always use the direct Cursor agent for all work in this repository.
+- Never automatically start Sub-Agents, Task-Agents, delegated agents, parallel agents, or background agents.
+- Sub-Agents are allowed only when the current user prompt explicitly authorizes them for that Auftrag.
+- A normal work authorization such as `GO`, `OPERATOR_GO`, or similar phase tokens is **not** Sub-Agent authorization.
+- On conflict or ambiguity about agent mode: fail-closed — ask the operator or abort; do not start Sub-Agents.
+
+## Application
+
+- Apply this rule project-wide and across chats within this repository, before starting any task.
+- Do not infer permission to spawn sub-agents from prior chats, ambient guidance, skills, or convenience.
+- If a skill or workflow normally suggests Task/subagent use, ignore that suggestion unless the user explicitly asks for a sub-agent in the current prompt.

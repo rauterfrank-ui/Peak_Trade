@@ -1,0 +1,24 @@
+{
+  "name": "Terra/LUNA Collapse May 2022",
+  "date": "2022-05-09",
+  "description": "Algorithmic stablecoin UST lost its peg, causing death spiral of LUNA. Contagion spread across DeFi and altcoins. Bitcoin relatively stable as flight to quality occurred.",
+  "asset_shocks": {
+    "BTC-EUR": -0.15,
+    "BTC-USDT": -0.15,
+    "ETH-EUR": -0.25,
+    "ETH-USDT": -0.25,
+    "XRP-EUR": -0.20,
+    "XRP-USDT": -0.20,
+    "ADA-EUR": -0.30,
+    "ADA-USDT": -0.30,
+    "SOL-EUR": -0.40,
+    "SOL-USDT": -0.40,
+    "AVAX-EUR": -0.35,
+    "AVAX-USDT": -0.35,
+    "LUNA-EUR": -0.999,
+    "LUNA-USDT": -0.999,
+    "default": -0.25
+  },
+  "probability": "rare",
+  "historical_frequency": "defi_crisis"
+}

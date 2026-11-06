@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_one_page_exec_summary
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-one-page-exec-summary
+MODE: paper_stability_guard
+
+GOAL
+- provide a one-page executive summary for bounded / acceptance status
+
+OUTPUT
+- docs/ops/reviews/bounded_acceptance_one_page_exec_summary/EXEC_SUMMARY.md
+
+NEXT SUGGESTED STEP
+- use this as the quickest decision artifact for future bounded / acceptance discussions

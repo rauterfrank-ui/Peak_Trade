@@ -1,0 +1,40 @@
+{
+  "blocked_registry_names": [
+    "independent_killswitch_layer",
+    "execution_permission_controller",
+    "venue_execution",
+    "promotion_authority",
+    "supervisor_productive_runtime",
+    "stale_root_cause_inference",
+    "decision_result_trade_token_expansion"
+  ],
+  "explicit_pre_mutation_names": [
+    "section_11_14.flatten_pre_lease_send_intent"
+  ],
+  "implemented_registry_names": [
+    "selection.universe",
+    "selection.ranking",
+    "selection.single_future",
+    "selection.runtime_binding",
+    "c1.observation_acceptance",
+    "feature.regime",
+    "feature.typed_volatility",
+    "core.bull_bear",
+    "confirmation.state",
+    "core.master_v2_evidence",
+    "core.double_play_entry_exit",
+    "core.dynamic_scope",
+    "core.survival_suitability_composition",
+    "core.exit_policy",
+    "risk.step_29p",
+    "safety.kernel",
+    "safety.killswitch_blocked_flag",
+    "plan.step_29q",
+    "mapper.intended_action",
+    "recon.startup_gate",
+    "execution.simulated_outcome",
+    "real_outcome_horizon_engine"
+  ],
+  "role": "Existing named observation seams, not proof of enabled/called/persisted coverage or Golden Vector attachment to each seam",
+  "source_commit": "f49735166ab037b90b596d9b91c4ff5f5765e364"
+}

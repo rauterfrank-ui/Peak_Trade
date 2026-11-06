@@ -1,0 +1,7 @@
+{
+  "EVIDENCE_VERIFIER_PASS": true,
+  "FAILURE_INJECTION_PROVEN": true,
+  "PRECONDITIONS_ALL_PROVEN": true,
+  "ROLLBACK_PROVEN": true,
+  "ok": true
+}

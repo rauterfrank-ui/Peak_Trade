@@ -1,0 +1,150 @@
+{
+  "ACCOUNTING_IDENTITY_EQUATION": "reconstructed_realized_pnl[ccy] = fillPnl[feeCcy] + fee[feeCcy] + fundingFee[position.ccy] + settledPnl[position.ccy]",
+  "ACCOUNTING_RESIDUAL": "0",
+  "ACCOUNTING_RESIDUAL_UNIT": "USDC",
+  "ACCOUNTING_RESULT": "-0.000374",
+  "ACCOUNTING_RESULT_UNIT": "USDC",
+  "ACCOUNTING_TOLERANCE": "0",
+  "ACCOUNTING_TOLERANCE_AUTHORITY": "EXACT_DECIMAL_EQUALITY_NO_INVENTED_TOLERANCE",
+  "ACCOUNTING_UNIT": "USDC",
+  "ACTUAL_ACCOUNTING_RECONSTRUCTED": true,
+  "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+  "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+  "BOUND_ORDID": "3893505043080286208",
+  "BOUND_POS_SIDE": "net",
+  "BOUND_TRADE_ID": "1055244",
+  "EPISTEMIC_CLASS": "RECONSTRUCTED",
+  "FEE_CCY_EQUALS_POSITION_CCY": true,
+  "FILL_FEE_EQUALS_POSITION_FEE": true,
+  "FILL_IDENTITY": {
+    "CLORDID_MATCH": true,
+    "INSTRUMENT_MATCH": true,
+    "ORDER_IDENTITY_MATCH": true,
+    "ORDID_MATCH": true
+  },
+  "FILL_PNL_EQUALS_POSITION_PNL": true,
+  "IDENTITY_BOUND_REQUIRED_TERMS_PRESENT_PARSEABLE": true,
+  "MISSING_NOT_REPLACED_BY_ZERO": true,
+  "MISSING_OR_EMPTY": false,
+  "OBSERVED_REALIZED_PNL": "-0.000374",
+  "POSITION_IDENTITY": {
+    "INSTRUMENT_MATCH": true,
+    "POSITION_IDENTITY_MATCH": true,
+    "POS_SIDE_MATCH": true
+  },
+  "RAW_FILL_FEE_IF_OBSERVED": "-0.000374",
+  "RAW_FILL_PNL_IF_OBSERVED": "0",
+  "RAW_FUNDING_FEE_IF_OBSERVED": "0",
+  "RAW_POSITION_FEE_IF_OBSERVED": "-0.000374",
+  "RAW_POSITION_PNL_IF_OBSERVED": "0",
+  "RAW_REALIZED_PNL_IF_OBSERVED": "-0.000374",
+  "RAW_SETTLED_PNL_IF_OBSERVED": "0",
+  "RAW_UPL_IF_OBSERVED": "0.0041",
+  "REALIZED_PNL_IDENTITY_HOLDS": true,
+  "RECONSTRUCTED_REALIZED_PNL": "-0.000374",
+  "SCHEMA_AMBIGUITY_REASONS": [],
+  "SCHEMA_AMBIGUOUS": false,
+  "TRADE_ID_IDENTITY_MATCH": true,
+  "UNPARSEABLE": false,
+  "UPL_IN_REALIZED_IDENTITY": false,
+  "fill_fee_ccy": {
+    "field": "feeCcy",
+    "present_nonempty": true,
+    "raw": "USDC",
+    "value": "USDC"
+  },
+  "fill_terms": {
+    "fee": {
+      "field": "fee",
+      "missing_treated_as_zero": false,
+      "observed_zero": false,
+      "parseable": true,
+      "parsed": "-0.000374",
+      "present_nonempty": true,
+      "raw": "-0.000374"
+    },
+    "fillPnl": {
+      "field": "fillPnl",
+      "missing_treated_as_zero": false,
+      "observed_zero": true,
+      "parseable": true,
+      "parsed": "0",
+      "present_nonempty": true,
+      "raw": "0"
+    }
+  },
+  "fill_trade_id": {
+    "field": "tradeId",
+    "present_nonempty": true,
+    "raw": "1055244",
+    "value": "1055244"
+  },
+  "position_ccy": {
+    "field": "ccy",
+    "present_nonempty": true,
+    "raw": "USDC",
+    "value": "USDC"
+  },
+  "position_terms": {
+    "fee": {
+      "field": "fee",
+      "missing_treated_as_zero": false,
+      "observed_zero": false,
+      "parseable": true,
+      "parsed": "-0.000374",
+      "present_nonempty": true,
+      "raw": "-0.000374"
+    },
+    "fundingFee": {
+      "field": "fundingFee",
+      "missing_treated_as_zero": false,
+      "observed_zero": true,
+      "parseable": true,
+      "parsed": "0",
+      "present_nonempty": true,
+      "raw": "0"
+    },
+    "pnl": {
+      "field": "pnl",
+      "missing_treated_as_zero": false,
+      "observed_zero": true,
+      "parseable": true,
+      "parsed": "0",
+      "present_nonempty": true,
+      "raw": "0"
+    },
+    "realizedPnl": {
+      "field": "realizedPnl",
+      "missing_treated_as_zero": false,
+      "observed_zero": false,
+      "parseable": true,
+      "parsed": "-0.000374",
+      "present_nonempty": true,
+      "raw": "-0.000374"
+    },
+    "settledPnl": {
+      "field": "settledPnl",
+      "missing_treated_as_zero": false,
+      "observed_zero": true,
+      "parseable": true,
+      "parsed": "0",
+      "present_nonempty": true,
+      "raw": "0"
+    }
+  },
+  "position_trade_id": {
+    "field": "tradeId",
+    "present_nonempty": true,
+    "raw": "1055244",
+    "value": "1055244"
+  },
+  "upl_observed": {
+    "field": "upl",
+    "missing_treated_as_zero": false,
+    "observed_zero": false,
+    "parseable": true,
+    "parsed": "0.0041",
+    "present_nonempty": true,
+    "raw": "0.0041"
+  }
+}

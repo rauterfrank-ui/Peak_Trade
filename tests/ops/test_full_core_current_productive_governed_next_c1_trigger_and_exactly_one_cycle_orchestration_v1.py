@@ -1,0 +1,659 @@
+"""CURRENT_PRODUCTIVE next-C1 trigger and exactly-one cycle orchestration. No POST."""
+
+from __future__ import annotations
+
+import inspect
+import json
+import threading
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
+    AUTONOMY_CAN_CHANGE_TRADING_LOGIC,
+    AUTONOMY_CAN_MINT_PERMIT,
+    AUTONOMY_CAN_POST,
+    AUTONOMY_CAN_RESELECT_DOWNSTREAM,
+    CYCLE_EXCLUSION_LOCK_NAME,
+    DISPOSITION_DISPATCHED,
+    DISPOSITION_FAILED_STOP,
+    DISPOSITION_FAIL_CLOSED,
+    DISPOSITION_NO_DISPATCH,
+    DISPOSITION_PRESENT,
+    FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY,
+    JOIN_SEAM_ID,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PARAM,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL,
+    OCCUPANCY_OWNER_GO,
+    OCCUPANCY_OWNER_GO_STATUS,
+    OWNER_GO,
+    PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS,
+    REASON_CONCURRENT_CYCLE,
+    REASON_CURSOR_MISSING,
+    REASON_CYCLE_EXCEPTION,
+    REASON_DISPATCHED,
+    REASON_DUPLICATE_C1,
+    REASON_LINEAGE_MISMATCH,
+    REASON_OWNER_GO_MISMATCH,
+    REASON_PERSIST_GO_NOT_TRIGGER_LICENSE,
+    REASON_STALE_C1,
+    REASON_UNFINALIZED_C1,
+    RUNTIME_TRIGGER_OWNER_GO,
+    S4A_FRESH_C1_GET_OWNER_GO,
+    S4B_OWNER_GO,
+    S4B_V5_EXECUTE_NETWORK,
+    S4C_MANIFEST_SHA256,
+    S4C_PACK_OCCUPANCY_DISPOSITION,
+    S4C_PRETRADE_DECISION_ID,
+    S4D_OWNER_GO,
+    S4D_V5_EXECUTE_NETWORK,
+    STATE_CYCLE_COMPLETED,
+    STATE_CYCLE_IN_PROGRESS,
+    STATE_FAILED_STOP,
+    STATE_IDLE,
+    STATE_NEW_C1_ACCEPTED,
+    THIS_SLICE,
+    VENUE_OCCUPANCY_KNOWLEDGE,
+    CurrentProductiveC1ObservationV1,
+    CurrentProductiveGovernedNextC1OrchestrationError,
+    _inject_occupancy_gate_input_join,
+    bind_s4b_occupancy_gate_input_v1,
+    bind_s4d_s4c_disposition_go_consumption_persist_v1,
+    s4c_historical_pack_may_be_consumed_as_fresh_get_v1,
+    trigger_current_productive_next_c1_and_exactly_one_cycle_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    CURSOR_FILENAME,
+    CURSOR_LINEAGE_ID,
+)
+from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
+    FullCoreProductiveHttpPostError,
+    FullCoreProductiveHttpTradeOrderTransportV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
+    STEP_29Q_PLAN_ONLY,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED,
+    CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED,
+    CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
+    OCCUPANCY_NEXT_OWNER_GO,
+    V5_OWNER_GO,
+)
+from src.ops.single_selected_future_policy_v1.constants_v1 import (
+    WRITER_LOCK_FILENAME as CAP23_WRITER_LOCK_FILENAME,
+)
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+    MAX_POSITIONS_EFFECTIVE,
+)
+from tests.ops.test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1 import (
+    _handle,
+)
+from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
+    TRACKED_CURSOR,
+    _candles,
+    _declared_checkout_sha,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+SPEC_PATH = (
+    REPO_ROOT
+    / "docs/ops/specs"
+    / "FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_V1.md"
+)
+ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
+OWNER_MODULE = (
+    REPO_ROOT
+    / "src/ops/full_core_live_path_composition_root_v1"
+    / "current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py"
+)
+PROTECTED_ALGORITHM_FILES = (
+    "src/ops/single_selected_future_policy_v1/selection_v1.py",
+    "src/ops/single_selected_future_policy_v1/policy_v1.py",
+    "src/trading/master_v2/double_play_state.py",
+    "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+)
+SEALED_CORE_MEMBERS = (
+    "src/trading/master_v2/double_play_state.py",
+    "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+)
+CURSOR_C1_FLOOR = 1789527780.0
+NEW_C1 = 1789527840.0
+EG_HEADING = (
+    "### 11.2.1.EG FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_"
+    "AND_EXACTLY_ONE_CYCLE_ORCHESTRATION"
+)
+
+
+def _seed_cursor(tmp_path: Path, *, event_time: float = CURSOR_C1_FLOOR) -> Path:
+    payload = json.loads(TRACKED_CURSOR.read_text(encoding="utf-8"))
+    payload["lineage_id"] = CURSOR_LINEAGE_ID
+    payload["venue_native_id"] = "0G-USDT-SWAP"
+    payload["schema_name"] = "current_productive_sidestate_confirmation_cursor.v1"
+    payload["cap61_confirmation_state"]["observation_acceptance_state"][
+        "last_accepted_observation_identity"
+    ]["venue_event_time"] = event_time
+    store = tmp_path / "cursor"
+    store.mkdir(parents=True, exist_ok=True)
+    (store / CURSOR_FILENAME).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return store
+
+
+def _observation(
+    *,
+    venue_event_time: float = NEW_C1,
+    confirm: str = "1",
+    native_id: str = "0G-USDT-SWAP",
+    bar: str = "1m",
+    payload: dict[str, object] | None = None,
+) -> CurrentProductiveC1ObservationV1:
+    if payload is None:
+        payload = _candles(last_ts_ms=int(venue_event_time * 1000))
+    return CurrentProductiveC1ObservationV1(
+        venue_event_time=venue_event_time,
+        confirm=confirm,
+        native_id=native_id,
+        bar=bar,
+        payload=payload,
+    )
+
+
+def _stub_result() -> SimpleNamespace:
+    return SimpleNamespace(
+        permit_created="false",
+        post_count="0",
+        master_v2_decision="observe",
+        venue_plan_status="DENY",
+        final_envelope_id="",
+        runtime_cycle_count="1",
+    )
+
+
+def _trigger(tmp_path: Path, observation, **kwargs):
+    cursor_store = kwargs.pop("cursor_store_root", None)
+    if cursor_store is None:
+        cursor_store = _seed_cursor(tmp_path)
+    return trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+        owner_go=kwargs.pop("owner_go", RUNTIME_TRIGGER_OWNER_GO),
+        origin_main_sha=kwargs.pop("origin_main_sha", _declared_checkout_sha()),
+        observation=observation,
+        cursor_store_root=cursor_store,
+        lock_root=kwargs.pop("lock_root", tmp_path / "lock"),
+        evidence_root=kwargs.pop("evidence_root", tmp_path / "evidence"),
+        cycle_dispatch=kwargs.pop("cycle_dispatch", None),
+        v5_kwargs=kwargs.pop("v5_kwargs", None),
+    )
+
+
+def _assert_post_guard() -> None:
+    transport = FullCoreProductiveHttpTradeOrderTransportV1(handle=_handle())
+    with pytest.raises(FullCoreProductiveHttpPostError, match="REAL_VENUE_POST_FORBIDDEN"):
+        transport.post_trade_order(
+            payload={"instId": "MUST_NOT_POST"},
+            permit_id="eep-fixture",
+            envelope_id="env-fixture",
+            envelope_digest="0" * 64,
+        )
+    assert transport.post_count == 0
+
+
+def test_created_flag_pins_and_docs() -> None:
+    assert (
+        CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED
+        is True
+    )
+    assert FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY == (
+        "NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY"
+    )
+    assert AUTONOMY_CAN_CHANGE_TRADING_LOGIC is False
+    assert AUTONOMY_CAN_RESELECT_DOWNSTREAM is False
+    assert AUTONOMY_CAN_MINT_PERMIT is False
+    assert AUTONOMY_CAN_POST is False
+    assert int(MAX_POSITIONS_EFFECTIVE) == 1
+    assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
+    assert RUNTIME_TRIGGER_OWNER_GO != OWNER_GO
+    assert JOIN_SEAM_ID == (
+        "CURRENT_PRODUCTIVE_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_SEAM_V1"
+    )
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    mot = MOT_PATH.read_text(encoding="utf-8")
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert EG_HEADING not in runbook
+    assert "11.2.1.EG.FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_" in source
+    assert "current_productive_governed_cycle_orchestrator_v1.py" in mot
+    assert "docs_token:" in spec
+    assert (
+        "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_"
+        "AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_V1"
+    ) in spec
+    assert JOIN_SEAM_ID in atlas
+    for path in (*PROTECTED_ALGORITHM_FILES, *SEALED_CORE_MEMBERS):
+        assert (REPO_ROOT / path).is_file()
+
+
+def test_persist_go_is_not_runtime_trigger_license(tmp_path: Path) -> None:
+    with pytest.raises(
+        CurrentProductiveGovernedNextC1OrchestrationError,
+        match=REASON_PERSIST_GO_NOT_TRIGGER_LICENSE,
+    ):
+        _trigger(tmp_path, _observation(), owner_go=OWNER_GO)
+
+
+def test_owner_go_mismatch_fail_closed(tmp_path: Path) -> None:
+    with pytest.raises(
+        CurrentProductiveGovernedNextC1OrchestrationError,
+        match=REASON_OWNER_GO_MISMATCH,
+    ):
+        _trigger(tmp_path, _observation(), owner_go="WRONG")
+
+
+def test_new_c1_single_dispatch(tmp_path: Path) -> None:
+    calls: list[object] = []
+
+    def _dispatch(**kwargs):
+        calls.append(kwargs)
+        assert kwargs["execute_network"] is False
+        assert kwargs["incoming_cursor"] is not None
+        transport = kwargs.get("acquisition_transport")
+        assert transport is not None
+        assert type(transport).__name__ == "UrllibEeaPublicUniverseGetTransportV1"
+        assert getattr(transport, "request_count", 0) == 0
+        assert kwargs.get("fresh_get_transport") is None
+        return _stub_result()
+
+    result = _trigger(tmp_path, _observation(), cycle_dispatch=_dispatch)
+    assert result.disposition == DISPOSITION_DISPATCHED
+    assert result.reason_code == REASON_DISPATCHED
+    assert result.dispatch_count == 1
+    assert len(calls) == 1
+    assert STATE_NEW_C1_ACCEPTED in result.transitions
+    assert STATE_CYCLE_IN_PROGRESS in result.transitions
+    assert STATE_CYCLE_COMPLETED in result.transitions
+    assert result.transitions[-1] == STATE_IDLE
+    assert result.lock_released == "true"
+    assert result.permit_created == "false"
+    assert result.post_count == "0"
+
+
+def test_duplicate_c1_no_dispatch(tmp_path: Path) -> None:
+    calls: list[object] = []
+
+    def _dispatch(**kwargs):
+        calls.append(kwargs)
+        return _stub_result()
+
+    result = _trigger(
+        tmp_path,
+        _observation(venue_event_time=CURSOR_C1_FLOOR),
+        cycle_dispatch=_dispatch,
+    )
+    assert result.disposition == DISPOSITION_NO_DISPATCH
+    assert result.reason_code == REASON_DUPLICATE_C1
+    assert result.dispatch_count == 0
+    assert calls == []
+
+
+def test_stale_c1_no_dispatch(tmp_path: Path) -> None:
+    calls: list[object] = []
+
+    def _dispatch(**kwargs):
+        calls.append(kwargs)
+        return _stub_result()
+
+    result = _trigger(
+        tmp_path,
+        _observation(venue_event_time=CURSOR_C1_FLOOR - 60.0),
+        cycle_dispatch=_dispatch,
+    )
+    assert result.disposition == DISPOSITION_NO_DISPATCH
+    assert result.reason_code == REASON_STALE_C1
+    assert result.dispatch_count == 0
+    assert calls == []
+
+
+def test_unfinalized_c1_no_dispatch(tmp_path: Path) -> None:
+    calls: list[object] = []
+
+    def _dispatch(**kwargs):
+        calls.append(kwargs)
+        return _stub_result()
+
+    result = _trigger(
+        tmp_path,
+        _observation(confirm="0"),
+        cycle_dispatch=_dispatch,
+    )
+    assert result.disposition == DISPOSITION_NO_DISPATCH
+    assert result.reason_code == REASON_UNFINALIZED_C1
+    assert result.dispatch_count == 0
+    assert calls == []
+
+
+def test_concurrent_trigger_exactly_one_accepted(tmp_path: Path) -> None:
+    started = threading.Event()
+    release = threading.Event()
+    calls: list[str] = []
+    lock_root = tmp_path / "lock"
+    cursor_store = _seed_cursor(tmp_path)
+
+    def _dispatch(**kwargs):
+        calls.append("dispatch")
+        started.set()
+        assert release.wait(timeout=2.0) is True
+        return _stub_result()
+
+    first: dict[str, object] = {}
+    second: dict[str, object] = {}
+
+    def _run_first() -> None:
+        first["result"] = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+            owner_go=RUNTIME_TRIGGER_OWNER_GO,
+            origin_main_sha=_declared_checkout_sha(),
+            observation=_observation(),
+            cursor_store_root=cursor_store,
+            lock_root=lock_root,
+            evidence_root=tmp_path / "first",
+            cycle_dispatch=_dispatch,
+        )
+
+    worker = threading.Thread(target=_run_first)
+    worker.start()
+    assert started.wait(timeout=2.0) is True
+    second["result"] = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
+        origin_main_sha=_declared_checkout_sha(),
+        observation=_observation(),
+        cursor_store_root=cursor_store,
+        lock_root=lock_root,
+        evidence_root=tmp_path / "second",
+        cycle_dispatch=_dispatch,
+    )
+    release.set()
+    worker.join(timeout=2.0)
+    accepted = first["result"]
+    rejected = second["result"]
+    assert accepted.dispatch_count == 1
+    assert accepted.disposition == DISPOSITION_DISPATCHED
+    assert rejected.dispatch_count == 0
+    assert rejected.reason_code == REASON_CONCURRENT_CYCLE
+    assert rejected.disposition == DISPOSITION_NO_DISPATCH
+    assert calls == ["dispatch"]
+
+
+def test_cycle_exception_no_retry_cursor_not_advanced(tmp_path: Path) -> None:
+    cursor_store = _seed_cursor(tmp_path)
+    before = (cursor_store / CURSOR_FILENAME).read_text(encoding="utf-8")
+    lock_root = tmp_path / "lock"
+
+    def _boom(**kwargs):
+        raise RuntimeError("injected-cycle-failure")
+
+    failed = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
+        origin_main_sha=_declared_checkout_sha(),
+        observation=_observation(),
+        cursor_store_root=cursor_store,
+        lock_root=lock_root,
+        evidence_root=tmp_path / "failed",
+        cycle_dispatch=_boom,
+    )
+    assert failed.disposition == DISPOSITION_FAILED_STOP
+    assert failed.reason_code == REASON_CYCLE_EXCEPTION
+    assert failed.state == STATE_FAILED_STOP
+    assert failed.lock_released == "false"
+    assert (lock_root / CYCLE_EXCLUSION_LOCK_NAME).is_file()
+    after = (cursor_store / CURSOR_FILENAME).read_text(encoding="utf-8")
+    assert after == before
+    retry_calls: list[object] = []
+
+    def _retry(**kwargs):
+        retry_calls.append(kwargs)
+        return _stub_result()
+
+    blocked = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
+        origin_main_sha=_declared_checkout_sha(),
+        observation=_observation(venue_event_time=NEW_C1 + 60.0),
+        cursor_store_root=cursor_store,
+        lock_root=lock_root,
+        evidence_root=tmp_path / "retry",
+        cycle_dispatch=_retry,
+    )
+    assert blocked.reason_code == REASON_CONCURRENT_CYCLE
+    assert blocked.dispatch_count == 0
+    assert retry_calls == []
+
+
+def test_lineage_mismatch_no_dispatch(tmp_path: Path) -> None:
+    calls: list[object] = []
+
+    def _dispatch(**kwargs):
+        calls.append(kwargs)
+        return _stub_result()
+
+    result = _trigger(
+        tmp_path,
+        _observation(native_id="BTC-USDT-SWAP"),
+        cycle_dispatch=_dispatch,
+    )
+    assert result.disposition == DISPOSITION_NO_DISPATCH
+    assert result.reason_code == REASON_LINEAGE_MISMATCH
+    assert result.dispatch_count == 0
+    assert calls == []
+
+
+def test_cursor_missing_no_dispatch(tmp_path: Path) -> None:
+    calls: list[object] = []
+
+    def _dispatch(**kwargs):
+        calls.append(kwargs)
+        return _stub_result()
+
+    empty = tmp_path / "empty-cursor"
+    empty.mkdir()
+    result = _trigger(
+        tmp_path,
+        _observation(),
+        cursor_store_root=empty,
+        cycle_dispatch=_dispatch,
+    )
+    assert result.reason_code == REASON_CURSOR_MISSING
+    assert result.dispatch_count == 0
+    assert calls == []
+
+
+def test_default_dispatch_is_fail_closed_non_k2_stub(tmp_path: Path) -> None:
+    cursor_store = _seed_cursor(tmp_path)
+    result = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
+        origin_main_sha=_declared_checkout_sha(),
+        observation=_observation(),
+        cursor_store_root=cursor_store,
+        lock_root=tmp_path / "lock",
+        evidence_root=tmp_path / "retired-v5",
+    )
+    assert result.disposition == DISPOSITION_DISPATCHED
+    assert result.dispatch_count == 1
+    cycle = result.cycle_result
+    assert cycle is not None
+    assert cycle.disposition == "FAIL_CLOSED_V5_EXECUTE_HOST_RETIRED"
+    assert cycle.post_count == "0"
+    assert cycle.permit_created == "false"
+    assert result.permit_created == "false"
+    assert result.post_count == "0"
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    assert "live_credential_ephemeral_v1" not in source
+    assert "default_vault_path_v1" not in source
+    _assert_post_guard()
+
+
+def test_eg_default_dispatch_does_not_join_v5_or_29p(tmp_path: Path) -> None:
+    result = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
+        origin_main_sha=_declared_checkout_sha(),
+        observation=_observation(),
+        cursor_store_root=_seed_cursor(tmp_path),
+        lock_root=tmp_path / "lock",
+        evidence_root=tmp_path / "no-v5-29p",
+    )
+    cycle = result.cycle_result
+    assert cycle is not None
+    assert cycle.disposition == "FAIL_CLOSED_V5_EXECUTE_HOST_RETIRED"
+    assert getattr(cycle, "store_root", None) is None
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "observation_v5" not in source
+    assert "enter_live_29p" not in source
+    _assert_post_guard()
+
+
+def test_authority_guard_cannot_mint_permit_or_post() -> None:
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "issue_external_effect_permit_v1" not in source
+    assert "post_trade_order" not in source
+    assert "while True" not in source
+    assert "time.sleep" not in source
+    assert 'execute_network": True' not in source
+    assert "execute_network = True" not in source
+    assert CAP23_WRITER_LOCK_FILENAME not in source
+    assert CYCLE_EXCLUSION_LOCK_NAME in source
+    assert "AuthorizationLifecycleLockV1" in source
+    inspected = inspect.getsource(trigger_current_productive_next_c1_and_exactly_one_cycle_v1)
+    assert "issue_external_effect_permit_v1" not in inspected
+    assert AUTONOMY_CAN_MINT_PERMIT is False
+    assert AUTONOMY_CAN_POST is False
+    _assert_post_guard()
+
+
+class _SpyOccupancyTransportV1:
+    def __init__(self) -> None:
+        self.get_calls = 0
+
+    def get(self, **kwargs: object) -> object:
+        self.get_calls += 1
+        raise AssertionError("occupancy GET invoked during S4B offline bind")
+
+
+def test_s4b_occupancy_input_seam_injects_without_get_or_v5_invoke(tmp_path: Path) -> None:
+    spy = _SpyOccupancyTransportV1()
+    injected = _inject_occupancy_gate_input_join(
+        {"execute_network": True, "fresh_get_transport": spy}
+    )
+    absent = _inject_occupancy_gate_input_join({"execute_network": True})
+    assert injected["execute_network"] is False
+    assert injected["fresh_get_transport"] is spy
+    assert absent["execute_network"] is False
+    assert absent["fresh_get_transport"] is None
+    assert spy.get_calls == 0
+    calls: list[object] = []
+
+    def _dispatch(**kwargs):
+        calls.append(kwargs)
+        assert kwargs["execute_network"] is False
+        assert kwargs["fresh_get_transport"] is spy
+        assert kwargs["fresh_get_transport"].get_calls == 0
+        return _stub_result()
+
+    result = _trigger(
+        tmp_path,
+        _observation(),
+        cycle_dispatch=_dispatch,
+        v5_kwargs={"fresh_get_transport": spy},
+    )
+    assert result.disposition == DISPOSITION_DISPATCHED
+    assert result.dispatch_count == 1
+    assert len(calls) == 1
+    assert spy.get_calls == 0
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
+    assert "execute_network = True" not in source
+    assert OCCUPANCY_FRESH_GET_TRANSPORT_PARAM in source
+    assert OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL in source
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "OCCUPANCY_OWNER_GO=" + OCCUPANCY_OWNER_GO in spec
+    assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
+    assert CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED is True
+    bound = bind_s4b_occupancy_gate_input_v1(owner_go=S4B_OWNER_GO)
+    assert bound.disposition == DISPOSITION_PRESENT
+    assert bound.v5_execute_network is False
+    assert S4B_V5_EXECUTE_NETWORK is False
+    assert bound.venue_occupancy == VENUE_OCCUPANCY_KNOWLEDGE
+    assert bound.occupancy_owner_go != S4A_FRESH_C1_GET_OWNER_GO
+    assert bound.occupancy_owner_go != RUNTIME_TRIGGER_OWNER_GO
+    assert bound.occupancy_owner_go != V5_OWNER_GO
+    assert bound.occupancy_owner_go != OWNER_GO
+    assert bound.occupancy_owner_go_status == OCCUPANCY_OWNER_GO_STATUS
+    assert bound.acquisition_transport_class == PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS
+    assert bound.acquisition_transport_semantically_separate is True
+    assert bind_s4b_occupancy_gate_input_v1(owner_go=OWNER_GO).disposition == (
+        DISPOSITION_FAIL_CLOSED
+    )
+    assert CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED is True
+    persisted = bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=S4D_OWNER_GO)
+    assert persisted.disposition == DISPOSITION_PRESENT
+    assert persisted.venue_occupancy == VENUE_OCCUPANCY_KNOWLEDGE
+    assert persisted.venue_occupancy == "UNKNOWN"
+    assert persisted.s4c_pack_occupancy_disposition == S4C_PACK_OCCUPANCY_DISPOSITION
+    assert persisted.s4c_pack_occupancy_disposition != persisted.venue_occupancy
+    assert persisted.occupancy_owner_go_consumed is False
+    assert persisted.occupancy_owner_go_status == OCCUPANCY_OWNER_GO_STATUS
+    assert persisted.v5_execute_network is False
+    assert S4D_V5_EXECUTE_NETWORK is False
+    assert persisted.s4c_pretrade_decision_id == S4C_PRETRADE_DECISION_ID
+    assert persisted.s4c_manifest_sha256 == S4C_MANIFEST_SHA256
+    assert persisted.fresh_reproof_required_for_later_pretrade_decision is True
+    assert persisted.persist_go_is_runtime_license is False
+    assert persisted.get_count == 0
+    assert persisted.eg_dispatch_count == 0
+    assert persisted.v5_invoke_count == 0
+    assert persisted.runtime_cycle_count == 0
+    assert persisted.occupancy_owner_go != S4D_OWNER_GO
+    assert persisted.occupancy_owner_go != S4A_FRESH_C1_GET_OWNER_GO
+    assert persisted.occupancy_owner_go != RUNTIME_TRIGGER_OWNER_GO
+    assert (
+        s4c_historical_pack_may_be_consumed_as_fresh_get_v1(
+            pretrade_decision_id="dv-unrelated-later-decision"
+        )
+        is False
+    )
+    assert bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=OWNER_GO).disposition == (
+        DISPOSITION_FAIL_CLOSED
+    )
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "S4D_OWNER_GO=" + S4D_OWNER_GO in spec
+    assert "FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true" in spec
+    assert "VENUE_OCCUPANCY=UNKNOWN" in spec
+
+
+def test_s4b_missing_occupancy_does_not_invoke_retired_v5_host() -> None:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
+        _classify_occupancy_v1,
+    )
+
+    facts = _classify_occupancy_v1(
+        positions_payload=None,
+        pending_payload=None,
+        config_payload=None,
+        positions_error="",
+        pending_error="",
+        config_error="",
+    )
+    assert facts["OCCUPANCY_STATUS"].startswith("POSITIONS_GET_FAIL_CLOSED")
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    assert OCCUPANCY_OWNER_GO == OCCUPANCY_NEXT_OWNER_GO

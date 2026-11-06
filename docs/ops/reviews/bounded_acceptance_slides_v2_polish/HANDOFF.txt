@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_slides_v2_polish
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-slides-v2-polish
+MODE: paper_stability_guard
+
+GOAL
+- polish bounded acceptance slides into a tighter Marp v2 deck with better hierarchy and sharper copy
+
+OUTPUTS
+- docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md
+- docs/ops/reviews/bounded_acceptance_slides_v2_polish/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- export or restyle slides if a higher-fidelity presentation artifact is needed

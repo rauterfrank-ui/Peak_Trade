@@ -1,0 +1,35 @@
+{
+  "boundaries": [
+    "Controlled computed returns, existing stats/robustness/Failure/Meta/Search owners; no natural market or strategy study",
+    "Next Search candidate generated; next experiment not executed, no installed scheduler or productive apply",
+    "Policy thresholds, stability/later-outcome definitions not invented; same data trials not independent market proof",
+    "Input integrity is not external authenticity; all existing historical experiments preserved; U04/GAP-0370 deferred"
+  ],
+  "current_paths_sha256": {
+    "src/experiments/canonical_automated_offline_research_loop_v1.py": "48b3cccdc8034afbd9d6acd03f1225c3c2cc65b39365ff1ca42183bc68445524",
+    "src/experiments/canonical_research_result_to_meta_input_v1.py": "26e183dbb85a23a9e93077c828a4913240df4cb9ce50693082bcfc9ed13da67b",
+    "tests/experiments/test_canonical_research_result_to_meta_input_v1.py": "f141e4e1f984a44ceacd6487b37b34e9e819e24855c4ec9ce2ab12329fa9ee7b"
+  },
+  "ruff_status": "PASS",
+  "runtime_activation_authorized": false,
+  "source_commit": "7354cf98f856f99e72e9c705739b22e6ee4531ea",
+  "tests": "89 connected PASS, including 15 new adapter/feedback/denial controls; two source-integrity vulnerabilities reproduced with original validator; valid default full loop output unchanged.",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/numerical_research_meta_search_feedback_v1_2026_11_04/README.md",
+      "docs/ops/specs/CANONICAL_RESEARCH_RESULT_META_SEARCH_FEEDBACK_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 224,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

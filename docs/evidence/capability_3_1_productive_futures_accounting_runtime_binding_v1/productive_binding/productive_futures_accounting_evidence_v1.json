@@ -1,0 +1,177 @@
+{
+  "accounting_authority_after": "ops.productive_futures_accounting_runtime_binding_v1",
+  "accounting_authority_before": "ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1",
+  "accounting_output_digests": [],
+  "call_graph_after": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "call_graph_before": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "canonical_kernel_path": "src/execution/paper/futures_accounting.py",
+  "canonical_kernel_reused": true,
+  "capability_id": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+  "config_digest": "e0677483a3a086db6fd05c8150a95a3acc011b2784eace6a7e11fe83ff7d1261",
+  "contract_metadata_digest": "6e803e292289711557d15c44e30f3927458dac3b619f372a7f4909f7b24354cc",
+  "core_logic_change": false,
+  "failure_injection_results": {
+    "CONFLICTING_WRITER": {
+      "code": "CONFLICTING_WRITER",
+      "ok": true
+    },
+    "DUPLICATE_FILL_IDEMPOTENT": {
+      "action_code": "IDEMPOTENT_REPLAY",
+      "ok": true
+    },
+    "INVALID_CONTRACT_METADATA": {
+      "code": "INVALID_CONTRACT_METADATA",
+      "ok": true
+    },
+    "MISSING_MARK": {
+      "code": "MISSING_MARK_PRICE",
+      "ok": true
+    },
+    "OVER_REDUCE_FLIP": {
+      "code": "OVER_REDUCE",
+      "ok": true
+    },
+    "PERSISTENCE_INTERRUPTION": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "ok": true
+    },
+    "REDUCE_ONLY_VIOLATION": {
+      "code": "REDUCE_ONLY_VIOLATION",
+      "ok": true
+    },
+    "ZERO_QUANTITY": {
+      "code": "ZERO_QUANTITY",
+      "ok": true
+    }
+  },
+  "fill_input_digests": [],
+  "futures_accounting_runtime_bound": true,
+  "legacy_authority_check": {
+    "allowlist_selection_authority": false,
+    "canonical_kernel_owner": "src.execution.paper.futures_accounting",
+    "canonical_kernel_path": "src/execution/paper/futures_accounting.py",
+    "canonical_kernel_reused": true,
+    "dashboard_authority_effect": false,
+    "direct_instrument_override_allowed": false,
+    "legacy_or_local_surfaces": [
+      {
+        "notes": "Fill/economics shell may remain for non-productive research; Cap 3.1 productive PnL authority is canonical futures_accounting via binding.",
+        "path": "src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py",
+        "productive_accounting_authority": false,
+        "role": "LEGACY_SIMULATED_PORTFOLIO_SHELL"
+      },
+      {
+        "path": "src/execution/position_ledger.py",
+        "productive_accounting_authority": false,
+        "role": "EXECUTION_LEDGER_LOCAL_ACCOUNTING"
+      },
+      {
+        "path": "src/execution/ledger/pnl.py",
+        "productive_accounting_authority": false,
+        "role": "EXECUTION_LEDGER_LOCAL_ACCOUNTING"
+      },
+      {
+        "path": "src/backtest/p28/accounting_v1.py",
+        "productive_accounting_authority": false,
+        "role": "BACKTEST_LOCAL"
+      },
+      {
+        "path": "src/backtest/p29/accounting_v2.py",
+        "productive_accounting_authority": false,
+        "role": "BACKTEST_LOCAL"
+      }
+    ],
+    "productive_accounting_authority": "ops.productive_futures_accounting_runtime_binding_v1",
+    "second_accounting_kernel_created": false,
+    "single_writer_identity": "productive_futures_accounting_portfolio_writer_v1"
+  },
+  "notes": [
+    "CAPABILITY_3_1_PRODUCTIVE_BINDING",
+    "REACHABLE_VIA_CAPABILITY_2_4_ENTRYPOINT_HOST",
+    "FUTURES_ACCOUNTING_RUNTIME_BOUND=True"
+  ],
+  "owner": "ops.productive_futures_accounting_runtime_binding_v1",
+  "portfolio_state_digest_after": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+  "portfolio_state_digest_before": "ded3eb2608a70a2e28040c5e1e7c4faa49be0d27b4ffc4d3e2a3ffb91bf72fbb",
+  "producer_version": "productive_futures_accounting_runtime_binding.v1",
+  "repository_sha": "9f294a2d459812a54f376180494e25eeebed8fa0",
+  "restart_idempotency_proven": true,
+  "risk_state_digest": "6a1e7a5699321a31c4fe0ec128ba2760251827c5a3c0920a5e614179790c015f",
+  "schema_version": "productive_futures_accounting_runtime_binding.v1",
+  "single_writer_identity": "productive_futures_accounting_portfolio_writer_v1",
+  "verification_result": {
+    "call_graph": [
+      "persisted_single_selected_future",
+      "selection_integrity_freshness_validation",
+      "ranking_snapshot_reference_validation",
+      "governed_universe_instrument_validation",
+      "venue_native_instrument_binding",
+      "single_selected_future_runtime_binding",
+      "productive_reconciliation_startup_gate",
+      "okx_public_market_data",
+      "feature_pipeline",
+      "regime_pipeline",
+      "master_v2_double_play_integrated_offline_replay",
+      "risk_position_sizing",
+      "safety_kernel",
+      "intended_side_quantity",
+      "analytical_simulated_execution",
+      "simulated_fill_fee_slippage",
+      "canonical_futures_accounting",
+      "session_persistent_portfolio",
+      "realized_unrealized_pnl_equity_drawdown",
+      "risk_state_from_accounting",
+      "simulated_economics_no_order_path",
+      "evidence",
+      "full_economic_reconstruction_verifier"
+    ],
+    "manifest_verified": true,
+    "ok": true
+  }
+}

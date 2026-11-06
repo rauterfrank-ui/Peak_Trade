@@ -1,0 +1,45 @@
+{
+  "material_claims": [
+    {
+      "claim": "L1\u2013L10 semantic owners are explicit layered core modules",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ]
+    },
+    {
+      "claim": "Cap 2.3 selection authority is single_selected_future_policy_v1",
+      "evidence_refs": [
+        "src/ops/single_selected_future_policy_v1/producer_v1.py",
+        "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md"
+      ]
+    },
+    {
+      "claim": "Cap 2.4 binding authority is single_selected_future_runtime_binding_v1",
+      "evidence_refs": [
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py"
+      ]
+    },
+    {
+      "claim": "DDO capture on trading producers is observation-only",
+      "evidence_refs": [
+        "src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py"
+      ]
+    },
+    {
+      "claim": "No intelligence producer directly imports L1\u2013L10 apply/orchestrate",
+      "evidence_refs": [
+        {
+          "classification": "PROVEN_ABSENT",
+          "evidence_refs": [
+            "src/learning/**/*.py: no naked_mv2_dp_explicit_layered_core import (grep census v1)",
+            "src/experiments/**/*.py: no orchestrate_naked_layered_core import (grep census v1)"
+          ],
+          "notes": "Direct import/call from MI/Learning/Optimization/Meta-Learning/Research into explicit L1\u2013L10 layered-core apply/orchestrate surfaces.",
+          "path_id": "external_intelligent_producer_to_dp_layer_direct_call"
+        }
+      ]
+    }
+  ],
+  "schema_version": "master_v2_double_play_evidence_input_plane_p0_ledger/v1"
+}

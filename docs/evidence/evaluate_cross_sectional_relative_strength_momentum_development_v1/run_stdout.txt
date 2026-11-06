@@ -1,0 +1,1 @@
+{"evaluation_executed": false, "reason": "UNEXPECTED:ValueError:ALIGNMENT_GAP:okx:linear_perpetual:1INCH:USDT:USDT:perp", "runner_started": false, "status": "FAIL_CLOSED"}

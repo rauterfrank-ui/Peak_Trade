@@ -1,0 +1,27 @@
+{
+  "bounds_comparator": "eligible = rank.notna() & (rank > 25.0) & (rank < 75.0)",
+  "definitions": {
+    "atr_14h": "True Range (max(high-low, |high-prev_close|, |low-prev_close|)) ewm(span=14, min_periods=14, adjust=False).mean(); identical to VolRegimeFilter._compute_atr / VolBreakoutStrategy._compute_atr",
+    "atr_14h_rolling_percentile_rank_100h": "_rolling_last_pct_rank(atr_14h, window=100, min_periods=14) from src.strategies.vol_breakout; causal rolling percentile rank in [0,100] of the last value in each trailing 100-bar window",
+    "eligibility_rule": "ELIGIBLE iff rank is finite (notna) AND rank > 25.0 AND rank < 75.0 (STRICT / exclusive bounds); otherwise STAND_ASIDE. First min_bars=30 bars are always STAND_ASIDE regardless of rank."
+  },
+  "distinction_from_vol_regime_filter_generate_signals": "VolRegimeFilter.generate_signals uses inclusive >= / <= bounds; this eligibility rule uses STRICT (exclusive) > / < bounds instead.",
+  "feature_formula_id": "entry_effective_mr_eligibility_atr_percentile_midband_features_v1",
+  "feature_formula_sha256": "99865b94fbc34026b25e2667cfc14e7290bd940b5287a5030509dc7adc610f08",
+  "filter_id": "canonical_vol_regime_filter_atr_percentile_midband_v1",
+  "frozen_parameters": {
+    "invert": false,
+    "lookback_percentile": 100,
+    "min_bars": 30,
+    "regime_mode": false,
+    "vol_method": "atr",
+    "vol_percentile_high": 75,
+    "vol_percentile_low": 25,
+    "vol_window": 14
+  },
+  "lookahead_forbidden": true,
+  "post_hoc_retune_forbidden": true,
+  "source": "finalized_pt1h_ohlcv_high_low_close_only",
+  "strict_bounds": true,
+  "threshold_adjustment_forbidden": true
+}

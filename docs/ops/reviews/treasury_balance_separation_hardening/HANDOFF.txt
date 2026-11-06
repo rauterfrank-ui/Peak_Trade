@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: treasury_balance_separation_hardening
+STATUS: plan_stub_ready
+BRANCH: feat/treasury-balance-separation-hardening
+MODE: paper_stability_guard
+
+GOAL
+- choose and frame the first treasury / balance hardening slice
+
+OUTPUTS
+- docs/ops/reviews/treasury_balance_separation_hardening/PLAN.md
+- docs/ops/reviews/treasury_balance_separation_hardening/HANDOFF.txt
+
+RECOMMENDED FIRST SLICE
+- treasury / balance separation spec consolidation

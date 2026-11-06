@@ -1,0 +1,17 @@
+{
+  "blockers": [],
+  "call_graph_complete": true,
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+  "expected_equity": "100000.00000000",
+  "expected_fees": "0",
+  "notes": [
+    "RECONSTRUCTED_VIA_CANONICAL_FUTURES_ACCOUNTING",
+    "cycles=12",
+    "reconstructed_fills=0"
+  ],
+  "ok": true,
+  "reconstructed_equity": "100000.00000000",
+  "reconstructed_fees": "0",
+  "reconstructed_fill_count": 0,
+  "verifier_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1"
+}

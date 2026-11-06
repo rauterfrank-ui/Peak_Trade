@@ -1,0 +1,25 @@
+{
+  "baseline_effective_config_digest": "279ed098324a2e5f513f7aa1805dc07dd034735cbbc2a8a962a0058583971513",
+  "gates": {
+    "b1_clarification_bound": true,
+    "blocked_through_t_plus_24": true,
+    "control_treatment_isolation_ok": true,
+    "cooldown_activation_synthetic": true,
+    "effective_configs_differ": true,
+    "exit_bars_observed": 1,
+    "exit_divergence_required_by_clarification": false,
+    "exit_fills_identical": true,
+    "first_eligible_t_plus_25": true,
+    "gap_fail_closed": true,
+    "open_side_binding_observed": true,
+    "reentry_divergence_observed": true,
+    "same_bar_reentry_blocked": true,
+    "scope_fields_present": true
+  },
+  "holdout_data_accessed": false,
+  "panel_data_accessed": false,
+  "passed": true,
+  "reason": "all_measurement_validity_gates_passed",
+  "result_class": "PREFLIGHT_PASSED",
+  "treatment_effective_config_digest": "6df0ceaabdd1d87330e5052de94f794d693d458864601684e685adb6a0fedbdf"
+}

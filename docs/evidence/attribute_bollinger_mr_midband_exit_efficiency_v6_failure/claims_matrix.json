@@ -1,0 +1,81 @@
+{
+  "claims": [
+    {
+      "claim_id": "C1_totals_reconcile",
+      "strength": "PROVEN",
+      "text": "Baseline/treatment trade counts and forced/midband/max-hold counters match summary/exit_attribution/metrics."
+    },
+    {
+      "claim_id": "C2_dual_trigger_overlap",
+      "strength": "PROVEN",
+      "text": "midband+max_hold-forced=2 dual midband_and_max_holding counter overlaps."
+    },
+    {
+      "claim_id": "C3_trade_count_increase_reentry",
+      "strength": "SUPPORTED",
+      "text": "Trade-count rise 109\u2192566 explained by earlier exits on shared entries plus short-side re-entry churn (458 T-only shorts)."
+    },
+    {
+      "claim_id": "C4_forced_vs_signal_gap",
+      "strength": "INCONCLUSIVE",
+      "text": "forced_exits=326 vs ledger signal exits=320; gap=6 not trade-grain proven."
+    },
+    {
+      "claim_id": "C5_cost_drag_primary",
+      "strength": "PROVEN",
+      "text": "Cost-drag increase exceeds gross-PnL improvement and accounts for net degradation."
+    },
+    {
+      "claim_id": "C6_short_side_primary",
+      "strength": "PROVEN",
+      "text": "Short-side net delta dominates degradation; long-side improved."
+    },
+    {
+      "claim_id": "C7_eod_winner_truncation",
+      "strength": "PROVEN",
+      "text": "11 baseline end_of_data winners truncated to signal exits with large negative shared-pair net delta."
+    },
+    {
+      "claim_id": "C8_sl_rescue_offset",
+      "strength": "PROVEN",
+      "text": "55 stop_loss\u2192signal shared pairs improve net (positive delta), offsetting part of truncation loss."
+    },
+    {
+      "claim_id": "C9_reentry_cost_channel",
+      "strength": "SUPPORTED",
+      "text": "T-only re-entry trades carry large fee+slippage cost and negative net contribution."
+    },
+    {
+      "claim_id": "C10_maxhold_not_loss_driver",
+      "strength": "SUPPORTED",
+      "text": "Max-hold class is small and proxy economics are positive."
+    },
+    {
+      "claim_id": "C11_regime_vol_buckets",
+      "strength": "NOT_OBSERVABLE",
+      "text": "No committed regime/volatility bucket fields in V6 ledgers/metrics."
+    },
+    {
+      "claim_id": "C12_bar_path_mr_incomplete",
+      "strength": "NOT_OBSERVABLE",
+      "text": "Cannot prove unfinished mean-reversion path without raw panel/bar reconstruction (forbidden)."
+    },
+    {
+      "claim_id": "C13_earliest_causal_boundary",
+      "strength": "SUPPORTED",
+      "text": "Earliest evidenced causal boundary is forced exit eligibility / forced midband-or-maxhold exit, then re-entry and cost aggregation."
+    },
+    {
+      "claim_id": "C14_concentration_mixed",
+      "strength": "SUPPORTED",
+      "text": "Degradation is mixed: short-side broad churn plus concentrated instrument losers (APE/ENS/MANA/LUNA/EGLD)."
+    }
+  ],
+  "counts": {
+    "INCONCLUSIVE": 1,
+    "NOT_OBSERVABLE": 2,
+    "PROVEN": 6,
+    "SUPPORTED": 5
+  },
+  "schema_version": "attribute_bollinger_mr_midband_exit_efficiency_v6_failure_claims_matrix.v1"
+}

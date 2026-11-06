@@ -1,0 +1,23 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_14_COMPLETE_CAPTURE_SEAM_TEST_PLAN_V1",
+  "NOT_REQUIRED_NOW": "host_crash_or_power_loss_claim_tests; Live/Testnet/wire tests; LIVE_RESTART_RECONSTRUCTED promotion tests",
+  "REUSE_EXISTING_OWNERS": "tests/ops/test_section_11_14_live_handoff_pos_producer_semantics_and_contract_v1.py; tests/ops/test_section_11_14_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contract_v1.py; tests/ops/test_section_11_14_live_restart_reconstructed_adjudication_v1.py; no new test framework",
+  "TEST_PLAN_STATUS": "BOUND_NOT_EXECUTED_AS_IMPLEMENTATION",
+  "required_tests": [
+    "unit_producer_s05_semantics",
+    "contract_required_five_fields",
+    "persistence_roundtrip",
+    "malformed_storage",
+    "stale_storage",
+    "wrong_instrument",
+    "wrong_unit",
+    "duplicate_idempotent_writes",
+    "process_restart_readable_record",
+    "crash_boundary_no_host_crash_claim",
+    "atomicity_torn_write_invisible",
+    "failure_injection_write_fsync_serialize",
+    "no_retroactive_synthesis_proof",
+    "exact_producer_semantics_s05",
+    "exact_reader_fail_closed_missing_stale_corrupt"
+  ]
+}

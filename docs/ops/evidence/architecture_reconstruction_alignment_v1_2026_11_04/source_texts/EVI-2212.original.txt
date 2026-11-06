@@ -1,0 +1,27 @@
+KLARSTELLUNG ZUR QUELLEN- UND VERWENDUNGSTRENNUNG
+02.11.2026, nach der Präzisierung des Owners
+
+Die bisherige Rekonstruktion und die Offline-Probe betreffen einen bestimmten Public-Runtime-/Economic-MD-/B05-/Cap22-Strang. Sie sind kein vollständiger Nachweis aller WebSocket-Verbindungen, Marktdatenarten, historischen Vorauswahlmechanismen oder Consumer.
+
+Insbesondere ist zurückzuweisen:
+- Aus einem untersuchten Tickerpfad folgt nicht, dass dieser die historische Volatilitäts-/Amplituden-Vorauswahl versorgen sollte.
+- Aus fehlenden finalisierten Minuten-Markfakten dieses Pfads folgt keine globale Marktdatenlücke und kein Beleg, dass eine andere Vorauswahlquelle fehlt.
+- Aus einem gemeinsamen WebSocket-Host oder derselben Instrument-ID folgt keine gemeinsame Daten- oder Berechnungssemantik.
+- Die 61-Mark-Anforderung gilt für den konkret gelesenen B05-Vertrag, nicht automatisch für jede historische Volatilitätsberechnung oder jeden Consumer.
+- Eine WebSocket-Verbindung kann mehrere Kanäle und Consumer versorgen. Mehrere unabhängige Verbindungen können gleichzeitig oder in verschiedenen Betriebsarten bestehen.
+
+Gezielt neu gelesene Spuren am HEAD242b7974 plus Arbeitskopie:
+1. src/ops/peak_trade_public_market_data_runtime_v1/ws_binding_v1.py: öffentlicher OKX-EEA-WS-Vertrag mit tickers, trades, books5. Das sind verschiedene Datenarten, nicht drei Namen desselben Preiswerts.
+2. src/ops/peak_trade_public_market_data_runtime_v1/consumer_adapters_v1.py: getrennte Adapter für Landscape-Anzeige, B05/Ranking, O4/N_BARS und historische Research-Nutzung. Benannte Adapter allein belegen nicht alle produktiven Aufrufe.
+3. src/ops/okx_eea_private_account_state_runtime_v1/ws_binding_v1.py und constants_v1.py: eigener privater Account-State-WebSocket, beobachtend und ohne Ranking-/Execution-Rechte. Dies ist kein Beleg eines zweiten Volatilitäts-Marktdatenfeeds.
+4. src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py: weitere öffentliche/private Demo-WS-Hosts als Offline-Kompatibilitätsvertrag. Keine beobachteten laufenden Verbindungen.
+5. src/data/shadow/tick_normalizer.py, ohlcv_builder.py und scripts/shadow_run_tick_to_ohlcv_smoke.py: eigener älterer Trade-Message→Tick→OHLCV-Pfad mit Kraken-förmigen Listen und Offline-Beispielen. Keine belegte Übernahme dieses Pfads ins heutige wirtschaftliche Ranking.
+6. src/data/feeds/live_feed.py kennzeichnet seinen Feed ausdrücklich als Stub. Er darf nicht als beobachtete zusätzliche Live-Verbindung gezählt werden.
+
+Die Korrektur der Untersuchungseinheit lautet:
+konkrete Verbindung/Betriebsart → Subscription/Kanal → Instrument + Zeit + Preis-/Faktenart → Normalisierung/Aggregation/Berechnung → tatsächliche Consumer → wirksame Befugnisse und Zustände.
+Ein Kanal kann verzweigen; ein Consumer kann mehrere Quellen zusammenführen. Deshalb wird kein einzelner Datenweg als Universalpipeline vorausgesetzt.
+
+Die früheren lokalen Probeergebnisse bleiben gültig: dieser eine Ticker erzeugte keine finale B05-Markhistorie; explizite finale Fakten konnten den geprüften B05/Cap22-Strang versorgen. Daraus wird keine Schlussfolgerung über sämtliche anderen Quellen oder die ursprüngliche Vorauswahl abgeleitet.
+
+Kein zusätzlicher Produkttest, Netzwerkzugriff, keine Aktivierung und keine Produkt-/Konfigurationsänderung. Der neue Suchauszug ws-surface-search.txt ist Navigation, kein Vollständigkeits- oder Laufzeitbeweis. Frühere Quellen und Proben wurden nicht überschrieben.

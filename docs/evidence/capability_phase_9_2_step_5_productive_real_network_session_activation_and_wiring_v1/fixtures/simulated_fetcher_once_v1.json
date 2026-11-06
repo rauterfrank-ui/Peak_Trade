@@ -1,0 +1,220 @@
+{
+  "activation_cli": "scripts/ops/run_phase_9_2_step_5_productive_real_network_session_activation_and_wiring_v1.py",
+  "blockers": [],
+  "boundary": {
+    "AUTH_HEADER_REACHABLE": false,
+    "EXCHANGE_CREDENTIAL_PATH_REACHABLE": false,
+    "HTTP_METHOD_ALLOWLIST": "GET_ONLY",
+    "NETWORK_ALLOWLIST": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+    "ORDER_SIDE_EFFECT_OCCURRED": false,
+    "ORDER_SUBMIT_PATH_REACHABLE": false,
+    "PRIVATE_ENDPOINT_REACHABLE": false,
+    "PUBLIC_MD_GET_ONLY": true,
+    "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+    "binding_boundary": {
+      "AUTH_HEADER_PRESENT": false,
+      "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+      "GET_ONLY_BOUND": true,
+      "NETWORK_ALLOWLIST": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+      "ORDER_SIDE_EFFECT_OCCURRED": false,
+      "PRIVATE_ENDPOINT_REACHABLE": false,
+      "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED": false,
+      "PUBLIC_MD_ONLY_BOUND": true,
+      "blockers": [],
+      "notes": [
+        "REUSES_WALLCLOCK_NETWORK_BOUNDARY_GUARD",
+        "NO_PARALLEL_TRANSPORT_AUTHORITY",
+        "BINDING_CAPABILITY_DOES_NOT_START_NETWORK"
+      ],
+      "ok": true
+    },
+    "blockers": [],
+    "notes": [
+      "REUSES_STEP5_BINDING_NETWORK_BOUNDARY=true",
+      "NO_PARALLEL_TRANSPORT_AUTHORITY=true"
+    ],
+    "ok": true
+  },
+  "call_graph_after": [
+    "Step-5 Execution CLI",
+    "Step-5 Activation + Wiring gate",
+    "ephemeral NETWORK_SESSION_GO (parameter-only, default false)",
+    "SHA / session-contract / binding-config digest binding",
+    "capability + authorization + confirm-token scope binding",
+    "Step-4-pattern authorization adapter (validate; consume deferred)",
+    "Step-4-pattern hidden-PTY confirm-token adapter (validate; consume deferred)",
+    "canonical Public-MD fetcher factory wired",
+    "bounded prolonged Public-MD executor (later session only)",
+    "Public-MD GET-only boundary",
+    "evidence + verifier",
+    "process cleanup"
+  ],
+  "call_graph_before": [
+    "Step-5 Execution CLI execute-governed-session",
+    "digest/auth/token validate-only",
+    "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+    "NETWORK_SESSION_ALLOWED_FALSE",
+    "REAL_NETWORK_FETCHER_NOT_WIRED_IN_THIS_CAPABILITY",
+    "FAIL_CLOSED_NO_NETWORK_NO_CONSUME"
+  ],
+  "canonical_public_md_fetcher": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.real_http_fetcher_v1.make_real_eea_public_md_fetcher_v1",
+  "capability_id": "PHASE_9_2_STEP_5_PRODUCTIVE_REAL_NETWORK_SESSION_ACTIVATION_AND_WIRING_V1",
+  "claims": {
+    "AUTHORIZATION_CONSUMED": false,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CORE_LOGIC_CHANGED": false,
+    "FETCHER_INVOKE_COUNT": 1,
+    "NETWORK_SESSION_STARTED": false,
+    "ONLY_GET_ALLOWED": true,
+    "PUBLIC_MD_FETCHER_PRODUCTIVELY_WIRED": true,
+    "SECRET_HYGIENE_PROVEN": true,
+    "SIMULATED_FULL_GATE_FETCHER_ONCE": true
+  },
+  "cleanup": {
+    "child_processes_remaining": 0,
+    "notes": [
+      "NO_WATCHER_NO_TAIL_NO_BACKGROUND_LEFT=true"
+    ],
+    "ok": true,
+    "remaining_pids": [],
+    "terminated_pids": []
+  },
+  "executor_result": {
+    "blockers": [],
+    "claims": {
+      "AUTH_HEADER_TRANSMITTED": false,
+      "BACKOFF_BOUND": true,
+      "CREDENTIAL_ACCESS_OCCURRED": false,
+      "DISK_BOUNDS_PROVEN": true,
+      "DISTINCT_OBSERVATION_COUNT": 1,
+      "HEARTBEAT_BOUND": true,
+      "INTERRUPT_BOUND": true,
+      "NETWORK_SESSION_STARTED": true,
+      "ORDER_SIDE_EFFECT_OCCURRED": false,
+      "PACING_BOUND": true,
+      "PRIVATE_ENDPOINT_ACCESS_OCCURRED": false,
+      "RECONNECT_BOUND": true,
+      "RECOVERY_BOUND": true,
+      "REQUEST_COUNT": 1,
+      "RETRY_BOUND": true,
+      "SESSION_MONOTONIC_WALLCLOCK_SECONDS": 3.0,
+      "STALENESS_BOUND": true,
+      "ZERO_INTERVAL_BURST": false
+    },
+    "evidence_path": "/Users/frnkhrz/Peak_Trade/docs/evidence/capability_phase_9_2_step_5_productive_real_network_session_activation_and_wiring_v1/fixtures/sim_evidence",
+    "notes": [
+      "PACING_POLICY_OWNER=research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+      "EEA_TRANSPORT_OWNER=ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1",
+      "STALENESS_OWNER=ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1",
+      "SESSION_LOCK_OWNER=ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_lock_v1",
+      "PUBLIC_MD_GET_ONLY=true"
+    ],
+    "ok": true,
+    "telemetry": {
+      "auth_header_transmitted": false,
+      "backoff_count": 0,
+      "credential_access_occurred": false,
+      "distinct_observation_count": 1,
+      "duplicate_observation_count": 0,
+      "evidence_bytes": 59,
+      "heartbeat_count": 0,
+      "http_429_count": 0,
+      "min_observed_interval_seconds": null,
+      "network_session_started": true,
+      "order_side_effect_occurred": false,
+      "private_endpoint_access_occurred": false,
+      "reconnect_attempt_count": 0,
+      "reconnect_success_count": 0,
+      "recovery_count": 0,
+      "request_count": 1,
+      "restart_count": 0,
+      "retry_count": 0,
+      "session_monotonic_wallclock_seconds": 3.0,
+      "stale_observation_count": 0
+    },
+    "terminal_class": "PASS"
+  },
+  "fetcher_invoke_count": 1,
+  "fetcher_resolution": {
+    "blockers": [],
+    "canonical_public_md_fetcher": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.real_http_fetcher_v1.make_real_eea_public_md_fetcher_v1",
+    "fetcher_constructed": true,
+    "fetcher_wired": true,
+    "injected": true,
+    "invoke_count": 0,
+    "notes": [
+      "INJECTED_FETCHER_FOR_OFFLINE_PROOF=true"
+    ],
+    "ok": true
+  },
+  "gate": {
+    "activation_permit_ok": true,
+    "authorization_consumed": false,
+    "authorization_digest": "digest_step5_activation_sim_v1",
+    "authorization_id": "auth_step5_activation_sim_v1",
+    "binding_config_digest": "42772ed8339bf35912433a9bffd021f9f027acaa37617decdece84b6e780efb7",
+    "blockers": [],
+    "claims": {
+      "ACTIVATION_PERMIT_OK": true,
+      "AUTHORIZATION_CONSUMED": false,
+      "AUTHORIZATION_ISSUED": false,
+      "AUTH_HEADER_REACHABLE": false,
+      "CONFIRM_TOKEN_CONSUMED": false,
+      "CONFIRM_TOKEN_ISSUED": false,
+      "CONFIRM_TOKEN_PERSISTED": false,
+      "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": false,
+      "EPHEMERAL_NETWORK_SESSION_GO_BOUND": true,
+      "EXCHANGE_CREDENTIAL_PATH_REACHABLE": false,
+      "MAX_SESSION_DURATION_SECONDS": 21600,
+      "MINIMUM_SUCCESSFUL_WALLCLOCK_SECONDS": 7200,
+      "NETWORK_SESSION_GO_DEFAULT_FALSE": true,
+      "NETWORK_SESSION_GO_PERSISTED": false,
+      "NETWORK_SESSION_STARTED": false,
+      "ORDER_SUBMIT_PATH_REACHABLE": false,
+      "PARALLEL_AUTHORIZATION_MODEL_CREATED": false,
+      "PARALLEL_TOKEN_MODEL_CREATED": false,
+      "PLANNED_SESSION_DURATION_SECONDS": 7200,
+      "PRIVATE_ENDPOINT_REACHABLE": false,
+      "PUBLIC_MD_GET_ONLY": true,
+      "STEP4_AUTHORIZATION_PATTERN_REUSED": true,
+      "STEP4_CONFIRM_TOKEN_PATTERN_REUSED": true
+    },
+    "confirm_token_consumed": false,
+    "confirm_token_digest": "476c53453dfc7498cd82be281e2c5399012dce9b3ee9675afdff2aff8d0cb252",
+    "confirm_token_fingerprint": "476c53453dfc7498cd82be281e2c5399012dce9b3ee9675afdff2aff8d0cb252",
+    "confirm_token_id": "tok_476c53453dfc7498",
+    "ephemeral_network_session_go_bound": true,
+    "max_session_duration_seconds": 21600,
+    "minimum_successful_wallclock_seconds": 7200,
+    "network_session_go": true,
+    "network_session_go_default_false": true,
+    "network_session_go_persisted": false,
+    "network_session_started": false,
+    "notes": [
+      "ACTIVATION_CAPABILITY_ID=PHASE_9_2_STEP_5_PRODUCTIVE_REAL_NETWORK_SESSION_ACTIVATION_AND_WIRING_V1",
+      "STEP4_AUTHORIZATION_PATTERN_REUSED=true",
+      "STEP4_CONFIRM_TOKEN_PATTERN_REUSED=true",
+      "NO_ISSUANCE_NO_CONSUMPTION_IN_THIS_CAPABILITY=true",
+      "NO_NETWORK_SESSION_IN_THIS_CAPABILITY=true"
+    ],
+    "ok": true,
+    "planned_session_duration_seconds": 7200,
+    "session_contract_digest": "074b04142e0ffd2d1ded56527c63ec7d6ccb3c9abd25f86017cd873b6d5a7d17"
+  },
+  "missing_edges_before": [
+    "REAL_PUBLIC_MD_FETCHER_WIRE_INTO_STEP5_EXECUTOR",
+    "EPHEMERAL_NETWORK_SESSION_GO_GATE",
+    "STEP4_PATTERN_ACTIVATION_PERMIT_FOR_STEP5"
+  ],
+  "network_session_started": false,
+  "notes": [
+    "SIMULATED_FULL_GATE_OFFLINE=true",
+    "FAKE_FETCHER_ONLY=true",
+    "NO_REAL_HTTP=true",
+    "NO_AUTH_TOKEN_CONSUMPTION=true"
+  ],
+  "ok": true,
+  "productive_entrypoint": "scripts/ops/run_phase_9_2_step_5_governed_productive_real_network_prolonged_natural_market_session_execution_v1.py",
+  "step4_activation_pattern_owner": "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.final_generic_session_activation_binding_v1",
+  "step5_execution_capability_id": "PHASE_9_2_STEP_5_GOVERNED_PRODUCTIVE_REAL_NETWORK_PROLONGED_NATURAL_MARKET_SESSION_EXECUTION_CAPABILITY_V1"
+}

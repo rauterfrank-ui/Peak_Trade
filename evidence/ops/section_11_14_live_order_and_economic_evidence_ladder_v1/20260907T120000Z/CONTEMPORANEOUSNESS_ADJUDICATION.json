@@ -1,0 +1,41 @@
+{
+  "CONTEMPORANEOUS_IDENTITY_BINDING": "CONTRACT_PROVEN",
+  "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": false,
+  "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": false,
+  "CONTEMPORANEOUS_PROVENANCE_BINDING": "CONTRACT_PROVEN",
+  "DOCUMENT_CLASS": "SECTION_11_14_CONTEMPORANEOUSNESS_ADJUDICATION_V1",
+  "ENVELOPE_PROVENANCE_IS_NOT_EMPIRICAL_LIVE_OBSERVATION": true,
+  "TEST_FIXTURE_IS_NOT_PRODUCTIVE_CAPTURE": true,
+  "properties": [
+    {
+      "PROOF": "accept_complete_contemporaneous_capture_inputs_v1 requires one lifecycle_id and rejects restart_derived/historical/restart-reader sources",
+      "PROPERTY": "SAME_BOUND_FILL_LIFECYCLE_NOT_LATER_RECONSTRUCTION",
+      "STATUS": "CONTRACT_PROVEN"
+    },
+    {
+      "PROOF": "identity fields must exact-match the same bound_fill_identity; duplicate conflicting identity hard-fails",
+      "PROPERTY": "FILL_ORDER_INSTRUMENT_POSITION_IDENTITY_CANNOT_DRIFT",
+      "STATUS": "CONTRACT_PROVEN"
+    },
+    {
+      "PROOF": "forbidden freshness STALE/STALE_CACHE/BACKFILLED/RECONSTRUCTED/RESTART_DERIVED",
+      "PROPERTY": "STALE_CACHED_VALUE_CANNOT_PASS_AS_CONTEMPORANEOUS",
+      "STATUS": "CONTRACT_PROVEN"
+    },
+    {
+      "PROOF": "missing required field or provenance hard-fails; no defaults; no coercion",
+      "PROPERTY": "NO_RETROACTIVE_SYNTHESIS_OF_MISSING_REQUIRED_FIELDS",
+      "STATUS": "CONTRACT_PROVEN"
+    },
+    {
+      "PROOF": "source_is_restart_reader and RESTART_READER source_kind hard-fail",
+      "PROPERTY": "RESTART_READER_IS_NOT_A_PRE_RESTART_SOURCE",
+      "STATUS": "CONTRACT_PROVEN"
+    },
+    {
+      "PROOF": "source_is_historical_evidence and HISTORICAL_EVIDENCE source_kind hard-fail",
+      "PROPERTY": "HISTORICAL_EVIDENCE_IS_NOT_CURRENT_RUNTIME_EVIDENCE",
+      "STATUS": "CONTRACT_PROVEN"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "schema_version": "bulk04_findings.v1",
+  "authority": "NONE",
+  "findings": [
+    {
+      "FINDING_ID": "B04-F001",
+      "SECTOR": "B04-S06",
+      "LOCATION": "tests/governance/test_unified_blueprint_phase_26_final_closed_cycle_dod_v1.py",
+      "OBSERVED": "prove_unified_blueprint_phase_26_final_closed_cycle_dod_v1 returns false; phase_15_final_dod reproof false in summary grid",
+      "EXPECTED": "Phase 26 aggregate DoD proof passes on current repo",
+      "CURRENT_CLASSIFICATION": "VIOLATED_CURRENT",
+      "ROOT_CAUSE_PROVEN": true,
+      "AUTHORITY_IMPACT": "NONE — adjudication/navigation closure matrix only",
+      "SAFETY_IMPACT": "NONE",
+      "GHV_IMPACT": "GHV stopped at Phase 26 prover; phases 16-25 mostly reproven via other tests",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null
+    },
+    {
+      "FINDING_ID": "B04-F002",
+      "SECTOR": "B04-S04",
+      "LOCATION": "canonical_optimization_universe_v1._reject_forbidden_request_flags",
+      "OBSERVED": "requested_productive_join raises PRODUCTIVE_JOIN_FORBIDDEN",
+      "EXPECTED": "Fail-closed rejection of productive join attempts",
+      "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+      "ROOT_CAUSE_PROVEN": true,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE — preserves isolation",
+      "GHV_IMPACT": "legitimate GHV stop recorded at promotion seam",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null
+    },
+    {
+      "FINDING_ID": "B04-F003",
+      "SECTOR": "B04-S01",
+      "LOCATION": "capture_v0 CAPTURE_FAILURE_CHANGES_DECISION",
+      "OBSERVED": "False; productive replay outcome unchanged when capture fails",
+      "EXPECTED": "Observation-only capture must not alter trading decisions",
+      "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+      "ROOT_CAUSE_PROVEN": true,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE",
+      "GHV_IMPACT": "GHV crosses producer→ledger without authority handoff",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null
+    },
+    {
+      "FINDING_ID": "B03-F001-CARRY",
+      "SECTOR": "BULK-03 carry-forward",
+      "LOCATION": "open-findings-ledger",
+      "OBSERVED": "offline GHV short synthetic enter → HOLD_CLOSED",
+      "EXPECTED": "PRE_EXTERNAL for that test vector",
+      "CURRENT_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "ROOT_CAUSE_PROVEN": false,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE",
+      "GHV_IMPACT": "unchanged",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null,
+      "B03_F001_STATUS": "UNCHANGED_OPEN"
+    },
+    {
+      "FINDING_ID": "B03-F005-CARRY",
+      "SECTOR": "BULK-03 carry-forward",
+      "LOCATION": "open-findings-ledger",
+      "OBSERVED": "adjacent pytest/runbook section drift in non-BULK04 tests",
+      "EXPECTED": "tests aligned to runbook headings",
+      "CURRENT_CLASSIFICATION": "VIOLATED_CURRENT",
+      "ROOT_CAUSE_PROVEN": true,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE",
+      "GHV_IMPACT": "not used as BULK-04 proof",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null,
+      "B03_F005_STATUS": "UNCHANGED_OPEN"
+    }
+  ]
+}

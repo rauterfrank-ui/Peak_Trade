@@ -1,0 +1,27 @@
+REPO_ROOT=/Users/frnkhrz/Peak_Trade
+BRANCH=fix/auth-005-el-karoui-armstrong-non-authority-v1
+HEAD=43558204d4f7bcab30ce9e8357d2513a9a5f0970
+ORIGIN_MAIN=43558204d4f7bcab30ce9e8357d2513a9a5f0970
+BASE_SHA=43558204d4f7bcab30ce9e8357d2513a9a5f0970
+CAPTURED_AT=2026-07-18T18:34:03Z
+
+GIT_STATUS:
+ M config/strategy_tiering.toml
+ M src/experiments/armstrong_elkaroui_combi_experiment.py
+ M src/strategies/armstrong/armstrong_cycle_strategy.py
+ M src/strategies/ecm.py
+ M src/strategies/el_karoui/el_karoui_vol_model_strategy.py
+ M src/strategies/registry.py
+?? docs/evidence/auth_005_el_karoui_armstrong_non_authority_classification_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+?? tests/strategies/test_auth_005_el_karoui_armstrong_non_authority_classification_v1.py
+
+STASH_LIST:
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework
+
+LIVE_AUTHORIZED=false
+ORDERS_ENABLED=false

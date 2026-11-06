@@ -1,0 +1,16 @@
+{
+  "workpackage_id": "CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1",
+  "owner_go": true,
+  "owner_go_token": "OWNER_GO_PRODUCTIVE_ACTIVATION_POLICY",
+  "baseline_origin_main_sha": "958657754033f432dc723fc4f56412f2de9430dd",
+  "current_productive_activation_policy_owner_go": true,
+  "productive_activation_authorized": true,
+  "continuous_run_authorized": false,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "runtime_authorization_effect": "PRODUCTIVE_RUNTIME_ADMISSION_ONLY",
+  "policy_record_config": "config/governance/current_productive_activation_policy_v1_record.json",
+  "normative_spec": "docs/ops/specs/CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1.md",
+  "earliest_unclosed_boundary": "CONTINUOUS_RUN_AUTHORIZATION",
+  "next_genuine_blocker": "CONTINUOUS_RUN_OWNER_GO"
+}

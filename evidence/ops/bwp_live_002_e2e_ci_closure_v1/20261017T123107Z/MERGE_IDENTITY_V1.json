@@ -1,0 +1,17 @@
+{
+  "schema_version": "bwp_live_002_merge_identity.v1",
+  "authority": "NONE",
+  "pr_number": 7140,
+  "owner_merge_go": true,
+  "approved_head": "5ae057bbd3d46147b99d065515b2efcd720a4874",
+  "merge_commit_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "merge_parent": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
+  "origin_main_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "tree_sha": "9f0e3878a5db053eadf7d6abd87d5ac97f1b6848",
+  "post_merge_tree_match": true,
+  "validated_diff_sha256": "6b10b3ae91a32b60c917da05eba4ca55a82d97e8e12cbe0be34105ae41d172be",
+  "merged_at": "2026-10-17T12:31:07Z",
+  "capital_authorization": false,
+  "post_authorization": false,
+  "live_trading_authorization": false
+}

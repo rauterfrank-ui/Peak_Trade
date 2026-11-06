@@ -1,0 +1,79 @@
+{
+  "AUTHORIZED_RUNTIME_SURFACE": "NONE",
+  "AUTHORIZED_RUNTIME_SURFACE_PROVEN": false,
+  "CURRENT_CANARY_AUTHORIZED": false,
+  "CURRENT_LIVE_ARMED": false,
+  "CURRENT_LIVE_ENABLED": false,
+  "CURRENT_ORDER_SUBMIT_ALLOWED": false,
+  "CURRENT_POST_ALLOWED": false,
+  "CURRENT_RUNTIME_EXECUTION_AUTHORIZED": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_AUTHORIZATION_SURFACE_MATRIX_V1",
+  "MINIMUM_SEMANTIC_CLASS_IF_LATER_AUTHORIZED": "LIVE_ORDER",
+  "MINIMUM_SEMANTIC_CLASS_IS_NOT_CURRENTLY_AUTHORIZED": true,
+  "SUFFICIENT_SURFACE_COUNT": 0,
+  "rows": [
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": false,
+      "CURRENTLY_AUTHORIZED": true,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "OFFLINE",
+      "SURFACE_PRESENT": true
+    },
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": false,
+      "CURRENTLY_AUTHORIZED": false,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "REPLAY",
+      "SURFACE_PRESENT": true
+    },
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": false,
+      "CURRENTLY_AUTHORIZED": false,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "SIMULATED",
+      "SURFACE_PRESENT": true
+    },
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": false,
+      "CURRENTLY_AUTHORIZED": false,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "SHADOW",
+      "SURFACE_PRESENT": true
+    },
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": false,
+      "CURRENTLY_AUTHORIZED": false,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "PAPER",
+      "SURFACE_PRESENT": true
+    },
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": false,
+      "CURRENTLY_AUTHORIZED": false,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "TESTNET",
+      "SURFACE_PRESENT": true
+    },
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": false,
+      "CURRENTLY_AUTHORIZED": false,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "LIVE_READ_ONLY",
+      "SURFACE_PRESENT": true
+    },
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": true,
+      "CURRENTLY_AUTHORIZED": false,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "LIVE_ORDER",
+      "SURFACE_PRESENT": true
+    },
+    {
+      "BOUND_FILL_SEMANTICS_PRODUCTIVE": false,
+      "CURRENTLY_AUTHORIZED": false,
+      "HOOK_REACHABLE": false,
+      "SURFACE": "OTHER",
+      "SURFACE_PRESENT": true
+    }
+  ]
+}

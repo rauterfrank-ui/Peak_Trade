@@ -1,0 +1,14 @@
+{
+  "blockers": [],
+  "findings": {
+    "canonical_fill_ledger_attr": "fill_ledger",
+    "default_hold_fallback_active": false,
+    "default_regime_fallback_active": false,
+    "default_zero_quantity_fallback_active": false,
+    "economics_placeholder_writers_active": false,
+    "forced_fixture_wallclock_reachable": false,
+    "hardcoded_hold_present": false
+  },
+  "ok": true,
+  "scan_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.stub_fallback_scan_v2"
+}

@@ -1,0 +1,7 @@
+{
+  "atr_percentile_eligibility_filter_v1.py": "159bbccfad008ed104139e6de48327aca1ed9e5e1ff708d99d81be05dc5f6e0f",
+  "contract": "54b7e20edc3c348aeb8e6b87b7f88265f6210bdfc08347960b5f49f7b859d37c",
+  "entry_eligibility_gate_v1.py": "ab26b0f1ed8a31db52e222c8207cf7c277567a18bc12e32e09521dcd26de95b2",
+  "feature_formula_sha256": "99865b94fbc34026b25e2667cfc14e7290bd940b5287a5030509dc7adc610f08",
+  "panel_runner_v1.py": "4720b91a9095bd1d6116919ea28a2bad72d8a43db27408d2c68149715e0c198a"
+}

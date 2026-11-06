@@ -1,0 +1,36 @@
+{
+  "schema_version": "v1",
+  "required_fields": [
+    "evidence_id",
+    "pr_id",
+    "component",
+    "claim",
+    "level",
+    "artifacts",
+    "how_to_verify"
+  ],
+  "level_enum": ["E0", "E1", "E2", "E3", "E4"],
+  "status_enum": ["planned", "stub", "configured", "implemented", "enforced", "legacy", "optional"],
+  "example": {
+    "evidence_id": "EV-2026-02-PR01-001",
+    "pr_id": "PR-01",
+    "component": "kill_switch",
+    "claim": "RiskHook blocks order placement when kill switch is enabled",
+    "level": "E1",
+    "status": "planned",
+    "artifacts": [
+      { "type": "test", "path": "tests/risk/test_kill_switch.py::test_blocks_when_enabled" },
+      { "type": "doc", "path": "docs/ops/UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md#kill-switch" }
+    ],
+    "how_to_verify": {
+      "commands": [
+        "pytest -q tests/risk/test_kill_switch.py -k enabled"
+      ],
+      "expected": [
+        "exit_code=0",
+        "test_blocks_when_enabled PASSED"
+      ]
+    },
+    "notes": "E1 only; add E2 smoke once orchestration is wired"
+  }
+}

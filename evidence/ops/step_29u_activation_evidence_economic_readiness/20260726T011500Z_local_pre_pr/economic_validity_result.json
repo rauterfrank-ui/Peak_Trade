@@ -1,0 +1,46 @@
+{
+  "blockers": [
+    "ECONOMIC_VALIDITY:FAIL"
+  ],
+  "canonical_policy_owner": "backtest.economic_validity_policy_v1",
+  "canonical_policy_version": "economic_validity_policy_v1",
+  "capability_id": "STEP_29U_ECONOMIC_VALIDITY_READINESS_V0",
+  "economic_validity_proven": false,
+  "evidence_class": "CANONICAL_GATE_AND_FLEET_CLOSEOUT",
+  "gate_closed": true,
+  "generated_at": "2026-07-25T23:18:16Z",
+  "inputs": {
+    "economic_validity_offline_gate_pass": false,
+    "fleet_closeout_digest": "e826cc924111b6ad9da896d60acf3344b34b1c9d6ea175e7e12f58e189ad26f1",
+    "fleet_closeout_relpath": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+    "fleet_economic_validity_offline_gate_pass": false,
+    "fleet_verdict": "FLEET_ECONOMIC_VALIDITY_FAIL",
+    "policy_owner": "backtest.economic_validity_policy_v1",
+    "policy_version": "economic_validity_policy_v1",
+    "readiness_config_digest": "d0ebdbcab41aaa1bfb5599bb1fd4f5efe910749a504af145be0348bbe4a77a99",
+    "readiness_config_relpath": "config/ops/shadow_preparation_readiness_gate_v0.toml",
+    "readiness_contract_relpath": "docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md"
+  },
+  "provenance": {
+    "no_metric_recomputation": true,
+    "no_threshold_invention": true,
+    "package_marker": "STEP_29U_ECONOMIC_VALIDITY_READINESS_V0=true",
+    "producer_family": "ops.step_29u_economic_validity_readiness_v0",
+    "reuses_economic_validity_policy_v1": true,
+    "reuses_shadow_preparation_readiness_gate": true
+  },
+  "reasons": [
+    "CANONICAL_FLEET_VERDICT_FAIL",
+    "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE"
+  ],
+  "safety_facts": {
+    "ACTIVATION_ELIGIBLE": false,
+    "ECONOMIC_VALIDITY_PROVEN": false,
+    "METRIC_RECOMPUTATION": false,
+    "STEP_29U_ACTIVATED": false,
+    "THRESHOLD_INVENTION": false
+  },
+  "schema_id": "ops.step_29u_economic_validity_readiness_v0",
+  "schema_version": "v0",
+  "status": "FAIL"
+}

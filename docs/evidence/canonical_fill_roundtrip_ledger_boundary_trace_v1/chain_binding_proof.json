@@ -1,0 +1,22 @@
+{
+  "authority_effect": "NONE",
+  "canonical_engine_signal_source": "mv2_decision_replay_series",
+  "fill_owner": "src/backtest/engine.py::BacktestEngine.run_realistic",
+  "harness_id": "CANONICAL_FILL_ROUNDTRIP_LEDGER_BOUNDARY_TRACE_V1",
+  "ledger_owner": "src/backtest/trade_ledger_equity_curve_persistence_v0.py::materialize_trade_ledger_rows_v0",
+  "legacy_exits_on_signal_minus_one_only_if_open": true,
+  "legacy_hardcodes_side_long_on_emit": true,
+  "legacy_opens_on_signal_plus_one": true,
+  "legacy_path_cost_application_default": false,
+  "live_authorized": false,
+  "map_owner": "src/backtest/mv2_research_wiring_v1.py::map_decision_evidence_to_position_signal_v1",
+  "non_authoritative_marker": true,
+  "orders": false,
+  "partial_reduction_supported_flag_false": true,
+  "runtime_bridge_status": "BOUND_NOT_ACTIVATED",
+  "runtime_effect": "NONE",
+  "uses_backtest_engine": true,
+  "uses_map_decision_evidence_to_position_signal_v1": true,
+  "uses_materialize_trade_ledger_rows_v0": true,
+  "wiring_calls_replay": true
+}

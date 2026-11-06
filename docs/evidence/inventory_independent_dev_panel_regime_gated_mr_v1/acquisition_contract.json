@@ -1,0 +1,20 @@
+{
+  "schema_version": "independent_dev_panel_acquisition_contract_pointer.v1",
+  "contract_ref": "config/research/regime_gated_standaside_mr_independent_dev_panel_acquisition_contract_v1.json",
+  "proposed_development_dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "classification": "DEVELOPMENT_ONLY",
+  "holdout_forbidden": true,
+  "period_start_utc": "2021-09-01T00:00:00Z",
+  "period_end_exclusive_utc": "2023-08-16T05:55:00Z",
+  "frequency": "PT1H",
+  "futures_only": true,
+  "btc_excluded": true,
+  "spot_excluded": true,
+  "pit_chronological": true,
+  "download_enabled": false,
+  "network_enabled": false,
+  "acquisition_started": false,
+  "materialized": false,
+  "sealed_holdout_opaque_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "sealed_holdout_content_inspection_authorized": false
+}

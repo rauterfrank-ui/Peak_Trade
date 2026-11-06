@@ -1,0 +1,48 @@
+---
+docs_token: DOCS_TOKEN_FULL_CORE_EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS_V1
+status: active
+scope: Full-Core C17+ source-generation/reopen mechanism; acceptance conjunction; promotion state machine; read-only candidate census; no mapping; no Owner ratification of a candidate; no producer; no runtime binding; no POST; no wire; no LiveExecutionPort construction
+capability: FULL_CORE_EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-13
+---
+
+# Full Core Equity Recovery PR1 Governance Reopen And Candidate Census V1
+
+Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.AQ.
+
+```text
+C01_C16_REJECTION_STILL_BINDING=true
+C01_C16_REVIVAL_ALLOWED=false
+NEW_CANDIDATE_NAMESPACE_START=C17
+NEW_SOURCE_GENERATION_MECHANISM_RATIFIED=true
+SOURCE_ACCEPTANCE_CONJUNCTION_RATIFIED=true
+SOURCE_PROMOTION_STATE_MACHINE_RATIFIED=true
+MAPPING_REOPEN_MECHANISM_EXISTS=true
+MAPPING_BOUNDARY_CURRENTLY_OPEN=false
+CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=false
+CANDIDATE_CENSUS_COMPLETE=true
+C17_CREATED=false
+GENUINELY_NEW_CANDIDATE_COUNT=0
+ACCEPTABLE_FOR_OWNER_RATIFICATION_COUNT=0
+CANDIDATE_IDS_CREATED=NONE
+NEXT_EVIDENCE_GENERATION_BLOCKER=NO_GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_RUNTIME_INSTANCE_WITH_DISTINCT_C17_PLUS_PROVENANCE
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+GOVERNED_PRODUCER_CREATED=false
+PRODUCTIVE_RUNTIME_BINDING_ADDED=false
+RECONSTRUCTION_ALGEBRA_COMPLETE=false
+P01_PRODUCTIVE_EXTERNAL_SOURCE_MAPPING_RESOLVED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+AUTHORITY_EFFECT=NONE
+```
+
+This persist ratifies the governed C17+ source-candidate mechanism and
+records a read-only census of existing repo/evidence origins. It does
+not revive C01-C16, does not invent a fake C17, does not open the
+mapping boundary, and does not authorize a producer, runtime binding,
+or Live.

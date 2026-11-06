@@ -1,0 +1,4 @@
+usage: validate_docs_token_policy.py [-h] [--changed] [--all] [--tracked-docs]
+                                     [--base BASE] [--json FILE]
+                                     [--allowlist ALLOWLIST]
+validate_docs_token_policy.py: error: unrecognized arguments: --files docs/evidence/adverse_exit_downscope_priority_fix_v1/README.md docs/evidence/adverse_exit_downscope_priority_fix_v1/root_cause.md docs/evidence/adverse_exit_downscope_priority_fix_v1/contract_before_after.md docs/evidence/adverse_exit_downscope_priority_fix_v1/authority_and_ordering_proof.md

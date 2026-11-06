@@ -1,0 +1,93 @@
+# Self-Learning: fachlicher Wandel anhand konkreter Codeänderungen
+
+Die Untersuchung vertieft ausgewählte Übergänge der bereits erschlossenen Historie. Der Schwerpunkt bleibt auf Zuständigkeiten und inneren Beziehungen der Self-Learning-Konstruktion. Vier Übergänge wurden anhand konkreter historischer Quellen/Diffs gelesen; daraus folgt keine vollständige Semantikprüfung aller historischen Änderungen.
+
+## 17.08.2026 — Legacy-Schreibweg bewusst abgetrennt
+
+Vorher: Learning-Snippets konnten über den Legacy-Runner in Override-Dateien gelangen; der Promotion-Writer konnte Updates schreiben; der Config-Loader konnte Overlays zusammenführen.
+
+Nachher: Runner verweigert Schreiben; Promotion-Writer gibt None zurück; der Legacy-Overlay-Loader lädt nur die Basiskonfiguration. Signaturen bleiben zur Kompatibilität erhalten.
+
+Architektonische Bedeutung: Ein vorhandener historischer Konfigurationsweg wurde ausdrücklich beendet. Sein Name oder seine Dateiexistenz darf nicht als weiterhin wirksame Lernrückkopplung gelten.
+
+Einordnung: `DELIBERATE_REMOVAL_OF_LEGACY_WRITE_EFFECT; NOT_LOST_FUNCTION_RESTORE_TARGET`.
+Belege: `TR01A`, `TR01B`, `TR02A`, `TR02B`, `TR03A`, `TR03B`.
+Grenze: Nachgewiesen sind Quelländerung und untersuchte Funktionskörper. Kein globaler Ausschluss aller möglichen Writer oder Runtime-Pfade.
+
+## 18.08.2026 — Beobachtung, Identität und Gedächtnis erhalten eine eigene Bindung
+
+Vorher: Die Forschungsschleife baute den Phase-2-Experimentrecord intern aus bereitgestellten Beobachtungen auf.
+
+Nachher: Ein gesonderter Binder prüft vollständige Phase-1-Identität, erlaubten Beobachtungs-Owner, Experiment-ID und Lineage. Die Forschungsschleife ruft diesen Binder auf und verlangt dessen BOUND-Ergebnis.
+
+Architektonische Bedeutung: Ein zusätzlicher Schnittstellenbaustein, der vorhandene Identität und vorhandenes Gedächtnis verbindet. Keine neue Identität, kein zweites Experimentgedächtnis und ausdrücklich keine Self-Learning-Phase 13.
+
+Einordnung: `EXTENSION_AND_REFACTOR_OF_BINDING; EXISTING_OWNERS_REUSED`.
+Belege: `TR04`, `TR05`, `TR06`, `TR07`.
+Grenze: Evidenzzuordnung wird codiert; daraus folgt keine Herkunftsgarantie für jede vom Aufrufer gelieferte Beobachtung und kein eigenständig ausgeführter Backtest.
+
+## 18.08.2026 — Persistenzverantwortung an dieselbe Bindung delegiert
+
+Vorher: Nach der Bindung konnte die Forschungsschleife den Experimentrecord separat an den Store anhängen.
+
+Nachher: Der Store wird an den Beobachtungsbinder übergeben. Die Schleife übernimmt dessen Persistenzreferenz; divergierende Duplikate werden als bestehender Record-Konflikt weitergegeben.
+
+Architektonische Bedeutung: Zuordnung und Persistenz werden über einen gemeinsamen Zuständigkeitsweg geführt; die Phase-2-Speicherwahrheit bleibt erhalten.
+
+Einordnung: `RESPONSIBILITY_CONSOLIDATION_NOT_NEW_LEARNING_LAYER`.
+Belege: `TR04`, `TR07`, `TR08`.
+Grenze: Kein vollständiger Crash-/Atomicity-Beweis oder System-Restart-Nachweis in dieser Untersuchung.
+
+## 01.09.2026 — DDO schließt über Records und Referenzen an die August-Grundlagen an
+
+Vorher: Vollständige Experimentidentität, Gedächtnis und Robustheitsbewertung existierten bereits als getrennte Forschungsbausteine.
+
+Nachher: DDO nimmt serialisierte Identitätsrecords über einen Referenzadapter entgegen und ordnet zugelassene Validierungsartefakte bestehenden Erzeugern zu. Seine Registry verwaltet Hypothesen, Kandidaten und Prüf-Pakete über den DDO-Ledger.
+
+Architektonische Bedeutung: Zusätzliche Beobachtungs-/Auswertungs- und Nachweisschicht; keine belegte Ablösung der zwölf August-Bausteine. Referenzübergabe ist von einem direkten Engine-Aufruf zu unterscheiden.
+
+Einordnung: `ADDITIVE_RECORD_AND_REFERENCE_BOUNDARY`.
+Belege: `TR09`, `TR10`, `TR11`, `TR12`, `TR13`.
+Grenze: Adapter-/Registry-Aufgaben sind statisch belegt. Vollständige automatische Hypothesenbildung, Training und produktive Rückwirkung sind dadurch nicht nachgewiesen.
+
+## Drei unterschiedliche Arten von Verbindung
+
+Direkter Funktionsaufruf, Übergabe eines serialisierten Records und Referenz auf einen externen Producer sind unterschiedliche Konstruktionen. Ihre Namen oder Pfeile werden nicht als gleichwertiger Integrationsbeweis behandelt.
+
+- **Identity-Referenzadapter** — Prüft übergebene Identitätsrecords und erzeugt einen gebundenen Referenzrecord; prägt die ursprüngliche Experimentidentität nicht selbst. Beleg: `TR09:bind_canonical_experiment_identity_ref_v0`.
+- **Validation-Producer-Katalog** — Ordnet Prüf-Artefakte zulässigen bestehenden Ownern zu und prüft ihre Angaben; führt deren WF-/MC-/Robustheits-Engines nicht selbst aus. Beleg: `TR10:admit_validation_producer_bindings_v0`.
+- **Hypothesen-Builder / Registry** — Validiert und registriert einen bereits übergebenen Vorschlag mit Herkunft; diese Funktionen sind für sich kein Hypothesen-Erzeugungsalgorithmus. Beleg: `TR11:build_learning_hypothesis_v0;TR12:register_hypothesis`.
+- **Capture** — Laut Modulvertrag Producer-Ergebnisse nach deren Rückkehr beobachten und als DDO-Records ablegen; keine Umdeutung zum eigentlichen Entscheider. Beleg: `TR13:module contract; deeper bodies not fully reviewed`.
+
+## Aussage zur ursprünglichen Architektur
+
+Der untersuchte Verlauf zeigt eine Trennung zwischen Research-Wissen, dessen eindeutiger Identität/Speicherung, Bewertung und möglicher späterer Änderung von Runtime-Verhalten. Die Legacy-Schreibbefugnis wurde vor dem zwölfteiligen Forschungsaufbau gezielt entzogen. Die August-Bausteine wurden um eine Beobachtungsbindung ergänzt; die September-DDO-Linie schloss über Records und Artefaktreferenzen an vorhandene Grundlagen an.
+
+Das ist eine belegte Entwicklung der Zuständigkeiten. Es ist keine nachträglich erfundene nummerierte Urhierarchie. Die vollständige ursprüngliche Ebenenzahl bleibt offen.
+
+## Neue Quellenlücke statt falscher Vollständigkeit
+
+Die Dependency-Verfolgung fand den Binder-Einführungscommit #5943 zusätzlich zu den vorher katalogisierten 119 Pfad-Commits. Das frühere Set war eine begrenzte Discovery-Menge, kein abgeschlossener Gesamtverlauf. Die paginierte GitHub-Pfadsuche des Binders liefert am Vergleichspin nur seine Einführung.
+
+Die drei untersuchten Legacy-Funktionskörper sind am Vergleichspin in ihrer AST-Codeform mit dem Firewall-Stand identisch. Das ist nur ein begrenzter statischer Vergleich, kein globaler Runtime-Nachweis.
+
+## Quellen
+
+- **TR01A**: [`scripts/run_learning_apply_cycle.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/c38cdfb4e8e1b3d5ff84021a682387dc8701beaf/scripts/run_learning_apply_cycle.py) · Revision `c38cdfb4e8e1b3d5ff84021a682387dc8701beaf`; Prüfumfang: Selected removed writer/overlay functions; corresponding full diff read. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR01A-scripts__run_learning_apply_cycle.py>).
+- **TR01B**: [`scripts/run_learning_apply_cycle.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/a7f4502e04e168b2dd12b56fecb745323bd6c783/scripts/run_learning_apply_cycle.py) · Revision `a7f4502e04e168b2dd12b56fecb745323bd6c783`; Prüfumfang: Selected replacement writer/overlay functions; corresponding full diff read. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR01B-scripts__run_learning_apply_cycle.py>).
+- **TR02A**: [`src/core/peak_config.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/c38cdfb4e8e1b3d5ff84021a682387dc8701beaf/src/core/peak_config.py) · Revision `c38cdfb4e8e1b3d5ff84021a682387dc8701beaf`; Prüfumfang: Selected removed writer/overlay functions; corresponding full diff read. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR02A-src__core__peak_config.py>).
+- **TR02B**: [`src/core/peak_config.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/a7f4502e04e168b2dd12b56fecb745323bd6c783/src/core/peak_config.py) · Revision `a7f4502e04e168b2dd12b56fecb745323bd6c783`; Prüfumfang: Selected replacement writer/overlay functions; corresponding full diff read. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR02B-src__core__peak_config.py>).
+- **TR03A**: [`src/governance/promotion_loop/engine.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/c38cdfb4e8e1b3d5ff84021a682387dc8701beaf/src/governance/promotion_loop/engine.py) · Revision `c38cdfb4e8e1b3d5ff84021a682387dc8701beaf`; Prüfumfang: Selected removed writer/overlay functions; corresponding full diff read. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR03A-src__governance__promotion_loop__engine.py>).
+- **TR03B**: [`src/governance/promotion_loop/engine.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/a7f4502e04e168b2dd12b56fecb745323bd6c783/src/governance/promotion_loop/engine.py) · Revision `a7f4502e04e168b2dd12b56fecb745323bd6c783`; Prüfumfang: Selected replacement writer/overlay functions; corresponding full diff read. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR03B-src__governance__promotion_loop__engine.py>).
+- **TR04**: [`src/experiments/canonical_identity_bound_offline_observation_binding_v1.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/c0a45f4ecf592d1618679f1ef5087e0a22c04fab/src/experiments/canonical_identity_bound_offline_observation_binding_v1.py) · Revision `c0a45f4ecf592d1618679f1ef5087e0a22c04fab`; Prüfumfang: bind_canonical_identity_bound_offline_observation_v1 body lines 270-488 read; no product execution. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR04-src__experiments__canonical_identity_bound_offline_observation_binding_v1.py>).
+- **TR05**: [`docs/ops/specs/CANONICAL_IDENTITY_BOUND_OFFLINE_OBSERVATION_BINDING_V1.md`](https://github.com/rauterfrank-ui/Peak_Trade/blob/dfe2003fdd03eb782725bd99eb56788320ae0592/docs/ops/specs/CANONICAL_IDENTITY_BOUND_OFFLINE_OBSERVATION_BINDING_V1.md) · Revision `dfe2003fdd03eb782725bd99eb56788320ae0592`; Prüfumfang: Full historical architecture contract read. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR05-docs__ops__specs__CANONICAL_IDENTITY_BOUND_OFFLINE_OBSERVATION_BINDING_V1.md>).
+- **TR06**: [`src/experiments/canonical_automated_offline_research_loop_v1.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/7c36858bb6b9ed036bba901170d370b61a805110/src/experiments/canonical_automated_offline_research_loop_v1.py) · Revision `7c36858bb6b9ed036bba901170d370b61a805110`; Prüfumfang: Full relevant diff read: identity-bound observation and persist delegation; rest previously structural review. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR06-src__experiments__canonical_automated_offline_research_loop_v1.py>).
+- **TR07**: [`src/experiments/canonical_automated_offline_research_loop_v1.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/dfe2003fdd03eb782725bd99eb56788320ae0592/src/experiments/canonical_automated_offline_research_loop_v1.py) · Revision `dfe2003fdd03eb782725bd99eb56788320ae0592`; Prüfumfang: Full relevant diff read: identity-bound observation and persist delegation; rest previously structural review. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR07-src__experiments__canonical_automated_offline_research_loop_v1.py>).
+- **TR08**: [`src/experiments/canonical_automated_offline_research_loop_v1.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/eac9bbafeee98ffb7bacb1bd407625c667e9d71e/src/experiments/canonical_automated_offline_research_loop_v1.py) · Revision `eac9bbafeee98ffb7bacb1bd407625c667e9d71e`; Prüfumfang: Full relevant diff read: identity-bound observation and persist delegation; rest previously structural review. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR08-src__experiments__canonical_automated_offline_research_loop_v1.py>).
+- **TR09**: [`src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/615de3b307132b73a60df33fd3bedfac811c8cce/src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py) · Revision `615de3b307132b73a60df33fd3bedfac811c8cce`; Prüfumfang: Module, schema fields, validators and bind/observe functions. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR09-src__learning__deterministic_decision_outcome_v0__experiment_identity_binding_v0.py>).
+- **TR10**: [`src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/615de3b307132b73a60df33fd3bedfac811c8cce/src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py) · Revision `615de3b307132b73a60df33fd3bedfac811c8cce`; Prüfumfang: Full module including source catalog, field checks, admission and binding functions. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR10-src__learning__deterministic_decision_outcome_v0__validation_producer_bindings_v0.py>).
+- **TR11**: [`src/learning/deterministic_decision_outcome_v0/learning_records_v0.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/615de3b307132b73a60df33fd3bedfac811c8cce/src/learning/deterministic_decision_outcome_v0/learning_records_v0.py) · Revision `615de3b307132b73a60df33fd3bedfac811c8cce`; Prüfumfang: Module role and builders lines 163-248. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR11-src__learning__deterministic_decision_outcome_v0__learning_records_v0.py>).
+- **TR12**: [`src/learning/deterministic_decision_outcome_v0/registry_v0.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/615de3b307132b73a60df33fd3bedfac811c8cce/src/learning/deterministic_decision_outcome_v0/registry_v0.py) · Revision `615de3b307132b73a60df33fd3bedfac811c8cce`; Prüfumfang: Registry methods for provided hypotheses, candidates and validation packs. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR12-src__learning__deterministic_decision_outcome_v0__registry_v0.py>).
+- **TR13**: [`src/learning/deterministic_decision_outcome_v0/capture_v0.py`](https://github.com/rauterfrank-ui/Peak_Trade/blob/615de3b307132b73a60df33fd3bedfac811c8cce/src/learning/deterministic_decision_outcome_v0/capture_v0.py) · Revision `615de3b307132b73a60df33fd3bedfac811c8cce`; Prüfumfang: Module docstring, symbols and static capture role; not all 934 lines semantically reviewed. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/architecture-transitions/TR13-src__learning__deterministic_decision_outcome_v0__capture_v0.py>).
+
+Keine produktive Ausführung, keine Code-/Configänderung, keine Reaktivierung und kein neuer Obsidian-Ledger-Run.

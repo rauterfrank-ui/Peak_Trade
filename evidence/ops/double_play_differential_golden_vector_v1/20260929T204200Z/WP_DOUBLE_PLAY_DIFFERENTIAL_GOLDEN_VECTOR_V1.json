@@ -1,0 +1,793 @@
+{
+  "current_sha": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+  "differential": {
+    "comparisons": {
+      "f1m9_fresh_alpha": "BEHAVIORALLY_DIVERGENT",
+      "f1m9_stale_alpha": "BEHAVIORALLY_DIVERGENT",
+      "g17_policy": "STRUCTURALLY_DIFFERENT_SEMANTICALLY_EQUIVALENT",
+      "vector_A_enter_long": "IDENTICAL",
+      "vector_B_enter_short": "IDENTICAL",
+      "vector_C_duplicate_advanced": "IDENTICAL",
+      "vector_F_0": "IDENTICAL",
+      "vector_F_1": "IDENTICAL",
+      "vector_G_cycle_0_carrier": "IDENTICAL",
+      "vector_G_cycle_1_carrier": "BEHAVIORALLY_DIVERGENT",
+      "vector_H_layered_init": "BEHAVIORALLY_DIVERGENT",
+      "vector_I": "CURRENT_SAFETY_BOUNDARY_ONLY"
+    },
+    "first_divergences": [
+      {
+        "checkpoint": "duplicate_distinct_increment",
+        "current": [
+          0,
+          0,
+          0
+        ],
+        "cycle": 2,
+        "old": [
+          null,
+          null,
+          null
+        ],
+        "vector_id": "VECTOR_C",
+        "wp1_divergence_id": "SINGLE-LANE-LIFECYCLE-01"
+      },
+      {
+        "checkpoint": "alpha_scope_entry_authority_allowed",
+        "current": false,
+        "cycle": 0,
+        "old": true,
+        "vector_id": "VECTOR_E",
+        "wp1_divergence_id": "F1M9-MAX-AGE-ENFORCEMENT-01"
+      },
+      {
+        "checkpoint": "carrier_after",
+        "current": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "candidate",
+          "bull_distinct_count": 1,
+          "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+          "present": true
+        },
+        "cycle": 1,
+        "old": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=1)",
+          "bull_assessment_state": "candidate",
+          "bull_distinct_count": 1,
+          "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+          "present": true
+        },
+        "vector_id": "VECTOR_G",
+        "wp1_divergence_id": "SINGLE-LANE-LIFECYCLE-01"
+      },
+      {
+        "checkpoint": "estimate_absent_policy",
+        "current": "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE",
+        "cycle": 0,
+        "old": "BIND_ONLY_WHEN_PRODUCED",
+        "vector_id": "G17",
+        "wp1_divergence_id": "G17-CMC-BIND-01"
+      },
+      {
+        "checkpoint": "observation_init_helpers",
+        "current": {
+          "cmc_mark_obs_helper": true,
+          "file_present": true,
+          "finalized_closes_grid_helper": true,
+          "transition_carryforward_param": true
+        },
+        "cycle": 0,
+        "old": {
+          "cmc_mark_obs_helper": false,
+          "file_present": true,
+          "finalized_closes_grid_helper": false,
+          "transition_carryforward_param": false
+        },
+        "vector_id": "VECTOR_H",
+        "wp1_divergence_id": "LAYERED-CORE-OBS-INIT-01"
+      }
+    ],
+    "layered_core_markers": {
+      "current": {
+        "cmc_mark_obs_helper": true,
+        "file_present": true,
+        "finalized_closes_grid_helper": true,
+        "transition_carryforward_param": true
+      },
+      "historical": {
+        "cmc_mark_obs_helper": false,
+        "file_present": true,
+        "finalized_closes_grid_helper": false,
+        "transition_carryforward_param": false
+      }
+    }
+  },
+  "historical_sha": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+  "side_current": {
+    "repo_root": "/Users/frnkhrz/Peak_Trade",
+    "repository_sha": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+    "side": "current",
+    "vectors": {
+      "A": {
+        "composition_reached": false,
+        "composition_status": "no_action",
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          }
+        ],
+        "enter_long": false,
+        "vector_id": "A_BULL_ENTER_LONG"
+      },
+      "B": {
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3530.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3030.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4030.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3530.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3030.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4030.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "short_armed",
+            "side_state_before": "short_armed"
+          }
+        ],
+        "enter_short": false,
+        "vector_id": "B_BEAR_ENTER_SHORT"
+      },
+      "C": {
+        "cycles": [
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "confirmation_advanced": false,
+            "cycle": 0,
+            "distinct_count_after": null,
+            "label": "distinct_1",
+            "lifecycle_reason": "neutral_no_lane"
+          },
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=1)",
+              "present": true
+            },
+            "confirmation_advanced": true,
+            "cycle": 1,
+            "distinct_count_after": 1,
+            "label": "distinct_2",
+            "lifecycle_reason": "activate_new_sequence"
+          },
+          {
+            "c1_classification": "duplicate",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=1)",
+              "present": true
+            },
+            "confirmation_advanced": false,
+            "cycle": 2,
+            "distinct_count_after": null,
+            "label": "duplicate_noop",
+            "lifecycle_reason": "rejected_no_lane"
+          },
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+              "present": true
+            },
+            "confirmation_advanced": true,
+            "cycle": 3,
+            "distinct_count_after": 1,
+            "label": "distinct_3",
+            "lifecycle_reason": "activate_new_sequence"
+          }
+        ],
+        "duplicate_advanced_confirmation": false,
+        "duplicate_distinct_increment": [
+          0,
+          0,
+          0
+        ],
+        "vector_id": "C_DUPLICATE_C1"
+      },
+      "D_E": {
+        "consumer_wiring_authorized": true,
+        "fresh": {
+          "integrated_replay": {
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true
+          },
+          "new_consumer_alpha_allowed": true,
+          "new_enforcement_applied": true,
+          "old_presence_alpha_allowed": true
+        },
+        "has_f1_m9_consumer_module": true,
+        "ratified_max_age_seconds": 600,
+        "stale": {
+          "integrated_replay": {
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true
+          },
+          "new_consumer_alpha_allowed": false,
+          "new_enforcement_applied": true,
+          "old_presence_alpha_allowed": true
+        },
+        "vector_id": "D_E_F1M9_FRESH_STALE"
+      },
+      "F": {
+        "cases": [
+          {
+            "decision_outcome": "no_action",
+            "label": "reconciled_flat",
+            "reconciliation_state": "reconciled",
+            "replay_pass": true
+          },
+          {
+            "decision_outcome": "reconcile_only",
+            "label": "reconciliation_required",
+            "reconciliation_state": "reconciliation_required",
+            "replay_pass": true
+          }
+        ],
+        "vector_id": "F_RECON_POSITION_FLAT"
+      },
+      "G": {
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          },
+          {
+            "c3_signal_strength": 0.02,
+            "c3_status": "candidate",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "candidate",
+              "bull_distinct_count": 1,
+              "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+              "present": true
+            },
+            "composition_status": "observe",
+            "cycle": 1,
+            "decision_outcome": "observe",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          }
+        ],
+        "vector_id": "G_SINGLE_LANE_TWO_CYCLE"
+      },
+      "G17": {
+        "estimate_absent_policy": "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE",
+        "reuse_allowed_outcomes": [
+          "DUPLICATE_NOOP",
+          "PRODUCED"
+        ],
+        "vector_id": "G17_CMC_BIND"
+      },
+      "H": {
+        "current_module_markers": {
+          "cmc_mark_obs_helper": true,
+          "finalized_closes_grid_helper": true,
+          "transition_carryforward_param": true
+        },
+        "note": "Historical side verified via worktree module markers in orchestrator",
+        "vector_id": "H_LAYERED_INIT"
+      },
+      "I": {
+        "forbidden_mark_source_blocked": true,
+        "forbidden_sources": [
+          "ORDINARY_MARKET_CANDLE_CLOSE",
+          "UNPROVEN"
+        ],
+        "old_equivalent_restriction": false,
+        "valid_provenance_passes": true,
+        "vector_id": "I_CANONICAL_PRICE_PROVENANCE"
+      }
+    }
+  },
+  "side_historical": {
+    "repo_root": "/Users/frnkhrz/Peak_Trade/evidence/ops/double_play_differential_golden_vector_v1/20260929T204200Z/wt_historical",
+    "repository_sha": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+    "side": "historical",
+    "vectors": {
+      "A": {
+        "composition_reached": false,
+        "composition_status": "no_action",
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          }
+        ],
+        "enter_long": false,
+        "vector_id": "A_BULL_ENTER_LONG"
+      },
+      "B": {
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3530.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3030.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4030.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3530.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3030.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4030.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "short_armed",
+            "side_state_before": "short_armed"
+          }
+        ],
+        "enter_short": false,
+        "vector_id": "B_BEAR_ENTER_SHORT"
+      },
+      "C": {
+        "cycles": [
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "present": false
+            },
+            "confirmation_advanced": false,
+            "cycle": 0,
+            "distinct_count_after": null,
+            "label": "distinct_1",
+            "lifecycle_reason": "neutral_no_lane"
+          },
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "present": false
+            },
+            "confirmation_advanced": true,
+            "cycle": 1,
+            "distinct_count_after": 1,
+            "label": "distinct_2",
+            "lifecycle_reason": "activate_new_sequence"
+          },
+          {
+            "c1_classification": "duplicate",
+            "carrier_after": {
+              "present": false
+            },
+            "confirmation_advanced": false,
+            "cycle": 2,
+            "distinct_count_after": null,
+            "label": "duplicate_noop",
+            "lifecycle_reason": "rejected_no_lane"
+          },
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "present": false
+            },
+            "confirmation_advanced": true,
+            "cycle": 3,
+            "distinct_count_after": 1,
+            "label": "distinct_3",
+            "lifecycle_reason": "activate_new_sequence"
+          }
+        ],
+        "duplicate_advanced_confirmation": false,
+        "duplicate_distinct_increment": [
+          null,
+          null,
+          null
+        ],
+        "vector_id": "C_DUPLICATE_C1"
+      },
+      "D_E": {
+        "consumer_wiring_authorized": false,
+        "fresh": {
+          "integrated_replay": {
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true
+          },
+          "new_consumer_alpha_allowed": null,
+          "new_enforcement_applied": null,
+          "old_presence_alpha_allowed": true
+        },
+        "has_f1_m9_consumer_module": false,
+        "ratified_max_age_seconds": 600,
+        "stale": {
+          "integrated_replay": {
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true
+          },
+          "new_consumer_alpha_allowed": null,
+          "new_enforcement_applied": null,
+          "old_presence_alpha_allowed": true
+        },
+        "vector_id": "D_E_F1M9_FRESH_STALE"
+      },
+      "F": {
+        "cases": [
+          {
+            "decision_outcome": "no_action",
+            "label": "reconciled_flat",
+            "reconciliation_state": "reconciled",
+            "replay_pass": true
+          },
+          {
+            "decision_outcome": "reconcile_only",
+            "label": "reconciliation_required",
+            "reconciliation_state": "reconciliation_required",
+            "replay_pass": true
+          }
+        ],
+        "vector_id": "F_RECON_POSITION_FLAT"
+      },
+      "G": {
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          },
+          {
+            "c3_signal_strength": 0.02,
+            "c3_status": "candidate",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=1)",
+              "bull_assessment_state": "candidate",
+              "bull_distinct_count": 1,
+              "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+              "present": true
+            },
+            "composition_status": "observe",
+            "cycle": 1,
+            "decision_outcome": "observe",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          }
+        ],
+        "vector_id": "G_SINGLE_LANE_TWO_CYCLE"
+      },
+      "G17": {
+        "estimate_absent_policy": "BIND_ONLY_WHEN_PRODUCED",
+        "reuse_allowed_outcomes": [],
+        "vector_id": "G17_CMC_BIND"
+      },
+      "H": {
+        "current_module_markers": {
+          "cmc_mark_obs_helper": false,
+          "finalized_closes_grid_helper": false,
+          "transition_carryforward_param": false
+        },
+        "note": "Historical side verified via worktree module markers in orchestrator",
+        "vector_id": "H_LAYERED_INIT"
+      },
+      "I": {
+        "module_present": false,
+        "old_equivalent_restriction": false,
+        "vector_id": "I_CANONICAL_PRICE_PROVENANCE"
+      }
+    }
+  },
+  "wp1_minimal_divergence_set": [
+    "F1M9-CONSUMER-PATH-01",
+    "F1M9-MAX-AGE-ENFORCEMENT-01",
+    "G17-CMC-BIND-01",
+    "SINGLE-LANE-LIFECYCLE-01",
+    "LAYERED-CORE-OBS-INIT-01",
+    "RECON-ADMISSION-GATE-01"
+  ],
+  "wp_id": "DOUBLE_PLAY_DIFFERENTIAL_GOLDEN_VECTOR_V1"
+}

@@ -1,0 +1,16 @@
+{
+  "economic_gate_opened": false,
+  "manifest_digest": "3fe68d8ae1234839b068e2a0dc07fb178bdb07acd8247af2b9f73bdaac225f3e",
+  "manifest_partition_count": 5,
+  "manifest_schema_version": "longer_chronological_pit_acquisition_manifest.v1",
+  "promotion_eligible": false,
+  "resume_partition_count": 5,
+  "resume_partition_statuses": {
+    "ohlcv_pt1h_okx_linear_perpetual_ETH_USDT_USDT_perp_202109_f699f0d0cc6f8568": "DISCOVERED",
+    "ohlcv_pt1h_okx_linear_perpetual_LINK_USDT_USDT_perp_202109_338c4dab24ef22be": "DISCOVERED",
+    "ohlcv_pt1h_okx_linear_perpetual_LUNA_USDT_USDT_perp_202201_6c0263200123a30e": "DISCOVERED",
+    "ohlcv_pt1h_okx_linear_perpetual_SOL_USDT_USDT_perp_202109_86fd59897953ceb6": "DISCOVERED",
+    "ohlcv_pt1h_okx_linear_perpetual_TIA_USDT_USDT_perp_202311_7c114ac09bfdb916": "DISCOVERED"
+  },
+  "resume_state_schema_version": "longer_chronological_pit_acquisition_state.v1"
+}

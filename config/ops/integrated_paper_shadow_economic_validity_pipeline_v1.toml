@@ -1,0 +1,66 @@
+# Integrated Paper-Shadow Economic-Validity Pipeline v1
+#
+# Canonical gate-split metadata. Non-activating. Authority effect NONE.
+# All Pass / Authorized flags default false. No runtime. No session. No orders.
+
+schema_version = "integrated_paper_shadow_economic_validity_pipeline.v1"
+producer_family = "ops.integrated_paper_shadow_economic_validity_pipeline_v1"
+authority_effect = "NONE"
+activation_effect = "NONE"
+economic_gate_effect = "NONE"
+
+# Legacy offline sub-evidence token (false-only compatible; never alone sets system PASS).
+legacy_offline_gate_field_name = "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS"
+legacy_offline_gate_role = "LEGACY_OFFLINE_SUB_EVIDENCE_ONLY"
+economic_validity_offline_gate_pass = false
+
+# Semantic gate states (all default false for this capability).
+full_canonical_system_parity = false
+system_correctness_pass = false
+integrated_offline_replay_pass = false
+backtest_runtime_decision_parity_pass = false
+paper_shadow_observation_readiness_pass = false
+paper_shadow_observation_authorized = false
+integrated_paper_shadow_evidence_complete = false
+offline_economic_evidence_complete = false
+integrated_economic_evidence_bundle_verified = false
+economic_validity_pass = false
+promotion_pass = false
+testnet_authorized = false
+live_authorized = false
+orders_authorized = false
+
+# Explicit non-goals for this capability PR.
+runtime_executed = false
+session_executed = false
+credentials_used = false
+broker_writes_performed = false
+orders_created = false
+paper_shadow_observation_operator_go_granted = false
+economic_validity_operator_ratification_granted = false
+
+canonical_pipeline_sequence = [
+  "FULL_CANONICAL_SYSTEM_PARITY",
+  "INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_PASS",
+  "INTEGRATED_PAPER_SHADOW_OBSERVATION_READINESS_PASS",
+  "OPERATOR_PAPER_SHADOW_OBSERVATION_GO",
+  "INTEGRATED_PAPER_SHADOW_OBSERVATION",
+  "INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE",
+  "INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED",
+  "ECONOMIC_VALIDITY_PASS",
+  "PROMOTION",
+  "TESTNET",
+  "LIVE",
+]
+
+paper_shadow_readiness_does_not_require_legacy_offline_gate_pass = true
+legacy_offline_gate_does_not_alone_set_economic_validity_pass = true
+paper_shadow_is_evidence_generator_only = true
+zero_order_not_equivalent_to_paper_shadow = true
+dashboard_is_consumer_not_ssot = true
+ai_layer_non_authority = true
+master_v2_double_play_decision_authority = true
+safety_kernel_independent_veto = true
+
+contract_doc = "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md"
+runbook_ssot = "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md"

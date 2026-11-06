@@ -1,0 +1,49 @@
+{
+  "bounded_failure_classes": [
+    "PROCESS_START_FAILURE",
+    "UNEXPECTED_CHILD_PROCESS_EXIT",
+    "STALE_PID_OR_SESSION_REGISTRY",
+    "DUPLICATE_SESSION_START",
+    "WRITER_CONFLICT",
+    "HEARTBEAT_LOSS",
+    "STALE_MARKET_DATA_STATE",
+    "DISCONNECTED_SOURCE_STATE",
+    "READ_MODEL_PROJECTION_FAILURE",
+    "DASHBOARD_BACKEND_FAILURE",
+    "DUPLICATE_MARKET_EVENT",
+    "OUT_OF_ORDER_MARKET_EVENT",
+    "DUPLICATE_OHLCV_FINALIZATION",
+    "MISSED_OR_STALE_OHLCV_INTERVAL",
+    "GRACEFUL_SHUTDOWN_TIMEOUT",
+    "RECOVERY_FROM_PERSISTED_ACTIVE_STATE",
+    "UNAVAILABLE_LOG_STATE_OR_EVIDENCE_PATH"
+  ],
+  "components": [
+    "SUPERVISOR",
+    "MARKET_DATA",
+    "RUNTIME",
+    "PERSISTENCE",
+    "READ_MODEL_PROJECTOR",
+    "DASHBOARD_BACKEND",
+    "SYSTEM"
+  ],
+  "recovery_eligibility_values": [
+    "ELIGIBLE",
+    "BLOCKED",
+    "OWNER_LOCK",
+    "NOT_APPLICABLE"
+  ],
+  "required_fields": [
+    "root_cause_class",
+    "reason_code",
+    "affected_component",
+    "session_id",
+    "first_failure_time",
+    "last_good_time",
+    "data_loss_possible",
+    "state_divergence_possible",
+    "automatic_recovery_allowed",
+    "owner_action_required",
+    "recovery_eligibility"
+  ]
+}

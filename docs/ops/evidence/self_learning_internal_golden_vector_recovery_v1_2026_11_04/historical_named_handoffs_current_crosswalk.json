@@ -1,0 +1,40 @@
+{
+  "edges": [
+    {
+      "consumer": "validate_canonical_optimization_universe_learning_input_v1",
+      "current_runtime_execution_proven_here": false,
+      "current_semantic_read": "Typed record acceptance/provenance and digest; not numerical search policy",
+      "historical_edge_id": "EDGE:SL_EXPORT_TO_OPT_LEARNING_INPUT",
+      "producer": "export_learning_evidence_from_state_v1"
+    },
+    {
+      "consumer": "validate_canonical_optimization_universe_v1",
+      "current_runtime_execution_proven_here": false,
+      "current_semantic_read": "Optional foundation input, not the required M4 entrypoint",
+      "historical_edge_id": "EDGE:OPT_FOUNDATION_ACK",
+      "producer": "learning_evidence optional"
+    },
+    {
+      "consumer": "run_optimization_universe_experiment_plane_v1",
+      "current_runtime_execution_proven_here": false,
+      "current_semantic_read": "Required validated evidence and context identity; request supplies numerical research inputs",
+      "historical_edge_id": "EDGE:OPT_PLANE_REQUIRES_EVIDENCE",
+      "producer": "plane_request.learning_evidence"
+    },
+    {
+      "consumer": "validate_self_learning_optimization_return_input_v1",
+      "current_runtime_execution_proven_here": false,
+      "current_semantic_read": "ACK-only boundary; M6 is an additional explicit consumer, not automatically called by ACK",
+      "historical_edge_id": "EDGE:OPT_EVIDENCE_TO_SL_RETURN",
+      "producer": "build_optimization_experiment_evidence_from_plane_v1"
+    },
+    {
+      "consumer": "canonical_meta_to_optimization_feedback_v1",
+      "current_runtime_execution_proven_here": false,
+      "current_semantic_read": "Bounded feedback decision; search_executed false in that owner. Separate later research-result Meta/Search adapter exists; no universal no-Search claim",
+      "historical_edge_id": "EDGE:META_TO_OPT_FEEDBACK",
+      "producer": "meta_learning_evidence_v1"
+    }
+  ],
+  "source_role": "Five exact historical report EDGE_ID names, not newly declared canonical IDs or runtime edges"
+}

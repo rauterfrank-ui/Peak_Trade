@@ -1,0 +1,16 @@
+PROJECT: Peak_Trade
+TOPIC: closeout_template_standardization
+STATUS: docs_draft_ready
+BRANCH: feat/closeout-template-standardization
+MODE: paper_stability_guard
+
+GOAL
+- standardize closeout and handoff templates for future bounded / acceptance runs
+
+OUTPUTS
+- docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md
+- docs/ops/templates/REJECTED_ORDER_CLOSEOUT_TEMPLATE.md
+- docs/ops/templates/ACCEPTANCE_EVIDENCE_HANDOFF_TEMPLATE.txt
+
+NEXT SUGGESTED STEP
+- align future closeouts and handoffs to these templates

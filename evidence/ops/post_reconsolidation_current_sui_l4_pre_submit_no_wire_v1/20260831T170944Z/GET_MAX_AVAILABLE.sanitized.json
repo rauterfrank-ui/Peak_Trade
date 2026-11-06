@@ -1,0 +1,30 @@
+{
+  "AUTH_HEADER_PERSISTED": false,
+  "BODY_SHA256": "5f877ef730a9a7ba112d0997d051cd8969a687bf3c1288dce9728ac16a1c0acd",
+  "EDGE_ID": "MAX_AVAILABLE",
+  "ENDPOINT": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.7215",
+  "HTTP_STATUS": 200,
+  "OKX_CODE": "0",
+  "OKX_MSG": "",
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_ROW": {
+    "ccy": "",
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "maxBuy": "0",
+    "maxSell": "0",
+    "tradeQuoteCcy": ""
+  },
+  "payload": {
+    "code": "0",
+    "data": [
+      {
+        "ccy": "",
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "maxBuy": "0",
+        "maxSell": "0",
+        "tradeQuoteCcy": ""
+      }
+    ],
+    "msg": ""
+  }
+}

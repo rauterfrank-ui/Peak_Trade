@@ -1,0 +1,50 @@
+{
+  "LIVE_DRY_RUN_NETWORK_EFFECT": "NONE",
+  "LIVE_DRY_RUN_ORDER_PLAN_ACTIVATED": false,
+  "LIVE_DRY_RUN_ORDER_PLAN_CONTRACT_ACTIVATED": false,
+  "LIVE_DRY_RUN_ORDER_PLAN_CONTRACT_BOUND": true,
+  "LIVE_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_8": false,
+  "OWNER": "ops.capability_11_8_live_dry_run_order_plan_parity_v1",
+  "activation_blocked": true,
+  "canary_stage_blocked": true,
+  "cap_11_9_surface_blocked": true,
+  "credential_access_blocked": true,
+  "forbidden_lifecycle_states": [
+    "SUBMIT_PENDING",
+    "SUBMIT_ATTEMPTED",
+    "ACKNOWLEDGED",
+    "REJECTED",
+    "UNKNOWN",
+    "OPEN",
+    "PARTIALLY_FILLED",
+    "FILLED",
+    "CANCEL_PENDING",
+    "AMEND_PENDING",
+    "CANCELLED",
+    "EXPIRED",
+    "TERMINAL_REJECTED"
+  ],
+  "lifecycle_states": [
+    "INTENT_CREATED",
+    "ORDER_PLAN_CREATED",
+    "RISK_RESERVED",
+    "PRE_SUBMIT_VALIDATED"
+  ],
+  "live_submit_mode_blocked": true,
+  "network_session_blocked": true,
+  "non_fixture_blocked": true,
+  "ok": true,
+  "sample_canonical_digest": "c5fd7fdf84d87f5dceedc10735ff3856e4baba36b1bfe47925bc44d17c62bc4f",
+  "sample_dry_run_digest": "66ec869f5177746190a741bbf27702b6f73f4f5ba6e5a7be9c341f7436f2d756",
+  "stages_forbidden": [
+    "LIVE_CANARY_MINIMUM_EXPOSURE",
+    "LIVE_BOUNDED_SINGLE_FUTURE",
+    "LIVE_BOUNDED_MULTI_SESSION",
+    "LIVE_AUTONOMOUS_SINGLE_FUTURE"
+  ],
+  "stages_in_scope": [
+    "LIVE_DRY_RUN_ORDER_PLAN"
+  ],
+  "submit_blocked": true,
+  "submit_lifecycle_blocked": true
+}

@@ -1,0 +1,28 @@
+{
+  "live_cold_path": {
+    "entry": "run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1",
+    "bootstrap": "bootstrap_s8_lane_via_s7_compose_v1",
+    "compose": "compose_occupied_lane_mv2_dp_durable_cycle_v1",
+    "layered_bootstrap": "ensure_productive_layered_core_episode_store_v1",
+    "observation_builder_when_wp3": "_observation_candidates_from_cmc_mark_v1",
+    "terminal_error": "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_MISMATCHED_LANE_STATE:LANE_1:layered_core_bootstrap_init_fail_closed:INITIALIZATION_INCOMPLETE",
+    "productive_cycles": 0,
+    "post_count": 0,
+    "instrument": "0G-USDT-SWAP",
+    "live_mark_snapshot": 0.3283,
+    "source_evidence": "evidence/ops/double_play_root_wiring_01_patch_golden_vector_reproof_v1/20260929T221500Z/runtime/run_stdout.json"
+  },
+  "forensic_success_path": {
+    "entry": "run_natural_enter_long_sequence_for_governed_pre_external_v1",
+    "cycle_host": "run_current_productive_master_v2_runtime_cycle_v1",
+    "compose_s7_ensure_bootstrap_invoked": false,
+    "enter_long_reached": true,
+    "observation_builder_note": "Forensic sequence does not invoke ensure_productive; layered init via prepare_productive_layered_core_replay_bind on later cycles when store exists",
+    "productive_reachable": false,
+    "forensic_continuation": true
+  },
+  "committed_head_cold_bootstrap": {
+    "observation_builder": "_observation_candidates_from_finalized_closes_v1",
+    "wp3_flag_file_absent_effect": "closes path only in ensure_productive"
+  }
+}

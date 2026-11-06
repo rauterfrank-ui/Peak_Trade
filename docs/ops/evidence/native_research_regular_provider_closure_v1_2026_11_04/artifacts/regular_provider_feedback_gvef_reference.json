@@ -1,0 +1,15 @@
+{
+  "schema_version": "research_execution_gvef_reference_v1",
+  "artifact_ref": "regular_provider_feedback_execution.canonical.json",
+  "payload_encoding": "UTF8_JSON_NUMBERS_PRESERVED",
+  "payload_sha256": "f9b079ebb7e882882fa0f5b3b4a8f59afe14bf6c97857f923668115539edfa78",
+  "execution_content_digest": "5f3234000b2d02c77b96fed1e5e5900758ba4ecdec6949f6eac6caae085caf06",
+  "experiment_id": "718d0afb358bb35a727663299014068bb36fe16c2ca41221cdf5bb4d7a806867",
+  "loop_identity": "d6619fae443efd176a8793886f23aacec7846757bbdf8537109523d2ab198b72",
+  "search_identity": "b056660c09c5df597e9742d171cf635dd6af7e66ba686a031d562d58af2e3859",
+  "declared_evidence_source_class": "TEST_ONLY_SYNTHETIC",
+  "source_class_authenticated": false,
+  "TEST_ONLY_SYNTHETIC": true,
+  "gvef_scope": "REFERENCE_ARTIFACT_BINDING_NOT_NUMERIC_QUALITY_EVALUATION",
+  "productive_apply_authorized": false
+}

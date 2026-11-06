@@ -1,0 +1,43 @@
+"""Preregistered PASS/FAIL/INCONCLUSIVE decision for MACD DEVELOPMENT evaluation.
+
+Locked decision thresholds are identical to the prior entry-effective contract
+and are reused read-only from that package's decision helper (no retune).
+"""
+
+from __future__ import annotations
+
+from src.research.entry_effective_mr_eligibility_development_evaluation_v1.decision_v1 import (
+    REASON_ALL_PASS_REQUIRES_MET,
+    REASON_COST_DRAG_NOT_FULLY_INCLUDED,
+    REASON_EXCESSIVE_TRADE_COUNT_REDUCTION,
+    REASON_INSUFFICIENT_CONTROL_TRADE_COUNT,
+    REASON_INSUFFICIENT_TREATMENT_TRADE_COUNT,
+    REASON_MAX_DRAWDOWN_WORSE,
+    REASON_NET_RETURN_NOT_IMPROVED,
+    REASON_NO_DIVERGENCE,
+    REASON_PASS_REQUIRES_NOT_MET,
+    REASON_PROFIT_FACTOR_NOT_IMPROVED,
+    REASON_TECHNICAL_FAILURE,
+    RESULT_FAIL,
+    RESULT_INCONCLUSIVE,
+    RESULT_PASS,
+    decide_development_evaluation,
+)
+
+__all__ = [
+    "REASON_ALL_PASS_REQUIRES_MET",
+    "REASON_COST_DRAG_NOT_FULLY_INCLUDED",
+    "REASON_EXCESSIVE_TRADE_COUNT_REDUCTION",
+    "REASON_INSUFFICIENT_CONTROL_TRADE_COUNT",
+    "REASON_INSUFFICIENT_TREATMENT_TRADE_COUNT",
+    "REASON_MAX_DRAWDOWN_WORSE",
+    "REASON_NET_RETURN_NOT_IMPROVED",
+    "REASON_NO_DIVERGENCE",
+    "REASON_PASS_REQUIRES_NOT_MET",
+    "REASON_PROFIT_FACTOR_NOT_IMPROVED",
+    "REASON_TECHNICAL_FAILURE",
+    "RESULT_FAIL",
+    "RESULT_INCONCLUSIVE",
+    "RESULT_PASS",
+    "decide_development_evaluation",
+]

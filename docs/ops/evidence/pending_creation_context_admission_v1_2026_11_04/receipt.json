@@ -1,0 +1,40 @@
+{
+  "source_commit": "6a0e11e61ade0b83a5ee38cdc67835e9a2db1af4",
+  "source_paths_sha256": {
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py": "bd0115db5ad0861fdd2cba4de7da5279e8ecf6bbc79e7a6747f5b8e793818b5e",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py": "f014639791744c82cd37938a05d9b2ce27e2f1688dc888915b7e0a087edd6559",
+    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py": "1d7aa748ff0b72d07120b4bc9cebca7643bb31bbe79e324948a4e3bc4a5a1475",
+    "src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py": "43a0ea328cfc148f73714bee766fcc12787caa7aa4ccc2d29b4f7300e383ad9a",
+    "tests/ops/test_pending_creation_context_admission_v1.py": "59dfdb2fb5a54d2a2a85c157e77f767e5a7ba74f08f5c77822516ea445af90ff"
+  },
+  "tests": {
+    "before": "12 FAIL",
+    "after": "55 PASS including all 12 new cases"
+  },
+  "boundaries": [
+    "normal price producer independent of optional trace",
+    "exact selected DPO/cycle/episode lineage",
+    "positive numeric validity is not authenticity",
+    "Meta/MI/G2/Optimization full integration incomplete"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/pending_creation_context_admission_v1_2026_11_04/README.md",
+      "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 544,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

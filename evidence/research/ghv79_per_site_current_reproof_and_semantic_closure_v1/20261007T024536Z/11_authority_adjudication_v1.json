@@ -1,0 +1,39 @@
+{
+  "NOTE": "Historical GHV CAN_AFFECT_* flags are non-authoritative; CURRENT recomputation is fail-closed false for getattr field reads",
+  "PER_SITE_AUTHORITY_GHV_NONE": true,
+  "SITES_WITH_HISTORICAL_SELECTION_FLAG": [],
+  "SITES_WITH_RECOMPUTED_BINDING_TRUE": [],
+  "SITES_WITH_RECOMPUTED_POST_TRUE": [],
+  "SITES_WITH_RECOMPUTED_SELECTION_TRUE": [],
+  "SYSTEM": {
+    "BACKFLOW_PROOF": "No GHV/GV/GVEF write into Cap23 selection or Cap24 binding owners observed in GHV79 site set; GHV_AUTHORITY forced NONE; integrated INVARIANTS reconfirmed",
+    "CAP22_EVIDENCE": {
+      "cap22_dual_input_defers_to_cap23": true,
+      "cap22_offline_has_VOLATILITY_RANK_ONLY": true
+    },
+    "CAP22_REMAINS_RANK_ONLY": true,
+    "CAP23_OWNER_FROM_CURRENT_CONSTANTS": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+    "CAP23_REMAINS_SOLE_SELECTION_OWNER": true,
+    "CAP24_OWNER_FROM_CURRENT": "ops.single_selected_future_runtime_binding_v1",
+    "CAP24_REMAINS_BIND_ONLY": true,
+    "GHV_PRODUCTIVE_AUTHORITY_BACKFLOW": false,
+    "GVEF_PRODUCTIVE_AUTHORITY_BACKFLOW": false,
+    "GV_PRODUCTIVE_AUTHORITY_BACKFLOW": false,
+    "INTEGRATED_INVARIANTS": {
+      "Cap22_IS_NOT_SELECTION": true,
+      "Cap23_SOLE_SELECTION_OWNER": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+      "Cap24_BIND_ONLY": true,
+      "GHV_AUTHORITY": "NONE",
+      "GVEF_AUTHORITY": "NONE",
+      "GV_AUTHORITY": "NONE",
+      "POST_AUTHORIZED": false
+    },
+    "INTEGRATED_PRODUCTIVE_BINDING_OWNER": "ops.single_selected_future_runtime_binding_v1",
+    "INTEGRATED_PRODUCTIVE_SELECTION_OWNER": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+    "POST_AUTHORITY_PROVEN": false,
+    "POST_AUTHORIZED": false,
+    "POST_EVIDENCE_HITS": [],
+    "PRODUCTIVE_BINDING_OWNER": "ops.single_selected_future_runtime_binding_v1",
+    "PRODUCTIVE_SELECTION_OWNER": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1"
+  }
+}

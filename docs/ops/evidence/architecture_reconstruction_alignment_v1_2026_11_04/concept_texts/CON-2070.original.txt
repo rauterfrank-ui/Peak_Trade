@@ -1,0 +1,9 @@
+### CON-2070 — Preisfrische, Wiederverbindung und Anzeige
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Berichtete Gegenproben zeigen: S6-Preisprovenienz verliert Provider-ts; dynamischer Refresh behebt den älteren Cache-Effekt, garantiert aber keine frische Providerantwort. Separater Parser prüft Alter anders und akzeptiert Zukunftszeiten. Greenfield-Projektion erwartet Mapping statt gelieferten skalaren Markstrings und kann Close anzeigen; Poll-Fehler lässt dort den letzten Gesundheitsstatus stehen. OHLCV-Frische ist kein Markalter.
+
+**Grenze:** Das sind eng gebundene Arbeitskopie-/Funktionsbefunde, kein nachgewiesener aktiver UI- oder Live-Feed-Fehler. 5 s aus vorhandenen Proben ist keine neue universelle Owner-Schwelle; Landscape hatte im getesteten Formatfall keinen solchen Fehler.
+
+Quellen: EVI-2219, EVI-2295, EVI-2297.

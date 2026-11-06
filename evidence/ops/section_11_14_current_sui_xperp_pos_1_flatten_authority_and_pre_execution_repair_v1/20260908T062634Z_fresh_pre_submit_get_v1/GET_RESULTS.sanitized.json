@@ -1,0 +1,56 @@
+{
+  "GETS": [
+    {
+      "auth_header_sent": true,
+      "body_sha256": "23b88b3b2226d88f5bf8069c109156dc89e844c4ee5a958cc8e497793d9fbe27",
+      "endpoint": "/api/v5/account/positions",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "POSITIONS",
+      "observed_at_utc": "2026-09-08T06:26:34.982764Z",
+      "response_received_monotonic_ms": 23802784,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": false,
+      "body_sha256": "4d6f9562c2c2b84db4f7517cad8a36dc42dbebc9dba59e82f4a1f912b5406664",
+      "endpoint": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "TICKER",
+      "observed_at_utc": "2026-09-08T06:26:35.270112Z",
+      "response_received_monotonic_ms": 23802938,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+      "endpoint": "/api/v5/trade/orders-pending",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "ORDERS_PENDING",
+      "observed_at_utc": "2026-09-08T06:26:35.424433Z",
+      "response_received_monotonic_ms": 23803176,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": false,
+      "body_sha256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+      "endpoint": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "INSTRUMENTS",
+      "observed_at_utc": "2026-09-08T06:26:35.661677Z",
+      "response_received_monotonic_ms": 23803341,
+      "timeout": false,
+      "venue_code": "0"
+    }
+  ]
+}

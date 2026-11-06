@@ -1,0 +1,7 @@
+{
+  "method": "Original convergence module loaded from source HEAD; existing integrated test called with temporary root and original bootstrap",
+  "baseline_sha": "5161a5c8656069ac301220f2cf84ad535c284345",
+  "error_type": "PersistentNaturalEnterConvergenceError",
+  "error": "CANDIDATE_INPUT_REJECTED:finalized_history_not_ready",
+  "runtime_network_invoked": false
+}

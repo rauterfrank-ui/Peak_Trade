@@ -1,0 +1,17 @@
+---
+description: Peak_Trade canonical Map of Truth bootstrap
+alwaysApply: true
+---
+
+# Peak_Trade Canonical Map of Truth
+
+Vor jeder Analyse, Planung, Implementierung, Codeänderung, Review-, Merge-, Runtime- oder Capability-Arbeit in diesem Repository:
+
+1. Lies `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` vollständig.
+2. Behandle es als primäre semantische Implementierungs- und Operationsautorität für Peak_Trade.
+3. Erstelle keine parallele Architektur, Autoritätskette, Capability-Reihenfolge, Zustandssemantik oder Definition of Done.
+4. Prüfe konkrete Runtime-Wahrheit weiterhin gegen Code, Config, Persistenz, Tests, Repository-HEAD und Evidence.
+5. Bei Widerspruch zwischen Runbook und produktiver Runtime-Wahrheit: nichts stillschweigend anpassen; Drift klassifizieren; fail-closed stoppen, sofern mutationsrelevant.
+6. Das Runbook besitzt keine Runtime-Autorisierung und aktiviert weder Live, Testnet, Orders, Credentials noch Kapitalbewegungen.
+7. Git-Operationen müssen im echten lokalen Repository mit echtem `.git` über das lokale Terminal stattfinden. Cursor-Sandbox-Git ist verboten.
+8. Untracked Evidence-Dateien müssen erhalten bleiben.

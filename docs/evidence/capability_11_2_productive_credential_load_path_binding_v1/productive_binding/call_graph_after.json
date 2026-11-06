@@ -1,0 +1,12 @@
+{
+  "activation": "not_activated",
+  "cap_11_3": "not_started_construction_forbidden",
+  "credential_load": "path_bound_fail_closed_never_executed",
+  "network_session": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_2_CredentialAuthorizationBoundary",
+    "Cap11_2_ProductiveCredentialLoadPathBinding",
+    "SimulatedExecutionPort"
+  ]
+}

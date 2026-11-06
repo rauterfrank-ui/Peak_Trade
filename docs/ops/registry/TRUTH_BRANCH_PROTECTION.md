@@ -1,0 +1,21 @@
+# Truth Branch Protection — `main`
+
+**Zweck:** Sicherstellen, dass die stabilen Job-Namen aus `.github/workflows/truth_gates_pr.yml` in der **klassischen** Branch Protection von `main` als **Required status checks** eingetragen sind:
+
+- `docs-drift-guard`
+- `repo-truth-claims`
+
+**Skript:** `scripts/ops/ensure_truth_branch_protection.py`
+
+| Modus | Verhalten |
+| --- | --- |
+| `--check` | Nur lesen (`gh api` GET). Exit `0`, wenn beide Kontexte vorhanden sind; sonst `1`. |
+| `--apply` | Deprecated und fail-closed blockiert (Exit `2`). Verwende den kanonischen Writer `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --apply`. |
+
+**Voraussetzungen:** `gh` installiert und authentifiziert; Token mit Leserecht auf Branch Protection.
+
+**Standard-Repo:** Owner `rauterfrank-ui`, Repo `Peak_Trade`, Branch `main` (über CLI-Flags überschreibbar).
+
+Siehe auch `docs/ops/registry/TRUTH_CORE.md` für die Truth-Schicht der Checks selbst.
+
+**Betrieb:** Wenn ein PR wegen fehlender oder hängender Required Checks blockiert ist (oder Reviews), Kurzüberblick und Retrigger-Hinweise: `docs/ops/runbooks/github_rulesets_pr_reviews_policy.md` → Abschnitt *Merge blockiert (`BLOCKED`)*.

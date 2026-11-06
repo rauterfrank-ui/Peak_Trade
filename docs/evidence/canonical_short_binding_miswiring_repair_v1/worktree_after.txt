@@ -1,0 +1,14 @@
+ M docs/evidence/canonical_short_binding_miswiring_trace_v1/short_binding_miswiring_harness_v1.py
+ M src/backtest/backtest_engine_position_feedback_adapter_v1.py
+ M src/backtest/mv2_research_wiring_v1.py
+ M tests/backtest/test_offline_canonical_end_to_end_system_smoke_run_v1.py
+ M tests/governance/test_canonical_short_binding_miswiring_trace_v1.py
+?? docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/
+?? docs/evidence/canonical_short_binding_miswiring_repair_v1/
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+?? docs/evidence/scope_event_noop_root_cause_audit_v1/
+?? tests/backtest/test_canonical_short_binding_miswiring_repair_v1.py
+?? tests/governance/test_canonical_short_binding_miswiring_repair_v1.py

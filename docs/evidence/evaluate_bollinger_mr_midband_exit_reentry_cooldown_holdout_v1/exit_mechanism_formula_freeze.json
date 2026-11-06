@@ -1,0 +1,31 @@
+{
+  "acts_after_entry_fill_only": true,
+  "composite_exit_efficiency": true,
+  "frozen_parameters": {
+    "bb_period": 20,
+    "bb_std": 2.0,
+    "composite_trigger_policy": "first_of_midband_cross_or_max_holding",
+    "exit_level": "middle_band",
+    "exit_threshold_binding_value": 0.5,
+    "long_exit_rule": "close_crosses_middle_from_below_to_at_or_above",
+    "max_holding_bars": 48,
+    "max_holding_exit_rule": "bars_since_entry_fill_gte_max_holding_bars",
+    "max_holding_frequency": "PT1H",
+    "max_holding_horizon_hours": 48,
+    "max_holding_source_field": "splits.max_holding_horizon_hours",
+    "short_exit_rule": "close_crosses_middle_from_above_to_at_or_below",
+    "stop_loss_remains_active_if_hit_first": true
+  },
+  "future_mfe_forbidden": true,
+  "includes_max_holding_horizon_exit": true,
+  "lookahead_forbidden": true,
+  "max_holding_bars": 48,
+  "max_holding_frequency": "PT1H",
+  "max_holding_horizon_hours": 48,
+  "max_holding_source_field": "splits.max_holding_horizon_hours",
+  "mechanism_class": "EXIT_EFFICIENCY",
+  "mechanism_id": "canonical_bollinger_side_aware_middle_band_exit_with_frozen_max_holding_horizon_v1",
+  "no_new_entry_authority": true,
+  "no_new_side_selection_authority": true,
+  "stop_loss_remains_active_if_hit_first": true
+}

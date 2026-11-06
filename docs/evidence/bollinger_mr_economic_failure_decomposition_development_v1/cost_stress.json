@@ -1,0 +1,44 @@
+{
+  "rows": [
+    {
+      "cost_multiplier": 0.5,
+      "fees": 100.84009765500801,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -123.42984651338043,
+      "net_profit_factor": 0.949885677847558,
+      "slippage": 50.420048827504004,
+      "trade_count": 51
+    },
+    {
+      "cost_multiplier": 1.0,
+      "fees": 201.68019531001602,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -274.6899929958916,
+      "net_profit_factor": 0.8945131625090622,
+      "slippage": 100.84009765500801,
+      "trade_count": 51
+    },
+    {
+      "cost_multiplier": 1.5,
+      "fees": 302.52029296502405,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -425.95013947840386,
+      "net_profit_factor": 0.8448312884170267,
+      "slippage": 151.26014648251203,
+      "trade_count": 51
+    },
+    {
+      "cost_multiplier": 2.0,
+      "fees": 403.36039062003204,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -577.2102859609156,
+      "net_profit_factor": 0.8000056876171731,
+      "slippage": 201.68019531001602,
+      "trade_count": 51
+    }
+  ]
+}

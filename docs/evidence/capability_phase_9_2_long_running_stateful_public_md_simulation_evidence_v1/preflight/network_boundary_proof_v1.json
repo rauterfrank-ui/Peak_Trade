@@ -1,0 +1,153 @@
+{
+  "AUTH_HEADER_PRESENT": false,
+  "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+  "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+  "GET_ONLY_PROVEN": false,
+  "LIVE_PATH_REACHABLE": false,
+  "NETWORK_SESSION_STARTED": false,
+  "NO_REAL_SUBMIT_ORDER_INTERFACE_IN_NO_ORDER_HOST": true,
+  "PAPER_EXCHANGE_EXECUTION_REACHABLE": false,
+  "PRIVATE_ENDPOINT_REACHABLE": false,
+  "PUBLIC_MD_ONLY_BOUNDARY_PROVEN": true,
+  "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+  "SIMULATED_EXECUTION_PORT_SEPARATE_FROM_REAL_EXECUTION_PORT": true,
+  "TESTNET_PATH_REACHABLE": false,
+  "cap72_network_boundary": {
+    "AUTH_HEADER_PRESENT": false,
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "HTTP_METHOD_ALLOWLIST": "GET_ONLY",
+    "NETWORK_SESSION_STARTED": false,
+    "PRIVATE_ENDPOINT_REACHABLE": false,
+    "ok": true
+  },
+  "eea_boundary": {
+    "AUTH_HEADER_PRESENT": false,
+    "EEA_PUBLIC_MD_HOST": "eea.okx.com",
+    "GET_ONLY_PROVEN": false,
+    "HTTP_METHOD_ALLOWLIST": "GET_ONLY",
+    "NETWORK_ALLOWLIST": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+    "PRIVATE_ENDPOINT_REACHABLE": false,
+    "PUBLIC_MD_ONLY_BOUNDARY_PROVEN": true,
+    "allowed_paths": [
+      "/api/v5/market/ticker",
+      "/api/v5/market/tickers",
+      "/api/v5/public/instruments",
+      "/api/v5/public/mark-price",
+      "/api/v5/public/time"
+    ],
+    "cases": [
+      {
+        "allowed": true,
+        "blockers": [],
+        "expect_allow": true,
+        "method": "GET",
+        "ok": true,
+        "url": "https://eea.okx.com/api/v5/public/time"
+      },
+      {
+        "allowed": true,
+        "blockers": [],
+        "expect_allow": true,
+        "method": "GET",
+        "ok": true,
+        "url": "https://eea.okx.com/api/v5/public/mark-price?instType=FUTURES"
+      },
+      {
+        "allowed": false,
+        "blockers": [
+          "PATH_FRAGMENT_FORBIDDEN:order",
+          "PATH_FRAGMENT_FORBIDDEN:trade",
+          "PATH_NOT_ALLOWED:/api/v5/trade/order"
+        ],
+        "expect_allow": false,
+        "method": "GET",
+        "ok": true,
+        "url": "https://eea.okx.com/api/v5/trade/order"
+      },
+      {
+        "allowed": false,
+        "blockers": [
+          "PATH_FRAGMENT_FORBIDDEN:account",
+          "PATH_FRAGMENT_FORBIDDEN:balance",
+          "PATH_NOT_ALLOWED:/api/v5/account/balance"
+        ],
+        "expect_allow": false,
+        "method": "GET",
+        "ok": true,
+        "url": "https://eea.okx.com/api/v5/account/balance"
+      },
+      {
+        "allowed": false,
+        "blockers": [
+          "METHOD_FORBIDDEN:POST"
+        ],
+        "expect_allow": false,
+        "method": "POST",
+        "ok": true,
+        "url": "https://eea.okx.com/api/v5/public/time"
+      },
+      {
+        "allowed": false,
+        "blockers": [
+          "AUTH_HEADER_DETECTED:Authorization",
+          "HEADER_NOT_ALLOWED:Authorization",
+          "SENSITIVE_HEADER_VALUE"
+        ],
+        "expect_allow": false,
+        "method": "GET",
+        "ok": true,
+        "url": "https://eea.okx.com/api/v5/public/time"
+      },
+      {
+        "allowed": false,
+        "blockers": [
+          "HOST_CLASS_FORBIDDEN:www.okx.com",
+          "HOST_FORBIDDEN:www.okx.com"
+        ],
+        "expect_allow": false,
+        "method": "GET",
+        "ok": true,
+        "url": "https://www.okx.com/api/v5/public/time"
+      },
+      {
+        "allowed": false,
+        "blockers": [
+          "HOST_CLASS_FORBIDDEN:okx.com",
+          "HOST_FORBIDDEN:okx.com"
+        ],
+        "expect_allow": false,
+        "method": "GET",
+        "ok": true,
+        "url": "https://okx.com/api/v5/public/time"
+      },
+      {
+        "allowed": false,
+        "blockers": [
+          "PATH_FRAGMENT_FORBIDDEN:users",
+          "PATH_NOT_ALLOWED:/api/v5/users/self/verify"
+        ],
+        "expect_allow": false,
+        "method": "GET",
+        "ok": true,
+        "url": "https://eea.okx.com/api/v5/users/self/verify"
+      }
+    ],
+    "ok": true,
+    "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1"
+  },
+  "execution_port": {
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+    "NO_REAL_SUBMIT_ORDER_INTERFACE_IN_NO_ORDER_HOST": true,
+    "ORDER_SIDE_EFFECT_OCCURRED": false,
+    "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+    "SIMULATED_EXECUTION_PORT_SEPARATE_FROM_REAL_EXECUTION_PORT": true,
+    "delegate": "ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1.apply_intended_action_via_canonical_accounting_v1",
+    "forbidden_call_hits": [],
+    "forbidden_import_hits": [],
+    "ok": true,
+    "port_kind": "SIMULATED_EXECUTION_PORT_V1",
+    "refuse_real_adapter": "refuse_real_execution_adapter_construction_v1"
+  },
+  "ok": true
+}

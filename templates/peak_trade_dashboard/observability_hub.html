@@ -1,0 +1,421 @@
+<!-- templates/peak_trade_dashboard/observability_hub.html -->
+<!-- Read-only Navigations-/Observability-Hub — keine Datenabfragen, keine Steuerzentrale -->
+{% extends "base.html" %}
+
+{% block content %}
+<div
+  class="space-y-8 max-w-5xl mx-auto"
+  data-section="observability-hub-v0"
+  data-observability-hub="true"
+  data-observability-readonly="true"
+  data-observability-display-only="true"
+>
+  <section
+    aria-label="Einordnung dieser Seite"
+    class="rounded-xl border border-amber-900/40 bg-amber-950/25 px-5 py-4 text-xs text-amber-100/95"
+    data-observability-safety-banner="true"
+  >
+    <p class="font-semibold text-amber-200/95 tracking-wide uppercase text-[11px] mb-2">
+      Observability-Hub · rein read-only · non-authorizing
+    </p>
+    <ul class="list-disc pl-5 space-y-1.5 leading-relaxed text-amber-100/90">
+      <li>Keine Orders.</li>
+      <li>Keine Live-/Testnet-Aktivierung.</li>
+      <li>Keine Capital-/Scope-Freigabe.</li>
+      <li>Kein Risk-/KillSwitch-Override.</li>
+      <li>
+        Diese Seite enthält keine POSTs und kein eigener Datenabruf gegen Provider oder Exchanges
+        — nur Verweise zu bestehenden GET-/Anzeige-Flächen.
+      </li>
+    </ul>
+  </section>
+
+  <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+    <div class="space-y-1.5">
+      <p class="text-xs uppercase tracking-wide text-slate-500">Peak_Trade</p>
+      <h1 class="text-2xl font-bold text-slate-100">Observability-Hub</h1>
+      <p class="text-sm text-slate-400 mt-0 max-w-3xl leading-relaxed">
+        Zentrale Link- und Hinweisleiste: bestehende, sichere Lese-Angebote durchklickbar machen —
+        keine neue Autorität, keine Steuerlogik für Handel oder Runner.
+      </p>
+    </div>
+  </header>
+
+  <section
+    class="rounded-xl border border-slate-700/80 bg-slate-900/45 px-5 py-4 text-xs text-slate-300 space-y-4"
+    aria-label="Globale Systemgrenze"
+    data-observability-boundary-legend="true"
+  >
+    <div class="space-y-1.5">
+      <p class="font-semibold text-slate-200 tracking-wide uppercase text-[11px]">
+        Globale Grenz-Legende (display-only)
+      </p>
+    </div>
+    <ul class="list-disc pl-5 space-y-1 leading-relaxed text-slate-400">
+      <li>Keine Orders.</li>
+      <li>Keine Testnet-/Live-Aktivierung.</li>
+      <li>Keine Capital-/Scope-Freigabe.</li>
+      <li>Kein Risk-/KillSwitch-Override.</li>
+      <li>Kein Workflow-Trigger von dieser Hub-Seite.</li>
+      <li>Kein PaperExecutionEngine-Wiring über diesen Hub.</li>
+    </ul>
+  </section>
+
+  {# Template contract: workflow dashboard panels rendered via shared partial include.
+     Projection Coverage panel markers (Not Truth · Not Selected Future):
+     data-workflow-panel-projection-coverage-v1="true"
+     data-projection-coverage-not-truth="true"
+     data-projection-coverage-non-authorizing="true"
+     data-projection-coverage-not-selected-future="true"
+     data-projection-coverage-strict-upstream-blocked="true"
+     universe_selection_projection_coverage
+     pcov.loaded
+     Projection Coverage
+     Not Truth
+     Not Selected Future
+     data-workflow-panel-pipeline-v1="true"
+  #}
+  {% include "partials/workflow_dashboard_v1_panels.html" %}
+
+
+  <section
+    class="rounded-xl border border-cyan-900/35 bg-cyan-950/10 px-5 py-4 space-y-4"
+    aria-label="System Status Snapshot — display-only"
+    data-observability-status-summary="true"
+  >
+    <div class="space-y-1.5">
+      <h2 class="text-sm font-semibold text-cyan-200/95 tracking-wide uppercase text-[11px]">
+        System Status Snapshot
+      </h2>
+      <p class="text-xs text-cyan-100/85 leading-relaxed">
+        Display-only status snapshot. No backend health certification. No provider readiness.
+        No Paper/Testnet/Live/order readiness.
+      </p>
+    </div>
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs">
+      <div>
+        <dt class="text-slate-400">Version</dt>
+        <dd class="font-mono text-slate-200">{{ status.version if status and status.version else "not provided" }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-400">Snapshot Commit</dt>
+        <dd class="font-mono text-slate-200">
+          {{ status.snapshot_commit if status and status.snapshot_commit else "not provided" }}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-slate-400">Environment</dt>
+        <dd class="font-mono text-slate-200">
+          {{
+            status.environment if status and status.environment
+            else (status.env if status and status.env else "not provided")
+          }}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-slate-400">Mode</dt>
+        <dd class="font-mono text-slate-200">
+          {{
+            status.mode if status and status.mode
+            else (status.run_mode if status and status.run_mode else "not provided")
+          }}
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section
+    class="rounded-xl border border-emerald-900/40 bg-emerald-950/15 px-5 py-4 space-y-4"
+    aria-label="Health Status — display-only"
+    data-observability-health-panel="true"
+    data-observability-health-readonly="true"
+    data-observability-health-no-actions="true"
+  >
+    <div class="space-y-1.5">
+      <h2 class="text-sm font-semibold text-emerald-200/95 tracking-wide uppercase text-[11px]">
+        Health Status Panel
+      </h2>
+      <p class="text-xs text-emerald-100/85 leading-relaxed">
+        read-only / display-only — keine Steuerbuttons, keine Formulare auf dieser Hub-Seite.
+        Dieses Panel löst keine Health-Checks oder Workflows aus, aktiviert weder Live noch Testnet und keine Orders,
+        und erlaubt keinen Risk- oder KillSwitch-Override.
+        Nutze die Links, um bestehende JSON-/Text-Endpunkte im Browser oder per Client abzufragen
+        (Polling oder Automatisierung gehört hierher nicht).
+      </p>
+    </div>
+    {% if status %}
+    <p class="text-xs text-slate-400 font-mono border border-slate-800/80 rounded-lg px-3 py-2 bg-slate-950/40"
+       data-observability-health-project-snapshot="{{ status.version }} {{ status.snapshot_commit }}">
+      Projekt-/Dashboard-Kontext (wie übrige Seiten — kein Gesundheitssignal):
+      {{ status.version }} · {{ status.snapshot_commit }}
+    </p>
+    {% endif %}
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
+      <ul class="space-y-2 text-sm text-sky-400 font-mono text-xs">
+        <li><a class="underline hover:text-sky-300" href="/health">GET /health</a></li>
+        <li><a class="underline hover:text-sky-300" href="/health/detailed">GET /health/detailed</a></li>
+        <li><a class="underline hover:text-sky-300" href="/health/metrics">GET /health/metrics</a></li>
+        <li><a class="underline hover:text-sky-300" href="/health/prometheus">GET /health/prometheus</a></li>
+        <li><a class="underline hover:text-sky-300" href="/api/health">GET /api/health</a> <span class="text-slate-500 font-sans text-xs">(minimaler Alias)</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section
+    class="rounded-xl border border-sky-900/35 bg-sky-950/10 px-5 py-4 space-y-4"
+    aria-label="Market Dashboard — removed"
+    data-observability-market-panel="true"
+    data-observability-market-provenance="true"
+    data-observability-market-no-fetch="true"
+    data-observability-market-no-readiness="true"
+  >
+    <div class="space-y-1.5">
+      <h2 class="text-sm font-semibold text-sky-200/95 tracking-wide uppercase text-[11px]">
+        Market Dashboard — Legacy Removed / Landscape V2 Shell
+      </h2>
+      <p class="text-xs text-sky-100/80 leading-relaxed">
+        The legacy Market Dashboard product was intentionally removed.
+        See <span class="font-mono">docs/webui/MARKET_DASHBOARD_REMOVED.md</span>.
+        Landscape V2 restores read-only <span class="font-mono">GET /market</span> as a consumer shell only.
+      </p>
+    </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-sky-100/90 leading-relaxed">
+      <li><span class="font-mono">source=dummy</span> is offline/synthetic display data.</li>
+      <li>
+        <span class="font-mono">source=kraken</span> is optional public OHLCV/network display if opened directly.
+      </li>
+      <li>The Observability Hub itself does not fetch OHLCV.</li>
+      <li>The Observability Hub itself does not call Kraken.</li>
+      <li>Market display is not provider readiness.</li>
+      <li>Market display is not Futures readiness.</li>
+      <li>Market display is not Paper/Testnet/Live/order readiness.</li>
+      <li>Market display is not trading authority.</li>
+      <li>Removed Market Dashboard BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth.</li>
+    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        Route status
+      </h3>
+      <p class="text-xs text-slate-400 m-0 font-mono">
+        GET /market — Landscape V2 Phase 3 read-only shell (no write/order/runtime controls).
+        Legacy aliases remain absent.
+      </p>
+    </div>
+  </section>
+
+  <section
+    class="rounded-xl border border-violet-900/35 bg-violet-950/10 px-5 py-4 space-y-4"
+    aria-label="Double Play Display JSON — display-only"
+    data-observability-double-play-panel="true"
+    data-observability-double-play-display-json="true"
+    data-observability-double-play-no-authority="true"
+  >
+    <div class="space-y-1.5">
+      <h2 class="text-sm font-semibold text-violet-200/95 tracking-wide uppercase text-[11px]">
+        Double Play Display Panel
+      </h2>
+      <p class="text-xs text-violet-100/85 leading-relaxed">
+        Reiner Snapshot/Display-Vertrag für Dashboard-Payload — keine Session, keine Exchange-Anbindung,
+        keine Ausführungsautorität.
+      </p>
+    </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-violet-100/90 leading-relaxed">
+      <li>Display JSON only</li>
+      <li>pure snapshot/display contract</li>
+      <li>no execution authority</li>
+      <li>no strategy authorization</li>
+      <li>no Live/Testnet/order path</li>
+      <li>no Capital/Scope approval</li>
+      <li>no Risk/KillSwitch override</li>
+    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
+      <ul class="text-sm space-y-2">
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
+             href="/api/master-v2/double-play/dashboard-display.json">
+            GET /api/master-v2/double-play/dashboard-display.json
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section
+    class="rounded-xl border border-indigo-900/35 bg-indigo-950/10 px-5 py-4 space-y-4"
+    aria-label="R and D experiments — visibility only"
+    data-observability-rd-panel="true"
+    data-observability-rd-research-only="true"
+    data-observability-rd-no-deployment="true"
+    data-observability-rd-no-strategy-authority="true"
+  >
+    <div class="space-y-1.5">
+      <h2 class="text-sm font-semibold text-indigo-200/95 tracking-wide uppercase text-[11px]">
+        R&amp;D Experiments Panel
+      </h2>
+      <p class="text-xs text-indigo-100/85 leading-relaxed">
+        R&amp;D experiments are research visibility only.
+      </p>
+    </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-indigo-100/90 leading-relaxed">
+      <li>The hub does not fetch experiment data.</li>
+      <li>The hub does not promote experiments.</li>
+      <li>The hub does not deploy strategies.</li>
+      <li>The hub does not authorize strategy output.</li>
+      <li>R&amp;D display is not readiness approval.</li>
+      <li>R&amp;D display is not Paper/Testnet/Live/order readiness.</li>
+      <li>R&amp;D display is not trading authority.</li>
+    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
+      <ul class="space-y-2 text-sm">
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/r_and_d/experiments">
+            GET /r_and_d/experiments
+          </a>
+        </li>
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
+             href="/api/r_and_d/experiments?limit=20">
+            GET /api/r_and_d/experiments?limit=20
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section
+    class="rounded-xl border border-orange-900/35 bg-orange-950/10 px-5 py-4 space-y-4"
+    aria-label="OPS CI Health — hub links read-only"
+    data-observability-ops-ci-panel="true"
+    data-observability-ops-ci-readonly-links="true"
+    data-observability-ops-ci-no-workflow-trigger="true"
+    data-observability-ops-ci-no-approval="true"
+  >
+    <div class="space-y-1.5">
+      <h2 class="text-sm font-semibold text-orange-200/95 tracking-wide uppercase text-[11px]">
+        OPS — CI Health Panel
+      </h2>
+      <p class="text-xs text-orange-100/85 leading-relaxed">
+        Nur Navigations-Verweise hier — löst keine Prüfluft aus. Die HTML-Oberfläche unter „CI Health“ kann
+        an anderer Stelle eigene Schritte anbieten; dieser Hub triggert nichts.
+      </p>
+    </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-orange-100/90 leading-relaxed">
+      <li>The Observability Hub only links to OPS CI GET surfaces.</li>
+      <li>
+        <span class="font-mono">GET /ops/ci-health/status</span> is the preferred read-only status path.
+      </li>
+      <li>
+        <span class="font-mono">GET /ops/ci-health</span> may show the dedicated CI dashboard, but the Hub itself
+        triggers nothing.
+      </li>
+      <li>The Hub does not trigger workflows.</li>
+      <li>The Hub does not start GitHub Actions.</li>
+      <li>CI status display is not readiness approval.</li>
+      <li>CI status display is not deployment approval.</li>
+      <li>CI status display is not Live/Testnet/order readiness.</li>
+      <li>CI status display is not trading authority.</li>
+    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
+      <ul class="space-y-2 text-sm">
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health">
+            GET /ops/ci-health</a>
+          <span class="text-slate-500 text-xs"> — HTML-Dashboard</span>
+        </li>
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health/status">
+            GET /ops/ci-health/status</a>
+          <span class="text-slate-500 text-xs"> — JSON (Lesestatus)</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {% include "partials/last_paper_run_panel_v0.html" %}
+
+  <section
+    class="rounded-xl border border-rose-900/35 bg-rose-950/10 px-5 py-4 space-y-4"
+    aria-label="Paper Shadow summary API — placeholder links only"
+    data-observability-paper-shadow-panel="true"
+    data-observability-paper-shadow-readmodel="true"
+    data-observability-paper-shadow-no-readiness="true"
+    data-observability-paper-shadow-no-authority="true"
+    data-observability-paper-shadow-placeholder="true"
+  >
+    <div class="space-y-1.5">
+      <h2 class="text-sm font-semibold text-rose-200/95 tracking-wide uppercase text-[11px]">
+        Paper/Shadow Summary API — Placeholder
+      </h2>
+      <p class="text-xs text-rose-100/85 leading-relaxed">
+        A read-only Paper/Shadow summary <span class="font-mono">GET</span> exists and is <strong>env-gated</strong>
+        on the server. This panel is static navigation only.
+      </p>
+    </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-rose-100/90 leading-relaxed">
+      <li><span class="font-mono">GET /observability</span> does not call that endpoint server-side.</li>
+      <li>The Observability Hub does not read Paper/Shadow artifacts.</li>
+      <li>No <span class="font-mono">/tmp</span> runtime source and no GitHub Actions artifact fetch from this page.</li>
+      <li>This placeholder is not readiness approval.</li>
+      <li>Not Paper/Testnet/Live/order readiness.</li>
+      <li>Not trading, execution, or strategy authority.</li>
+    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele und Doc-Pfade
+      </h3>
+      <ul class="space-y-2 text-sm">
+        <li>
+          <a
+            class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
+            href="/api/observability/paper-shadow-summary"
+          >GET /api/observability/paper-shadow-summary</a>
+          <span class="text-slate-500 text-xs"> — JSON (env-gated; may return 503)</span>
+        </li>
+        <li>
+          <span class="text-slate-300 font-mono text-xs">docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md</span>
+        </li>
+        <li>
+          <span class="text-slate-300 font-mono text-xs">docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4 text-xs text-slate-500" aria-label="Hinweise">
+    <p class="leading-relaxed">
+      Knowledge API und andere geschriebene Oberflächen sind absichtlich nicht verlinkt
+      — dieser Hub soll nur bestehende, uneingeschränkte GET-/Angebote sammeln, ohne neue Autorisierung zu suggerieren.
+    </p>
+  </section>
+</div>
+{% endblock %}

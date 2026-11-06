@@ -1,0 +1,25 @@
+"""Read exact committed artifacts, verify byte domains and recompute later Meta."""
+from pathlib import Path
+import hashlib
+import json
+import subprocess
+from src.experiments.canonical_search_candidate_research_execution_v1 import read_research_execution_gvef_reference_v1
+from src.experiments.canonical_research_result_to_meta_input_v1 import build_meta_learning_from_research_results_v1
+from src.experiments.canonical_meta_learning_v1 import canonical_meta_learning_policy_v1
+from src.experiments.canonical_advanced_search_v1 import canonical_record_payload_v1
+revision='1c34978282ede5aa4e25542bbb83fb7360d7d10b'
+root=Path.cwd();prefix='docs/ops/evidence/search_candidate_measured_execution_meta_proof_v1_2026_11_04/'
+def blob(path):return subprocess.check_output(['git','show',revision+':'+path])
+def doc(path):return json.loads(blob(prefix+path))
+manifest=doc('artifact_manifest.json');checked=[]
+for item in manifest['files']:
+ raw=blob(prefix+item['path']);assert hashlib.sha256(raw).hexdigest()==item['sha256'];checked.append(item['path'])
+for path,h in doc('source_bindings.json')['new_worktree_files'].items():
+ assert hashlib.sha256(blob(path)).hexdigest()==h;assert (root/path).read_bytes()==blob(path)
+reference=doc('artifacts/gvef_reference.json');raw=blob(prefix+'artifacts/'+reference['artifact_ref']);executed=read_research_execution_gvef_reference_v1(reference,artifact_bytes=raw)
+meta=build_meta_learning_from_research_results_v1([executed.next_meta_input],created_at='2026-08-18T19:00:00Z',policy=canonical_meta_learning_policy_v1())
+assert canonical_record_payload_v1(meta)==doc('artifacts/later_meta.json')
+assert canonical_record_payload_v1(meta)==doc('artifacts/later_meta_after_gvef_reference_reload.json')
+result=dict(source_commit=revision,method='git show revision:path for every manifest artifact and bound new source; no workspace artifact read',artifact_count=len(checked),artifact_git_byte_sha256='ALL_MATCH',new_source_git_and_worktree_bytes='IDENTICAL',canonical_numeric_reference_read='PASS',existing_search_and_phase10_validators='PASS',later_meta_full_result='IDENTICAL_TO_BOTH_COMMITTED_PRE_AND_POST_RELOAD_OUTPUTS',authority='NONE',limits='Bounded synthetic mechanism reproducibility and committed artifact availability only; no natural learning, source authentication or whole-system usefulness proof')
+Path('/tmp/peaktrade_git_numeric_roundtrip_result.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps(result,indent=2))

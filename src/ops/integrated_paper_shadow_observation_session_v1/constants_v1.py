@@ -1,0 +1,52 @@
+"""Identity and hard invariants for IPSO capability v1."""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1"
+PACKAGE_MARKER = "INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1=true"
+PRODUCER_FAMILY = "ops.integrated_paper_shadow_observation_session_v1"
+SCHEMA_VERSION = "v1"
+CONTRACT_CONFIG_SCHEMA_VERSION = "integrated_paper_shadow_observation_session.v1"
+
+AUTHORITY_EFFECT_NONE = "NONE"
+ACTIVATION_EFFECT_NONE = "NONE"
+ECONOMIC_GATE_EFFECT_NONE = "NONE"
+RUNTIME_EFFECT_NONE = "NONE"
+ORDER_EFFECT_NONE = "NONE"
+
+REQUIRED_MODE = "observation"
+VENUE_OKX = "OKX"
+MARKET_TYPE_FUTURES = "FUTURES"
+DEFAULT_MAX_SESSION_DURATION_SECONDS = 21600
+
+CONFIG_RELPATH = "config/ops/integrated_paper_shadow_observation_session_v1.toml"
+CONTRACT_DOC_RELPATH = (
+    "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md"
+)
+CLI_RELPATH = "scripts/ops/run_integrated_paper_shadow_observation_session_contract_v1.py"
+
+FORBIDDEN_IMPORT_PREFIXES: tuple[str, ...] = (
+    "src.orders",
+    "src.broker",
+    "src.live",
+    "src.execution.live",
+)
+
+AUTHORITY_FLAGS_ALWAYS_FALSE: tuple[str, ...] = (
+    "PAPER_SHADOW_OBSERVATION_AUTHORIZED",
+    "TESTNET_AUTHORIZED",
+    "LIVE_AUTHORIZED",
+    "ORDERS_AUTHORIZED",
+    "ECONOMIC_VALIDITY_PASS",
+    "INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED",
+    "SHADOW_ACTIVATION_AUTHORIZED",
+    "RUNTIME_ACTIVATION_AUTHORIZED",
+    "PROMOTION_PASS",
+)
+
+NO_AUTO_PROMOTION = True
+WALLCLOCK_SESSION_EXECUTION_ALLOWED = False
+NETWORK_ALLOWED = False
+CREDENTIALS_ALLOWED = False
+BROKER_WRITES_ALLOWED = False
+ORDERS_ALLOWED = False

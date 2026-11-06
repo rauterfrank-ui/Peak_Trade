@@ -1,0 +1,49 @@
+{
+  "domain": "self_learning",
+  "verdict": "PASS",
+  "metrics": [
+    {
+      "metric_id": "sl.artifact_digest",
+      "value": "4c3e61c8b5e0ddf1909927877c4c9b46414dbe361f1d47c21c61c90f0ff00b43",
+      "unit": null,
+      "baseline_value": null
+    }
+  ],
+  "invariants": [
+    {
+      "invariant_id": "sl.no_productive_writeback",
+      "pass_": true,
+      "detail": "SELF_LEARNING_PRODUCTIVE_WRITEBACK=false"
+    },
+    {
+      "invariant_id": "sl.baseline_candidate_bound",
+      "pass_": true,
+      "detail": null
+    }
+  ],
+  "boundary_results": [],
+  "decision_deltas": null,
+  "semantic_digest_deltas": {
+    "learning_artifact": {
+      "schema_version": "research_execution_gvef_reference_v1",
+      "artifact_ref": "executed_research.canonical.json",
+      "payload_encoding": "UTF8_JSON_NUMBERS_PRESERVED",
+      "payload_sha256": "4e5970b30662925e77fdc7e4912135943c1b29087241401b01202f6f35d7b2b2",
+      "execution_content_digest": "f4429aea641d229f2e4b21b74fc8b1fcf5f972c9bb75f10e2710baf9fea34512",
+      "experiment_id": "7ed962d52ca935f94ca77d8defc6ddab7e31331b899cb31551a679236058f7b3",
+      "loop_identity": "ad018404a1aa57e80e9927a7b1bf6575815bd1d9c412ca712e97ae645cd067c9",
+      "search_identity": "312e26eb1f09cac10df2e7495e18179934fe7968d865149a69e5838862eae813",
+      "declared_evidence_source_class": "TEST_ONLY_SYNTHETIC",
+      "source_class_authenticated": false,
+      "TEST_ONLY_SYNTHETIC": true,
+      "gvef_scope": "REFERENCE_ARTIFACT_BINDING_NOT_NUMERIC_QUALITY_EVALUATION",
+      "productive_apply_authorized": false
+    },
+    "learning_artifact_digest": "4c3e61c8b5e0ddf1909927877c4c9b46414dbe361f1d47c21c61c90f0ff00b43",
+    "evidence_source_class": "MECHANISM_TEST_EVIDENCE"
+  },
+  "evidence_refs": [
+    "evidence/sl/candidate"
+  ],
+  "failure_classification": null
+}

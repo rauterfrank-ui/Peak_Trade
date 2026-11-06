@@ -1,0 +1,32 @@
+"""Constants for PREREGISTRATION_PROBE_FIXTURE_REPOSITORY_SHA_BINDING_V1."""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "PREREGISTRATION_PROBE_FIXTURE_REPOSITORY_SHA_BINDING_V1"
+PACKAGE_MARKER = "PREREGISTRATION_PROBE_FIXTURE_REPOSITORY_SHA_BINDING_V1=true"
+OWNER = "ops.preregistration_probe_fixture_repository_sha_binding_v1"
+SCHEMA_VERSION = "v1"
+
+HARDENS_CAPABILITY = "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1"
+BRIDGED_CAPABILITY = HARDENS_CAPABILITY
+
+# Normative Desktop forensic 1h runbook identity (operator-ratified).
+RUNBOOK_NORMATIVE_FILENAME = "Peak_Trade_Full_System_Paper_Shadow_1h_Runbook_v4_forensic_safe(6).md"
+RUNBOOK_SHA256 = "a7529ef8ba8c5950f6372822b71ac2a5304ae037013288d48d53306d4105ff5a"
+LOCAL_OPERATOR_COPY_BYTE_IDENTICAL = True
+LOCAL_OPERATOR_COPY_FILENAME = "Peak_Trade_Full_System_Paper_Shadow_1h_Runbook_v4_forensic_safe.md"
+
+PROBE_TYPE_CANONICAL = "canonical_strategy_probe"
+PROBE_TYPE_FORCED_FIXTURE = "forced_wiring_fixture"
+
+REPOSITORY_SHA_SOURCE = "git_rev_parse_HEAD"
+REPOSITORY_SHA_FULL_LENGTH = 40
+REPOSITORY_SHA_HEX_RE = r"^[0-9a-f]{40}$"
+
+# Explicit non-claims for this capability attestation.
+GO_FOR_PREREGISTRATION = False
+GO_FOR_AUTHORIZATION = False
+GO_FOR_1H_RUN = False
+HARD_STOP = True
+ECONOMIC_VALIDITY_PASS = False
+PROMOTION_ELIGIBLE = False

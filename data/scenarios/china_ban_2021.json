@@ -1,0 +1,20 @@
+{
+  "name": "China Mining Ban May 2021",
+  "date": "2021-05-19",
+  "description": "China announced ban on cryptocurrency mining and trading, causing immediate 30% drop in Bitcoin. Hashrate plummeted as miners relocated. Market recovered within months.",
+  "asset_shocks": {
+    "BTC-EUR": -0.35,
+    "BTC-USDT": -0.35,
+    "ETH-EUR": -0.40,
+    "ETH-USDT": -0.40,
+    "XRP-EUR": -0.25,
+    "XRP-USDT": -0.25,
+    "ADA-EUR": -0.30,
+    "ADA-USDT": -0.30,
+    "SOL-EUR": -0.35,
+    "SOL-USDT": -0.35,
+    "default": -0.30
+  },
+  "probability": "rare",
+  "historical_frequency": "regulatory_events"
+}

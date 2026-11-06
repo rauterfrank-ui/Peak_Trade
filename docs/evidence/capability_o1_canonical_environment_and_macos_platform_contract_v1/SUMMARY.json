@@ -1,0 +1,24 @@
+{
+  "AUTHORIZATION_CONSUMED": false,
+  "CANONICAL_LAUNCHER_IMPLEMENTED": false,
+  "CAPABILITY_ID": "CAPABILITY_O1_CANONICAL_ENVIRONMENT_AND_MACOS_PLATFORM_CONTRACT_V1",
+  "CORE_LOGIC_CHANGE": false,
+  "ENVIRONMENT_POLICY_ID": "peak_trade.canonical_runtime_environment_policy_public_md_no_order_v1",
+  "GLOBAL_OS_ENVIRON_MUTATED": false,
+  "MACOS_PORTABILITY_CONTRACT": {
+    "LAUNCH_BACKEND_DEFERRED_TO_O2": true,
+    "PYTHON_OS_SETSID_OR_START_NEW_SESSION_ALLOWED": true,
+    "SETSID_CLI_REQUIRED": false
+  },
+  "NETWORK_SESSION_STARTED": false,
+  "NO_PROXY_POLICY_UNAMBIGUOUS": true,
+  "OHLCV_IMPLICIT_PROXY_INHERITANCE_BLOCKED": true,
+  "PROCESS_SUPERVISOR_IMPLEMENTED": false,
+  "PUBLIC_MD_IMPLICIT_PROXY_INHERITANCE_BLOCKED": true,
+  "SETSID_CLI_REQUIRED": false,
+  "ok": true,
+  "repository_sha": "7eaa3bd51669a9beefc1af432e263877db56a749",
+  "tests_run": [
+    "tests/ops/test_canonical_runtime_environment_contract_v1.py"
+  ]
+}

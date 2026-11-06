@@ -1,0 +1,47 @@
+PROJECT: Peak_Trade
+TOPIC: acceptance_oriented_next_step_prep
+STATUS: ready_for_preflight
+BRANCH: main baseline after Type-A bounded trial closeout
+MODE: paper_stability_guard
+
+STARTING POINT
+- Type-A rejected-order-evidence run completed successfully
+- completed session:
+  - session_id: session_20260318_192925_bounded_pilot_08b026
+  - run_id: bounded_pilot_ma_crossover_20260318_192926_21d00411
+- session-scoped execution-event evidence confirmed
+- no active bounded-pilot processes remain
+
+OBJECTIVE OF NEXT STEP
+- prepare an acceptance-oriented bounded run
+- distinguish clearly from rejected-order-evidence runs
+- ensure operator intent, credentials, and evidence expectations are explicit before launch
+
+ACCEPTANCE-ORIENTED PRECONDITIONS
+- valid Kraken credentials available in the intended execution environment
+- explicit operator approval for an acceptance-oriented run
+- Entry Contract confirmed
+- Go/No-Go confirmed
+- Dry Validation confirmed
+- Ops Cockpit reviewed
+- supervisor remains stopped unless intentionally required
+- PT_EXEC_EVENTS_ENABLED=true set when execution-event evidence is required
+
+WHAT MUST BE EXPLICITLY DECIDED
+- the next run is intended to test exchange acceptance, not just rejected-order evidence
+- the operator expects an actually acceptable order path
+- evidence expectations include at least:
+  - order_submit
+  - acceptance / reject / fill outcome as produced by the concrete exchange path
+
+RECOMMENDED NEXT STEP
+- run the read-only preflight checklist first
+- confirm no interfering bounded-pilot processes remain
+- confirm credentials are present in the actual execution environment
+- confirm the acceptance-oriented goal in the operator decision block before launch
+
+KEY REFERENCES
+- docs&#47;ops&#47;evidence&#47;TYPE_A_BOUNDED_TRIAL_20260318_REJECTED_ORDER_EVIDENCE_CLOSEOUT.md
+- docs&#47;ops&#47;runbooks&#47;NEXT_BOUNDED_TRIAL_PREFLIGHT_CHECKLIST.md
+- docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md
+- docs&#47;ops&#47;specs&#47;FIRST_BOUNDED_LIVE_ORDER_CONTRACT.md

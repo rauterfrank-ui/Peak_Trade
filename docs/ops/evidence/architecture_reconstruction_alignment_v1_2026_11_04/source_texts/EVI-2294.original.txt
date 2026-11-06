@@ -1,0 +1,119 @@
+# Gesamtsystem: Strukturbausteine und offenes Register
+
+Die 28 zuvor ohne Vergleichsgruppe gebliebenen Einträge der späteren Interaction-Map sind jetzt mit ihrer Aufgabe und Begrenzung erfasst. Damit haben alle 75 Einträge dieser konkreten Map eine Navigation. Das ist weder eine vollständige PeakTrade-Inventur noch eine vollständige ursprüngliche Architektur. Mehrere Navigationsbezüge sind zulässig; sie behaupten keine gemeinsame fachliche Elternstruktur.
+
+## Ergänzte Struktur
+
+### Evidence-Eingang zwischen Forschung und Entscheidungskern
+
+Dokumentierte Schnittstellenarchitektur; relevante Verbindung, keine automatische Änderung der Handelslogik.
+
+- **Producer → typisierter Adapter** — MI-, Learning-, Optimization- und Meta-Learning-Artefakte in zulässige Intake-Datensätze überführen. Quelle: `SS05:Topology`.
+- **Component A: Evidence Adjudicator** — Registrierten Producer/Typ/Version prüfen, normalisieren und zulässige Evidence adjudizieren. Quelle: `SS01:Component A; SS02:Inputs/outputs`.
+- **Component B: Input Creator / Binder** — Nur zugelassene A-Ergebnisse in unveränderliche typisierte Ziel-Inputs binden. Quelle: `SS03:Inputs/outputs`.
+- **Ziel-Seam / Interpretation** — Zulässigen Input entgegennehmen; semantische Interpretation bleibt beim Zielbaustein. Quelle: `SS04:Authority`.
+
+Grenze: Direkter Producer→B-/DP-Bypass ist im Vertrag ausgeschlossen. Der bestehende mechanische proposed_d_t-Pfad wird separat erhalten.
+
+Offen: Ursprung des gesamten fachlichen Eingangsmodells, vollständige Producer-Abdeckung und tatsächliche Laufzeitwirkung offen. P1–P5 bezeichnen Ausbaustufen, keine fünf Universumsebenen.
+
+### Äußere Ausführungs-, Zugriffs- und Signiergrenzen
+
+Kontrollarchitektur außerhalb der fachlichen Handelsentscheidung.
+
+- **Standing / Policy Admission** — Voraussetzungen für einen begrenzten Gate-Entscheid prüfen. Quelle: `SS09:Semantic contract`.
+- **Permit Admission / Mint / Binding** — Zulässigkeit, tatsächliche Erzeugung und Identitätsbindung eines Permits unterscheiden. Quelle: `SS08:Semantic contract`.
+- **Credential / opaker Handle / Signatur** — Materialzugriff und Signieren ohne Ableitung einer Handelsentscheidung oder Sendeberechtigung trennen. Quelle: `SS10:Semantic contract`.
+- **PRE-POST / tatsächliche Ausführung** — Vorbereitete Request-Envelope von gesonderter tatsächlicher Sendefreigabe unterscheiden. Quelle: `SS10:Authority lattice`.
+
+Grenze: Die hier gelesenen Verträge autorisieren unsere Arbeit nicht zu einem Zugriff, Signieren oder Senden. Es wurden ausschließlich Textquellen gelesen.
+
+Offen: Ursprünglicher vollständiger Außenring und alle ursprünglichen Grenzen weiter offen. Policy-Voraussetzungen sind keine bewiesene aktive Sendekette.
+
+### Marktkontext, Bestätigung und passive Identitäten
+
+Zulässigen Input und einfache Beobachtungsidentität von höherer Handelssemantik trennen.
+
+- **Frische Pretrade-Evidence** — Vertragsgemäße GET-Evidence für den jeweiligen Pretrade-Kontext beschreiben; allein noch keine Admission. Quelle: `SS07:Goal;Freshness`.
+- **C1 / G17 Kontext** — Bestätigte Beobachtung und typisierten Volatilitätskontext an die vorgesehenen Stellen binden. Quelle: `MAP:c1_confirmation;g17_typed_vol_cmc_bind`.
+- **Elementary Direction** — Einfache aufeinanderfolgende Markbewegung als passive BULL/BEAR/NEUTRAL-Identität führen. Quelle: `SS06:Purpose;Non-authority`.
+
+Grenze: Die einfache Richtungsidentität ersetzt weder Double Play noch SideState, Scope oder Entry/Exit. Keine Detailformel rekonstruiert.
+
+Offen: Historische Rolle und alle Consumer-Bindungen dieser Primitiven offen; Vorhandensein ist kein Relevanz- oder Wirkungsbeweis.
+
+### Vergleichsvarianten und Nachweise
+
+Vorhandene Varianten erhalten, ohne sie zur aktuellen vollständigen Architektur zu erklären.
+
+- **Layered Core / Authority Seal** — Mechanische Episode und ihren Seal-Nachweis beschreiben. Quelle: `SS11`.
+- **Closure / Grenzprüfung** — Abschluss- und Prüfartefakte als Nachweise eigener Reichweite führen. Quelle: `MAP:ranking_selection_profile_closure_b12;external_effect_boundary_forensic_review`.
+- **Ungeklärte Seams** — Kapital-Slot, Intent-Firewall und Parametertarget als offene Zuordnung statt gesicherte Architektur führen. Quelle: `MAP:double_play_capital_slot;intent_compatibility_firewall;m9_volatility_max_age`.
+
+Grenze: L1–L10 im Seal-Dokument, L6 im Evidence-Seam und das zurückgestellte AI L0–L6 sind unterschiedliche Namenskontexte; sie werden nicht gleichgesetzt.
+
+Offen: Vollständige ursprüngliche Layered-Core-Konstruktion und fachliche Relevanz aller Vergleichsvarianten offen.
+
+## Bisher offene Map-Einträge
+
+- **full_core_fresh_pretrade_runtime_get** — Frische Pretrade-Evidence; `EVIDENCE_INTERFACE`. Beobachtungsdaten und frische zulässige Pretrade-Evidence nicht gleichsetzen.
+- **ranking_selection_profile_closure_b12** — Status- und Nachweisprodukte; `EVIDENCE_RECORD`. Abschlussrecord ist kein neuer fachlicher Entscheider.
+- **venue_plan_td_mode** — Order-/Venue-Identität; `BOUNDARY_GATE`. Plan-/Umgebungsidentität nicht als Ausführung interpretieren.
+- **c1_confirmation** — Gebundener Marktkontext / Bestätigung; `TYPED_CONTEXT_INPUT`. Zeit-/Identitätskontext getrennt von Entscheidungsautorität führen.
+- **elementary_direction** — Elementare Zustandsidentität; `PASSIVE_PRIMITIVE`. Explizit keine SideState-, C3-, EntryExit- oder Sizing-Entscheidung.
+- **p5_layered_core** — Layered-Core-Vergleichsvariante; `QUALIFIED_VARIANT`. Mechanischer Seal-/Episode-Beleg beweist keinen Authority-Cutover und keine vollständige ursprüngliche Ebenenarchitektur.
+- **p3_input_creator_binder** — Evidence-Eingang / typisierte Bindung; `EVIDENCE_INTERFACE`. Producer, Prüfung, Bindung und Zielinterpretation bleiben getrennt; keine automatische Handelslogikänderung.
+- **p4_l6_productive_seam** — Evidence-Eingang / typisierte Bindung; `EVIDENCE_INTERFACE`. Producer, Prüfung, Bindung und Zielinterpretation bleiben getrennt; keine automatische Handelslogikänderung.
+- **governed_runtime_apply_materialization** — Governed Apply / Consumer-Bindung; `CHANGE_CONTROL_SEAM`. Record, Freigabe, Materialisierung, Start und Consumerwirkung sind eigene Nachweise; Slice-Status nicht als globaler heutiger Stand übernehmen.
+- **f1_m9_scoped_owner_apply_execution** — Governed Apply / Consumer-Bindung; `CHANGE_CONTROL_SEAM`. Record, Freigabe, Materialisierung, Start und Consumerwirkung sind eigene Nachweise; Slice-Status nicht als globaler heutiger Stand übernehmen.
+- **f1_m9_scoped_owner_threshold_value_ratification** — Governed Apply / Consumer-Bindung; `CHANGE_CONTROL_SEAM`. Record, Freigabe, Materialisierung, Start und Consumerwirkung sind eigene Nachweise; Slice-Status nicht als globaler heutiger Stand übernehmen.
+- **f1_m9_scoped_owner_productive_runtime_apply_start** — Governed Apply / Consumer-Bindung; `CHANGE_CONTROL_SEAM`. Record, Freigabe, Materialisierung, Start und Consumerwirkung sind eigene Nachweise; Slice-Status nicht als globaler heutiger Stand übernehmen.
+- **f1_m9_productive_runtime_threshold_consumer_wiring** — Governed Apply / Consumer-Bindung; `CHANGE_CONTROL_SEAM`. Record, Freigabe, Materialisierung, Start und Consumerwirkung sind eigene Nachweise; Slice-Status nicht als globaler heutiger Stand übernehmen.
+- **external_effect_boundary_forensic_review** — Grenzprüfung / Nachweise; `FORENSIC_REVIEW_RECORD`. Prüfung der Grenze ist weder Aktivierung noch Ausführung.
+- **standing_external_effect_lift_policy** — Externe Wirkung: Policy und Permit; `AUTHORIZATION_POLICY`. Policy-Zulassung bedeutet nicht bereits erzeugtes Permit oder Orderversand.
+- **external_effect_permit_mint_policy** — Externe Wirkung: Policy und Permit; `AUTHORIZATION_POLICY`. Policy-Zulassung bedeutet nicht bereits erzeugtes Permit oder Orderversand.
+- **checkout_independent_credential_access_policy** — Zugriffs-/Signiergrenze; `CREDENTIAL_INTERFACE`. Zugriffspolitik, Materialbeschaffung, opaker Handle, Signatur und PRE-POST sind getrennt; keine Credentials gelesen oder verwendet.
+- **real_keychain_access_or_credential_material_load_policy** — Zugriffs-/Signiergrenze; `CREDENTIAL_INTERFACE`. Zugriffspolitik, Materialbeschaffung, opaker Handle, Signatur und PRE-POST sind getrennt; keine Credentials gelesen oder verwendet.
+- **current_productive_k1_opaque_signing_handle_pre_post_policy** — Zugriffs-/Signiergrenze; `CREDENTIAL_INTERFACE`. Zugriffspolitik, Materialbeschaffung, opaker Handle, Signatur und PRE-POST sind getrennt; keine Credentials gelesen oder verwendet.
+- **productive_activation_boundary_forensic_review** — Grenzprüfung / Nachweise; `FORENSIC_REVIEW_RECORD`. Prüfung der Grenze ist weder Aktivierung noch Ausführung.
+- **k1_credential_seam** — Zugriffs-/Signiergrenze; `CREDENTIAL_INTERFACE`. Zugriffspolitik, Materialbeschaffung, opaker Handle, Signatur und PRE-POST sind getrennt; keine Credentials gelesen oder verwendet.
+- **host_join_send_adapter** — Host-/Execution-Übergabe; `HOST_EXECUTION_INTERFACE`. Readiness und Port-/Adapter-Bindung sind keine externe Wirkung.
+- **double_play_capital_slot** — Ungeklärte Kapital-/Intent-/Parameter-Seams; `UNRESOLVED_INTERFACE`. Existenz oder registrierter Target-Name beweist weder fachliche Zuständigkeit noch wirksame Einbindung.
+- **intent_compatibility_firewall** — Ungeklärte Kapital-/Intent-/Parameter-Seams; `UNRESOLVED_INTERFACE`. Existenz oder registrierter Target-Name beweist weder fachliche Zuständigkeit noch wirksame Einbindung.
+- **m9_volatility_max_age** — Ungeklärte Kapital-/Intent-/Parameter-Seams; `UNRESOLVED_INTERFACE`. Existenz oder registrierter Target-Name beweist weder fachliche Zuständigkeit noch wirksame Einbindung.
+- **g17_typed_vol_cmc_bind** — Gebundener Marktkontext / Bestätigung; `TYPED_CONTEXT_INPUT`. Zeit-/Identitätskontext getrennt von Entscheidungsautorität führen.
+- **eea_universe_inventory_acquisition_v1** — Externe Faktenaufnahme; `READ_ACQUISITION_BOUNDARY`. Netzwerkaufnahme von den nachgelagerten no-network Entscheidungsproducern trennen.
+- **cap21_cap23_productive_persistence_v1** — Auswahlzustand / Persistenz-Orchestrierung; `STATE_ORCHESTRATION`. Orchestrierte Veröffentlichung bewahrt die getrennten Producer-/Selection-Aufgaben.
+
+## Neue Quellenkandidaten mit ungeklärter Relevanz
+
+Ein ergänzender Census nennt weitere Strukturflächen. Dessen Topologie- und Vollständigkeitslabels sind keine neuen Nachweise. Diese Kandidaten erscheinen deshalb nicht automatisch als aktuelle Architekturbausteine.
+
+- **Feature Contract Layer** (`src/features`): Quellenrolle contract/catalog; Relevanz ungeklärt.
+- **Knowledge** (`src/knowledge`): Quellenrolle operator knowledge API; Relevanz ungeklärt.
+- **LevelUp** (`src/levelup`): Quellenrolle offline contract joins; Relevanz ungeklärt.
+
+## Belegart, Zeit und Grenzen
+
+Elf Vertragsdokumente wurden für die Struktur vollständig gelesen, unverändert am lokalen Vergleichspin 5d1c838c15369507c5247834db4dd0df25592169 gesichert und gehasht. Der Census SS12 wurde nur in den im Manifest aufgeführten Navigationsabschnitten gelesen; nicht alle 477 KB wurden semantisch geprüft. Seine eigenen Baselines und Konflikthinweise bleiben erhalten. Die Arbeitskopie des Census wurde nicht verwendet oder verändert.
+
+P1–P5 sind Workpackage-/Ausbaustufen. Aus ihnen werden keine ursprünglichen Universums-Level erfunden. Die A/B/L6-Seam-Struktur ist von der alten AI-Autonomie-Matrix L0–L6 getrennt. Alte Status- und Freigabetexte sind historische Aussagen, keine neuen Aufträge oder pauschalen heutigen Betriebszustände.
+
+Die drei expliziten parent_domain-Beziehungen aus der Map bleiben dokumentierte Hierarchieaussagen; alle weiteren Gruppen sind Navigation. Ein Navigationsbezug oder Policyname ist kein Beweis einer implementierten Verbindung oder Laufzeitwirkung.
+
+Weiter offen: früheste fachliche Konstruktion aller Bereiche, vollständige innere Ebenen, semantische Kausalität innerhalb und zwischen ihnen, vollständiger ursprünglicher Außenring sowie relevante Bereiche außerhalb dieser Map. Keine Produktänderung, Aktivierung, Credential-Nutzung oder Ledger-Mutation.
+
+## Quellen
+
+- **SS01**: `docs/ops/specs/EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS01-EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1.md>).
+- **SS02**: `docs/ops/specs/EVIDENCE_INPUT_PLANE_P2_EVIDENCE_ADJUDICATOR_RUNTIME_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS02-EVIDENCE_INPUT_PLANE_P2_EVIDENCE_ADJUDICATOR_RUNTIME_V1.md>).
+- **SS03**: `docs/ops/specs/EVIDENCE_INPUT_PLANE_P3_INPUT_CREATOR_BINDER_RUNTIME_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS03-EVIDENCE_INPUT_PLANE_P3_INPUT_CREATOR_BINDER_RUNTIME_V1.md>).
+- **SS04**: `docs/ops/specs/EVIDENCE_INPUT_PLANE_P4_L6_PRODUCTIVE_SEAM_BINDING_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS04-EVIDENCE_INPUT_PLANE_P4_L6_PRODUCTIVE_SEAM_BINDING_V1.md>).
+- **SS05**: `docs/ops/specs/EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS05-EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md>).
+- **SS06**: `docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS06-ELEMENTARY_DIRECTION_PRIMITIVE_V1.md>).
+- **SS07**: `docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS07-FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md>).
+- **SS08**: `docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS08-EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md>).
+- **SS09**: `docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS09-STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md>).
+- **SS10**: `docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS10-CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md>).
+- **SS11**: `docs/ops/specs/P5_LAYERED_CORE_AUTHORITY_SEAL_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS11-P5_LAYERED_CORE_AUTHORITY_SEAL_V1.md>).
+- **SS12**: `config/governance/current_system_census_graph_v1/source_v1.json`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/SS12-census.source.json>).

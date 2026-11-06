@@ -1,0 +1,246 @@
+# config/strategy_tiering.toml
+# =============================================================================
+# Peak_Trade Strategy Tiering Configuration (Phase 41B)
+# =============================================================================
+#
+# Zentrale Konfiguration für Strategy-Tiering:
+# - core:   Primäre Strategien für Hauptportfolio
+# - aux:    Ergänzende Strategien mit spezifischen Stärken
+# - legacy: Ältere Strategien, nur zu Vergleichszwecken
+#
+# Kriterien für Tiering:
+# - core:   Sharpe >= 1.5, MaxDD >= -15%, robust über Regime
+# - aux:    Sharpe >= 1.0, MaxDD >= -20%, spezifische Stärken
+# - legacy: Sharpe < 1.0 oder MaxDD < -20% oder ersetzt durch bessere Version
+#
+
+# =============================================================================
+# CORE STRATEGIES
+# =============================================================================
+
+[strategy.rsi_reversion]
+tier = "core"
+recommended_config_id = "rsi_reversion_v1_core"
+allow_live = false
+notes = "Robust über mehrere Vol-Regime, gute Sharpe/MaxDD-Balance. Empfohlen als Mean-Reversion-Komponente."
+
+[strategy.ma_crossover]
+tier = "core"
+recommended_config_id = "ma_crossover_v1_core"
+allow_live = false
+notes = "Klassischer Trend-Follower, stabil und vorhersagbar. Basis für Portfolio-Diversifikation."
+
+[strategy.bollinger_bands]
+tier = "core"
+recommended_config_id = "bollinger_bands_v1_core"
+allow_live = false
+notes = "Volatilitäts-basierte Mean-Reversion. Gute Performance in Range-Märkten."
+
+# =============================================================================
+# AUX STRATEGIES
+# =============================================================================
+
+[strategy.breakout]
+tier = "aux"
+recommended_config_id = "breakout_v1_balanced"
+allow_live = false
+notes = "Trend-folgend mit SL/TP, gute Ergänzung. Höhere Tail-Risiken in choppy Märkten."
+
+[strategy.macd]
+tier = "aux"
+recommended_config_id = "macd_v1_balanced"
+allow_live = false
+notes = "Momentum-basiert, gut in Trending-Phasen. Kann in Seitwärtsmärkten Verluste generieren."
+
+[strategy.momentum_1h]
+tier = "aux"
+recommended_config_id = "momentum_1h_v1"
+allow_live = false
+notes = "Kurzfristiges Momentum, als Timing-Filter nutzbar."
+
+[strategy.trend_following]
+tier = "aux"
+recommended_config_id = "trend_following_v1"
+allow_live = false
+notes = "ADX-basiert, robust in Trending-Märkten. Schlechte Performance in Range-Phasen."
+
+[strategy.mean_reversion]
+tier = "aux"
+recommended_config_id = "mean_reversion_v1"
+allow_live = false
+notes = "Z-Score-basiert, gut in stabilen Märkten. Risiko bei Regime-Wechseln."
+
+[strategy.vol_regime_filter]
+tier = "aux"
+recommended_config_id = "vol_regime_filter_v1"
+allow_live = false
+notes = "Volatilitäts-Filter, als Overlay für andere Strategien nutzbar."
+
+[strategy.composite]
+tier = "aux"
+recommended_config_id = "composite_v1"
+allow_live = false
+notes = "Multi-Strategy-Aggregation, Diversifikationseffekte. Komplexität erhöht."
+
+[strategy.regime_aware_portfolio]
+tier = "aux"
+recommended_config_id = "regime_aware_portfolio_v1"
+allow_live = false
+notes = "Regime-basierte Allokation, adaptive Gewichtung. Abhängig von Regime-Detection-Qualität."
+
+# =============================================================================
+# LEGACY STRATEGIES
+# =============================================================================
+
+[strategy.breakout_donchian]
+tier = "legacy"
+recommended_config_id = "breakout_donchian_v0"
+allow_live = false
+notes = "Ersetzt durch neuere Breakout-Strategie mit SL/TP. Nur zu Vergleichszwecken."
+
+[strategy.my_strategy]
+tier = "legacy"
+recommended_config_id = "my_strategy_v0"
+allow_live = false
+notes = "Demo-Strategie, nicht für Produktion gedacht."
+
+[strategy.vol_breakout]
+tier = "legacy"
+recommended_config_id = "vol_breakout_v0"
+allow_live = false
+notes = "Ersetzt durch vol_regime_filter + breakout Kombination."
+
+# =============================================================================
+# R&D / RESEARCH STRATEGIES (NICHT FÜR LIVE-TRADING)
+# =============================================================================
+#
+# Diese Strategien befinden sich in der Research-Phase und dürfen NICHT
+# für Shadow/Testnet/Live-Trading verwendet werden. Sie sind ausschließlich
+# für Offline-Backtests und akademische Analysen gedacht.
+#
+# Felder:
+# - tier:           "r_and_d" für alle Research-Strategien
+# - category:       Gruppierung (z.B. "cycles", "volatility", "microstructure", "ml")
+# - risk_profile:   "experimental" für alle R&D-Strategien
+# - owner:          "research" - Team/Bereich
+# - tags:           Schlagworte für Filterung/Suche
+# - label:          Lesbare Anzeige im Dashboard
+#
+
+[strategy.el_karoui_vol_model]
+tier = "r_and_d"
+label = "El Karoui Volatility Model"
+category = "volatility"
+risk_profile = "experimental"
+owner = "research"
+tags = ["volatility", "stochastic-vol", "risk-model", "options"]
+recommended_config_id = "el_karoui_vol_v0_research"
+allow_live = false
+notes = """
+El Karoui Vol-Regime-Modell (Research-Only / Non-Authority).
+PRIMARY_ROLE=REGIME_INFORMATION · AUTH-005.
+Pragmatische rolling/EWM-Vol (nicht BSDE-Publikationsmath).
+⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
+Keine Master-V2-/Double-Play-/Scope-/Agreement-/Risk-/Sizing-Authority.
+"""
+
+[strategy.ehlers_cycle_filter]
+tier = "r_and_d"
+label = "Ehlers Cycle Filter"
+category = "cycles"
+risk_profile = "experimental"
+owner = "research"
+tags = ["cycles", "dsp", "filters", "signal-processing", "intraday"]
+recommended_config_id = "ehlers_cycle_filter_v0_research"
+allow_live = false
+notes = """
+Ehlers DSP Cycle Filter (Research-Only).
+Basiert auf John Ehlers' Digital Signal Processing Techniken:
+- Super Smoother Filter (weniger Lag als EMA)
+- Bandpass-Filter für Cycle-Isolation
+- Hilbert Transform für Phase-Messung
+Ziel: Verbesserte Intraday-Signalqualität.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
+Deployment erst nach Phase-X-Freigabe möglich.
+"""
+
+[strategy.meta_labeling]
+tier = "r_and_d"
+label = "Lopez de Prado Meta-Labeling"
+category = "ml"
+risk_profile = "experimental"
+owner = "research"
+tags = ["meta-labeling", "ml", "machine-learning", "signal-filtering", "triple-barrier"]
+recommended_config_id = "meta_labeling_v0_research"
+allow_live = false
+notes = """
+Meta-Labeling nach López de Prado (Research-Only).
+ML-basierter Meta-Layer über Basis-Strategien:
+- Triple-Barrier-Labeling für Outcomes
+- Feature-Engineering für ML-Modelle
+- Signal-Filterung durch Secondary Model
+Ziel: Bessere Precision durch ML-gestützte Signal-Auswahl.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
+Deployment erst nach Phase-X-Freigabe möglich.
+"""
+
+# =============================================================================
+# R&D SKELETON STRATEGIES (Platzhalter ohne Implementierung)
+# =============================================================================
+
+[strategy.bouchaud_microstructure]
+tier = "r_and_d"
+label = "Bouchaud Microstructure Overlay"
+category = "microstructure"
+risk_profile = "experimental"
+owner = "research"
+tags = ["microstructure", "orderbook", "market-impact", "propagator"]
+recommended_config_id = "bouchaud_microstructure_v0_skeleton"
+allow_live = false
+notes = """
+Bouchaud Microstructure (R&D-SKELETON, Orderbuch-/Tick-basiert).
+Platzhalter-Skelett für Markt-Mikrostruktur-Analyse nach Bouchaud:
+- Orderbuch-Imbalance als Preisdruckindikator
+- Trade-Sign-Korrelationen (Metaorder-Detection)
+- Propagator-Modelle für Preisimpact
+Voraussetzung: Tick-/Orderbuch-Daten (nicht in Peak_Trade verfügbar).
+⚠️ SKELETON OHNE IMPLEMENTIERUNG - Nur strukturelle Basis.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für offline_backtest/research.
+"""
+
+[strategy.vol_regime_overlay]
+tier = "r_and_d"
+label = "Gatheral Cont Vol Overlay"
+category = "volatility"
+risk_profile = "experimental"
+owner = "research"
+tags = ["volatility", "rough-vol", "regime-overlay", "risk-layer", "position-sizing"]
+recommended_config_id = "vol_regime_overlay_v0_skeleton"
+allow_live = false
+notes = """
+Vol-/Rough-Vol-Regime-Overlay nach Gatheral & Cont (R&D-SKELETON).
+Meta-Risk-Layer über bestehende Strategien:
+- Keine eigenen Entry/Exit-Signale
+- Vol-Budget-Management (Tages-Vol-Limit)
+- Regime-Detection (low/normal/high vol)
+- Position-Sizing basierend auf Vol-Regime
+⚠️ SKELETON OHNE IMPLEMENTIERUNG - Nur strukturelle Basis.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für offline_backtest/research.
+"""
+
+# =============================================================================
+# NOTES
+# =============================================================================
+#
+# Tiering-Updates:
+# - Bei neuen Strategien: Erst als "unclassified" starten, nach Profiling tiern
+# - Upgrade core -> aux: Wenn Robustness-Tests problematisch
+# - Downgrade aux -> legacy: Wenn bessere Alternative verfügbar
+#
+# Live-Trading-Freigabe:
+# - allow_live = true nur nach:
+#   1. Erfolgreichem Walk-Forward-Testing
+#   2. Monte-Carlo mit positivem 5%-Perzentil
+#   3. Stress-Tests bestanden
+#   4. Testnet-Validierung abgeschlossen
+#

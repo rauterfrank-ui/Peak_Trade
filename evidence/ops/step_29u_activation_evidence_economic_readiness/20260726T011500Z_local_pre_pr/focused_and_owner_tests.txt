@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/.peak_trade_worktrees/step-29u-activation-evidence-economic-readiness-v0
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 71 items
+
+tests/ops/test_step_29u_audit_provenance_v0.py ...........               [ 15%]
+tests/ops/test_step_29u_economic_validity_readiness_v0.py .............  [ 33%]
+tests/ops/test_step_29u_activation_eligibility_inventory_v0.py ......... [ 46%]
+.....................                                                    [ 76%]
+tests/ops/test_step_29u_canonical_shadow_binding_v0.py ......            [ 84%]
+tests/ops/test_step29u_binding_implementation_inventory_contract_v0.py . [ 85%]
+..........                                                               [100%]
+
+============================== 71 passed in 3.00s ==============================

@@ -1,0 +1,19 @@
+{
+  "SECRET_VALUES_INCLUDED": false,
+  "auth_required": false,
+  "bar": "1m",
+  "connect_timeout_seconds": 10.0,
+  "endpoint": "/api/v5/market/candles?instId=0G-USDT-SWAP&bar=1m&limit=100",
+  "get_count": 0,
+  "host": "eea.okx.com",
+  "inst_id": "0G-USDT-SWAP",
+  "inst_id_binding_source": "CURRENT_PRODUCTIVE_CURSOR_VENUE_NATIVE_ID",
+  "limit": "100",
+  "limit_binding_source": "EXISTING_CURRENT_PRODUCTIVE_PUBLIC_1M_CANDLES_GET_QUERY",
+  "max_request_count": 1,
+  "method": "GET",
+  "path": "/api/v5/market/candles",
+  "timeout_seconds": 20.0,
+  "transport_capability": "FullCoreProductiveReadOnlyGetTransportV1",
+  "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1"
+}

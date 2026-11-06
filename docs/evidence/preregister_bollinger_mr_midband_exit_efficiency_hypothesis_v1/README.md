@@ -1,0 +1,8 @@
+# Preregister Bollinger/MR midband exit-efficiency hypothesis v1
+
+Definition-only evidence package. No evaluation executed.
+`EVALUATION_RUN_COUNT=0`. Holdout not accessed.
+
+HYPOTHESIS_ID=BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1
+DATASET_ID=pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1
+PREREGISTRATION_STATE=DEFINITION_ONLY_PREREGISTERED

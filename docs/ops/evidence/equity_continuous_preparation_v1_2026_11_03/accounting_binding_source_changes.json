@@ -1,0 +1,26 @@
+{
+  "base_commit": "a4459354489570ac361951b86c81d23fd7290898",
+  "canonical_mathematical_kernel": {
+    "path": "src/execution/paper/futures_accounting.py",
+    "unchanged_sha256": "4b0ba16bbef653678fa4ff499a867ab745b3b02c3a02f39cf8c311a71ca81e84"
+  },
+  "intentional_binding_corrections": {
+    "src/ops/productive_futures_accounting_runtime_binding_v1/accounting_engine_v1.py": {
+      "before_sha256": "4a4c4b249b93ab193d94751028f8d4946889ad65ad506569ff090dc5f69bdf21",
+      "after_sha256": "5622a632cfcd28bb31a194d81efea55edd68a04df830d6cdcded3c51b3335283"
+    },
+    "src/ops/productive_futures_accounting_runtime_binding_v1/models_v1.py": {
+      "before_sha256": "53ba9e3774d4a451773097f0182eb2f91b870dfa99126d1f2df9819c3c20bd9b",
+      "after_sha256": "fdf7b62081d38224d2b24de4c535cd8756fb9dac793bab571cc2db164446b5d0"
+    },
+    "src/ops/productive_futures_accounting_runtime_binding_v1/bridge_binding_v1.py": {
+      "before_sha256": "e1e6d050138c38cdabca34dac3cda067b591d10cac44516e5b9937229b278782",
+      "after_sha256": "9d2c3f0fe196faeb934f30a641a43a84eff665c302e7b5c34352b9386b920682"
+    },
+    "src/ops/productive_futures_accounting_runtime_binding_v1/persistence_v1.py": {
+      "before_sha256": "7a066f7ed10449e3c2a464d245da46f05c2641d2f57343a9e38b68afd4880077",
+      "after_sha256": "56ab422bc578b858e4b34a69f0ec76042d5379a3677578a5e1fcf3ad0e29111d"
+    }
+  },
+  "real_state_or_learning_rewrite": false
+}

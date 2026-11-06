@@ -1,0 +1,936 @@
+
+# ci smoke workflow-only 20260207-0217Z
+# ci smoke workflow-only 20260207-0135Z
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: ["main", "master"]
+  merge_group:
+    branches: ["main", "master"]
+  workflow_dispatch:
+    inputs:
+      force_matrix:
+        description: 'Force full Python matrix (run_matrix=true) regardless of changed paths'
+        required: false
+        default: false
+        type: boolean
+      run_exhaustive_full:
+        description: 'Run EXHAUSTIVE_FULL suite (manual only; never default for PR paths)'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+  actions: read
+
+jobs:
+  # ============================================================================
+  # Exact-head Ready reuse preflight (always runs; reuse=true only on ready_for_review
+  # when Draft already produced successful required contexts for this exact head SHA).
+  # Never job-level-skips required checks; consumers short-circuit heavy steps instead.
+  # ============================================================================
+  ready-exact-head-reuse:
+    name: ready-exact-head-reuse
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Probe must never fail the job: reuse=false falls through to full validation.
+    outputs:
+      reuse: ${{ steps.normalize.outputs.reuse }}
+    steps:
+      - name: Initialize Ready-reuse fallback
+        id: ready_reuse_default
+        shell: bash
+        run: |
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=bootstrap_not_completed" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout exact PR-head verifier
+        id: ready_reuse_checkout
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        continue-on-error: true
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: .ready-reuse-head
+          sparse-checkout: |
+            scripts/ci/exact_head_ready_reuse.py
+            scripts/ci/required_checks_config.py
+            config/ci/required_status_checks.json
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Evaluate exact-head Ready reuse
+        id: verify
+        if: ${{ always() }}
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=init" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" != "pull_request" ] || [ "${{ github.event.action }}" != "ready_for_review" ]; then
+            echo "reuse_reason=not_ready_for_review" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ steps.ready_reuse_checkout.outcome }}" != "success" ]; then
+            echo "reuse_reason=bootstrap_checkout_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          expected_sha="${{ github.event.pull_request.head.sha }}"
+          actual_sha="$(git -C .ready-reuse-head rev-parse HEAD 2>/dev/null || true)"
+          if [ -z "${actual_sha}" ] || [ "${actual_sha}" != "${expected_sha}" ]; then
+            echo "reuse_reason=bootstrap_sha_mismatch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f .ready-reuse-head/scripts/ci/exact_head_ready_reuse.py ]; then
+            echo "reuse_reason=bootstrap_verifier_missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f .ready-reuse-head/scripts/ci/required_checks_config.py ] || [ ! -f .ready-reuse-head/config/ci/required_status_checks.json ]; then
+            echo "reuse_reason=bootstrap_verifier_missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export PYTHONPATH="${GITHUB_WORKSPACE}/.ready-reuse-head/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
+          python3 .ready-reuse-head/scripts/ci/exact_head_ready_reuse.py \
+            --repo "${{ github.repository }}" \
+            --head-sha "${expected_sha}" \
+            --contexts "tests (3.11)" "strategy-smoke" \
+            --required-config .ready-reuse-head/config/ci/required_status_checks.json \
+            --report-json /tmp/exact_head_ready_reuse_report.json \
+            --write-github-output
+          RC=$?
+          if [ "${RC}" -ne 0 ]; then
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=verifier_execution_failed" >> "$GITHUB_OUTPUT"
+          fi
+          # Always succeed so Required jobs never skip due to probe failure.
+          exit 0
+
+      - name: Normalize reuse output (fail-closed default false)
+        id: normalize
+        if: ${{ always() }}
+        run: |
+          set +e
+          RAW="${{ steps.verify.outputs.reuse }}"
+          if [ "${RAW}" = "true" ]; then
+            echo "reuse=true" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=${{ steps.verify.outputs.reuse_reason }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            if [ -n "${{ steps.verify.outputs.reuse_reason }}" ]; then
+              echo "reuse_reason=${{ steps.verify.outputs.reuse_reason }}" >> "$GITHUB_OUTPUT"
+            else
+              echo "reuse_reason=normalize_default_false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Upload reuse report
+        if: ${{ always() && github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: exact-head-ready-reuse-report
+          path: /tmp/exact_head_ready_reuse_report.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # ============================================================================
+  # Change Detection (pragmatic flow)
+  # ============================================================================
+  # Outputs: code_changed (historical output name), run_matrix, run_fast_lane, docs_only, workflow_only,
+  # static_contract_changed, docs_or_static_contract_only, webui_surface_changed, webui_surface_only.
+  # - run_fast_lane: always true (Fast-Lane always runs).
+  # - run_matrix: true when non_webui_code paths changed (or workflow_dispatch force_matrix=true).
+  # - run_fast: always true. run_fast_lane: alias.
+  # - docs_only: true when ONLY docs/out/*.md changed (no code, workflow, or static-contract paths).
+  # - workflow_only: true when ONLY .github/workflows changed.
+  # - static_contract_changed: tests/ci/**, tests/ops/**, tests/webui/test_*_structure_contract*.py, src/ops/*_contract_v0.py, src/ops/*_contract_v1.py (not full-matrix code).
+  # - docs_or_static_contract_only: no src/scripts/config/workflow code paths; docs and/or static-contract only.
+  # - webui_surface_changed: Market/Observability/WebUI surface paths (bounded Fast-Lane lane).
+  # - webui_surface_only: webui_surface without non_webui_code (Case D — skip full matrix, bounded WebUI pytest).
+  # Code paths: src/**, templates/**, tests/** minus tests/ci/**, tests/ops/**, and whitelisted tests/webui/test_*_structure_contract*.py; plus scripts/**, config/**, schemas/levelup/**, deps, Makefile.
+  # ============================================================================
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code_changed: ${{ steps.set_outputs.outputs.code_changed }}
+      run_matrix: ${{ steps.set_outputs.outputs.run_matrix }}
+      run_fast: ${{ steps.set_outputs.outputs.run_fast }}
+      run_fast_lane: ${{ steps.set_outputs.outputs.run_fast }}
+      docs_only: ${{ steps.set_outputs.outputs.docs_only }}
+      workflow_only: ${{ steps.set_outputs.outputs.workflow_only }}
+      static_contract_changed: ${{ steps.set_outputs.outputs.static_contract_changed }}
+      docs_or_static_contract_only: ${{ steps.set_outputs.outputs.docs_or_static_contract_only }}
+      webui_surface_changed: ${{ steps.set_outputs.outputs.webui_surface_changed }}
+      webui_surface_only: ${{ steps.set_outputs.outputs.webui_surface_only }}
+      test_selection_mode: ${{ steps.test_selection.outputs.test_selection_mode }}
+      test_selection_reason: ${{ steps.test_selection.outputs.test_selection_reason }}
+      tests_execute_full: ${{ steps.test_selection.outputs.tests_execute_full }}
+      tests_execute_contract_focused: ${{ steps.test_selection.outputs.tests_execute_contract_focused }}
+      tests_execute_focused: ${{ steps.test_selection.outputs.tests_execute_focused }}
+      tests_execute_pr_bounded_full: ${{ steps.test_selection.outputs.tests_execute_pr_bounded_full }}
+      tests_execute_exhaustive_full: ${{ steps.test_selection.outputs.tests_execute_exhaustive_full }}
+      tests_execute_invalid: ${{ steps.test_selection.outputs.tests_execute_invalid }}
+      tests_execute_no_op: ${{ steps.test_selection.outputs.tests_execute_no_op }}
+      focused_pytest_targets: ${{ steps.test_selection.outputs.focused_pytest_targets }}
+      focused_module_imports: ${{ steps.test_selection.outputs.focused_module_imports }}
+      pr_bounded_pytest_targets: ${{ steps.test_selection.outputs.pr_bounded_pytest_targets }}
+      fast_lane_contract_mode: ${{ steps.test_selection.outputs.fast_lane_contract_mode }}
+      fast_lane_contract_pytest_targets: ${{ steps.test_selection.outputs.fast_lane_contract_pytest_targets }}
+      matrix_contract_mode: ${{ steps.test_selection.outputs.matrix_contract_mode }}
+      matrix_contract_reason: ${{ steps.test_selection.outputs.matrix_contract_reason }}
+      matrix_contract_pytest_targets: ${{ steps.test_selection.outputs.matrix_contract_pytest_targets }}
+      tests_execute_matrix_contract_focused: ${{ steps.test_selection.outputs.tests_execute_matrix_contract_focused }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3
+        id: filter
+        with:
+          filters: |
+            code:
+              # Picomatch extglob: offline ops contract modules use static_contract + Fast-Lane (PR #3984 lineage).
+              - 'src/!(ops)/**'
+              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py|shadow_preparation_readiness_gate_v0.py)'
+              - 'templates/**'
+              # Picomatch extglob (dorny/paths-filter): separate `!` lines do not exclude
+              # matched files from `tests/**` (see PR #3728 validation). Split buckets:
+              - 'tests/!(ci|ops|webui)/**'
+              - 'tests/webui/!(test_*_structure_contract*)/**'
+              - 'tests/webui/!(test_*_structure_contract*).py'
+              - 'scripts/**'
+              - 'config/**'
+              - '!config/ops/shadow_preparation_readiness_gate_v0.toml'
+              - 'schemas/levelup/**'
+              - 'requirements.txt'
+              - 'requirements*.txt'
+              - 'pyproject.toml'
+              - 'uv.lock'
+              - 'pytest.ini'
+              - 'Makefile'
+            webui_surface:
+              - 'src/webui/**'
+              - 'templates/peak_trade_dashboard/**'
+              - 'docs/webui/**'
+              - 'tests/webui/**'
+              - 'tests/fixtures/**'
+              - 'tests/ops/test_*_env_schema_boundary*.py'
+            non_webui_code:
+              - 'src/!(ops|webui)/**'
+              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py|shadow_preparation_readiness_gate_v0.py)'
+              - 'templates/!(peak_trade_dashboard)/**'
+              - 'tests/!(ci|ops|webui|fixtures)/**'
+              - 'scripts/**'
+              - 'config/**'
+              - '!config/ops/shadow_preparation_readiness_gate_v0.toml'
+              - 'schemas/levelup/**'
+              - 'requirements.txt'
+              - 'requirements*.txt'
+              - 'pyproject.toml'
+              - 'uv.lock'
+              - 'pytest.ini'
+              - 'Makefile'
+            static_contract:
+              - 'tests/ci/**'
+              - 'tests/ops/**'
+              - 'tests/webui/test_*_structure_contract*.py'
+              - 'src/ops/*_contract_v0.py'
+              - 'src/ops/*_contract_v1.py'
+            docs:
+              - 'docs/**'
+              - 'out/**'
+              - '**/*.md'
+            workflow:
+              - '.github/workflows/**'
+
+      - name: Set pragmatic flow outputs
+        id: set_outputs
+        run: |
+          FORCE_MATRIX="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force_matrix == 'true' }}"
+          CODE="${{ steps.filter.outputs.code }}"
+          NON_WEBUI="${{ steps.filter.outputs.non_webui_code }}"
+          WEBUI="${{ steps.filter.outputs.webui_surface }}"
+          STATIC="${{ steps.filter.outputs.static_contract }}"
+          DOCS="${{ steps.filter.outputs.docs }}"
+          WF="${{ steps.filter.outputs.workflow }}"
+
+          echo "code_changed=${CODE}" >> "$GITHUB_OUTPUT"
+          echo "static_contract_changed=${STATIC}" >> "$GITHUB_OUTPUT"
+          echo "webui_surface_changed=${WEBUI}" >> "$GITHUB_OUTPUT"
+
+          if [ "$FORCE_MATRIX" = "true" ]; then
+            echo "run_matrix=true" >> "$GITHUB_OUTPUT"
+          elif [ "$NON_WEBUI" = "true" ]; then
+            echo "run_matrix=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_matrix=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "run_fast=true" >> "$GITHUB_OUTPUT"
+
+          if [ "$WEBUI" = "true" ] && [ "$NON_WEBUI" != "true" ] && [ "$WF" != "true" ]; then
+            echo "webui_surface_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "webui_surface_only=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ "$DOCS" = "true" ] && [ "$CODE" != "true" ] && [ "$WF" != "true" ] && [ "$STATIC" != "true" ]; then
+            echo "docs_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$WF" = "true" ] && [ "$CODE" != "true" ] && [ "$DOCS" != "true" ] && [ "$STATIC" != "true" ]; then
+            echo "workflow_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "workflow_only=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$CODE" != "true" ] && [ "$WF" != "true" ] && { [ "$DOCS" = "true" ] || [ "$STATIC" = "true" ]; }; then
+            echo "docs_or_static_contract_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_or_static_contract_only=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # CI_PROVISIONED_INTERPRETER: `python` after setup-python is the
+      # documented runtime-contract exception. Local PATH python3 remains prohibited.
+      - name: Set up Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies for test selection
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Diff-aware test selection (fail-closed)
+        id: test_selection
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          FORCE_ARGS=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_exhaustive_full }}" = "true" ]; then
+            FORCE_ARGS+=(--force-exhaustive)
+          fi
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="${{ github.event.pull_request.base.ref }}"
+            git fetch origin "${BASE_REF}" --depth=1
+            git diff --name-only "origin/${BASE_REF}...HEAD" > /tmp/changed_files.txt || true
+          else
+            : > /tmp/changed_files.txt
+          fi
+          python3 scripts/ops/ci_test_selection_v1.py \
+            --files-file /tmp/changed_files.txt \
+            --event-name "${{ github.event_name }}" \
+            "${FORCE_ARGS[@]}" \
+            --github-output
+          echo "Changed files:"
+          cat /tmp/changed_files.txt || true
+
+  # ============================================================================
+  # CI Required Contexts Contract
+  # ============================================================================
+  # Validates that the CI workflow follows the required checks naming contract:
+  # - Matrix jobs must have explicit names (e.g., tests (${{ matrix.python-version }}))
+  # - No job-level if: conditions on required checks (would skip check creation)
+  # This prevents PRs from being blocked by missing required check contexts.
+  # See: docs/ops/ci_required_checks_matrix_naming_contract.md
+  # Ops: mergeable UNKNOWN quickflow siehe docs/ops/runbooks/github_rulesets_pr_reviews_policy.md
+  # ============================================================================
+  ci-required-contexts-contract:
+    name: ci-required-contexts-contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Validate CI Required Contexts Contract
+        run: ./scripts/ops/check_required_ci_contexts_present.sh
+
+  # ============================================================================
+  # Evidence Validator (P5B required check)
+  # ============================================================================
+  # Generates a deterministic pack from fixtures and validates via
+  # scripts/aiops/validate_evidence_pack.py. Always runs (no job-level if)
+  # to satisfy required check contract.
+  # ============================================================================
+  evidence-validator:
+    name: Evidence Validator
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [changes, ready-exact-head-reuse]
+    steps:
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: Evidence Validator skipped heavy work — exact-head required contexts already success"
+
+      - name: Checkout
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Set up Python 3.11
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate and validate Evidence Pack (P5B)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        run: scripts/ci/evidence_pack_validation_smoke.sh
+
+  # ============================================================================
+  # Fast-Lane (always runs; minimal smoke for docs/workflow-only PRs)
+  # ============================================================================
+  fast-lane:
+    name: Fast-Lane
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [changes, ready-exact-head-reuse]
+    steps:
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: Fast-Lane skipped heavy work — exact-head required contexts already success"
+
+      - name: Checkout
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Stability smoke (fast gate)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
+        run: |
+          pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
+
+      - name: Durable completion bounded Fast-Lane (diff-aware CONTRACT_FOCUSED)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.fast_lane_contract_mode == 'DURABLE_COMPLETION_BOUNDED' }}
+        run: |
+          set -euo pipefail
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          TARGETS="${{ needs.changes.outputs.fast_lane_contract_pytest_targets }}"
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          (( ${#VALIDATED_TARGETS[@]} )) || { echo "DURABLE_COMPLETION_BOUNDED targets empty — fail closed"; exit 1; }
+          pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+
+      - name: Focused Fast-Lane contract check (diff-aware FOCUSED PRs)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.workflow_only != 'true' && needs.changes.outputs.fast_lane_contract_mode != 'DURABLE_COMPLETION_BOUNDED' }}
+        run: |
+          set -euo pipefail
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          shopt -s nullglob; ci_contract=(tests/ci/test_ci_*contract*.py); shopt -u nullglob
+          (( ${#ci_contract[@]} )) || { echo "tests/ci contract subset empty — fail closed"; exit 1; }
+          if [ "${{ needs.changes.outputs.run_matrix }}" = "true" ]; then
+            pytest "${ci_contract[@]}" "${PYTEST_ARGS[@]}"
+          else
+            TARGETS="${{ needs.changes.outputs.focused_pytest_targets }}"
+            mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+            pytest "${ci_contract[@]}" "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+          fi
+
+      - name: Workflow contract tests (diff-aware CONTRACT_FOCUSED)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.fast_lane_contract_mode == 'CONTRACT_FOCUSED' }}
+        run: |
+          set -euo pipefail
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          TARGETS="${{ needs.changes.outputs.fast_lane_contract_pytest_targets }}"
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          (( ${#VALIDATED_TARGETS[@]} )) || { echo "CONTRACT_FOCUSED targets empty — fail closed"; exit 1; }
+          pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+
+      - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract, src/ops contract modules via tests)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.webui_surface_only != 'true' && needs.changes.outputs.tests_execute_focused != 'true' && needs.changes.outputs.workflow_only != 'true' && needs.changes.outputs.fast_lane_contract_mode == 'FULL_STATIC_CONTRACTS' }}
+        run: |
+          set -euo pipefail
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          NARROW=false; declare -a EXTRA=()
+          # narrow_fast_lane_gate: canonical selector outputs + strict changed-file allowlist (fail-closed)
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ needs.changes.outputs.tests_execute_no_op }}" = "true" ] && [ "${{ needs.changes.outputs.static_contract_changed }}" = "true" ] && [ "${{ needs.changes.outputs.run_matrix }}" != "true" ]; then
+            NARROW=true
+            BASE_REF="${{ github.event.pull_request.base.ref }}"
+            git fetch origin "${BASE_REF}" --depth=1
+            while IFS= read -r path; do
+              [ -z "$path" ] && continue
+              case "$path" in
+                .github/workflows/ci.yml) ;;
+                tests/ci/*) ;;
+                docs/*|out/*|*.md) ;;
+                tests/ops/test_*.py|tests/webui/test_*structure_contract*.py) EXTRA+=("$path") ;;
+                .github/workflows/*) NARROW=false; break ;;
+                src/*) NARROW=false; break ;;
+                requirements.txt|pyproject.toml|uv.lock|pytest.ini|Makefile) NARROW=false; break ;;
+                requirements*.txt) NARROW=false; break ;;
+                *) NARROW=false; break ;;
+              esac
+            done < <(git diff --name-only "origin/${BASE_REF}...HEAD")
+          fi
+          if [ "$NARROW" = "true" ]; then
+            shopt -s nullglob; ci_contract=(tests/ci/test_ci_*contract*.py); shopt -u nullglob
+            (( ${#ci_contract[@]} )) || { echo "tests/ci contract subset empty — fail closed"; exit 1; }
+            VALID=(); for t in "${EXTRA[@]}"; do [ -f "$t" ] && VALID+=("$t"); done
+            pytest "${ci_contract[@]}" "${VALID[@]}" "${PYTEST_ARGS[@]}"
+            exit 0
+          fi
+          shopt -s nullglob
+          webui_structure_contract=(tests/webui/test_*structure_contract*.py)
+          shopt -u nullglob
+          OPS_SHARD_COUNT=8
+          SHARD_FAIL=0
+          mapfile -t OPS_FILES < <(find tests/ops -name 'test_*.py' -type f | LC_ALL=C sort)
+          (( ${#OPS_FILES[@]} )) || { echo "tests/ops shard inventory empty"; exit 1; }
+          ( pytest tests/ci "${webui_structure_contract[@]}" "${PYTEST_ARGS[@]}" ) & PID_CI=$!
+          PIDS_OPS=()
+          for ((shard_idx = 0; shard_idx < OPS_SHARD_COUNT; shard_idx++)); do
+            ( shard_files=(); for i in "${!OPS_FILES[@]}"; do
+                (( i % OPS_SHARD_COUNT == shard_idx )) && shard_files+=("${OPS_FILES[i]}")
+              done; pytest "${shard_files[@]}" "${PYTEST_ARGS[@]}" ) & PIDS_OPS+=("$!")
+          done
+          wait "$PID_CI" || SHARD_FAIL=1
+          for pid in "${PIDS_OPS[@]}"; do wait "$pid" || SHARD_FAIL=1; done
+          exit "$SHARD_FAIL"
+
+      - name: WebUI bounded pytest (market/observability surface)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.webui_surface_changed == 'true' && needs.changes.outputs.run_matrix != 'true' }}
+        env:
+          PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED: ""
+          PEAK_TRADE_LAST_PAPER_RUN_BUNDLE_ROOT: ""
+          PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED: ""
+          PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT: ""
+        run: |
+          set -euo pipefail
+          pytest \
+            tests/webui/test_workflow_dashboard_readmodel_v1.py \
+            tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py \
+            tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py \
+            tests/webui/test_observability_hub.py \
+            tests/webui/test_last_paper_run_panel_readmodel_v0.py \
+            tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py \
+            tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py \
+            tests/webui/test_pkg_landscape_current_consumer_boundary_v1.py \
+            tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py \
+            tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py \
+            tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py \
+            tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py \
+            -q --tb=short -m "not network and not external_tools"
+
+  # ============================================================================
+  # Tests (all Python versions)
+  # ============================================================================
+  # Always creates test jobs for all required Python versions (3.10, 3.11).
+  # Python 3.9 dropped: RB-01/RB-02 security fix floors require CPython >=3.10.
+  # On docs-only / workflow-only / static-contract-only PRs, jobs short-circuit SUCCESS (NO_OP).
+  # FOCUSED/CONTRACT_FOCUSED runs bounded pytest on mapped owners.
+  # PR_BOUNDED_FULL runs conservative bounded gates (never pytest tests/ exhaustive).
+  # EXHAUSTIVE_FULL is not reachable from normal PR events.
+  # ============================================================================
+  tests:
+    name: tests (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [changes, ready-exact-head-reuse]
+    # IMPORTANT: No job-level if condition - matrix jobs must always be created
+    # to satisfy branch protection rules (e.g., "tests (3.11)" check)
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Always create jobs for all required versions (to satisfy branch protection)
+        python-version: ['3.10', '3.11']
+
+    steps:
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: tests (${{ matrix.python-version }}) — exact-head required contexts already success"
+
+      - name: Diff-aware test selection summary
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' }}
+        run: |
+          echo "test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}"
+          echo "tests_execute_pr_bounded_full=${{ needs.changes.outputs.tests_execute_pr_bounded_full }}"
+          echo "tests_execute_exhaustive_full=${{ needs.changes.outputs.tests_execute_exhaustive_full }}"
+          echo "tests_execute_contract_focused=${{ needs.changes.outputs.tests_execute_contract_focused }}"
+          echo "matrix_contract_mode=${{ needs.changes.outputs.matrix_contract_mode }}"
+          echo "matrix_contract_reason=${{ needs.changes.outputs.matrix_contract_reason }}"
+          echo "matrix_contract_pytest_targets=${{ needs.changes.outputs.matrix_contract_pytest_targets }}"
+          echo "focused_pytest_targets=${{ needs.changes.outputs.focused_pytest_targets }}"
+          echo "focused_module_imports=${{ needs.changes.outputs.focused_module_imports }}"
+
+      - name: NO_OP — skip full matrix tests (diff-aware)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
+        run: |
+          echo "NO_OP diff-aware selection — skipping full matrix for Python ${{ matrix.python-version }}"
+          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
+
+      - name: Fail closed on invalid test selection
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_invalid == 'true' }}
+        run: |
+          echo "Invalid test selection — fail-closed"
+          exit 1
+
+      - name: MATRIX_CONTRACT_FOCUSED — non-canonical version ack (diff-aware)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11' }}
+        run: |
+          echo "MATRIX_CONTRACT_FOCUSED — required check ack on Python ${{ matrix.python-version }}"
+          echo "reason=${{ needs.changes.outputs.matrix_contract_reason }}"
+          echo "canonical execution on tests (3.11) only"
+          echo "targets=${{ needs.changes.outputs.matrix_contract_pytest_targets }}"
+
+      - name: Checkout
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && (github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'))) }}
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && (github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'))) }}
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && (github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'))) }}
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && (github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'))) }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: "Stability Smoke Tests (Fast Gate)"
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && (needs.changes.outputs.tests_execute_pr_bounded_full == 'true' || needs.changes.outputs.tests_execute_exhaustive_full == 'true' || needs.changes.outputs.tests_execute_contract_focused == 'true') }}
+        id: stability_smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Running fast stability smoke tests (<5s)..."
+          pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
+
+      - name: "Import and collection smoke (matrix version gate)"
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_pr_bounded_full == 'true' }}
+        run: |
+          set -euo pipefail
+          python -c "import src"
+          pytest --collect-only -q tests/test_stability_smoke.py
+
+      - name: "Smoke: RL v0.1 Contract Test"
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
+        id: rl_v0_1_smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          pytest -q tests/test_rl_v0_1_smoke.py
+
+      - name: Validate RL v0.1 Contract
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
+        id: rl_v0_1_contract
+        shell: bash
+        run: |
+          bash scripts/validate_rl_v0_1.sh
+
+      - name: Upload RL validation reports on failure
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && failure() && runner.os == 'Linux' && (steps.rl_v0_1_smoke.outcome == 'failure' || steps.rl_v0_1_contract.outcome == 'failure') }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: rl-v0-1-validation-reports-py${{ matrix.python-version }}
+          path: |
+            reports/rl/**/*
+            reports/rl_v0_1/**/*
+            logs/rl/**/*
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Run PR_BOUNDED_FULL tests (matrix)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_pr_bounded_full == 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
+        run: |
+          set -euo pipefail
+          PYTEST_ARGS=(-v --tb=short -m "not network and not external_tools")
+          if [ "${{ matrix.python-version }}" != "3.11" ]; then
+            pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke "${PYTEST_ARGS[@]}"
+            exit 0
+          fi
+          export PYTHONUNBUFFERED=1
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          TARGETS="${{ needs.changes.outputs.pr_bounded_pytest_targets }}"
+          if [ -z "$TARGETS" ]; then
+            echo "PR_BOUNDED_FULL without explicit targets — fail-closed"
+            exit 1
+          fi
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          (( ${#VALIDATED_TARGETS[@]} )) || { echo "PR_BOUNDED_FULL validated targets empty — fail closed"; exit 1; }
+          echo "PR_BOUNDED_FULL_VALIDATED_TARGET_COUNT=${#VALIDATED_TARGETS[@]}"
+          pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+
+      - name: Run EXHAUSTIVE_FULL test suite
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
+        run: |
+          pytest tests/ -v --tb=short -m "not network and not external_tools"
+
+      - name: Run focused tests (matrix)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_contract_focused == 'true' && (needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' || matrix.python-version == '3.11') }}
+        run: |
+          set -euo pipefail
+          export PYTHONUNBUFFERED=1
+          PYTEST_ARGS=(-v --tb=short -m "not network and not external_tools")
+          TARGETS="${{ needs.changes.outputs.focused_pytest_targets }}"
+          if [ -z "$TARGETS" ]; then
+            echo "FOCUSED mode without explicit targets — fail-closed to tests/ci/"
+            TARGETS="tests/ci/"
+          fi
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          CI_OWNER="tests/ci/test_ci_diff_aware_test_selection_v1.py"
+          GRAPH_OWNER="tests/ops/test_durable_completion_validation_graph_v1.py"
+          INTEGRATION_SHARD_COUNT=3
+          INTEGRATION_NODES=()
+          OTHER_FILE_TARGETS=()
+          CI_TARGET=""
+          GRAPH_TARGET=""
+          for target in "${VALIDATED_TARGETS[@]}"; do
+            if [[ "$target" == *"::"* ]]; then
+              INTEGRATION_NODES+=("$target")
+            elif [[ "$target" == "$CI_OWNER" ]]; then
+              CI_TARGET="$target"
+            elif [[ "$target" == "$GRAPH_OWNER" ]]; then
+              GRAPH_TARGET="$target"
+            else
+              OTHER_FILE_TARGETS+=("$target")
+            fi
+          done
+          echo "focused-matrix target inventory validated=${#VALIDATED_TARGETS[@]} integration_nodes=${#INTEGRATION_NODES[@]} ci_owner=$([ -n "$CI_TARGET" ] && echo 1 || echo 0) graph_owner=$([ -n "$GRAPH_TARGET" ] && echo 1 || echo 0) other_files=${#OTHER_FILE_TARGETS[@]}"
+          if (( ${#INTEGRATION_NODES[@]} == 0 )); then
+            pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+            exit 0
+          fi
+          SHARD_FAIL=0
+          PIDS=()
+          LABELS=()
+          LOG_DIR="$(mktemp -d)"
+          _launch_focused_lane() {
+            local label="$1"
+            shift
+            local logfile="$LOG_DIR/${label}.log"
+            echo "focused-matrix parallel start label=${label} target_count=$#"
+            (
+              set -euo pipefail
+              pytest "$@" "${PYTEST_ARGS[@]}"
+            ) >"$logfile" 2>&1 &
+            PIDS+=("$!")
+            LABELS+=("$label")
+          }
+          if [ -n "$CI_TARGET" ]; then
+            _launch_focused_lane "ci_owner" "$CI_TARGET"
+          fi
+          if [ -n "$GRAPH_TARGET" ]; then
+            _launch_focused_lane "graph_owner" "$GRAPH_TARGET"
+          fi
+          if (( ${#OTHER_FILE_TARGETS[@]} > 0 )); then
+            _launch_focused_lane "other_files" "${OTHER_FILE_TARGETS[@]}"
+          fi
+          for ((shard_idx = 0; shard_idx < INTEGRATION_SHARD_COUNT; shard_idx++)); do
+            shard_targets=()
+            for ((i = shard_idx; i < ${#INTEGRATION_NODES[@]}; i += INTEGRATION_SHARD_COUNT)); do
+              shard_targets+=("${INTEGRATION_NODES[i]}")
+            done
+            echo "focused-matrix integration shard ${shard_idx} target_count=${#shard_targets[@]}"
+            if (( ${#shard_targets[@]} == 0 )); then
+              echo "focused-matrix integration shard ${shard_idx} empty — skip"
+              continue
+            fi
+            _launch_focused_lane "integration_shard_${shard_idx}" "${shard_targets[@]}"
+          done
+          for idx in "${!PIDS[@]}"; do
+            if ! wait "${PIDS[$idx]}"; then
+              SHARD_FAIL=1
+              echo "focused-matrix parallel failed label=${LABELS[$idx]}"
+              cat "$LOG_DIR/${LABELS[$idx]}.log"
+            fi
+          done
+          if (( SHARD_FAIL != 0 )); then
+            for label in "${LABELS[@]}"; do
+              echo "focused-matrix log dump label=${label}"
+              if [ -f "$LOG_DIR/${label}.log" ]; then
+                cat "$LOG_DIR/${label}.log"
+              fi
+            done
+            exit 1
+          fi
+          echo "focused-matrix parallel success lanes=${#PIDS[@]} integration_nodes=${#INTEGRATION_NODES[@]}"
+
+      - name: Focused module import smoke
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_contract_focused == 'true' && needs.changes.outputs.focused_module_imports != '' }}
+        run: |
+          set -euo pipefail
+          python3 scripts/ops/ci_test_selection_v1.py --import-smoke-modules "${{ needs.changes.outputs.focused_module_imports }}"
+          echo "import smoke ok on Python ${{ matrix.python-version }}"
+
+      - name: Run tests with coverage (EXHAUSTIVE_FULL only)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
+        run: |
+          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"
+
+      # TODO: Linting (optional, aktivieren wenn gewünscht)
+      # - name: Run ruff
+      #   run: |
+      #     pip install ruff
+      #     ruff check src/ tests/
+
+  # ============================================================================
+  # Strategy Smoke Tests (Phase 77)
+  # ============================================================================
+  # Runs the strategy smoke-check CLI and associated tests to ensure all
+  # v1.1 strategies pass basic validation. This is a safety gate - if any
+  # strategy fails the smoke test, the CI build fails.
+  #
+  # IMPORTANT: This job runs OFFLINE only - no live/testnet exchanges,
+  # no API keys, no secrets. Uses only synthetic/backtest data.
+  # ============================================================================
+  strategy-smoke:
+    name: strategy-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [changes, tests]  # Probe must not cascade-skip this required context
+    # IMPORTANT: No job-level if that skips required context creation.
+    # Probe job always succeeds (reuse=false on error); do not cascade-skip.
+
+    steps:
+      - name: Skip strategy smoke (not EXHAUSTIVE_FULL)
+        if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.tests_execute_exhaustive_full != 'true' }}
+        run: |
+          echo "Skipping strategy smoke — test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
+
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Set up Python 3.11
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run strategy smoke pytest
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
+        run: |
+          pytest tests/test_strategy_smoke_cli.py -v --tb=short
+
+      - name: Create smoke results directory
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
+        run: |
+          mkdir -p test_results/strategy_smoke
+
+      - name: Run strategy smoke CLI
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
+        run: |
+          python scripts/strategy_smoke_check.py \
+            --output-json test_results/strategy_smoke/ci_smoke_latest.json \
+            --output-md test_results/strategy_smoke/ci_smoke_latest.md
+
+      - name: Upload smoke test artifacts
+        if: ${{ always() && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: strategy-smoke-results
+          path: test_results/strategy_smoke/
+          retention-days: 30
+
+  # ============================================================================
+  # PR Gate (informational aggregate check)
+  # ============================================================================
+  # When run_matrix=false: Fast-Lane + (tests/strategy-smoke skip) → SUCCESS.
+  # When run_matrix=true: Fast-Lane + tests (3.10/3.11) + strategy-smoke → SUCCESS.
+  # Branch-protection required contexts are managed via
+  # config/ci/required_status_checks.json (required_contexts - ignored_contexts).
+  # ============================================================================
+  pr-gate:
+    name: PR Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs: [changes, fast-lane, tests, strategy-smoke]
+    if: always() && !cancelled() && needs.changes.result == 'success'
+    steps:
+      - name: Require all gates passed
+        run: |
+          [[ "${{ needs.fast-lane.result }}" == "success" ]] || { echo "Fast-Lane failed"; exit 1; }
+          [[ "${{ needs.tests.result }}" == "success" ]] || { echo "tests failed"; exit 1; }
+          [[ "${{ needs.strategy-smoke.result }}" == "success" ]] || { echo "strategy-smoke failed"; exit 1; }
+          echo "PR Gate: all gates passed (run_matrix=${{ needs.changes.outputs.run_matrix }}, test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}, test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}, docs_only=${{ needs.changes.outputs.docs_only }}, workflow_only=${{ needs.changes.outputs.workflow_only }}, static_contract_changed=${{ needs.changes.outputs.static_contract_changed }}, docs_or_static_contract_only=${{ needs.changes.outputs.docs_or_static_contract_only }}, webui_surface_changed=${{ needs.changes.outputs.webui_surface_changed }}, webui_surface_only=${{ needs.changes.outputs.webui_surface_only }})"

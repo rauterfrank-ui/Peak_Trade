@@ -1,0 +1,78 @@
+{
+  "source_commit": "af2f748de6424910ea6f2b56856c9f972c1111b7",
+  "product_code_changed_in_workpackage": false,
+  "tests_changed_in_workpackage": false,
+  "failures": [
+    {
+      "classname": "tests.governance.test_governed_runtime_primary_to_offline_observation_projection_v1",
+      "name": "test_bounded_end_to_end_and_reconstruction[PAPER]",
+      "message": "AssertionError: assert 'REJECTED' == 'PROVEN'\n  \n  - PROVEN\n  + REJECTED"
+    },
+    {
+      "classname": "tests.governance.test_governed_runtime_primary_to_offline_observation_projection_v1",
+      "name": "test_bounded_end_to_end_and_reconstruction[SHADOW]",
+      "message": "AssertionError: assert 'REJECTED' == 'PROVEN'\n  \n  - PROVEN\n  + REJECTED"
+    },
+    {
+      "classname": "tests.governance.test_governed_runtime_primary_to_offline_observation_projection_v1",
+      "name": "test_bounded_end_to_end_and_reconstruction[TESTNET]",
+      "message": "AssertionError: assert 'REJECTED' == 'PROVEN'\n  \n  - PROVEN\n  + REJECTED"
+    },
+    {
+      "classname": "tests.governance.test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "name": "test_real_runtime_g2_to_m4_m8_without_ddo_fixture[PAPER]",
+      "message": "AssertionError: ('INVALID_STRING:outcome_semantic_class',)\nassert 'REJECTED' == 'CONTINUATION_COMPLETE'\n  \n  - CONTINUATION_COMPLETE\n  + REJECTED"
+    },
+    {
+      "classname": "tests.governance.test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "name": "test_real_runtime_g2_to_m4_m8_without_ddo_fixture[SHADOW]",
+      "message": "AssertionError: ('INVALID_STRING:outcome_semantic_class',)\nassert 'REJECTED' == 'CONTINUATION_COMPLETE'\n  \n  - CONTINUATION_COMPLETE\n  + REJECTED"
+    },
+    {
+      "classname": "tests.governance.test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "name": "test_real_runtime_g2_to_m4_m8_without_ddo_fixture[TESTNET]",
+      "message": "AssertionError: ('INVALID_STRING:outcome_semantic_class',)\nassert 'REJECTED' == 'CONTINUATION_COMPLETE'\n  \n  - CONTINUATION_COMPLETE\n  + REJECTED"
+    },
+    {
+      "classname": "tests.governance.test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "name": "test_closure_proves_real_m4_m8[PAPER]",
+      "message": "AssertionError: assert False\n +  where False = prove_g2_runtime_to_m4_m8_real_mechanical_v1(projection_request=GovernedRuntimePrimaryProjectionRequestV1(source_mode=<RuntimePrimarySourceModeV1.PAPER: 'PAPER'>, primary_evidence_ro...ne, start_runtime_execution=False, request_promotion=False, request_runtime_apply=False, request_external_effect=False))\n +    where GovernedRuntimePrimaryProjectionRequestV1(source_mode=<RuntimePrimarySourceModeV1.PAPER: 'PAPER'>, primary_evidence_ro...ne, start_runtime_execution=False, request_promotion=False, request_runtime_apply=False, request_external_effect=False) = projection_request(source_mode=<RuntimePrimarySourceModeV1.PAPER: 'PAPER'>, primary_root=PosixPath('/Users/frnkhrz/Peak_Trade/tests/.pytest_archive_roots/test_closure_proves_real_m4_m80/paper/g2_projection_fixture_v1'))"
+    },
+    {
+      "classname": "tests.governance.test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "name": "test_closure_proves_real_m4_m8[SHADOW]",
+      "message": "AssertionError: assert False\n +  where False = prove_g2_runtime_to_m4_m8_real_mechanical_v1(projection_request=GovernedRuntimePrimaryProjectionRequestV1(source_mode=<RuntimePrimarySourceModeV1.SHADOW: 'SHADOW'>, primary_evidence_...ne, start_runtime_execution=False, request_promotion=False, request_runtime_apply=False, request_external_effect=False))\n +    where GovernedRuntimePrimaryProjectionRequestV1(source_mode=<RuntimePrimarySourceModeV1.SHADOW: 'SHADOW'>, primary_evidence_...ne, start_runtime_execution=False, request_promotion=False, request_runtime_apply=False, request_external_effect=False) = projection_request(source_mode=<RuntimePrimarySourceModeV1.SHADOW: 'SHADOW'>, primary_root=PosixPath('/Users/frnkhrz/Peak_Trade/tests/.pytest_archive_roots/test_closure_proves_real_m4_m81/shadow/g2_projection_fixture_v1'))"
+    },
+    {
+      "classname": "tests.governance.test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "name": "test_forbidden_m4_m8_authority_escalation",
+      "message": "Failed: DID NOT RAISE <class 'src.experiments.canonical_m4_m8_evidence_return_loop_v1.M4M8EvidenceReturnLoopError'>"
+    }
+  ],
+  "diagnosis": "Older G2 review-label projection lacks outcome_semantic_class required by current Learning-Evidence validator. Dependent closure/exception expectations fail before downstream M4/authority path. No automatic schema weakening or fabricated classification.",
+  "automatic_repair_performed": false,
+  "why_no_repair": "Owner requires reconstructing original intent, intermediates and final semantic contract before changing an apparent mismatch. Review signal must not be relabeled as realized/simulated/counterfactual outcome to satisfy a schema.",
+  "current_anchors": [
+    {
+      "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+      "symbol": "_project_learning_evidence_from_runtime_v1",
+      "line": 209,
+      "end_line": 293,
+      "sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec"
+    },
+    {
+      "path": "src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
+      "symbol": "build_bounded_offline_m4_plane_request_from_runtime_learning_evidence_v1",
+      "line": 165,
+      "end_line": 206,
+      "sha256": "6d003847797858ecae8a510ef0c6a4a617519706babe34d4c82c15048f76ad61"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+      "symbol": "validate_learning_evidence_record_v1",
+      "line": 285,
+      "end_line": 286,
+      "sha256": "b57f3370e85c730cb88f2861ced973b06dad26f3175c9e1a1290ebfb5e98929b"
+    }
+  ]
+}

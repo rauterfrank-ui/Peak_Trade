@@ -1,0 +1,34 @@
+{
+  "result": "PASS",
+  "scope": "EXACT_CONTENT_PRESERVATION_AND_BOUNDED_DOCUMENT_ALIGNMENT",
+  "captured_files": 7323,
+  "before_originals_preserved": 7276,
+  "archives_verified": 28,
+  "unique_archive_members_verified": 6854,
+  "existing_original_references_verified": 115,
+  "reader_projections_verified": 26,
+  "preexisting_repository_files_unchanged": 22716,
+  "repository_navigation_files_changed": 1,
+  "vault_content_checked": true,
+  "introduced_wikilinks_checked": 63,
+  "introduced_markdown_links_checked": 57,
+  "global_semantic_recertified": false,
+  "product_code_changed": false,
+  "runtime_authorization_effect": "NONE",
+  "documentation_checks": {
+    "markdown_files": 29,
+    "token_violations": [],
+    "repo_reference_targets_checked": 63,
+    "missing_reference_targets": []
+  },
+  "exact_original_stdout_readback": "PASS",
+  "checked_at_utc": "2026-11-05T23:37:42.546508+00:00",
+  "product_test_reuse": {
+    "distinct_passed_cases": 1575,
+    "rerun": false,
+    "binding": "docs/ops/evidence/iu_sl_opt_market_learning_checkpoint_2026_11_05/integration/source_test_bindings.json",
+    "all_prior_source_test_and_evidence_bytes_unchanged": true,
+    "known_legacy_fixture_counterevidence_preserved": true,
+    "whole_repo_product_test_claim": false
+  }
+}

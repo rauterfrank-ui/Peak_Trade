@@ -1,0 +1,16 @@
+{
+  "composite": {
+    "DASHBOARD_BACKEND_HEALTH": "HEALTHY",
+    "END_TO_END_DATA_HEALTH": "HEALTHY",
+    "HOST_HEALTH": "HEALTHY",
+    "MARKET_DATA_HEALTH": "HEALTHY",
+    "PERSISTENCE_HEALTH": "HEALTHY",
+    "READ_MODEL_HEALTH": "HEALTHY",
+    "RUNTIME_HEALTH": "HEALTHY"
+  },
+  "derived_not_guessed": true,
+  "end_to_end_blocks_stale_dashboard": true,
+  "may_render_green": true,
+  "ok": true,
+  "process_existence_alone_insufficient": true
+}

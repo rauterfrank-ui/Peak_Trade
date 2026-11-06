@@ -1,0 +1,13 @@
+---
+docs_token: DOCS_TOKEN_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8
+STATUS: READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION
+---
+
+# V8 Operator Clarification Authority binding
+
+- Authority: `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8`
+- Prereg digest: `610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c`
+- Status: `READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION`
+- B1–B6 resolved; B7/B8 require wiring+tests (fulfilled by V8 evaluation surfaces)
+- Pre-authorization parity validator bound before runner authorization / slot
+- V7 remains terminal `INCONCLUSIVE_INFRASTRUCTURE_FAILURE` / `FROZEN_EXIT_PARAMETERS_MISMATCH`

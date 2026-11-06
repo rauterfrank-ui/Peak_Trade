@@ -1,0 +1,6 @@
+# Post-repair reevaluation commands
+/Users/frnkhrz/Peak_Trade/.venv/bin/python docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/post_repair_reevaluation_probe_v1.py
+/Users/frnkhrz/Peak_Trade/.venv/bin/python docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/materialize_evidence_v1.py
+/Users/frnkhrz/Peak_Trade/.venv/bin/python -m pytest tests/governance/test_canonical_short_binding_post_repair_reevaluation_v1.py tests/backtest/test_canonical_short_binding_miswiring_repair_v1.py -q --tb=line
+/Users/frnkhrz/Peak_Trade/.venv/bin/ruff format --check docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/post_repair_reevaluation_probe_v1.py tests/governance/test_canonical_short_binding_post_repair_reevaluation_v1.py
+/Users/frnkhrz/Peak_Trade/.venv/bin/ruff check docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/post_repair_reevaluation_probe_v1.py tests/governance/test_canonical_short_binding_post_repair_reevaluation_v1.py

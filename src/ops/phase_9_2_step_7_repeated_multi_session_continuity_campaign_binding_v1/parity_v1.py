@@ -1,0 +1,136 @@
+"""Parity and reuse proofs for Step-7 campaign binding (no parallel semantics)."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from src.ops.phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.constants_v1 import (
+    AUTHORIZATION_CONSUMPTION_ALLOWED,
+    AUTHORIZATION_ISSUANCE_ALLOWED,
+    BULL_BEAR_CHANGE,
+    CAMPAIGN_EXECUTED,
+    CAPABILITY_CLOSED,
+    CONFIRM_TOKEN_CONSUMPTION_ALLOWED,
+    CONFIRM_TOKEN_ISSUANCE_ALLOWED,
+    CORE_LOGIC_CHANGE,
+    DASHBOARD_AUTHORITY_EFFECT,
+    DASHBOARD_READ_ONLY_CONSUMER,
+    DIRECT_FILL_INJECTION_ALLOWED,
+    DOUBLE_PLAY_BYPASS_ALLOWED,
+    DOUBLE_PLAY_CHANGE,
+    DYNAMIC_SCOPE_LOGIC_CHANGE,
+    FORCED_INTENT_ALLOWED,
+    MASTER_V2_BYPASS_ALLOWED,
+    MASTER_V2_CHANGE,
+    MULTI_SESSION_CONTINUITY_LADDER_STEP_CLOSED,
+    MULTI_SESSION_REQUIREMENT_EXPRESSION,
+    NETWORK_SESSION_ALLOWED,
+    NETWORK_SESSION_STARTED,
+    NO_PARALLEL_CAMPAIGN_AUTHORITY,
+    NO_PARALLEL_RECONNECT_MODEL,
+    NO_PARALLEL_RESTART_MODEL,
+    NO_PARALLEL_STALE_MODEL,
+    NO_PERMANENT_UNSCOPED_ENABLE_FLAG,
+    PHASE_9_2_SESSION_LADDER_COMPLETE,
+    PHASE_9_2_STEP_7_STATUS,
+    PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED,
+    RISK_BYPASS_ALLOWED,
+    RISK_CHANGE,
+    SAFETY_BYPASS_ALLOWED,
+    SAFETY_CHANGE,
+    STEP3_RESTART_OWNER,
+    STEP4_RECONNECT_OWNER,
+    STEP6_STALE_ADVERSE_OWNER,
+    STEP7_BINDING_IMPLEMENTED,
+    STEP7_STARTED,
+)
+
+
+def prove_phase92_step7_campaign_binding_parity_v1() -> dict[str, Any]:
+    blockers: list[str] = []
+    if CORE_LOGIC_CHANGE or MASTER_V2_CHANGE or DOUBLE_PLAY_CHANGE or BULL_BEAR_CHANGE:
+        blockers.append("CORE_LOGIC_FREEZE_VIOLATED")
+    if DYNAMIC_SCOPE_LOGIC_CHANGE or RISK_CHANGE or SAFETY_CHANGE:
+        blockers.append("POLICY_FREEZE_VIOLATED")
+    if PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED or NETWORK_SESSION_ALLOWED:
+        blockers.append("PERMANENT_ENABLE_MUST_REMAIN_FALSE")
+    if (
+        AUTHORIZATION_ISSUANCE_ALLOWED
+        or AUTHORIZATION_CONSUMPTION_ALLOWED
+        or CONFIRM_TOKEN_ISSUANCE_ALLOWED
+        or CONFIRM_TOKEN_CONSUMPTION_ALLOWED
+    ):
+        blockers.append("AUTH_CONFIRM_MUST_REMAIN_FORBIDDEN")
+    if not NO_PERMANENT_UNSCOPED_ENABLE_FLAG:
+        blockers.append("NO_PERMANENT_UNSCOPED_ENABLE_FLAG_REQUIRED")
+    if DASHBOARD_AUTHORITY_EFFECT != "NONE" or not DASHBOARD_READ_ONLY_CONSUMER:
+        blockers.append("DASHBOARD_AUTHORITY_DRIFT")
+    if FORCED_INTENT_ALLOWED or DIRECT_FILL_INJECTION_ALLOWED:
+        blockers.append("FORCED_INTENT_OR_FILL_INJECTION_FORBIDDEN")
+    if MASTER_V2_BYPASS_ALLOWED or DOUBLE_PLAY_BYPASS_ALLOWED:
+        blockers.append("CORE_BYPASS_FORBIDDEN")
+    if RISK_BYPASS_ALLOWED or SAFETY_BYPASS_ALLOWED:
+        blockers.append("RISK_SAFETY_BYPASS_FORBIDDEN")
+    if PHASE_9_2_STEP_7_STATUS != "OPEN":
+        blockers.append("STEP7_STATUS_MUST_REMAIN_OPEN")
+    if (
+        MULTI_SESSION_CONTINUITY_LADDER_STEP_CLOSED
+        or CAPABILITY_CLOSED
+        or PHASE_9_2_SESSION_LADDER_COMPLETE
+        or CAMPAIGN_EXECUTED
+        or STEP7_STARTED
+        or NETWORK_SESSION_STARTED
+    ):
+        blockers.append("LADDER_OR_CAMPAIGN_CLOSEOUT_FORBIDDEN_IN_BINDING")
+    if not STEP7_BINDING_IMPLEMENTED:
+        blockers.append("BINDING_IMPLEMENTED_REQUIRED")
+    if MULTI_SESSION_REQUIREMENT_EXPRESSION != ">1":
+        blockers.append("MULTI_SESSION_REQUIREMENT_EXPRESSION_DRIFT")
+    return {
+        "ok": not blockers,
+        "blockers": blockers,
+        "MULTI_SESSION_REQUIREMENT_EXPRESSION": MULTI_SESSION_REQUIREMENT_EXPRESSION,
+        "PHASE_9_2_STEP_7_STATUS": PHASE_9_2_STEP_7_STATUS,
+        "PHASE_9_2_SESSION_LADDER_COMPLETE": PHASE_9_2_SESSION_LADDER_COMPLETE,
+    }
+
+
+def prove_step7_reuse_bindings_v1() -> dict[str, Any]:
+    blockers: list[str] = []
+    if "restart_recovery" not in STEP3_RESTART_OWNER:
+        blockers.append("STEP3_RESTART_OWNER_DRIFT")
+    if "rate_limit_reconnect" not in STEP4_RECONNECT_OWNER:
+        blockers.append("STEP4_RECONNECT_OWNER_DRIFT")
+    if "governed_injected_stale_data_fault_v1" not in STEP6_STALE_ADVERSE_OWNER:
+        blockers.append("STEP6_STALE_ADVERSE_OWNER_DRIFT")
+    if not NO_PARALLEL_RESTART_MODEL:
+        blockers.append("PARALLEL_RESTART_MODEL_FORBIDDEN")
+    if not NO_PARALLEL_RECONNECT_MODEL:
+        blockers.append("PARALLEL_RECONNECT_MODEL_FORBIDDEN")
+    if not NO_PARALLEL_STALE_MODEL:
+        blockers.append("PARALLEL_STALE_MODEL_FORBIDDEN")
+    return {
+        "ok": not blockers,
+        "blockers": blockers,
+        "STEP3_RESTART_SEMANTICS_REUSED": True,
+        "STEP4_RECONNECT_SEMANTICS_REUSED": True,
+        "STEP6_STALE_ADVERSE_SEMANTICS_REUSED": True,
+        "step3_restart_owner": STEP3_RESTART_OWNER,
+        "step4_reconnect_owner": STEP4_RECONNECT_OWNER,
+        "step6_stale_adverse_owner": STEP6_STALE_ADVERSE_OWNER,
+        "NO_PARALLEL_RESTART_MODEL": NO_PARALLEL_RESTART_MODEL,
+        "NO_PARALLEL_RECONNECT_MODEL": NO_PARALLEL_RECONNECT_MODEL,
+        "NO_PARALLEL_STALE_MODEL": NO_PARALLEL_STALE_MODEL,
+    }
+
+
+def assert_no_parallel_campaign_authority_v1() -> dict[str, Any]:
+    blockers: list[str] = []
+    if not NO_PARALLEL_CAMPAIGN_AUTHORITY:
+        blockers.append("PARALLEL_CAMPAIGN_AUTHORITY_FORBIDDEN")
+    return {
+        "ok": not blockers,
+        "blockers": blockers,
+        "parallel_campaign_authority_detected": False,
+        "NO_PARALLEL_CAMPAIGN_AUTHORITY": NO_PARALLEL_CAMPAIGN_AUTHORITY,
+    }

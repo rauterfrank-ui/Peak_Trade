@@ -1,0 +1,70 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 2901,
+      "sha256": "bac46f6f532f12d7d3d1b6fc2463c2c605ef462dd66af727ff26830126b73b96"
+    },
+    "baseline_metrics.json": {
+      "bytes": 894,
+      "sha256": "c9040061629c19b2454748755b855050d8165c83181be5ee3995c21b6b45e68d"
+    },
+    "ci_timing_proof.txt": {
+      "bytes": 1278,
+      "sha256": "d9fe743f4142d16aef5c57fda9c4c43bab792b3107a9e14d7802d201932613be"
+    },
+    "code_config_hashes.json": {
+      "bytes": 488,
+      "sha256": "1124505db88f2b3039f75fa6c10be34c8d7fc2bfc9c27fbdc3c4be8f86d686d7"
+    },
+    "comparison_decision.json": {
+      "bytes": 991,
+      "sha256": "ee21749d0a349c0f282568c4133e49ab3288a0db0698b4def6bbab564582f82a"
+    },
+    "config_snapshot.json": {
+      "bytes": 2793,
+      "sha256": "bccb17fd9aeeb3db7a6cec754deebcb532912ac8a026c93639da066bd6b92704"
+    },
+    "determinism_repro.txt": {
+      "bytes": 930,
+      "sha256": "60ede8eb1567a1376096ead23285a34b992b8e0ab472fab3658a7eadbf98354f"
+    },
+    "eligibility_attribution.json": {
+      "bytes": 4554,
+      "sha256": "20c5b7d5fd3ac7ce56637036999224f648fa319ca400a8d25b2ac4e3032a13f4"
+    },
+    "eligibility_filter_formula_freeze.json": {
+      "bytes": 1644,
+      "sha256": "cd42f29f23ac46a9f33e7f9276f78cd55adfa494011b3fc8f2ff1ac8ba3bc4d6"
+    },
+    "instrument_attribution.json": {
+      "bytes": 55423,
+      "sha256": "920c5c28987e7753c14f0942be00157f0d376224bb6a34f38ebeb15aa439cc20"
+    },
+    "portfolio_equity_baseline.csv": {
+      "bytes": 92646,
+      "sha256": "7266c180470611c6c62163db69de1f81fd04639c30809d8c0a37a887e9620f11"
+    },
+    "portfolio_equity_treatment.csv": {
+      "bytes": 92008,
+      "sha256": "05be1eac5425fa20151dc1d79741b612309a73bb28dd2cd79c646c0ea5a8e9b8"
+    },
+    "run_stdout.txt": {
+      "bytes": 11932,
+      "sha256": "97dbd28e054b0ca11bbe10c76a9d5961ef3ebf6212c02ceb60749a2be0d4a6c0"
+    },
+    "safety_attestation.md": {
+      "bytes": 720,
+      "sha256": "8ff4908d6a5df36cc53e13fec77770e7d3e6ca23e7e4a938e8e57aca438b537e"
+    },
+    "summary.json": {
+      "bytes": 10876,
+      "sha256": "377b5d3c0acb20e7f47e0e3391849746fd7486bfa47a7c1c947492ba9a6ffae7"
+    },
+    "treatment_metrics.json": {
+      "bytes": 898,
+      "sha256": "f64509d4d7bc3603b2a9f0a43adf1f21f36894a7a12ca45a77532fff3b30a3dd"
+    }
+  },
+  "generated_at_utc": "2026-07-20T23:53:27Z",
+  "schema_version": "evaluate_entry_effective_mr_eligibility_development_run_manifest.v1"
+}

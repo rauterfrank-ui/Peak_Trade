@@ -1,0 +1,4 @@
+# Immutable original source and pytest output bytes; preserve their source formatting.
+# This exception is confined to this historical evidence package, not product code.
+*.txt -text -whitespace
+*.xml -text -whitespace

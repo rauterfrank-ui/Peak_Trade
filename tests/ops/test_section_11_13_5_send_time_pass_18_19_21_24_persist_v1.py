@@ -1,0 +1,227 @@
+"""SEND_TIME_PASS_18_19_21_24 persist invariants."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    LIVE_ARMED,
+    LIVE_AUTHORIZED,
+    LIVE_ENABLED,
+    SUBMIT_UNLOCKED,
+    TESTNET_AUTHORIZED,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
+    verify_manifest_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
+    FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS,
+)
+from src.ops.section_11_13_5_send_time_pass_18_19_21_24_v1.assemble_v1 import (
+    assemble_send_time_pass_18_19_21_24_v1,
+)
+from src.ops.section_11_13_5_send_time_pass_18_19_21_24_v1.constants_v1 import (
+    CANONICAL_EVIDENCE_RUN_ID,
+    EARLIEST_UNRESOLVED_DEPENDENCY,
+    EXPECTED_ORIGIN_MAIN_SHA,
+    LAST_CANONICALLY_CLOSED_STEP,
+    NEXT_AUTHORITY_BOUNDARY,
+    OWNER_GO,
+    PREDECESSOR_SLICE,
+    THIS_SLICE,
+    WORKPACKAGE_ID,
+)
+from src.ops.section_11_13_5_send_time_pass_18_19_21_24_v1.persist_claims_v1 import (
+    CLAIMS,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MASTER_RUNBOOK.md"
+MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
+ATLAS_CATALOG = REPO_ROOT / "docs" / "system_atlas" / "entities" / "catalog.yaml"
+SPEC = REPO_ROOT / "docs/ops/specs/SEND_TIME_PASS_18_19_21_24_V1.md"
+EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence"
+    / "ops"
+    / "section_11_13_5_send_time_pass_18_19_21_24_v1"
+    / CANONICAL_EVIDENCE_RUN_ID
+)
+
+P25_HEADING = "### 11.13.5 P25 EXECUTION_PREREQUISITE_25 no additional owner decision required"
+STP_HEADING = "### 11.13.5 SEND_TIME_PASS_18_19_21_24"
+APT_HEADING = "### 11.13.5 AUTHENTICATED_PRODUCTIVE_TRANSPORT"
+LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
+
+
+def _read(path: Path) -> str:
+    assert path.is_file(), f"missing canonical path: {path}"
+    return path.read_text(encoding="utf-8")
+
+
+def _stp_section(text: str) -> str:
+    start = text.find(STP_HEADING)
+    assert start >= 0, "missing SEND_TIME_PASS persist heading"
+    end = text.find(APT_HEADING, start)
+    assert end > start, (
+        "missing AUTHENTICATED_PRODUCTIVE_TRANSPORT boundary after SEND_TIME_PASS persist"
+    )
+    return text[start:end]
+
+
+def test_stp_is_additive_after_p25() -> None:
+    text = _read(MASTER_RUNBOOK)
+    p25_start = text.find(P25_HEADING)
+    stp_start = text.find(STP_HEADING)
+    apt_start = text.find(APT_HEADING)
+    ladder = text.find(LADDER_HEADING)
+    assert 0 <= p25_start < stp_start < apt_start < ladder
+    p25 = text[p25_start:stp_start]
+    assert "P25_TEXT_REWRITTEN=true" not in p25
+    assert (
+        "EXECUTION_PREREQUISITE_25_NO_ADDITIONAL_OWNER_DECISION_REQUIRED=PASS_OFFLINE_CONTRACT"
+        in p25
+    )
+
+
+def test_stp_runbook_persist_tokens() -> None:
+    section = _stp_section(_read(MASTER_RUNBOOK))
+    required = (
+        f"OWNER_GO={OWNER_GO}",
+        f"THIS_SLICE={THIS_SLICE}",
+        f"PREDECESSOR_SLICE={PREDECESSOR_SLICE}",
+        f"WORKPACKAGE_ID={WORKPACKAGE_ID}",
+        f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}",
+        "TARGET_INSTRUMENT_ID=SUI-USD_UM_XPERP-310404",
+        "CASE=CASE_B_OFFLINE_CLOSABLE_CONTRACT",
+        "SEND_TIME_PASS_18_19_21_24=PASS_OFFLINE_CONTRACT",
+        "PREREQUISITE_18_PROVEN_AT_SEND=false",
+        "PREREQUISITE_19_PROVEN_AT_SEND=false",
+        "PREREQUISITE_21_PROVEN_AT_SEND=false",
+        "PREREQUISITE_24_PROVEN_AT_SEND=false",
+        "STP_FLATTEN_EXECUTE_AUTHORIZED=false",
+        "STP_NETWORK_SESSION_AUTHORIZED=false",
+        "STP_DOES_NOT_ISSUE_RUNTIME_PERMIT=true",
+        "STP_DOES_NOT_SET_LIVE_AUTHORIZED=true",
+        "P25_TEXT_REWRITTEN=false",
+        "P25_CLOSED=true",
+        f"LAST_CANONICALLY_CLOSED_STEP={LAST_CANONICALLY_CLOSED_STEP}",
+        f"EARLIEST_UNRESOLVED_DEPENDENCY={EARLIEST_UNRESOLVED_DEPENDENCY}",
+        f"NEXT_AUTHORITY_BOUNDARY={NEXT_AUTHORITY_BOUNDARY}",
+        "THIS_GO_GET_COUNT=0",
+        "GET_PERFORMED_THIS_PERSIST=false",
+        "PRIVATE_AUTH_USED=false",
+        "POST_PERFORMED=false",
+        "LIVE_AUTHORIZED=false",
+        "CANARY_AUTHORIZED=false",
+        "SUBMIT_UNLOCKED=false",
+        "LIVE_ENABLED=false",
+        "LIVE_ARMED=false",
+        "MERGE_AUTHORIZED_BY_THIS_PERSIST=false",
+        "BOUNDED_RUNTIME_PERMIT_ISSUANCE=false",
+        "STP_DOES_NOT_GRANT_EXECUTION_READINESS=true",
+        "ATLAS_AUTHORITY=NONE",
+        "LANDSCAPE_AUTHORITY=NONE",
+        "EXECUTION_READY=false",
+        "FAIL_CLOSED_IF_MARKED_PROVEN_AT_SEND_FROM_OFFLINE_CODE_ALONE=true",
+        "RUNTIME_PERMIT_CLAIM_DENIES=true",
+        "FLATTEN_EXECUTE_CLAIM_DENIES=true",
+        "GLOBAL_LIVE_AUTHORIZED_SUBSTITUTE_DENIES=true",
+        "PROVEN_AT_SEND_CLAIM_DENIES=true",
+    )
+    for token in required:
+        assert token in section, token
+    forbidden = (
+        "\nPOST_PERFORMED=true\n",
+        "\nGET_PERFORMED_THIS_PERSIST=true\n",
+        "\nPRIVATE_AUTH_USED=true\n",
+        "\nLIVE_EXECUTION=true\n",
+        "\nCANARY_EXECUTION=true\n",
+        "\nMERGE_AUTHORIZED_BY_THIS_PERSIST=true\n",
+        "\nATLAS_AUTHORITY=CANONICAL\n",
+        "\nLIVE_AUTHORIZED=true\n",
+        "\nEXECUTION_READY=true\n",
+        "\nP25_TEXT_REWRITTEN=true\n",
+        "\nPREREQUISITE_18_PROVEN_AT_SEND=true\n",
+        "\nSTP_FLATTEN_EXECUTE_AUTHORIZED=true\n",
+        "\nBOUNDED_RUNTIME_PERMIT_ISSUANCE=true\n",
+        "\nSEND_TIME_PASS_18_19_21_24=PROVEN\n",
+    )
+    for token in forbidden:
+        assert token not in section, token
+    assert "api_secret" not in section.lower()
+    assert "ok-access-" not in section.lower()
+
+
+def test_map_of_truth_has_no_stp_semantic_entry() -> None:
+    text = _read(MAP_OF_TRUTH)
+    assert "DOCUMENT_ROLE=NAVIGATION_ONLY_NO_SEMANTICS" in text
+    assert OWNER_GO not in text
+    assert "SEND_TIME_PASS_18_19_21_24_V1" not in text
+
+
+def test_atlas_stp_is_navigation_only() -> None:
+    catalog = _read(ATLAS_CATALOG)
+    authority = _read(REPO_ROOT / "docs" / "system_atlas" / "ATLAS_AUTHORITY_AND_USAGE.md")
+    assert "ATLAS_AUTHORITY=NONE" in authority
+    assert "id: PHASE:send_time_pass_18_19_21_24" in catalog
+    assert "id: RUNTIME_COMPONENT:send_time_pass_18_19_21_24_v1" in catalog
+    assert "ATLAS_AUTHORITY=NONE" in catalog
+
+
+def test_code_claims_remain_fail_closed() -> None:
+    assert CLAIMS["OWNER_GO"] == OWNER_GO
+    assert CLAIMS["THIS_SLICE"] == THIS_SLICE
+    assert CLAIMS["SEND_TIME_PASS_18_19_21_24"] == "PASS_OFFLINE_CONTRACT"
+    assert CLAIMS["PREREQUISITE_18_PROVEN_AT_SEND"] is False
+    assert CLAIMS["STP_FLATTEN_EXECUTE_AUTHORIZED"] is False
+    assert CLAIMS["POST_ALLOWED"] is False
+    assert CLAIMS["GET_ALLOWED"] is False
+    assert CLAIMS["PRIVATE_AUTH_USED"] is False
+    assert CLAIMS["NEXT_AUTHORITY_BOUNDARY"] == NEXT_AUTHORITY_BOUNDARY
+    assert OWNER_GO in FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS
+    assert LIVE_AUTHORIZED is False
+    assert TESTNET_AUTHORIZED is False
+    assert LIVE_ENABLED is False
+    assert LIVE_ARMED is False
+    assert SUBMIT_UNLOCKED is False
+
+
+def test_spec_token_and_no_execution_unlock() -> None:
+    text = _read(SPEC)
+    assert "docs_token: DOCS_TOKEN_SEND_TIME_PASS_18_19_21_24_V1" in text
+    assert "SEND_TIME_PASS_18_19_21_24=PASS_OFFLINE_CONTRACT" in text
+    assert "STP_DOES_NOT_GRANT_EXECUTION_READINESS=true" in text
+    assert "LIVE_AUTHORIZED=false" in text
+    assert "PREREQUISITE_18_PROVEN_AT_SEND=false" in text
+    assert "STP_DOES_NOT_ISSUE_RUNTIME_PERMIT=true" in text
+
+
+def test_evidence_pack_manifest_and_claims() -> None:
+    verified = verify_manifest_v1(EVIDENCE_PACK)
+    assert int(verified["MANIFEST_VERIFY_RC"]) == 0
+    claims = json.loads((EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    summary = json.loads((EVIDENCE_PACK / "SUMMARY.json").read_text(encoding="utf-8"))
+    adjudication = json.loads((EVIDENCE_PACK / "ADJUDICATION.json").read_text(encoding="utf-8"))
+    assert claims["SEND_TIME_PASS_18_19_21_24"] == "PASS_OFFLINE_CONTRACT"
+    assert summary["STP_DOES_NOT_GRANT_EXECUTION_READINESS"] is True
+    assert summary["EXECUTION_READY"] is False
+    assert adjudication["PREREQUISITE_18_PROVEN_AT_SEND"] is False
+    assert adjudication["STP_FLATTEN_EXECUTE_AUTHORIZED"] is False
+    assert adjudication["PRIVATE_AUTH_USED"] is False
+    assert adjudication["POST_PERFORMED"] is False
+    assert adjudication["BOUNDED_RUNTIME_PERMIT_ISSUANCE"] is False
+
+
+def test_assemble_roundtrip(tmp_path: Path) -> None:
+    result = assemble_send_time_pass_18_19_21_24_v1(
+        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        evidence_root=tmp_path,
+        run_id="roundtrip",
+    )
+    assert result["adjudication"]["SEND_TIME_PASS_18_19_21_24"] == "PASS_OFFLINE_CONTRACT"
+    assert result["adjudication"]["PREREQUISITE_18_PROVEN_AT_SEND"] is False
+    assert result["MANIFEST_VERIFY_RC"] == 0
+    verified = verify_manifest_v1(tmp_path / "roundtrip")
+    assert int(verified["MANIFEST_VERIFY_RC"]) == 0

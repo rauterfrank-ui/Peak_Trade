@@ -1,0 +1,2 @@
+# Preserve historical source/diff bytes; confined to this evidence archive.
+*.txt -text -whitespace

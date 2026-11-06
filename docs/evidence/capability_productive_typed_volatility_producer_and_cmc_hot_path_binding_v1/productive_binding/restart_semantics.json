@@ -1,0 +1,5 @@
+{
+  "classification": "PERSIST_DIRECTLY_WHEN_PATH_CONFIGURED_ELSE_PROCESS_LOCAL_CONTINUITY",
+  "estimate_rematerialized_on_restore": false,
+  "semantics": "History restores via existing mark-history persistence when configured; estimate remains fail-closed until next PRODUCED. Wallclock sessions without persistence_path keep process-local continuity only; cross-process restart without persistence remains an explicit open boundary."
+}

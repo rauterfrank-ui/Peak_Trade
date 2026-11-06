@@ -1,0 +1,955 @@
+{
+  "base_sha_expected": "a55c4000f33269a98107fd1294b1c9ba82433cad",
+  "composition_selected_side_counts": {
+    "long": 1356,
+    "none": 21578,
+    "short": 210
+  },
+  "decision_outcome_counts": {
+    "None": 480,
+    "enter_long": 231,
+    "hold": 18587,
+    "no_action": 210,
+    "observe": 2976,
+    "reduce": 1140
+  },
+  "dominant_first_failed_stage": "composition",
+  "first_failed_stage_counts": {
+    "composition": 6,
+    "entry_exit": 4
+  },
+  "global_first_entry_value_loss": {
+    "bar_index": 2305,
+    "bar_timestamp": "2024-08-05 01:00:00+00:00",
+    "composition_outcome": "short_selected",
+    "directional_agreement_outcome": "bull=observe;bear=confirmed",
+    "entry_side_on_material": "NONE",
+    "explicit_block_reason": "no_action",
+    "final_decision_outcome": "no_action",
+    "first_failed_stage": "entry_exit",
+    "mapped_position_signal": 0,
+    "panel_member": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+    "price_path": [
+      0.2725,
+      0.2505
+    ],
+    "suitability_outcome": "bull=pass;bear=pass",
+    "taxonomy_outcome": "HOLD"
+  },
+  "members": [
+    {
+      "all_bar_count_hooked": 2953,
+      "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+      "entry_aggregate": {
+        "authority_effect": "NONE",
+        "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "dominant_first_failed_stage": "entry_exit",
+        "dominant_taxonomy_outcome": "HOLD",
+        "entry_bar_count": 1,
+        "entry_bars_with_exactly_one_outcome": 1,
+        "first_failed_stage_counts": {
+          "entry_exit": 1
+        },
+        "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "offline_only": true,
+        "outcome_counts": {
+          "BLOCKED_COMPOSITION": 0,
+          "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+          "BLOCKED_ENTRY_EXIT": 0,
+          "BLOCKED_OTHER": 0,
+          "BLOCKED_SUITABILITY": 0,
+          "BLOCKED_SURVIVAL": 0,
+          "BLOCKED_WARMUP": 0,
+          "ENTER_LONG": 0,
+          "ENTER_SHORT": 0,
+          "EXIT_OR_DEMOTION": 0,
+          "HOLD": 1,
+          "UNOBSERVABLE_FAIL_CLOSED": 0
+        },
+        "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
+        "price_path_suspicion_status": "NOT_OBSERVED_AS_SYNTHETIC_MARK_PLUS_5",
+        "reconciled": true,
+        "regime_id_suspicion_status": "OBSERVED_HARDCODED_TRENDING_ON_ALL_ENTRY_BARS",
+        "runtime_effect": "NONE",
+        "schema_version": "mv2_zero_trade_per_bar_decision_outcome_diagnostic.v1",
+        "unobservable_entry_bar_count": 0
+      },
+      "entry_record_count": 1,
+      "first_entry_value_loss": {
+        "bar_index": 2305,
+        "bar_timestamp": "2024-08-05 01:00:00+00:00",
+        "composition_outcome": "short_selected",
+        "directional_agreement_outcome": "bull=observe;bear=confirmed",
+        "entry_side_on_material": "NONE",
+        "explicit_block_reason": "no_action",
+        "final_decision_outcome": "no_action",
+        "first_failed_stage": "entry_exit",
+        "mapped_position_signal": 0,
+        "panel_member": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+        "price_path": [
+          0.2725,
+          0.2505
+        ],
+        "suitability_outcome": "bull=pass;bear=pass",
+        "taxonomy_outcome": "HOLD"
+      },
+      "hook_counters": {
+        "agreement_entry": 1,
+        "composition_selected_side": {
+          "long": 132,
+          "none": 2751,
+          "short": 10
+        },
+        "composition_status": {
+          "long_selected": 132,
+          "observe": 2623,
+          "reversal_preparation": 128,
+          "short_selected": 10
+        },
+        "da_bear": {
+          "candidate": 531,
+          "confirmed": 138,
+          "observe": 2224
+        },
+        "da_bull": {
+          "candidate": 484,
+          "confirmed": 132,
+          "observe": 2277
+        },
+        "decision_outcome": {
+          "None": 60,
+          "enter_long": 11,
+          "hold": 2669,
+          "no_action": 10,
+          "observe": 75,
+          "reduce": 128
+        },
+        "entry_side_long": 0,
+        "entry_side_none": 2893,
+        "entry_side_short": 0,
+        "mapped_signal": {
+          "0": 2942,
+          "1": 11
+        },
+        "next_side_state": {
+          "long_armed": 2893
+        },
+        "price_path_down": 1467,
+        "price_path_flat": 55,
+        "price_path_missing": 60,
+        "price_path_up": 1371,
+        "raw_entry_hook": 1,
+        "side_state": {},
+        "suit_bear": {
+          "pass": 2893
+        },
+        "suit_bull": {
+          "pass": 2893
+        },
+        "trade_like_enter": 11
+      },
+      "member_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "raw_signal_counts": {
+        "-1": 168,
+        "0": 2784,
+        "1": 1
+      },
+      "trade_count_observed": 0
+    },
+    {
+      "all_bar_count_hooked": 2953,
+      "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+      "entry_aggregate": {
+        "authority_effect": "NONE",
+        "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "dominant_first_failed_stage": null,
+        "dominant_taxonomy_outcome": null,
+        "entry_bar_count": 0,
+        "entry_bars_with_exactly_one_outcome": 0,
+        "first_failed_stage_counts": {},
+        "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "offline_only": true,
+        "outcome_counts": {
+          "BLOCKED_COMPOSITION": 0,
+          "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+          "BLOCKED_ENTRY_EXIT": 0,
+          "BLOCKED_OTHER": 0,
+          "BLOCKED_SUITABILITY": 0,
+          "BLOCKED_SURVIVAL": 0,
+          "BLOCKED_WARMUP": 0,
+          "ENTER_LONG": 0,
+          "ENTER_SHORT": 0,
+          "EXIT_OR_DEMOTION": 0,
+          "HOLD": 0,
+          "UNOBSERVABLE_FAIL_CLOSED": 0
+        },
+        "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
+        "price_path_suspicion_status": "NOT_APPLICABLE_NO_ENTRY_BARS",
+        "reconciled": true,
+        "regime_id_suspicion_status": "NOT_APPLICABLE_NO_ENTRY_BARS",
+        "runtime_effect": "NONE",
+        "schema_version": "mv2_zero_trade_per_bar_decision_outcome_diagnostic.v1",
+        "unobservable_entry_bar_count": 0
+      },
+      "entry_record_count": 0,
+      "first_entry_value_loss": null,
+      "hook_counters": {
+        "agreement_entry": 0,
+        "composition_selected_side": {
+          "long": 201,
+          "none": 2677,
+          "short": 15
+        },
+        "composition_status": {
+          "long_selected": 201,
+          "observe": 2517,
+          "reversal_preparation": 160,
+          "short_selected": 15
+        },
+        "da_bear": {
+          "candidate": 503,
+          "confirmed": 175,
+          "observe": 2215
+        },
+        "da_bull": {
+          "candidate": 505,
+          "confirmed": 201,
+          "observe": 2187
+        },
+        "decision_outcome": {
+          "None": 60,
+          "enter_long": 30,
+          "hold": 2302,
+          "no_action": 15,
+          "observe": 386,
+          "reduce": 160
+        },
+        "entry_side_long": 0,
+        "entry_side_none": 2893,
+        "entry_side_short": 0,
+        "mapped_signal": {
+          "0": 2923,
+          "1": 30
+        },
+        "next_side_state": {
+          "long_armed": 2893
+        },
+        "price_path_down": 1453,
+        "price_path_flat": 28,
+        "price_path_missing": 60,
+        "price_path_up": 1412,
+        "raw_entry_hook": 0,
+        "side_state": {},
+        "suit_bear": {
+          "pass": 2893
+        },
+        "suit_bull": {
+          "pass": 2893
+        },
+        "trade_like_enter": 30
+      },
+      "member_id": "okx:linear_perpetual:AAVE:USDT:USDT:perp",
+      "raw_signal_counts": {
+        "-1": 183,
+        "0": 2770
+      },
+      "trade_count_observed": 0
+    },
+    {
+      "all_bar_count_hooked": 2953,
+      "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+      "entry_aggregate": {
+        "authority_effect": "NONE",
+        "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "dominant_first_failed_stage": "composition",
+        "dominant_taxonomy_outcome": "BLOCKED_COMPOSITION",
+        "entry_bar_count": 1,
+        "entry_bars_with_exactly_one_outcome": 1,
+        "first_failed_stage_counts": {
+          "composition": 1
+        },
+        "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "offline_only": true,
+        "outcome_counts": {
+          "BLOCKED_COMPOSITION": 1,
+          "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+          "BLOCKED_ENTRY_EXIT": 0,
+          "BLOCKED_OTHER": 0,
+          "BLOCKED_SUITABILITY": 0,
+          "BLOCKED_SURVIVAL": 0,
+          "BLOCKED_WARMUP": 0,
+          "ENTER_LONG": 0,
+          "ENTER_SHORT": 0,
+          "EXIT_OR_DEMOTION": 0,
+          "HOLD": 0,
+          "UNOBSERVABLE_FAIL_CLOSED": 0
+        },
+        "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
+        "price_path_suspicion_status": "NOT_OBSERVED_AS_SYNTHETIC_MARK_PLUS_5",
+        "reconciled": true,
+        "regime_id_suspicion_status": "OBSERVED_HARDCODED_TRENDING_ON_ALL_ENTRY_BARS",
+        "runtime_effect": "NONE",
+        "schema_version": "mv2_zero_trade_per_bar_decision_outcome_diagnostic.v1",
+        "unobservable_entry_bar_count": 0
+      },
+      "entry_record_count": 1,
+      "first_entry_value_loss": {
+        "bar_index": 906,
+        "bar_timestamp": "2024-06-07 18:00:00+00:00",
+        "composition_outcome": "reversal_preparation",
+        "directional_agreement_outcome": "bull=observe;bear=confirmed",
+        "entry_side_on_material": "NONE",
+        "explicit_block_reason": "reversal_preparation",
+        "final_decision_outcome": "reduce",
+        "first_failed_stage": "composition",
+        "mapped_position_signal": 0,
+        "panel_member": "okx:linear_perpetual:ACH:USDT:USDT:perp",
+        "price_path": [
+          0.03038,
+          0.0281
+        ],
+        "suitability_outcome": "bull=pass;bear=pass",
+        "taxonomy_outcome": "BLOCKED_COMPOSITION"
+      },
+      "hook_counters": {
+        "agreement_entry": 1,
+        "composition_selected_side": {
+          "long": 176,
+          "none": 2692,
+          "short": 25
+        },
+        "composition_status": {
+          "long_selected": 176,
+          "observe": 2534,
+          "reversal_preparation": 158,
+          "short_selected": 25
+        },
+        "da_bear": {
+          "candidate": 547,
+          "confirmed": 183,
+          "observe": 2163
+        },
+        "da_bull": {
+          "candidate": 517,
+          "confirmed": 176,
+          "observe": 2200
+        },
+        "decision_outcome": {
+          "None": 60,
+          "enter_long": 26,
+          "hold": 2373,
+          "no_action": 25,
+          "observe": 311,
+          "reduce": 158
+        },
+        "entry_side_long": 0,
+        "entry_side_none": 2893,
+        "entry_side_short": 0,
+        "mapped_signal": {
+          "0": 2927,
+          "1": 26
+        },
+        "next_side_state": {
+          "long_armed": 2893
+        },
+        "price_path_down": 1497,
+        "price_path_flat": 74,
+        "price_path_missing": 60,
+        "price_path_up": 1322,
+        "raw_entry_hook": 1,
+        "side_state": {},
+        "suit_bear": {
+          "pass": 2893
+        },
+        "suit_bull": {
+          "pass": 2893
+        },
+        "trade_like_enter": 26
+      },
+      "member_id": "okx:linear_perpetual:ACH:USDT:USDT:perp",
+      "raw_signal_counts": {
+        "-1": 147,
+        "0": 2805,
+        "1": 1
+      },
+      "trade_count_observed": 0
+    },
+    {
+      "all_bar_count_hooked": 2953,
+      "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+      "entry_aggregate": {
+        "authority_effect": "NONE",
+        "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "dominant_first_failed_stage": null,
+        "dominant_taxonomy_outcome": null,
+        "entry_bar_count": 0,
+        "entry_bars_with_exactly_one_outcome": 0,
+        "first_failed_stage_counts": {},
+        "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "offline_only": true,
+        "outcome_counts": {
+          "BLOCKED_COMPOSITION": 0,
+          "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+          "BLOCKED_ENTRY_EXIT": 0,
+          "BLOCKED_OTHER": 0,
+          "BLOCKED_SUITABILITY": 0,
+          "BLOCKED_SURVIVAL": 0,
+          "BLOCKED_WARMUP": 0,
+          "ENTER_LONG": 0,
+          "ENTER_SHORT": 0,
+          "EXIT_OR_DEMOTION": 0,
+          "HOLD": 0,
+          "UNOBSERVABLE_FAIL_CLOSED": 0
+        },
+        "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
+        "price_path_suspicion_status": "NOT_APPLICABLE_NO_ENTRY_BARS",
+        "reconciled": true,
+        "regime_id_suspicion_status": "NOT_APPLICABLE_NO_ENTRY_BARS",
+        "runtime_effect": "NONE",
+        "schema_version": "mv2_zero_trade_per_bar_decision_outcome_diagnostic.v1",
+        "unobservable_entry_bar_count": 0
+      },
+      "entry_record_count": 0,
+      "first_entry_value_loss": null,
+      "hook_counters": {
+        "agreement_entry": 0,
+        "composition_selected_side": {
+          "long": 91,
+          "none": 2778,
+          "short": 24
+        },
+        "composition_status": {
+          "long_selected": 91,
+          "observe": 2703,
+          "reversal_preparation": 75,
+          "short_selected": 24
+        },
+        "da_bear": {
+          "candidate": 400,
+          "confirmed": 99,
+          "observe": 2394
+        },
+        "da_bull": {
+          "candidate": 412,
+          "confirmed": 91,
+          "observe": 2390
+        },
+        "decision_outcome": {
+          "None": 60,
+          "enter_long": 22,
+          "hold": 2018,
+          "no_action": 24,
+          "observe": 754,
+          "reduce": 75
+        },
+        "entry_side_long": 0,
+        "entry_side_none": 2893,
+        "entry_side_short": 0,
+        "mapped_signal": {
+          "0": 2931,
+          "1": 22
+        },
+        "next_side_state": {
+          "long_armed": 2893
+        },
+        "price_path_down": 1429,
+        "price_path_flat": 62,
+        "price_path_missing": 60,
+        "price_path_up": 1402,
+        "raw_entry_hook": 0,
+        "side_state": {},
+        "suit_bear": {
+          "pass": 2893
+        },
+        "suit_bull": {
+          "pass": 2893
+        },
+        "trade_like_enter": 22
+      },
+      "member_id": "okx:linear_perpetual:ADA:USDT:USDT:perp",
+      "raw_signal_counts": {
+        "-1": 185,
+        "0": 2768
+      },
+      "trade_count_observed": 0
+    },
+    {
+      "all_bar_count_hooked": 2953,
+      "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+      "entry_aggregate": {
+        "authority_effect": "NONE",
+        "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "dominant_first_failed_stage": "composition",
+        "dominant_taxonomy_outcome": "BLOCKED_COMPOSITION",
+        "entry_bar_count": 4,
+        "entry_bars_with_exactly_one_outcome": 4,
+        "first_failed_stage_counts": {
+          "composition": 3,
+          "entry_exit": 1
+        },
+        "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "offline_only": true,
+        "outcome_counts": {
+          "BLOCKED_COMPOSITION": 3,
+          "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+          "BLOCKED_ENTRY_EXIT": 0,
+          "BLOCKED_OTHER": 0,
+          "BLOCKED_SUITABILITY": 0,
+          "BLOCKED_SURVIVAL": 0,
+          "BLOCKED_WARMUP": 0,
+          "ENTER_LONG": 0,
+          "ENTER_SHORT": 0,
+          "EXIT_OR_DEMOTION": 0,
+          "HOLD": 1,
+          "UNOBSERVABLE_FAIL_CLOSED": 0
+        },
+        "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
+        "price_path_suspicion_status": "NOT_OBSERVED_AS_SYNTHETIC_MARK_PLUS_5",
+        "reconciled": true,
+        "regime_id_suspicion_status": "OBSERVED_HARDCODED_TRENDING_ON_ALL_ENTRY_BARS",
+        "runtime_effect": "NONE",
+        "schema_version": "mv2_zero_trade_per_bar_decision_outcome_diagnostic.v1",
+        "unobservable_entry_bar_count": 0
+      },
+      "entry_record_count": 4,
+      "first_entry_value_loss": {
+        "bar_index": 344,
+        "bar_timestamp": "2024-05-15 08:00:00+00:00",
+        "composition_outcome": "observe",
+        "directional_agreement_outcome": "bull=observe;bear=candidate",
+        "entry_side_on_material": "NONE",
+        "explicit_block_reason": "observe",
+        "final_decision_outcome": "observe",
+        "first_failed_stage": "composition",
+        "mapped_position_signal": 0,
+        "panel_member": "okx:linear_perpetual:AEVO:USDT:USDT:perp",
+        "price_path": [
+          1.01,
+          0.849
+        ],
+        "suitability_outcome": "bull=pass;bear=pass",
+        "taxonomy_outcome": "BLOCKED_COMPOSITION"
+      },
+      "hook_counters": {
+        "agreement_entry": 4,
+        "composition_selected_side": {
+          "long": 294,
+          "none": 2532,
+          "short": 67
+        },
+        "composition_status": {
+          "long_selected": 294,
+          "observe": 2290,
+          "reversal_preparation": 242,
+          "short_selected": 67
+        },
+        "da_bear": {
+          "candidate": 598,
+          "confirmed": 309,
+          "observe": 1986
+        },
+        "da_bull": {
+          "candidate": 520,
+          "confirmed": 294,
+          "observe": 2079
+        },
+        "decision_outcome": {
+          "None": 60,
+          "enter_long": 58,
+          "hold": 2007,
+          "no_action": 67,
+          "observe": 519,
+          "reduce": 242
+        },
+        "entry_side_long": 0,
+        "entry_side_none": 2893,
+        "entry_side_short": 0,
+        "mapped_signal": {
+          "0": 2895,
+          "1": 58
+        },
+        "next_side_state": {
+          "long_armed": 2893
+        },
+        "price_path_down": 1522,
+        "price_path_flat": 40,
+        "price_path_missing": 60,
+        "price_path_up": 1331,
+        "raw_entry_hook": 4,
+        "side_state": {},
+        "suit_bear": {
+          "pass": 2893
+        },
+        "suit_bull": {
+          "pass": 2893
+        },
+        "trade_like_enter": 58
+      },
+      "member_id": "okx:linear_perpetual:AEVO:USDT:USDT:perp",
+      "raw_signal_counts": {
+        "-1": 187,
+        "0": 2762,
+        "1": 4
+      },
+      "trade_count_observed": 0
+    },
+    {
+      "all_bar_count_hooked": 2953,
+      "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+      "entry_aggregate": {
+        "authority_effect": "NONE",
+        "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "dominant_first_failed_stage": "entry_exit",
+        "dominant_taxonomy_outcome": "HOLD",
+        "entry_bar_count": 1,
+        "entry_bars_with_exactly_one_outcome": 1,
+        "first_failed_stage_counts": {
+          "entry_exit": 1
+        },
+        "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "offline_only": true,
+        "outcome_counts": {
+          "BLOCKED_COMPOSITION": 0,
+          "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+          "BLOCKED_ENTRY_EXIT": 0,
+          "BLOCKED_OTHER": 0,
+          "BLOCKED_SUITABILITY": 0,
+          "BLOCKED_SURVIVAL": 0,
+          "BLOCKED_WARMUP": 0,
+          "ENTER_LONG": 0,
+          "ENTER_SHORT": 0,
+          "EXIT_OR_DEMOTION": 0,
+          "HOLD": 1,
+          "UNOBSERVABLE_FAIL_CLOSED": 0
+        },
+        "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
+        "price_path_suspicion_status": "NOT_OBSERVED_AS_SYNTHETIC_MARK_PLUS_5",
+        "reconciled": true,
+        "regime_id_suspicion_status": "OBSERVED_HARDCODED_TRENDING_ON_ALL_ENTRY_BARS",
+        "runtime_effect": "NONE",
+        "schema_version": "mv2_zero_trade_per_bar_decision_outcome_diagnostic.v1",
+        "unobservable_entry_bar_count": 0
+      },
+      "entry_record_count": 1,
+      "first_entry_value_loss": {
+        "bar_index": 1562,
+        "bar_timestamp": "2024-07-05 02:00:00+00:00",
+        "composition_outcome": "short_selected",
+        "directional_agreement_outcome": "bull=observe;bear=confirmed",
+        "entry_side_on_material": "NONE",
+        "explicit_block_reason": "no_action",
+        "final_decision_outcome": "no_action",
+        "first_failed_stage": "entry_exit",
+        "mapped_position_signal": 0,
+        "panel_member": "okx:linear_perpetual:AGLD:USDT:USDT:perp",
+        "price_path": [
+          0.8218,
+          0.759
+        ],
+        "suitability_outcome": "bull=pass;bear=pass",
+        "taxonomy_outcome": "HOLD"
+      },
+      "hook_counters": {
+        "agreement_entry": 1,
+        "composition_selected_side": {
+          "long": 211,
+          "none": 2668,
+          "short": 14
+        },
+        "composition_status": {
+          "long_selected": 211,
+          "observe": 2478,
+          "reversal_preparation": 190,
+          "short_selected": 14
+        },
+        "da_bear": {
+          "candidate": 565,
+          "confirmed": 204,
+          "observe": 2124
+        },
+        "da_bull": {
+          "candidate": 506,
+          "confirmed": 211,
+          "observe": 2176
+        },
+        "decision_outcome": {
+          "None": 60,
+          "enter_long": 19,
+          "hold": 2519,
+          "no_action": 14,
+          "observe": 151,
+          "reduce": 190
+        },
+        "entry_side_long": 0,
+        "entry_side_none": 2893,
+        "entry_side_short": 0,
+        "mapped_signal": {
+          "0": 2934,
+          "1": 19
+        },
+        "next_side_state": {
+          "long_armed": 2893
+        },
+        "price_path_down": 1470,
+        "price_path_flat": 13,
+        "price_path_missing": 60,
+        "price_path_up": 1410,
+        "raw_entry_hook": 1,
+        "side_state": {},
+        "suit_bear": {
+          "pass": 2893
+        },
+        "suit_bull": {
+          "pass": 2893
+        },
+        "trade_like_enter": 19
+      },
+      "member_id": "okx:linear_perpetual:AGLD:USDT:USDT:perp",
+      "raw_signal_counts": {
+        "-1": 183,
+        "0": 2769,
+        "1": 1
+      },
+      "trade_count_observed": 0
+    },
+    {
+      "all_bar_count_hooked": 2953,
+      "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+      "entry_aggregate": {
+        "authority_effect": "NONE",
+        "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "dominant_first_failed_stage": null,
+        "dominant_taxonomy_outcome": null,
+        "entry_bar_count": 0,
+        "entry_bars_with_exactly_one_outcome": 0,
+        "first_failed_stage_counts": {},
+        "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "offline_only": true,
+        "outcome_counts": {
+          "BLOCKED_COMPOSITION": 0,
+          "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+          "BLOCKED_ENTRY_EXIT": 0,
+          "BLOCKED_OTHER": 0,
+          "BLOCKED_SUITABILITY": 0,
+          "BLOCKED_SURVIVAL": 0,
+          "BLOCKED_WARMUP": 0,
+          "ENTER_LONG": 0,
+          "ENTER_SHORT": 0,
+          "EXIT_OR_DEMOTION": 0,
+          "HOLD": 0,
+          "UNOBSERVABLE_FAIL_CLOSED": 0
+        },
+        "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
+        "price_path_suspicion_status": "NOT_APPLICABLE_NO_ENTRY_BARS",
+        "reconciled": true,
+        "regime_id_suspicion_status": "NOT_APPLICABLE_NO_ENTRY_BARS",
+        "runtime_effect": "NONE",
+        "schema_version": "mv2_zero_trade_per_bar_decision_outcome_diagnostic.v1",
+        "unobservable_entry_bar_count": 0
+      },
+      "entry_record_count": 0,
+      "first_entry_value_loss": null,
+      "hook_counters": {
+        "agreement_entry": 0,
+        "composition_selected_side": {
+          "long": 104,
+          "none": 2770,
+          "short": 19
+        },
+        "composition_status": {
+          "long_selected": 104,
+          "observe": 2683,
+          "reversal_preparation": 87,
+          "short_selected": 19
+        },
+        "da_bear": {
+          "candidate": 465,
+          "confirmed": 106,
+          "observe": 2322
+        },
+        "da_bull": {
+          "candidate": 463,
+          "confirmed": 104,
+          "observe": 2326
+        },
+        "decision_outcome": {
+          "None": 60,
+          "enter_long": 23,
+          "hold": 2522,
+          "no_action": 19,
+          "observe": 242,
+          "reduce": 87
+        },
+        "entry_side_long": 0,
+        "entry_side_none": 2893,
+        "entry_side_short": 0,
+        "mapped_signal": {
+          "0": 2930,
+          "1": 23
+        },
+        "next_side_state": {
+          "long_armed": 2893
+        },
+        "price_path_down": 1413,
+        "price_path_flat": 148,
+        "price_path_missing": 60,
+        "price_path_up": 1332,
+        "raw_entry_hook": 0,
+        "side_state": {},
+        "suit_bear": {
+          "pass": 2893
+        },
+        "suit_bull": {
+          "pass": 2893
+        },
+        "trade_like_enter": 23
+      },
+      "member_id": "okx:linear_perpetual:ALGO:USDT:USDT:perp",
+      "raw_signal_counts": {
+        "-1": 175,
+        "0": 2778
+      },
+      "trade_count_observed": 0
+    },
+    {
+      "all_bar_count_hooked": 2953,
+      "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+      "entry_aggregate": {
+        "authority_effect": "NONE",
+        "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "dominant_first_failed_stage": "composition",
+        "dominant_taxonomy_outcome": "BLOCKED_COMPOSITION",
+        "entry_bar_count": 3,
+        "entry_bars_with_exactly_one_outcome": 3,
+        "first_failed_stage_counts": {
+          "composition": 2,
+          "entry_exit": 1
+        },
+        "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+        "offline_only": true,
+        "outcome_counts": {
+          "BLOCKED_COMPOSITION": 2,
+          "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+          "BLOCKED_ENTRY_EXIT": 0,
+          "BLOCKED_OTHER": 0,
+          "BLOCKED_SUITABILITY": 0,
+          "BLOCKED_SURVIVAL": 0,
+          "BLOCKED_WARMUP": 0,
+          "ENTER_LONG": 0,
+          "ENTER_SHORT": 0,
+          "EXIT_OR_DEMOTION": 0,
+          "HOLD": 1,
+          "UNOBSERVABLE_FAIL_CLOSED": 0
+        },
+        "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
+        "price_path_suspicion_status": "NOT_OBSERVED_AS_SYNTHETIC_MARK_PLUS_5",
+        "reconciled": true,
+        "regime_id_suspicion_status": "OBSERVED_HARDCODED_TRENDING_ON_ALL_ENTRY_BARS",
+        "runtime_effect": "NONE",
+        "schema_version": "mv2_zero_trade_per_bar_decision_outcome_diagnostic.v1",
+        "unobservable_entry_bar_count": 0
+      },
+      "entry_record_count": 3,
+      "first_entry_value_loss": {
+        "bar_index": 906,
+        "bar_timestamp": "2024-06-07 18:00:00+00:00",
+        "composition_outcome": "reversal_preparation",
+        "directional_agreement_outcome": "bull=observe;bear=confirmed",
+        "entry_side_on_material": "NONE",
+        "explicit_block_reason": "reversal_preparation",
+        "final_decision_outcome": "reduce",
+        "first_failed_stage": "composition",
+        "mapped_position_signal": 0,
+        "panel_member": "okx:linear_perpetual:APE:USDT:USDT:perp",
+        "price_path": [
+          1.2761,
+          1.1771
+        ],
+        "suitability_outcome": "bull=pass;bear=pass",
+        "taxonomy_outcome": "BLOCKED_COMPOSITION"
+      },
+      "hook_counters": {
+        "agreement_entry": 3,
+        "composition_selected_side": {
+          "long": 147,
+          "none": 2710,
+          "short": 36
+        },
+        "composition_status": {
+          "long_selected": 147,
+          "observe": 2610,
+          "reversal_preparation": 100,
+          "short_selected": 36
+        },
+        "da_bear": {
+          "candidate": 512,
+          "confirmed": 136,
+          "observe": 2245
+        },
+        "da_bull": {
+          "candidate": 507,
+          "confirmed": 147,
+          "observe": 2239
+        },
+        "decision_outcome": {
+          "None": 60,
+          "enter_long": 42,
+          "hold": 2177,
+          "no_action": 36,
+          "observe": 538,
+          "reduce": 100
+        },
+        "entry_side_long": 0,
+        "entry_side_none": 2893,
+        "entry_side_short": 0,
+        "mapped_signal": {
+          "0": 2911,
+          "1": 42
+        },
+        "next_side_state": {
+          "long_armed": 2893
+        },
+        "price_path_down": 1442,
+        "price_path_flat": 24,
+        "price_path_missing": 60,
+        "price_path_up": 1427,
+        "raw_entry_hook": 3,
+        "side_state": {},
+        "suit_bear": {
+          "pass": 2893
+        },
+        "suit_bull": {
+          "pass": 2893
+        },
+        "trade_like_enter": 42
+      },
+      "member_id": "okx:linear_perpetual:APE:USDT:USDT:perp",
+      "raw_signal_counts": {
+        "-1": 176,
+        "0": 2774,
+        "1": 3
+      },
+      "trade_count_observed": 0
+    }
+  ],
+  "next_side_state_counts": {
+    "long_armed": 23144
+  },
+  "panel_members_probed": [
+    "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+    "okx:linear_perpetual:AAVE:USDT:USDT:perp",
+    "okx:linear_perpetual:ACH:USDT:USDT:perp",
+    "okx:linear_perpetual:ADA:USDT:USDT:perp",
+    "okx:linear_perpetual:AEVO:USDT:USDT:perp",
+    "okx:linear_perpetual:AGLD:USDT:USDT:perp",
+    "okx:linear_perpetual:ALGO:USDT:USDT:perp",
+    "okx:linear_perpetual:APE:USDT:USDT:perp"
+  ],
+  "raw_signal_counts_total": {
+    "-1": 1404,
+    "0": 22210,
+    "1": 10
+  },
+  "raw_signal_nonzero": true,
+  "trade_count_total_observed": 0
+}

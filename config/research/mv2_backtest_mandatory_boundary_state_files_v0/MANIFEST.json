@@ -1,0 +1,26 @@
+{
+  "files": {
+    "canonical_order_intent": {
+      "expected_state_file_digest_ref": "3fc5a99ca38101b3017b00260b2bdbbd7a0fb96e7f2c600333e40876c98e06b5",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/canonical_order_intent.json"
+    },
+    "capital_risk_sizing": {
+      "expected_state_file_digest_ref": "82a8b8ae2f38a90c93915c97c912243b3fca64b68e1e1490e062049cdff728a7",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/capital_risk_sizing.json"
+    },
+    "killswitch": {
+      "expected_state_file_digest_ref": "e8acdea6f07b3e5e232aef82ad9e6ce0e2dbf1bf09f7c1395a13e5cb176f9aeb",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/killswitch.json"
+    },
+    "reconciliation": {
+      "expected_state_file_digest_ref": "3475daedda9ec7d490f395972fd82356ac81288379fa708b43fc0a6c4870dcaf",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/reconciliation.json"
+    },
+    "safety_kernel": {
+      "expected_state_file_digest_ref": "21e11676f47a579032cfb594cc003271483e342f6edd49dd5e573c06da7bd30b",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/safety_kernel.json"
+    }
+  },
+  "instrument_id": "inst-eth-usdt-perp",
+  "schema_version": "mv2_backtest_mandatory_boundary_state_files_manifest_v0"
+}

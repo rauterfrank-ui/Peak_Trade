@@ -1,0 +1,101 @@
+{
+  "AFTER_BOUND_FILL_MEANS": "bound_fill_proven is True and bound_fill_kind == LIVE_IDENTITY_BOUND_VENUE_FILL for the same lifecycle; BOUND_FILL_PROVEN_AT <= CAPTURE_STARTED_AT",
+  "BOUND_FILL_CAN_BE_CREATED_OFFLINE_SYNTHETICALLY": "STRUCTURALLY_YES_AS_TEST_FIXTURE_NOT_VALID_PRODUCTIVE_PROVENANCE",
+  "BOUND_FILL_ONLY_AFTER_SUCCESSFUL_EXCHANGE_FILL": true,
+  "CAPTURE_POINT": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+  "CAPTURE_RELATIVE_TO_ACCOUNTING_RECONCILIATION": "INDEPENDENT_NOT_AFTER_REQUIRED",
+  "CAPTURE_RELATIVE_TO_FILL_CONFIRMATION": "AFTER",
+  "CAPTURE_RELATIVE_TO_ORDER_SUBMIT": "AFTER",
+  "CAPTURE_RELATIVE_TO_OTHER_PRODUCTIVE_PERSISTENCE": "CAPTURE_WRITES_ONLY_HANDOFF_ARTIFACT",
+  "CAPTURE_RELATIVE_TO_POSITION_MUTATION": "AFTER_VENUE_FILL_POSITION_EFFECT; S05_QTY_IS_PEAK_TRADE_OWNED_NOT_VENUE_GET",
+  "DOCUMENT_CLASS": "SECTION_11_14_CAPTURE_POINT_TIMELINE_V1",
+  "PRODUCTIVE_CONTEMPORANEOUS_CAPTURE_REQUIRES_PRIOR_LIVE_OR_VENUE_ACTION": true,
+  "UNDERLYING_FILL_ALREADY_EXTERNALLY_EXECUTED": true,
+  "steps": [
+    {
+      "AUTHORITY": "HISTORICAL_STATE",
+      "EXTERNAL_EFFECT": "NONE_REQUIRED_FOR_CAPTURE_RECORD",
+      "ID": "T0",
+      "REQUIRED_FOR_CAPTURE": false,
+      "REVERSIBLE": true,
+      "RUNTIME_EVENT": "ORDER_PLAN_OPTIONAL_HISTORICAL"
+    },
+    {
+      "AUTHORITY": "ADJUDICATED_CONCLUSIONS",
+      "EXTERNAL_EFFECT": "EXCHANGE_SUBMIT",
+      "ID": "T1",
+      "NOTE": "Required to create the order that can produce a contemporaneous LIVE_IDENTITY_BOUND_VENUE_FILL. Not part of the capture call itself.",
+      "REQUIRED_FOR_CAPTURE": true,
+      "REVERSIBLE": false,
+      "RUNTIME_EVENT": "LIVE_SUBMIT_WIRE_SEND_ORDER_CREATE"
+    },
+    {
+      "AUTHORITY": "ADJUDICATED_CONCLUSIONS",
+      "EXTERNAL_EFFECT": "ORDER_STATE_MUTATION",
+      "ID": "T2",
+      "NOTE": "ORDER_ACK is a forbidden capture trigger, but ack identity is required on the later bound fill.",
+      "REQUIRED_FOR_CAPTURE": true,
+      "REVERSIBLE": false,
+      "RUNTIME_EVENT": "SUBMIT_ACK"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "EXTERNAL_EFFECT": "VENUE_FILL; POSITION_EFFECT_AT_VENUE",
+      "ID": "T3",
+      "NOTE": "after_bound_fill means bound_fill_proven is True for kind LIVE_IDENTITY_BOUND_VENUE_FILL. Simulated/replay/ack/position-observation fills are forbidden. The fill is already externally executed before capture is allowed.",
+      "REQUIRED_FOR_CAPTURE": true,
+      "REVERSIBLE": false,
+      "RUNTIME_EVENT": "LIVE_IDENTITY_BOUND_VENUE_FILL"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "EXTERNAL_EFFECT": "NONE",
+      "ID": "T4",
+      "REQUIRED_FOR_CAPTURE": true,
+      "REVERSIBLE": true,
+      "RUNTIME_EVENT": "PARAMETERIZE_BOUND_FILL_IDENTITY_AND_S05_QTY"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "EXTERNAL_EFFECT": "NONE",
+      "ID": "T5",
+      "REQUIRED_FOR_CAPTURE": true,
+      "REVERSIBLE": true,
+      "RUNTIME_EVENT": "run_live_order_pre_restart_handoff_capture_v1"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "EXTERNAL_EFFECT": "NONE",
+      "ID": "T6",
+      "REQUIRED_FOR_CAPTURE": true,
+      "REVERSIBLE": true,
+      "RUNTIME_EVENT": "call_pre_restart_handoff_capture_after_bound_fill_v1"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "EXTERNAL_EFFECT": "NONE_UNTIL_WRITER",
+      "ID": "T7",
+      "REQUIRED_FOR_CAPTURE": true,
+      "REVERSIBLE": true,
+      "RUNTIME_EVENT": "run_capture_hook_after_bound_fill_before_restart_v1"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "EXTERNAL_EFFECT": "FILESYSTEM_WRITE of handoff artifact only",
+      "ID": "CAPTURE_POINT",
+      "NOTE": "Contemporaneous means CAPTURE_STARTED_AT >= BOUND_FILL_PROVEN_AT and CAPTURE_COMMITTED_AT < RESTART_BOUNDARY_AT. Capture is after fill confirmation and after Peak_Trade-owned S05 qty exists, before restart, and is not accounting/reconciliation persistence.",
+      "REQUIRED_FOR_CAPTURE": true,
+      "REVERSIBLE": false,
+      "RUNTIME_EVENT": "commit_handoff_after_bound_fill_before_restart_v1 commit captured_at_utc"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "EXTERNAL_EFFECT": "PROCESS_STOP_START",
+      "ID": "Tn",
+      "NOTE": "Must not have occurred yet. Capture does not invoke restart.",
+      "REQUIRED_FOR_CAPTURE": false,
+      "REVERSIBLE": false,
+      "RUNTIME_EVENT": "SupervisorLifecycle.restart"
+    }
+  ]
+}

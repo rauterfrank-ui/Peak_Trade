@@ -1,0 +1,95 @@
+{
+  "GETS": [
+    {
+      "auth_header_sent": false,
+      "body_sha256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+      "endpoint": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "INSTRUMENTS",
+      "observed_at_utc": "2026-09-08T08:49:36.679409Z",
+      "response_received_monotonic_ms": 32384411,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": false,
+      "body_sha256": "0d517e231a5c19696fb8db5ed56ea520cb132d15eb051fffdab5060ad2887efc",
+      "endpoint": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "TICKER",
+      "observed_at_utc": "2026-09-08T08:49:36.906614Z",
+      "response_received_monotonic_ms": 32384624,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": false,
+      "body_sha256": "122835f60ab6847cd1771db38d4928155e9cd96588972002fcbb762ddf993520",
+      "endpoint": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "PRICE_LIMIT",
+      "observed_at_utc": "2026-09-08T08:49:37.119509Z",
+      "response_received_monotonic_ms": 32384781,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "66aa0c6f4a39420b5a6f1077e61af66645266968f67cb7e0faf1dd02cedf52da",
+      "endpoint": "/api/v5/account/positions",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "POSITIONS",
+      "observed_at_utc": "2026-09-08T08:49:37.276614Z",
+      "response_received_monotonic_ms": 32384996,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "855580080ca2f42d4a86fecab33a44b7ae2a3f56bcf78b6a78f76750e17f3caf",
+      "endpoint": "/api/v5/account/trade-fee?instType=FUTURES&instFamily=SUI-USD_UM_XPERP",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "TRADE_FEE",
+      "observed_at_utc": "2026-09-08T08:49:37.491286Z",
+      "response_received_monotonic_ms": 32385221,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "d43e222f6a8543e39e1a76ad836bfe9aea9de8c3c615cefbe48253be19c69395",
+      "endpoint": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.8185",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "MAX_SIZE",
+      "observed_at_utc": "2026-09-08T08:49:37.718047Z",
+      "response_received_monotonic_ms": 32385389,
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+      "endpoint": "/api/v5/trade/orders-pending",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "ORDERS_PENDING",
+      "observed_at_utc": "2026-09-08T08:49:37.884507Z",
+      "response_received_monotonic_ms": 32385525,
+      "timeout": false,
+      "venue_code": "0"
+    }
+  ]
+}

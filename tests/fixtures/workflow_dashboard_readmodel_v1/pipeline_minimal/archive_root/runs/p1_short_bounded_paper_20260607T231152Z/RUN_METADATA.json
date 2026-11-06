@@ -1,0 +1,13 @@
+{
+  "stage": "P1_SHORT_BOUNDED_PAPER",
+  "review_verdict": "PASS",
+  "verdict": "PASS",
+  "utc_start": "2026-06-08T00:00:00Z",
+  "utc_end": "2026-06-08T00:10:00Z",
+  "duration_seconds_actual": 600,
+  "duration_cap_seconds": 1800,
+  "hard_stop_enforced": true,
+  "fills_count": 0,
+  "operator": "Frank Rauter",
+  "adapter_rc": 0
+}

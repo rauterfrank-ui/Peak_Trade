@@ -1,0 +1,898 @@
+[
+  {
+    "cycle": 1,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 2,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 3,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 4,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 5,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 6,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 7,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 8,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 9,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 10,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 11,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 12,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 13,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 14,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 15,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 16,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 17,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 18,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 19,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 20,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 21,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 22,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 23,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 24,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 25,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 26,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 27,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 28,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 29,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 30,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 31,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 32,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 33,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 34,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 35,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 36,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 37,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 38,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 39,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 40,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 41,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 42,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 43,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 44,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 45,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 46,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 47,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 48,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 49,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 50,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 51,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 52,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 53,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 54,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 55,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 56,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 57,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 58,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 59,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 60,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 61,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 62,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 63,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 64,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 65,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 66,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 67,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 68,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 69,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 70,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 71,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 72,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 73,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 74,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 75,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 76,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 77,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 78,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 79,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 80,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 81,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 82,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 83,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 84,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 85,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 86,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 87,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 88,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 89,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 90,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 91,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 92,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 93,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 94,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 95,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 96,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 97,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 98,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 99,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 100,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 101,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 102,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 103,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 104,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 105,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 106,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 107,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 108,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 109,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 110,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 111,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 112,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 113,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 114,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 115,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 116,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 117,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 118,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 119,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 120,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 121,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 122,
+    "estimate_present": false,
+    "fail_closed_reason": "WARMUP_NO_ESTIMATE",
+    "producer_outcome": "WARMUP",
+    "source_digest": null
+  },
+  {
+    "cycle": 123,
+    "estimate_present": true,
+    "fail_closed_reason": "NONE",
+    "producer_outcome": "PRODUCED",
+    "source_digest": "f96c9b255c8e96a3d8b723004317e945d91af9d805475b3f81e3d94d446c9764"
+  },
+  {
+    "cycle": 124,
+    "estimate_present": true,
+    "fail_closed_reason": "NONE",
+    "producer_outcome": "PRODUCED",
+    "source_digest": "f96c9b255c8e96a3d8b723004317e945d91af9d805475b3f81e3d94d446c9764"
+  },
+  {
+    "cycle": 125,
+    "estimate_present": true,
+    "fail_closed_reason": "NONE",
+    "producer_outcome": "PRODUCED",
+    "source_digest": "8d4cffdd3386844a5bb36b46118ba404e781186574b21d08d9859b7ebf8240c3"
+  },
+  {
+    "cycle": 126,
+    "estimate_present": true,
+    "fail_closed_reason": "NONE",
+    "producer_outcome": "PRODUCED",
+    "source_digest": "8d4cffdd3386844a5bb36b46118ba404e781186574b21d08d9859b7ebf8240c3"
+  },
+  {
+    "cycle": 127,
+    "estimate_present": true,
+    "fail_closed_reason": "NONE",
+    "producer_outcome": "PRODUCED",
+    "source_digest": "ff79bae49f770bf6585156744a459b4135b95230239503b40849904a6876c6dc"
+  },
+  {
+    "cycle": 128,
+    "estimate_present": true,
+    "fail_closed_reason": "NONE",
+    "producer_outcome": "PRODUCED",
+    "source_digest": "ff79bae49f770bf6585156744a459b4135b95230239503b40849904a6876c6dc"
+  }
+]

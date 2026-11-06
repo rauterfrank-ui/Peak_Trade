@@ -1,0 +1,67 @@
+{
+  "source_commit": "2ed94965facb87bb24eaa386b44d78c233be8dc2",
+  "new_implementation_sha256": {
+    "src/experiments/canonical_search_candidate_research_execution_v1.py": "a124840cd2a97de2318f478ea205775862d10b731c48f4dfbe9e69ff0f5584be",
+    "tests/experiments/test_canonical_search_candidate_research_execution_v1.py": "0235b55910dc3fc8b472564311f69e73d241055be72f78bf2fc812adaaaae6a5"
+  },
+  "implementation_status": "New additive explicit composition based on evidenced original design, not historical byte restoration",
+  "tests": "32 new scoped tests PASS: exact candidate/identity/chronology, no Phase10 persistence on divergence, actual native3-split engine execution, same later Meta input, existing stores persist/reload, float-free GVEF reference, canonical numeric byte reload and unchanged later Meta result. Existing90/128 PASS remain separate bounded prior evidence; not added to this count.",
+  "ruff_status": "PASS; format PASS for both new Python files",
+  "runtime_activation_authorized": false,
+  "own_test_iteration_corrections": [
+    "Initial tuple freezing violated existing owners JSON-list contract; fixed only in new component with read-only list shape.",
+    "Initial test used nonexistent robustness overall_status; corrected to existing aggregate_status.",
+    "Direct float-bearing GVEF payload is forbidden by existing canonical-JSON contract; added explicit numeric-artifact byte reference and verifier rather than changing GVEF or converting numbers to strings.",
+    "Dataset proof compares raw CSV SHA through existing Phase1 dataset domain rather than equating different digest domains."
+  ],
+  "boundaries": [
+    "Synthetic ancillary identity/core/cost bindings and caller-supplied champion/gap fixture are not authenticated productive evidence.",
+    "Funding NOT_BOUND, economic_interpretation_allowed false, robustness BLOCKED and nonfinite metric names remain visible.",
+    "No model training, natural outcome verification, incremental feature benefit, complete regime/portfolio orchestration, installed scheduler or productive apply established.",
+    "Old generic fast/slow candidate was not renamed or retroactively declared executed. This is a new native-name case.",
+    "One explicit provider call per composition invocation; provider is caller-owned Python code, not sandboxed or externally authenticated. No automatic scheduling or transactional rollback of all existing stores is added.",
+    "Scope and protected original learning ledger unchanged; U04/GAP-0370 deferred. No market/network service, activation, trading, credential access, push or external-source writes."
+  ],
+  "additional_check": "Reload test independently PASS without any other test executing first; not counted as an additional distinct test.",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/search_candidate_measured_execution_meta_proof_v1_2026_11_04/README.md",
+      "docs/ops/evidence/self_learning_reconstruction_resolution_v1_2026_11_04/README.md",
+      "docs/ops/specs/CANONICAL_SEARCH_CANDIDATE_RESEARCH_EXECUTION_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 295,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; format PASS for both new Python files",
+    "atlas_structure_generated_drift": "PASS"
+  },
+  "final_verification": {
+    "tests_xml": "32 PASS, no failure/error/skip",
+    "isolated_reload_test": "PASS",
+    "source_and_artifact_sha256": "ALL_MATCH",
+    "existing_src_tests_scripts_config": "UNCHANGED; only2 new additive Python paths",
+    "gvef_payload_file_bytehash": "MATCH",
+    "later_meta_after_reload": "FULL_RECORD_IDENTICAL",
+    "scenario_time_limit": "August fixture timestamps, not claimed historical execution; actual current test date2026-11-04",
+    "all_manifest_artifacts_in_git_index": "PASS;4 specifically reviewed synthetic CSVs explicitly added despite repository-wide CSV ignore"
+  },
+  "post_commit_git_replay": {
+    "source_commit": "1c34978282ede5aa4e25542bbb83fb7360d7d10b",
+    "method": "git show revision:path for every manifest artifact and bound new source; no workspace artifact read",
+    "artifact_count": 15,
+    "artifact_git_byte_sha256": "ALL_MATCH",
+    "new_source_git_and_worktree_bytes": "IDENTICAL",
+    "canonical_numeric_reference_read": "PASS",
+    "existing_search_and_phase10_validators": "PASS",
+    "later_meta_full_result": "IDENTICAL_TO_BOTH_COMMITTED_PRE_AND_POST_RELOAD_OUTPUTS",
+    "authority": "NONE",
+    "limits": "Bounded synthetic mechanism reproducibility and committed artifact availability only; no natural learning, source authentication or whole-system usefulness proof"
+  }
+}

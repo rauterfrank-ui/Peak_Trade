@@ -1,0 +1,17 @@
+{
+  "PRODUCTIVE_CALLER_ADDED": true,
+  "PRODUCTIVE_RECONCILIATION_BOUND": true,
+  "RECONCILIATION_BEFORE_ALPHA": true,
+  "RUNTIME_REACHABLE": true,
+  "SINGLE_WRITER_IDENTITY": "productive_portfolio_position_state_writer_v1",
+  "alpha_enabled": true,
+  "capability_id": "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
+  "clean_match_ok": true,
+  "core_logic_change": false,
+  "cycles": 3,
+  "live_authorized": false,
+  "orders_authorized": false,
+  "reconciliation_state": "reconciled",
+  "recoverable_ok": true,
+  "repository_sha": "5824af75e9c65592b362c935ac707064cfaea099"
+}

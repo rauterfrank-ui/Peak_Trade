@@ -1,0 +1,10 @@
+{
+  "FAILURE_INJECTION_PROVEN": true,
+  "config_digest_mismatch_fail_closed": true,
+  "corrupt_checkpoint_fail_closed": true,
+  "evidence_materialization_recovery_idempotent": true,
+  "forced_injection_rejected": true,
+  "runtime_commit_retained_after_evidence_fault": true,
+  "seed_ok": true,
+  "writer_conflict_hard_stop": true
+}

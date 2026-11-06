@@ -1,0 +1,408 @@
+"""Typed Full-Core Execution Admission contract.
+
+Single intended join point: halt_at_live_execution_boundary_v1.
+Durable FILEGATE evidence is joined via durable_filegate_join_v1.
+OWNER_ONE_SHOT permit evidence is joined via owner_one_shot_permit_v1.
+Fresh pretrade GET evidence is joined via fresh_pretrade_runtime_get_v1.
+LIVE_ACCOUNT_BOUND evidence is joined via live_account_bound_v1.
+Capital Admission evidence is joined via capital_admission_v1.
+DataSafetyGate evidence is joined as a conjunct via
+datasafety_gate_join_into_execution_admission_v1. DataSafetyGate is not
+an admission owner. Does not construct LiveExecutionPort. Does not send wire.
+
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from enum import Enum
+from typing import Optional, Tuple
+
+from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    OFFLINE_BOUNDARY_ROLE,
+)
+
+EXECUTION_ADMISSION_CONTRACT_VERSION = "v1"
+EXECUTION_BOUNDARY_REF = (
+    "src.ops.full_core_live_path_composition_root_v1.execution_boundary_v1"
+    ".halt_at_live_execution_boundary_v1"
+)
+RUNTIME_AUTHORITY_EFFECT_NONE = "NONE"
+
+CAPITAL_RISK_MODE_OFFLINE_ALGEBRA = "OFFLINE_ALGEBRA"
+CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND = "LIVE_ACCOUNT_BOUND"
+
+PRETRADE_SOURCE_FROZEN_OFFLINE = "FROZEN_OFFLINE_PRETRADE_EVIDENCE"
+PRETRADE_SOURCE_FRESH_GET = "FRESH_GET_PER_PRETRADE_DECISION"
+
+ADMISSION_CONTEXT_OFFLINE_FULL_CORE_PROOF = "OFFLINE_FULL_CORE_PROOF"
+ADMISSION_CONTEXT_LIVE = "LIVE_ADMISSION"
+
+
+class PretradeFreshnessStatusV1(str, Enum):
+    FROZEN_OFFLINE = "FROZEN_OFFLINE"
+    LIVE_FRESH = "LIVE_FRESH"
+    MISSING = "MISSING"
+    UNKNOWN = "UNKNOWN"
+    STALE = "STALE"
+
+
+class DurableKillSwitchEvidenceStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    UNKNOWN_BLOCKED = "UNKNOWN_BLOCKED"
+    MISSING = "MISSING"
+    CONTRADICTORY = "CONTRADICTORY_BLOCKED"
+
+
+class OwnerOneShotPermitStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    MISSING = "MISSING"
+    MALFORMED = "MALFORMED"
+    MISMATCH = "MISMATCH"
+    CONTRADICTORY = "CONTRADICTORY"
+
+
+class FreshPretradeGetStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    MISSING = "MISSING"
+    MALFORMED = "MALFORMED"
+    STALE = "STALE"
+    CONTRADICTORY = "CONTRADICTORY"
+    AUTH_FAILURE = "AUTH_FAILURE"
+    PUBLIC_FAILURE = "PUBLIC_FAILURE"
+    NOT_REQUIRED_OFFLINE = "NOT_REQUIRED_OFFLINE"
+
+
+class LiveAccountBoundStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    MISSING = "MISSING"
+    MALFORMED = "MALFORMED"
+    MISMATCH = "MISMATCH"
+    CONTRADICTORY = "CONTRADICTORY"
+    STALE = "STALE"
+
+
+class CapitalAdmissionStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    MISSING = "MISSING"
+    MALFORMED = "MALFORMED"
+    STALE = "STALE"
+    CONTRADICTORY = "CONTRADICTORY"
+    WRONG_CONTEXT = "WRONG_CONTEXT"
+    NOT_REQUIRED_OFFLINE = "NOT_REQUIRED_OFFLINE"
+
+
+class DataSafetyAdmissionStatusV1(str, Enum):
+    """Dedicated DataSafety conjunct status. Not GET/CAPITAL vocabulary."""
+
+    SATISFIED = "SATISFIED"
+    UNBOUND = "UNBOUND"
+    DENIED = "DENIED"
+    ERROR = "ERROR"
+    MISSING = "MISSING"
+
+
+CAPITAL_SOURCE_OFFLINE_ALGEBRA = "OFFLINE_ALGEBRA"
+CAPITAL_SOURCE_OBSERVED_VENUE = "OBSERVED_VENUE"
+CAPITAL_SOURCE_FIXTURE = "FIXTURE"
+CAPITAL_SOURCE_REPLAY = "REPLAY"
+CAPITAL_SOURCE_HISTORICAL = "HISTORICAL"
+
+CAPITAL_AUTHORITY_NONE = "NONE"
+CAPITAL_AUTHORITY_NON_PRODUCTIVE_OFFLINE_ALGEBRA = "NON_PRODUCTIVE_OFFLINE_ALGEBRA"
+CAPITAL_AUTHORITY_OBSERVED_NOT_RISK_ADMISSIBLE = "OBSERVED_NOT_RISK_ADMISSIBLE"
+CAPITAL_AUTHORITY_RISK_ADMISSIBLE = "RISK_ADMISSIBLE"
+
+
+@dataclass(frozen=True)
+class ExecutionAdmissionInputsV1:
+    """Caller must inject durable kill-switch and typed OWNER_ONE_SHOT evidence."""
+
+    plan_identity: str
+    venue_plan_identity: str
+    instrument_identity_ok: bool
+    pretrade_admissible: bool
+    pretrade_source_kind: str
+    pretrade_freshness_status: str
+    capital_risk_mode: str
+    durable_kill_switch_evidence_status: str
+    durable_kill_switch_blocked: Optional[bool]
+    live_enabled: bool
+    live_armed: bool
+    wire_send_permitted: bool
+    owner_authorization_present: bool
+    owner_one_shot_permit_status: str
+    admission_context: str
+    fresh_pretrade_get_status: str = FreshPretradeGetStatusV1.MISSING.value
+    live_account_bound_status: str = LiveAccountBoundStatusV1.MISSING.value
+    capital_admission_status: str = CapitalAdmissionStatusV1.MISSING.value
+    capital_authority_class: str = CAPITAL_AUTHORITY_NONE
+    step_29p_risk_admissible: bool = False
+    data_safety_admission_status: str = DataSafetyAdmissionStatusV1.MISSING.value
+    provenance_refs: Tuple[str, ...] = ()
+    runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
+
+
+@dataclass(frozen=True)
+class ExecutionAdmissionDecisionV1:
+    admitted: bool
+    fail_closed: bool
+    reason_codes: Tuple[str, ...]
+    execution_boundary_ref: str
+    runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
+    contract_version: str = EXECUTION_ADMISSION_CONTRACT_VERSION
+
+
+def evaluate_execution_admission_v1(
+    inputs: ExecutionAdmissionInputsV1,
+) -> ExecutionAdmissionDecisionV1:
+    """Fail-closed admission conjunction. Never a second execution owner.
+
+    LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED are standing predicates:
+    false denies; true satisfies only that one predicate and does not admit
+    by itself. A complete trusted conjunction admits. Admission is not
+    LiveExecutionPort construction, LIVE_AUTHORIZED, STEP-29Q, POST, or send.
+    Contradiction-lock deny-on-true branches are not used.
+    """
+    reasons: list[str] = []
+    live_context = inputs.admission_context == ADMISSION_CONTEXT_LIVE
+
+    if inputs.runtime_authority_effect != RUNTIME_AUTHORITY_EFFECT_NONE:
+        reasons.append("ADMISSION_RUNTIME_AUTHORITY_NOT_NONE")
+    if not inputs.instrument_identity_ok:
+        reasons.append("INSTRUMENT_IDENTITY_MISMATCH")
+    permit_status = str(inputs.owner_one_shot_permit_status or "").strip()
+    permit_trusted = permit_status == OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value
+    if permit_trusted is not bool(inputs.owner_authorization_present):
+        reasons.append("OWNER_ONE_SHOT_PERMIT_CONTRADICTORY")
+    if permit_status == OwnerOneShotPermitStatusV1.MALFORMED.value:
+        reasons.append("OWNER_ONE_SHOT_PERMIT_MALFORMED")
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
+    elif permit_status == OwnerOneShotPermitStatusV1.MISMATCH.value:
+        reasons.append("OWNER_ONE_SHOT_PERMIT_MISMATCH")
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
+    elif permit_status == OwnerOneShotPermitStatusV1.CONTRADICTORY.value:
+        reasons.append("OWNER_ONE_SHOT_PERMIT_CONTRADICTORY")
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
+    elif permit_status != OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value:
+        reasons.append("OWNER_ONE_SHOT_PERMIT_MISSING")
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
+    if not inputs.owner_authorization_present:
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
+    if inputs.live_enabled is not True:
+        reasons.append("LIVE_ENABLED_FALSE")
+    if inputs.live_armed is not True:
+        reasons.append("LIVE_ARMED_FALSE")
+    if inputs.wire_send_permitted is not True:
+        reasons.append("WIRE_SEND_NOT_PERMITTED")
+
+    ks_status = str(inputs.durable_kill_switch_evidence_status or "").strip()
+    if ks_status == DurableKillSwitchEvidenceStatusV1.CONTRADICTORY.value:
+        reasons.append("DURABLE_FILEGATE_CONTRADICTORY")
+        reasons.append("DURABLE_FILEGATE_EVIDENCE_MISSING")
+        reasons.append("DURABLE_FILEGATE_UNKNOWN_BLOCKED")
+    elif ks_status in {
+        DurableKillSwitchEvidenceStatusV1.UNKNOWN_BLOCKED.value,
+        DurableKillSwitchEvidenceStatusV1.MISSING.value,
+        "",
+    }:
+        reasons.append("DURABLE_FILEGATE_EVIDENCE_MISSING")
+        reasons.append("DURABLE_FILEGATE_UNKNOWN_BLOCKED")
+    elif ks_status != DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value:
+        reasons.append("DURABLE_FILEGATE_EVIDENCE_MISSING")
+        reasons.append("DURABLE_FILEGATE_UNKNOWN_BLOCKED")
+    if inputs.durable_kill_switch_blocked is not False:
+        reasons.append("DURABLE_KILL_SWITCH_BLOCKED_OR_UNTRUSTED")
+    if inputs.durable_kill_switch_blocked is True:
+        reasons.append("DURABLE_FILEGATE_BLOCKS_TRADING")
+
+    freshness = str(inputs.pretrade_freshness_status or "").strip()
+    source_kind = str(inputs.pretrade_source_kind or "").strip()
+    get_status = str(inputs.fresh_pretrade_get_status or "").strip()
+    get_trusted = get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+    if freshness in {
+        PretradeFreshnessStatusV1.MISSING.value,
+        PretradeFreshnessStatusV1.UNKNOWN.value,
+        "",
+    }:
+        reasons.append("PRETRADE_FRESHNESS_MISSING")
+    if freshness == PretradeFreshnessStatusV1.STALE.value:
+        reasons.append("FRESH_PRETRADE_GET_STALE")
+    if source_kind == PRETRADE_SOURCE_FROZEN_OFFLINE or freshness == (
+        PretradeFreshnessStatusV1.FROZEN_OFFLINE.value
+    ):
+        reasons.append("FROZEN_OFFLINE_PRETRADE_NOT_LIVE_FRESH")
+    get_required = live_context or source_kind == PRETRADE_SOURCE_FRESH_GET
+    if get_trusted is True and (
+        source_kind != PRETRADE_SOURCE_FRESH_GET
+        or freshness != PretradeFreshnessStatusV1.LIVE_FRESH.value
+    ):
+        reasons.append("FRESH_PRETRADE_GET_CONTRADICTORY")
+    if (
+        source_kind == PRETRADE_SOURCE_FRESH_GET
+        and freshness == PretradeFreshnessStatusV1.LIVE_FRESH.value
+        and get_trusted is not True
+    ):
+        reasons.append("FRESH_PRETRADE_GET_CONTRADICTORY")
+    if get_status == FreshPretradeGetStatusV1.MALFORMED.value:
+        reasons.append("FRESH_PRETRADE_GET_MALFORMED")
+    elif get_status == FreshPretradeGetStatusV1.STALE.value:
+        reasons.append("FRESH_PRETRADE_GET_STALE")
+        reasons.append("FRESH_PRETRADE_GET_FIXTURE_REPLAY_NOT_PRODUCTIVE")
+    elif get_status == FreshPretradeGetStatusV1.CONTRADICTORY.value:
+        reasons.append("FRESH_PRETRADE_GET_CONTRADICTORY")
+    elif get_status == FreshPretradeGetStatusV1.AUTH_FAILURE.value:
+        reasons.append("FRESH_PRETRADE_GET_AUTH_FAILURE")
+    elif get_status == FreshPretradeGetStatusV1.PUBLIC_FAILURE.value:
+        reasons.append("FRESH_PRETRADE_GET_PUBLIC_FAILURE")
+    elif get_required and get_status in {
+        FreshPretradeGetStatusV1.MISSING.value,
+        "",
+    }:
+        reasons.append("FRESH_PRETRADE_GET_MISSING")
+    if not inputs.pretrade_admissible:
+        reasons.append("PRETRADE_NOT_ADMISSIBLE")
+
+    mode = str(inputs.capital_risk_mode or "").strip()
+    bound_status = str(inputs.live_account_bound_status or "").strip()
+    bound_trusted = bound_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
+    if bound_status == LiveAccountBoundStatusV1.MALFORMED.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_MALFORMED")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    elif bound_status == LiveAccountBoundStatusV1.MISMATCH.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_MISMATCH")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    elif bound_status == LiveAccountBoundStatusV1.CONTRADICTORY.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_CONTRADICTORY")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    elif bound_status == LiveAccountBoundStatusV1.STALE.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_STALE")
+        reasons.append("LIVE_ACCOUNT_BOUND_FIXTURE_REPLAY_NOT_PRODUCTIVE")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    elif bound_status != LiveAccountBoundStatusV1.TRUSTED_PRESENT.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_MISSING")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    if bound_trusted is True and mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+        reasons.append("LIVE_ACCOUNT_BOUND_CONTRADICTORY")
+    if bound_trusted is not True and mode == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+        reasons.append("LIVE_ACCOUNT_BOUND_CONTRADICTORY")
+        reasons.append("LIVE_ACCOUNT_BOUND_STRING_PASSTHROUGH_NOT_AUTHORITY")
+    if mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    if mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA:
+        reasons.append("OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY")
+
+    capital_status = str(inputs.capital_admission_status or "").strip()
+    capital_authority = str(inputs.capital_authority_class or "").strip()
+    capital_trusted = capital_status == CapitalAdmissionStatusV1.TRUSTED_PRESENT.value
+    if capital_status == CapitalAdmissionStatusV1.MALFORMED.value:
+        reasons.append("CAPITAL_ADMISSION_MALFORMED")
+    elif capital_status == CapitalAdmissionStatusV1.STALE.value:
+        reasons.append("CAPITAL_ADMISSION_STALE")
+        reasons.append("CAPITAL_ADMISSION_FIXTURE_REPLAY_NOT_PRODUCTIVE")
+    elif capital_status == CapitalAdmissionStatusV1.CONTRADICTORY.value:
+        reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
+    elif capital_status == CapitalAdmissionStatusV1.WRONG_CONTEXT.value:
+        reasons.append("CAPITAL_ADMISSION_WRONG_CONTEXT")
+    elif capital_status == CapitalAdmissionStatusV1.NOT_REQUIRED_OFFLINE.value:
+        if live_context:
+            reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
+            reasons.append("OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY")
+    elif capital_status != CapitalAdmissionStatusV1.TRUSTED_PRESENT.value:
+        reasons.append("CAPITAL_ADMISSION_MISSING")
+        reasons.append("FRESH_GET_ALONE_NOT_CAPITAL_AUTHORITY")
+        reasons.append("LIVE_ACCOUNT_BOUND_ALONE_NOT_CAPITAL_AUTHORITY")
+    step_29p_ok = inputs.step_29p_risk_admissible is True
+    if capital_authority == CAPITAL_AUTHORITY_RISK_ADMISSIBLE and step_29p_ok is not True:
+        reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
+        reasons.append("CAPITAL_ADMISSION_RISK_ADMISSIBLE_CONJUNCTION_INCOMPLETE")
+        reasons.append("FORGED_RISK_ADMISSIBLE_WITHOUT_29P_CONTRACT")
+    if capital_trusted is True and capital_authority == CAPITAL_AUTHORITY_NONE:
+        reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
+    if capital_trusted is True and step_29p_ok is not True:
+        reasons.append("OBSERVED_CAPITAL_NOT_RISK_ADMISSIBLE")
+
+    if live_context:
+        if freshness != PretradeFreshnessStatusV1.LIVE_FRESH.value:
+            reasons.append("FROZEN_PRETRADE_LIVE_ADMISSION_DENIED")
+        if mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+            reasons.append("OFFLINE_ALGEBRA_LIVE_ADMISSION_DENIED")
+        if bound_trusted is not True:
+            reasons.append("OFFLINE_ALGEBRA_LIVE_ADMISSION_DENIED")
+        if source_kind != PRETRADE_SOURCE_FRESH_GET:
+            reasons.append("LIVE_ADMISSION_REQUIRES_FRESH_GET_PRETRADE")
+        if get_trusted is not True:
+            reasons.append("LIVE_ADMISSION_REQUIRES_FRESH_GET_PRETRADE")
+            if get_status == FreshPretradeGetStatusV1.NOT_REQUIRED_OFFLINE.value:
+                reasons.append("FRESH_PRETRADE_GET_MISSING")
+        if capital_trusted is not True:
+            reasons.append("LIVE_ADMISSION_REQUIRES_CAPITAL_ADMISSION")
+        if step_29p_ok is not True:
+            reasons.append("LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P")
+    else:
+        reasons.append("OFFLINE_FULL_CORE_PROOF_NOT_LIVE_ADMISSION")
+
+    ds_status = str(inputs.data_safety_admission_status or "").strip()
+    if ds_status == DataSafetyAdmissionStatusV1.SATISFIED.value:
+        pass
+    elif ds_status == DataSafetyAdmissionStatusV1.UNBOUND.value:
+        reasons.append("DATA_SAFETY_ADMISSION_UNBOUND")
+    elif ds_status == DataSafetyAdmissionStatusV1.DENIED.value:
+        reasons.append("DATA_SAFETY_ADMISSION_DENIED")
+    elif ds_status == DataSafetyAdmissionStatusV1.ERROR.value:
+        reasons.append("DATA_SAFETY_ADMISSION_ERROR")
+    else:
+        reasons.append("DATA_SAFETY_ADMISSION_MISSING")
+
+    unique = tuple(dict.fromkeys(reasons))
+    admitted = len(unique) == 0
+    return ExecutionAdmissionDecisionV1(
+        admitted=admitted,
+        fail_closed=True,
+        reason_codes=unique,
+        execution_boundary_ref=EXECUTION_BOUNDARY_REF,
+        runtime_authority_effect=RUNTIME_AUTHORITY_EFFECT_NONE,
+    )
+
+
+def default_untrusted_filegate_inputs_v1(
+    *,
+    plan_identity: str,
+    venue_plan_identity: str,
+    instrument_identity_ok: bool,
+    pretrade_admissible: bool,
+    pretrade_source_kind: str,
+    pretrade_freshness_status: str,
+    capital_risk_mode: str,
+    owner_authorization_present: bool,
+    admission_context: str,
+    provenance_refs: Tuple[str, ...] = (),
+    owner_one_shot_permit_status: str = OwnerOneShotPermitStatusV1.MISSING.value,
+    fresh_pretrade_get_status: str = FreshPretradeGetStatusV1.MISSING.value,
+) -> ExecutionAdmissionInputsV1:
+    """Explicit untrusted injector. Production halt uses composed join seams."""
+    return ExecutionAdmissionInputsV1(
+        plan_identity=plan_identity,
+        venue_plan_identity=venue_plan_identity,
+        instrument_identity_ok=instrument_identity_ok,
+        pretrade_admissible=pretrade_admissible,
+        pretrade_source_kind=pretrade_source_kind,
+        pretrade_freshness_status=pretrade_freshness_status,
+        capital_risk_mode=capital_risk_mode,
+        durable_kill_switch_evidence_status=(
+            DurableKillSwitchEvidenceStatusV1.UNKNOWN_BLOCKED.value
+        ),
+        durable_kill_switch_blocked=None,
+        live_enabled=False,
+        live_armed=False,
+        wire_send_permitted=False,
+        owner_authorization_present=owner_authorization_present,
+        owner_one_shot_permit_status=owner_one_shot_permit_status,
+        admission_context=admission_context,
+        fresh_pretrade_get_status=fresh_pretrade_get_status,
+        live_account_bound_status=LiveAccountBoundStatusV1.MISSING.value,
+        capital_admission_status=CapitalAdmissionStatusV1.MISSING.value,
+        capital_authority_class=CAPITAL_AUTHORITY_NONE,
+        provenance_refs=provenance_refs + (OFFLINE_BOUNDARY_ROLE,),
+    )

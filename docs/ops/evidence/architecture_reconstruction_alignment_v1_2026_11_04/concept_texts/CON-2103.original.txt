@@ -1,0 +1,9 @@
+### CON-2103 — Slot-Lebenszyklen haben verschiedene Enden
+
+Status im Quellenabgleich: **UNPROVEN** · Klasse: `DERIVED_INFERENCE`.
+
+Ein freigegebener Auswertungsplatz beendet weder Core-Cursor noch Positions-Custody, offene Order, Pending-Outcome oder Kapitalreservierung. Umgekehrt darf ein späteres Lern-Outcome keinen alten Handelsslot neu öffnen. Für Slot-Reuse und Rotation ist ein gemeinsamer Episodenbezug nötig, ohne diese Zustände zusammenzulegen.
+
+**Grenze:** Konkreter Übergangs-/Restore-Vertrag offen. Kein vollständiger Fünf-Lane-Lifecycle bewiesen.
+
+Quellen: EVI-2203, EVI-2206, EVI-2209, EVI-2214, EVI-2218, EVI-2220, EVI-2221, EVI-2222, EVI-2234, EVI-2237, EVI-2240, EVI-2263, EVI-2266, EVI-2267, EVI-2268, EVI-2271, EVI-2272, EVI-2273, EVI-2284, EVI-2292, EVI-2293, EVI-2295.

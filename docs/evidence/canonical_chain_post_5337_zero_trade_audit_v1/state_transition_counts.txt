@@ -1,0 +1,23 @@
+RAW_SIGNAL_COUNTS_TOTAL (8-member sample)
+  +1 ENTRY = 10
+  -1 EXIT  = 1404
+  0  FLAT  = 22210
+RAW_SIGNAL_NONZERO=true
+
+AGREEMENT / CMC
+  entry_side=NONE on all hooked Bollinger bars (OBL_B07 / OPTION_D)
+  agreement ENTRY events observed on raw +1 bars
+  MARKET_CONTEXT_SIGNAL_PRESERVED=true
+  price_path after #5337: predominantly up/down market paths (not synthetic mark+5)
+  price_path_suspicion (entry bars): NOT_OBSERVED_AS_SYNTHETIC_MARK_PLUS_5
+
+ENGINE / REPLAY SIGNALS (1INCH eval)
+  mv2_replay_nonzero_signal_count=11
+  backtest trades=11
+  trades_opened_count(funnel)=11
+
+PANEL SAMPLE TRADES (8 members)
+  TRADE_TOTAL=179
+  ZERO_TRADE_PANEL_REFUTED_ON_SAMPLE=true
+  Note: Strategy ENTRY bars themselves often do not map to these trades;
+  enter_long typically occurs on non-+1 bars when composition selects long.

@@ -1,0 +1,56 @@
+=== DOCS TOKEN POLICY ===
+== Docs token policy preflight (changed .md vs origin/main) ==
+✅ No Markdown files to check (changed files (base: origin/main))
+OK: docs token policy preflight passed
+DOCS_TOKEN_RC=0
+=== DOCS REFERENCE TARGETS ===
+Docs Reference Targets: scanned 1767 md file(s) (514 ignored), found 12804 reference(s).
+All referenced targets exist.
+DOCS_REF_RC=0
+=== DIFF CHECK ===
+DIFF_CHECK_RC=0
+=== ECONOMIC BOUNDARY GUARD ===
+PRODUCTIVE_HIT=NONE
+ECONOMIC_BOUNDARY_GUARD=PASS
+=== DIFF SCOPE (intended) ===
+?? docs/evidence/canonical_chain_economic_reevaluation_v1/
+?? tests/research/test_canonical_chain_economic_reevaluation_audit_harness_v1.py
+usage: ci_test_selection_v1.py [-h] [--files [FILES ...]]
+                               [--files-file FILES_FILE] [--force-full]
+                               [--force-exhaustive] [--event-name EVENT_NAME]
+                               [--github-output]
+                               [--emit-validated-pytest-targets TARGETS]
+                               [--import-smoke-modules MODULES]
+                               [--patch-file PATCH_FILE]
+                               [--diff-base-ref DIFF_BASE_REF]
+
+CI diff-aware test selection v1
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --files [FILES ...]   Changed file paths
+  --files-file FILES_FILE
+  --force-full
+  --force-exhaustive    Select EXHAUSTIVE_FULL (schedule/workflow_dispatch
+                        only)
+  --event-name EVENT_NAME
+  --github-output
+  --emit-validated-pytest-targets TARGETS
+                        Print validated repo-relative pytest paths (one per
+                        line)
+  --import-smoke-modules MODULES
+                        Import listed Python modules (space-separated)
+  --patch-file PATCH_FILE
+                        Unified diff patch for GLB-019 A2/B change-contract
+                        classification (tests/probes)
+  --diff-base-ref DIFF_BASE_REF
+                        Base ref for merge-base patch collection (CI path)
+
+=== GATE RESULTS ===
+TESTS=153_passed
+RUFF=PASS
+DOCS_TOKEN_POLICY=PASS
+DOCS_REFERENCE_TARGETS=PASS
+ECONOMIC_BOUNDARY_GUARD=PASS
+DIFF_CHECK=PASS
+SELECTOR_MODE=CONTRACT_FOCUSED

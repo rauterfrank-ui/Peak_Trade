@@ -1,0 +1,15 @@
+Closes kill-switch RC and F1-F6: fail-closed env-secret approval (no argv
+secrets), HMAC-bound recovery requests, cooldown/timestamp integrity,
+flock + lock-free KILL journal latch (no lock-timeout bypass), append-only
+transition journal, DISABLED and PEAK_KILL_SWITCH=1 always deny, attested
+ACTIVE required by the productive POST kill-switch gate, complete-recovery CLI.
+
+ACTIVE is not a trading authorization. LIVE/TESTNET/real-venue POST and
+production arming remain unauthorized.
+
+Accepted residuals (fail-closed, documented in PR #7139): journal truncation
+plus old attested state restore undetectable; secret-free legacy readers
+without journal keep file-only ACTIVE; env deny also blocks risk reduction;
+crash after RECOVERY_COMPLETED / corrupt journal need operator procedure;
+Bugbot 97beb165 (RECOVERING without binding needs trigger + new request);
+Bugbot f0c9040e (status ignores bound cooldown, display only).

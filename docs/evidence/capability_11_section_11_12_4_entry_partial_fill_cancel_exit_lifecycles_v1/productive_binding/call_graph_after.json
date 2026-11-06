@@ -1,0 +1,24 @@
+{
+  "activation": "not_activated",
+  "cap_11_4_adapter": "not_activated",
+  "cap_11_4_entry_partial_fill_cancel_exit_contract": "reused_fixture_only",
+  "network_effect": "NONE",
+  "network_writes": "unauthorized",
+  "next_consumer": "CAPABILITY_11_SECTION_11_12_5_UNKNOWN_SUBMIT_AND_RECONNECT_RECOVERY_V1",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_3_SingleControlledOrderLifecycle",
+    "Cap11_Section_11_12_4_EntryPartialFillCancelExitLifecycles",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled",
+  "path_class": "ENTRY_PARTIAL_FILL_CANCEL_EXIT_LIFECYCLES",
+  "paths_bound": [
+    "entry_lifecycle",
+    "partial_fill_lifecycle",
+    "cancel_lifecycle",
+    "exit_lifecycle"
+  ],
+  "section_11_12_4": "productive_entry_partial_fill_cancel_exit_lifecycles_bound",
+  "section_11_12_5": "not_started"
+}

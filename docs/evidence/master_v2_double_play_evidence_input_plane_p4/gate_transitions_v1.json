@@ -1,0 +1,49 @@
+{
+  "baseline_sha": "91cb2a475ddc0bf0dab0d0fee3d64fbd3d1abdc7",
+  "gate_transitions": [
+    {
+      "field": "productive_l6_binding_authorized",
+      "justification": "OWNER_GO P4 authorizes seam-scoped productive L6 typed binding only (P4 package + owner decision config).",
+      "new_value": true,
+      "old_value": false,
+      "scope": "P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1"
+    },
+    {
+      "field": "l6_productive_binding",
+      "justification": "First census-approved L6 seam runtime reachable via P4 orchestrator; does not activate full DP productive cycle.",
+      "new_value": true,
+      "old_value": false,
+      "scope": "P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1"
+    },
+    {
+      "field": "productive_dp_seam_bound",
+      "justification": "Typed A→B→L6 admission chain bound in isolated P4 runtime owner.",
+      "new_value": true,
+      "old_value": false,
+      "scope": "P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1"
+    },
+    {
+      "field": "a_runtime_reachable",
+      "justification": "P2 adjudicator invoked only inside P4 seam orchestrator when P4 gate authorized; P2 constants unchanged.",
+      "new_value": true,
+      "old_value": false,
+      "scope": "P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1"
+    },
+    {
+      "field": "b_runtime_reachable",
+      "justification": "P3 binder invoked only inside P4 seam orchestrator when P4 gate authorized; P3 constants unchanged.",
+      "new_value": true,
+      "old_value": false,
+      "scope": "P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1"
+    },
+    {
+      "field": "productive_activation_authorized",
+      "justification": "Intentionally unchanged — no blanket productive activation.",
+      "new_value": false,
+      "old_value": false,
+      "scope": "UNCHANGED"
+    }
+  ],
+  "schema_version": "master_v2_double_play_evidence_input_plane_p4_gate_transitions/v1",
+  "workpackage_id": "P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1"
+}

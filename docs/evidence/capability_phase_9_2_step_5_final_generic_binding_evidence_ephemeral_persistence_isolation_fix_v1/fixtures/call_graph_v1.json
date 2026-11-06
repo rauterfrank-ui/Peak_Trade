@@ -1,0 +1,14 @@
+{
+  "after": [
+    "materialize_step5_final_generic_binding_evidence_v1",
+    "TemporaryDirectory(prefix=step5_final_generic_fi_ephemeral_) OR explicit failure_injection_persistence_root",
+    "run_step5_final_generic_failure_injection_v1(persistence_root=exclusive per call)",
+    "TemporaryDirectory.cleanup() in finally (owned ephemeral only)"
+  ],
+  "before": [
+    "materialize_step5_final_generic_binding_evidence_v1",
+    "run_step5_final_generic_failure_injection_v1(persistence_root=repo/var/tmp/step5_final_generic_failure_injection)",
+    "run_step5_final_generic_consume_and_network_start_binding_v1(persistence under shared root)",
+    "authorization/confirm ledgers accumulate single-use state across materialize calls"
+  ]
+}

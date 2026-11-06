@@ -1,0 +1,7 @@
+{
+  "package": "docs/ops/evidence/independent_market_observation_v1_2026_11_06",
+  "source_test_config_files_verified": 11358,
+  "distinct_passes": 787,
+  "role": "prior market-only mechanism proof; not a next-model proof",
+  "new_product_test_run": false
+}

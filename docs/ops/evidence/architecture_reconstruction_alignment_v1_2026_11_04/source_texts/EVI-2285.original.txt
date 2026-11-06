@@ -1,0 +1,171 @@
+# Self-Learning: erste belegte Verarbeitungskette und spätere Nachspeisung
+
+Stand 02.11.2026. Rekonstruiertes Arbeitsmodell aus Code, keine neue System-SSOT. V1–V4 bezeichnen unsere vorläufige Verarbeitungsschichtung, keine behaupteten historischen Namen oder vollständige Anzahl von Ebenen.
+
+## Was zuerst ankommt
+
+An der belegten August-Loop-Grenze kommt ein zusammengesetzter Request an: Hypothesen/Identitätsvorgaben, bereits vorhandene Experimentmesswerte, Champion-/Challenger-Werte, erwartete und beobachtete Gap-Werte sowie gegebenenfalls Fehlerhistorie. Das ist der erste belegte Eingang dieser Teilstrecke, nicht der bewiesene erste Datensatz des gesamten Universums. Der Erzeuger hinter diesen Experimentmesswerten bleibt offen.
+
+Die vorangehende historische Bestandsaufnahme an Commit 1389c0f181380af6813709c3e7f274a6ddc4a12a liefert zusätzliche Hinweise auf vorgesehene Fills-/Session-/Reality-Rückflüsse. Ihre Aussagen sind kein Gesamtbeweis. Nachgeprüft wurde unter anderem der tatsächliche Offline-Fill-Auswerter; dessen direkter Anschluss an den August-Loop ist nicht belegt.
+
+## Rekonstruierte Verarbeitungsschichten
+
+### V1 — Eingänge zuordnen und binden
+
+Belegte Loop-Teilfolge: vorhandene Daten erhalten Experiment-/Herkunftsbezug.
+
+Zugeordnete Schritte: F01, F02, F03.
+
+### V2 — Einzelversuch bewerten und Befunde bilden
+
+Mehrere Bewertungsaufgaben, im Loop sequenziell aufgerufen. Einzelne Werte und Vergleiche haben unterschiedliche Bedeutung.
+
+Zugeordnete Schritte: F04, F05, F06, F07.
+
+### V3 — Forschungsserien mit weiterer Erfahrung auswerten
+
+Separater Request über mehrere Experimente; kann später bekannte Ergebnisse einbeziehen. Keine automatische Verbindung von V2 bewiesen.
+
+Zugeordnete Schritte: F08, F09.
+
+### V4 — Weitere Forschung planen
+
+Separater Search-Request nutzt historische Signale; neue Experimentanfragen sind noch keine Ausführung.
+
+Zugeordnete Schritte: F10.
+
+## Reihenfolge, neu erzeugte Daten und Bedeutung
+
+### F01 — Request-Grenze
+
+Schon vorhanden: Hypothesen/Identity-Requests, Experimentbeobachtungen, Champion, beide Scores, Gap-Dimensionen, Fehlerhistorie und optionale Stores.
+
+Noch kein neuer Messwert; strukturierter Auftrag mit bereits vorhandenen Daten.
+
+Quellenanker: FLOW01:171–207.
+
+### F02 — Zuordnung und Vorwissen
+
+Hypothese wählen; Identität, experiment_id und Fingerprint bilden; existierende Failure-Records auf Duplikate prüfen.
+
+Experimentbezug und Wiederholungsbezug entstehen; Messwerte sind weiter die gelieferten.
+
+Quellenanker: FLOW01:226–248.
+
+### F03 — Ergebnis binden
+
+Experimentbeobachtungen in Experiment-Memory-Record einfügen; optional append.
+
+Vorhandene Ergebnisse werden zu identitätsgebundener Forschungs-Evidence. Kein Experimentlauf wird hier gestartet.
+
+Quellenanker: FLOW01:250–259;659–691.
+
+### F04 — Robustheit beurteilen
+
+Bereits gelieferte robustness_observations mit Policy auswerten.
+
+Neues Robustheitsurteil / failed_gates; vorhandene robustness_results im zuvor gebauten Memory sind ein separates Eingabefeld.
+
+Quellenanker: FLOW01:261–267;694–723; FLOW07:327–405.
+
+### F05 — Vergleich und Challenger-Bericht
+
+Vergleichskandidat aus Identität bilden; Vergleichbarkeit prüfen; übergebene Champion-/Challenger-Scores verwenden.
+
+Neue Vergleichs-/Challenger-Aussage. Scores werden hier nicht aus Rohdaten berechnet.
+
+Quellenanker: FLOW01:269–301.
+
+### F06 — Erwartung gegen Beobachtung
+
+Bereits im Request liegende gap_dimensions und observed_surface auswerten.
+
+Neuer Reality-Gap-Record. Spätere Verarbeitung, kein hier belegtes späteres Eintreffen der Messwerte.
+
+Quellenanker: FLOW01:303–320.
+
+### F07 — Ergebnisse zusammenführen
+
+Robustheits-, Vergleichs- und Gap-Urteile in Failure-Records projizieren; optional persistieren; Gesamtergebnis bilden.
+
+Aus einzelnen Bewertungen entsteht über zukünftige Requests wiederverwendbare Fehler-Evidence.
+
+Quellenanker: FLOW01:321–335;726–768.
+
+### F08 — Weitere Analyse: eigener Eingang
+
+Meta-Learning bekommt units sowie Failure-/Gap-Records als eigenen Request; optional later_outcome.
+
+Mehrversuchsbefunde entstehen. Ein automatischer Loop-Record→Meta-Unit-Adapter ist hier nicht bewiesen.
+
+Quellenanker: FLOW02:191–237;250–281;476–603.
+
+### F09 — Nachspeisung späterer Beobachtung
+
+later_outcome trägt Oberfläche, metric_name, value und observed_at; wird mit Backtest-Metrik verglichen.
+
+Spätere Erfahrung wird in neuer Meta-Auswertung interpretiert; ursprüngliche historische Records werden nicht allein dadurch überschrieben.
+
+Quellenanker: FLOW02:538–555;871–915.
+
+### F10 — Forschung zurück anstoßen
+
+Advanced Search erhält eigenes Suchraum-/Identitätstemplate plus optionale Failure-/Gap-/Meta-Signale.
+
+Neue Kandidaten und Offline-Anfragen; die Anfragen enthalten executed=False und loop_started=False. Ein automatischer Wiedereintritt bleibt offen.
+
+Quellenanker: FLOW03:284–306;337–413;1283–1301.
+
+## Zusätzliche und seitliche Eingänge
+
+### Session-Fills → Offline-Sessionauswertung
+
+CLI liest fills.csv, ruft compute_metrics auf und gibt JSON/Text bzw. optional live_eval_report.json aus.
+
+Konkrete codierte Vorverarbeitung außerhalb des hier belegten Forschungsloops.
+
+Offen: Keine hier nachgewiesene direkte Überleitung dieser Metriken in den August-Loop. Fill-Daten und FIFO-PnL sind nicht automatisch Futures-Nettoökonomie inklusive Gebühren/Funding.
+
+Quelle: FLOW04:main; FLOW05:43–168
+
+### Regime-/Portfoliodaten
+
+Eigene Requests in den August-Verträgen; ausdrücklich keine Phase-10-Loop-Schritte.
+
+Seitliche fachliche Analysewege, nicht pauschal in V1–V4 hineingezwungen.
+
+Offen: Erzeuger und zeitliche Verknüpfung mit der Hauptstrecke separat rekonstruieren.
+
+Quelle: SL08/SL09; ursprünglicher Phase-10-Vertrag
+
+### Spätere Paper-/Shadow-/Testnet-Archive
+
+September-G2-Projektion liest vorhandene Primärarchive und erzeugt Offline-Beobachtungen/Ingress.
+
+Später eingeführter Lieferweg, im vorherigen Input-History-Register datiert.
+
+Offen: Nicht rückwirkend als bereits vorhandener August-Erstlieferant behandeln; realer Archiv→Learning-Record-Abgleich offen.
+
+Quelle: input-origins/INPUT-05; Commit 85d4d70cb910239c4809d24ae6a177672a813629
+
+## Beleggrenze und nächster Suchpunkt
+
+Die Reihenfolge F01–F07 ist eine statisch codierte Teilfolge. F08–F10 sind weitere belegte Funktionen mit eigenen Eingängen; deren automatische Gesamtverkettung ist nicht bewiesen. Ein späteres Outcome ist ein eigener zeitlicher Eingang; dagegen liegen Gap-Werte für F06 bereits bei F01 vor. Neue Bewertungsrecords sind neu erzeugte Daten, keine neu eintreffenden externen Messungen.
+
+Gezielte Symbolsuche am Phase-12-Commit findet innerhalb der untersuchten src-/scripts-Pfade keinen externen namentlichen Loop-Aufruf und keine MetaLearningExperimentUnitV1-Konstruktion. Der Fill-Metrikaufruf ist dagegen im Offline-CLI belegt. Dies ist begrenzte statische Suche, kein Ausschluss von Alias-/dynamischen Aufrufen oder anderen Pfaden.
+
+Nächster Suchpunkt: ursprünglicher Ergebnisproduzent und Übergabe an den Forschungs-Request; danach tatsächliche Bildung der Meta-Einheiten und Wiedereintritt neuer Experimentanfragen. Fehlende Verbindung als Lücke markieren, übrige Verarbeitung weiter rekonstruieren.
+
+Kein Produktcode ausgeführt, keine Session gestartet und keine Daten aktiviert. Laufzeitwirkung und geschlossener Lernkreislauf bleiben unbewiesen.
+
+## Quellen
+
+- FLOW01: `899e154d1bb095227c13690943e13284fb936972` / `src/experiments/canonical_automated_offline_research_loop_v1.py` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/FLOW01-canonical_automated_offline_research_loop_v1.py) · SHA256 `3290171ea806a48ad68d90e600c04d013efca872c698fb849e6ea75d38b1d31f`.
+- FLOW02: `899e154d1bb095227c13690943e13284fb936972` / `src/experiments/canonical_meta_learning_v1.py` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/FLOW02-canonical_meta_learning_v1.py) · SHA256 `b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331`.
+- FLOW03: `899e154d1bb095227c13690943e13284fb936972` / `src/experiments/canonical_advanced_search_v1.py` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/FLOW03-canonical_advanced_search_v1.py) · SHA256 `861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad`.
+- FLOW04: `899e154d1bb095227c13690943e13284fb936972` / `scripts/evaluate_live_session.py` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/FLOW04-evaluate_live_session.py) · SHA256 `a2703f07e96150d2e5b76bb533be9b62ade69f026c1663717d2eb431cc2b430f`.
+- FLOW05: `1389c0f181380af6813709c3e7f274a6ddc4a12a` / `src/live_eval/live_session_eval.py` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/FLOW05-live_session_eval.py) · SHA256 `6ed7fc25e3be201462651332d7de98c713fa7a1e37e402f865314d19b0031b43`.
+- FLOW06: `1389c0f181380af6813709c3e7f274a6ddc4a12a` / `src/meta/learning_loop/runtime_observation_feedback_v1.py` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/FLOW06-runtime_observation_feedback_v1.py) · SHA256 `3c438c87060ca381831f5604f5a2ca29a2e27dcc4323eaa2c3df23f12c66c2a8`.
+- FLOW07: `899e154d1bb095227c13690943e13284fb936972` / `src/experiments/canonical_robustness_suite_v1.py` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/FLOW07-canonical_robustness_suite_v1.py) · SHA256 `ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a`.
+- Historischer Cursor-Record 8537: [/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/cursor-record-8537.md](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/cursor-record-8537.md) · Original `/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/b58d89d5-cac1-4561-88ff-1a92d74a2b70/b58d89d5-cac1-4561-88ff-1a92d74a2b70.jsonl`, Zeile 1; Inhalt mit Originalnachricht abgeglichen. Historischer Auftrag/Bericht, keine heutige Ausführungsanweisung.
+- Historischer Cursor-Record 8543: [/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/cursor-record-8543.md](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/cursor-record-8543.md) · Original `/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/b58d89d5-cac1-4561-88ff-1a92d74a2b70/b58d89d5-cac1-4561-88ff-1a92d74a2b70.jsonl`, Zeile 21; Inhalt mit Originalnachricht abgeglichen. Historischer Auftrag/Bericht, keine heutige Ausführungsanweisung.

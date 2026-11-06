@@ -1,0 +1,14 @@
+{
+  "schema": "meta_knowledge_time_semantics_v1",
+  "source_commit": "72f9fb006d08add4c0ea741fda00cfbd36360915",
+  "source_path": "src/experiments/canonical_meta_learning_v1.py",
+  "before_sha256": "1bfbdcad312837d57616801167d1c4a726e009c6b9f47025fac95083811ffa7e",
+  "after_sha256": "41035e94d90c81c6d5f972318a7cc22260dc9c3e5d919cfb6b16e52faa2162a9",
+  "origin": "EVI-2251 / data-prerequisites-and-processing originally recorded G05; exact current UTC-string comparisons re-read and controlled future-fraction admission reproduced.",
+  "fix": "Compare validated whole-second UTC calendar instant plus exact integer nanoseconds. Keep original 0–9 fractional-digit strings for record serialization; validate calendar dates.",
+  "tests": "34 passed including 11 new chronological/precision/calendar cases and current Meta→Search→M4 regression scopes. Overlapping suites are not summed.",
+  "normal_fixture_meta_identity_unchanged": true,
+  "before_case_note": "The .100Z vs whole-second-Z case was wrongly accepted. The equal-precision nanosecond case in before_cases.json was already rejected and is retained as a non-regression reference, not claimed as another old failure.",
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "remaining": "Chronological input validity does not prove original numerical measurement, producer identity or natural outcome; no learner/trading activation or label inference."
+}

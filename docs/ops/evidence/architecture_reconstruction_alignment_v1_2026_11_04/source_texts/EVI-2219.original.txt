@@ -1,0 +1,200 @@
+PREISVERSORGUNG: QUELLENABGLEICH UND OFFLINE-FEHLERSIMULATION
+02.11.2026 · Untersuchung, keine Implementierung oder Betriebsfreigabe
+
+ERGEBNIS
+Die Owner-Anforderung „Nulllinie bildet den aktuellen Marktpreis des ausgewählten
+Futures ab, Scope verwendet diese Grundlage“ ist NICHT durchgehend nachgewiesen.
+Es wurden konkrete Gegenbeispiele in Originalfunktionen reproduziert. Vorhandene
+Schutzbausteine sind nicht an jedem untersuchten Übergang wirksam. Daher keine
+Aussage „100 Prozent abgesichert“, kein grüner Gesamtfunktionsstatus.
+
+Dieser Bericht ergänzt GGE_Marktpreis_Quellen_und_Uebergaben.txt im benachbarten
+Untersuchungsordner gge-market-price-lineage-2026-11-02. Der dortige Quellenweg bleibt
+gültig; hier kommen historische Owner-Semantik, alternative Schutzpfade, Anzeigen,
+L1–L10-Verhalten und Fehlersimulationen hinzu. Keine neue kanonische System-SSOT.
+
+QUELLEN UND ABDECKUNG
+Hauptcheckout /Users/frnkhrz/Peak_Trade, HEAD242b7974fc93f0bdb47706556101bd6f0c497414,
+Arbeitsbytes einschließlich vorhandener Änderungen. 18 weitere Quellen gehasht,
+ihre lokale Dateihistorie gelesen. Vorherige Untersuchung bindet 16 weitere Pfadrollen
+(mit Überschneidungen). Keine Gleichsetzung der Arbeitskopie mit aktivem Betrieb.
+Weitere Arbeitskopie /Users/frnkhrz/Peak_Trade_M1_5_CURRENT:
+HEADfffb95ef41f7e78c145f022144947911cce27279, Branch feat/k1-get-only-observation-v1.
+Vier einschlägige vorhandene Dateien sind bytegleich, Greenfield-Projektionsdatei
+dort nicht vorhanden. Kein Ordnername begründet Autorität oder aktiven UI-Betrieb.
+
+Historische Originalgespräche: drei Nachrichten aus dem lokalen Suchindex im
+ursprünglichen JSONL nachgeprüft und mit Dateihash/Pfad/Zeile gespeichert.
+Owner-Vorgabe 21.09.2026 23:12 Berlin: Nulllinie folgt dem ausgewählten Future;
+Nulllinie, Scope-Grenze und Peak-/Trough-Trailing sind ausdrücklich verschieden.
+Owner-Klarstellung 23.10.2026 03:58 Berlin wiederholt aktuelle kontinuierliche
+Marktpreisabbildung und fordert Prüfung des Ist-Verhaltens. Das ist historische
+Absicht, kein damaliger Implementierungs- oder Laufzeitnachweis.
+Frühere Antwort zum Mark-Cache-A/B-Versuch ist als sekundärer Bericht erhalten;
+dessen Roh-Evidence wurde in den konkret geprüften Pfaden nicht gefunden. Die dort
+genannten Erfolgszahlen werden deshalb hier nicht als erneut geprüfter Beweis genutzt.
+Der Original-Code-Diff #7003 war bereits in der vorigen Untersuchung geprüft.
+
+Externe Medien: Mounts erneut gesehen (M2DATA HFS+, PeakDATARecovery APFS), keine
+Recovery-Prozesse im begrenzten Namenscheck gefunden; keine laufende Aktivität dadurch
+umfassend ausgeschlossen. Keine Scans, Reparaturen, Remounts oder Schreibzugriffe.
+Drei Originaldateien aus M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1
+gezielt gelesen: S6, strenger Markparser und L5 jeweils bytegleich zum Hauptcheckout.
+Das datiert vorhandene Inhalte, beweist aber weder Wiederherstellungsbedarf noch
+damals korrekte Gesamtfunktion. Eine gezielte Recovery-Spezifikation zum öffentlichen
+MD-Runtime-Pfad gelesen; SHA256 stimmt mit dem vorhandenen Recovery-Inventar überein.
+Sie beschreibt eine observation-only Datenebene ohne MV2-/Execution-Autorität.
+Obsidian README/INDEX/Register-Navigation und Recovery-Inventar dienen der Einordnung;
+kein neuer Ledger-RUN, kein Blueprint-Umbau, keine Registeränderung.
+Nicht alle alten Chats, PRs, Dateien und Recovery-Fragmente wurden vollständig gelesen.
+Diese Untersuchung umfasst passende verfügbare Quellenarten; sie ist keine Behauptung
+eines vollständigen historischen Wissens oder uneingeschränkten Classic-Chat-Zugriffs.
+
+SIMULATIONEN
+32 Python-Szenarien mit vorhandenen Originalfunktionen, plus zwei Browser-Pollfälle.
+Kanonischer scripts/pt-STDIN-Start, -B, keine sys.path-/PYTHONPATH-Manipulation.
+Netzwerkantworten vollständig durch lokale Fixtures ersetzt. Künstliches Instrument
+SIM-USDT-SWAP und feste Simulationsuhr; kein produktiv ausgewählter Future.
+Keine Börsenanfrage, kein Runtime-Host-Zyklus, keine Order, keine Produktänderung.
+Assertions prüfen, ob das beobachtete Verhalten reproduzierbar ist. Ihr Bestehen
+ist ausdrücklich KEIN Bestehen der Owner-Anforderungen.
+
+BEFUND P1: S6-VERBINDUNG BENUTZT DIE STRENGERE ZEITPRÜFUNG NICHT
+Originale:
+src/ops/full_core_live_path_composition_root_v1/
+ current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py
+ current_productive_canonical_price_provenance_v1.py
+vs. src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/
+ mark_price_contract_v1.py.
+S6 liest markPx/Native-ID über den Herkunfts-Builder. Dieser liest ts nicht.
+Der separate parse_public_mark_price_response_v1 liest Event-/Empfangszeit und
+verwirft zu alte und zeitstempellose Werte. Seine Verwendung im untersuchten
+S6-Einstieg ist durch den konkreten Aufruf nicht gegeben.
+Gleiche Fixture bei Simulationsuhr t:
+- 1s alt: beide akzeptieren.
+- 60s alt: S6-Builder akzeptiert; separater Parser mit5s Testgrenze weist zurück.
+- ts fehlt: S6-Builder akzeptiert; separater Parser weist zurück.
+- falsche Native-ID, fehlender markPx, negativ/null/NaN/Infinity: beide weisen zurück.
+- Provider-Fehlercode bei sonst befüllter data: S6-Builder akzeptiert; separater
+  Parser weist zurück. Ob ein anderer umgebender Owner Providerfehler abfängt,
+  ist dadurch nicht global entschieden.
+Die5s sind ein vorhandener Public-MD-/Testvergleichswert, KEINE neue fachliche
+GGE-/Nulllinien-Latenzfreigabe.
+
+BEFUND P2: AUSFALL/WIEDERVERBINDUNG KANN EINEN ALTEN WERT WIEDER DURCHLASSEN
+Originale S6-_fetch_mark_price_payloads_for_native_v1, Transport durch Sequenzfixture:
+frisch → liefert Bundle; Ausfall → liefert None; 600s alter Wiederverbindungswert →
+liefert Bundle; frisch → Bundle; fremdes Instrument → None; korrekt → Bundle.
+Der gemessene Effekt ist die Adapterausgabe, nicht eine ausgeführte Handelsentscheidung.
+Eine erfolgreiche Wiederverbindung allein ist daher kein Frischenachweis.
+Die reale GET-Transportklasse wurde mit lokalem HTTP-Double geprüft:
+4Aufrufe CACHEABLE_SNAPSHOT mit unterschiedlichen decision_ids ergeben1Mock-GET;
+4Aufrufe DYNAMIC_REFRESH_REQUIRED ergeben4Mock-GETs mit fortschreitenden Antworten.
+Die heutige S6-Mark-Abfrage fordert dynamisches Refresh an. Der alte Cache-Fehler
+darf daher nicht als heute unverändert aktiver Fehler dargestellt werden.
+
+BEFUND P3: BESTEHENDER PARSER IST SELBST KEIN VOLLSTÄNDIGER ZEITVERTRAG
+60s in der Zukunft liegende Providerzeit wird vom separaten Markparser akzeptiert,
+weil nur age>max geprüft wird. Die andere Public-MD-Frischefunktion verwirft ein
+negatives Alter ausdrücklich. Diese Einzelbausteine haben unterschiedliche Verträge.
+Die zustandslose Parsergrenze akzeptiert auch innerhalb der Altersgrenze rückwärts
+laufende Zeiten. Ob ein nachfolgender Stateful-Owner das verhindert, bleibt separat.
+Eine Uhrabweichungstoleranz oder verbindliche gemeinsame Politik wird hier nicht erfunden.
+
+BEFUND U1: PRODUCER-/ANZEIGEFORMAT PASST IM GREENFIELD-PFAD NICHT ZUSAMMEN
+Producer src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py:831–853,939ff:
+live_mark_price ist ein skalarer Dezimalstring, z.B."123.45".
+Consumer src/webui/market_surface_greenfield_v1/market_projection_v1.py:78–89:
+ein Live-Mark wird nur aus einer Mapping-Struktur {price:...} oder {mark_px:...}
+übernommen. Beim Skalar bleibt last_price der letzte Kerzenschlusskurs.
+Die canonical_state_v1.py lädt den Readmodel-Dict und reicht ihn an diese Projektion;
+surface_app_v1.js:209 rendert market.last_price in den Headerpreis.
+Originalfunktion im Versuch:
+live_mark_price="123.45", Kerzenclose71.9 → last_price71.9, StatusFRESH/HEALTHY,
+classificationPROVEN_CURRENT. Das Label ist Funktionsausgabe und kein Beweis.
+Mit verschachteltem Mapping → last_price123.45. Floatskalar oder fehlender Mark →71.9.
+Dies reproduziert einen Schnittstellenfehler an diesem Anzeigeadapter. Es beweist
+nicht, dass diese Oberfläche beim Owner gerade aktiv ist oder dass jeder Chart
+denselben Fehler hat. Insbesondere hat die andere Landscape-Projektion dieses
+Formatproblem im getesteten Fall NICHT: sie liefert Mark123.45 und Close71.9 getrennt.
+
+BEFUND U2: POLL-FEHLER ERNEUERT NICHT DEN ANGEZEIGTEN VERBINDUNGSSTATUS
+Original static/js/market_surface_greenfield_v1/surface_app_v1.js, tick():
+catch nach fetch/JSON-Fehler plant nur den nächsten Versuch nach3000ms.
+Die Originalfunktion wurde per AST aus der Datei entnommen und mit lokalen
+fetch-/Anzeige-Double-Abhängigkeiten ausgeführt; kein echter Browser/DOM-Test.
+Positivkontrolle: Erfolg aktualisiert123.45→124 und plant1000ms.
+Fehler: letzter Wert123.45 samt FRESH/HEALTHY bleibt in der Testanzeige unverändert;
+erneuter Versuch3000ms. Dieser Handler markiert den Zustand nicht selbst als ungültig.
+Das zeigt eine lokale Fehlerbehandlungslücke. Externe unabhängige Watchdogs oder
+die tatsächliche aktive Oberfläche sind dadurch nicht ausgeschlossen/geprüft.
+
+BEFUND U3: OHLCV-FRISCHE IST NICHT AUTOMATISCH MARKPREIS-FRISCHE
+OKX-Readmodel-Producer berechnet freshness_state/is_stale anhand des Trades-
+Capture-Zeitpunkts für die OHLCV-Revision. Er erhält Mark-Providerzeit separat.
+Landscape-Browser-Serializer trägt Markzeit und Markwert zwar weiter, berechnet
+aber dort keinen unabhängigen Markalterstatus. Fixture mit älterer Markzeit und
+FRESH-OHLCV bleibt im serialisierten Ergebnis FRESH/is_stale=False.
+Die Funktionsgrenze ist damit reproduziert; kein Nachweis tatsächlicher veralteter
+Börsenantworten im aktiven Dashboard. Ein unabhängiger Markstatus muss gesondert
+belegt werden; Kerzenfrische ersetzt ihn fachlich nicht.
+Separater GHV-Current-Input-Beobachtungsadapter setzt mark_age=0.0, bevor er eine
+Altersgrenze vergleicht. Dieser statische Befund entwertet dessen lokalen Frischewert
+als Messnachweis; keine Behauptung, dass genau diese Forensikstrecke Orders freigibt.
+
+BEFUND N1: FELD NAMENS NULLLINIE IST IM UNTERSUCHTEN KERN INITIALBASIS
+L5 l5_nullline_v1.py ist ausdrücklich „immutable initial price basis“.
+orchestrator_v1.py initialisiert L5 einmal und führt nullline_frozen weiter.
+Originaler reiner L1–L10-Orchestrator, Initialmark100→110, mechanische Folge:
+- danach120→130: final_nullline_price110, final_running_r_t130.
+- danach100→95: final_nullline_price110, final_running_r_t95.
+Beide Fälle laufen ohne fail_closed. D_t wurde als explizite Fixture5 vorgegeben;
+keine Kalibrierungsbehauptung oder neu gewählte produktive Scope-Konfiguration.
+Damit ist bewiesen: dieses Feld bildet nicht jeden aktuellen Marktpreis ab.
+Ob es legitim nur die Initialbasis speichert oder tatsächlich fälschlich als
+Owner-Nulllinie angezeigt/verwendet wird, muss am jeweiligen Consumer entschieden
+werden. Keine pauschale Umdeutung aller L1–L10-Phasen, kein blindes Überschreiben
+von Initialreferenzen oder Trailing-Zustand. Die historische Owner-Nulllinie bleibt
+fachlich von diesen Größen getrennt.
+
+GEGENBELEG ZU „ES KAM NIE EIN AKTUELLER PREIS AN“
+Gespeicherte öffentliche Capture-Datei vom12.10., SHA256 im Begleitartefakt:
+136Datensätze, darunter33Markantworten für RSR-USDT-SWAP,15unterschiedliche Marken.
+Differenz gespeicherte captured_at_utc minus Provider-ts: etwa0.00037–0.06759s,
+alle33unter5s, kein negatives Alter. Dies sind berechnete Werte aus vorhandenen
+Aufzeichnungen, keine neue Börsenmessung und keine zertifizierte Uhrmessung.
+Alle33haben keinen vollständigen Poll-Bundle-Nachweis. Keine Gleichsetzung mit
+einem GGE-, Order- oder Bildschirmausgang. Der Fund zeigt, dass plausible frische
+Markantworten historisch vorlagen; er schließt die genannten Anschlusslücken nicht.
+
+WAS FÜR EINEN TRAGFÄHIGEN NACHWEIS NOCH FEHLT
+1. Verbindliche Preissemantik Mark/Last/BidAsk; historischer Ownertext sagt aktueller
+   Marktpreis, die untersuchte Implementierung nimmt Venue-Mark. Unterschied erhalten.
+2. Fachlich freigegebene maximale Alters-/Anzeigeverzögerung und Umgang mit Uhrskew.
+   Die vorhandenen5s nicht ungeprüft als universelle Zielvorgabe übernehmen.
+3. Gebundene Herkunft bis zum Consumer: Instrument, Börse, Preisart, Providerzeit,
+   Empfangszeit, Sequenz/Session und Anzeigezeit; kein stilles Verschwinden von ts.
+4. Effektive Gate-Verbindung im tatsächlichen Host. Vorhandensein eines Validators
+   genügt nicht. Neue Richtungsentscheidungen bei ungültiger Versorgung sperren;
+   offene Positionen/Schutzausstiege brauchen eine explizite Ausfallpolitik.
+5. Eigene Mark-Frische bis in Browser/Anzeige, unabhängig von OHLCV-Frische;
+   sichtbare Entwertung auch ohne erfolgreiche nächste Antwort.
+6. Auswahlwechsel und Wiederverbindung gegen verspätete alte Antworten absichern;
+   keine Wiederverwendung allein wegen gleicher Feldnamen oder globalem Cache.
+7. Fachlich aktuelle Nulllinie, gespeicherte Initialbasis und laufender Trailing-
+   Anker getrennt zum richtigen Scope-/Anzeige-Consumer binden.
+8. Anschließend derselbe gebundene Trace von Quelle über CMC/G17/GGE/Scope bis
+   zur gerenderten Anzeige, einschließlich Ausfällen und Wiederaufnahme, auf der
+   konkret benannten aktiven Konfiguration. Dieser vollständige Lauf fehlt.
+
+ABSCHLUSS UND REPRODUZIERBARKEIT
+simulation-results.json:32Szenarien. browser-failure-probe.json:2Kontroll-/Fehlerfälle.
+historical-original-messages.json:3verifizierte Originalnachrichten.
+historical-capture-audit.json:öffentliche gespeicherte Capture-Auswertung.
+external-source-comparison.json, second-checkout-comparison.json:Quellenabgleiche.
+source-manifest.json, history.json, baseline.json, verification.json:Bindungen/Grenzen.
+investigate.py und browser_failure_probe.cjs enthalten die isolierten Prüfungen.
+Repository-HEAD, Status und versionierter Diff blieben während der Prüfung gleich.
+Externe Originale erhalten; keine Gesamtwiederherstellung, keine Aktivierung.
+Diese Untersuchung ist als Ergebnis abgeschlossen. Die Preisversorgungsanforderung
+ist damit überprüfbarer, aber ausdrücklich noch nicht erfüllt oder freigegeben.

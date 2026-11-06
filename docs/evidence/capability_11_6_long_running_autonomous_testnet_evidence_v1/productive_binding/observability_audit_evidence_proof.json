@@ -1,0 +1,25 @@
+{
+  "DASHBOARD_TRADING_AUTHORITY": false,
+  "OBSERVABILITY_AUDIT_EVIDENCE_CONTRACT_ACTIVATED": false,
+  "OBSERVABILITY_AUDIT_EVIDENCE_CONTRACT_BOUND": true,
+  "OWNER": "ops.capability_11_6_long_running_autonomous_testnet_evidence_v1",
+  "dashboard_trading_authority_blocked": true,
+  "domains": [
+    "market_data_health",
+    "private_account_stream_health",
+    "clock_synchronization",
+    "decision_latency",
+    "order_lifecycle_latency",
+    "rejection_and_retry_taxonomy",
+    "position_and_margin_state",
+    "risk_and_safety_vetoes",
+    "reconciliation_status",
+    "persistence_and_journal_status",
+    "evidence_cursor_health",
+    "authorization_and_credential_status",
+    "operating_state_transitions"
+  ],
+  "network_side_effect_blocked": true,
+  "ok": true,
+  "unknown_domain_blocked": true
+}

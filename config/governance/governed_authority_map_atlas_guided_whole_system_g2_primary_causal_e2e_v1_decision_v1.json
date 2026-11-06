@@ -1,0 +1,10 @@
+{
+  "schema_version": "governed_whole_system_e2e.v1",
+  "workpackage_id": "AUTHORITY_MAP_ATLAS_GUIDED_WHOLE_SYSTEM_CAUSAL_E2E_FROM_POST_6938_MAIN",
+  "post_merge_baseline_sha": "1a3ffd8ba081e732ecdb56258838ca528c0d3dc3",
+  "case_b_preserved": true,
+  "productive_optimization_join_authorized": false,
+  "external_effect": false,
+  "primary_evidence_fabrication_forbidden": true,
+  "authority_effect": "NONE"
+}

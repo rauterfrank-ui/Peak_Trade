@@ -1,0 +1,67 @@
+{
+  "wp_id": "DOUBLE_PLAY_COMPATIBILITY_BOUNDARY_PATCH_V1",
+  "baseline_sha": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+  "branch": "wp3/double-play-compatibility-boundary-v1",
+  "head_before": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+  "head_after": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+  "commit_created": false,
+  "wp1_status": "PASS",
+  "wp2_status": "PASS",
+  "wp3_status": "PASS",
+  "patched_root_divergences": [
+    "F1M9-MAX-AGE-ENFORCEMENT-01",
+    "F1M9-CONSUMER-PATH-01",
+    "LAYERED-CORE-OBS-INIT-01",
+    "G17-CMC-BIND-01"
+  ],
+  "behavioral_root_divergences_before": 3,
+  "behavioral_root_divergences_after": 0,
+  "new_behavioral_divergences": 0,
+  "discovered_out_of_scope_defects": 0,
+  "differential_adjudication": {
+    "F1M9-MAX-AGE-ENFORCEMENT-01": {
+      "status": "RESOLVED",
+      "note": "Consumer enforcement remains false on stale; integrated_replay stale matches historical (replay_pass true, no_action)."
+    },
+    "F1M9-CONSUMER-PATH-01": {
+      "status": "RESOLVED",
+      "note": "DP boundary uses presence alpha via resolve_alpha_scope_entry_for_integrated_replay_v1."
+    },
+    "G17-CMC-BIND-01": {
+      "status": "RESOLVED",
+      "note": "Effective bind on DUPLICATE_NOOP disabled when g17_cmc_bind_produced_only; module policy string unchanged."
+    },
+    "LAYERED-CORE-OBS-INIT-01": {
+      "status": "RESOLVED",
+      "note": "productive_cycle_bind_seam selects _observation_candidates_from_cmc_mark_v1 when layered_core_cmc_mark_observation_init flag on."
+    },
+    "SINGLE-LANE-LIFECYCLE-01": {
+      "status": "PRESERVED_REGRESSION_OBSERVATION",
+      "note": "Not a WP-3 patch target; carrier metadata may still differ."
+    },
+    "RECON-ADMISSION-GATE-01": {
+      "status": "NO_PATCH_REQUIRED",
+      "note": "WP-2 proven equivalent at replay input."
+    },
+    "CANONICAL_PRICE_PROVENANCE": {
+      "status": "PRESERVED_CURRENT_SAFETY_BOUNDARY"
+    }
+  },
+  "production_files_changed": 5,
+  "test_files_changed": 2,
+  "core_files_changed": 0,
+  "f1_m9_fresh_regression": "PASS",
+  "f1_m9_stale_compatibility": "PASS",
+  "layered_init_compatibility": "PASS",
+  "g17_cmc_bind_compatibility": "PASS",
+  "duplicate_double_advance": "PROVEN_NO",
+  "recon_position_flat_regression": "PASS",
+  "canonical_price_provenance_safety": "PRESERVED",
+  "single_lane_regression": "PASS",
+  "state_persistence_regression": "PASS",
+  "core_regression": "PASS",
+  "restoration_requires_safety_weakening": false,
+  "venue_contacted": false,
+  "network_used": false,
+  "productive_state_mutated": false
+}

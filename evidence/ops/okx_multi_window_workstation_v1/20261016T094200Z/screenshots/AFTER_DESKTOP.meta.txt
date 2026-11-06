@@ -1,0 +1,7 @@
+captured_utc=2026-10-16T07:45:00Z
+type=full_desktop_primary_acceptance
+windows=2
+window_a_left=Diagramm TradingView 15m + Orderbuch + header Mark/Funding/OI strip
+window_b_right=Handelsdaten Open Interest/Volumen + Orderbuch + Letzte Trades
+instrument=BTC USD UM XPERP (both windows)
+workspace_id=1031216400532770816

@@ -1,0 +1,9 @@
+# recovery commands log
+RECOVERED_AT=2026-07-18T23:23:43Z
+BASELINE=bcf359ae5102d5e6d5d540dc42225439ad41b204
+BRANCH=recovery/reconstruct-deleted-evidence-packs-v1
+TEMP_WORKTREES=/tmp/pt_recovery_a55c4000,/tmp/pt_recovery_43558204
+EXTRACT=/tmp/evidence_recovery_extract
+NO_GIT_CLEAN=true
+NO_HARD_RESET=true
+PROBES_RERUN=scope_event_noop_root_cause_audit_v1,canonical_chain_post_5337_zero_trade_audit_v1

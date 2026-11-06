@@ -1,0 +1,56 @@
+{
+  "LIVE_AUTONOMOUS_RECOVERY_ACTIVATED": false,
+  "LIVE_AUTONOMOUS_RECOVERY_CONTRACT_ACTIVATED": false,
+  "LIVE_AUTONOMOUS_RECOVERY_CONTRACT_BOUND": true,
+  "LIVE_AUTONOMOUS_RECOVERY_PROVEN": false,
+  "LIVE_AUTONOMOUS_SINGLE_FUTURE_ACTIVATED": false,
+  "LIVE_ORDER_EXECUTION_PERFORMED_IN_CAPABILITY_11_11": false,
+  "LIVE_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_11": false,
+  "OWNER": "ops.capability_11_11_live_autonomous_recovery_and_degradation_evidence_v1",
+  "activation_blocked": true,
+  "credential_access_blocked": true,
+  "forbidden_condition_blocked": {
+    "credential_scope_mismatch": true,
+    "evidence_chain_corruption_affecting_economic_truth": true,
+    "kill_switch_activation": true,
+    "repeated_duplicate_order_evidence": true,
+    "repository_or_config_integrity_mismatch": true,
+    "risk_limit_breach_requiring_limit_change": true,
+    "unauthorized_mode_or_venue_transition": true,
+    "unexplained_position_divergence": true,
+    "unknown_account_identity": true
+  },
+  "gate_not_satisfied_blocked": true,
+  "network_session_blocked": true,
+  "non_fixture_blocked": true,
+  "ok": true,
+  "proven_overclaim_blocked": true,
+  "recovery_forbidden_conditions": [
+    "credential_scope_mismatch",
+    "repository_or_config_integrity_mismatch",
+    "unknown_account_identity",
+    "unexplained_position_divergence",
+    "kill_switch_activation",
+    "repeated_duplicate_order_evidence",
+    "risk_limit_breach_requiring_limit_change",
+    "evidence_chain_corruption_affecting_economic_truth",
+    "unauthorized_mode_or_venue_transition"
+  ],
+  "recovery_permitted_gates": [
+    "ROOT_CAUSE_CLASSIFIED",
+    "RECOVERY_POLICY_PRE_RATIFIED",
+    "RETRY_BUDGET_AVAILABLE",
+    "AUTHORIZATION_STILL_VALID",
+    "NO_UNRESOLVED_ECONOMIC_AMBIGUITY",
+    "POST_RECOVERY_RECONCILIATION_PASS"
+  ],
+  "sample_from_state": "RECOVERING",
+  "sample_recovery_session_id": "live-recovery-fixture-v1",
+  "sample_to_state": "READY",
+  "stages_in_scope": [
+    "LIVE_BOUNDED_MULTI_SESSION",
+    "LIVE_AUTONOMOUS_SINGLE_FUTURE"
+  ],
+  "submit_blocked": true,
+  "unknown_forbidden_condition_blocked": true
+}

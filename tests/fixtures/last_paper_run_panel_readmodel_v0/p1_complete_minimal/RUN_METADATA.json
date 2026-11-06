@@ -1,0 +1,16 @@
+{
+  "schema": "p1_short_bounded_paper_run_metadata.v1",
+  "stage": "P1_SHORT_BOUNDED_PAPER",
+  "utc_start": "2026-06-07T23:13:10Z",
+  "utc_end": "2026-06-07T23:23:10Z",
+  "duration_seconds_actual": 600,
+  "duration_cap_seconds": 1800,
+  "hard_stop_enforced": true,
+  "adapter_rc": 0,
+  "review_verdict": "PASS",
+  "fills_count": 0,
+  "paper_archive": "/archive/runs/paper/daemon_paper_24h_test_fixture_v0",
+  "operator": "Frank Rauter",
+  "go_token": "GO_P1_SHORT_BOUNDED_PAPER_EXECUTE",
+  "head": "5cc06cec5097381e740eb2ee4c43ac5be6528f36"
+}

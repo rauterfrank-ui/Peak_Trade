@@ -1,0 +1,29 @@
+{
+  "AUTHORIZATION_CONSUMPTION_ALLOWED": false,
+  "LIVE_AUTHORIZED": false,
+  "REQUIRED_AUTHORIZATION_BINDINGS": [
+    "repository_sha",
+    "config_digest",
+    "runtime_mode",
+    "venue",
+    "account_identity",
+    "instrument_or_active_set_scope",
+    "maximum_notional",
+    "maximum_leverage",
+    "maximum_position_count",
+    "maximum_session_duration",
+    "loss_and_drawdown_limits",
+    "allowed_order_types",
+    "allowed_side_effects",
+    "activation_epoch",
+    "expiry"
+  ],
+  "TESTNET_AUTHORIZED": false,
+  "authorization_digest": "15c1a0e0117fd6987a2f2966801ccf362168e071977144a0e9757fe7a77b77d0",
+  "consumption_blocked": true,
+  "incomplete_blocked": true,
+  "match_ok": true,
+  "mismatch_fail_closed": true,
+  "ok": true,
+  "owner": "ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1"
+}

@@ -1,0 +1,160 @@
+{
+  "schema_version": "productive_pure_stack_stage2_shadow_campaign_input_authority_decisions/v1",
+  "document_type": "OWNER_AUTHORITY_DECISIONS_MANIFEST",
+  "status": "OWNER_RATIFIED_BOUNDED_IMPLEMENTATION_AUTHORIZED",
+  "baseline_origin_main_sha": "55922609182a3166320c0a66a3a0b7cda5c13090",
+  "sole_trading_authority": "run_integrated_offline_trading_logic_replay_v1",
+  "authority_surface": "B",
+  "o4_unchanged": true,
+  "dashboard_authority_effect": "NONE",
+  "input_authority": false,
+  "runtime_implemented": false,
+  "productive_numeric_values_set": 0,
+  "productive_calibration_authorized": false,
+  "resultv1_mapping_authorized": false,
+  "orders_authorized": false,
+  "testnet_authorized": false,
+  "live_authorized": false,
+  "paper_exchange_orders": false,
+  "exchange_credential_use": false,
+  "real_capital_movement": false,
+  "core_logic_change": false,
+  "decisions": {
+    "AUTHORITY_SURFACE": {
+      "value": "B",
+      "producer_class": "sole_trading_authority_shadow_calibration_producer",
+      "o4_unchanged": true,
+      "dashboard_readmodel_as_source_authority": false
+    },
+    "PRICE_SEMANTICS": {
+      "ohlcv_source": "VENUE_NATIVE_FINALIZED_CANDLES",
+      "mark_price": "REQUIRED_SEPARATE_FIELD",
+      "candle_mark_trade_equivalence": "FORBIDDEN",
+      "missing_or_inconsistent": "FAIL_CLOSED",
+      "venue_candles_role": "RAW_OHLCV_INPUT_BEHIND_DEDICATED_PRODUCER_ONLY"
+    },
+    "INSTRUMENT_BINDING": {
+      "mode": "SINGLE_SELECTED_FUTURE_VENUE_NATIVE",
+      "required_fields": [
+        "venue",
+        "canonical_instrument_id",
+        "venue_instrument_id",
+        "contract_type",
+        "market_type",
+        "quote_currency",
+        "settlement_currency"
+      ],
+      "instrument_change_policy": "NEW_DATASET_ID_OR_SEGMENT_SPLIT",
+      "multi_instrument_pooling": false
+    },
+    "DATASET_IDENTITY": {
+      "immutable_snapshot": true,
+      "required_provenance_fields": [
+        "dataset_id",
+        "source_id",
+        "venue",
+        "instrument_id",
+        "timeframe",
+        "event_time_range",
+        "ingestion_timestamp",
+        "finalization_timestamp",
+        "repository_sha",
+        "config_digest",
+        "producer_version",
+        "raw_source_digest",
+        "correction_revision_policy"
+      ],
+      "timeframe": "PT1M",
+      "observation_pack_digest_bound_to_reproducibility_record": true
+    },
+    "FINALITY_CORRECTIONS": {
+      "final_requires_bucket_closed_and_authorized_finalizer": true,
+      "open_tip_bars": false,
+      "late_events": "EXPLICIT_CORRECTED_REVISION_OR_REJECT_INVALIDATE_SEGMENT",
+      "silent_rewrites": false,
+      "snapshots_immutable": true,
+      "rebuild_requires_new_dataset_id_and_digest": true,
+      "evidence_pack_future_mutation": false
+    },
+    "PARTITION_PROTOCOL": {
+      "split_type": "CHRONOLOGICAL_POINT_IN_TIME",
+      "segments": ["train", "calibration", "validation", "holdout"],
+      "random_bar_splitting": false,
+      "purge_and_embargo": "MANDATORY",
+      "purge_embargo_numeric_magnitudes": null,
+      "preserve_atr_rv_warmup_history": true,
+      "regime_coverage_labels": ["low", "mid", "high", "unknown", "missing"],
+      "invent_observations": false,
+      "instrument_continuity_break": "NEW_DATASET"
+    },
+    "WALK_FORWARD_PROTOCOL": {
+      "mode": "EXPANDING_CALIBRATION_WINDOWS",
+      "locked_forward_validation": true,
+      "isolated_forward_holdout_min_count": 1,
+      "stable_fold_ids_and_digests": true,
+      "rebalance_boundaries": "EVENT_TIME_BASED",
+      "calibration_may_access_validation_or_holdout_labels": false,
+      "fold_sizes_and_cadence_numbers": null
+    },
+    "BOOTSTRAP_PROTOCOL": {
+      "method": "BLOCK_BOOTSTRAP",
+      "preserve_temporal_structure": true,
+      "iid_resampling": "FORBIDDEN_BY_DEFAULT",
+      "deterministic_recorded_seeds": true,
+      "block_length": null,
+      "resampling_unit_choice": null,
+      "path_count": null,
+      "path_ensemble_ownership": "SOLE_TRADING_AUTHORITY_SHADOW_CALIBRATION",
+      "parallel_survival_kernel": false
+    },
+    "STRESS_PROTOCOL": {
+      "structural_families": [
+        "gaps_missing_bars",
+        "staleness",
+        "spread_expansion_crossed_book",
+        "volatility_shocks",
+        "liquidation_near_miss_paths",
+        "chop_switch_clusters",
+        "fees",
+        "slippage",
+        "latency",
+        "sequence_path_disruption"
+      ],
+      "numeric_magnitudes_ratified": false
+    },
+    "SEQUENCE_LAYER_AUTHORITY": {
+      "sequence_survival_metrics_producer": "SequenceSurvivalMetricsProducerV1_FUTURE_BOUNDED_UNDER_STA",
+      "sequence_survival_metrics_shape": "trading.master_v2.double_play_survival.SequenceSurvivalMetrics",
+      "path_survival_metrics_source": "VERSIONED_DIGESTED_STA_OWNED_PATH_ENSEMBLE",
+      "layer_projection_kernel": "src/execution/paper/futures_accounting.py",
+      "forbidden_authorities": [
+        "ResultV1",
+        "fixtures",
+        "dashboard_WebUI_values",
+        "CMC_volatility",
+        "research_panels",
+        "parallel_arithmetic_volatility_opportunity_survival_kernels"
+      ]
+    },
+    "IMPLEMENTATION_BOUNDARY": {
+      "authorized": [
+        "dedicated_pt1m_producer_export",
+        "immutable_observation_packs_and_digests",
+        "semantic_free_binding_to_FinalizedBarV1_and_ShadowCampaignRequestV1",
+        "structural_manifest_builders_without_numeric_policy_values",
+        "worktree_safe_cli_api_loader_with_repository_sha_binding",
+        "tests_and_explicit_boundary_guards"
+      ],
+      "forbidden": [
+        "productive_calibration_or_thresholds",
+        "INPUT_AUTHORITY_or_runtime_activation_flips",
+        "trading_logic_mutation",
+        "O4_authority_expansion",
+        "dashboard_authority",
+        "parallel_kernels",
+        "orders_paper_execution_testnet_live_trading",
+        "numeric_Owner_value_ratification"
+      ]
+    }
+  }
+}

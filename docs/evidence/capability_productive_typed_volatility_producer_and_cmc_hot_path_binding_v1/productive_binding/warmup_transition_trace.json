@@ -1,0 +1,12 @@
+[
+  {
+    "cycle": 1,
+    "estimate_present": false,
+    "producer_outcome": "WARMUP"
+  },
+  {
+    "cycle": 123,
+    "estimate_present": true,
+    "producer_outcome": "PRODUCED"
+  }
+]

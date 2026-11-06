@@ -1,0 +1,182 @@
+{
+  "CURRENT_CLAIMS_WITH_MULTI_SOURCE_CORROBORATION": [
+    "C_NO_ORCH",
+    "C_GHV",
+    "C_BACKFLOW",
+    "C_NE",
+    "C_POST"
+  ],
+  "CURRENT_CLAIMS_WITH_SINGLE_SOURCE": [
+    "C_IU_14",
+    "C_POPS",
+    "C_CAP23",
+    "C_CAP24",
+    "C_GVEF_EVAL",
+    "C_PTP_GV"
+  ],
+  "EVIDENCE_TO_SYSTEM": {
+    "CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md": [
+      "C_NE"
+    ],
+    "GHV79": [
+      "C_GHV"
+    ],
+    "GVEF GHV relationship": [
+      "C_GHV"
+    ],
+    "GVEF RU evaluator": [
+      "C_CAP22"
+    ],
+    "GVEF evaluators package": [
+      "C_GVEF_EVAL"
+    ],
+    "GVEF/06": [
+      "C_GV_COUNT",
+      "C_PTP_GV"
+    ],
+    "GVEF/07 fabric": [
+      "C_NO_ORCH"
+    ],
+    "GVEF/08": [
+      "C_DISPATCH"
+    ],
+    "GVEF/09": [
+      "C_BACKFLOW"
+    ],
+    "GVEF/12": [
+      "C_GV_COUNT",
+      "C_DISPATCH"
+    ],
+    "GenericRunnerV1": [
+      "C_NO_ORCH"
+    ],
+    "IU/03": [
+      "C_IU_TOPO"
+    ],
+    "IU/04": [
+      "C_POPS"
+    ],
+    "IU/11": [
+      "C_RU_L07"
+    ],
+    "IU/12": [
+      "C_RU_L07",
+      "C_OUSLMI"
+    ],
+    "IU/14": [
+      "C_DISPATCH"
+    ],
+    "IU/15": [
+      "C_BACKFLOW"
+    ],
+    "IU/17": [
+      "C_CAP22",
+      "C_CAP24",
+      "C_OUSLMI",
+      "C_BACKFLOW"
+    ],
+    "IU/17 GHV_ISOLATED": [
+      "C_GHV"
+    ],
+    "IU/17 SOLE_SELECTION_OWNER": [
+      "C_CAP23"
+    ],
+    "IU/17_iu_final_fixpoint_v1.json": [
+      "C_IU_14"
+    ],
+    "IU/19": [
+      "C_IU_TOPO"
+    ],
+    "K1 summary": [
+      "C_POST"
+    ],
+    "K1 witness at 6ed52d01": [
+      "C_NE"
+    ],
+    "NE doc preserved fields": [
+      "C_POST"
+    ],
+    "NE/05": [
+      "C_NE"
+    ],
+    "R4 POST_ALLOWED=false": [
+      "C_POST"
+    ],
+    "R4 backflow": [
+      "C_BACKFLOW"
+    ],
+    "chat forensic": [
+      "C_NO_ORCH"
+    ]
+  },
+  "EVIDENCE_WITH_NO_CURRENT_USE": [
+    "ABORT_STORAGE_CENSUS",
+    "ABORT_GV_WHOLE_SYSTEM"
+  ],
+  "SYSTEM_TO_EVIDENCE": {
+    "C_BACKFLOW": [
+      "IU/15",
+      "IU/17",
+      "GVEF/09"
+    ],
+    "C_CAP22": [
+      "IU/17",
+      "GVEF RU evaluator"
+    ],
+    "C_CAP23": [
+      "IU/17 SOLE_SELECTION_OWNER"
+    ],
+    "C_CAP24": [
+      "IU/17"
+    ],
+    "C_DISPATCH": [
+      "IU/14",
+      "GVEF/08",
+      "GVEF/12"
+    ],
+    "C_GHV": [
+      "IU/17 GHV_ISOLATED",
+      "GVEF GHV relationship"
+    ],
+    "C_GVEF_EVAL": [
+      "GVEF evaluators package"
+    ],
+    "C_GV_COUNT": [
+      "GVEF/06",
+      "GVEF/12"
+    ],
+    "C_IU_14": [
+      "IU/17_iu_final_fixpoint_v1.json"
+    ],
+    "C_IU_TOPO": [
+      "IU/03",
+      "IU/19"
+    ],
+    "C_NE": [
+      "CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md",
+      "NE/05"
+    ],
+    "C_NO_ORCH": [
+      "GVEF/07 fabric",
+      "GenericRunnerV1"
+    ],
+    "C_OUSLMI": [
+      "IU/12",
+      "IU/17"
+    ],
+    "C_POPS": [
+      "IU/04"
+    ],
+    "C_POST": [
+      "NE doc preserved fields",
+      "K1 summary"
+    ],
+    "C_PTP_GV": [
+      "GVEF/06"
+    ],
+    "C_RU_L07": [
+      "IU/11",
+      "IU/12"
+    ]
+  }
+}

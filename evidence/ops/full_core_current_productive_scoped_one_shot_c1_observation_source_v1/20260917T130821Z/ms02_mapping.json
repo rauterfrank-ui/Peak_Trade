@@ -1,0 +1,11 @@
+{
+  "disposition": "EMITTED",
+  "get_count": 0,
+  "observation": {
+    "bar": "1m",
+    "confirm": "1",
+    "native_id": "0G-USDT-SWAP",
+    "venue_event_time": 1789650660.0
+  },
+  "reason_code": ""
+}

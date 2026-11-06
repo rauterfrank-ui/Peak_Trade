@@ -1,0 +1,18 @@
+{
+  "config_digest": "90c779d1434888533c70f65e10d51d5290c995ee15f09a5a7f2526d650e6a9de",
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "evaluation_executed": true,
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_volatility_term_structure_reversion_development_v1",
+  "evidence_ref": "docs/evidence/evaluate_volatility_term_structure_reversion_development_v1/",
+  "holdout_accessed": false,
+  "hypothesis_id": "VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+  "runner_start_count": 1,
+  "runner_started": true,
+  "schema_version": "evaluate_volatility_term_structure_reversion_registry.v1",
+  "strategy_identity": "VOLATILITY_TERM_STRUCTURE_REVERSION_V1",
+  "strategy_params_digest": "8ea68aa092e31ea1307fbcf4ac1f0418f612362a0ba743fc6fdff61345bcca21",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
+}

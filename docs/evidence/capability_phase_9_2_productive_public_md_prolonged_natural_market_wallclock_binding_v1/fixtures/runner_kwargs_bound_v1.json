@@ -1,0 +1,16 @@
+{
+  "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+  "confirmation_session_id": "phase_9_2_prolonged_natural_market_confirmation_session_v1",
+  "duration_seconds": 7200,
+  "instrument_id": "ETH-USD_UM_XPERP-310404",
+  "invoke_runner": false,
+  "max_cycles": 3601,
+  "network_session_allowed": false,
+  "notes": [
+    "RUNNER_KWARGS_BOUND_WITHOUT_INVOKE=true",
+    "NETWORK_SESSION_ALLOWED_DEFAULT_FALSE=true"
+  ],
+  "repository_sha": "69c02a0bb0df718de67e248aaa3e76291194dfb6",
+  "runtime_session_id": "phase_9_2_prolonged_natural_market_runtime_session_v1",
+  "session_id": "phase_9_2_public_md_prolonged_natural_market_session_v1"
+}

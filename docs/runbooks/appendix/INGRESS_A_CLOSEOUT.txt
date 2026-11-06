@@ -1,0 +1,6 @@
+Ingress-A closeout
+- v1 (tag ingress-A-v1 @ fd249147): A2 NormalizedEvent+JSONL(+sha256), A3 FeatureView(pointer-only), A4 EvidenceCapsule(pointer-only), A5 Orchestrator wiring, A6 CLI, A7 docs/contracts + end-to-end runbook.
+- v1.1 (tag ingress-A-v1.1 @ 9b2484ec): post-run hygiene: removed previously tracked out/ops artifacts (#1214); out/ops no longer tracked.
+Evidence artifacts (local):
+- ~/Downloads/ingress-A-v1_appendix.zip (+ .sha256)
+- ~/Downloads/ingress-A-v1_evidence-20260208-051920-20181_evidence.tgz (+ .sha256)

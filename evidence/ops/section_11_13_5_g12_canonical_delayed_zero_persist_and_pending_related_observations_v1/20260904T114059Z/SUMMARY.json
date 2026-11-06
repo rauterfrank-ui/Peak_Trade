@@ -1,0 +1,152 @@
+{
+  "BLOCKING_REASONS": [],
+  "BOUND_ORIGIN_MAIN_SHA": "21705383447b5a7aa71a533cba48c4a5b9b356a9",
+  "CANONICAL_SSOT_TARGET_POSITION_ZERO_PROVEN": true,
+  "CANONICAL_SSOT_TARGET_POSITION_ZERO_PROVEN_FROM_P5_ALONE": false,
+  "CONJUNCT_REASONS": {
+    "P10_TEMPORAL_ORDER": "PRE_LT_SUBMIT_LT_DELAYED_ZERO",
+    "P1_AUTHORIZED_FLATTEN": "AUTHORIZED_REDUCE_ONLY_LIMIT_FLATTEN",
+    "P2_VENUE_ACCEPTED": "VENUE_ACCEPTED",
+    "P3_ORDER_FILLED": "FILL_BOUND_TO_CLORDID",
+    "P4_PRE_ACTION_NONZERO": "PRE_TARGET_NONZERO",
+    "P5_DELAYED_TARGET_ZERO": "UNIQUE_EXPLICIT_POS_EQ_0_TARGET_ROW",
+    "P6_CAUSAL_LINEAGE": "CAUSAL_POSID_INSTID_LINEAGE_NOT_IDENTITY_EQUALITY",
+    "P7_PENDING_EMPTY": "REGULAR_PENDING_EMPTY_AFTER_DELAYED_ZERO",
+    "P8_NO_FLIP": "PAIRWISE_PRE_NONZERO_DELAYED_EXPLICIT_ZERO",
+    "P9_NO_UNEXPECTED_RELATED_NONZERO": "UNFILTERED_NO_RELATED_NONZERO_AFTER_DELAYED_ZERO"
+  },
+  "COUNTERS": {
+    "AMEND_REQUEST_COUNT": 0,
+    "CANCEL_REQUEST_COUNT": 0,
+    "ENTRY_SUBMIT_COUNT": 0,
+    "FLATTEN_SUBMIT_COUNT": 0,
+    "GET_REQUEST_COUNT": 2,
+    "ORDER_REQUEST_COUNT": 0,
+    "REQUEST_COUNT": 2,
+    "TRANSFER_REQUEST_COUNT": 0,
+    "WITHDRAW_REQUEST_COUNT": 0,
+    "WRITE_REQUEST_COUNT": 0,
+    "endpoints_used": [
+      "/api/v5/trade/orders-pending",
+      "/api/v5/account/positions"
+    ],
+    "http_result_classes": [
+      "HTTP_200_OK",
+      "HTTP_200_OK"
+    ],
+    "methods_used": [
+      "GET",
+      "GET"
+    ]
+  },
+  "CREDENTIALS_EXPOSED": false,
+  "DATA_EMPTY_PROMOTED_TO_ZERO": false,
+  "DELAYED_EXPLICIT_TARGET_ZERO": true,
+  "DOCUMENT_CLASS": "G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_P7_P9_SUMMARY_V1",
+  "EARLIEST_UNRESOLVED_DEPENDENCY": "SECTION_11_14_NOT_AUTHORIZED",
+  "EVALUATOR": {
+    "account_mutation_effect": "none",
+    "blocking_reasons": [],
+    "canonical_ssot_g12_status": "OPEN_LIVE_FLATTEN_PROVABILITY_UNPROVEN",
+    "conjuncts": [
+      {
+        "proposition": "P1_AUTHORIZED_FLATTEN",
+        "reason": "AUTHORIZED_REDUCE_ONLY_LIMIT_FLATTEN",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P2_VENUE_ACCEPTED",
+        "reason": "VENUE_ACCEPTED",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P3_ORDER_FILLED",
+        "reason": "FILL_BOUND_TO_CLORDID",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P4_PRE_ACTION_NONZERO",
+        "reason": "PRE_TARGET_NONZERO",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P5_DELAYED_TARGET_ZERO",
+        "reason": "UNIQUE_EXPLICIT_POS_EQ_0_TARGET_ROW",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P6_CAUSAL_LINEAGE",
+        "reason": "CAUSAL_POSID_INSTID_LINEAGE_NOT_IDENTITY_EQUALITY",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P7_PENDING_EMPTY",
+        "reason": "REGULAR_PENDING_EMPTY_AFTER_DELAYED_ZERO",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P8_NO_FLIP",
+        "reason": "PAIRWISE_PRE_NONZERO_DELAYED_EXPLICIT_ZERO",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P9_NO_UNEXPECTED_RELATED_NONZERO",
+        "reason": "UNFILTERED_NO_RELATED_NONZERO_AFTER_DELAYED_ZERO",
+        "status": "PASS"
+      },
+      {
+        "proposition": "P10_TEMPORAL_ORDER",
+        "reason": "PRE_LT_SUBMIT_LT_DELAYED_ZERO",
+        "status": "PASS"
+      }
+    ],
+    "delayed_explicit_target_zero": true,
+    "full_conjunction_proven": true,
+    "instrument_id": "SUI-USD_UM_XPERP-310404",
+    "live_flatten_provability_proven": true,
+    "live_flatten_provability_status": "PROVEN",
+    "network_effect": "none",
+    "order_effect": "none",
+    "provenance_sha256": "c7a703ccd2ee80687032f4c4670335e1fbd24158b725d931984b2e1cea58f655",
+    "schema_version": "g12_delayed_posid_zero_row_full_conjunction.v1"
+  },
+  "EVALUATOR_PROVENANCE_SHA256": "c7a703ccd2ee80687032f4c4670335e1fbd24158b725d931984b2e1cea58f655",
+  "EXACT_REMAINING_G12_BLOCKER": "",
+  "FULL_G12_CONJUNCTION_CURRENTLY_PROVEN": true,
+  "G12_CLOSURE_CRITERIA_STATUS": "CLOSED",
+  "G12_STATUS": "CLOSED_LIVE_FLATTEN_PROVABILITY_PROVEN",
+  "LIVE_FLATTEN_PROVABILITY_PROVEN": true,
+  "NEXT_CANONICAL_POINTER": "SEPARATE_OWNER_GO_FOR_SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER",
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS_V1",
+  "P10_TEMPORAL_ORDER": "PASS",
+  "P1_AUTHORIZED_FLATTEN": "PASS",
+  "P2_VENUE_ACCEPTED": "PASS",
+  "P3_ORDER_FILLED": "PASS",
+  "P4_PRE_ACTION_NONZERO": "PASS",
+  "P5_CANONICAL_PERSIST": "PASS",
+  "P5_DELAYED_TARGET_ZERO": "PASS",
+  "P5_POSID": "3891385768441942017",
+  "P5_ZERO_OBSERVATION_IDENTITY": "72491eead579848819bf4d8f4548bcbba8eedb9b8dbddf6b3dc19d449fa1b852",
+  "P5_ZERO_TIMESTAMP": "2026-09-04T11:01:48Z",
+  "P6_CAUSAL_LINEAGE": "PASS",
+  "P7_ENDPOINT": "/api/v5/trade/orders-pending",
+  "P7_GET_PERFORMED": true,
+  "P7_OBSERVATION_IDENTITY": "ef2de9fe522305f24732535be0724d1c92c4f4b61779862b89f12e59ec047a42",
+  "P7_PENDING_EMPTY": "PASS",
+  "P7_REQUEST_TIMESTAMP": "2026-09-04T11:40:59Z",
+  "P8_NO_FLIP": "PASS",
+  "P9_ENDPOINT": "/api/v5/account/positions",
+  "P9_GET_PERFORMED": true,
+  "P9_NO_UNEXPECTED_RELATED_NONZERO": "PASS",
+  "P9_OBSERVATION_IDENTITY": "935bbac99bfd7583b405eaebb0d64a56ff6397b2f86b99c4738e8cb55d7ded4a",
+  "P9_REQUEST_TIMESTAMP": "2026-09-04T11:40:59Z",
+  "POST_USED": false,
+  "REMAINING_CONJUNCTS": [],
+  "RETRY_USED": false,
+  "SECTION_11_14_AUTHORIZED": false,
+  "TARGET_INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+  "TARGET_POSITION_ZERO_WINDOW_PROVEN": true,
+  "THIS_SLICE": "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS",
+  "TOTAL_NEW_HTTP_GET_COUNT": 2,
+  "TOTAL_WRITE_COUNT": 0
+}

@@ -1,0 +1,38 @@
+{
+  "AUTHORITY": "NONE",
+  "BODY_BYTES": 996,
+  "BODY_SHA256": "6ba982c388fdbcac8fcbfb51006cc1fafd2fa6db8a0ce63fb623f276b6389cdf",
+  "BODY_UTF8_EXACT": "{\"code\":\"0\",\"data\":[{\"accFillSz\":\"1\",\"algoClOrdId\":\"\",\"algoId\":\"\",\"attachAlgoClOrdId\":\"\",\"attachAlgoOrds\":[],\"avgPx\":\"0.748\",\"cTime\":\"1788537892511\",\"cancelSource\":\"\",\"cancelSourceReason\":\"\",\"category\":\"normal\",\"ccy\":\"USDC\",\"clOrdId\":\"ptokxeprod1fec928b1fec928b00\",\"fee\":\"-0.000374\",\"feeCcy\":\"USDC\",\"fillPx\":\"0.748\",\"fillSz\":\"1\",\"fillTime\":\"1788537892511\",\"instId\":\"SUI-USD_UM_XPERP-310404\",\"instType\":\"FUTURES\",\"isTpLimit\":\"false\",\"lever\":\"3\",\"linkedAlgoOrd\":{\"algoId\":\"\"},\"ordId\":\"3893505043080286208\",\"ordType\":\"limit\",\"outcome\":\"\",\"pnl\":\"0\",\"posSide\":\"net\",\"px\":\"0.7483\",\"pxType\":\"\",\"pxUsd\":\"\",\"pxVol\":\"\",\"quickMgnType\":\"\",\"rebate\":\"0\",\"rebateCcy\":\"USDC\",\"reduceOnly\":\"false\",\"side\":\"buy\",\"slOrdPx\":\"\",\"slTriggerPx\":\"\",\"slTriggerPxType\":\"\",\"slippage\":\"0\",\"source\":\"\",\"state\":\"filled\",\"stpId\":\"\",\"stpMode\":\"cancel_maker\",\"sz\":\"1\",\"tag\":\"\",\"tdMode\":\"cross\",\"tgtCcy\":\"\",\"tpOrdPx\":\"\",\"tpTriggerPx\":\"\",\"tpTriggerPxType\":\"\",\"tradeId\":\"1055244\",\"tradeQuoteCcy\":\"\",\"uTime\":\"1788537892511\"}],\"msg\":\"\"}",
+  "BODY_WAS_JSON_RESERIALIZED": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_FEE_OBSERVED_RAW_EXCHANGE_V1",
+  "DOCUMENT_ROLE": "FORENSIC_RAW_NOT_CANONICAL_NOT_ADJUDICATION",
+  "ELAPSED_SECONDS": 0.3075496670062421,
+  "ENDPOINT": "/api/v5/trade/order?instId=SUI-USD_UM_XPERP-310404&ordId=3893505043080286208",
+  "ENDPOINT_PATH": "/api/v5/trade/order",
+  "GET_ERROR": null,
+  "GET_ROLE": "ORDER_STATUS",
+  "HOST": "eea.okx.com",
+  "HTTP_STATUS": 200,
+  "METHOD": "GET",
+  "PARSE_ERROR": null,
+  "QUERY_PARAMETERS": {
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "ordId": "3893505043080286208"
+  },
+  "REDIRECT_FOLLOWED": false,
+  "REDIRECT_STATUS": null,
+  "REQUEST_TIME_UTC": "2026-09-04T17:38:13Z",
+  "RESPONSE_HEADERS_SAFE": {
+    "CF-RAY": "a35ec445c9622fee-MUC",
+    "Content-Length": "996",
+    "Content-Type": "application/json;charset=UTF-8",
+    "Date": "Fri, 04 Sep 2026 17:38:14 GMT",
+    "Server": "cloudflare",
+    "cf-cache-status": "DYNAMIC",
+    "x-content-type-options": "nosniff"
+  },
+  "RESPONSE_TIME_UTC": "2026-09-04T17:38:14Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "SEND_ATTEMPTED": true,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true
+}

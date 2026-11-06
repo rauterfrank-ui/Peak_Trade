@@ -1,0 +1,62 @@
+{
+  "base_head": "bcff47c08f2b51cf41c4226a06ada0ad96f0f605",
+  "captures": [
+    {
+      "private_root": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/equity-reconciliation-2026-11-03/K1_20261103T220219Z",
+      "manifest_sha256": "ddebc72fe37fafca83020902b8fd62d74b6ba6d551db15e3eecdc380a4f212a1",
+      "source_bindings_sha256": "fd86d11d0fb64a164af3b6bc529ae2054afaa27433bd5998c70d50c49ac05462",
+      "source_hashes_at_capture": {
+        "src/ops/governed_productive_account_equity_authority_producer_v1/real_equity_journal_v1.py": "a7be22afdd340f58a4c5ded81655d06b9839d0a28488ea6166ef479f8daf00ef",
+        "src/ops/okx_eea_private_account_state_runtime_v1/k1_source_v1.py": "85ada4ff830ae2d2f147c0770f30300a24ea6f479cac0421abe50b2a7632bd52",
+        "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py": "cbe5312a819bdba381e3aef21049291ca4d924ec0f9df2474cc777f8b7bbd75f",
+        "src/ops/okx_eea_private_account_state_runtime_v1/startup_source_v1.py": "a4287b10205daf2e8b75fa5d8c7365730e67471d20115b21e3e34715387e42a2",
+        "config/ops/treasury_k1_account_source_v1.json": "5bd54db9e842bd9d12defb80e8d9b64a917f64b811aefddc8e3115608bd98bcd"
+      },
+      "record_count": 10,
+      "started_at": "2026-11-03T22:02:19.454664+00:00",
+      "completed_at": "2026-11-03T22:02:21.217568+00:00",
+      "endpoint_paths": [
+        "/api/v5/account/config",
+        "/api/v5/account/balance",
+        "/api/v5/account/positions",
+        "/api/v5/account/bills-archive",
+        "/api/v5/account/bills-archive",
+        "/api/v5/account/bills",
+        "/api/v5/asset/balances",
+        "/api/v5/account/positions",
+        "/api/v5/account/balance",
+        "/api/v5/account/config"
+      ],
+      "raw_rows_and_account_values_in_repo": false
+    },
+    {
+      "private_root": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/equity-reconciliation-2026-11-03/FUNDING_20261103T220611Z",
+      "manifest_sha256": "d3bef1828e0beb79e9138473fbcd45f579c6110820a692733f99a8af8559b8cb",
+      "source_bindings_sha256": "4d2499e33c19971cc1f97ced5e92c1e08d55ee592a935e43ebe4f01844293695",
+      "source_hashes_at_capture": {
+        "src/ops/governed_productive_account_equity_authority_producer_v1/real_equity_journal_v1.py": "b16e1673e31ae29d3289f41a40a4a4dd1e7b3dd5a52d70aa1b074d50bde78f60",
+        "src/ops/okx_eea_private_account_state_runtime_v1/k1_source_v1.py": "5716010945310ee113b7910a0b16beaac913b8b0117a072dcb046cf3474ab391",
+        "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py": "cbe5312a819bdba381e3aef21049291ca4d924ec0f9df2474cc777f8b7bbd75f",
+        "src/ops/okx_eea_private_account_state_runtime_v1/startup_source_v1.py": "a4287b10205daf2e8b75fa5d8c7365730e67471d20115b21e3e34715387e42a2",
+        "config/ops/treasury_k1_account_source_v1.json": "5bd54db9e842bd9d12defb80e8d9b64a917f64b811aefddc8e3115608bd98bcd"
+      },
+      "record_count": 7,
+      "started_at": "2026-11-03T22:06:12.004877+00:00",
+      "completed_at": "2026-11-03T22:06:14.638991+00:00",
+      "endpoint_paths": [
+        "/api/v5/account/config",
+        "/api/v5/asset/balances",
+        "/api/v5/account/subtypes",
+        "/api/v5/asset/bills-history",
+        "/api/v5/asset/bills-history",
+        "/api/v5/asset/balances",
+        "/api/v5/account/config"
+      ],
+      "raw_rows_and_account_values_in_repo": false
+    }
+  ],
+  "total_private_gets": 17,
+  "orders_or_transfers": 0,
+  "capture_code_matches_saved_private_sources": true,
+  "later_journal_metadata_hardening": "Final attempt-count/source-binding metadata guards tested separately; dated capture source snapshots retained, no live rerun to reseal"
+}

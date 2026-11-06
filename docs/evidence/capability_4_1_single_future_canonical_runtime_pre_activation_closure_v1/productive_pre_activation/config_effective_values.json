@@ -1,0 +1,13 @@
+{
+  "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+  "config_path": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/config/config.toml",
+  "digest": "3dc0943242932c368141d29aa6ff5b6bcafbb6e35ba8569415ccaa79152a6e6c",
+  "enable_live_trading": false,
+  "live_authorized": false,
+  "max_open_positions": 1,
+  "orders_authorized": false,
+  "paper_execution_authorized": false,
+  "runtime_bridge_live_activated": false,
+  "testnet_authorized": false,
+  "volatility_numeric_max_age_enforcement": false
+}

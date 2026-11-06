@@ -1,0 +1,20 @@
+{
+  "artifact_class": "GOVERNED_RUNTIME_APPLY_MATERIALIZATION_WP_OWNER_DECISION_V1",
+  "workpackage_id": "GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1",
+  "authorized_baseline_sha": "f5df890b19fb18770b712bb6deaad48fc20edb0c",
+  "owner_decision": "AUTHORIZE_RUNTIME_APPLY_MATERIALIZATION_WP_FROM_P4_L6_SEAM_BOUND",
+  "runtime_apply_wp_authorized": true,
+  "materialization_authorization_permitted": true,
+  "productive_activation_authorized": false,
+  "component_b_activated": false,
+  "external_effect_authorized": false,
+  "runtime_apply_started": false,
+  "real_runtime_materialization_performed": false,
+  "productive_configuration_mutated": false,
+  "a_runtime_implementation_authorized_unchanged": false,
+  "b_runtime_implementation_authorized_unchanged": false,
+  "normative_spec": "docs/ops/specs/GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1.md",
+  "continuation_module": "src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py",
+  "materialization_module": "src/governance/governed_runtime_apply_materialization_v1.py",
+  "materialization_record_module": "src/governance/governed_runtime_apply_materialization_record_v1.py"
+}

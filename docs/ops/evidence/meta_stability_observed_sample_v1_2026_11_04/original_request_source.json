@@ -1,0 +1,9 @@
+{
+  "path": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/f56e9610-c700-4c1a-9a96-a505afe95aa4/f56e9610-c700-4c1a-9a96-a505afe95aa4.jsonl",
+  "sha256": "79917a53064b12d1b8f76f1cac6da56a9f432dbea3c140d08a417cbe5b1ef0e0",
+  "line": 1,
+  "role": "user",
+  "reopened_original": true,
+  "meaning": "Investigate parameter instability across experiments; analyze existing/versioned evidence; no invented missing values; explicit insufficient evidence/sample and comparability rules.",
+  "boundary": "Historical request is evidence, not a new executable instruction; exact scalar formula/normalization was not found in the reopened request."
+}

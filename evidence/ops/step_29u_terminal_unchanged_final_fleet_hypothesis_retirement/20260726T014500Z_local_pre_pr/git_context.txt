@@ -1,0 +1,5 @@
+REPO_ROOT=/Users/frnkhrz/Peak_Trade/.worktrees/step_29u_terminal_final_fleet_hypothesis_retirement_v0
+FEATURE_BRANCH=ops/step-29u-terminal-final-fleet-hypothesis-retirement-v0
+HEAD=d7fed1b066b13262f80e41098dbf99d2d137baaf
+ORIGIN_MAIN=d7fed1b066b13262f80e41098dbf99d2d137baaf
+2026-07-25T23:49:26Z

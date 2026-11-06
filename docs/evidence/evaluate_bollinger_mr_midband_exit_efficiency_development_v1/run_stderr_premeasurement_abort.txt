@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/frnkhrz/Peak_Trade_evaluate_bollinger_mr_midband_exit_efficiency_development_v1/scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v1.py", line 67, in <module>
+    raise SystemExit(main())
+  File "/Users/frnkhrz/Peak_Trade_evaluate_bollinger_mr_midband_exit_efficiency_development_v1/scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v1.py", line 58, in main
+    summary = run_development_evaluation(output_dir=args.output_dir, archive_root=archive)
+  File "/Users/frnkhrz/Peak_Trade_evaluate_bollinger_mr_midband_exit_efficiency_development_v1/src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v1/panel_runner_v1.py", line 386, in run_development_evaluation
+    reject_holdout_dataset_or_path(HOLDOUT_OPAQUE_ID)
+  File "/Users/frnkhrz/Peak_Trade_evaluate_bollinger_mr_midband_exit_efficiency_development_v1/src/research/bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v1.py", line 145, in reject_holdout_dataset_or_path
+    raise HypothesisPreregistrationError(f"HOLDOUT_PATH_OR_ID_REJECTED:{text}")
+src.research.bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v1.HypothesisPreregistrationError: HOLDOUT_PATH_OR_ID_REJECTED:offline_economic_reevaluation_sealed_long_panel_v1

@@ -1,0 +1,437 @@
+{
+  "concentration": {
+    "bottom5_instruments": [
+      {
+        "instrument": "FLOKI",
+        "member_id": "okx:linear_perpetual:FLOKI:USDT:USDT:perp",
+        "net_pnl": -757.0679357729499,
+        "trades": 14
+      },
+      {
+        "instrument": "APT",
+        "member_id": "okx:linear_perpetual:APT:USDT:USDT:perp",
+        "net_pnl": -704.9459200194595,
+        "trades": 13
+      },
+      {
+        "instrument": "FIL",
+        "member_id": "okx:linear_perpetual:FIL:USDT:USDT:perp",
+        "net_pnl": -652.529981892924,
+        "trades": 12
+      },
+      {
+        "instrument": "EGLD",
+        "member_id": "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+        "net_pnl": -599.8184639294086,
+        "trades": 11
+      },
+      {
+        "instrument": "STX",
+        "member_id": "okx:linear_perpetual:STX:USDT:USDT:perp",
+        "net_pnl": -599.8184639294085,
+        "trades": 11
+      }
+    ],
+    "ranked_by_net_pnl": [
+      {
+        "instrument": "AGLD",
+        "member_id": "okx:linear_perpetual:AGLD:USDT:USDT:perp",
+        "net_pnl": 0.0,
+        "trades": 0
+      },
+      {
+        "instrument": "IOST",
+        "member_id": "okx:linear_perpetual:IOST:USDT:USDT:perp",
+        "net_pnl": 0.0,
+        "trades": 0
+      },
+      {
+        "instrument": "SUI",
+        "member_id": "okx:linear_perpetual:SUI:USDT:USDT:perp",
+        "net_pnl": 0.0,
+        "trades": 0
+      },
+      {
+        "instrument": "TRX",
+        "member_id": "okx:linear_perpetual:TRX:USDT:USDT:perp",
+        "net_pnl": 0.0,
+        "trades": 0
+      },
+      {
+        "instrument": "USDC",
+        "member_id": "okx:linear_perpetual:USDC:USDT:USDT:perp",
+        "net_pnl": 0.0,
+        "trades": 0
+      },
+      {
+        "instrument": "IOTA",
+        "member_id": "okx:linear_perpetual:IOTA:USDT:USDT:perp",
+        "net_pnl": -55.92499999999998,
+        "trades": 1
+      },
+      {
+        "instrument": "ORDI",
+        "member_id": "okx:linear_perpetual:ORDI:USDT:USDT:perp",
+        "net_pnl": -55.925,
+        "trades": 1
+      },
+      {
+        "instrument": "XLM",
+        "member_id": "okx:linear_perpetual:XLM:USDT:USDT:perp",
+        "net_pnl": -55.925000000000004,
+        "trades": 1
+      },
+      {
+        "instrument": "UNI",
+        "member_id": "okx:linear_perpetual:UNI:USDT:USDT:perp",
+        "net_pnl": -56.07499999999961,
+        "trades": 1
+      },
+      {
+        "instrument": "COMP",
+        "member_id": "okx:linear_perpetual:COMP:USDT:USDT:perp",
+        "net_pnl": -56.07499999999964,
+        "trades": 1
+      },
+      {
+        "instrument": "ALGO",
+        "member_id": "okx:linear_perpetual:ALGO:USDT:USDT:perp",
+        "net_pnl": -56.07499999999969,
+        "trades": 1
+      },
+      {
+        "instrument": "BCH",
+        "member_id": "okx:linear_perpetual:BCH:USDT:USDT:perp",
+        "net_pnl": -56.0749999999997,
+        "trades": 1
+      },
+      {
+        "instrument": "NEO",
+        "member_id": "okx:linear_perpetual:NEO:USDT:USDT:perp",
+        "net_pnl": -56.07499999999975,
+        "trades": 1
+      },
+      {
+        "instrument": "MASK",
+        "member_id": "okx:linear_perpetual:MASK:USDT:USDT:perp",
+        "net_pnl": -56.075,
+        "trades": 1
+      },
+      {
+        "instrument": "SUSHI",
+        "member_id": "okx:linear_perpetual:SUSHI:USDT:USDT:perp",
+        "net_pnl": -56.075,
+        "trades": 1
+      },
+      {
+        "instrument": "API3",
+        "member_id": "okx:linear_perpetual:API3:USDT:USDT:perp",
+        "net_pnl": -111.68640056249974,
+        "trades": 2
+      },
+      {
+        "instrument": "ETC",
+        "member_id": "okx:linear_perpetual:ETC:USDT:USDT:perp",
+        "net_pnl": -111.68640056249974,
+        "trades": 2
+      },
+      {
+        "instrument": "1INCH",
+        "member_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+        "net_pnl": -111.8355594374993,
+        "trades": 2
+      },
+      {
+        "instrument": "DOGE",
+        "member_id": "okx:linear_perpetual:DOGE:USDT:USDT:perp",
+        "net_pnl": -111.83555943749931,
+        "trades": 2
+      },
+      {
+        "instrument": "ETH",
+        "member_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+        "net_pnl": -111.83555943749947,
+        "trades": 2
+      },
+      {
+        "instrument": "CRO",
+        "member_id": "okx:linear_perpetual:CRO:USDT:USDT:perp",
+        "net_pnl": -111.83555943749974,
+        "trades": 2
+      },
+      {
+        "instrument": "LUNA",
+        "member_id": "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+        "net_pnl": -111.83555943749974,
+        "trades": 2
+      },
+      {
+        "instrument": "ENS",
+        "member_id": "okx:linear_perpetual:ENS:USDT:USDT:perp",
+        "net_pnl": -111.83555943749977,
+        "trades": 2
+      },
+      {
+        "instrument": "PEPE",
+        "member_id": "okx:linear_perpetual:PEPE:USDT:USDT:perp",
+        "net_pnl": -167.283441537953,
+        "trades": 3
+      },
+      {
+        "instrument": "BNB",
+        "member_id": "okx:linear_perpetual:BNB:USDT:USDT:perp",
+        "net_pnl": -167.28344153795342,
+        "trades": 3
+      },
+      {
+        "instrument": "IMX",
+        "member_id": "okx:linear_perpetual:IMX:USDT:USDT:perp",
+        "net_pnl": -167.28344153795348,
+        "trades": 3
+      },
+      {
+        "instrument": "ATOM",
+        "member_id": "okx:linear_perpetual:ATOM:USDT:USDT:perp",
+        "net_pnl": -167.28344153795354,
+        "trades": 3
+      },
+      {
+        "instrument": "MINA",
+        "member_id": "okx:linear_perpetual:MINA:USDT:USDT:perp",
+        "net_pnl": -167.28344153795368,
+        "trades": 3
+      },
+      {
+        "instrument": "BLUR",
+        "member_id": "okx:linear_perpetual:BLUR:USDT:USDT:perp",
+        "net_pnl": -167.2834415379537,
+        "trades": 3
+      },
+      {
+        "instrument": "THETA",
+        "member_id": "okx:linear_perpetual:THETA:USDT:USDT:perp",
+        "net_pnl": -167.28344153795388,
+        "trades": 3
+      },
+      {
+        "instrument": "ONT",
+        "member_id": "okx:linear_perpetual:ONT:USDT:USDT:perp",
+        "net_pnl": -222.12541591793894,
+        "trades": 4
+      },
+      {
+        "instrument": "CFX",
+        "member_id": "okx:linear_perpetual:CFX:USDT:USDT:perp",
+        "net_pnl": -222.42039963952902,
+        "trades": 4
+      },
+      {
+        "instrument": "DYDX",
+        "member_id": "okx:linear_perpetual:DYDX:USDT:USDT:perp",
+        "net_pnl": -222.42039963952917,
+        "trades": 4
+      },
+      {
+        "instrument": "AR",
+        "member_id": "okx:linear_perpetual:AR:USDT:USDT:perp",
+        "net_pnl": -222.42039963952934,
+        "trades": 4
+      },
+      {
+        "instrument": "MAGIC",
+        "member_id": "okx:linear_perpetual:MAGIC:USDT:USDT:perp",
+        "net_pnl": -222.42039963952936,
+        "trades": 4
+      },
+      {
+        "instrument": "XTZ",
+        "member_id": "okx:linear_perpetual:XTZ:USDT:USDT:perp",
+        "net_pnl": -222.4203996395295,
+        "trades": 4
+      },
+      {
+        "instrument": "LINK",
+        "member_id": "okx:linear_perpetual:LINK:USDT:USDT:perp",
+        "net_pnl": -276.9548476481789,
+        "trades": 5
+      },
+      {
+        "instrument": "LPT",
+        "member_id": "okx:linear_perpetual:LPT:USDT:USDT:perp",
+        "net_pnl": -277.1015135545456,
+        "trades": 5
+      },
+      {
+        "instrument": "LDO",
+        "member_id": "okx:linear_perpetual:LDO:USDT:USDT:perp",
+        "net_pnl": -277.2481772485501,
+        "trades": 5
+      },
+      {
+        "instrument": "HBAR",
+        "member_id": "okx:linear_perpetual:HBAR:USDT:USDT:perp",
+        "net_pnl": -277.24817724855046,
+        "trades": 5
+      },
+      {
+        "instrument": "GMX",
+        "member_id": "okx:linear_perpetual:GMX:USDT:USDT:perp",
+        "net_pnl": -277.2481772485511,
+        "trades": 5
+      },
+      {
+        "instrument": "ICP",
+        "member_id": "okx:linear_perpetual:ICP:USDT:USDT:perp",
+        "net_pnl": -331.62266681728795,
+        "trades": 6
+      },
+      {
+        "instrument": "ARB",
+        "member_id": "okx:linear_perpetual:ARB:USDT:USDT:perp",
+        "net_pnl": -331.7685080946289,
+        "trades": 6
+      },
+      {
+        "instrument": "LTC",
+        "member_id": "okx:linear_perpetual:LTC:USDT:USDT:perp",
+        "net_pnl": -331.76850809462917,
+        "trades": 6
+      },
+      {
+        "instrument": "CORE",
+        "member_id": "okx:linear_perpetual:CORE:USDT:USDT:perp",
+        "net_pnl": -331.7685080946294,
+        "trades": 6
+      },
+      {
+        "instrument": "QTUM",
+        "member_id": "okx:linear_perpetual:QTUM:USDT:USDT:perp",
+        "net_pnl": -331.7685080946298,
+        "trades": 6
+      },
+      {
+        "instrument": "APE",
+        "member_id": "okx:linear_perpetual:APE:USDT:USDT:perp",
+        "net_pnl": -385.8380927131096,
+        "trades": 7
+      },
+      {
+        "instrument": "WOO",
+        "member_id": "okx:linear_perpetual:WOO:USDT:USDT:perp",
+        "net_pnl": -385.9831161854873,
+        "trades": 7
+      },
+      {
+        "instrument": "GRT",
+        "member_id": "okx:linear_perpetual:GRT:USDT:USDT:perp",
+        "net_pnl": -385.98311618548803,
+        "trades": 7
+      },
+      {
+        "instrument": "OP",
+        "member_id": "okx:linear_perpetual:OP:USDT:USDT:perp",
+        "net_pnl": -385.9831161854883,
+        "trades": 7
+      },
+      {
+        "instrument": "CHZ",
+        "member_id": "okx:linear_perpetual:CHZ:USDT:USDT:perp",
+        "net_pnl": -385.9831161854885,
+        "trades": 7
+      },
+      {
+        "instrument": "ADA",
+        "member_id": "okx:linear_perpetual:ADA:USDT:USDT:perp",
+        "net_pnl": -385.98311618548894,
+        "trades": 7
+      },
+      {
+        "instrument": "XRP",
+        "member_id": "okx:linear_perpetual:XRP:USDT:USDT:perp",
+        "net_pnl": -439.89371586147706,
+        "trades": 8
+      },
+      {
+        "instrument": "RVN",
+        "member_id": "okx:linear_perpetual:RVN:USDT:USDT:perp",
+        "net_pnl": -439.8937158614779,
+        "trades": 8
+      },
+      {
+        "instrument": "ETHW",
+        "member_id": "okx:linear_perpetual:ETHW:USDT:USDT:perp",
+        "net_pnl": -493.35861025552225,
+        "trades": 9
+      },
+      {
+        "instrument": "WLD",
+        "member_id": "okx:linear_perpetual:WLD:USDT:USDT:perp",
+        "net_pnl": -493.35861025552265,
+        "trades": 9
+      },
+      {
+        "instrument": "MANA",
+        "member_id": "okx:linear_perpetual:MANA:USDT:USDT:perp",
+        "net_pnl": -493.50201184978425,
+        "trades": 9
+      },
+      {
+        "instrument": "GMT",
+        "member_id": "okx:linear_perpetual:GMT:USDT:USDT:perp",
+        "net_pnl": -546.8096993183358,
+        "trades": 10
+      },
+      {
+        "instrument": "SOL",
+        "member_id": "okx:linear_perpetual:SOL:USDT:USDT:perp",
+        "net_pnl": -546.8096993183368,
+        "trades": 10
+      },
+      {
+        "instrument": "YGG",
+        "member_id": "okx:linear_perpetual:YGG:USDT:USDT:perp",
+        "net_pnl": -599.6766660748985,
+        "trades": 11
+      },
+      {
+        "instrument": "STX",
+        "member_id": "okx:linear_perpetual:STX:USDT:USDT:perp",
+        "net_pnl": -599.8184639294085,
+        "trades": 11
+      },
+      {
+        "instrument": "EGLD",
+        "member_id": "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+        "net_pnl": -599.8184639294086,
+        "trades": 11
+      },
+      {
+        "instrument": "FIL",
+        "member_id": "okx:linear_perpetual:FIL:USDT:USDT:perp",
+        "net_pnl": -652.529981892924,
+        "trades": 12
+      },
+      {
+        "instrument": "APT",
+        "member_id": "okx:linear_perpetual:APT:USDT:USDT:perp",
+        "net_pnl": -704.9459200194595,
+        "trades": 13
+      },
+      {
+        "instrument": "FLOKI",
+        "member_id": "okx:linear_perpetual:FLOKI:USDT:USDT:perp",
+        "net_pnl": -757.0679357729499,
+        "trades": 14
+      }
+    ],
+    "top1_abs_share_of_abs_total": 0.0,
+    "top1_instrument": null,
+    "top1_pnl_share": 0.0,
+    "top5_instruments": [],
+    "top5_pnl_share": 0.0
+  },
+  "ex_top1_net_pnl": -256.73280650393065,
+  "ex_top1_net_return": -0.02567328065039287,
+  "ex_top5_net_pnl": -256.73280650393065,
+  "ex_top5_net_return": -0.02567328065039287
+}

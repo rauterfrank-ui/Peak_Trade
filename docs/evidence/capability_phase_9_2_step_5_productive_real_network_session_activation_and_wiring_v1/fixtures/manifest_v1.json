@@ -1,0 +1,91 @@
+{
+  "binding_matrix": {
+    "authorization_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+    "binding_config_digest": "42772ed8339bf35912433a9bffd021f9f027acaa37617decdece84b6e780efb7",
+    "capability_scope": "PHASE_9_2_STEP_5_PRODUCTIVE_REAL_NETWORK_SESSION_ACTIVATION_AND_WIRING_V1",
+    "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+    "confirm_token_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+    "maximum_seconds": 21600,
+    "minimum_seconds": 7200,
+    "planned_seconds": 7200,
+    "repository_sha": "d42ac0d890e4af00d14fc40828c96ac5d5504660",
+    "session_contract_digest": "074b04142e0ffd2d1ded56527c63ec7d6ccb3c9abd25f86017cd873b6d5a7d17"
+  },
+  "call_graph": {
+    "after": [
+      "Step-5 Execution CLI",
+      "Step-5 Activation + Wiring gate",
+      "ephemeral NETWORK_SESSION_GO (parameter-only, default false)",
+      "SHA / session-contract / binding-config digest binding",
+      "capability + authorization + confirm-token scope binding",
+      "Step-4-pattern authorization adapter (validate; consume deferred)",
+      "Step-4-pattern hidden-PTY confirm-token adapter (validate; consume deferred)",
+      "canonical Public-MD fetcher factory wired",
+      "bounded prolonged Public-MD executor (later session only)",
+      "Public-MD GET-only boundary",
+      "evidence + verifier",
+      "process cleanup"
+    ],
+    "before": [
+      "Step-5 Execution CLI execute-governed-session",
+      "digest/auth/token validate-only",
+      "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+      "NETWORK_SESSION_ALLOWED_FALSE",
+      "REAL_NETWORK_FETCHER_NOT_WIRED_IN_THIS_CAPABILITY",
+      "FAIL_CLOSED_NO_NETWORK_NO_CONSUME"
+    ],
+    "missing_edges_before": [
+      "REAL_PUBLIC_MD_FETCHER_WIRE_INTO_STEP5_EXECUTOR",
+      "EPHEMERAL_NETWORK_SESSION_GO_GATE",
+      "STEP4_PATTERN_ACTIVATION_PERMIT_FOR_STEP5"
+    ]
+  },
+  "capability_id": "PHASE_9_2_STEP_5_PRODUCTIVE_REAL_NETWORK_SESSION_ACTIVATION_AND_WIRING_V1",
+  "claims": {
+    "AUTHORIZATION_CONSUMED": false,
+    "AUTHORIZATION_ISSUED": false,
+    "AUTH_HEADER_REACHABLE": false,
+    "BINDING_CONFIG_DIGEST": "42772ed8339bf35912433a9bffd021f9f027acaa37617decdece84b6e780efb7",
+    "CANONICAL_PUBLIC_MD_FETCHER_REUSED": true,
+    "CHILD_PROCESSES_REMAINING": 0,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CONFIRM_TOKEN_ISSUED": false,
+    "CORE_LOGIC_CHANGED": false,
+    "EPHEMERAL_NETWORK_SESSION_GO_BOUND": true,
+    "EXCHANGE_CREDENTIAL_PATH_REACHABLE": false,
+    "FAILURE_INJECTION_OK": true,
+    "MAX_SESSION_DURATION_SECONDS": 21600,
+    "MINIMUM_SUCCESSFUL_WALLCLOCK_SECONDS": 7200,
+    "NETWORK_SESSION_GO_DEFAULT_FALSE": true,
+    "NETWORK_SESSION_GO_PERSISTED": false,
+    "NETWORK_SESSION_STARTED": false,
+    "NO_ORDER_BOUNDARY_PROVEN": true,
+    "ORDER_SUBMIT_PATH_REACHABLE": false,
+    "PARALLEL_AUTHORIZATION_MODEL_CREATED": false,
+    "PARALLEL_NETWORK_RUNNER_CREATED": false,
+    "PARALLEL_TOKEN_MODEL_CREATED": false,
+    "PLANNED_SESSION_DURATION_SECONDS": 7200,
+    "PRIVATE_ENDPOINT_REACHABLE": false,
+    "PROCESS_CLEANUP_PROVEN": true,
+    "PUBLIC_MD_FETCHER_PRODUCTIVELY_WIRED": true,
+    "PUBLIC_MD_GET_ONLY_BOUNDARY_PROVEN": true,
+    "READY_FOR_SEPARATE_GOVERNED_STEP5_SESSION": true,
+    "SECRET_HYGIENE_PROVEN": true,
+    "SESSION_CONTRACT_DIGEST": "074b04142e0ffd2d1ded56527c63ec7d6ccb3c9abd25f86017cd873b6d5a7d17",
+    "SIMULATED_FETCHER_ONCE_OK": true,
+    "STEP4_AUTHORIZATION_PATTERN_REUSED": true,
+    "STEP4_CONFIRM_TOKEN_PATTERN_REUSED": true,
+    "STEP5_ACTIVATION_WIRING_PACKAGE_CREATED": true
+  },
+  "failure_injection_ok": true,
+  "gate_truth_table": {
+    "default_without_go": false,
+    "env_cannot_enable": true,
+    "fetcher_once_on_simulated_gate": true,
+    "full_simulated_gate": true
+  },
+  "network_session_started": false,
+  "repository_sha": "d42ac0d890e4af00d14fc40828c96ac5d5504660",
+  "schema": "phase_9_2_step_5_productive_real_network_session_activation_and_wiring.v1",
+  "simulated_fetcher_once_ok": true
+}

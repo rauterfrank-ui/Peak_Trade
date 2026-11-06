@@ -1,0 +1,243 @@
+{
+  "contract": "ghosv_execution_bounded_offline_observer.v1",
+  "current_baseline_sha": "f5f76a4d4480089110f47078a56eb53dcd59ac2c",
+  "detected_at": "2026-10-15T22:39:43+00:00",
+  "disclaimer": {
+    "cli_exit_not_traffic_green": true,
+    "observer_run_success_not_execution_green": true
+  },
+  "evidence_consistency": "PASS",
+  "execution_lifecycle_completeness": "POST_SUBMISSION_WITNESSED",
+  "ghosv_pipeline_error": null,
+  "ghosv_result": {
+    "adapter_mode": "DISABLED",
+    "adapter_productive_side_effects": false,
+    "findings": [
+      {
+        "check_id": "ORDER_IDENTITY_INTEGRITY",
+        "evidence_refs": [
+          "3c8bf8639ad6d5a6b96907044c0c6cde",
+          "9654b48578d65f3ea065b6335c669476",
+          "dcca3979d97171ac86e6d8bedc96bbcf",
+          "gc-obs-5d54e300324e8cfe4b344134",
+          "gc-post-5500093224d046422ab1d576",
+          "gc-obs-a0d18679ddbc69580cce9ceb",
+          "gc-post-8323ed06f8390f09f7040c0f",
+          "gc-obs-b7fad7aee504a4050f014c6e",
+          "gc-post-6947a08ae9c2c63a7c7f28cb",
+          "gc-obs-c74032492d2ea77ad27a600e",
+          "gc-post-bf1ff837cfd9a2a4ed504723"
+        ],
+        "outcome": "UNKNOWN",
+        "reason": "IDENTITY_UNKNOWN",
+        "traffic": "YELLOW"
+      },
+      {
+        "check_id": "ORDER_ACK_SEMANTICS",
+        "evidence_refs": [
+          "3c8bf8639ad6d5a6b96907044c0c6cde",
+          "9654b48578d65f3ea065b6335c669476",
+          "dcca3979d97171ac86e6d8bedc96bbcf",
+          "gc-obs-5d54e300324e8cfe4b344134",
+          "gc-post-5500093224d046422ab1d576",
+          "gc-obs-a0d18679ddbc69580cce9ceb",
+          "gc-post-8323ed06f8390f09f7040c0f",
+          "gc-obs-b7fad7aee504a4050f014c6e",
+          "gc-post-6947a08ae9c2c63a7c7f28cb",
+          "gc-obs-c74032492d2ea77ad27a600e",
+          "gc-post-bf1ff837cfd9a2a4ed504723"
+        ],
+        "outcome": "UNKNOWN",
+        "reason": "ACK_NOT_OBSERVED",
+        "traffic": "YELLOW"
+      },
+      {
+        "check_id": "FILL_IDENTITY_INTEGRITY",
+        "evidence_refs": [
+          "3c8bf8639ad6d5a6b96907044c0c6cde",
+          "9654b48578d65f3ea065b6335c669476",
+          "dcca3979d97171ac86e6d8bedc96bbcf",
+          "gc-obs-5d54e300324e8cfe4b344134",
+          "gc-post-5500093224d046422ab1d576",
+          "gc-obs-a0d18679ddbc69580cce9ceb",
+          "gc-post-8323ed06f8390f09f7040c0f",
+          "gc-obs-b7fad7aee504a4050f014c6e",
+          "gc-post-6947a08ae9c2c63a7c7f28cb",
+          "gc-obs-c74032492d2ea77ad27a600e",
+          "gc-post-bf1ff837cfd9a2a4ed504723"
+        ],
+        "outcome": "UNKNOWN",
+        "reason": "NO_FILL_EVIDENCE",
+        "traffic": "YELLOW"
+      },
+      {
+        "check_id": "FILL_QUANTITY_INTEGRITY",
+        "evidence_refs": [
+          "3c8bf8639ad6d5a6b96907044c0c6cde",
+          "9654b48578d65f3ea065b6335c669476",
+          "dcca3979d97171ac86e6d8bedc96bbcf",
+          "gc-obs-5d54e300324e8cfe4b344134",
+          "gc-post-5500093224d046422ab1d576",
+          "gc-obs-a0d18679ddbc69580cce9ceb",
+          "gc-post-8323ed06f8390f09f7040c0f",
+          "gc-obs-b7fad7aee504a4050f014c6e",
+          "gc-post-6947a08ae9c2c63a7c7f28cb",
+          "gc-obs-c74032492d2ea77ad27a600e",
+          "gc-post-bf1ff837cfd9a2a4ed504723"
+        ],
+        "outcome": "UNKNOWN",
+        "reason": "UNKNOWN",
+        "traffic": "YELLOW"
+      },
+      {
+        "check_id": "POSITION_ATTRIBUTION",
+        "evidence_refs": [
+          "3c8bf8639ad6d5a6b96907044c0c6cde",
+          "9654b48578d65f3ea065b6335c669476",
+          "dcca3979d97171ac86e6d8bedc96bbcf",
+          "gc-obs-5d54e300324e8cfe4b344134",
+          "gc-post-5500093224d046422ab1d576",
+          "gc-obs-a0d18679ddbc69580cce9ceb",
+          "gc-post-8323ed06f8390f09f7040c0f",
+          "gc-obs-b7fad7aee504a4050f014c6e",
+          "gc-post-6947a08ae9c2c63a7c7f28cb",
+          "gc-obs-c74032492d2ea77ad27a600e",
+          "gc-post-bf1ff837cfd9a2a4ed504723"
+        ],
+        "outcome": "UNKNOWN",
+        "reason": "MISSING_POSITION_EVIDENCE",
+        "traffic": "YELLOW"
+      },
+      {
+        "check_id": "RECONCILIATION_CONSISTENCY",
+        "evidence_refs": [
+          "3c8bf8639ad6d5a6b96907044c0c6cde"
+        ],
+        "outcome": "PASS",
+        "reason": "RECON_MATCH",
+        "traffic": "GREEN"
+      }
+    ],
+    "incidents": [],
+    "ingest_rejected": [],
+    "package_id": "GHOSV_BOUNDED_CONTEXT_V1",
+    "schema_version": "ghosv_bounded_context.v1",
+    "traffic_by_trade": [
+      [
+        "e0ac0f0955d15a0b",
+        "YELLOW"
+      ]
+    ],
+    "traffic_overall": "YELLOW"
+  },
+  "ghosv_traffic_light": "YELLOW",
+  "identity_provenance_coverage": {
+    "input_bytes_total": 10102,
+    "input_file_count": 8,
+    "trade_id": "e0ac0f0955d15a0b"
+  },
+  "missing_evidence_classes": [
+    "EXECUTION_PREPARATION",
+    "VENUE_ACK",
+    "FILL",
+    "FULL_FILL",
+    "PARTIAL_FILL",
+    "POSITION"
+  ],
+  "observer_entrypoint": "src.ops.ghosv_bounded_context_v1.execution_bounded_offline_observer_v1",
+  "observer_invocation_mode": "OPERATOR_STARTED_ONE_SHOT",
+  "observer_run_status": "OBSERVER_RUN_SUCCESS",
+  "observer_run_success": true,
+  "safety_adapter_status": {
+    "adapter_mode": "DISABLED",
+    "external_post_count": 0,
+    "productive_runtime_activation": false,
+    "safety_escalation_enabled": false
+  },
+  "selected_evidence_sources": {
+    "final_order_envelope": "NOT_SELECTED",
+    "g004_post_attempt_store_root": "NOT_SELECTED",
+    "governed_cycle_evidence_dir": "PRESENT",
+    "pre_external_report": "PRESENT",
+    "recon_dir": "PRESENT"
+  },
+  "source_consistency": {
+    "cross_file": {
+      "consistency": "PASS",
+      "details": {
+        "cross_file_snapshot_guarantee": "NONE",
+        "cycle_binding_digest": "afe55fe7ab5e9934f3bb19cdde32b7ac0d78bd370e3cc05106f0ad0169705a1b",
+        "repository_root": "/Users/frnkhrz/Peak_Trade",
+        "resolved_evidence_root": "/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T190205Z_ghv_l10_integrated_natural_enter_pre_external_v1",
+        "run_cycle_binding_witness": "EXPLICIT_PERSISTED_WITNESSES"
+      },
+      "presence": "PRESENT",
+      "reason_codes": [
+        "CROSS_FILE_CHECKS_OK"
+      ],
+      "selected": true,
+      "source_id": "cross_file"
+    },
+    "cross_file_snapshot_guarantee": "NONE",
+    "evidence_consistency": "PASS",
+    "g004_consistency": "NOT_SELECTED",
+    "guard_details": {
+      "g004": {
+        "consistency": "NOT_APPLICABLE",
+        "details": {},
+        "presence": "NOT_SELECTED",
+        "reason_codes": [],
+        "selected": false,
+        "source_id": "g004_disposition"
+      },
+      "ledger": {
+        "consistency": "PASS",
+        "details": {
+          "binding_digest": "afe55fe7ab5e9934f3bb19cdde32b7ac0d78bd370e3cc05106f0ad0169705a1b",
+          "ledger_path": "/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T190205Z_ghv_l10_integrated_natural_enter_pre_external_v1/cycles/48cf857337ef5f1f8249146ff607c24787afe0ec2124b406b6cb4321801c4cd5/s5/governed_cycle_orchestrator_ledger_v1.json",
+          "native_id": "DOS-USDT-SWAP",
+          "state": "COMPLETED"
+        },
+        "presence": "PRESENT",
+        "reason_codes": [
+          "LEDGER_JSON_OK"
+        ],
+        "selected": true,
+        "source_id": "governed_cycle_ledger"
+      },
+      "recon": {
+        "consistency": "PASS",
+        "details": {
+          "manifest_path": "/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/productivity/runtime_state/recon/MANIFEST.sha256",
+          "ok": true
+        },
+        "presence": "PRESENT",
+        "reason_codes": [
+          "MANIFEST_VERIFIED"
+        ],
+        "selected": true,
+        "source_id": "recon_portfolio"
+      },
+      "transitions": {
+        "consistency": "PASS",
+        "details": {
+          "duplicate_adjacent_transition": false,
+          "malformed_line_numbers": [],
+          "post_count_conflict": false,
+          "sequence_anomaly": false,
+          "transition_count": 3,
+          "truncated_jsonl": false
+        },
+        "presence": "PRESENT",
+        "reason_codes": [
+          "TRANSITIONS_OK"
+        ],
+        "selected": true,
+        "source_id": "governed_cycle_transitions"
+      }
+    },
+    "ledger_read_consistency": "PASS",
+    "recon_manifest_validation": "PASS",
+    "transitions_consistency": "PASS"
+  }
+}

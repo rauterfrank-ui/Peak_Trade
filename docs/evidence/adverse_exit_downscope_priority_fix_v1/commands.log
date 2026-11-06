@@ -1,0 +1,37 @@
+# Commands log — adverse_exit_downscope_priority_fix_v1
+
+## Phase A
+gh pr view 5339 --json state,mergedAt,mergeCommit,url,headRefName
+# MERGED squash @ d740ca27689bb2331d2a6d68e1b52ff748bb2adf
+
+## Focused tests (final)
+.venv/bin/python -m pytest \
+  tests/trading/master_v2/test_adverse_exit_downscope_priority_v1.py \
+  tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py \
+  tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py \
+  tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py \
+  tests/research/test_scope_adverse_exit_and_reversal_preparation_narrow_reuse_first_rewire_v0.py \
+  tests/research/test_adverse_scope_exit_reversal_preparation_narrow_reuse_first_rewire_v0.py \
+  tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_narrow_rewire_v0.py \
+  tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py \
+  tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py \
+  -q --tb=line
+# RESULT: 133 passed
+
+.venv/bin/python -m pytest tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py -q
+# RESULT: 9 passed
+
+## Gates
+.venv/bin/ruff format --check <changed py>
+.venv/bin/ruff check <changed py>
+# RESULT: All checks passed
+
+git diff --check
+# RESULT: empty (PASS)
+
+## Digests (surface contract)
+shasum -a 256 src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+# f99f3859dc9f6934be170884356e91c17a224023092f8ba3026085d8b76cb928
+shasum -a 256 src/trading/master_v2/deterministic_scope_event_generator_v1.py
+# b562677ac56b7143af25bd7f619fc435ad0359c5ed80bed7631b2793e40a2a55
+# Also refreshed mv2_research_wiring digest to post-#5338 main truth (41cc8116…)

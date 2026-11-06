@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/.peak_trade_worktrees/step-29u-economic-failure-closeout-recovery-v0
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 56 items
+
+tests/ops/test_step_29u_economic_failure_closeout_recovery_decision_v0.py . [  1%]
+............                                                             [ 23%]
+tests/ops/test_step_29u_economic_validity_readiness_v0.py .............  [ 46%]
+tests/ops/test_step_29u_activation_eligibility_inventory_v0.py ......... [ 62%]
+.....................                                                    [100%]
+
+============================== 56 passed in 4.42s ==============================

@@ -1,0 +1,42 @@
+[
+  {
+    "asset": "ETH",
+    "canonicalization_success": true,
+    "generator_success": true,
+    "generator_errors": [],
+    "validator_errors": []
+  },
+  {
+    "asset": "BTC",
+    "canonicalization_success": true,
+    "generator_success": false,
+    "generator_errors": [
+      "OUTPUT_VALIDATION_FAILED"
+    ],
+    "validator_errors": [
+      "BITCOIN_MEMBER_REJECTED"
+    ]
+  },
+  {
+    "asset": "XBT",
+    "canonicalization_success": true,
+    "generator_success": false,
+    "generator_errors": [
+      "OUTPUT_VALIDATION_FAILED"
+    ],
+    "validator_errors": [
+      "BITCOIN_MEMBER_REJECTED"
+    ]
+  },
+  {
+    "asset": "WBTC",
+    "canonicalization_success": true,
+    "generator_success": false,
+    "generator_errors": [
+      "OUTPUT_VALIDATION_FAILED"
+    ],
+    "validator_errors": [
+      "BITCOIN_MEMBER_REJECTED"
+    ]
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "mission": "OKX_MAXIMUM_OBSERVATION_WORKSTATION_V6",
+  "timestamp_utc": "2026-10-16T07:05:35Z",
+  "evidence_path": "evidence/ops/okx_maximum_observation_workstation_v6/20261016T070435Z",
+  "SAFARI_ACCESS": {
+    "initial_javascript_apple_events": "BLOCKED_ERR8",
+    "activation_attempt": "FAIL",
+    "activation_failure_reason": "System Events Accessibility (-10006/-1728); Safari-Einstellungen/Entwickler-Menü nicht bedienbar aus Cursor-Shell; keine wirksame Plist-Aktivierung (V5/V6 policy)",
+    "read_methods_used": ["Safari AppleScript URL", "Safari AppleScript document name", "screencapture window"],
+    "dom_configuration": "NOT_AVAILABLE_WITHOUT_JS"
+  },
+  "OKX_SESSION_PRESERVED": true,
+  "FUNCTION_INVENTORY_COMPLETED": "PARTIAL_VISUAL_AND_PRIOR_V5",
+  "workspaces": {
+    "WORKSPACE_1_ID": "1006418239457071104",
+    "WORKSPACE_1_STATUS": "PRESERVED_UNCHANGED_BY_AGENT; URL load shows 3-chart multi (BTC XPERP 5m + 2x BTC/USDC 15m); no orderbook/T&S/positions panels visible in screenshot",
+    "WORKSPACE_2_ID": "1031216400532770816",
+    "WORKSPACE_2_STATUS": "NOT_CONFIGURED_IN_V6; URL-only navigation to hash 103121 renders same 3-chart layout as WS1 in screenshots — sidebar slot click required for reliable switch (not performed without safe automation)",
+    "WORKSPACE_3_ID": "UNKNOWN",
+    "WORKSPACE_3_STATUS": "URL without hash resolved to workspaceId=1006418239457071104; prior V5 state for slot 3 unverified"
+  },
+  "visibility_from_screenshots": {
+    "ORDERBOOK_VISIBLE": false,
+    "TIME_AND_SALES_VISIBLE": false,
+    "POSITIONS_VISIBLE": false,
+    "ORDERS_VISIBLE": false,
+    "PNL_VISIBLE": false,
+    "futures_terminal": "charts and Handeln button only"
+  },
+  "NATIVE_PERFORMANCE_PAGES": {
+    "account_overview": {
+      "url_attempt": "https://my.okx.com/de/account/report-center/trading-data",
+      "redirect_observed": "https://my.okx.com/de/account/users (Überblick)",
+      "available": "YES",
+      "display": "Geschätzter Gesamtwert, Heutiger PnL, chart"
+    },
+    "balance_finance_overview": {
+      "url_attempt": "https://my.okx.com/de/balance/finance/overview",
+      "redirect_observed": "Earn page",
+      "available": "PARTIAL",
+      "limitations": "EEA routing; use account Überblick / Finanzierung / Handel tabs"
+    }
+  },
+  "CURRENT_INSTRUMENT": {
+    "safari_ui_market": "BTC USD UM XPERP (futures terminal screenshots)",
+    "peak_trade_runtime_file": "runtime/current_productive/natural_evidence_accumulation_v1/productivity/runtime_state/selection/single_selected_future_selection_v1.json",
+    "peak_trade_venue_native_id": "DOS-USDT-SWAP",
+    "peak_trade_valid_until": "2026-10-12T20:03:10Z",
+    "interpretation": "Runtime snapshot present but valid_until predates mission date — treat as historical snapshot not proven CURRENT; no instrument switch performed"
+  },
+  "LAYOUT_PERSISTENCE": "INSUFFICIENT_EVIDENCE_FOR_V6_CONFIGURATION; URL hash alone did not produce distinct layouts for 100641 vs 103121 in screenshots",
+  "SECURITY_RESTORE": "N_A_NEVER_ENABLED",
+  "TRADING_ACTIONS": "ZERO",
+  "ACCOUNT_MUTATIONS": "ZERO",
+  "PEAK_TRADE_CHANGES": "ZERO",
+  "configuration_phase": "NOT_EXECUTED",
+  "stop_reason": "JavaScript from Apple Events required for OKX layout/panel configuration; activation via regular Safari UI failed from agent environment"
+}

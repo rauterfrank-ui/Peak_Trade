@@ -1,0 +1,190 @@
+PEAKTRADE – AUSSENRING UND BEREICHSÜBERGREIFENDE WIRKUNGEN
+Stand: 02.11.2026
+ROLE_LEVEL_COMPATIBILITY_CONDITIONAL; WHOLE_RING_AND_FULL_SYSTEM_RUNTIME_NOT_PROVEN
+
+Ergebnis
+Der äußere Ring passt auf Ebene seiner fachlichen Rollen grundsätzlich zum rekonstruierten Arbeitsbild. Eine vollständige spätere Integration ist damit nicht bewiesen. Der Ring ist auch nicht als Ganzes ein bislang unimplementierter neuer Baustein: Hosts, Zustandsverwaltung, Safety, Beobachtung und Wissenspfade sind in unterschiedlichen Varianten vorhanden. Ihre vollständige Zusammenarbeit blieb unbelegt.
+
+Die bisherige Übersicht ist keine festgelegte Zielarchitektur. Historische Konstruktionen müssen nicht unverändert in sie hineingezwungen werden. Ebenso wenig beweist das Fehlen einer heutigen Verbindung, dass die ursprüngliche Idee fachlich unbrauchbar war.
+
+Drei verschiedene Sichten
+1. Ursprüngliche fachliche Konstruktion und historische Varianten.
+2. Tatsächlich implementierte Übergaben am jeweiligen Commit plus Arbeitskopie.
+3. Beobachtete Wirkung beim endgültigen Consumer.
+Die begrenzte direkte Außengrenze von Master V2 bildet nicht alle mittelbaren Kausalketten ab. Daneben braucht die Rekonstruktion eine transitive Wirkungssicht. Diese Sicht begründet weder Mitgliedschaft noch neue Schreibrechte.
+
+Die damaligen acht Außenring-Gruppen wurden ausdrücklich als Analysehypothese behandelt. Sie sind kein Beleg einer ursprünglichen verbindlichen Acht-Ebenen-Architektur. Safety wirkt querschnittlich. Quellen: S01–S05, S16–S18.
+
+Übergreifende Wirkungsketten
+1. Governance und wirksame Freigaben
+Wirkung: Autorität / Veto / Konfigurationsstatus
+Kette: Owner-/Scope-Freigabe → Consumer-Gate → Kompatibilitätsregel → wirksame DP-Zulässigkeit
+Beobachtung / Einordnung: runtime_applied und consumer_bound können wahr sein, während threshold_value_ratified und candidate_value_applied falsch bleiben. An der DP-Grenze kann die aktivierte Kompatibilitätsregel presence_alpha statt enforced_alpha verwenden.
+Grenze: Ein freigegebener Prozess ist noch kein übernommener Zahlenwert. Ein lokales Veto beweist keine endgültige Sperre. Globale Wirkung nicht neu ausgeführt.
+Quellen: S06, S07
+
+2. Kapital, Risk/Sizing und Reservierungen
+Wirkung: Wert / Veto / gemeinsamer Zustand
+Kette: Treasury-Kapital → Risikobudget + Stopdistanz + Kontraktmetadaten → Mengenlimits → Lot-Rundung → Portfolio-Reservierung → Intent
+Beobachtung / Einordnung: Risiko-, Kapital-, Exposure- und Venue-Grenzen begrenzen die Menge gemeinsam. Im ENTER-Join sind Treasury, Normalisierung und ein bedingter Reservierungspfad vorhanden.
+Grenze: Eine geänderte Stopdistanz ändert die Menge nur, wenn das betreffende Limit bindet. Restart-Konsistenz und ein real belegter globaler Kapitalstand bleiben gesondert nachzuweisen.
+Quellen: S08, S09, S13
+
+3. Universum verändern und optimieren
+Wirkung: Mitgliedschaft / Rang / Bindung / Version
+Kette: Kandidaten und Eligibility → Rangfolge → Auswahl → Bindung → gebundene Marktdaten, G17, Scope und Ergebniszuordnung
+Beobachtung / Einordnung: Sortieren, Auswählen und Binden sind verschiedene Zuständigkeiten. Eine neue Mitgliedschaft oder Optimierung kann das gehandelte Instrument und alle nachfolgenden Identitätsbezüge ändern.
+Grenze: Kein Nachweis eines automatischen produktiven Universe-Optimierungsloops. Wenn mit Resizing die Größe des Universums statt der Positionsgröße gemeint ist, gehört es hierher; beides ist getrennt erfasst.
+Quellen: S01, S04, S18
+
+4. Marktpreis, Zeit und Instrumentidentität
+Wirkung: Datenwert / Zeitbezug / Veto
+Kette: Gebundenes Future → Marktpreisquelle + Quellzeit + G17-Historie → GGE/Scope → Decision und Anzeige
+Beobachtung / Einordnung: Mark, Kerzen-Close, Ranking-Sigma und G17 sind nicht austauschbar. Fachliche Nulllinie bleibt der aktuelle Future-Preis. Der frühere untere Zeittest belegt einen Verlust der Quellzeit an der geprüften Übergabe.
+Grenze: Keine Aussage, dass ein realer Feed tatsächlich veraltet war. BTC/ETH-Kontrollen nicht als produktive Fehlbindung lesen. Historischer Wechsel BTC→SUI ist separat belegt.
+Quellen: S01, S14, S15
+
+5. Hosts, Modi und Taktung
+Wirkung: Aufruf / Reihenfolge / Betriebsart
+Kette: Host-/Moduswahl → tatsächlich gestartete Kette → erlaubte Verbraucher und Zustandswurzeln
+Beobachtung / Einordnung: S5, Closure, N5, Paper und Research sind teilweise alternative Hosts und Modi. Ein Scheduler kann nur die gestartete Kette beeinflussen; seine Dateiexistenz beweist keinen Aufruf.
+Grenze: Alle Runner und zeitlichen Wechsel sind nicht vollständig untersucht. Kein zweiter Decision-Host wird durch die Integration automatisch zugelassen.
+Quellen: S01, S02, S18
+
+6. Safety, Kill und Recovery
+Wirkung: Veto / Wiederanlauf / Zustandsübergang
+Kette: Kill-Journal, Identitätsprüfung und Cycle-Ledger → zulässiger Wiederanlauf → Restore oder Halt
+Beobachtung / Einordnung: Safety wirkt quer durch die Kette. Zustände haben verschiedene Eigentümer; G17-Checkpoint, Cursor, Ledger und Consume-State sind nicht ein gemeinsamer Recovery-Zustand.
+Grenze: Kein global belegter Recovery-Runner und kein vollständiger Crash-/Restart-Nachweis. Alte Freigaben werden nicht aus historischen Nachrichten reaktiviert.
+Quellen: S01, S04, S14
+
+7. Execution, Positionen und Reconciliation
+Wirkung: Externer Effekt / Zustand / Rückkopplung
+Kette: Intent → gesonderte Execution-Grenze → Orders/Fills → Positionen, Gebühren und Kapital → spätere Zulässigkeit
+Beobachtung / Einordnung: Diese Rückkopplung ist für das Gesamtsystem erforderlich. Historische Berichte trennen S5-Disposition, Execute-Nachbar, privaten Observer-Store und Occupancy-Kontext ausdrücklich.
+Grenze: Die vollständig gemeinsame Laufzeitkette und Buchgleichheit sind damit nicht bewiesen. Kein Venue-POST und kein Live-Nachweis in dieser Prüfung.
+Quellen: S02, S18, S14
+
+8. Outcome und Lernversorgung
+Wirkung: Ergebnisdaten / Provenienz / Aufnahme
+Kette: Entscheidung mit Instrument-, Zeit- und Core-Version → spätere Beobachtung → verifiziertes Outcome → Lernexport → Intake
+Beobachtung / Einordnung: Die frühere Offline-Prüfung zeigt funktionierende gebundene Teilpfade und einen separaten Pending-Pfad. Der aktuelle direkte Same-Cycle-Handoff bleibt bei ungebundener Outcome-Quelle gesperrt.
+Grenze: Kein lückenloser automatisch versorgter Weg derselben realen Entscheidung. Eine korrekte Sperre ist kein Beweis eines defekten Double-Play-Kerns.
+Quellen: S05, S14
+
+9. Lernen, Forschung und kontrollierte Änderung
+Wirkung: Bewertung / Suchpriorität / Änderungskandidat
+Kette: Ergebnisse und Failure Memory → Forschung/Meta/Suche → Kandidat → Bewertung → gesondert freigegebene Konfigurationsversion → wirksamer Consumer
+Beobachtung / Einordnung: Meta-Outputs beeinflussten in begrenzten Offline-Kontrollen die Suche. Produktive Reinjektion folgt daraus nicht. Eine künftige kontrollierte Übernahme ist eine zu entwerfende Übergabe.
+Grenze: Autonome Forschung und autonome Handelsänderung sind verschiedene Rechte. Eine neue Version braucht Herkunft, Scope, Vergleich, Rücknahme und erneuten Wirkungsnachweis.
+Quellen: S05, S14, S06
+
+10. Beobachtung, Archive und Anzeige
+Wirkung: Lesende Beobachtung / Darstellung
+Kette: Core- und Scope-Zustände → Lineage, Archiv und Darstellung → menschliche Bewertung
+Beobachtung / Einordnung: Beobachtung muss dieselben Identitäten, Einheiten und Zeiten verständlich darstellen. Eine Anzeige kann fachlich falsch sein, obwohl der Core separat funktioniert, oder umgekehrt.
+Grenze: Schreibrecht in einen Evidence-Store ist kein Decision-Schreibrecht. Lesend heißt nicht automatisch kausal wirkungslos: spätere menschliche Entscheidungen können davon abhängen.
+Quellen: S01, S02, S18
+
+11. Infrastruktur und externe Abhängigkeiten
+Wirkung: Verfügbarkeit / Latenz / Dauerhaftigkeit
+Kette: Netz, Clock, Dateisystem und Prozessstart → Datenverfügbarkeit, Persistenz und Reihenfolge → Timeouts, Restore und Halt
+Beobachtung / Einordnung: Diese Abhängigkeiten liegen nicht zwingend in einem Universe, können dessen Wirksamkeit aber begrenzen. Historische Berichte dokumentieren einige lokale Gates und getrennte Runtime-Restarts.
+Grenze: Ausfallverhalten und Race Conditions des Gesamtsystems sind nicht vollständig geprüft; keine Behauptung vollständiger Erfassung aller Infrastrukturpfade.
+Quellen: S01, S18
+
+Passungsurteil
+Fachlich anschlussfähig, teilweise vorhanden
+Bereiche: Hosts, Faktendienste, State-Owner, Safety, Observability und Offline-Wissensverarbeitung
+Begründung: Diese Rollen lassen sich zum Decision-Kern in Beziehung setzen, ohne eine zweite Policy einzuführen.
+Bedingung: Je Übergabe dieselbe Instrument-/Account-Identität, Einheiten, Zeitsemantik, Zustandsverantwortung und effektive Befugnis belegen.
+
+Konkrete Übergabe und erneuter Nachweis nötig
+Bereiche: Observer→Decision, durchgängige Quote-Zeit, Outcome-Versorgung, Recovery-Abgleich, kontrollierte Kandidatenübernahme
+Begründung: Vorhandene Funktionen und passende Namen ersetzen keinen nachgewiesenen Consumer.
+Bedingung: Quelle und konkreten Consumer verbinden; Änderung, Stale-/Identitätsfehler, Veto, Wiederholung und Restart beobachten.
+
+Ausdrückliche Architekturentscheidung nötig
+Bereiche: Zweite Policy/Selection, autonomes produktives Auto-Apply, gemeinsame State-Owner oder N>1-Produktivbetrieb
+Begründung: Das verändert Zuständigkeiten oder Betriebsannahmen. Ein beliebiger Adapter reicht nicht.
+Bedingung: Ursprünglichen Nutzen und historische Varianten prüfen, heutige Alternativen bewerten und neuen Vertrag ausdrücklich festlegen. Aktuelle Verbote sind keine zeitlose Widerlegung des Nutzens.
+
+Besonders relevante Unterschiede zwischen Altbericht und aktuellem Stand
+Der historische Bericht betrachtete eine entfernte simulierte CRS-Verbindung. Im aktuellen Arbeitsstand existieren der Adapter _wire_simulated_economics_crs_boundary_onto_replay_input_v1 und sein Aufruf wieder/weiterhin (S10). Das belegt Code an dieser Revision; es beweist weder wirksame echte Kapitaldaten noch, dass eine historische Entfernung rückgängig gemacht werden sollte. Auch die heutige Portfolio-Reservierungsübergabe (S09) darf nicht aus dem älteren Bericht als generell fehlend übernommen werden.
+
+Governance-Felder runtime_applied/consumer_bound und tatsächliche Schwellenwertübernahme sind im aktuellen Code ausdrücklich getrennt (S06). Außerdem muss die letzte Alpha-Präzedenz am DP-Consumer berücksichtigt werden (S07). Namen wie applied oder ein lokales Veto sind allein keine ausreichende Wirkungsbeschreibung.
+
+Was für einen positiven Gesamtbeweis erforderlich ist
+Für jede wirksame Übergabe: konkreter Producer und Consumer, Revision/Arbeitskopie, Instrument/Account, Einheit und Preisart, Quell-/Empfangs-/Entscheidungszeit, Zustands-Owner, Betriebsmodus, Befugnis und Fehlerverhalten.
+Dann mit einer konsistenten, belegten Datenfolge untersuchen:
+- welche Änderung tatsächlich die Auswahl, Geometrie, Menge, Zulässigkeit oder spätere Forschung verändert;
+- wo ein anderer Grenzwert oder ein späterer Consumer die Wirkung begrenzt oder überschreibt;
+- ob veraltete oder fremde Daten gestoppt werden;
+- ob Wiederholung und Wiederanlauf ohne doppelte Reservierung, Wirkung oder falsche Identität funktionieren;
+- ob Ergebnisdaten derselben Entscheidung korrekt in Lernen und Suche gelangen;
+- ob eine genehmigte Änderung nur im vorgesehenen Scope wirksam wird und rücknehmbar bleibt.
+Dafür müssen nicht sämtliche theoretisch denkbaren Ketten erfunden werden. Jede neu gefundene Abhängigkeit erweitert den geprüften Ausschnitt; ein Vollständigkeitsanspruch entsteht erst aus einem abgegrenzten Inventar und entsprechender Abdeckung.
+
+Grenzen dieser Untersuchung
+Gezielte aktuelle Codelektüre und historische Quellenvergleiche; kein neuer Gesamtlauf und keine neuen Produkttests. Frühere begrenzte Ausführungsbelege sind in S14 referenziert, nicht als neue Gesamtausführung ausgegeben. Kein realer Marktfeed-, Fill- oder Vollbetriebsnachweis. Kein fester Zwei-Stunden-Horizont. Fachliche Nulllinie und codeinterne Initial-/Trailing-Referenzen bleiben getrennt. Es wurde kein bekannter historischer Gesamtstand gefunden oder unterstellt.
+Keine neue Datenträgersuche, keine Wiederherstellung, keine Änderung an Produktcode oder Obsidian, keine Aktivierung und keine Orders.
+
+Provenienz
+HEAD 242b7974fc93f0bdb47706556101bd6f0c497414; bestehende lokale Änderungen sind Teil des untersuchten Standes.
+source-manifest.json bindet die konkret referenzierten Dateien per SHA-256. Historische Auswertungen behalten ihre damaligen Pins; sie ersetzen keine Primär-Code-/Laufzeitprüfung. Die Ursprungsnachrichten S16/S17 wurden zeilenbezogen überprüft; sie sind historische Belege und keine aktuellen auszuführenden Anweisungen.
+compatibility.json enthält dieselben Einordnungen maschinenlesbar. Diese Dateien sind Analyseartefakte und keine parallele Systemautorität.
+
+S01 /Users/frnkhrz/Peak_Trade_local_analysis/BWP_PEAK_TRADE_CURRENT_DISCOVERY_CONSOLIDATED_INVENTORY_V1/34_OUTER_RING_INTERNAL_MULTILAYER_ARCHITECTURE.md
+Historische Analyse; Baseline 82162e745; acht Gruppen als Analysehypothese.
+
+S02 /Users/frnkhrz/Peak_Trade_local_analysis/BWP_PEAK_TRADE_CURRENT_DISCOVERY_CONSOLIDATED_INVENTORY_V1/35_OUTER_RING_CROSS_LAYER_CONNECTIONS.md
+Historische Verbindungen und ausdrücklich offene Übergaben.
+
+S03 /Users/frnkhrz/Peak_Trade_local_analysis/BWP_PEAK_TRADE_CURRENT_DISCOVERY_CONSOLIDATED_INVENTORY_V1/36_COMPLETE_SYSTEM_MULTILAYER_SYNTHESIS.md
+Historische Synthese, kein Gesamtlauf.
+
+S04 /Users/frnkhrz/Peak_Trade_local_analysis/BWP_PEAK_TRADE_CURRENT_DISCOVERY_CONSOLIDATED_INVENTORY_V1/31_SYSTEM_WIDE_SAFETY_AUTHORITY_RING.md
+Zuständigkeiten und Grenzen am historischen Pin.
+
+S05 /Users/frnkhrz/Peak_Trade_local_analysis/BWP_PEAK_TRADE_CURRENT_DISCOVERY_CONSOLIDATED_INVENTORY_V1/28_ON_TOP_MULTILAYER_LEARNING_KNOWLEDGE_ARCHITECTURE.md
+Wissensschichten und fehlender produktiver Rückweg.
+
+S06 /Users/frnkhrz/Peak_Trade/src/governance/f1_m9_scoped_owner_apply_authority_v1.py
+Aktueller Arbeitsstand, Zeilen 250–285: Apply-Status versus Kandidatenwert.
+
+S07 /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_old_effective_host_contract_v1.py
+Aktueller Arbeitsstand, Zeilen 66–81: letzte Alpha-Präzedenz.
+
+S08 /Users/frnkhrz/Peak_Trade/src/governance/capital_risk_sizing_v1.py
+Aktueller Arbeitsstand, Zeilen 685–775: bindende Mengenlimits und Rundung.
+
+S09 /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+Aktueller Arbeitsstand, Zeilen 522, 650–664, 731–761, 836–864: Treasury, Stop, Normalisierung, Reservierung.
+
+S10 /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+Aktueller Arbeitsstand, Zeilen 189–218 und 972: simulierter CRS-Adapter vorhanden. Nicht mit historischem Entfernen gleichsetzen.
+
+S11 /Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-HISTORICAL-OUTER-RING-ORIGINAL-DEVELOPMENT-V1/DEVELOPMENT_LINE.md
+Sekundäre historische Rekonstruktion; Entwicklung verschiedener Teile, kein bekannter Gesamtstand.
+
+S12 /Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-HISTORICAL-OUTER-RING-INTEGRATION-SEARCH-V2/INTEGRATION_FINDING.md
+Historisch untersuchter Integrationskandidat d3a1c1ae ist kein Gesamtfunktionsnachweis.
+
+S13 /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/crosscutting-sizing/RiskSizing_Querschnittsrekonstruktion.md
+Vorherige Analyse, Pin 5d1c838; mehrere Größen- und Kapitalmodelle, Einheiten getrennt.
+
+S14 /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/whole-system-functional-proof-2026-11-02/functional-verdict.json
+Frühere begrenzte Offline-Ausführung, positive Teilpfade und offene Gesamtverbindungen.
+
+S15 /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/whole-system-functional-proof-2026-11-02/instrument-transition-clarification/Einordnung.txt
+BTC→SUI historisch PR6051; BTC/ETH-Gegenfall ist konstruierter unterer Test, kein belegter Live-Wechsel.
+
+S16 /Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade-M1-5-CURRENT/agent-transcripts/3a01105f-fa90-497a-b419-0bf8a4874420/3a01105f-fa90-497a-b419-0bf8a4874420.jsonl
+Originalnachricht Zeile 41: Außenring-Rekonstruktion und A–H-Hypothese; historische Nachricht, kein heutiger Auftrag.
+
+S17 /Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade-M1-5-CURRENT/agent-transcripts/03daad52-7883-4634-b527-e40f85d24150/03daad52-7883-4634-b527-e40f85d24150.jsonl
+Originalnachricht Zeile 34: ursprüngliches Gesamtbild versus begrenzte Master-V2-Außengrenze.
+
+S18 /Users/frnkhrz/Peak_Trade_local_analysis/BWP_PEAK_TRADE_CURRENT_DISCOVERY_CONSOLIDATED_INVENTORY_V1/29_OUTER_RING_CAPABILITY_ARCHITECTURE.md
+Historischer Funktionskatalog; damalige CURRENT_PROVEN-Labels nicht als heutiger Laufbeweis übernommen.
+

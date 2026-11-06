@@ -1,0 +1,13 @@
+{
+  "EXTERNAL_DOMAINS": [
+    "FULL_CORE",
+    "MASTER_V2_DP",
+    "CONFIRMATION",
+    "NATURAL_ENTER",
+    "PRE_EXTERNAL",
+    "GVEF_OFFLINE",
+    "GHV_REFERENCE"
+  ],
+  "NOTE": "Integrated only where completed evidence proves connection",
+  "TEMPORAL_VIEW": "CURRENT_ONLY_PLUS_LABELED_HISTORICAL_GHV79"
+}

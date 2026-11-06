@@ -1,0 +1,38 @@
+{
+  "source_commit": "2a905d38773679f62c6cb5b584d3c3f265772093",
+  "sources": [
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py",
+      "sha256": "43a0ea328cfc148f73714bee766fcc12787caa7aa4ccc2d29b4f7300e383ad9a"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
+      "sha256": "6f359e816acffca8ff45ad324b4ba2bf24eef8310f155d07925653a1bb16ef43"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_lineage_v1.py",
+      "sha256": "88899113fa7cc4bc6e0086d0e862c5e7cc2bd09e8fed5323c8c699d2410d040b"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
+      "sha256": "229854324b60f6f1ac85c91be22efbad9cceffc0e38fc2a202e4efcdb3f2a6a9"
+    },
+    {
+      "path": "docs/ops/evidence/pending_exact_decision_context_v1_2026_11_04/README.md",
+      "sha256": "36e58f27680d99745ac16caaeb71f364b509aebeb575b2e9241e4e1098c100d1"
+    },
+    {
+      "path": "docs/ops/evidence/pending_decision_parent_lineage_v1_2026_11_04/README.md",
+      "sha256": "22a0eb11a7a315b71881114b56a832506b0b4b2ded969333f4ba3d3276c0f377"
+    },
+    {
+      "path": "docs/ops/evidence/pending_bound_decision_identity_v1_2026_11_04/README.md",
+      "sha256": "79d685c6693124d5793ffeff5454631974ca6589e19ac795cdb767a7fba54959"
+    }
+  ],
+  "coverage": "focused existing projection/capture/transport/ledger-reader and Pending consumer; no new runtime test"
+}

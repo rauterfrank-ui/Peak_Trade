@@ -1,0 +1,156 @@
+{
+  "artifact_kind": "cross_sectional_funding_rate_ranking_semantics_versioned_binding",
+  "artifact_version": "v0",
+  "binding": {
+    "binding_status": {
+      "cost_model_binding_status": "REQUIRED_UNBOUND",
+      "dataset_binding_status": "REQUIRED_UNBOUND",
+      "digest_binding_status": "REQUIRED_UNBOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "INCOMPLETE_FAIL_CLOSED",
+      "period_binding_status": "REQUIRED_UNBOUND",
+      "policy_classes_status": "BOUND",
+      "universe_binding_status": "REQUIRED_UNBOUND"
+    },
+    "digest_bindings": {
+      "config_digest": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "data_digest": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "implementation_digest": {
+        "status": "REQUIRED_UNBOUND"
+      }
+    },
+    "direction_semantics": {
+      "dual_leg_simultaneous_forbidden": true,
+      "long_leg_means": "LONG_LOWEST_FUNDING",
+      "non_finite_funding_target": "FLAT",
+      "panel_insufficient_target": "FLAT",
+      "selection_mode": "funding_extremes_single_leg_rotation_v0",
+      "short_leg_means": "SHORT_HIGHEST_FUNDING",
+      "single_slot_rotation": true,
+      "warmup_incomplete_target": "FLAT"
+    },
+    "external_bindings": {
+      "admissibility_manifest_ref": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "evaluation_period_binding": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "execution_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "fee_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "funding_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "instrument_id_canonicalization_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "panel_funding_dataset_manifest_ref": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "pit_universe_manifest_ref": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "slippage_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "spread_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      }
+    },
+    "hypothesis_id": "CROSS_SECTIONAL_FUNDING_RATE_CARRY_NON_BITCOIN_PERPETUALS_V0",
+    "missing_bar_semantics": {
+      "carry_forward": false,
+      "missing_bar_policy": "exclude_non_selected_instrument_for_epoch",
+      "non_selected_missing": "exclude_for_epoch",
+      "selected_missing": "force_flat"
+    },
+    "numeric_bindings": {
+      "funding_smoothing_window_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "max_bar_staleness_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "min_eligible_members_for_rank": {
+        "status": "BOUND",
+        "value": 5
+      },
+      "rebalance_interval_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "signal_lag_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "switch_entry_delay_epochs": {
+        "status": "BOUND",
+        "value": 1
+      }
+    },
+    "orchestrator": {
+      "owner": "cross_sectional_single_slot_research_orchestrator_v0",
+      "scope": "RESEARCH_ONLY"
+    },
+    "panel_semantics": {
+      "eligibility_mode": "per_instrument_eligibility_mask",
+      "insufficient_panel_action": "flat",
+      "minimum_eligible_member_count_required": true
+    },
+    "policy_classes": {
+      "cooldown_policy": "no_cooldown",
+      "direction_policy": "long_low_funding_short_high_funding",
+      "minimum_hold_policy": "until_next_rebalance",
+      "missing_bar_policy": "exclude_non_selected_instrument_for_epoch",
+      "panel_completeness_policy": "per_instrument_eligibility_mask",
+      "rebalance_policy_class": "fixed_N_bar_cadence",
+      "score_family_policy": "cross_sectional_funding_rate_rank_long_low_short_high",
+      "signal_timing_policy": "finalized_bar_close_epoch",
+      "switch_policy": "flat_then_wait_one_epoch_then_enter",
+      "threshold_policy": "rank_extremes_only_no_continuous_threshold_tuning",
+      "tie_break_policy": "funding_rate_asc_then_instrument_id_asc_for_long_leg"
+    },
+    "schema_version": "cross_sectional_funding_rate_ranking_semantics_binding.v0",
+    "switch_semantics": {
+      "atomic_side_switch": false,
+      "flat_then_wait_one_epoch_then_enter": true,
+      "opposite_side_requires_reconciled_flat": true,
+      "switch_policy": "flat_then_wait_one_epoch_then_enter"
+    },
+    "system_constraints": {
+      "bitcoin_direction_allowed": false,
+      "futures_only": true,
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false
+    },
+    "threshold_semantics": {
+      "numeric_strength_threshold_initial": false,
+      "threshold_policy": "rank_extremes_only_no_continuous_threshold_tuning"
+    },
+    "tie_break_semantics": {
+      "long_leg_order": "funding_rate_asc_then_instrument_id_asc",
+      "short_leg_order": "funding_rate_desc_then_instrument_id_asc",
+      "tie_break_policy": "funding_rate_asc_then_instrument_id_asc_for_long_leg"
+    },
+    "timing_semantics": {
+      "decision_input": "finalized_bars_only",
+      "finalized_bar_required": true,
+      "funding_observation_field": "funding_rate",
+      "minimum_signal_lag_bars": 1,
+      "pit_universe_at_score_epoch": true,
+      "same_bar_execution": false,
+      "score_epoch": "finalized_bar_close"
+    }
+  },
+  "operator_decision_digest": "7131f94848a494d272039c6f6d17ed0fff10d7d999d380e8c84040b215ad47a0"
+}

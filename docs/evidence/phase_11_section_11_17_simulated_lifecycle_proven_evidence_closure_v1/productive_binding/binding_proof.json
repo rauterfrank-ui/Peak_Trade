@@ -1,0 +1,121 @@
+{
+  "CANONICAL_FIELD_SEMANTICS": "Master Runbook \u00a711.17 second readiness gate: deterministic simulated Entry/Reduce/Exit lifecycle evidence (Cap 7.1 Simulated Entry, Reduce and Exit Actionability Evidence) with nonzero Fee/Slippage, accounting reconstruction, and restart proofs on the no-order simulated path. Distinct from CANONICAL_STATEFUL_CORE_PROVEN (Cap 7.2), Testnet/Live proven fields, READY, and Cap 11.13 activation.",
+  "CANONICAL_STATEFUL_CORE_PROVEN": true,
+  "CAPABILITY_11_13_STARTED": false,
+  "CAPABILITY_ID": "PHASE_11_SECTION_11_17_SIMULATED_LIFECYCLE_PROVEN_EVIDENCE_CLOSURE_V1",
+  "CLOSURE_METHOD": "EXISTING_EVIDENCE_BINDING",
+  "CORE_LOGIC_CHANGE": false,
+  "CREDENTIAL_ACCESS": false,
+  "EVIDENCE_BINDINGS": [
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/SUMMARY.json",
+      "sha256": "713c17f297c6f1c2e1ec0b4b6520c8168dcbb2553c3d36265a7461061fabccbd"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/MANIFEST.sha256",
+      "sha256": "5ab835b3b7d1da5a992b77662a20cff2bcba483c910ca5dae23b3ddc0d67cd57"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/accounting_reconstruction_v1.json",
+      "sha256": "143e1e0b370c1d7996ddc1bb05c8666458e1127d6b40425792a75522b7256538"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/actionability_gate_results_v1.json",
+      "sha256": "2b5a30a0dcd0a17a167cba25bed9f19b8209d7eec8bdff66ec36c7bc601e8999"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/authority_evidence_matrix_v1.json",
+      "sha256": "057b15cd83d043cc4f1adce4f0b1dc345c4ea7a011f8254875e296a3e2b85369"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/deterministic_replay_digest_comparison_v1.json",
+      "sha256": "8c0c7582f336d6fa3ecd9de8a37a67dc7c0983fd40fbec7b31c3e050f3014e6f"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/entry_reduce_exit_intent_ledger_v1.jsonl",
+      "sha256": "35034fcad4f48f16f1afae5a4b13718207d51b81bae67b55687478f439c17912"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/failure_injection_results.json",
+      "sha256": "d5648c1a0536d4c174c8a19c6c07abed0432e1b23bc03448a638dab70d3e7723"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/fee_slippage_ledger_v1.jsonl",
+      "sha256": "c650004cefa4fc1a76c2dc85455ee768b295f192c9ac5123392e18d50324f6eb"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/fill_ledger_v1.jsonl",
+      "sha256": "f2f7b336b11aea678ed924612aaefb1c840703fb77fe69dcf99136b4bf1300af"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/lifecycle_fixture_spec_v1.json",
+      "sha256": "89c936fcf8ee3da0e96abfeb642fcb07f6a98b87ccd0e685b6e7c75526248089"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/long_lifecycle_trace_v1.json",
+      "sha256": "1c5fd5bea8b8363c043ea669a3c19e772b7c262f065eda4bd609231b817c5788"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/no_order_boundary_proof_v1.json",
+      "sha256": "2ec0e369e6be34e10d8562442907c974a5524094ab9d6c4d6716e9e4e7f92099"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/portfolio_reconstruction_v1.json",
+      "sha256": "19410e554f66afdbf5bf80236551de22fa8259c5999b33a1c052170f3da9a449"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/reconciliation_results_v1.json",
+      "sha256": "6b261f79ead0f4d5c480db20a4d7360e899154ccb75fefbad3371005ac72bab2"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/reduce_lifecycle_trace_v1.json",
+      "sha256": "cb021e73034981e741a1310bbd6599961300d20363843639a1db12f9c923d2a9"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/restart_recovery_traces_v1.json",
+      "sha256": "edcb6b1fd15207b99139ea503f6444157eb6e2a4e2469b0c33451ab7e35942c3"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/safety_risk_exit_precedence_proof_v1.json",
+      "sha256": "7f6a17caf5ad5d2fda3c42cd10779291248b47f6263dbdf683fd53f44d5f51a5"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/short_lifecycle_trace_v1.json",
+      "sha256": "855191df7fb33be7c9a70b2ee01f81176b76d2fc3503ee31d4d7a095515f1e5b"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/simulated_entry_reduce_exit_actionability_evidence_v1.json",
+      "sha256": "f801e8d27bae7d3f3bcaf4999439a8e3fa66995c95634c1ab3fd7362f412a26e"
+    },
+    {
+      "path": "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/productive_binding/simulated_entry_reduce_exit_actionability_result_v1.json",
+      "sha256": "cc6cf3ee34975cfcc10dd8e7111ea7747683e2c2a9d855512c538e87f010ba68"
+    }
+  ],
+  "EVIDENCE_REUSED": true,
+  "FIXTURE_ONLY": false,
+  "FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE": false,
+  "FULLY_AUTONOMOUS_LIVE_TRADING_READY": false,
+  "LIVE_ORDER_LIFECYCLE_PROVEN": false,
+  "LIVE_PRIVATE_READ_ONLY_PROVEN": false,
+  "NETWORK_SESSION_STARTED": false,
+  "ORDER_SUBMIT_REACHABLE": false,
+  "OWNER": "ops.phase_11_section_11_17_simulated_lifecycle_proven_evidence_closure_v1",
+  "PRODUCTIVE_BINDING": true,
+  "REPROOF_EXECUTED": false,
+  "SECTION_11_17_FIELD": "SIMULATED_LIFECYCLE_PROVEN",
+  "SIMULATED_LIFECYCLE_PROVEN": true,
+  "SOURCE_CAPABILITY_ID": "CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_EVIDENCE_V1",
+  "SOURCE_CONFIG_DIGEST": "59f3062f719dcf4efe73aaa52b74527969aa1fb746b7cb9b12cdd69a5bdfc31b",
+  "SOURCE_EVIDENCE_DIGEST": "e19001d4c3bc4f3bd9d5ab91c5d880a39df3c3a0edaea3dc2e3f200c7e62c13b",
+  "SOURCE_EVIDENCE_DIRNAME": "capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1",
+  "SOURCE_GATE_RESULTS_SHA256": "2b5a30a0dcd0a17a167cba25bed9f19b8209d7eec8bdff66ec36c7bc601e8999",
+  "SOURCE_HISTORICAL_REPOSITORY_SHA": "5d09b88c8ee415cc39ddff3cde1ab1348e1147b3",
+  "SOURCE_NO_ORDER_BOUNDARY_SHA256": "2ec0e369e6be34e10d8562442907c974a5524094ab9d6c4d6716e9e4e7f92099",
+  "SOURCE_OWNER": "ops.simulated_entry_reduce_exit_actionability_evidence_v1",
+  "SOURCE_RESULT_SHA256": "cc6cf3ee34975cfcc10dd8e7111ea7747683e2c2a9d855512c538e87f010ba68",
+  "SOURCE_SPEC_SHA256": "488b7893bd38b6d0d741921e8a01e14ac6df31803577eb9318c70df44086934a",
+  "SOURCE_SUMMARY_SHA256": "713c17f297c6f1c2e1ec0b4b6520c8168dcbb2553c3d36265a7461061fabccbd",
+  "TESTNET_LIFECYCLE_PROVEN": false,
+  "ok": true
+}

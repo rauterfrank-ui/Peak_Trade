@@ -1,0 +1,34 @@
+# PRE_ECONOMIC_ZERO_ORDER_EVIDENCE session runner config v1
+# Capability: PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1
+#
+# Defaults are fail-closed. This file never authorizes a real 6h session,
+# Shadow, Paper, Testnet, Live, orders, or Economic Validity PASS.
+
+schema_version = "v1"
+contract_version = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1"
+capability_id = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1"
+
+# Implementation surface may be exercised offline/dry-run when explicitly requested
+# by the runner CLI. Production session execution remains unauthorized.
+implementation_enabled = false
+session_execution_authorized = false
+operator_go_required = true
+dry_run = true
+zero_order_enforced = true
+
+# CI / offline simulation budget (never sleep to wall-clock production duration).
+maximum_test_runtime_seconds = 30
+# Declarative production target only — execution of this duration requires a
+# separate operator authorization capability (not this PR).
+production_session_duration_seconds = 21600
+
+output_root = "out/ops/pre_economic_zero_order_evidence_session_v1"
+heartbeat_interval_seconds = 1
+stale_threshold_seconds = 5
+maximum_test_cycles = 5
+
+runtime_authority = "NONE"
+orders_allowed = false
+broker_writes_allowed = false
+network_allowed = false
+allow_unknown_config_fields = false

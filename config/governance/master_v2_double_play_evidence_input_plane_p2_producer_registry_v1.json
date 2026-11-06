@@ -1,0 +1,41 @@
+{
+  "entries": [
+    {
+      "evidence_kind": "mi_market_context_descriptive_v1",
+      "evidence_type_version": "1.0.0",
+      "producer_family": "market_intelligence",
+      "producer_id": "mi.market_context_descriptive.producer",
+      "producer_version": "1.0.0"
+    },
+    {
+      "evidence_kind": "learning_conditioned_evaluative_v1",
+      "evidence_type_version": "1.0.0",
+      "producer_family": "learning",
+      "producer_id": "learning.conditioned_evaluative.producer",
+      "producer_version": "1.0.0"
+    },
+    {
+      "evidence_kind": "optimization_envelope_evidence_v1",
+      "evidence_type_version": "1.0.0",
+      "producer_family": "optimization",
+      "producer_id": "optimization.envelope_evidence.producer",
+      "producer_version": "1.0.0"
+    },
+    {
+      "evidence_kind": "meta_learning_routed_evidence_v1",
+      "evidence_type_version": "1.0.0",
+      "producer_family": "meta_learning",
+      "producer_id": "meta_learning.routed_evidence.producer",
+      "producer_version": "1.0.0"
+    },
+    {
+      "evidence_kind": "research_promoted_evidence_v1",
+      "evidence_type_version": "1.0.0",
+      "producer_family": "research",
+      "producer_id": "research.promoted_evidence.producer",
+      "producer_version": "1.0.0"
+    }
+  ],
+  "schema_version": "master_v2_double_play_evidence_input_plane_p2_producer_registry/v1",
+  "workpackage_id": "P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1"
+}

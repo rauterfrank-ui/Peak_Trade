@@ -1,0 +1,39 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_14_CRITICAL_DISTINCTION_V1",
+  "RESTART_RECONSTRUCTION_IS_NOT_GENERAL_LIVE_RELEASE": true,
+  "SINGLE_AUTHORIZED_FILL_IS_NOT_GENERAL_LIVE_RELEASE": true,
+  "SUCCESSFUL_CAPTURE_IS_NOT_RESTART_RECONSTRUCTION": true,
+  "SUCCESSFUL_FILL_IS_NOT_SUCCESSFUL_CAPTURE": true,
+  "rows": [
+    {
+      "EQUALS_EXECUTION_AUTHORIZATION": false,
+      "ID": "A",
+      "NAME": "LIVE_FILL_READINESS",
+      "VALUE": false
+    },
+    {
+      "EQUALS_GENERAL_LIVE_TRADING": false,
+      "ID": "B",
+      "NAME": "LIVE_FILL_EXECUTION_AUTHORIZATION",
+      "VALUE": false
+    },
+    {
+      "EQUALS_SUCCESSFUL_FILL": false,
+      "ID": "C",
+      "NAME": "CONTEMPORANEOUS_CAPTURE_AUTHORIZATION",
+      "VALUE": false
+    },
+    {
+      "EQUALS_SUCCESSFUL_CAPTURE": false,
+      "ID": "D",
+      "NAME": "RESTART_AUTHORIZATION",
+      "VALUE": false
+    },
+    {
+      "EQUALS_SINGLE_FILL": false,
+      "ID": "E",
+      "NAME": "GENERAL_LIVE_TRADING_AUTHORIZATION",
+      "VALUE": false
+    }
+  ]
+}

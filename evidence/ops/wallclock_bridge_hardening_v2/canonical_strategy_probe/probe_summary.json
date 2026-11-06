@@ -1,0 +1,33 @@
+{
+  "canonical_strategy_probe_forced_action": false,
+  "canonical_strategy_probe_pass": true,
+  "canonical_strategy_probe_uses_real_decision_graph": true,
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+  "cycles": 6,
+  "hold_provenance_complete": true,
+  "legitimate_hold_present": true,
+  "ok": true,
+  "verification": {
+    "blockers": [],
+    "call_graph_complete": true,
+    "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+    "expected_equity": "100000",
+    "expected_fees": "0",
+    "notes": [
+      "final_portfolio_hash=89e4dd6f748a293445e84758f85454aec637b1321c1ad403baad609784b5bcd0",
+      "gross_pnl=0",
+      "net_pnl=0",
+      "exposure=0",
+      "cycles=6",
+      "reconstructed_fills=0",
+      "PRIVATE_API_ABSENT_ASSERTED",
+      "ORDER_ROUTING_UNREACHABLE_ASSERTED",
+      "ORDERS_FALSE_ASSERTED"
+    ],
+    "ok": true,
+    "reconstructed_equity": "100000",
+    "reconstructed_fees": "0",
+    "reconstructed_fill_count": 0,
+    "verifier_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.full_economic_reconstruction_verifier_v2"
+  }
+}

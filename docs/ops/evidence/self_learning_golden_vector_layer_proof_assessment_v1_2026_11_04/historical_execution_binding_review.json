@@ -1,0 +1,26 @@
+{
+  "claimed_forensic_pin": "5b606f6daf322995a7f26a7208bba70a43cdd392",
+  "complete_original_pytest_output": "Not retained in reviewed raw transcript; interstitial outputs redacted. Literal report counts are not parsed original XML.",
+  "historical_command_contains_nonexistent_test_path": {
+    "git_cat_file_error": "fatal: path 'tests/learning/test_ddo_replay_evaluator_v0.py' does not exist in '5b606f6daf322995a7f26a7208bba70a43cdd392'",
+    "path": "tests/learning/test_ddo_replay_evaluator_v0.py",
+    "raw_command_line": 42
+  },
+  "interpretation": "Primary checkout source binding is not the claimed worktree binding. DDO/test/launcher subtrees are equal at the two known revisions, mitigating that narrow difference. Ops/config differ; no full historical-run equivalence or import provenance claim.",
+  "launcher_default": "Repository root comes from script location; cwd changes to that root unless PT_KEEP_CWD=1. Retained report SOURCE_BINDING names main checkout. Historical environment override is not known.",
+  "main_launcher_used_in_retained_commands": true,
+  "narrow_ddo_learning_tests_and_launcher_tree_diff": [],
+  "other_src_tests_config_diff": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "src/ops/single_selected_future_runtime_binding_v1/cap24_runtime_binding_witness_epoch_v1.py",
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
+    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+  ],
+  "reported_primary_checkout": "10f601e6087c33334034b2e013a72ed46835e9e9"
+}

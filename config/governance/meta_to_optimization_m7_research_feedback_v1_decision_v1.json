@@ -1,0 +1,15 @@
+{
+    "artifact_class": "META_TO_OPTIMIZATION_M7_RESEARCH_FEEDBACK_DECISION_V1",
+    "workpackage_id": "META_TO_OPTIMIZATION_M7_RESEARCH_FEEDBACK_V1",
+    "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+    "predecessor_slice": "SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_V1",
+    "normative_spec": "docs/ops/specs/META_TO_OPTIMIZATION_M7_RESEARCH_FEEDBACK_NORMATIVE_V1.md",
+    "feedback_contract_id": "peak_trade.canonical_meta_to_optimization_feedback.v1",
+    "learning_productive_authority": "NONE",
+    "optimization_productive_authority": "NONE",
+    "meta_evidence_authority": "NONE",
+    "search_execution_authorized": false,
+    "authorized_productive_surfaces": 0,
+    "external_effect_authorized": false,
+    "proposal_not_authority": true
+}

@@ -1,0 +1,39 @@
+{
+  "source_commit": "85491657be44ee54af329d3e3318c2c0a12f2155",
+  "tests": {
+    "after": "77 PASS / 1 existing missing historical report out of 78",
+    "new_parent_scope": "16 PASS",
+    "before": "15 FAIL / 1 PASS with original baseline creation function substituted at test collection",
+    "after_command": "./scripts/pt -m pytest tests/ops/test_pending_decision_parent_lineage_v1.py tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py tests/ops/test_pending_exact_decision_context_v1.py tests/ops/test_pending_creation_context_admission_v1.py tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py -q"
+  },
+  "boundaries": [
+    "Context-free historical creation callers retain legacy admission and are not certified by this gate.",
+    "DecisionEvent does not store policy_decision_id or raw market/feature input snapshots. Checks prove existing cross-record fields only, not cryptographic origin or episode equivalence.",
+    "Natural source/freshness GAP-0370, U04 and full-system integration remain open/deferred."
+  ],
+  "runtime_activation_authorized": false,
+  "source_paths_sha256": {
+    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py": "768fab5f51709f5990c36770030ca9ef084c850f3ff6750ccb005ffb942dbad2",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py": "7c11098cc4f3a01579fe871e2641cfa32e55404051c84461a3c1dc83d790a666",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_lineage_v1.py": "b342b1efcdc1d9bba91f055c44da4d54f0af64a04aa91e3baa2d1aca0eee42fb",
+    "tests/ops/test_pending_decision_parent_lineage_v1.py": "cb98354bc2766d0501b43eb1629613299c882aa6f47a79c9a67d5a499ff1be89"
+  },
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/pending_decision_parent_lineage_v1_2026_11_04/README.md",
+      "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 188,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

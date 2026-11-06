@@ -1,0 +1,27 @@
+{
+  "schema_version": "peak_trade.aws_remote_247_bounded_offline_smoke_fixture.v0",
+  "approved_scope_name": "aws_remote_247_bounded_offline_smoke_implementation_v0",
+  "offline_inventory": {
+    "remote_run_id": "aws_remote_247_offline_smoke_fixture_v0",
+    "lane_id": "paper",
+    "runtime_host": "remote",
+    "runtime_backend": "ec2",
+    "runtime_mode": "paper_only",
+    "max_runtime_seconds": 3600,
+    "evidence_root_type": "remote_durable",
+    "evidence_transport": "local_only",
+    "host_inventory_relpath": "remote_host_inventory_planning_v0.json",
+    "archive_path": "synthetic_evidence",
+    "registry_evidence_transport": "local_only"
+  },
+  "credential_boundary": {
+    "secrets_present": false,
+    "broker_credentials_present": false,
+    "exchange_credentials_present": false,
+    "aws_profile_required": false
+  },
+  "closeout_plan": {
+    "fail_closed_on_any_gate_false": true,
+    "emit_blocked_if_preflight_not_eligible": false
+  }
+}

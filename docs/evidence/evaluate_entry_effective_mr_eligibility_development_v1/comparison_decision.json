@@ -1,0 +1,27 @@
+{
+  "checks": {
+    "cost_drag_fully_included": true,
+    "entry_eligibility_divergence_observed": true,
+    "max_drawdown_treatment_ge_control": false,
+    "net_return_treatment_gt_control": false,
+    "profit_factor_treatment_gt_control": false,
+    "trade_count_treatment_ge_control_floor": true,
+    "trade_count_treatment_ge_minimum": true
+  },
+  "control_max_drawdown": -0.009251339133889633,
+  "control_net_return": 0.0028248763672538146,
+  "control_profit_factor": 1.3131740173108835,
+  "control_trade_count": 81,
+  "cost_drag_fully_included_flag": true,
+  "entry_eligibility_divergence_observed": true,
+  "evaluable": true,
+  "max_trade_count_reduction_fraction": 0.5,
+  "minimum_trade_count": 50,
+  "reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+  "result_class": "FAIL",
+  "technical_failure": false,
+  "treatment_max_drawdown": -0.010858503466427282,
+  "treatment_net_return": -0.0034223561839032968,
+  "treatment_profit_factor": 0.7007308571015219,
+  "treatment_trade_count": 98
+}

@@ -1,0 +1,74 @@
+{
+  "binding_digest": "b7099d17af888dabebf14a63797729f807f866d265aeb5095c385541222fc2f2",
+  "config_digest": "e2140a73a6a613f99876ddc0d9a7e205704384baafbff92780227f292b7f07a1",
+  "config_schema_version": "cross_sectional_open_interest_level_rank_v0_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "cross_sectional_evaluation_binding_v1": {
+    "binding_digest": "b7099d17af888dabebf14a63797729f807f866d265aeb5095c385541222fc2f2",
+    "candidate_binding_ref": "config/research/cross_sectional_open_interest_level_rank_v0_versioned_hypothesis_binding_v0.json",
+    "candidate_id": "cross_sectional_open_interest_level_rank/v0",
+    "config_digest": "e2140a73a6a613f99876ddc0d9a7e205704384baafbff92780227f292b7f07a1",
+    "data_contract_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+    "data_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+    "dataset_binding": {
+      "bar_interval": "PT1H",
+      "binding_version": "v0",
+      "credential_access_forbidden": true,
+      "dataset_extension": "self_accumulated_forward_accrual_v0",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0",
+      "duplicate_bars_policy": "fail_closed",
+      "instrument_key": "instrument_id",
+      "missing_bars_policy": "exclude_non_selected_for_epoch",
+      "network_access_forbidden": true,
+      "open_interest_fields": [
+        "open_interest"
+      ],
+      "open_interest_usage": "open_interest_level_for_score_computation",
+      "out_of_order_bars_policy": "fail_closed",
+      "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+      "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+      "panel_dataset_schema": "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1",
+      "panel_open_interest_dataset_manifest_ref": "pit_okx_pt1h_panel_open_interest_dataset_v1:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel:self_accumulated_forward_accrual_v0",
+      "panel_schema": "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1",
+      "timestamp_key": "timestamp_utc",
+      "timezone": "UTC",
+      "warmup_bars": 2
+    },
+    "hypothesis_id": "cross_sectional_open_interest_level_rank_v0",
+    "implementation_digest": "3c1a1ad844896e1b604ff283484f8cd8d6a361386a3ccf3afa2963c439856563",
+    "parameter_binding": {
+      "binding_version": "v0",
+      "minimum_panel_bars": 6,
+      "no_instrument_substitution": true,
+      "no_universe_expansion": true,
+      "open_interest_level_definition": "point_in_time_open_interest_level_at_lagged_observation",
+      "open_interest_observation_field": "open_interest",
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "max_bar_staleness_bars": 1,
+        "min_eligible_members_for_rank": 5,
+        "rebalance_interval_bars": 1,
+        "signal_lag_bars": 1,
+        "switch_entry_delay_epochs": 1
+      },
+      "score_formula_expression": "level_i(t) = open_interest_i[t-lag]; long_leg = instrument with minimum level; short_leg = instrument with maximum level; single_slot selects leg with larger absolute deviation from cross-sectional median level",
+      "score_formula_version": "cross_sectional_open_interest_level_rank_v0",
+      "signal_lag_bars": 1,
+      "unchanged_retry_of_failed_bindings_forbidden": true
+    },
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1"
+  },
+  "fail_closed_contract": {
+    "economic_evaluation_executed_must_be_false_for_recovery": true,
+    "forbid_parameter_search": true,
+    "forbid_runtime_or_order_effect": true,
+    "require_bound_data_digest_match": true
+  },
+  "implementation_digest": "3c1a1ad844896e1b604ff283484f8cd8d6a361386a3ccf3afa2963c439856563",
+  "strategy_id": "cross_sectional_open_interest_level_rank",
+  "strategy_version": "v0",
+  "timeout_contract": {
+    "max_runtime_seconds": 1500,
+    "timeout_policy": "fail_closed"
+  }
+}

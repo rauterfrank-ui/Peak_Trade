@@ -1,0 +1,22 @@
+=== commands ===
+git fetch origin --prune
+git checkout -b fix/canonical-chain-zero-trade-blocker-v1
+# forensic probes via .venv/bin/python
+.venv/bin/python -m pytest tests/backtest/test_canonical_chain_zero_trade_blocker_v1.py -q
+.venv/bin/python -m pytest \
+  tests/backtest/test_canonical_chain_zero_trade_blocker_v1.py \
+  tests/backtest/test_obl_b07_bollinger_event_only_semantic_contract_v1.py \
+  tests/backtest/test_mv2_composition_directional_asymmetry_wiring_repair_v1.py \
+  tests/backtest/test_entry_exit_optional_side_carrier_contract_v1.py \
+  tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py \
+  tests/trading/master_v2/test_double_play_composition_matrix_v1.py \
+  tests/trading/master_v2/test_canonical_order_intent_offline_replay_binding_parity_rewire_contract_v0.py \
+  tests/trading/master_v2/test_strategy_suitability_agreement_consumer_contract_v1.py \
+  tests/trading/master_v2/test_suitability_regime_wildcard_integrated_counterfactual_v1.py \
+  tests/backtest/test_obl_b05_bollinger_entry_side_doc_alignment_v1.py -q
+.venv/bin/python -m pytest \
+  tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py \
+  tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py \
+  tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py -q
+.venv/bin/ruff format --check <changed py>
+.venv/bin/ruff check <changed py>

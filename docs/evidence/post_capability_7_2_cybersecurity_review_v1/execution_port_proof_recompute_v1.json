@@ -1,0 +1,18 @@
+{
+  "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+  "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+  "NO_REAL_SUBMIT_ORDER_INTERFACE_IN_NO_ORDER_HOST": true,
+  "ORDER_SIDE_EFFECT_OCCURRED": false,
+  "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+  "SIMULATED_EXECUTION_PORT_SEPARATE_FROM_REAL_EXECUTION_PORT": true,
+  "cli_switch_to_real_port_possible": false,
+  "config_switch_to_real_port_possible": false,
+  "delegate": "ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1.apply_intended_action_via_canonical_accounting_v1",
+  "env_switch_to_real_port_possible": false,
+  "forbidden_call_hits": [],
+  "forbidden_import_hits": [],
+  "ok": true,
+  "polymorphic_port_selector_absent": true,
+  "port_kind": "SIMULATED_EXECUTION_PORT_V1",
+  "refuse_real_adapter": "refuse_real_execution_adapter_construction_v1"
+}

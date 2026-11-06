@@ -1,0 +1,33 @@
+{
+  "boundaries": [
+    "Corrects own controlled test source, not historical evidence, production metrics owner or policy",
+    "Generic adapter cannot infer unit agreement from a field name/metric version; source-specific semantics still required",
+    "Shared synthetic trial data and ancillary fixture identities remain bounded; no natural-market profitability/core/economic certification",
+    "No automatic executed next canonical candidate or productive activation; original ledger/U04/GAP-0370 unchanged"
+  ],
+  "current_source_sha256": {
+    "tests/experiments/test_canonical_research_result_to_meta_input_v1.py": "ffc1373da345b2b6d3dd9502ad0beb675bd1aee75cc990b1249f60e9d1fd4751"
+  },
+  "ruff_status": "PASS; format PASS",
+  "runtime_activation_authorized": false,
+  "source_commit": "af0d0bdf33a0e78534e47beaa6ee9532803ee7b9",
+  "tests": "90 connected PASS including one new semantic control, which fails against original annualized source; actual Meta/Search region feedback and no-collapse countercontrol retained before/after alignment",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/numerical_feedback_nonannual_control_alignment_v1_2026_11_04/README.md",
+      "docs/ops/specs/CANONICAL_RESEARCH_RESULT_META_SEARCH_FEEDBACK_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 235,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; format PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

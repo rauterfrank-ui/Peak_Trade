@@ -1,0 +1,18 @@
+# Execution Prep Operator Record v0 (fixture)
+
+## Final machine lines
+
+```
+RUN_ID=__RUN_ID__
+EXECUTION_PREP_OPERATOR_RECORD_CREATED=true
+EXECUTION_PREP_AUTHORIZED=true_FOR_RUN_ID_ONLY
+EXECUTION_PREP_SCOPE=bounded_24h_daemon_paper_shadow_dry_run_only
+EXECUTION_PREP_ALLOWED_NEXT_STEP=reporter_binding_pr_only
+NO_ACTIVE_RUN_SNAPSHOT_VALID=true
+COMMAND_GUARDS_PRESERVED=true
+RUNTIME_STARTED=false
+READY_TO_START_RUN_NOW=false
+TESTNET_STARTED=false
+LIVE_STARTED=false
+ACTIVE_RUNS_DETECTED=false
+```

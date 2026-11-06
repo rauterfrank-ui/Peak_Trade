@@ -1,0 +1,10 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_CHANGE_RATE_V1",
+  "schema_version": "canonical_research_backtest_cost_grid_change_rate/v1",
+  "surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+  "max_parameters_changed_per_research_cycle": 2,
+  "max_grid_points_per_research_cycle": 9,
+  "self_deploy_forbidden": true,
+  "productive_default_mutation_forbidden": true,
+  "live_config_mutation_forbidden": true
+}

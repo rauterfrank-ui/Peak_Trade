@@ -1,0 +1,10 @@
+{
+  "bar_granularity": "PT1H",
+  "futures_only": true,
+  "bitcoin_direction_allowed": false,
+  "min_eligible_instruments": 5,
+  "production_lifecycle_source_id": "okx_production_instrument_lifecycle_historical_as_of_fail_closed.v1",
+  "universe_policy_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe",
+  "universe_policy_version": "v1",
+  "venue_scope": "okx_linear_usdt_perpetuals"
+}

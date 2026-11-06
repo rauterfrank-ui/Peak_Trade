@@ -1,0 +1,26 @@
+id: openai_chat_default
+provider: openai
+model: gpt-4.1-mini
+purpose: "Research/support only. No execution. No trade decisions."
+data_handling:
+  pii: "forbidden"
+  secrets: "forbidden"
+  storage: "no"
+guardrails:
+  allowed_tasks:
+    - "summarization"
+    - "code_review"
+    - "documentation"
+  forbidden_tasks:
+    - "place_orders"
+    - "withdraw_funds"
+    - "bypass_gates"
+  must_include:
+    - "deny-by-default gating remains active"
+    - "no financial advice"
+risk:
+  level: "low"
+  rationale: "Non-executing support; no live calls allowed without P50 enable+arm+token."
+ops:
+  owner: "Peak_Trade"
+  last_reviewed_utc: "2026-02-15T00:00:00Z"

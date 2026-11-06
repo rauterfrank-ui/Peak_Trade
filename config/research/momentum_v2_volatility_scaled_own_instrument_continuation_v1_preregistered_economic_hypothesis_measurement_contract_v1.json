@@ -1,0 +1,302 @@
+{
+  "artifact_kind": "preregistered_economic_hypothesis_measurement_contract",
+  "artifact_version": "v1",
+  "authority_effect": "NONE",
+  "backtest_authorized": false,
+  "baseline": {
+    "baseline_id": "FROZEN_RAW_RETURN_MOMENTUM_1H_ENTRY_EXIT_EVENT_V1",
+    "entry_threshold": 0.02,
+    "exit_threshold": -0.01,
+    "frozen": true,
+    "lookback_period": 20,
+    "momentum_score": "raw_simple_return_close_over_close_shift_N",
+    "no_reimplementation_or_semantic_mutation_of_registry_momentum_strategy": true,
+    "output_contract": "ENTRY_EXIT_EVENT_V1",
+    "registry_strategy_id_reference_only": "momentum_1h",
+    "signal_values": {
+      "entry_long": 1,
+      "exit": -1,
+      "none": 0
+    },
+    "sole_difference_vs_treatment": "VOLATILITY_SCALING_OF_MOMENTUM_SCORE_BEFORE_THRESHOLD_CROSS",
+    "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+    "supported_entry_side_semantics": "LONG_ENTRY_ONLY_EXIT_EVENT_NO_SHORT_ENTRY"
+  },
+  "bounded_preregistered_development_grid_authorized": false,
+  "comparison_semantics": {
+    "control_arm": "FROZEN_RAW_RETURN_MOMENTUM_1H_ENTRY_EXIT_EVENT_V1",
+    "deterministic": true,
+    "note": "Treatment vs frozen raw-return momentum_1h ENTRY/EXIT baseline; sole difference is PIT volatility scaling of the momentum score. Not a raw threshold retune, not a reopen of closed CS relative-strength momentum, and not a rename of pending momentum_1h/v2 MOMENTUM_HORIZON_V2 evaluation.",
+    "reproducibility_required": true,
+    "seed_policy": "frozen_when_stochastic_components_absent",
+    "treatment_arm": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1"
+  },
+  "contract_digest": "0820d94b306cf7b3240bccc2eee06484debdcd7ae1eb77d4a683425247a4c4ce",
+  "costs": {
+    "canonical_cost_multiplier": 1.0,
+    "cost_model_weakening_forbidden": true,
+    "fee_bps_per_side": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "half_spread_bps": 5.0,
+    "predefined_cost_stress_multipliers": [
+      0.5,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "slippage_bps_per_side": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0",
+    "spread_model_version": "research_conservative_bps_v1"
+  },
+  "dataset_bound": true,
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": false,
+  "development_evaluation_runs_allowed": 1,
+  "development_run_count": 0,
+  "directional_form": {
+    "double_play_remains_sole_authority": true,
+    "entry_side_ratification": "NONE",
+    "hypothesis_emits_entry_exit_timing_intent_only": true,
+    "label": "own-instrument long-entry/exit events from vol-scaled momentum crosses",
+    "rationale": "Treatment preserves ENTRY_EXIT_EVENT_V1 (+1 long entry, -1 exit, 0 none) and entry_side=NONE; Double-Play remains sole directional transition authority. No SHORT entry emission.",
+    "rejected_forms": {
+      "CROSS_SECTIONAL_RELATIVE_STRENGTH_RANKING": "Closed CS momentum lane; reopen forbidden.",
+      "RAW_THRESHOLD_RETUNE_OF_MOMENTUM_1H": "Raw entry/exit thresholds remain frozen baseline; treatment is vol-scaling only.",
+      "REGISTRY_MOMENTUMSTRATEGY_MUTATION": "src/strategies/momentum.py and registry remain unchanged.",
+      "SHORT_ENTRY_ADDITION": "No short-entry semantic expansion in this hypothesis."
+    },
+    "selected": "OWN_INSTRUMENT_LONG_ENTRY_EXIT_EVENT_TIMING_ONLY",
+    "semantics": "Emit +1 when vol_scaled_momentum crosses above entry_z from below; emit -1 when vol_scaled_momentum crosses below exit_z from above; else 0. No short entries.",
+    "sole_directional_transition_authority": "trading.master_v2.double_play_state.transition_state"
+  },
+  "economic_admission_contract": {
+    "evaluation_blocked_while_any_threshold_pending": false,
+    "fail_reasons": {
+      "COST_STRESS_NOT_SURVIVED": "net_profit_factor at 1.5x costs < 1.0",
+      "GROSS_EDGE_NOT_MEANINGFUL": "gross_profit_factor < 1.0 OR gross_pnl <= 0",
+      "INSTRUMENT_PNL_CONCENTRATION_BREACH": "max_single_instrument_positive_gross_pnl_share > 0.35",
+      "INSUFFICIENT_EXECUTED_TRADES": "executed_treatment_trades < 50",
+      "INSUFFICIENT_TRADES_PER_TIME_SEGMENT": "any segment has < 10 executed treatment trades",
+      "MAX_DRAWDOWN_ABS_BREACH": "abs(max_drawdown) > 0.25",
+      "MAX_DRAWDOWN_NOT_IMPROVED_VS_BASELINE": "abs(treatment_max_drawdown) > abs(baseline_max_drawdown)",
+      "NET_NOT_IMPROVED_VS_BASELINE": "treatment net_profit_factor not strictly greater than baseline",
+      "NET_PROFIT_FACTOR_BELOW_THRESHOLD": "net_profit_factor < 1.3 at canonical 1.0x costs",
+      "NET_RETURN_NOT_IMPROVED_VS_BASELINE": "treatment net_return not strictly greater than baseline",
+      "NON_FINITE_NUMERIC_RESULT": "NaN/Inf/Overflow observed => FAIL_CLOSED",
+      "POST_HOC_TUNING_ATTEMPTED": "parameter or threshold mutation after result inspection",
+      "ROBUSTNESS_SAMPLE_INSUFFICIENT": "fewer than four evaluable chronological equal-duration quarters",
+      "TIME_SEGMENT_ROBUSTNESS_FAIL": "passing_segment_count / 4 < time_segment_robustness_pass_ratio"
+    },
+    "pass_requires_all": [
+      "evaluable",
+      "executed_treatment_trades >= minimum_trade_count",
+      "each_time_segment_executed_treatment_trades >= min_trades_per_time_segment",
+      "gross_profit_factor >= gross_profit_factor_min",
+      "gross_pnl > 0",
+      "net_profit_factor >= net_profit_factor_min",
+      "net_profit_factor_treatment > net_profit_factor_baseline",
+      "net_return_treatment > net_return_baseline",
+      "net_expectancy >= minimum_net_expectancy",
+      "abs(max_drawdown) <= maximum_max_drawdown",
+      "abs(max_drawdown_treatment) <= abs(max_drawdown_baseline)",
+      "max_single_instrument_positive_gross_pnl_share <= max_single_instrument_positive_gross_pnl_share_max",
+      "all_numeric_results_finite",
+      "canonical_cost_multiplier_result_uses_1_0x",
+      "cost_stress_1_5x_net_profit_factor >= cost_stress_1_5x_net_profit_factor_min",
+      "deterministic_repro_digest_match",
+      "all_four_time_segments_evaluable",
+      "time_segment_robustness_pass_ratio >= time_segment_robustness_pass_ratio_min"
+    ],
+    "pending_threshold_keys": [],
+    "primary_decision_metric": "NET_PROFIT_FACTOR",
+    "secondary_metrics": [
+      "NET_RETURN_AFTER_COSTS",
+      "NET_EXPECTANCY",
+      "MAX_DRAWDOWN",
+      "GROSS_PROFIT_FACTOR",
+      "INSTRUMENT_PNL_CONCENTRATION",
+      "TRADE_COUNT"
+    ],
+    "thresholds": {
+      "cost_stress_1_5x_net_profit_factor_min": {
+        "source": "Survival interpretation under predefined 1.5x cost stress; PF>=1.0",
+        "status": "CONFIGURED",
+        "value": 1.0
+      },
+      "gross_profit_factor_min": {
+        "source": "ENTRY_GROSS_EDGE_PRESENT convention gpf>=1.0 and gross_pnl>0",
+        "status": "CONFIGURED",
+        "value": 1.0
+      },
+      "max_single_instrument_positive_gross_pnl_share_max": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION max_single_instrument_positive_gross_pnl_share_max=0.35",
+        "status": "CONFIGURED",
+        "value": 0.35
+      },
+      "maximum_max_drawdown": {
+        "source": "economic_validity_policy_v1 maximum_max_drawdown",
+        "status": "CONFIGURED",
+        "value": 0.25
+      },
+      "min_trades_per_time_segment": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION min_trades_per_segment=10",
+        "status": "CONFIGURED",
+        "value": 10
+      },
+      "minimum_net_expectancy": {
+        "source": "economic_validity_policy_v1 minimum_net_expectancy",
+        "status": "CONFIGURED",
+        "value": 0.0
+      },
+      "minimum_trade_count": {
+        "source": "economic_validity_policy_v1 minimum_trade_count",
+        "status": "CONFIGURED",
+        "value": 50
+      },
+      "net_profit_factor_min": {
+        "source": "economic_validity_policy_v1 minimum_profit_factor",
+        "status": "CONFIGURED",
+        "value": 1.3
+      },
+      "time_segment_robustness_pass_ratio": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "semantics": "pass_ratio = passing_segment_count / 4 under CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1; threshold 0.5 requires at least two PASS segments",
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "status": "CONFIGURED",
+        "value": 0.5
+      }
+    }
+  },
+  "economic_hypothesis": "On the DEVELOPMENT_ONLY non-BTC OKX linear USDT perpetual panel, own-instrument momentum measured as lookback simple return divided by trailing realized volatility (same lookback, PIT, completed bars only), with long ENTRY on upward cross of a frozen vol-scaled entry z-threshold and EXIT on downward cross of a frozen vol-scaled exit z-threshold, yields jointly better net profit factor and net return after canonical costs than the frozen raw-return momentum_1h ENTRY/EXIT baseline with identical lookback and event contract — testing whether volatility scaling recovers meaningful economics without retuning raw thresholds or reopening closed CS momentum.",
+  "evaluation_authorized": false,
+  "evaluation_run_count_authorized": 1,
+  "evidence_paths": {
+    "future_development_evaluation_evidence_ref": "docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/",
+    "governance_ref": "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "preregistration_evidence_ref": "docs/evidence/preregister_momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_v1/"
+  },
+  "explicit_non_actions": [
+    "NO_EVALUATION_IN_THIS_SLICE",
+    "NO_STRATEGY_IMPLEMENTATION_IN_THIS_SLICE",
+    "NO_REGISTRY_MUTATION",
+    "NO_MOMENTUMSTRATEGY_SEMANTIC_MUTATION",
+    "NO_RAW_THRESHOLD_RETUNE",
+    "NO_MOMENTUM_1H_V2_EXECUTION_IN_THIS_SLICE",
+    "NO_CS_MOMENTUM_REOPEN",
+    "NO_HOLDOUT_ACCESS",
+    "NO_MASTER_V2_MUTATION",
+    "NO_DOUBLE_PLAY_AUTHORITY_CHANGE",
+    "NO_RUNTIME",
+    "NO_ORDERS",
+    "NO_PROMOTION"
+  ],
+  "holdout_authorized": false,
+  "holdout_forbidden": true,
+  "holdout_run_limit": 0,
+  "hypothesis_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "parameter_governance": {
+    "development_only_bounded_grid": {
+      "authorized": false,
+      "grid_size": 0
+    },
+    "frozen_non_grid_parameters": {
+      "entry_side": "NONE",
+      "lookback_period": 20,
+      "output_contract": "ENTRY_EXIT_EVENT_V1",
+      "pit_safe": true,
+      "realized_vol_estimator": "std_of_one_bar_simple_returns_over_lookback_period",
+      "realized_vol_zero_or_non_finite_policy": "NO_SIGNAL_FAIL_CLOSED",
+      "registry_mutation_forbidden": true,
+      "short_entry_forbidden": true,
+      "signal_lag_bars": 1,
+      "vol_scaled_entry_z": 1.0,
+      "vol_scaled_exit_z": 0.0,
+      "vol_scaling_required": true
+    },
+    "post_result_retuning_forbidden": true,
+    "raw_entry_threshold_baseline_frozen": 0.02,
+    "raw_exit_threshold_baseline_frozen": -0.01
+  },
+  "pit_feature_policy": {
+    "completed_bars_only": true,
+    "lookahead_forbidden": true,
+    "pit_safe": true,
+    "same_bar_future_information_forbidden": true,
+    "signal_uses_prior_completed_information_with_lag_bars": 1
+  },
+  "program_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1",
+  "promotion_and_economic_gate_policy": {
+    "economic_gate_open": false,
+    "economic_validity_offline_gate_changed": false,
+    "promotion_claim_from_preregistration_forbidden": true,
+    "promotion_eligible": false,
+    "promotion_gate_open": false
+  },
+  "run_limit": {
+    "development_run_limit": 1,
+    "holdout_run_limit": 0,
+    "max_concurrent_open_preregistrations": 1,
+    "retry_forbidden": true,
+    "second_development_run_forbidden": true
+  },
+  "run_slot_consumed": false,
+  "runner_start_count": 0,
+  "runtime_policy": {
+    "capital_activated": false,
+    "live_authorized": false,
+    "orders_allowed": false,
+    "paper_activated": false,
+    "runtime_activated": false,
+    "scheduler_authorized": false,
+    "shadow_activated": false,
+    "testnet_activated": false
+  },
+  "schema_version": "preregistered_economic_hypothesis_measurement_contract.v1",
+  "scientific_hypothesis": "Volatility-normalizing own-instrument lookback returns before applying frozen cross thresholds isolates continuation strength from local volatility level and improves post-cost economics versus the identical raw-return momentum_1h baseline on the same DEVELOPMENT_ONLY non-BTC perpetual panel.",
+  "scope_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION_V1",
+  "sealed_holdout_binding_status": "UNBOUND_UNTOUCHED_ACCESS_FORBIDDEN",
+  "shared_authority_constraints": {
+    "double_play_sole_directional_transition_authority": true,
+    "execution_kernel_mutation_forbidden": true,
+    "kill_switch_mutation_forbidden": true,
+    "master_v2_mutation_forbidden": true,
+    "reconciliation_mutation_forbidden": true,
+    "registry_second_truth_forbidden": true,
+    "risk_authority_mutation_forbidden": true,
+    "runtime_bridge_remains_bound_not_activated": true,
+    "safety_mutation_forbidden": true,
+    "sizing_mutation_forbidden": true
+  },
+  "signal_family": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM",
+  "slice_class": "DEFINITION_ONLY_GOVERNANCE",
+  "status": "DEFINITION_ONLY_PREREGISTERED",
+  "strategy_identity": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1",
+  "strategy_implementation_present": false,
+  "target_phenomenon": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM_CONTINUATION",
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+  "treatment": {
+    "momentum_score": "raw_simple_return_divided_by_trailing_realized_vol",
+    "output_contract_unchanged": "ENTRY_EXIT_EVENT_V1",
+    "treatment_id": "VOLATILITY_SCALED_MOMENTUM_SCORE_THRESHOLD_CROSS_V1",
+    "treatment_variable": "vol_scaled_momentum = (close/close.shift(N)-1) / std(one_bar_simple_returns, N)",
+    "vol_scaled_entry_z": 1.0,
+    "vol_scaled_exit_z": 0.0
+  },
+  "treatment_type": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM_CONTINUATION_ADMISSION",
+  "universe_scope": {
+    "bitcoin_excluded": true,
+    "frequency": "PT1H",
+    "instrument_class": "LINEAR_USDT_PERPETUAL",
+    "panel_class": "DEVELOPMENT_ONLY_PRE_HOLDOUT",
+    "spot_excluded": true,
+    "venue": "OKX"
+  },
+  "workstream_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_WORKSTREAM_V1"
+}

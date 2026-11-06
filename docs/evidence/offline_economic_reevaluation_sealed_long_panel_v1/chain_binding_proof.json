@@ -1,0 +1,23 @@
+{
+  "adapter_default_honor_mapped_short_entry_false": true,
+  "authority_effect": "NONE",
+  "canonical_engine_signal_source": "mv2_decision_replay_series",
+  "composition_owner_present": true,
+  "direction_authority": "trading.master_v2.double_play_state.transition_state",
+  "economic_gate_opened": false,
+  "harness_id": "OFFLINE_ECONOMIC_REEVALUATION_SEALED_LONG_PANEL_V1",
+  "honor_mapped_short_entry_true_count": 2,
+  "live_authorized": false,
+  "no_second_direction_authority_in_harness": true,
+  "non_authoritative_marker": true,
+  "orders": false,
+  "promotion_eligible": false,
+  "runtime_bridge_status": "BOUND_NOT_ACTIVATED",
+  "runtime_effect": "NONE",
+  "short_bound_via_execution_pipeline": true,
+  "transition_state_owner_present": true,
+  "uses_integrated_offline_replay": true,
+  "uses_run_mv2_research_backtest_wiring_v1": true,
+  "wiring_use_execution_pipeline_false_count": 0,
+  "wiring_use_execution_pipeline_true_count": 2
+}

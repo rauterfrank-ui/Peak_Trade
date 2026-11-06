@@ -1,0 +1,30 @@
+{
+  "AUTH_HEADER_PERSISTED": false,
+  "BODY_SHA256": "fbfc9480218e15b0a15a5aac5b662b222108336d71501da82436b8df60b42ef7",
+  "EDGE_ID": "LEVERAGE",
+  "ENDPOINT": "/api/v5/account/leverage-info?instId=SUI-USD_UM_XPERP-310404&mgnMode=cross",
+  "HTTP_STATUS": 200,
+  "OKX_CODE": "0",
+  "OKX_MSG": "",
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_ROW": {
+    "ccy": "",
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "lever": "3",
+    "mgnMode": "cross",
+    "posSide": "net"
+  },
+  "payload": {
+    "code": "0",
+    "data": [
+      {
+        "ccy": "",
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "lever": "3",
+        "mgnMode": "cross",
+        "posSide": "net"
+      }
+    ],
+    "msg": ""
+  }
+}

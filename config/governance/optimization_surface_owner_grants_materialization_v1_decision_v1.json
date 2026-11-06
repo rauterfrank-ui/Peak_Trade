@@ -1,0 +1,41 @@
+{
+  "artifact_class": "OPTIMIZATION_SURFACE_OWNER_GRANTS_MATERIALIZATION_DECISION_V1",
+  "workpackage_id": "OPTIMIZATION_SURFACE_OWNER_GRANTS_MATERIALIZATION_V1",
+  "bound_origin_main_sha": "3abeffae801f2973408e8e613b1c03f903b08d0a",
+  "normative_spec": "docs/ops/specs/OPTIMIZATION_SURFACE_OWNER_GRANTS_MATERIALIZATION_V1.md",
+  "owner_decisions": {
+    "D1_F5_FRESH": {
+      "decision": "GO",
+      "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+      "owner_value_token": "OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS",
+      "mode": "SHADOW_RESEARCH_ENVELOPE"
+    },
+    "D2_F5_SURV": {
+      "decision": "SHADOW_CALIBRATION_ONLY",
+      "optimizer_envelope_authorized": false,
+      "per_token_identity_required": true
+    },
+    "D3_F5_CAP": {
+      "decision": "SHADOW_CALIBRATION_ONLY",
+      "optimizer_envelope_authorized": false,
+      "per_token_identity_required": true
+    },
+    "D4_F3": {
+      "decision": "GLOBAL_SURFACE_NO_GO",
+      "global_f3_optimizable_surface_authorized": false
+    }
+  },
+  "authorized_optimization_surface_ids": [
+    "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+    "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+    "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1"
+  ],
+  "shadow_calibration_only_families": [
+    "F5-SURV",
+    "F5-CAP"
+  ],
+  "productive_effect": "NONE",
+  "external_effect_authorized": false,
+  "trading_logic_changed": false,
+  "core_boundary_changed": false
+}

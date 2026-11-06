@@ -1,0 +1,33 @@
+{
+  "boundaries": [
+    "N5 Full Core means all five slots per current user clarification; separate autonomy workflow identity not inferred",
+    "Existing scope implementation preserved byte-for-byte; no formula/parameter/owner change, no new functional scope certification",
+    "GVEF default gates/adapters/test doubles and in-memory registry do not establish actual natural-source verification, durable archive or automatic multi-domain execution",
+    "MI is not automatically historical IU; IU scope-specific/broader layer meanings kept distinct",
+    "GVEF failure fan-out classification does not itself execute reproof or authorize promotion",
+    "No automatic GVEF-to-numerical-research bridge; semantic/value/source binding and actual next executed experiment still require evidence",
+    "U04/GAP-0370 deferred; original Learning ledger unchanged; no productive activation, order, push or external-source writes"
+  ],
+  "ruff_status": "NOT_APPLICABLE_NO_PYTHON_SOURCE_CHANGE",
+  "runtime_activation_authorized": false,
+  "scope": "Repo assessment/evidence only; existing GVEF included explicitly in reconstruction, no new runtime join or authority taxonomy",
+  "source_commit": "3a01199438acfe9050e5f3a6a1eafd032b6abaa5",
+  "tests": "104 selected existing GVEF tests PASS; five actual domain-evaluator/runner registration probes on controlled fixture traces with explicit test doubles, one integrated forbidden-ranking-authority denial with WHOLE_SYSTEM_REPROOF classification",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/gvef_universe_relationship_assessment_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 234,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_NO_PYTHON_SOURCE_CHANGE",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

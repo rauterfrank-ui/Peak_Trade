@@ -1,0 +1,105 @@
+{
+  "capability_id": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+  "failure_injection_results": {
+    "CHECKPOINT_MISSING_AFTER_PRIOR_COMMIT": {
+      "ok": true
+    },
+    "CHECKPOINT_MISSING_BEFORE_FIRST_STATE": {
+      "ok": true
+    },
+    "CONFIG_DIGEST_MISMATCH": {
+      "ok": true
+    },
+    "CONFLICTING_WRITER": {
+      "ok": true
+    },
+    "CORRUPTED_CHECKPOINT": {
+      "ok": true
+    },
+    "REPOSITORY_SHA_MISMATCH": {
+      "ok": true
+    }
+  },
+  "gate_flags": {
+    "AUTHORIZATION_NOT_CONSUMED": true,
+    "C1_PRODUCTIVELY_BOUND": true,
+    "C2_PRODUCTIVELY_BOUND": true,
+    "C3_PRODUCTIVELY_BOUND": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CONFIRMATION_RESTART_PROVEN": true,
+    "CONFIRMATION_SESSION_ID_STABLE": true,
+    "CONFIRMATION_STATE_PERSISTED": true,
+    "CORE_LOGIC_CHANGE": false,
+    "CORE_LOGIC_UNCHANGED": true,
+    "DECISION_CYCLE_DOES_NOT_ADVANCE_CONFIRMATION": true,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DETERMINISTIC_REPLAY_PROVEN": true,
+    "DUPLICATE_DOES_NOT_ADVANCE": true,
+    "EVIDENCE_VERIFIED": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "FAILURE_INJECTION_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "INSTRUMENT_ISOLATION": true,
+    "NO_LIVE_ORDER_PATH": true,
+    "NO_NETWORK_ACCESS": true,
+    "NO_SAMPLE_DOES_NOT_ADVANCE": true,
+    "NO_TESTNET_ORDER_PATH": true,
+    "RISK_PARITY_PROVEN": true,
+    "RUNTIME_ACTIVATED": false,
+    "RUNTIME_NOT_ACTIVATED": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "SILENT_CONFIRMATION_REINITIALIZATION": false,
+    "SILENT_CONFIRMATION_REINITIALIZATION_FALSE": true,
+    "SINGLE_WRITER_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "capability_id": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+    "instrument_id": "ETH-USD_UM_XPERP-310404",
+    "venue": "OKX"
+  },
+  "ok": true,
+  "parity_results": {
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CORE_LOGIC_CHANGE": false,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "RISK_PARITY_PROVEN": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "decision_precedence_nodes": [
+      "master_v2_double_play_integrated_offline_replay",
+      "risk_position_sizing",
+      "safety_kernel",
+      "intended_side_quantity"
+    ],
+    "frozen_thresholds": {
+      "adverse_exit_distance": 80.0,
+      "candidate_signal_threshold": 0.005,
+      "confirmation_epochs": 2,
+      "confirmation_signal_threshold": 0.01,
+      "entry_exit_policy_version": "double_play_entry_exit_policy_v0",
+      "reversal_distance": 120.0,
+      "up_distance": 200.0
+    },
+    "inserted_wiring_edges_only": [
+      "canonical_confirmation_state_commit",
+      "directional_assessment_confirmation_integration",
+      "directional_confirmation_progress",
+      "distinct_market_observation_acceptor",
+      "observation_acceptance_result"
+    ]
+  },
+  "restart_results": {
+    "CONFIRMATION_RESTART_PROVEN": true,
+    "CONFIRMATION_SESSION_ID_STABLE": true,
+    "checkpoint_phase": "observe",
+    "final_digest_restart": "79a2d5d9f42b0cd933dab056122f42a5b04cb712a899f71e3b0dd7bfc9055dda",
+    "final_digest_uninterrupted": "79a2d5d9f42b0cd933dab056122f42a5b04cb712a899f71e3b0dd7bfc9055dda",
+    "final_phase_restart": "observe",
+    "final_phase_uninterrupted": "observe",
+    "loaded_commit_sequence": 4,
+    "ok": true
+  }
+}

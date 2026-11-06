@@ -1,0 +1,7 @@
+python=3.11.14
+platform=macOS-26.5.1-arm64-arm-64bit
+executable=/Users/frnkhrz/.pyenv/versions/3.11.14/bin/python3
+numpy=present
+pandas=present
+LIVE_AUTHORIZED=false
+ORDERS=false

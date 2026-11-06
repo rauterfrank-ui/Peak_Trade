@@ -1,0 +1,1064 @@
+{
+  "automated_offline_research_loop": true,
+  "automated_runtime_authority": false,
+  "autonomous_champion_swap": false,
+  "autonomous_promotion": false,
+  "canonical_trading_decision_core_bound": true,
+  "challenger_report": {
+    "autonomous_champion_swap": false,
+    "challenger_experiment_ids": [
+      "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9"
+    ],
+    "challenger_results": [
+      {
+        "challenger_experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+        "disposition": "CHALLENGER_RESEARCH_PREFERRED",
+        "role": "CHALLENGER",
+        "score": 1.2
+      }
+    ],
+    "champion_challenger_can_arm": false,
+    "champion_challenger_can_authorize_canary": false,
+    "champion_challenger_can_create_confirm_token": false,
+    "champion_challenger_can_enable": false,
+    "champion_challenger_can_fund": false,
+    "champion_challenger_can_increase_leverage": false,
+    "champion_challenger_can_increase_risk": false,
+    "champion_challenger_can_mutate_live_config": false,
+    "champion_challenger_can_promote": false,
+    "champion_challenger_can_promote_to_live": false,
+    "champion_challenger_can_submit_order": false,
+    "champion_challenger_can_use_confirm_token": false,
+    "champion_challenger_can_write_live_config": false,
+    "champion_challenger_domain": "peak_trade.canonical_champion_challenger.v1",
+    "champion_challenger_has_runtime_authority": false,
+    "champion_challenger_present": true,
+    "champion_experiment_id": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d",
+    "champion_state": {
+      "champion_experiment_id": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d",
+      "mutated": false,
+      "swapped": false
+    },
+    "comparable_challenger_experiment_ids": [
+      "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9"
+    ],
+    "comparison_contract_version": "canonical_comparison_ssot_v1",
+    "comparison_ssot_version": "canonical_comparison_ssot_v1",
+    "completeness": "COMPLETE",
+    "created_at": "2026-08-18T12:40:00Z",
+    "digest_algorithm": "sha256",
+    "evaluation_identity": "dbd33133d10562ecb171e2c8861a7b0f92a0cc993641fbf9123c030622d84b62",
+    "evaluation_policy_version": "canonical_champion_challenger_policy_v1",
+    "evidence_refs": [
+      {
+        "digest": "dbefaf1de2e5ea9ddf043ed01c7b7ff963bbd9cf73c0ea5cf5ca84cf789734c4",
+        "kind": "COMPARISON_RESULT",
+        "ref": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9"
+      },
+      {
+        "digest": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d",
+        "kind": "EXPERIMENT_RECORD",
+        "ref": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d"
+      }
+    ],
+    "integrity": {
+      "content_sha256": "d77df521eec1c13180b505e081b99dda2f58aa04c43a654f75d71d79120ccdc3"
+    },
+    "learning_may_autonomously_replace_core_logic": false,
+    "metric_definitions": "canonical_robustness_metrics_v1",
+    "overall_status": "EVALUATION_COMPLETE",
+    "pair_results": [
+      {
+        "challenger_experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+        "champion_experiment_id": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d",
+        "comparison_identity": "dbefaf1de2e5ea9ddf043ed01c7b7ff963bbd9cf73c0ea5cf5ca84cf789734c4",
+        "overall_comparability": "COMPARABLE",
+        "rejection_reasons": []
+      }
+    ],
+    "promotion_authority": "NONE",
+    "ranked_experiment_ids": [
+      "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+      "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d"
+    ],
+    "ranking": {
+      "ranked_experiment_ids": [
+        "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+        "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d"
+      ],
+      "ranking_identity": "a59e73ca27558eea0250dc74f9af6dec741dc6c1ab88ef7b3e8f2d59098afd99",
+      "ranking_status": "RANKED",
+      "rejection_reasons": []
+    },
+    "research_recommendation": "CHALLENGER_RESEARCH_PREFERRED",
+    "robustness_suite_version": "canonical_robustness_suite_v1",
+    "runtime_authority_impact": "NONE",
+    "schema_version": "canonical_champion_challenger_v1",
+    "score_metric": "explicit_research_score",
+    "scores": {
+      "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9": 1.2,
+      "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d": 1.0
+    },
+    "self_learning_self_authorizing_separation": true
+  },
+  "champion_experiment_id": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d",
+  "comparison_result": {
+    "champion_challenger_implemented": false,
+    "comparability_dimensions": [
+      "dataset_identity",
+      "split_policy",
+      "fee_model",
+      "slippage_model",
+      "funding_model",
+      "risk_policy",
+      "portfolio_constraints",
+      "robustness_suite_version",
+      "metric_definitions",
+      "time_horizon",
+      "market_universe"
+    ],
+    "comparison_contract_version": "canonical_comparison_ssot_v1",
+    "comparison_domain": "peak_trade.canonical_comparison_ssot.v1",
+    "comparison_identity": "dbefaf1de2e5ea9ddf043ed01c7b7ff963bbd9cf73c0ea5cf5ca84cf789734c4",
+    "comparison_ssot_can_arm": false,
+    "comparison_ssot_can_authorize_canary": false,
+    "comparison_ssot_can_create_confirm_token": false,
+    "comparison_ssot_can_enable": false,
+    "comparison_ssot_can_fund": false,
+    "comparison_ssot_can_increase_leverage": false,
+    "comparison_ssot_can_increase_risk": false,
+    "comparison_ssot_can_mutate_live_config": false,
+    "comparison_ssot_can_promote": false,
+    "comparison_ssot_can_promote_to_live": false,
+    "comparison_ssot_can_rank_non_comparable": false,
+    "comparison_ssot_can_submit_order": false,
+    "comparison_ssot_can_use_confirm_token": false,
+    "comparison_ssot_can_write_live_config": false,
+    "comparison_ssot_has_runtime_authority": false,
+    "compatibility_contract": null,
+    "compatibility_contract_version": "NONE",
+    "completeness": "COMPLETE",
+    "created_at": "2026-08-18T12:40:00Z",
+    "digest_algorithm": "sha256",
+    "dimension_results": [
+      {
+        "dimension": "dataset_identity",
+        "left_value": "344d346b4c50b652925c87a67052e7dedf8d01837cdabc7862acad258a1d85e4",
+        "reason": null,
+        "right_value": "344d346b4c50b652925c87a67052e7dedf8d01837cdabc7862acad258a1d85e4",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "split_policy",
+        "left_value": "2571bd703fe6d4f7cc7c38cadf208e07acfe4f5702e8218e9858409fbabafcd0",
+        "reason": null,
+        "right_value": "2571bd703fe6d4f7cc7c38cadf208e07acfe4f5702e8218e9858409fbabafcd0",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "fee_model",
+        "left_value": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+        "reason": null,
+        "right_value": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "slippage_model",
+        "left_value": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+        "reason": null,
+        "right_value": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "funding_model",
+        "left_value": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+        "reason": null,
+        "right_value": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "risk_policy",
+        "left_value": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+        "reason": null,
+        "right_value": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "portfolio_constraints",
+        "left_value": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+        "reason": null,
+        "right_value": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "robustness_suite_version",
+        "left_value": "canonical_robustness_suite_v1",
+        "reason": null,
+        "right_value": "canonical_robustness_suite_v1",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "metric_definitions",
+        "left_value": "canonical_robustness_metrics_v1",
+        "reason": null,
+        "right_value": "canonical_robustness_metrics_v1",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "time_horizon",
+        "left_value": "0192f8ac9d668ccac086287e026afe7921f23d0fbc94ad4dce78350382af64cd",
+        "reason": null,
+        "right_value": "0192f8ac9d668ccac086287e026afe7921f23d0fbc94ad4dce78350382af64cd",
+        "status": "IDENTICAL"
+      },
+      {
+        "dimension": "market_universe",
+        "left_value": "c02a66e440f2ae9c21673ae86d4139e1caad1e5db1d91bb2795d8796173db329",
+        "reason": null,
+        "right_value": "c02a66e440f2ae9c21673ae86d4139e1caad1e5db1d91bb2795d8796173db329",
+        "status": "IDENTICAL"
+      }
+    ],
+    "evidence_refs": [
+      {
+        "digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+        "kind": "EXPERIMENT_RECORD",
+        "ref": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9"
+      },
+      {
+        "digest": "73cda693afaaa9cf54965a2ae7c45133fab2840a8affb30c617e9adb9d7999f3",
+        "kind": "EXPERIMENT_RECORD",
+        "ref": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d"
+      }
+    ],
+    "integrity": {
+      "content_sha256": "035c027f14faa887991f8ad8ecc2f9174c0220c87379ba0f3a1700bef0da9e9c"
+    },
+    "learning_may_autonomously_replace_core_logic": false,
+    "left_experiment_id": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d",
+    "left_identity_digest": "73cda693afaaa9cf54965a2ae7c45133fab2840a8affb30c617e9adb9d7999f3",
+    "overall_comparability": "COMPARABLE",
+    "promotion_authority": "NONE",
+    "rejection_reasons": [],
+    "right_experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+    "right_identity_digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+    "runtime_authority_impact": "NONE",
+    "schema_version": "canonical_comparison_ssot_v1",
+    "self_learning_self_authorizing_separation": true
+  },
+  "completeness": "COMPLETE",
+  "created_at": "2026-08-18T12:40:00Z",
+  "digest_algorithm": "sha256",
+  "duplicate_assessment": {
+    "actions": [
+      "NONE"
+    ],
+    "automatic_research_ban": false,
+    "detected": false,
+    "duplicate_detected_is_not_automatic_research_ban": true,
+    "failure_memory_has_runtime_authority": false,
+    "hypothesis_fingerprint": "1d32fa9b7942d47884c64fcf7f4083f482caf5f8657f5e1452575e4b9362c2a0",
+    "matching_failure_record_ids": [],
+    "matching_record_count": 0,
+    "previously_rejected": false,
+    "same_failure_mode_known": false,
+    "same_parameter_region_repeatedly_unstable": false,
+    "same_parameter_region_seen": false
+  },
+  "experiment_record": {
+    "artifacts": [
+      {
+        "digest": "c7c5c1d70c5dec4416ab6158afd0b223ef40c29b1dc1f97ed9428b94d4cadb1c",
+        "kind": "REPO_RELATIVE",
+        "media_type": "text/markdown",
+        "ref": "docs/ops/specs/CANONICAL_EXPERIMENT_IDENTITY_V1.md"
+      }
+    ],
+    "candidate_role": "RESEARCH",
+    "canonical_trading_decision_core_bound": true,
+    "comparison_status": "NOT_COMPARED",
+    "completeness": "COMPLETE",
+    "cost_model_ref": {
+      "digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+      "kind": "IDENTITY_DIGEST_BOUND"
+    },
+    "created_at": "2026-08-18T12:40:00Z",
+    "dataset_ref": {
+      "digest": "344d346b4c50b652925c87a67052e7dedf8d01837cdabc7862acad258a1d85e4",
+      "kind": "IDENTITY_DIGEST_BOUND"
+    },
+    "digest_algorithm": "sha256",
+    "disposition": "RESEARCH_ONLY",
+    "experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+    "experiment_identity": {
+      "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+      "canonical_trading_decision_core_bound": true,
+      "completeness": "COMPLETE",
+      "cost_model_digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+      "dataset_digest": "344d346b4c50b652925c87a67052e7dedf8d01837cdabc7862acad258a1d85e4",
+      "digest_algorithm": "sha256",
+      "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+      "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+      "environment": {
+        "identity_schema_version": "canonical_experiment_identity_v1",
+        "python_implementation": "CPython",
+        "python_version": "3.11.15"
+      },
+      "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+      "experiment_identity_has_runtime_authority": false,
+      "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+      "fee_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+      "funding_model_digest": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+      "git_sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+      "identity_digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+      "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+      "integrity": {
+        "content_sha256": "7bcfdc710e4e3da6045535e1383a4100b371ee67c081add22787b487bb56bb51"
+      },
+      "learning_may_autonomously_replace_core_logic": false,
+      "learning_may_research_core_logic_changes": true,
+      "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+      "parent_lineage": {
+        "kind": "ROOT",
+        "parent_lineage_ref": null
+      },
+      "portfolio_digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+      "risk_policy_digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+      "runtime_authority_impact": "NONE",
+      "schema_version": "canonical_experiment_identity_v1",
+      "seed": 11,
+      "self_learning_must_learn_from_canonical_trading_decision_path": true,
+      "slippage_model_digest": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+      "split_policy_digest": "2571bd703fe6d4f7cc7c38cadf208e07acfe4f5702e8218e9858409fbabafcd0",
+      "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+      "strategy_identity": "ma_crossover.v1",
+      "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+      "strategy_params_digest": "3ad95784e803f78585d33abdb5e066652711df7177426638586859c8486161ea",
+      "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+      "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+      "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+      "working_tree_status": "CLEAN"
+    },
+    "experiment_memory_can_mutate_live_config": false,
+    "experiment_memory_can_promote": false,
+    "experiment_memory_has_runtime_authority": false,
+    "hypothesis_fingerprint": "1d32fa9b7942d47884c64fcf7f4083f482caf5f8657f5e1452575e4b9362c2a0",
+    "hypothesis_id": "hyp.ma-crossover.v1",
+    "integrity": {
+      "content_sha256": "acb39ec90b7683622ff840ada36ee834d7a831f335b22931885eb6c5bf153f05"
+    },
+    "lineage": {
+      "ancestors": [],
+      "kind": "ROOT",
+      "parent_experiment": null
+    },
+    "memory_domain": "peak_trade.canonical_experiment_memory.v1",
+    "metrics": {
+      "max_drawdown": -0.12,
+      "sharpe": 1.25
+    },
+    "parent_experiment": null,
+    "portfolio_ref": {
+      "digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+      "kind": "IDENTITY_DIGEST_BOUND"
+    },
+    "record_schema_version": "canonical_experiment_memory_v1",
+    "regime_results": {
+      "high_vol": {
+        "sharpe": 0.4
+      }
+    },
+    "rejection_reason": null,
+    "risk_policy_ref": {
+      "digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+      "kind": "IDENTITY_DIGEST_BOUND"
+    },
+    "robustness_results": {
+      "walk_forward": {
+        "folds": 4,
+        "passed": true
+      }
+    },
+    "runtime_authority_impact": "NONE",
+    "strategy_family": "ma_crossover",
+    "supersedes_experiment_id": null
+  },
+  "failure_records": [],
+  "hypothesis_preparation": {
+    "experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+    "hypothesis_fingerprint": "1d32fa9b7942d47884c64fcf7f4083f482caf5f8657f5e1452575e4b9362c2a0",
+    "identity_digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+    "robustness_policy_digest": "589a6ca184a96e700c57e4340918cf604a01ea5c7e2cef2421823281b69dc6cd"
+  },
+  "hypothesis_selection": {
+    "candidate_hypothesis_ids": [
+      "hyp.ma-crossover.v1"
+    ],
+    "selected_hypothesis_id": "hyp.ma-crossover.v1",
+    "selection_policy": "EXPLICIT_HYPOTHESIS_ID"
+  },
+  "integrity": {
+    "content_sha256": "03f1500ed1e3775b3f01606f2e2890e484199a6811b0bb7fe71c88865e8ae977"
+  },
+  "learning_may_autonomously_replace_core_logic": false,
+  "loop_identity": "2b73dc2528f128c9ab879450427938268c2bdce1e5be51924c0a2754886d8e38",
+  "observation_binding": {
+    "binding_domain": "peak_trade.canonical_identity_bound_offline_observation_binding.v1",
+    "bounded_auto_allowed": false,
+    "experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+    "identity_digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+    "identity_reinterpreted": false,
+    "observation_owner": "OFFLINE_EXPERIMENT_OBSERVATIONS_V1",
+    "persist": {
+      "experiment_record_id": null
+    },
+    "promotion_apply_allowed": false,
+    "runtime_authority_effect": false,
+    "schema_version": "canonical_identity_bound_offline_observation_binding_v1",
+    "status": "BOUND"
+  },
+  "overall_status": "LOOP_COMPLETE",
+  "persist": {
+    "experiment_record_id": null,
+    "failure_record_ids": [],
+    "reality_gap_record_id": null
+  },
+  "promotion_authority": "NONE",
+  "reality_gap_record": {
+    "canonical_trading_decision_core_bound": true,
+    "completeness": "COMPLETE",
+    "created_at": "2026-08-18T12:40:00Z",
+    "digest_algorithm": "sha256",
+    "dimension_results": [
+      {
+        "abs_delta": 0.00019999999999999987,
+        "delta": 0.00019999999999999987,
+        "expected": 0.001,
+        "identity_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+        "identity_digest_field": "fee_model_digest",
+        "name": "fee",
+        "observed": 0.0012,
+        "status": "WITHIN_THRESHOLD",
+        "threshold": 0.001,
+        "unit": "ratio"
+      }
+    ],
+    "evidence_refs": [
+      {
+        "digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+        "kind": "EXPERIMENT_RECORD",
+        "ref": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9"
+      }
+    ],
+    "expected_surface": "RESEARCH",
+    "experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+    "experiment_identity": {
+      "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+      "canonical_trading_decision_core_bound": true,
+      "completeness": "COMPLETE",
+      "cost_model_digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+      "dataset_digest": "344d346b4c50b652925c87a67052e7dedf8d01837cdabc7862acad258a1d85e4",
+      "digest_algorithm": "sha256",
+      "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+      "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+      "environment": {
+        "identity_schema_version": "canonical_experiment_identity_v1",
+        "python_implementation": "CPython",
+        "python_version": "3.11.15"
+      },
+      "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+      "experiment_identity_has_runtime_authority": false,
+      "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+      "fee_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+      "funding_model_digest": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+      "git_sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+      "identity_digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+      "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+      "integrity": {
+        "content_sha256": "7bcfdc710e4e3da6045535e1383a4100b371ee67c081add22787b487bb56bb51"
+      },
+      "learning_may_autonomously_replace_core_logic": false,
+      "learning_may_research_core_logic_changes": true,
+      "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+      "parent_lineage": {
+        "kind": "ROOT",
+        "parent_lineage_ref": null
+      },
+      "portfolio_digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+      "risk_policy_digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+      "runtime_authority_impact": "NONE",
+      "schema_version": "canonical_experiment_identity_v1",
+      "seed": 11,
+      "self_learning_must_learn_from_canonical_trading_decision_path": true,
+      "slippage_model_digest": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+      "split_policy_digest": "2571bd703fe6d4f7cc7c38cadf208e07acfe4f5702e8218e9858409fbabafcd0",
+      "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+      "strategy_identity": "ma_crossover.v1",
+      "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+      "strategy_params_digest": "3ad95784e803f78585d33abdb5e066652711df7177426638586859c8486161ea",
+      "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+      "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+      "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+      "working_tree_status": "CLEAN"
+    },
+    "failed_gate": "NOT_TRIGGERED",
+    "integrity": {
+      "content_sha256": "ed212cda9060e10c949b2a80b3b2c2b7065a72861b77991bd82816d8881e560f"
+    },
+    "learning_may_autonomously_replace_core_logic": false,
+    "metric_definitions": "canonical_robustness_metrics_v1",
+    "observed_surface": "SHADOW",
+    "observed_surface_is_not_authorization": true,
+    "overall_disposition": "WITHIN_THRESHOLD",
+    "promotion_authority": "NONE",
+    "reality_gap_can_arm": false,
+    "reality_gap_can_authorize_canary": false,
+    "reality_gap_can_create_confirm_token": false,
+    "reality_gap_can_enable": false,
+    "reality_gap_can_fund": false,
+    "reality_gap_can_increase_leverage": false,
+    "reality_gap_can_increase_risk": false,
+    "reality_gap_can_mutate_live_config": false,
+    "reality_gap_can_promote": false,
+    "reality_gap_can_promote_to_live": false,
+    "reality_gap_can_submit_order": false,
+    "reality_gap_can_use_confirm_token": false,
+    "reality_gap_can_write_live_config": false,
+    "reality_gap_domain": "peak_trade.canonical_reality_gap_store.v1",
+    "reality_gap_record_id": "a7d16bdd00b1b32c2142892f9373f52521fba795d64d68a73d0e7ed284dfb777",
+    "reality_gap_store_has_runtime_authority": false,
+    "reality_gap_store_present": true,
+    "record_schema_version": "canonical_reality_gap_store_v1",
+    "runtime_authority_impact": "NONE",
+    "self_learning_self_authorizing_separation": true,
+    "threshold_policy_digest": "11efcf1c4b7b822d3d60e70bad9e9585d33c1bbfd9cb8eb5b3a8e2e44c5939d9"
+  },
+  "research_loop_can_arm": false,
+  "research_loop_can_authorize_canary": false,
+  "research_loop_can_create_confirm_token": false,
+  "research_loop_can_enable": false,
+  "research_loop_can_fund": false,
+  "research_loop_can_increase_leverage": false,
+  "research_loop_can_increase_risk": false,
+  "research_loop_can_mutate_live_config": false,
+  "research_loop_can_promote": false,
+  "research_loop_can_promote_to_live": false,
+  "research_loop_can_submit_order": false,
+  "research_loop_can_use_confirm_token": false,
+  "research_loop_can_write_live_config": false,
+  "research_loop_domain": "peak_trade.canonical_automated_offline_research_loop.v1",
+  "research_loop_has_runtime_authority": false,
+  "research_loop_present": true,
+  "research_metadata": {
+    "champion_experiment_id": "3c4cbfb823dcfe64a04076cfe5225da4eb71e190474469c034a3e21ab05c465d",
+    "comparison_ssot_version": "canonical_comparison_ssot_v1",
+    "duplicate_detected": false,
+    "experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+    "failed_steps": [],
+    "hypothesis_fingerprint": "1d32fa9b7942d47884c64fcf7f4083f482caf5f8657f5e1452575e4b9362c2a0",
+    "hypothesis_id": "hyp.ma-crossover.v1",
+    "identity_digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+    "metric_definitions": "canonical_robustness_metrics_v1",
+    "robustness_suite_version": "canonical_robustness_suite_v1",
+    "step_ids": [
+      "HYPOTHESIS_SELECTION",
+      "RESEARCH_HYPOTHESIS_PREPARATION",
+      "OFFLINE_EXPERIMENT_EXECUTION",
+      "CANONICAL_ROBUSTNESS_EXECUTION",
+      "COMPARABILITY_CHECK",
+      "CHALLENGER_REPORT_GENERATION",
+      "FAILURE_MEMORY_UPDATE",
+      "REALITY_GAP_REPORT_GENERATION",
+      "RESEARCH_METADATA_AGGREGATION"
+    ]
+  },
+  "robustness_evidence": {
+    "aggregate_status": "PASS",
+    "candidate_ref": "candidate.ma-crossover.v1",
+    "canonical_trading_decision_core_bound": true,
+    "completeness": "COMPLETE",
+    "cost_model_ref": {
+      "digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+      "kind": "IDENTITY_DIGEST_BOUND"
+    },
+    "created_at": "2026-08-18T12:40:00Z",
+    "dataset_digest": "344d346b4c50b652925c87a67052e7dedf8d01837cdabc7862acad258a1d85e4",
+    "dataset_ref": {
+      "digest": "344d346b4c50b652925c87a67052e7dedf8d01837cdabc7862acad258a1d85e4",
+      "kind": "IDENTITY_DIGEST_BOUND"
+    },
+    "deterministic_randomness_contract": {
+      "kind": "NUMPY_GENERATOR_DEFAULT_RNG",
+      "monte_carlo_owner": "src.experiments.monte_carlo",
+      "seed": 11,
+      "stress_tests_owner": "src.experiments.stress_tests"
+    },
+    "digest_algorithm": "sha256",
+    "evidence_dimensions": {
+      "exposure": {
+        "status": "COMPUTED",
+        "value": 0.4
+      },
+      "fee_drag": {
+        "status": "COMPUTED",
+        "value": 0.01
+      },
+      "funding_sensitivity": {
+        "status": "COMPUTED",
+        "value": 0.02
+      },
+      "max_dd": {
+        "status": "COMPUTED",
+        "value": 0.08
+      },
+      "oos_stability": {
+        "status": "COMPUTED",
+        "value": 0.85
+      },
+      "parameter_stability": {
+        "status": "COMPUTED",
+        "value": 0.9
+      },
+      "profit_factor": {
+        "status": "COMPUTED",
+        "value": 1.4
+      },
+      "regime_concentration": {
+        "status": "COMPUTED",
+        "value": 0.35
+      },
+      "sample_size": {
+        "status": "COMPUTED",
+        "value": 32.0
+      },
+      "sharpe": {
+        "status": "COMPUTED",
+        "value": 1.2
+      },
+      "slippage_sensitivity": {
+        "status": "COMPUTED",
+        "value": 0.04
+      },
+      "sortino": {
+        "status": "COMPUTED",
+        "value": 1.5
+      },
+      "tail_risk": {
+        "status": "COMPUTED",
+        "value": 0.07
+      },
+      "turnover": {
+        "status": "COMPUTED",
+        "value": 0.2
+      }
+    },
+    "evidence_refs": [
+      {
+        "digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+        "kind": "EXPERIMENT_RECORD",
+        "ref": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9"
+      }
+    ],
+    "experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+    "experiment_identity": {
+      "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+      "canonical_trading_decision_core_bound": true,
+      "completeness": "COMPLETE",
+      "cost_model_digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+      "dataset_digest": "344d346b4c50b652925c87a67052e7dedf8d01837cdabc7862acad258a1d85e4",
+      "digest_algorithm": "sha256",
+      "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+      "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+      "environment": {
+        "identity_schema_version": "canonical_experiment_identity_v1",
+        "python_implementation": "CPython",
+        "python_version": "3.11.15"
+      },
+      "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+      "experiment_identity_has_runtime_authority": false,
+      "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+      "fee_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+      "funding_model_digest": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+      "git_sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+      "identity_digest": "8a17fc29e8d2166f3b41f9c6d60d9bb01b5c0c12f7d1aec54cbf8501ac590f4d",
+      "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+      "integrity": {
+        "content_sha256": "7bcfdc710e4e3da6045535e1383a4100b371ee67c081add22787b487bb56bb51"
+      },
+      "learning_may_autonomously_replace_core_logic": false,
+      "learning_may_research_core_logic_changes": true,
+      "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+      "parent_lineage": {
+        "kind": "ROOT",
+        "parent_lineage_ref": null
+      },
+      "portfolio_digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+      "risk_policy_digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+      "runtime_authority_impact": "NONE",
+      "schema_version": "canonical_experiment_identity_v1",
+      "seed": 11,
+      "self_learning_must_learn_from_canonical_trading_decision_path": true,
+      "slippage_model_digest": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+      "split_policy_digest": "2571bd703fe6d4f7cc7c38cadf208e07acfe4f5702e8218e9858409fbabafcd0",
+      "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+      "strategy_identity": "ma_crossover.v1",
+      "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+      "strategy_params_digest": "3ad95784e803f78585d33abdb5e066652711df7177426638586859c8486161ea",
+      "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+      "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+      "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+      "working_tree_status": "CLEAN"
+    },
+    "failed_gates": [],
+    "hypothesis_id": "hyp.ma-crossover.v1",
+    "integrity": {
+      "content_sha256": "1b03b519d865fe72a826d8bce617635a55eb988a011d289cd03d95115f15b661"
+    },
+    "learning_may_autonomously_replace_core_logic": false,
+    "metric_definition_version": "canonical_robustness_metrics_v1",
+    "observations_digest": "5eead99c512dcaf28bb45976f8d1b1777aea69ad25f9182099832fb9efbae2b4",
+    "parameter_region": {
+      "fast": 10,
+      "slow": 50
+    },
+    "promotion_authority": "NONE",
+    "promotion_intent": "FORBIDDEN",
+    "regime": "mixed",
+    "risk_policy_ref": {
+      "digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+      "kind": "IDENTITY_DIGEST_BOUND"
+    },
+    "robustness_domain": "peak_trade.canonical_robustness_suite.v1",
+    "robustness_policy_digest": "589a6ca184a96e700c57e4340918cf604a01ea5c7e2cef2421823281b69dc6cd",
+    "robustness_suite_can_arm": false,
+    "robustness_suite_can_authorize_canary": false,
+    "robustness_suite_can_create_confirm_token": false,
+    "robustness_suite_can_enable": false,
+    "robustness_suite_can_fund": false,
+    "robustness_suite_can_increase_leverage": false,
+    "robustness_suite_can_increase_risk": false,
+    "robustness_suite_can_mutate_live_config": false,
+    "robustness_suite_can_promote": false,
+    "robustness_suite_can_promote_to_live": false,
+    "robustness_suite_can_submit_order": false,
+    "robustness_suite_can_use_confirm_token": false,
+    "robustness_suite_can_write_live_config": false,
+    "robustness_suite_has_runtime_authority": false,
+    "robustness_suite_identity": "e726013d671108cd0c8e4fe045bd8c3be708134c8ccb29e5099f697f34827048",
+    "robustness_suite_version": "canonical_robustness_suite_v1",
+    "runtime_authority_impact": "NONE",
+    "seed": 11,
+    "self_learning_self_authorizing_separation": true,
+    "single_metric_promotion": false,
+    "split_policy_ref": {
+      "digest": "2571bd703fe6d4f7cc7c38cadf208e07acfe4f5702e8218e9858409fbabafcd0",
+      "kind": "IDENTITY_DIGEST_BOUND"
+    },
+    "test_results": [
+      {
+        "details": {
+          "holdout": {
+            "sample_size": 16.0,
+            "sharpe": 1.0
+          },
+          "train": {
+            "sample_size": 32.0,
+            "sharpe": 1.2
+          },
+          "validation": {
+            "sample_size": 16.0,
+            "sharpe": 1.1
+          }
+        },
+        "implementation": "ADAPT:src.backtest.parameter_sensitivity_v1",
+        "reason": "train/validation/holdout remain within OOS collapse policy",
+        "status": "PASS",
+        "test_id": "TRAIN_VALIDATION_HOLDOUT"
+      },
+      {
+        "details": {
+          "window_count": 2
+        },
+        "implementation": "ADAPT:src.backtest.walkforward",
+        "reason": "walk-forward window observations remain within OOS collapse policy",
+        "status": "PASS",
+        "test_id": "WALK_FORWARD"
+      },
+      {
+        "details": {
+          "test_sharpes": [
+            1.0,
+            0.95
+          ]
+        },
+        "implementation": "ADAPT:src.backtest.walkforward",
+        "reason": "rolling OOS test sharpes remain above policy floor",
+        "status": "PASS",
+        "test_id": "ROLLING_OOS"
+      },
+      {
+        "details": {
+          "test_sharpe": 1.0,
+          "train_sharpe": 1.2
+        },
+        "reason": "PURGED_SPLIT observations remain within OOS collapse policy",
+        "status": "PASS",
+        "test_id": "PURGED_SPLIT"
+      },
+      {
+        "details": {
+          "test_sharpe": 1.0,
+          "train_sharpe": 1.2
+        },
+        "reason": "EMBARGO observations remain within OOS collapse policy",
+        "status": "PASS",
+        "test_id": "EMBARGO"
+      },
+      {
+        "details": {
+          "num_runs": 16,
+          "p50_sharpe": 0.4291375490194061,
+          "p5_sharpe": 0.04079190290330873
+        },
+        "implementation": "REUSE:src.experiments.monte_carlo",
+        "reason": "MONTE_CARLO p5 sharpe remains above policy floor",
+        "status": "PASS",
+        "test_id": "MONTE_CARLO"
+      },
+      {
+        "details": {
+          "num_runs": 16,
+          "p50_sharpe": 0.42078606896812143,
+          "p5_sharpe": 0.32878029792668567
+        },
+        "implementation": "REUSE:src.experiments.monte_carlo",
+        "reason": "BLOCK_BOOTSTRAP p5 sharpe remains above policy floor",
+        "status": "PASS",
+        "test_id": "BLOCK_BOOTSTRAP"
+      },
+      {
+        "details": {
+          "sharpes": [
+            1.2,
+            1.15
+          ],
+          "sign_flips": 0
+        },
+        "implementation": "ADAPT:src.backtest.parameter_sensitivity_v1",
+        "reason": "parameter sensitivity observations remain within stability policy",
+        "status": "PASS",
+        "test_id": "PARAMETER_SENSITIVITY"
+      },
+      {
+        "details": {
+          "baseline_sharpe": 1.2,
+          "stressed_sharpe": 1.0
+        },
+        "implementation": "REUSE:src.backtest.cost_config_v0",
+        "reason": "FEE_STRESS remains within cost-stress collapse policy",
+        "status": "PASS",
+        "test_id": "FEE_STRESS"
+      },
+      {
+        "details": {
+          "baseline_sharpe": 1.2,
+          "stressed_sharpe": 1.02
+        },
+        "implementation": "REUSE:src.backtest.cost_config_v0",
+        "reason": "SLIPPAGE_STRESS remains within cost-stress collapse policy",
+        "status": "PASS",
+        "test_id": "SLIPPAGE_STRESS"
+      },
+      {
+        "details": {
+          "baseline_sharpe": 1.2,
+          "stressed_sharpe": 1.05
+        },
+        "implementation": "REUSE:src.backtest.cost_config_v0",
+        "reason": "FUNDING_STRESS remains within cost-stress collapse policy",
+        "status": "PASS",
+        "test_id": "FUNDING_STRESS"
+      },
+      {
+        "details": {
+          "baseline_sharpe": 1.2,
+          "stressed_sharpe": 1.1
+        },
+        "implementation": "REUSE:src.backtest.cost_config_v0",
+        "reason": "LATENCY_STRESS remains within cost-stress collapse policy",
+        "status": "PASS",
+        "test_id": "LATENCY_STRESS"
+      },
+      {
+        "details": {
+          "baseline_sharpe": 1.2,
+          "stressed_sharpe": 1.09
+        },
+        "implementation": "REUSE:src.backtest.cost_config_v0",
+        "reason": "SPREAD_STRESS remains within cost-stress collapse policy",
+        "status": "PASS",
+        "test_id": "SPREAD_STRESS"
+      },
+      {
+        "details": {
+          "baseline_sharpe": 1.2,
+          "stressed_sharpe": 1.08
+        },
+        "implementation": "REUSE:src.backtest.cost_config_v0",
+        "reason": "LIQUIDITY_STRESS remains within cost-stress collapse policy",
+        "status": "PASS",
+        "test_id": "LIQUIDITY_STRESS"
+      },
+      {
+        "details": {
+          "scenario_count": 3,
+          "worst_stressed_max_dd": 0.2039967999999999
+        },
+        "implementation": "REUSE:src.experiments.stress_tests",
+        "reason": "crash-scenario max_dd remains within policy limit",
+        "status": "PASS",
+        "test_id": "CRASH_SCENARIOS"
+      },
+      {
+        "details": {
+          "min_sample_size": 16,
+          "missing_fraction": 0.0
+        },
+        "reason": "missing-data stress observations report zero missing_fraction",
+        "status": "PASS",
+        "test_id": "MISSING_DATA_STRESS"
+      },
+      {
+        "details": {
+          "bad_tick_count": 0,
+          "min_sample_size": 16
+        },
+        "reason": "bad-tick stress observations report zero bad ticks",
+        "status": "PASS",
+        "test_id": "BAD_TICK_STRESS"
+      },
+      {
+        "details": {
+          "regime_count": 2
+        },
+        "reason": "regime sample shares remain above policy min share",
+        "status": "PASS",
+        "test_id": "REGIME_STRESS"
+      },
+      {
+        "details": {
+          "stressed_max_dd": 0.12
+        },
+        "reason": "risk-stress max_dd remains within policy limit",
+        "status": "PASS",
+        "test_id": "RISK_STRESS"
+      },
+      {
+        "details": {
+          "adjusted_p_value": 0.01,
+          "alpha": 0.05,
+          "family_size": 1
+        },
+        "reason": "Bonferroni-adjusted p-value remains within alpha",
+        "status": "PASS",
+        "test_id": "MULTIPLE_TESTING_CONTROLS"
+      },
+      {
+        "details": {
+          "promotion_authority": "NONE"
+        },
+        "reason": "single-metric promotion is forbidden and was not attempted",
+        "status": "PASS",
+        "test_id": "SINGLE_METRIC_PROMOTION_GUARD"
+      },
+      {
+        "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+        "reason": "Deflated Sharpe Ratio is not implemented: no bound non-centrality and trial-count contract exists for Canonical Experiment Identity",
+        "status": "BLOCKED_MISSING_CAPABILITY",
+        "test_id": "DEFLATED_SHARPE_RATIO"
+      },
+      {
+        "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+        "reason": "Probabilistic Sharpe Ratio is not implemented: no bound Sharpe sampling distribution owner is wired to this suite",
+        "status": "BLOCKED_MISSING_CAPABILITY",
+        "test_id": "PROBABILISTIC_SHARPE_RATIO"
+      },
+      {
+        "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+        "reason": "Probability of Backtest Overfitting is not implemented: CSCV/PBO requires a combinatorially partitioned trial matrix that this identity contract does not yet own",
+        "status": "BLOCKED_MISSING_CAPABILITY",
+        "test_id": "PROBABILITY_OF_BACKTEST_OVERFITTING"
+      },
+      {
+        "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+        "reason": "Combinatorial Purged Cross-Validation is not implemented: no purged combinatorial split engine is bound to experiment identity",
+        "status": "BLOCKED_MISSING_CAPABILITY",
+        "test_id": "CPCV"
+      },
+      {
+        "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+        "reason": "White Reality Check is not implemented: no bound benchmark-null and resampling family exists for this contract",
+        "status": "BLOCKED_MISSING_CAPABILITY",
+        "test_id": "WHITE_REALITY_CHECK"
+      },
+      {
+        "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+        "reason": "Hansen SPA test is not implemented: no bound superior predictive ability resampling owner exists for this contract",
+        "status": "BLOCKED_MISSING_CAPABILITY",
+        "test_id": "SPA_TEST"
+      }
+    ]
+  },
+  "runtime_authority_impact": "NONE",
+  "schema_version": "canonical_automated_offline_research_loop_v1",
+  "selected_experiment_id": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+  "selected_hypothesis_id": "hyp.ma-crossover.v1",
+  "self_learning_self_authorizing_separation": true,
+  "step_results": [
+    {
+      "detail": "hyp.ma-crossover.v1",
+      "status": "COMPLETE",
+      "step_id": "HYPOTHESIS_SELECTION"
+    },
+    {
+      "detail": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+      "status": "COMPLETE",
+      "step_id": "RESEARCH_HYPOTHESIS_PREPARATION"
+    },
+    {
+      "detail": "29a30384ef15ea62a48805b8f5240a4401d0580b45caa89f36067c9f6b1b2fa9",
+      "status": "COMPLETE",
+      "step_id": "OFFLINE_EXPERIMENT_EXECUTION"
+    },
+    {
+      "detail": "PASS",
+      "status": "COMPLETE",
+      "step_id": "CANONICAL_ROBUSTNESS_EXECUTION"
+    },
+    {
+      "detail": "COMPARABLE",
+      "status": "COMPLETE",
+      "step_id": "COMPARABILITY_CHECK"
+    },
+    {
+      "detail": "CHALLENGER_RESEARCH_PREFERRED",
+      "status": "COMPLETE",
+      "step_id": "CHALLENGER_REPORT_GENERATION"
+    },
+    {
+      "detail": "0",
+      "status": "COMPLETE",
+      "step_id": "FAILURE_MEMORY_UPDATE"
+    },
+    {
+      "detail": "WITHIN_THRESHOLD",
+      "status": "COMPLETE",
+      "step_id": "REALITY_GAP_REPORT_GENERATION"
+    },
+    {
+      "detail": "canonical_automated_offline_research_loop_v1",
+      "status": "COMPLETE",
+      "step_id": "RESEARCH_METADATA_AGGREGATION"
+    }
+  ]
+}

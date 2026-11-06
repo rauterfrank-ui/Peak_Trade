@@ -1,0 +1,9 @@
+{
+  "exit_code": 2,
+  "holdout_accessed": false,
+  "reason": "HOLDOUT_DUPLICATE_RUN_BLOCKED",
+  "result_class": "BLOCKED_NO_RERUN",
+  "run_blocked_before_data_access": true,
+  "schema_version": "evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_run_manifest.v1",
+  "sealed_holdout_content_inspected": false
+}

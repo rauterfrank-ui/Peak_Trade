@@ -1,0 +1,1438 @@
+# Peak_Trade – Projekt-Status Overview (Phasen 1–86)
+
+
+## Entry framing note
+
+This overview is a historical/status navigation surface, not a standalone readiness or promotion authority. Status percentages, phase labels, completion wording, and production/readiness language must be interpreted together with the current Master V2 / PRE_LIVE / gate / evidence / signoff sections.
+
+This overview does not grant Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, production readiness, or permission to route orders into any live capital path. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This docs-only note changes no runtime behavior and changes no status values.
+
+Dieses Dokument beschreibt den aktuellen Gesamtstatus von **Peak_Trade**
+(Phasen **1–86**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+
+> **Research v1.0 Freeze:** Phase 86 markiert den Scope-Freeze für Research v1.0 und die Freigabe des Live-Track für Beta-Testing. Siehe [`PHASE_86_RESEARCH_V1_FREEZE.md`](PHASE_86_RESEARCH_V1_FREEZE.md).
+
+> **Peak_Trade v1.0 Release-Paket:** siehe [`PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) und das aktualisierte Projekt-[`README.md`](../README.md).
+
+Ziel:
+
+* Eine **prozentuale Einschätzung** je Bereich
+* Klarheit, **was schon stabil ist** und **was noch fehlt**
+* Grundlage für zukünftige Roadmaps (Phase 59+)
+
+> **Hinweis:** Prozentwerte sind bewusst als **qualitative Reifegrade** zu verstehen
+> (Architektur, Codequalität, Tests, Doku, Operational Readiness), nicht als „fertig/nie-ändern".
+
+> **Für ein Architektur-Diagramm und Layer-Übersicht siehe:** [`ARCHITECTURE_OVERVIEW.md`](ARCHITECTURE_OVERVIEW.md)
+
+> **Live-Track Doc Index:** Für eine zentrale Übersicht aller Live-Track-, Dashboard-, Playbook- und Safety-Dokumente siehe [`LIVE_TRACK_DOC_INDEX_V1.md`](LIVE_TRACK_DOC_INDEX_V1.md).
+
+---
+
+## Wie du den v1.0 Status liest
+
+- **Schnell-Modus (5 Minuten):** Lies die Tabelle in [Projektstatus – Gesamtüberblick](#projektstatus-gesamtberblick-stand-2025-12-09) für den High-Level-Überblick. Für den v1.0-Gesamtsnapshot mit Kennzahlen siehe den Abschnitt **„Hall of Fame – Peak_Trade v1.0 Snapshot"** in [`PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md).
+
+- **Status-Interpretation:** Prozentwerte sind **qualitative Reifegrade** (Architektur, Codequalität, Tests, Doku, Operational Readiness) – nicht als „100% = fertig für immer" zu verstehen. Kommentare in den Tabellen erläutern den jeweiligen Stand.
+
+- **Deep-Dive nach Layer:** Für Details zu einzelnen Bereichen navigiere zu den nummerierten Abschnitten (2–10), z.B. Data & Market Access, Backtest & Simulation, Strategy & Portfolio, Live-/Testnet & Operations.
+
+- **Rollen-Fokus:**
+  - *Research/Quant:* Abschnitte 3 (Backtest), 4 (Strategy & Portfolio), 6 (Research & Experiments)
+  - *Operator/Ops:* Abschnitte 7 (Live-/Testnet), 8 (Reporting & CLI), 11 (Highlights Phasen 47–74)
+  - *Reviewer/Risk:* Abschnitte 5 (Risk & Safety), 9 (Documentation & Governance), 13a (v1.0 Gesamtübersicht)
+
+- **v1.0-Gesamtsnapshot:** Für Test-Zahlen, Tags, Commits und die verbindliche v1.0-Referenz siehe den Abschnitt **„Hall of Fame – Peak_Trade v1.0 Snapshot"** am Ende von [`PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md).
+
+---
+
+## Projektstatus – Gesamtüberblick (Stand: 2025-12-09)
+
+| Bereich                         | Beschreibung                                                      | Fortschritt |
+| ------------------------------- | ----------------------------------------------------------------- | ----------- |
+| **Gesamtprojekt (Phasen 1–86)** | Vollständiger Peak_Trade Stack von Data bis Live                  | **≈ 98%**   |
+| **Data-Layer**                  | Loader, Caches, Normalisierung, Multi-Source Support              | **100%**    |
+| **Backtest-Engine**             | Portfolio-Backtests, Metriken, Registry, Run-Management           | **100%**    |
+| **Strategy-Layer (Prod)**       | Kernstrategien, produktive Signals, Tier-System                   | **≈ 96%**   |
+| **Strategy-Layer (R&D)**        | R&D-Strategien (Armstrong, El Karoui, Waves), Sweeps              | **≈ 98%**   |
+| **Portfolio & Risk**            | Portfolio-Strategien, RiskLimits, Kelly/Exposure, Checks          | **≈ 96%**   |
+| **Execution & Live-Stack**      | Paper/Testnet-Flows, Live-Risk-Gates, Order-Executors, Telemetry Observability (Phase 16A–J: Events, Viewer, QA, Retention, Health, Trends, Alerting, Lifecycle) | **≈ 99%**   |
+| **Live-Track & Bridge**         | Strategy→Execution Bridge, Live-Session-Registry, Status-Overview | **≈ 96%**   |
+| **R&D Web-Dashboard**           | R&D Hub, Detail-View, Report-Gallery, Multi-Run-Comparison        | **100%**    |
+| **Monitoring & Alerts**         | CLI-Dashboards, Health-/Smoke-/Readiness-Checks                   | **≈ 95%**   |
+| **Docs & Runbooks**             | Phase-Dokus, Status-Overview, Runbooks, AI-Guides, Changelogs     | **≈ 97%**   |
+| **Tooling / Dev-Workflow**      | venv, Test-Suite (>2500 Tests), CLI-Skripte, Git-/GH-Flow         | **≈ 95%**   |
+
+## Phasen-Cluster – Fortschritt in Prozent
+
+| Phasen-Cluster   | Schwerpunkt                                                           | Fortschritt | Kommentar                                                     |
+| ---------------- | --------------------------------------------------------------------- | ----------- | ------------------------------------------------------------- |
+| **Phasen 1–20**  | Core-Framework, Data-Layer, Backtest-Engine, Basis-Infrastruktur      | **100%**    | Fundament steht, wird nur noch gepflegt/erweitert             |
+| **Phasen 21–40** | Strategy-Layer (Prod), erste Portfolio-Logik, Metriken & Reporting    | **≈ 99%**   | Alle Kernstrategien & Pipelines produktiv nutzbar             |
+| **Phasen 41–60** | Research-Ökosystem, Sweeps, Advanced Reporting, Risk-Vertiefung       | **≈ 97%**   | Voll funktionsfähig, nur noch Feintuning/Erweiterungen        |
+| **Phasen 61–75** | Execution-Stack, Environments, Risk-Gates, Monitoring & Checks        | **≈ 96%**   | Execution und Safety-Gates implementiert, laufendes Hardening |
+| **Phasen 76–81** | R&D Dashboard (Hub, Detail, Gallery, Comparison) & Live-Track Bridge  | **≈ 98%**   | 76–78 & 80/81 implementiert, UI/UX-Feinschliff laufend        |
+| **Phase 81** | Live / Risk | Live Session Registry v1 + Live Risk Severity & Alert Runbook v1 – Session-Registry, Severity-Ampel im Dashboard und kodifiziertes Operator-Runbook (GREEN/YELLOW/RED). |
+| **Phasen 82–86** | Future Extensions, Nice-to-have Features, Erweiterungen für Live & UI | **≈ 85%**   | Nur noch optionale Ausbau-Themen, Kernsystem ist vollständig  |
+
+## Layer-Matrix – Fortschritt nach Systemkomponente
+
+| Layer / Komponente           | Implementierung | Testabdeckung | Doku / Runbooks | Gesamt-Fortschritt |
+| ---------------------------- | --------------- | ------------- | --------------- | ------------------ |
+| **Data-Layer**               | **100%**        | **100%**      | **≈ 95%**       | **100%**           |
+| **Backtest-Engine**          | **100%**        | **100%**      | **≈ 95%**       | **100%**           |
+| **Strategy-Layer (Prod)**    | **≈ 97%**       | **≈ 96%**     | **≈ 95%**       | **≈ 96%**          |
+| **Strategy-Layer (R&D)**     | **≈ 98%**       | **≈ 97%**     | **≈ 95%**       | **≈ 98%**          |
+| **Portfolio & Risk**         | **≈ 96%**       | **≈ 95%**     | **≈ 94%**       | **≈ 96%**          |
+| **Execution & Environments** | **≈ 95%**       | **≈ 93%**     | **≈ 96%**       | **≈ 95%**          |
+| **Live-Track & Bridge**      | **≈ 96%**       | **≈ 94%**     | **≈ 92%**       | **≈ 96%**          |
+| **R&D Web-Dashboard**        | **100%**        | **100%**      | **≈ 95%**       | **100%**           |
+| **Monitoring & Alerts**      | **≈ 95%**       | **≈ 94%**     | **≈ 93%**       | **≈ 95%**          |
+| **Live-Risk Severity**       | **100%**        | **100%**      | **100%**        | **100%**           |
+| **Docs & Meta-Runbooks**     | **≈ 97%**       | –             | **≈ 97%**       | **≈ 97%**          |
+| **Tooling & Dev-Workflow**   | **≈ 95%**       | **≈ 95%**     | **≈ 90%**       | **≈ 95%**          |
+
+## Layer-Fokus – Nächste 3–5 Prozent
+
+| Layer / Komponente           | Nächste 3–5 %                                                                                                                         | Priorität |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| **Data-Layer**               | Doku harter abgrenzen: welche Loader/Normalizer sind „Core", welche „Legacy/Optional"; kleine Beispiel-Snippets in der Doku ergänzen. | Niedrig   |
+| **Backtest-Engine**          | Erweiterte Beispiel-Configs & „Best Practices"-Abschnitt für komplexe Portfolio-Runs (Multi-Asset, Multi-Strategy) dokumentieren.     | Niedrig   |
+| **Strategy-Layer (Prod)**    | Konsistenter Param-Namensraum (+ evtl. Mapping-Tabelle), einheitliche „Live-Ready"-Kennzeichnung pro Strategie.                       | Mittel    |
+| **Strategy-Layer (R&D)**     | Kurze Research-Notes pro R&D-Strategie (Armstrong, El Karoui, Waves) + ein „How to interpret results"-Snippet.                        | Mittel    |
+| **Portfolio & Risk**         | Weitere Szenario-/Stress-Tests (Multi-Day-Drawdown, Gap-Risk) – Risk-Runbook („Was tun bei Breach?") ist jetzt implementiert.         | Erledigt  |
+| **Execution & Environments** | Mehr Edge-Case-Tests (Order-Rejects, Retry-Logic, Network-Glitches) + klarer Failover-Flow je Environment.                            | Hoch      |
+| **Live-Track & Bridge**      | UI-Feinschliff (Badges, Tooltips, Filter), kleine „Operator-Playbook"-Sektion für typische Daily-Flows.                               | Mittel    |
+| **R&D Web-Dashboard**        | Zusätzliche Filter/Sortieroptionen (run_type, date_str) feintunen und in der Doku als „R&D Workflows" zeigen.                         | Niedrig   |
+| **Monitoring & Alerts**      | Checkliste: „Welche Checks müssen grün sein, bevor Live/Paper gestartet wird?" – direkt in Doku referenziert.                         | Mittel    |
+| **Docs & Meta-Runbooks**     | Ein zentrales „Start here"-Kapitel mit Verlinkung zu den wichtigsten Phase-/Runbook-Dokumenten.                                       | Mittel    |
+| **Tooling & Dev-Workflow**   | Pre-Commit-/CI-Hinweise (pytest-Subset, Format, Lint) als kleinen Dev-Guide ergänzen.                                                 | Mittel    |
+
+---
+
+## 2. Data & Market Access (~95%)
+
+**Relevante Phasen (konzeptionell):**
+
+* **Frühe Phasen 1–5** – Data-Layer-Aufbau, Loader/Normalizer/Cache
+* **Data-/Market-Access-Feinschliff** – sukzessive in späteren Phasen integriert
+* **Shadow Pipeline Phase 2** – Tick→OHLCV→Quality Monitoring (2025-12-27)
+
+**Kernkomponenten:**
+
+* `src/data/loader.py`, `normalizer.py`, `cache.py`, `kraken.py`
+* **Shadow Pipeline** (`src/data/shadow/`):
+  * `_guards.py` – Defense-in-depth safety guards
+  * `models.py` – Tick/Bar dataclasses
+  * `tick_normalizer.py` – Kraken WebSocket parser
+  * `ohlcv_builder.py` – OHLCV aggregation
+  * `quality_monitor.py` – Gap/spike detection
+  * `jsonl_logger.py` – Rotating JSONL logger
+* Demo-/Pipeline-Skripte (z.B. `demo_data_pipeline.py`, `shadow_run_tick_to_ohlcv_smoke.py`)
+* Nutzung von `pandas`, `numpy`, `pyarrow`, Parquet etc.
+* Saubere Trennung zwischen:
+
+  * Rohdaten-Load
+  * Normalisierung / Cleaning
+  * Caching / Persistenz
+  * Quality Monitoring
+
+**Stärken:**
+
+* Stabile Data-Pipeline für Research & Backtests.
+* Kraken-/Market-Access als Referenz-Exchange implementiert.
+* Data-Layer fügt sich gut in Registry, Backtest & Research-Pipeline ein.
+* **Shadow Pipeline** mit production-grade quality monitoring und safety guards.
+
+**Offene/optionale Themen:**
+
+* Weitere Exchanges / Feeds (z.B. CME, weitere Crypto-Exchanges).
+* Mehr Data-Quality-Checks, Outlier-Handling, Holiday-Kalender, etc.
+* Fortgeschrittene Features wie Regime-Erkennung im Data-Layer (später).
+* Shadow Pipeline Phase 3 (Signal Processing & Validation).
+
+**Shadow Pipeline Phase 2 (NEW):**
+
+* **Status:** ✅ Implemented (2025-12-27)
+* **Docs:**
+  * Quickstart: `docs/shadow/SHADOW_PIPELINE_PHASE2_QUICKSTART.md`
+  * Operator Runbook: `docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md`
+  * Technical Spec: `docs/shadow/PHASE_2_TICK_TO_OHLCV_AND_QUALITY.md`
+* **Quick Start:** `scripts&#47;ops&#47;ops_center.sh shadow smoke`
+* **Tests:** 35+ tests (`pytest tests&#47;data&#47;shadow&#47; -v`)
+* **Safety:** Blocked in live mode, safe for dev/testnet contexts
+
+> **Reifegrad:** **ca. 95%** – der Data-Layer ist produktionsnah und kann als Referenz gelten. Shadow Pipeline Phase 2 erweitert die Data-Quality-Capabilities signifikant.
+
+---
+
+## 3. Backtest & Simulation (~92%)
+
+**Relevante Phasen & Doku:**
+
+* **Backtest-Grundlagen** – frühe Backtest-Phasen (Engine & Stats)
+* **Phase 30 – Reporting & Visualization**
+  → `docs/PHASE_30_REPORTING_AND_VISUALIZATION.md`
+* **Registry-/Experiment-Integration** – Dokumentation im Research-/Registry-Kontext
+
+**Kernkomponenten:**
+
+* `src/backtest/engine.py` – zentrale BacktestEngine
+* `src/backtest/stats.py` – Metriken (Returns, Drawdown, Sharpe, etc.)
+* Registry-/Experiment-Integration (Backtests als erste Klasse in der Research-Pipeline)
+* Reporting:
+
+  * `src/reporting/backtest_report.py`
+  * `src/reporting/experiment_report.py`
+  * `src/reporting/plots.py`
+* CLI-Skripte:
+
+  * `scripts/generate_backtest_report.py`
+  * `scripts/generate_experiment_report.py`
+
+**Stärken:**
+
+* Realistische Backtests mit Portfolio-Fähigkeiten.
+* Enge Integration mit Registry & Research-CLI.
+* Berichte mit Kennzahlen, Plots und Trade-Statistiken.
+
+**Offene Themen:**
+
+* Noch mehr „Corner-Case"-Tests (Exotische Fee-Modelle, Slippage-Szenarien, Illiquidität).
+* Tooling, um Backtest-Szenarien paketiert in Presets abzulegen.
+* Performance-Tuning für extrem große Backtest-Sets (Scale-Out).
+
+> **Reifegrad:** **ca. 92%** – stabiler Kern, gut getestet und tief integriert.
+
+---
+
+## 4. Strategy & Portfolio Layer (~88%)
+
+**Relevante Phasen & Doku:**
+
+* **Phase 26 – Portfolio-Strategie-Bibliothek**
+  → Portfolio-Layer & Multi-Strategie-Kombination
+* **Phase 47 – Portfolio-Level Robustness**
+  → Portfolio-Robustheitslogik & Reporting
+* **Portfolio Recipes & Presets**
+  → `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`
+
+**Kernkomponenten:**
+
+* Single-Strategie-Layer:
+
+  * `src&#47;strategies&#47;*.py` (z.B. MA-Crossover, Trend-Following, RSI-Reversion, Breakout, Vol-Regime-Filter)
+* **Portfolio-Layer (Research/Backtest):**
+
+  * Kombination mehrerer Strategien in Portfolios
+  * Gewichtung & Aggregation auf Portfolio-Ebene
+* **Phase 47 – Portfolio-Level Robustness:**
+
+  * `src/experiments/portfolio_robustness.py`
+  * `src/reporting/portfolio_robustness_report.py`
+  * `scripts/run_portfolio_robustness.py`
+  * Portfolio-basierte Metriken, Monte-Carlo & Stress-Tests
+* **Portfolio Recipes & Presets:**
+
+  * `config/portfolio_recipes.toml`
+  * `src/experiments/portfolio_recipes.py`
+  * `tests/test_portfolio_recipes.py`
+  * CLI-Integration in `research_cli.py` (Preset + Override)
+
+**Stärken:**
+
+* Strategien sind nicht nur isoliert, sondern **portfolio-fähig**.
+* Portfolio-Robustheit (Monte-Carlo + Stress) ist auf Portfolio-Level angehoben.
+* Recipes & Presets ermöglichen reproduzierbare, benannte Portfolio-Konfigurationen.
+
+**Phase Strategy-Expansion (Breakout & Vol-Regime):**
+
+* **Breakout-Strategie** (`src/strategies/breakout.py`):
+  * Klassischer Donchian-/High-Low-Breakout auf Basis von N-Bars
+  * Optionaler ATR-Filter zur Vermeidung von „Noise-Breakouts"
+  * Separate Lookbacks für Long/Short, Exit bei gegenteiligem Breakout
+  * Drei Risk-Modes: symmetric, long_only, short_only
+* **Vol-Regime-Filter** (`src/strategies/vol_regime_filter.py`):
+  * Meta-Strategie/Signalquelle für Regime-Klassifikation (Low-Vol/High-Vol/Neutral)
+  * Threshold-basierte Regime-Erkennung
+  * Als Filter für andere Strategien verwendbar
+* **Dokumentation:** `docs/PHASE_STRATEGY_EXPANSION_BREAKOUT_VOL_REGIME.md`
+
+**Phase Regime-Aware Portfolios:**
+
+* **RegimeAwarePortfolioStrategy** (`src/strategies/regime_aware_portfolio.py`):
+  * Kombiniert mehrere Sub-Strategien (z.B. Breakout + RSI)
+  * Nutzt Vol-Regime-Signale für dynamische Gewichtung
+  * Risk-On/Neutral/Risk-Off-Skalierung (1.0/0.5/0.0)
+  * Modi: "scale" (kontinuierliche Skalierung) und "filter" (binäres An/Aus)
+* **Config-Varianten:**
+  * `portfolio.regime_aware_breakout_rsi` - Standard-Portfolio
+  * `portfolio.regime_aware_conservative` - Konservative Variante
+* **Dokumentation:** `docs/PHASE_REGIME_AWARE_PORTFOLIOS.md`
+
+**Phase Regime-Aware Portfolio Sweeps & Presets:**
+
+* **Vordefinierte Sweep-Presets:**
+  * `regime_aware_portfolio_aggressive` - Aggressiv: Breakout + RSI, hohe Aktivität in Risk-On
+  * `regime_aware_portfolio_conservative` - Konservativ: Breakout + MA, Filter-Mode
+  * `regime_aware_portfolio_volmetric` - Vol-Metrik-Vergleich (ATR/STD/REALIZED/RANGE)
+* **Sweep-Funktionen** (`src/experiments/regime_aware_portfolio_sweeps.py`):
+  * Parametrisierbare Granularität (coarse/medium/fine)
+  * Integration mit Research-CLI
+* **TOML-Configs** (`config&#47;sweeps&#47;regime_aware_portfolio_*.toml`)
+* **Dokumentation:** `docs/PHASE_REGIME_AWARE_SWEEPS_AND_PRESETS.md`
+
+**Offene Themen:**
+
+* Weitere Strategie-Familien und Märkte.
+* Erweiterte Portfolio-Optimierungs-Ansätze (z.B. Risk-Parity, CVaR-Minimierung, etc.).
+
+> **Reifegrad:** **ca. 92%** – Phase 53 erweitert die Strategy-/Portfolio-Library um klar benannte Presets für unterschiedliche Risk-Profile (conservative/moderate/aggressive) und Multi-Style-Portfolios (Trend + Mean-Reversion). Phase 54 fügt ein umfassendes Research→Live Playbook hinzu, das den kompletten Weg von Portfolio-Presets bis zur Live-/Testnet-Aktivierung dokumentiert. Siehe `PORTFOLIO_RECIPES_AND_PRESETS.md` und [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md).
+
+---
+
+## 5. Risk & Safety (Research + Live) (~90%)
+
+**Relevante Phasen & Doku:**
+
+* **Phase 25 – Governance & Safety**
+  → `docs/PHASE_25_GOVERNANCE_SAFETY_IMPLEMENTATION.md`
+* **Live-Risk-Limits**
+  → Konfiguration & Implementierung im Live-Layer
+* **Safety & Policies**
+  → `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
+  → `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`
+
+**Kernkomponenten:**
+
+* Research-Risk:
+
+  * Metriken, Drawdown-Analysen, Stress- & Monte-Carlo-Szenarien im Research-Track.
+* Live-Risk-Limits:
+
+  * `config/config.toml` – `[live_risk]` Block mit:
+
+    * `max_daily_loss_abs`, `max_daily_loss_pct`
+    * `max_total_exposure_notional`, `max_symbol_exposure_notional`
+    * `max_open_positions`, `max_order_notional`
+    * `block_on_violation`, `use_experiments_for_daily_pnl`
+  * `src/live/risk_limits.py`:
+
+    * `LiveRiskConfig`, `LiveRiskCheckResult`, `LiveRiskLimits`
+    * `check_orders(...)`, `evaluate_portfolio(...)` (Portfolio-Level)
+* Governance & Safety:
+
+  * `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
+  * `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`
+  * `docs/LIVE_READINESS_CHECKLISTS.md`
+  * `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
+
+**Stärken:**
+
+* Risk ist **nicht nachträglich draufgestöpselt**, sondern zentraler Bestandteil des Designs.
+* Harte Limits vor Order-Ausführung + auf Portfolio-Level im Live-Bereich.
+* Research-Track arbeitet schon mit Stress- und Robustheits-Methoden.
+
+**Offene Themen:**
+
+* Risk-Profile (Conservative/Moderate/Aggressive) als zusätzliche Abstraktion über Roh-Limits.
+* Einheitliche Risk-Language zwischen Research-Reports, Live-Monitoring und Governance-Doku.
+
+### Live-Risk Severity – UI, Alerts & Runbook (NEU)
+
+**Status:** ✅ Abgeschlossen (vollständig dokumentiert & getestet)
+
+**Scope:**
+
+- Integration des bestehenden Severity-Systems (`OK`/`WARNING`/`BREACH`) in:
+  - Web-Dashboard (Sessions-Übersicht, Session-Detail),
+  - Alerting & Logging (Slack, CLI, Logs),
+  - Runbook-/Operator-Sicht (GREEN/YELLOW/RED Handlungsempfehlungen).
+- Neue Komponenten:
+  - `src/live/risk_alert_helpers.py` – Formatierung und Triggern von Risk-Alerts,
+  - `src/live/risk_runbook.py` – strukturierte Runbook-Einträge pro Status,
+  - `docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md` – End-to-end Doku.
+- UI:
+  - Risk-Ampel in der Sessions-Tabelle (🟢/🟡/🔴),
+  - Risk-Status-Panel und Limit-Details in der Session-Detail-Ansicht,
+  - eingebettete Kurz-Guidance für Operatoren.
+- Qualität:
+  - 102 Tests grün (inkl. neuer Alert-/Runbook-Tests),
+  - keine Breaking Changes, bestehende Pipelines bleiben unverändert lauffähig.
+
+> **Reifegrad:** **ca. 95%** – konzeptionell stark und tief integriert, Risk-Dashboard & Alerting jetzt implementiert.
+
+---
+
+## 6. Research & Experiments (~90%)
+
+**Relevante Phasen & Doku:**
+
+* **Registry- & Experiment-Integration** – Backtest-/Registry-Phasen (Registry-Demo & Doku)
+* **Research-Pipeline v2 (Phase 43)** – Sweep → Promote → Walk-Forward → MC → Stress
+  → Doku zur Research-Pipeline v2 in `docs/` (Phase 43)
+* **Portfolio-Robustness & Recipes**
+  → Phase 47 + `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`
+
+**Kernkomponenten:**
+
+* Experiment-/Registry-Layer:
+
+  * Speicherung von Backtests, Sweeps, Parametern, Metriken.
+  * Demo-Skripte und Tests für Registry-Backtests.
+* **Research-Pipeline v2 (Phase 43):**
+
+  * Orchestrierung:
+
+    * Sweep → Report → Promote → Walk-Forward → Monte-Carlo → Stress-Tests
+* Research-CLI:
+
+  * `scripts/research_cli.py`
+  * Subcommands für Sweeps, Reports, Research-Pipelines, Portfolios
+* Portfolio-Level Research:
+
+  * Phase 47 – Portfolio-Robustness
+  * Portfolio-Recipes & Presets
+
+**Stärken:**
+
+* „Research wie in einem Mini-Quant-Lab": Sweeps, Promotion, Out-of-Sample, Monte-Carlo, Stress.
+* CLI-Workflows sind automatisierbar und skriptbar.
+* Portfolio-Robustheit direkt in die Research-Pipeline integriert.
+
+**Offene Themen:**
+
+* Integration mit externen Tracking-Tools (MLflow, Weights & Biases – nur optional).
+* Mehr Komfortfunktionen (z.B. automatische Best-Config-Snapshots für bestimmte Risk-Profile).
+
+> **Reifegrad:** **ca. 91%** – Research-Track ist auf sehr hohem Niveau. Phase 54 fügt ein umfassendes Research→Live Playbook hinzu, das den kompletten Prozess von Portfolio-Presets bis zur Live-/Testnet-Aktivierung dokumentiert. Siehe [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md).
+
+### R&D-Strategie-Welle v1 – Armstrong, Ehlers, El Karoui & Co.
+
+Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde die erste **R&D-Strategie-Welle** in Peak_Trade integriert. Ziel ist es, fortgeschrittene Forschungsansätze aus der quantitativen Finance in einer sauberen, testbaren Form bereitzustellen – klar getrennt von der produktiven v1.1 Strategy-Library.
+
+* **Phase 75 – R&D-Strategien Armstrong & El Karoui:** Die experimentellen Strategien sind in `docs/PHASE_75_STRATEGY_LIBRARY_V1_1.md` jetzt detailliert beschrieben (Scope, typische Nutzungsszenarien, klare Abgrenzung zu Paper-/Testnet-/Live-Einsatz).
+
+**Umfang der R&D-Welle v1:**
+
+| Modul | Beschreibung | Kategorie |
+|-------|-------------|-----------|
+| **Armstrong** (retired from the active catalog; historical `src&#47;strategies&#47;armstrong&#47;`) | Cycle-/Timing research (ECM cycles). Not an active catalog identity after PR #6392. Joint Armstrong×El-Karoui combi producer retired from HEAD. | cycles |
+| **Ehlers** (`src/strategies/ehlers/`) | Signal-Processing & Cycle-Filter (DSP-Techniken) | cycles |
+| **El Karoui** (`src/strategies/el_karoui/`) | Stochastisches Volatilitätsmodell | volatility |
+| **Bouchaud** (`src/strategies/bouchaud/`) | Microstructure-Overlay (Orderbuch-Analyse) | microstructure |
+| **Gatheral/Cont** (`src/strategies/gatheral_cont/`) | Vol-Regime-Overlay (Rough-Vol-Modelle) | volatility |
+| **Lopez de Prado** (`src/strategies/lopez_de_prado/`) | Meta-Labeling & ML-orientierte Ansätze | ml |
+| **ML-Research** (`src/research/ml/`) | Zentrale Komponenten für ML-Labeling & Meta-Labeling | ml |
+
+**Tests & Safety:**
+
+* 94+ R&D-bezogene Tests (u.a. `test_bouchaud_gatheral_cont_strategies.py`, `test_ehlers_lopez_strategies.py`, `test_research_strategies.py`)
+* Alle Strategien laufen unter dem Label **"R&D / Experimental"** im Strategy-Tiering
+* Keine dieser Strategien ist für Live-Trading freigegeben; sie dienen ausschließlich Research, Backtests, Sweeps und strukturierten Experimenten
+
+**Integration in Strategy-Tiering & Dashboard:**
+
+* R&D-Strategien sind im `config/strategy_tiering.toml` als `tier = "r_and_d"` registriert
+* Web-Dashboard zeigt R&D-Strategien nur mit explizitem `?include_research=true` Parameter
+* Kategorisierung nach: `cycles`, `volatility`, `microstructure`, `ml`
+* Zusätzliche Felder: `label`, `category`, `risk_profile`, `owner`, `tags`
+
+**Nächste Schritte (R&D-Track):**
+
+1. ~~Einbindung der R&D-Strategien in das Strategy-Tiering und das Web-Dashboard~~ ✅ Umgesetzt
+2. ~~Aufbau von Research-Presets (Sweeps, Scans, Experiment-Sets) für ausgewählte Armstrong-, Ehlers- und Lopez-de-Prado-Setups~~ ✅ Vorbereitet (Welle v2)
+3. Schrittweise Evaluierung, welche R&D-Strategien später für einen möglichen Übergang in die produktive v2.x-Strategie-Library in Frage kommen
+
+**R&D-Strategie-Welle v2 (Ready for Execution):**
+
+* Research-Presets für Armstrong, Ehlers, Lopez de Prado definiert
+* Experiment-Katalog: [`PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md`](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md) – 18 Experiment-Templates
+* Preset-Dokumentation: [`PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md`](PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md)
+* Preset-Konfiguration: `config/r_and_d_presets.toml`
+* Status: 🔬 Experimente definiert, Ready for Execution
+* **Run-Logs:** Siehe Abschnitt [„R&D-Experiment-Welle W2 (2025-12-08) – Run-Log"](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#61-rd-experiment-welle-w2-2025-12-08-run-log) für dokumentierte Läufe
+* **Operator-View:** Abschnitt 8 in [`PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md`](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#8-rd-wave-v1-operator-view-strategy-profile-experiments-viewer-dashboard) beschreibt den praktischen Operator-Workflow (Strategy-Profile → Experiments-Viewer → Dashboard)
+* **R&D Experiments Viewer CLI:** `scripts/view_r_and_d_experiments.py` – zentrales Tool zur Sichtung aller R&D-Experimente (Filter nach Preset, Tag, Strategy, Datum, Trades; Detail- und JSON-Output)
+* **Notebook-Template:** `notebooks/r_and_d_experiment_analysis_template.py` – DataFrame-basierte Analyse mit Filtern, Aggregationen und Plots
+
+**Phase 76 – R&D Dashboard v0 (Design):**
+
+* Design-Spezifikation: [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md)
+* Ziel: Read-Only Web-Dashboard für R&D-Experimente
+* Views: Experiments List, Detail, Preset/Strategy Aggregations, Charts
+* Basis: `reports&#47;r_and_d_experiments&#47;`, CLI `view_r_and_d_experiments.py`, Notebook-Template
+* Status: ✅ Implementiert
+
+**Phase 77 – R&D Experiment Detail & Report Viewer v1:**
+
+* R&D API auf v1.2 erweitert (`report_links`, `duration_info`, `status`, `run_type`)
+* Neuer Detail-View `/r_and_d/experiment/{run_id}` mit Meta-Panel, Metriken-Grid, Status-/Run-Type-Badges, Report-Links und einklappbarem Raw-JSON
+* R&D-Übersicht `/r_and_d` um klickbare Zeilen + explizite Details-Spalte ergänzt
+* Fehlerhafte oder unbekannte `run_id`s landen sauber auf `error.html` mit Rück-Link zum R&D Hub
+* Status: ✅ Implementiert
+
+**Phase 78 – R&D Report-Gallery & Multi-Run Comparison v1:**
+
+* R&D API auf v1.3 erweitert: Neuer Batch-Endpoint `/api/r_and_d/experiments/batch` für Multi-Run-Abfragen
+* Multi-Run Comparison View `/r_and_d/comparison` für den direkten Vergleich von 2–10 Experimenten
+* Checkbox-Auswahl in der R&D-Übersicht mit Counter und Compare-Button
+* Best-Metric-Hervorhebung (★) im Comparison-View für schnelle Identifikation der besten Runs
+* Validierung: Min. 2, max. 10 Run-IDs pro Batch; teilweise ungültige IDs werden transparent gemeldet
+* Design-Dokument: [`PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md`](PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md)
+* Status: ✅ Implementiert
+
+### Phase 78 v1.1 – R&D-API Helper-Refactoring
+
+**Kernidee:** R&D-API-Helper sind jetzt klar geschichtet, framework-agnostisch und robust gegen Edge-Cases – sowohl für Web-API als auch CLI.
+
+- **Architektur:** Neue Architekturnotiz beschreibt eine 4-Layer-Struktur:
+  - **Lookup Layer:** `load_experiment_json()`, `load_experiments_from_dir()`
+  - **Transform Layer:** `extract_flat_fields()`, `determine_status()`, `find_report_links()`
+  - **Aggregation Layer:** `compute_summary()`, `compute_preset_stats()`, `compute_best_metrics()`
+  - **Validation Layer:** `parse_and_validate_run_ids()` (wirft jetzt `ValueError` statt `HTTPException`)
+
+- **Run-ID-Validierung:**  
+  - `parse_and_validate_run_ids()` ist framework-agnostisch (nur noch `ValueError`, HTTP-Übersetzung passiert in den Endpoints).  
+  - Unterstützt Deduplizierung (standardmäßig aktiv), prüft Limits (`MAX_RUN_IDS = 100`) und validiert zulässige Zeichen (alphanumerisch, `_`, `-`).
+
+- **Best-Metrics-Aggregation:**  
+  - `compute_best_metrics()` ist mit `BestMetricsDict` (TypedDict, `total=False`) typisiert.  
+  - Funktioniert robust mit fehlenden oder partiellen Metrik-Sätzen, überspringt `None`-Werte und nicht-numerische Daten, ohne die Auswertung zu brechen.
+
+- **Tests / Robustheit:**
+  - 15 Edge-Case-Tests für `parse_and_validate_run_ids()` (Whitespace, Deduplizierung, Limits, ungültige Zeichen, leere Eingaben).
+  - 14 Tests für `compute_best_metrics()` (leere Listen, partielle Metriken, fehlende `results`/`_filename`, `None`-Werte, nicht-numerische Felder, TypedDict-Kompatibilität).
+
+###### Visualisierung – R&D API Helper-Flow
+
+```mermaid
+flowchart LR
+    Registry[(Experiment Registry JSON)]
+    API[REST API /api/r_and_d/*]
+    Helper[Helper-Layer\n(find_experiment_by_run_id,\n build_experiment_detail,\n compute_best_metrics,\n parse_and_validate_run_ids)]
+    HTML[HTML Views /r_and_d/*]
+
+    Registry --> Helper
+    API --> Helper
+    Helper --> API
+    Helper --> HTML
+```
+
+Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views denselben Helper-Layer nutzen und die Registry nicht direkt, sondern immer über die Helper-Funktionen angesprochen wird.
+
+> **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
+
+#### Done-Definition R&D-Strategie-Welle v1
+
+* Alle R&D-Module der Welle v1 sind implementiert und in der Strategy-Registry sichtbar (Armstrong, Ehlers, El Karoui, Bouchaud, Gatheral/Cont, Lopez de Prado).
+* Zu allen R&D-Modulen existieren Tests; alle R&D-bezogenen Tests laufen grün (aktuell 94 Tests für den R&D-Track).
+* Strategy-Tiering & Web-Dashboard kennen den Tier `r_and_d` und können den Research-Layer explizit ein-/ausblenden (inkl. `?include_research=true`).
+* Die R&D-Strategien sind in der Doku verankert (`PHASE_75_STRATEGY_LIBRARY_V1_1.md`, `PEAK_TRADE_STATUS_OVERVIEW.md`, `PEAK_TRADE_V1_OVERVIEW_FULL.md`).
+* Live-Mode ist für alle R&D-Strategien explizit blockiert (`allow_live = false` / Safety-Gates dokumentiert); Nutzung nur für Offline-Backtests, Research-Sweeps und strukturierte Experimente.
+
+#### Einstiegskriterien für R&D-Strategie-Welle v2
+
+* Es liegen mehrere abgeschlossene R&D-Experimente/Reports mit Welle v1 vor (z.B. Parameter-Sweeps, Robustheits-Checks, Regime-Vergleiche).
+* Aus den Ergebnissen von Welle v1 wurden konkrete „Gaps" oder neue Hypothesen abgeleitet (z.B. zusätzliche Volatilitätsmodelle, Execution-Cost-Modelle, Orderbuch-/Microstructure-Signale, ML-Regime-Classifier).
+* Für mindestens 1–2 neue Baustein-Kategorien existiert ein klar umrissener Scope (z.B. *Execution-Cost / Almgren-Chriss*, *Market-Making / Avellaneda-Stoikov*, *Regime-Classifier / ML*).
+* R&D-Welle v1 ist stabil: keine offenen Blocker-/TODOs im Code, Strategy-Tiering oder Web-Dashboard, nur noch inkrementelle Verbesserungen.
+
+### Phase 41B – Strategy Robustness & Tiering (Experiments)
+
+**Status:** ✅ abgeschlossen
+
+**Kernpunkte:**
+
+- Neues Modul `src/experiments/strategy_profiles.py` mit:
+  - `StrategyProfile`-Datenmodell (Metadata, Performance, Robustness, Regimes, Tiering)
+  - Builder-Pattern und Export (JSON + Markdown)
+- Tiering-Konfiguration in `config/strategy_tiering.toml`:
+  - 14 Strategien als `core` / `aux` / `legacy` klassifiziert
+  - Empfohlene Config-IDs + Live-/Trading-Flags
+- CLI-Erweiterung `scripts/research_cli.py`:
+  - Subcommand `strategy-profile` mit MC-/Stress-/Regime-Integration
+  - Beispiel:
+    `python scripts/research_cli.py strategy-profile --strategy-id rsi_reversion --use-dummy-data --with-montecarlo --with-stress --with-regime --output-format both`
+- Reports:
+  - JSON in `reports&#47;strategy_profiles&#47;`
+  - Markdown in `docs/strategy_profiles/`
+- Tests:
+  - 34 neue Tests (StrategyProfiles + CLI) grün
+  - 60 bestehende Tests weiterhin grün
+
+---
+
+## 7. Live-/Testnet & Operations (~91%)
+
+**Relevante Phasen & Doku:**
+
+* **Phase 17 – Environment & Safety**
+  → `docs/LIVE_TESTNET_PREPARATION.md`
+* **Phase 15 – Order-Layer (Sandbox & Routing)**
+  → `docs/ORDER_LAYER_SANDBOX.md`
+* **Phase 48 – Live Portfolio Monitoring & Risk Bridge**
+  → `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md`
+* **Phase 49 – Live Alerts & Notifications**
+  → `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
+* **Live-/Testnet-Track-Status**
+  → `docs/LIVE_TESTNET_TRACK_STATUS.md`
+
+**Kernkomponenten:**
+
+* Environment & Safety:
+
+  * `src/core/environment.py`
+  * `src/live/safety.py`
+  * Stufenmodell (Shadow → Testnet → Live)
+  * `docs/LIVE_TESTNET_PREPARATION.md`
+* Order-/Exchange-Layer:
+
+  * `src/orders/base.py`, `src/orders/paper.py`, `src/orders/mappers.py`
+  * `docs/ORDER_LAYER_SANDBOX.md`
+  * Exchange-/Testnet-Anbindung (z.B. Phase 38)
+* Run-Logging:
+
+  * `src/live/run_logging.py`
+  * Run-Events & Run-Metadaten für Shadow-/Paper-/Live-Runs
+* Live-Portfolio-Monitoring (Phase 48):
+
+  * `src/live/portfolio_monitor.py`
+  * `scripts/preview_live_portfolio.py`
+  * Portfolio-Snapshots + Risk-Evaluation
+* Live-Alerts & Notifications (Phase 49):
+
+  * `src/live/alerts.py`
+  * Alert-Level, AlertEvent, Logging-/Stderr-/Multi-Sinks
+  * `LiveAlertsConfig` + Config-Integration (`[live_alerts]`)
+  * Alerts in `LiveRiskLimits.check_orders&#47;evaluate_portfolio`
+* Governance & Status:
+
+  * `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
+  * `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`
+  * `docs/LIVE_READINESS_CHECKLISTS.md`
+  * `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
+  * `docs/LIVE_TESTNET_TRACK_STATUS.md` (Track-Status ≈ 91%)
+
+**Stärken:**
+
+* Live-/Testnet-Track **konzeptionell geschlossen**:
+
+  * Safety → Risk → Orders → Monitoring → Alerts → Runbooks
+* Monitoring & Alerts sind **read-only**, stören den Flow nicht, melden aber Probleme.
+* Doku & Runbooks machen das Ganze **operational nutzbar**.
+
+**Offene Themen:**
+
+* Externe Notification-Sinks (Slack/Webhook/Mail).
+* Konsolidierter „Live-Ops CLI" mit Subcommands (statt mehrere Einzel-Scripts).
+* Langfristige Historisierung von Portfolio-Snapshots & Alerts.
+
+> **Reifegrad:** **ca. 91%** – sehr weit, Live-System ist bewusst konservativ (kein Autopilot), aber technisch reif.
+
+---
+
+## 8. Reporting, Monitoring & CLI (~88%)
+
+**Relevante Phasen & Doku:**
+
+* **Phase 30 – Reporting & Visualization**
+  → `docs/PHASE_30_REPORTING_AND_VISUALIZATION.md`
+* **Research-/Portfolio-Reports (inkl. Phase 47)** – Backtest-/Experiment-/Portfolio-Reporting
+* **Regime-Aware Reporting & Heatmaps** – Regime-spezifische Kennzahlen und Visualisierungen
+  → `docs/PHASE_REGIME_AWARE_REPORTING.md`
+* **Phase 48 & 49 – Live Monitoring & Alerts**
+  → `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md`
+  → `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
+* **CLI-Referenz**
+  → `docs/CLI_CHEATSHEET.md`
+
+**Kernkomponenten:**
+
+* Reporting:
+
+  * `src/reporting/base.py`, `backtest_report.py`, `experiment_report.py`, `portfolio_robustness_report.py`
+  * `src/reporting/regime_reporting.py` – Regime-Aware Reporting
+  * Plots mit `src/reporting/plots.py` (inkl. Regime-Overlay)
+  * Reports für:
+
+    * Einzel-Backtests (mit Regime-Analyse)
+    * Sweeps / Experiments (mit Regime-Heatmaps)
+    * Portfolio-Robustness
+* Live-/Monitoring-CLI:
+
+  * `scripts/preview_live_orders.py`
+  * `scripts/preview_live_portfolio.py`
+* Research-CLI & Tools:
+
+  * `scripts/research_cli.py`
+  * `scripts/run_portfolio_robustness.py`
+* Dokumentation:
+
+  * `docs/CLI_CHEATSHEET.md` – zentrale Übersicht über wichtige CLI-Commands.
+
+**Stärken:**
+
+* Einheitlicher Reporting-Stil über Research & Backtests.
+* Klar getrennte CLIs für Operator-Fragen (Orders / Portfolio) und Research-Fragen.
+* Cheatsheet-Doku erleichtert Einstieg und Tages-Workflow.
+
+**Offene Themen:**
+
+* HTML-/Dashboard-Frontends für ausgewählte Reports/Monitoring-Ansichten.
+* Erweiterte Monitoring-Views (Equity, Drawdown, Risk-Events in „quasi-real-time").
+
+> **Reifegrad:** **ca. 89%** – Phase 51 fügt ein zentrales Live-Ops CLI hinzu (`live_ops.py`), das die wichtigsten Operator-Kommandos bündelt. Viel Funktionalität vorhanden, noch Luft nach oben bei UX & Dashboards.
+
+---
+
+## 9. Documentation & Governance (~86%)
+
+**Relevante Doku-Dateien:**
+
+* `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
+* `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`
+* `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
+* `docs/LIVE_READINESS_CHECKLISTS.md`
+* `docs/LIVE_TESTNET_TRACK_STATUS.md`
+* `docs/ops/WORKFLOW_MERGE_AND_FORMAT_SWEEP.md` – Ops Runbook für Merge + Format-Sweep Workflow
+* Diverse Phasen-Dokumente (`docs&#47;PHASE_XX_*.md`)
+
+**Kernkomponenten (Auszug):**
+
+* Governance & Safety:
+
+  * `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
+  * `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`
+* Runbooks & Checklisten:
+
+  * `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
+  * `docs/LIVE_READINESS_CHECKLISTS.md`
+  * `docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` – **v1.1 (Dezember 2025, 2026-ready)** – ExecutionPipeline Governance & Risk Runbook mit vollständiger Operator-Guidance (Status-Codes, Entscheidungsbaum, Incident-Artefakten, Daily Checks)
+* Live-/Testnet-Status:
+
+  * `docs/LIVE_TESTNET_TRACK_STATUS.md`
+* Research & Backtest:
+
+  * Verschiedene Phasen-Dokus (`PHASE_XX_*.md`)
+  * Reports & Overviews
+* Gesamt-Projekt:
+
+  * Dieses Dokument: `docs/PEAK_TRADE_STATUS_OVERVIEW.md` (Status Phasen 1–49)
+
+**Stärken:**
+
+* Governance & Safety sind explizit festgehalten.
+* Live-/Testnet-Track hat ein eigenes Status-Dokument.
+* Viele Phasen haben eigene Abschlussberichte & Doku-Snippets.
+
+**Offene Themen:**
+
+* Eine noch stärkere **Top-Down-Architekturübersicht** (Architektur-Diagramme, Modul-Maps).
+* Trennung in:
+
+  * „Operator-Handbuch"
+  * „Developer-Handbuch"
+  * „Quant-/Research-Handbuch"
+* Index / Inhaltsverzeichnis für die wichtigsten Docs.
+
+> **Reifegrad:** **ca. 88%** – Phase 52 fügt umfassende Architektur-Dokumentation und Developer-Guides hinzu. Phase 54 fügt ein Research→Live Playbook hinzu. Phase 55 konsolidiert die AI-/Claude-Dokumentation. Viel Substanz vorhanden, Meta-Struktur verbessert sich kontinuierlich.
+
+---
+
+## 10. Developer Experience & Tooling (~90%)
+
+### Docs-Navigation (Ops UX) — PRs #325–#329
+
+- Ops-Doku konsolidiert: Drift Guard Operator Notes nach `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` verschoben (inkl. Redirect/Referenz-Updates).
+- Traceability verbessert: Merge-Log als Artefakt ergänzt: `docs/ops/PR_325_MERGE_LOG.md` und im Workflow verlinkt (`docs/ops/MERGE_LOG_WORKFLOW.md`).
+- Einstiegspunkte geschärft: `docs/ops/README.md` verlinkt Drift Guard Notes + Quick Commands; Root `README.md` verlinkt jetzt explizit den Ops/Operator Hub (`docs/ops/README.md`).
+
+
+**Relevante Doku & Artefakte:**
+
+* **Architektur & Developer-Guides (Phase 52):**
+  * `docs/ARCHITECTURE_OVERVIEW.md` – High-Level-Architektur mit Diagramm
+  * `docs/DEV_GUIDE_ADD_STRATEGY.md` – Neue Strategie hinzufügen
+  * `docs/DEV_GUIDE_ADD_EXCHANGE.md` – Neuen Exchange-Adapter hinzufügen
+  * `docs/DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md` – Neues Live-Risk-Limit hinzufügen
+  * `docs/DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md` – Neues Portfolio-Rezept hinzufügen
+
+* Projektstruktur & CLI-Cheatsheet:
+
+  * `docs/CLI_CHEATSHEET.md`
+* AI-/Prompt-Setup:
+
+  * `docs/ai/CLAUDE_GUIDE.md` – AI-Assistenz-Guide
+  * weitere AI-/Tooling-Doku in `docs/ai/`
+
+**Relevante Bausteine:**
+
+* Python-Projektstruktur (`src/`, `tests/`, `docs/`, `scripts/`, `config/`).
+* Test-/CI-Mindset (viele Tests, klare Phasen-Commits).
+* CLI-basierte Workflows:
+
+  * Research-CLI, Preview-Skripte, Demo-Skripte.
+* AI-gestützter Entwicklungs-Workflow:
+
+  * Strukturierte Prompt-Blöcke für Claude/Cursor.
+  * Konsistenter „Peak_Trade-Workflow" über mehrere Tools.
+
+**Stärken:**
+
+* **Phase 52**: Umfassende Architektur-Dokumentation und Developer-Guides für typische Erweiterungen
+* Klare Struktur für neue Entwickler
+* AI-Tools können Developer-Guides als Kontext nutzen
+* Solide, nachvollziehbare Projektstruktur.
+* Tests sind fester Bestandteil der Entwicklung (nicht optional).
+
+**Weiterlesen:**
+
+* Strategy & Portfolio → `DEV_GUIDE_ADD_STRATEGY.md`, `DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md`
+* Risk & Safety → `DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md`
+* Live-/Testnet & Ops → `PHASE_51_LIVE_OPS_CLI.md`
+* Architektur → `ARCHITECTURE_OVERVIEW.md`
+* AI-Tools sind **integriert** (nicht nur „ein bisschen Copy-Paste").
+
+**Offene Themen:**
+
+* (Optional) Dev-Container / Docker-Setup, um Setup-Aufwand weiter zu senken.
+* CI-Pipeline (GitHub Actions o.ä.) mit automatischem Testing / Linting.
+* Mehr „Developer-Guides" (z.B. „How to add a new strategy", „How to add a new exchange").
+
+> **Reifegrad:** **ca. 90%** – sehr gut nutzbar mit umfassender Architektur-Dokumentation und Developer-Guides.
+
+---
+
+## 11. Highlights der letzten Phasen (47–53)
+
+**Relevante Phasen & Doku:**
+
+* **Phase 47 – Portfolio-Level Robustness**
+  → Portfolio-Robustness-Logik & Reports (Dokument in `docs&#47;PHASE_47_*.md`, Code in `src/experiments/portfolio_robustness.py`)
+* **Portfolio Recipes & Presets**
+  → `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`
+* **Phase 48 – Live Portfolio Monitoring & Risk Bridge**
+  → `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md`
+* **Phase 49 – Live Alerts & Notifications**
+  → `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
+* **Live-/Testnet-Track-Status**
+  → `docs/LIVE_TESTNET_TRACK_STATUS.md`
+
+Die Phasen **47–49** haben das System auf ein neues Level gehoben:
+
+1. **Phase 47 – Portfolio-Level Robustness**
+
+   * Portfolio-Robustheit (Metriken, Monte-Carlo, Stress) auf Portfolio-Ebene.
+   * Reports für Portfolios statt nur für Einzel-Strategien.
+2. **Portfolio Recipes & Presets**
+
+   * `config/portfolio_recipes.toml` + Loader + Research-CLI-Integration.
+   * Benannte Portfolio-Configs mit Defaults für MC & Stress.
+3. **Phase 48 – Live Portfolio Monitoring & Risk Bridge**
+
+   * Live-Portfolio-Snapshots mit Notional, PnL, Symbol-Exposure.
+   * Portfolio-Level Risk-Evaluation im Live-Bereich.
+   * CLI `scripts/preview_live_portfolio.py`.
+4. **Phase 49 – Live Alerts & Notifications**
+
+   * Zentrales Alert-System (`src/live/alerts.py`) mit Logging-/Stderr-Sinks.
+   * Automatische Alerts bei Risk-Violations (Orders & Portfolio).
+   * Integration in LiveRiskLimits und Live-/Testnet-Status-Doku.
+
+5. **Phase 50 – Live Alert Webhooks & Slack**
+
+   * Webhook- und Slack-Sinks für das Alert-System.
+   * `src/live/alerts.py` erweitert um HTTP-/Slack-Integration.
+   * Konfiguration über `[live_alerts]` Block in `config.toml`.
+
+6. **Phase 51 – Live-Ops-CLI**
+
+   * `scripts/live_ops.py` als zentraler Entry-Point für Live-Operationen.
+   * Subcommands: `orders`, `portfolio`, `alerts`, `health`.
+   * Ein einziger CLI-Entry-Point für Operatoren.
+
+7. **Phase 52 – Architecture Overview & Developer-Guides**
+
+   * `docs/ARCHITECTURE_OVERVIEW.md` mit High-Level-Diagramm.
+   * Developer-Guides für typische Erweiterungen:
+     * `DEV_GUIDE_ADD_STRATEGY.md`
+     * `DEV_GUIDE_ADD_EXCHANGE.md`
+     * `DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md`
+     * `DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md`
+
+8. **Phase 53 – Strategy & Portfolio Library Push**
+
+   * Klar benannte Strategie-Konfigurationen (`[strategy.*]` in `config.toml`):
+     * RSI-Reversion (BTC/ETH, 3 Risk-Profile)
+     * MA-Crossover (BTC, 3 Risk-Profile)
+     * Trend-Following (ETH, 3 Risk-Profile)
+   * 5 neue Portfolio-Recipes mit expliziten Risk-Profilen:
+     * `rsi_reversion_conservative`, `rsi_reversion_moderate`, `rsi_reversion_aggressive`
+     * `multi_style_moderate`, `multi_style_aggressive`
+   * Risk-Profile-Schema: `conservative`, `moderate`, `aggressive`
+   * Naming-Konvention: `<family>_<market>_<profile>`
+
+9. **Phase 71 – Live-Execution-Design & Gating**
+
+10. **Phase 72 – Live-Operator-Konsole & Status-CLI (Read-Only)**
+
+    **Status:** ✅ Abgeschlossen (100%)
+
+    **Ziel:** Read-Only Operator-Interface für transparenten Live-/Gating-/Risk-Status
+
+    **Was implementiert wurde:**
+    * `scripts/live_operator_status.py` – Status-CLI für Operatoren
+    * Status-Report-Generierung mit allen relevanten Informationen
+    * Integration von `is_live_execution_allowed()` für klare Gating-Erklärungen
+    * LiveRiskLimits-Anzeige (Phase 71: Design)
+    * Phase-71/72-Hinweise für Operatoren
+    * Tests für Status-Logik
+
+    **WICHTIG:** Phase 72 ist **reiner Status & Transparenz** – keine Config-Änderungen, keine State-Änderungen, keine echten Orders.
+
+    **Details:** Siehe [`docs/PHASE_72_LIVE_OPERATOR_CONSOLE.md`](PHASE_72_LIVE_OPERATOR_CONSOLE.md)
+
+11. **Phase 73 – Live-Dry-Run Drills & Safety-Validation**
+
+    **Status:** ✅ Abgeschlossen (100%)
+
+    **Ziel:** Systematische Sicherheitsübungen im Dry-Run zur Validierung von Gating & Safety-Mechanismen
+
+    **Was implementiert wurde:**
+    * Drill-System (`src/live/drills.py`) mit `LiveDrillScenario`, `LiveDrillResult`, `LiveDrillRunner`
+    * Standard-Drills definiert (A-G: Voll gebremst, Gate 1/2, Dry-Run, Token, Risk-Limits, Nicht-Live)
+    * CLI für Drill-Ausführung (`scripts/run_live_dry_run_drills.py`)
+    * Tests für Drill-Logik
+    * Dokumentation
+
+    **WICHTIG:** Phase 73 ist **reine Simulation & Validierung** – keine Config-Änderungen, keine State-Änderungen, keine echten Orders.
+
+    **Details:** Siehe [`docs/PHASE_73_LIVE_DRY_RUN_DRILLS.md`](PHASE_73_LIVE_DRY_RUN_DRILLS.md)
+
+12. **Phase 74 – Live-Config Audit & Export (Read-Only)**
+
+    **Status:** ✅ Abgeschlossen (100%)
+
+    **Ziel:** Audit-Snapshot für Governance, Audits und "Proof of Safety"
+
+    **Was implementiert wurde:**
+    * Audit-Modul (`src/live/audit.py`) mit `LiveAuditSnapshot`, `LiveAuditGatingState`, etc.
+    * CLI für Audit-Export (`scripts/export_live_audit_snapshot.py`)
+    * JSON- und Markdown-Export
+    * Tests für Audit-Logik
+    * Dokumentation
+
+    **WICHTIG:** Phase 74 ist **reiner Audit-Export** – keine Config-Änderungen, keine State-Änderungen, keine Token-Werte exportiert.
+
+    **Details:** Siehe [`docs/PHASE_74_LIVE_AUDIT_EXPORT.md`](PHASE_74_LIVE_AUDIT_EXPORT.md)
+
+13. **Phase 80 – Strategy-to-Execution Bridge & Shadow/Testnet Runner v0**
+
+    **Status:** ✅ Abgeschlossen (100%)
+
+    **Ziel:** Orchestrierter Flow von konfigurierten Strategien über Signale zu Orders via ExecutionPipeline
+
+    **Was implementiert wurde:**
+    * `LiveSessionRunner` + `LiveSessionConfig` + `LiveSessionMetrics` (`src/execution/live_session.py`)
+    * CLI `scripts/run_execution_session.py` (Shadow/Testnet-Sessions)
+    * Shadow/Testnet-Session-Flow: Strategy → Signals → Orders → `ExecutionPipeline.execute_with_safety()`
+    * LIVE-Mode explizit und hart blockiert (Safety-First, an 3 Stellen)
+    * Integration mit bestehenden Safety-Komponenten (SafetyGuard, LiveRiskLimits, ExecutionPipeline)
+    * 24 Tests (Config, Runner, CLI, Pipeline-Integration) grün
+
+    **WICHTIG:** Phase 80 ist **Safety-First** – LIVE-Mode ist technisch blockiert, nur Shadow/Testnet erlaubt.
+
+    **Details:** Siehe [`docs/PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`](PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md)
+
+14. **Phase 81 – Live Session Registry & Risk Severity v1**
+
+    **Status:** ✅ ABGESCHLOSSEN
+
+    **Ziel:**
+    Bündelt alle Live-/Shadow-/Testnet-Sessions in einer zentralen **Live Session Registry** und schärft den Live-Track zu einem risk-sensitiven Cockpit:
+    - Session-Registry als Single Source of Truth für Live-/Shadow-/Testnet-Runs
+    - Einführung einer **Severity-Ampel** (GREEN/YELLOW/RED) im Live-Track-Dashboard
+    - Kodifiziertes **Operator-Runbook** für GREEN/YELLOW/RED inkl. Checklisten & Eskalationspfaden
+
+    **Kern-Deliverables:**
+
+    - `docs/PHASE_81_LIVE_SESSION_REGISTRY.md` – Design & Flow der Session-Registry
+    - `docs/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md` – Live Risk Severity & Alert Runbook v1
+    - `src/live/risk_limits.py` – Severity-Herleitung auf Basis bestehender Risk-Limits
+    - `src/live/risk_alert_helpers.py` – Alert-Helfer (Severity → Messages/Struktur)
+    - `src/live/risk_runbook.py` – kodifizierte Runbook-Logik für GREEN/YELLOW/RED
+    - `src/webui/live_track.py` + Templates – Severity-Ampel im Dashboard & Session-Details
+
+    **Session-Registry (Kernpunkte):**
+
+    * **Datenmodell & Storage**
+      * `LiveSessionRecord` (analog zu `SweepResultRow`) als zentrale Dataclass für einzelne Live-Session-Runs
+      * Felder u.a.: `session_id`, `run_id`, `run_type`, `mode`, `env_name`, `symbol`, `status`, `started_at`, `finished_at`, `config`, `metrics`, `cli_args`, `error`, `created_at`
+      * Persistierung als JSON unter:
+        * `reports&#47;experiments&#47;live_sessions&#47;*.json`
+        * 1 Datei pro Session-Run (`<timestamp>_<run_type>_<session_id>.json`)
+
+    * **Run-Types & Modi**
+      * Run-Types: `live_session_shadow`, `live_session_testnet` (erweiterbar z.B. `live_session_live`)
+      * Modes: z.B. `shadow`, `testnet`, `live`, `paper`
+
+    * **Registry-Funktionen (Code)**
+      * Modul: `src/experiments/live_session_registry.py`
+      * `register_live_session_run()` – persistiert einen Session-Record (Config + Metrics + CLI-Args)
+      * `list_session_records()` – Query-API (Filter: Run-Type, Status, Limit)
+      * `get_session_summary()` – Aggregation (Anzahl, Status-Verteilung, Total PnL, Avg Drawdown)
+      * `render_session_markdown()` / `render_sessions_markdown()` – Markdown-Reports
+      * `render_session_html()` / `render_sessions_html()` – HTML-Reports
+
+    * **Integration in Execution-Flow**
+      * `scripts/run_execution_session.py`: Lifecycle mit `try&#47;except&#47;finally`
+      * Nach jeder Session (auch bei Fehler/Abbruch) wird ein `LiveSessionRecord` erzeugt und über `register_live_session_run()` registriert
+      * **Safety-Design:** Fehler in der Registry werden geloggt, dürfen aber die eigentliche Session nicht abbrechen
+
+    * **CLI-Tool für Auswertungen**
+      * Skript: `scripts/report_live_sessions.py`
+      * Nutzbare Flags (Auszug):
+        * `--run-type` (Filter nach Run-Type, z.B. `live_session_shadow`)
+        * `--status` (Filter nach Status, z.B. `completed`)
+        * `--limit` (Maximalanzahl Sessions)
+        * `--output-format` (`markdown` | `html` | `both`)
+        * `--summary-only` (nur Summary statt aller Sessions)
+        * `--output-dir` (Ziel-Verzeichnis für Reports)
+        * `--stdout` (Report zusätzlich auf STDOUT ausgeben)
+      * Typische Nutzung, z.B.:
+        ```bash
+        python3 scripts/report_live_sessions.py \
+          --run-type live_session_shadow \
+          --status completed \
+          --output-format markdown \
+          --summary-only \
+          --stdout
+        ```
+
+    **Testing & Safety:**
+
+    - 102 Risk-bezogene Tests (Severity, Szenarien, Alert-Helper, Runbook)
+    - 31 grüne Tests für Live-Session-Registry
+    - 22 CLI-Tests für Report-Generierung
+    - Live-Track UI Smoke-Test über `uvicorn "src.webui.app:create_app" --factory --reload --port 8000`
+    - Keine Breaking Changes: Live-Track-Flow bleibt kompatibel, Severity-Logik ist ein Add-on-Layer über den bestehenden Risk-Limits.
+
+    **Details:**
+    - [`docs/PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md)
+    - [`docs/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md`](PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md)
+
+15. **Phase 82 – Live-Track Panel im Web-Dashboard**
+
+    **Status:** ✅ Abgeschlossen
+
+    **Ziel:** Live-Sessions im Web-Dashboard visualisieren
+
+    **Was implementiert wurde:**
+    * `LiveSessionSummary` Pydantic-Modell für API-Responses (`src/webui/live_track.py`)
+    * `get_recent_live_sessions()` Service-Funktion
+    * API-Endpoint `GET &#47;api&#47;live_sessions` mit Limit-Parameter
+    * API-Endpoint `GET &#47;api&#47;health` für Health-Checks
+    * Dashboard-UI mit:
+      * Snapshot-Kachel (letzte Session)
+      * Sessions-Tabelle (letzte N Sessions)
+      * Status-Badges, PnL-Farbcodierung, Mode-Badges
+    * 26 Tests (Model, Service, API, Dashboard, Integration)
+
+    **Details:** Siehe [`docs/PHASE_82_LIVE_TRACK_DASHBOARD.md`](PHASE_82_LIVE_TRACK_DASHBOARD.md)
+
+16. **Phase 83 – Live-Track Operator Workflow**
+
+    **Status:** ✅ Abgeschlossen
+
+    **Ziel:** Strukturierter Operator-Workflow für Live-Track Panel
+
+    **Was dokumentiert wurde:**
+    * Täglicher Ablauf (Pre-Session, Während Session, Post-Session)
+    * Konkrete Checks im Live-Track Panel (Snapshot-Kachel, Sessions-Tabelle)
+    * Fehlerbehandlung für Failed-Sessions
+    * Governance-Anforderungen und Eskalationspfad
+    * Quick-Reference für URLs und CLI-Befehle
+    * Integration in `LIVE_DEPLOYMENT_PLAYBOOK.md` (Abschnitt 12)
+    * Neues Runbook 12a in `LIVE_OPERATIONAL_RUNBOOKS.md`
+
+    **Details:** Siehe [`docs/PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md`](PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md)
+
+### Live-Track – Alerts & Incident-Handling (Cluster 82–85)
+
+> **Authority- und Scope-Hinweis (Status-Overview):** Die folgenden Statuszeilen (z. B. *Production-Ready*, *2026-ready*, *operative Baseline*) beschreiben **Engineering-, Dokumentations- und Runbook-Reife** bzw. **historischen** Phasenstand in diesem Übersichtsdokument. Sie stellen **kein** operatives Echtgeld-Go, **keine** First-Live- oder PRE_LIVE-Freigabe, **keinen** Signoff, **keine** Evidence, **keinen** Gate-Pass, **keine** Order-, Exchange-, Arming- oder Enablement-Autorität und **kein** Master-V2- oder Double-Play-**Handoff** her. Maßgeblich bleiben **Master V2** / **Double Play** und die kanonischen PRE_LIVE-, Readiness- und Signoff-Verträge. Orientierung (Navigation, kein operatives Go): [Readiness Ladder](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), [PRE_LIVE Navigation Read-Model](ops/specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md), [Authority Recovery Consolidation Index](ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md) (Doku-Index, kein Freigabesignal).
+
+**Status:** ✅ Production-Ready v1.1 (inkl. Escalation)  
+**Implementierung:** Q4 2025 – **2026-ready**
+
+Der Live Alerts & Incident Runbooks Cluster (Phasen 82–85) ist vollständig implementiert und bildet die **operative Baseline für den 2026-Betrieb**:
+
+- **Alert-Pipeline (Phase 82):** Automatische Benachrichtigungen via Slack/E-Mail bei Risk-Events (GREEN→YELLOW→RED), Limit-Breaches und System-Problemen. Severity-basiertes Routing (INFO/WARN/CRITICAL) an konfigurierbare Channels.
+
+- **Alert-Historie & Dashboard (Phase 83):** Persistierte Alerts sind über das `/alerts` Dashboard einsehbar. Filterung nach Severity, Category, Zeitfenster. API-Endpoint `/api/live/alerts` für programmatischen Zugriff.
+
+- **Incident Runbook Integration (Phase 84):** Alerts werden automatisch mit passenden Runbooks angereichert basierend auf `category`, `source` und `severity`. Runbooks erscheinen in Slack-Messages, E-Mails und im Dashboard als klickbare Links.
+
+- **Escalation & On-Call Integration (Phase 85 – NEU):** Kritische Alerts können optional an On-Call-Dienste (PagerDuty, OpsGenie) eskaliert werden.
+  - Config-gated: Nur aktiv wenn `[escalation].enabled = true`
+  - Environment-gated: Standardmäßig nur in `live` aktiv
+  - Phase 85: Provider-Stubs (keine echten API-Calls)
+  - Safety: Eskalations-Fehler blockieren niemals Alerts
+
+- **Safety Property:** Weder Runbook-Registry- noch Escalation-Fehler blockieren Alerts – das System degradiert graceful und liefert Alerts immer aus.
+
+**Relevante Dokumente:**
+- [`docs/PHASE_84_INCIDENT_RUNBOOK_INTEGRATION_V1.md`](PHASE_84_INCIDENT_RUNBOOK_INTEGRATION_V1.md)
+- [`docs/PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md`](PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md)
+- [`docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`](runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md)
+- [`docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md`](runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md)
+- [`docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md`](runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md) – **v1.1 (2026-ready)** – Governance & Risk Runbook für ExecutionPipeline
+
+**Nächste Schritte (optional):**
+- Phase 86+: Alert Lifecycle & Acknowledge (open/acknowledged/resolved)
+- Phase 87+: Noise-Reduction & Alert-Deduplication
+- Runbook-Coverage-Checks (welche Alert-Types haben noch keine Runbooks?)
+
+17. **Phase 84 – Live-Track Demo Walkthrough & Case Study**
+
+    **Status:** ✅ Dokumentiert
+
+    **Ziel:** Praxisnaher Walkthrough für Operatoren (10–15 Minuten Demo)
+
+    **Was dokumentiert wurde:**
+    * Schritt-für-Schritt Demo-Anleitung (Shadow/Testnet)
+    * System-Prüfung (Dashboard, Health-Check)
+    * Session-Start mit Phase-80-Runner
+    * Registry-Prüfung via CLI (Phase 81)
+    * Live-Track Panel Verifikation (Phase 82)
+    * Plausibilitäts-Checks nach Phase 83
+    * Beispiel-Szenarien (Success/Failure)
+    * Quick-Reference und Checklisten
+
+    **Details:** Siehe [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+
+18. **Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)**
+
+    **Status:** ✅ Abgeschlossen
+
+    **Ziel:** Operatoren bekommen im Web-Dashboard eine durchsuchbare, filterbare Übersicht aller Live-Track Sessions (Shadow/Testnet/Live) inkl. Detailansicht, Metriken und Sicherheits-Hinweisen.
+
+    **Code:**
+    * `src/webui/live_track.py` – Live-Track Panel, Filter-Logik, Detail-View, Stats
+    * `src/webui/app.py` – API-Endpoints für Filter, Detail und Statistiken
+    * Templates: `...&#47;index.html`, `...&#47;session_detail.html` – UI für Liste & Detail
+    * Tests: `tests/test_webui_live_track.py` (54 Tests)
+
+    **Features:**
+    * Filterbare Session-Liste über Query-Params (`mode`, `status`)
+      * `&#47;?mode=shadow`
+      * `&#47;?mode=testnet&status=failed`
+    * Klickbare Sessions → Detailseite `/session/{session_id}`
+      * Config-Snapshot, Kennzahlen, Dauer, Run-Typ
+      * CLI-Hinweise zum Reproduzieren / Debuggen
+    * API-Endpoints:
+      * `/api/live_sessions?mode=testnet&status=completed`
+      * `/api/live_sessions/{session_id}`
+      * `/api/live_sessions/stats` (Aggregat-Statistiken)
+    * Safety: Live-Sessions werden im UI mit ⚠️ hervorgehoben
+
+    **Details:** Siehe [`docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md)
+
+   * Live-Execution-Path als Design modelliert (Dry-Run)
+   * `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
+   * Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
+   * Zweistufiges Gating (`enable_live_trading` + `live_mode_armed`)
+   * `live_dry_run_mode = True` blockt echte Orders technisch
+   * Live-spezifische Limits in Config modelliert:
+     * `max_live_notional_per_order`
+     * `max_live_notional_total`
+     * `live_trade_min_size`
+   * Tests für Design & Gating hinzugefügt
+   * **WICHTIG:** Keine echte Live-Order-Ausführung aktiviert!
+   * Siehe [`docs/PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md`](PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md)
+
+Diese Bausteine schließen die Lücke zwischen:
+
+* **Research-Robustness** (Backtests, Sweeps, Monte-Carlo, Stress)
+* und **Live-/Testnet-Safety & Monitoring** (Portfolio, Risk, Alerts, Runbooks)
+* und bieten eine **fertige Bibliothek aus robusten, benannten Setups**
+
+#### Live-Track-Stack v1 & Web-Dashboard v1 – Operator-Reifegrad
+
+Die Phasen 80/81/83/84/85 bilden zusammen den Live-Track-Stack v1 inkl. Web-Dashboard v1:
+
+- **Phase 80** – Strategy-to-Execution Bridge (CLI-Runner, Safety-Gates vor Live)
+- **Phase 81** – Live-Session-Registry & Reports (Post-Session-Metadaten & Auswertungen)
+- **Phase 83** – Operator-Workflow & Runbooks (Live-Track Playbook & Runbooks, inkl. Session Explorer)
+- **Phase 84** – Demo-Walkthrough & Hall-of-Fame (10–15 Minuten Demo-Flow, Onboarding & Showcases)
+- **Phase 85** – Live-Track Session Explorer & Dashboard-Integration (Web-Dashboard v1 Panels & Explorer)
+
+**Operator-Reifegrad (Stand v1.0):**
+
+- **Technik:** Shadow-/Testnet-Flow ist End-to-End implementiert (CLI → Registry → Reports → Web-Dashboard v1).
+- **Dokumentation:** Playbook, Runbooks (inkl. Dashboard-Check), Demo-Walkthrough & Storyboard sind vorhanden.
+- **Safety:** Live-Mode bleibt durch Environment-Config, Risk-Limits und Safety-Gates blockiert.
+- **Use-Cases:** Realistisches Testen, Monitoring, Reviews, Drills & Demos im Shadow-/Testnet-Mode sind voll unterstützt.
+
+**Kurz-Fazit:**  
+Der Live-Track-Stack v1 ist für Shadow-/Testnet-Betrieb operativ bereit („operator-ready"),
+während echte Live-Orders weiterhin bewusst nicht freigegeben sind.
+
+---
+
+## 12. Empfohlene nächste Schritte (Phase 54+)
+
+Basierend auf dem aktuellen Stand (≈ 91% Gesamt-Reifegrad) bieten sich folgende nächste Phasen an:
+
+1. **Weitere Strategie-/Portfolio-Library-Erweiterungen**
+
+   * Mehr Strategien (z.B. Bollinger Bands, MACD als Risk-Profile-Varianten).
+   * Mehr Märkte (z.B. Altcoins, traditionelle Assets).
+   * Multi-Asset-Portfolios über verschiedene Asset-Klassen.
+
+2. **Optionale Dashboards**
+
+   * HTML-/Notebook-Dashboards für:
+     * Research-Results
+     * Live-Monitoring (Equity/Drawdown, Portfolio-Exposure, Risk-Events)
+   * Interaktive Visualisierung von Portfolio-Robustness-Ergebnissen.
+
+3. **CI/CD & Automation**
+
+   * GitHub Actions für automatisches Testing / Linting.
+   * Automatische Backtest-Runs bei Code-Änderungen.
+   * Docker-Setup für reproduzierbare Umgebungen.
+
+4. **Advanced Portfolio-Optimierung**
+
+   * Risk-Parity, CVaR-Minimierung, etc.
+   * Dynamische Gewichts-Anpassung basierend auf Regime-Erkennung.
+
+5. **Live-Trading-Verfeinerung**
+
+   * Mail-Sinks für Alerts (zusätzlich zu Webhook/Slack).
+   * Alert-Throttling / Deduplizierung.
+   * Historisierung von Portfolio-Snapshots & Alerts.
+
+---
+
+## Research v1.0 & Live-Beta – Status nach Phasen 80–86
+
+**Research v1.0**
+
+- Alle für v1.0 geplanten Research-Komponenten sind implementiert und getestet:
+  - Strategy-Library v1.1 mit StrategyProfiles & Tiering
+  - Tiered Portfolio Presets (Phase 80)
+  - Research Golden Paths & Recipes (Phase 81)
+  - Research QA & Szenario-Library (Phase 82)
+- Insgesamt wurden im Rahmen der Micro-Phasen 80–86 **159 zusätzliche Tests** ergänzt.
+- Research v1.0 steht unter **Scope-Freeze**: Änderungen passieren nur noch gezielt und rückwärts-kompatibel.
+
+**Live-Track / Live-Beta**
+
+- Live-/Shadow-/Testnet-Track nutzt nun:
+  - Live-Gating & Risk Policies v1.0 (Phase 83)
+  - Operator Dashboard & Alerts v1.0 (Phase 84)
+  - Live-Beta Drill (Shadow/Testnet) als End-to-End-Validierung (Phase 85)
+- Shadow-/Testnet-Stack ist als **„produktionsreif" für Beta-Einsätze** markiert.
+- Echtes Live-Trading bleibt:
+  - weiterhin **streng gegated** (Tiering + Profil + Policies),
+  - als **„Live-Beta"** klassifiziert, nicht als voll freigegebener Produktionsmodus.
+
+**Kurzfazit**
+
+- ✅ Research v1.0: abgeschlossen
+- ✅ Shadow-/Testnet-Beta: betriebsbereit
+- ⚠️ Live-Beta: vorhanden, aber bewusst konservativ gerahmt (Gates & Policies müssen explizit passiert werden)
+
+---
+
+## 13. Reference Scenario
+
+Für einen vollständigen, praxisnahen Durchlauf (Research → Portfolio-Robustheit → Playbook → Shadow/Testnet → Status-Report → Incident-Drill) siehe:
+
+- [`docs/REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md`](REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md)
+
+Dieses Scenario demonstriert den **aktuellen v1.0-Stack** am konkreten Beispiel des Portfolio-Presets `multi_style_moderate` und bietet einen durchinszenierten Golden Path von A–Z.
+
+---
+
+## 13a. v1.0 Gesamtübersicht
+
+Für eine zusammenhängende, narrative Beschreibung von Architektur, Flows, Rollen und Governance siehe:
+
+- [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md)
+
+Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-Perspektive und verknüpft alle wichtigen Dokumente des Projekts.
+
+---
+
+## 13b. Live-Track Doc Index
+
+Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-Dokumente siehe:
+
+- [**Live-Track Doc Index v1.1**](./LIVE_TRACK_DOC_INDEX_V1.md) – Zentrale Übersicht für den gesamten Live-Track-Stack (Phasen 71–85), inkl. Web-Dashboard, Demo-Scripts, Operator-Workflow, Playbooks, Safety-Policies und Monitoring/Alerts.
+
+---
+
+## 14. Releases / Changelog
+
+### 14.1 **Phase 76 – R&D Experiments Overview v1.1 (R&D Hub im Web-Dashboard)**
+
+Phase 76 hebt die R&D-Experimente-Übersicht im Web-Dashboard auf **v1.1** und etabliert sie als zentralen **R&D Hub**. Die View verbindet Registry-Daten, neue R&D-API-Endpunkte und ein geschärftes UI für den täglichen Research-Flow.
+
+**Ziele**
+
+* Schneller Überblick: *Was läuft gerade? Was ist heute fertig geworden?*
+* Bessere Lesbarkeit bei vielen Runs (verschiedene Run-Types, Tiers, Kategorien)
+* Klar definierter Einstiegspunkt für kommende R&D-Wellen (Ehlers, Armstrong, Lopez de Prado, El Karoui)
+
+**Änderungen / Highlights**
+
+* **R&D-API (`src/webui/r_and_d_api.py`)**
+
+  * Neue Felder: `run_type`, `tier`, `experiment_category`, `date_str`
+  * Erweiterte Status-Werte: `success`, `running`, `failed`, `no_trades`
+  * Neue Endpoints:
+
+    * `GET &#47;api&#47;r_and_d&#47;today` – heute fertiggestellte Experimente
+    * `GET &#47;api&#47;r_and_d&#47;running` – aktuell laufende Experimente
+    * `GET &#47;api&#47;r_and_d&#47;categories` – verfügbare Kategorien & Run-Types
+  * Kategorie-Mapping aus Strategy/Preset (z.B. cycles, ml, volatility)
+
+* **Dashboard-Template (`templates/peak_trade_dashboard/r_and_d_experiments.html`)**
+
+  * R&D Hub Header mit Titel, Emoji und Kurzbeschreibung
+  * Daily Summary Kacheln: **„Heute fertig"** und **„Aktuell laufend"**
+  * Quick-Actions (Alle, Mit Trades, Dashboard) für typischen Operator-Flow
+  * Kompaktes Tabellenlayout mit Status- und Run-Type-Badges (BT, Sweep, MC, WF)
+  * Formular mit Run-Type-Filter für fokussierte Auswertungen
+
+* **App-Integration (`src/webui/app.py`)**
+
+  * Run-Type-Filter in der `/r_and_d`-Route
+  * Berechnung der Daily Summary Statistiken (`today_count`, `running_count`)
+
+* **Tests & Dokumentation**
+
+  * **51 Tests** in `tests/test_r_and_d_api.py` – alle bestanden ✅
+  * Neues Phasen-Dokument: `docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md`
+
+**Version**
+
+* Status: **R&D Experiments Overview v1.1**
+* Scope: Web-Dashboard (Phase 76), R&D-Track (Registry + R&D-API)
+
+---
+
+- **v1.1 – Live-Track Web-Dashboard & Demo-Pack (2025-12-08)**
+  - Web-Dashboard v1.1 mit Live-Track Operator View
+  - Phase-84-Demo-Walkthrough (CLI → Registry → Dashboard)
+  - 2-Minuten-Demo-Script + Playbook-How-To (Abschnitt 12.5)
+  - Details: [`docs/RELEASE_NOTES_V1_1_LIVE_TRACK_DASHBOARD.md`](RELEASE_NOTES_V1_1_LIVE_TRACK_DASHBOARD.md)
+
+---
+
+## 15. Road to 2026 – Production Readiness
+
+Der aktuelle Stand (Q4 2025) markiert die **Basis-Konfiguration für den 2026-Betrieb**:
+
+| Bereich | Status | Kommentar |
+|---------|--------|-----------|
+| **Live-Track Monitoring & Alerts (Cluster 82–85)** | ✅ 2026-ready | Alert-Pipeline, Dashboard, Runbook-Integration und Escalation vollständig implementiert |
+| **Research & Backtest Plattform** | ✅ Stabil für 2026 | Research v1.0 Freeze, R&D-Dashboard v1.3, Strategy-Tiering |
+| **Live-Order-Execution** | 🔒 Noch gesperrt | Separate Go/No-Go-Entscheidung erforderlich; Shadow/Testnet-Betrieb aktiv |
+
+**Hinweis:** Die Phasen 82–85 wurden in Q4 2025 implementiert und auditiert. Dieses Setup bildet die **produktionsreife Grundlage** für den operativen 2026-Betrieb.
+
+---
+
+## 15a. Governance – Go/No-Go 2026
+
+Die folgende Tabelle zeigt den aktuellen Governance-Status der Haupt-Features für den 2026-Betrieb:
+
+| Feature                        | Status              | Governance-Key               | Kommentar                                    |
+|--------------------------------|---------------------|------------------------------|----------------------------------------------|
+| **Live Alerts Cluster 82–85**  | ✅ Approved 2026    | `live_alerts_cluster_82_85`  | Alert-Pipeline, Dashboard, Runbooks, Escalation |
+| **Live-Order-Execution**       | 🔒 Locked           | `live_order_execution`       | Separate Go/No-Go-Entscheidung erforderlich  |
+
+**Programmatische Prüfung:** `src/governance/go_no_go.py`
+
+```python
+from src.governance.go_no_go import is_feature_approved_for_year
+
+# Beispiel: Prüfen ob Feature für 2026 freigegeben ist
+is_feature_approved_for_year("live_alerts_cluster_82_85", 2026)  # → True
+is_feature_approved_for_year("live_order_execution", 2026)       # → False
+```
+
+**Referenz:** [`docs/GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md`](GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md)
+
+---
+
+## 16. Änderungshistorie dieses Dokuments
+
+| Datum      | Commit    | Änderung                                                        |
+|------------|-----------|-----------------------------------------------------------------|
+| 2025-12-07 | f015c8a   | Erste Version Live-/Testnet-Status (`LIVE_TESTNET_TRACK_STATUS.md`) |
+| 2025-12-07 | c63ea36   | Abschluss Phase 49 – Live Alerts & Notifications                |
+| 2025-12-07 | 226dfac   | Erstellung `PEAK_TRADE_STATUS_OVERVIEW.md` (Phasen 1–49)        |
+| 2025-12-07 | (aktuell) | Update mit konkreten Phasen-Referenzen                          |
+| 2025-12-07 | (aktuell) | Phase 52 – Architecture Overview & Developer-Guides             |
+| 2025-12-07 | (aktuell) | Phase 53 – Strategy & Portfolio Library Push                    |
+| 2025-12-07 | (aktuell) | Phase 54 – Research → Live Portfolios Playbook                  |
+| 2025-12-07 | (aktuell) | Phase 55 – Clean-Up & Polishing (Docs, Status, CLI-Cheatsheet) |
+| 2025-12-07 | (aktuell) | Phase 60 – Reference Scenario `multi_style_moderate`             |
+| 2025-12-07 | (aktuell) | Phase 71 – Live-Execution-Design & Gating                        |
+| 2025-12-07 | (aktuell) | Phase 72 – Live-Operator-Konsole & Status-CLI (Read-Only)        |
+| 2025-12-07 | (aktuell) | Phase 73 – Live-Dry-Run Drills & Safety-Validation               |
+| 2025-12-07 | (aktuell) | Phase 74 – Live-Config Audit & Export (Read-Only)                |
+| 2025-12-08 | (aktuell) | Phase 80 – Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
+| 2025-12-08 | (aktuell) | Phase 81 – Live-Session-Registry & Report-CLI                        |
+| 2025-12-08 | (aktuell) | Phase 82 – Live-Track Panel im Web-Dashboard                         |
+| 2025-12-08 | (aktuell) | Phase 83 – Live-Track Operator Workflow                              |
+| 2025-12-08 | (aktuell) | Phase 84 – Live-Track Demo Walkthrough & Case Study                  |
+| 2025-12-08 | (aktuell) | Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)           |
+| 2025-12-08 | 7908106   | R&D-Strategie-Welle v1 (Armstrong, Ehlers, El Karoui, etc.)          |
+| 2025-12-08 | (aktuell) | **R&D-Experiment-Welle W2 Run-Log** – Verweis auf Run-Logs hinzugefügt |
+| 2025-12-09 | (aktuell) | **Phase 77** – R&D Experiment Detail & Report Viewer v1 (API v1.2, Detail-View, Report-Links) |
+| 2025-12-09 | (aktuell) | **Phase 78** – R&D Report-Gallery & Multi-Run Comparison v1 (API v1.3, Batch-Endpoint, Comparison-View) |
+| 2025-12-09 | (aktuell) | **Jahreskorrektur & 2026-ready** – Cluster 82–85 Datums-Referenzen auf Q4 2025 korrigiert, "Road to 2026" Abschnitt hinzugefügt |
+| 2025-12-09 | (aktuell) | **ExecutionPipeline Runbook v1.1** – Referenz auf `EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` (v1.1, 2026-ready) in Abschnitt 9 und Cluster 82–85 ergänzt |
+| 2025-12-20 | (aktuell) | **Phase 16A** – Simplified Execution Pipeline for Learning (`src/execution_simple/`) – Standalone learning module mit Gates (PriceSanity, ResearchOnly, LotSize, MinNotional), SimulatedBrokerAdapter, dry-run demo, 16 tests |
+| 2025-12-20 | (aktuell) | **Phase 16B** – Execution Telemetry & Live-Track Bridge – ExecutionEvent schema (intent/order/fill), JsonlExecutionLogger (`logs&#47;execution&#47;<session>.jsonl`), `execution_bridge.py` (timeline + summary), Dashboard widget (`/live/execution/{session_id}`), 17 tests |
+| 2025-12-20 | (aktuell) | **Phase 16C** – Telemetry Viewer & Ops Pack – Read-only CLI (`scripts/view_execution_telemetry.py`), API endpoint (`/api/telemetry`), robust JSONL parsing mit Filter (session/type/symbol/time), Latency-Analyse, 14 tests, Merge Log PR #183 |
+| 2025-12-20 | (aktuell) | **Phase 16D** – Telemetry QA + Incident Playbook + Regression Gates – Golden fixtures (deterministisch), 18 regression gate tests (parse robustness, schema, latency sanity), Incident runbook (operator-first, copy/paste CLI), CSV export (`/api/telemetry?format=csv`), Merge Log PR #185 |
+| 2025-12-20 | (aktuell) | **Phase 16E** – Telemetry Retention & Compression – Automated log lifecycle management (age-based deletion, session-count protection, size limits), gzip compression (~80% reduction), safe-by-default CLI (`scripts/ops/telemetry_retention.py`, dry-run default), 22 tests, deterministic ordering, root-safety checks, Merge Log PR #186 |
+| 2025-12-20 | (aktuell) | **Phase 16F** – Telemetry Console & Health Monitoring – Ops dashboard (`/live/telemetry`) with session overview, disk usage, retention policy summary, health checks (disk/retention/compression/parse errors), CLI tool (`scripts/telemetry_health_check.py`, exit codes 0/2/3), API endpoint (`/api/telemetry/health`), 24 tests, Health runbook, customizable thresholds |
+| 2025-12-20 | (aktuell) | **Phase 16H** – Historical Health Trends Dashboard – Snapshot capture (`scripts/telemetry_health_snapshot.py`), JSONL append-only storage, Trends API (`/api/telemetry/health/trends?days=30`), Dashboard integration (24h/7d/30d windows), Rollup metrics (min/avg/max), Degradation detection, 26 tests, Trends runbook, Leading indicators guide |
+| 2025-12-20 | (aktuell) | **Phase 16I** – Real-time Alerting & Incident Hooks – Rule-based evaluation (health critical, degradation, leading indicators, parse errors), AlertEngine (dedupe + cooldown + rate limiting), Adapters (console, webhook), Alert Runner CLI (`scripts/telemetry_alerts.py`), Alerts API (`/api/telemetry/alerts/latest`), Dashboard integration (auto-refresh), 26 tests, Config-driven (safe by default), Dry-run mode, Exit codes (0/1/2), Alerting runbook |
+| 2025-12-20 | (aktuell) | **Phase 16J** – Alert Lifecycle & Noise Control – Alert History (JSONL persistence, retention), Operator State (ACK/SNOOZE with TTL), Engine integration (suppress based on operator actions), Lifecycle CLI (`scripts/telemetry_alerts_lifecycle.py` with subcommands: history/ack/snooze/unsnooze/stats), Config-driven (safe defaults), 17 tests, CRITICAL bypass ACK (configurable), Atomic state file writes, Auto-cleanup expired entries |
+| 2025-12-20 | (aktuell) | **Phase 16K** – Stage1 Ops Dashboard Panel – Read-only Web Dashboard für Stage1 (DRY-RUN) Monitoring mit JSON Schema v1 (daily summaries + trend), FastAPI Router (3 endpoints: HTML dashboard + JSON API), Go/No-Go Heuristic, Auto-Refresh (30s), Empty-State-Safe, Additiv (keine Breaking Changes), 25 tests, Merge Log PR #197 |
+| 2025-12-20 | (aktuell) | **Phase 16L** – Docker Ops Runner (Stage1) – Reproducible Docker execution für Stage1 Monitoring (frozen deps via uv.lock), Multi-stage Dockerfile, Compose-based runner, Report path resolution (ENV + CLI override), Backwards compatible (host unchanged), Shell wrappers + entrypoint, 12 tests, 3 docs (Implementation Summary, Verification Report, Operational Runbook), Merge Log PR #199 |
+
+---
+
+**Peak_Trade** – Ein produktionsnahes Trading-Research-Framework mit integrierter Safety-First-Architektur.
+
+## Changelog
+- 2025-12-22 — PR #246 merged: added knowledge deployment drill e2e script and fixed prod smoke script (empty EXTRA_HEADERS under set -u).
+- 2025-12-22 — PR #243 merged: feat(webui): knowledge API endpoints + readonly/web-write gating + smoke runners (6 MVP endpoints, zweistufiges Gating, 105 Tests, 15 Smoke-Checks).
+- 2025-12-21 — PR #240 merged: test(ops): add run_helpers adoption guard.
+- 2025-12-21 — PR #237 merged: chore(ops): add shared bash run helpers (strict/robust).
+- 2025-12-21 — PR #235 merged: fix(ops): improve label_merge_log_prs.sh to find open PRs.
+- 2025-12-21 — PR #234 merged: ops scripts for PR inventory + merge-log labeling.
+- 2025-12-21 — PR #222 merged: feat(web): add merge+format-sweep workflow to ops hub — integrated workflow into /ops/workflows dashboard (5 workflows total, 2 commands, 3 docs refs).
+- 2025-12-21 — PR #220 merged: added comprehensive ops runbook for merge+format-sweep workflow (413 lines, includes quickstart, scenarios, troubleshooting, CI integration).
+- 2025-12-21 — PR #218 merged: added PR #217 post-merge ops documentation; verified Quarto non-blocking + path filter.
+- 2025-12-21 — PR #217 merged: added workflow script `merge_and_format_sweep.sh` for automated merge + format-sweep operations.
+- 2025-12-21 — PR #213 merged: added merge log for PR #212.
+- 2025-12-21 — PR #212 merged: added merge log for PR #211.
+- 2025-12-21 — PR #211 merged: added merge log for PR #210.
+- 2025-12-21 — PR #210 merged: added merge log for PR #209.
+- 2025-12-21 — PR #209 merged: added merge log for PR #208 (Ops Workflow Hub).
+- 2025-12-21: PR #206 – add ops workflow scripts bash syntax smoke guard (CI-safe)
+- 2025-12-21: PR #204 – docs(ops): workflow scripts documentation + automation infrastructure (vollständige Dokumentation + Helper-Scripts)
+- 2025-12-21: PR #203 – test(viz): matplotlib-based report/plot tests optional via extras (Core ohne Viz-Dependencies lauffähig)
+- 2025-12-21: PR #201 – Web-UI tests optional via extras (Core ohne Web-Stack lauffähig)
+- 2025-12-21: Workflow Scripts Dokumentation – Ops-Automations-Guide (post_merge_workflow, quick_pr_merge)

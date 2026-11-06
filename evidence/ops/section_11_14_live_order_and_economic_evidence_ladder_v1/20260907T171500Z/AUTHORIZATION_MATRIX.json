@@ -1,0 +1,154 @@
+{
+  "AUTHORIZATION_MATRIX_STATUS": "COMPLETE",
+  "DOCUMENT_CLASS": "SECTION_11_14_CAPTURE_AUTHORIZATION_MATRIX_V1",
+  "NON_CAPTURE_SIDE_EFFECTS_AUTHORIZED": false,
+  "UNAUTHORIZED_EFFECTS": [
+    "PRIVATE_GET",
+    "PUBLIC_GET",
+    "SESSION_AUTH",
+    "WIRE_SEND",
+    "ORDER_SUBMIT",
+    "ORDER_CANCEL",
+    "ORDER_AMEND",
+    "POSITION_MUTATION",
+    "RESTART",
+    "CRASH_INJECTION",
+    "LIVE_ENABLED_MUTATION",
+    "LIVE_ARMED_MUTATION"
+  ],
+  "rows": [
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": true,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "CAPTURE_PERSIST",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py::run_capture_hook_after_bound_fill_before_restart_v1 -> writer",
+      "REACHABLE": true,
+      "STATUS": "AUTHORIZED_ONLY_IF_ADMISSIBLE_CONTEMPORANEOUS_PRODUCTIVE_CAPTURE",
+      "TECHNICALLY_REQUIRED": true
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "PRIVATE_GET",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "constants_v1.PRIVATE_GET_ALLOWED=False",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "PUBLIC_GET",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "constants_v1.PUBLIC_GET_ALLOWED=False",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "SESSION_AUTH",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "constants_v1.CREDENTIAL_USE_ALLOWED=False",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "WIRE_SEND",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "NOTE": "Required as the LIVE_IDENTITY_BOUND_VENUE_FILL predecessor, not as a capture-surface call. Isolation is therefore false.",
+      "PROOF_SOURCE": "constants_v1.POST_ALLOWED=False; isolation census",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": true
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "ORDER_SUBMIT",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "NOTE": "Required predecessor of contemporaneous bound fill. Not capture-local.",
+      "PROOF_SOURCE": "constants_v1.ORDER_SUBMIT_ALLOWED=False; isolation census",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": true
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "ORDER_CANCEL",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "constants_v1.CANCEL_ALLOWED=False",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "ORDER_AMEND",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "constants_v1.AMEND_ALLOWED=False",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "POSITION_MUTATION",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "NOTE": "Venue fill of the identity-bound order is the irreversible predecessor.",
+      "PROOF_SOURCE": "census_side_effects_v1 EXCHANGE_FILL; isolation census",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": true
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "RESTART",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py restart_already_occurred fail-closed",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "CRASH_INJECTION",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "capture surface AST census; no crash injector on call path",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "LIVE_ENABLED_MUTATION",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "constants_v1.LIVE_ENABLED=False; caller fail-closed",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    },
+    {
+      "AUTHORIZED_BY_THIS_OWNER_GO": false,
+      "CURRENTLY_GATED": true,
+      "EFFECT": "LIVE_ARMED_MUTATION",
+      "MAY_OCCUR_THIS_WORKPACKAGE": false,
+      "PROOF_SOURCE": "constants_v1.LIVE_ARMED=False; caller fail-closed",
+      "REACHABLE": false,
+      "STATUS": "NOT_AUTHORIZED",
+      "TECHNICALLY_REQUIRED": false
+    }
+  ]
+}

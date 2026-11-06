@@ -1,0 +1,299 @@
+{
+  "MATRIX": [
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L00",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "NO_GV_RELATION",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L01",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L02",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L03",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L04",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": "RankingUniverseEvaluatorV1",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": "vec-gvef-ru-mechanism-001",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L05",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "INDIRECT_GV",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": "RankingUniverseEvaluatorV1",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L06",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": "RankingUniverseEvaluatorV1",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": "vec-gvef-ru-mechanism-001",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L07",
+      "MANAGEMENT_PATH": "fixture_corpus\u2192registry\u2192DI\u2192GenericRunner\u2192RU evaluator",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "DIRECT_GV",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": "RankingUniverseEvaluatorV1",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": "vec-gvef-ru-mechanism-001",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L08",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "INDIRECT_GV",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L09",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L10",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L11",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L12",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVALUATOR": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GV_ID": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L13",
+      "MANAGEMENT_PATH": null,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "RELATION": "GV_CAPABLE_ONLY",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    }
+  ],
+  "TEMPORAL_VIEW": "CURRENT_ONLY"
+}

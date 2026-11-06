@@ -1,0 +1,105 @@
+# Entscheidungen und Anpassung: historische Absicht bis zum Consumer
+
+Stand 01.11.2026. Quellen- und Codeanalyse, keine Ausführung von Produktmodulen. Kein neues kanonisches Register. Vergleichspin: `5d1c838c15369507c5247834db4dd0df25592169`.
+
+## Ergebnis
+
+Zwei scheinbare Widersprüche lassen sich konkret erklären: Alte Config-Schreibfunktionen bestehen unter gleichem Namen als absichtlich stillgelegte Schnittstellen fort; und ein neuerer Frische-Consumer kann sperren, während eine spätere Kompatibilitätsentscheidung an der Double-Play-Grenze bewusst einen anderen Zulassungswert verwendet. Diese Auswahl muss bis zum letzten Consumer verfolgt werden.
+
+Die heutige Architektur wird dadurch weder als endgültig richtig bewertet noch werden alte Mechanismen automatisch wieder freigegeben. Originalabsicht, Implementierung, spätere Entscheidung und tatsächliche Wirkung bleiben getrennte Belege.
+
+## Zeitliche Einordnung
+
+- 13.12.2025: Promotion-Writer im Commit c8096ad4 mit bedingter TOML-Dateiwirkung.
+- 27.01.2026: Learning-Apply-Runner in 5bc2624f; eigenes overrides-Format.
+- 17.08.2026: expliziter Firewall-Auftrag im Cursor-Chat 017be61c…, Zeile 1; Implementierung a7f4502e (#5927).
+- 29.09.2026: WP-3-Auftrag im Chat adddf22d…, Zeile 86, verlangt lokale Wiederherstellung alter DP-Zulassung; Commit a21d8606 implementiert Kompatibilität und bewahrt Vektoren.
+
+Beide Originalaufträge sind historische Quellen und wurden nicht erneut ausgeführt. `historical-requests.json` enthält Original-JSONL-Zeilen, aktuelle Dateihashes und den Abgleich mit dem Suchindex.
+
+## D01: Ein Scope-Ereignis kann zugleich ein Exit-Hinweis sein
+
+derive_scope_adverse_exit_signal_v0 erzeugt bei nicht blockierter Evidence ein Signal auch aus matched_conditions=ADVERSE_EXIT. Der Replay bevorzugt ein ausgelöstes abgeleitetes Signal vor dem passthrough_signal und übergibt es an DoublePlayEntryExitPolicyInputV0.
+
+Belegbereich: SCOPE_TO_POLICY.
+Grenze: Die Ableitung ist statisch belegt. Das gewählte Scope-Event allein repräsentiert nicht alle ausgelösten Dimensionen; kein Beweis jeder realen Host-Ausführung.
+- `src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py` Zeilen 234–244, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `9716cf9837a5f7c558160e30ac06d06773f1e5a0`.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` Zeilen 1384–1392, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `9cb35e5c966049010a5c95647e8d24115026f229`.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` Zeilen 816, 2013, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `9cb35e5c966049010a5c95647e8d24115026f229`.
+
+## D02: Consumer-Wirkung: Adverse führt hier zu REDUCE
+
+Nach Eingangsprüfungen kommen Safety-Exit, Hard-Risk und Reconciliation vor Mandatory-Exit. _resolve_mandatory_exit prüft dessen priorisierte Signale; ADVERSE_SCOPE_EXIT wird zu REDUCE, andere Mandatory-Exits zu EXIT. _exit_decision markiert reduce_only=True und position_flip_allowed=False.
+
+Belegbereich: POLICY_PRECEDENCE.
+Grenze: Eine Policy-Entscheidung ist noch keine Menge, Order oder ausgeführter Exit. Vorherige Guards oder andere priorisierte Signale können den Adverse-Zweig verhindern.
+- `src/trading/master_v2/double_play_entry_exit_policy_v0.py` Zeilen 604–973, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `e9109a0a6f7d388e4fdcb71051c1b2a5acce99c4`.
+- `src/trading/master_v2/double_play_entry_exit_policy_v0.py` Zeilen 336–349, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `e9109a0a6f7d388e4fdcb71051c1b2a5acce99c4`.
+- `src/trading/master_v2/double_play_entry_exit_policy_v0.py` Zeilen 352–355, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `e9109a0a6f7d388e4fdcb71051c1b2a5acce99c4`.
+- `src/trading/master_v2/double_play_entry_exit_policy_v0.py` Zeilen 520–546, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `e9109a0a6f7d388e4fdcb71051c1b2a5acce99c4`.
+
+## D03: Historischer Promotion-Writer hatte echte Dateiwirkung
+
+Im Commit c8096ad4 vom 13.12.2025 akzeptiert der Writer bounded_auto, numerische akzeptierte Kandidaten, Kategorie-Bounds und maximale Schrittweite. Er schreibt Updates unter auto_applied in TOML.
+
+Belegbereich: HISTORICAL_IMPLEMENTATION.
+Grenze: Code belegt die mögliche Dateiwirkung bei erfüllten Bedingungen; kein Beweis eines damaligen Aufrufs, erfolgreicher Parametrierung oder automatisch funktionierenden Gesamtlernens.
+- `src/governance/promotion_loop/engine.py` Zeilen 253–326, Commit `c8096ad4f2750bc6da6187f977898ba9c5d5bb4a`, Blob `21981093e073b4945e3e0ddae68f18f3bf68db60`.
+
+## D04: August-Firewall: Writer, Preview-Runner und Loader geändert
+
+Commit a7f4502e vom 17.08.2026 ersetzt den Promotion-Writer durch return None, verweigert Schreiben im separaten Learning-Apply-Runner und entfernt die Merge-Wirkung von load_config_with_live_overrides. Diese Körper sind am Vergleichspin weiter stillgelegt. Der Originalauftrag nennt SELF_LEARNING != SELF_AUTHORIZING.
+
+Belegbereich: INTENTIONAL_RETIREMENT.
+Grenze: Zwei unterschiedliche Ausgabeformate/Pfade nicht zusammenziehen: Promotion auto_applied/live_overrides/auto.toml und Learning-Runner overrides/config/auto/learning.override.toml. Die vorgelagerte Normalisierung ist dadurch nicht automatisch entfernt. Kein Auftrag zur Reaktivierung.
+- `src/governance/promotion_loop/engine.py` Zeilen 251–264, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `1dae64a63b6e727112f320c2082b869887791bb9`.
+- `scripts/run_learning_apply_cycle.py` Zeilen 75–77, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `0de3380d6433169d451f9c4cb341a23ea0b26856`.
+- `scripts/run_learning_apply_cycle.py` Zeilen 204–266, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `0de3380d6433169d451f9c4cb341a23ea0b26856`.
+- `src/core/peak_config.py` Zeilen 362–375, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `f197188467cc6ae1abb4a564d8b07d278ee39b50`.
+- `src/governance/promotion_loop/engine.py` Zeilen 253–326, Commit `c38cdfb4e8e1b3d5ff84021a682387dc8701beaf`, Blob `dec3c951e247c041d18f926d19314d447116446b`.
+- `src/core/peak_config.py` Zeilen 362–410, Commit `c38cdfb4e8e1b3d5ff84021a682387dc8701beaf`, Blob `71aefea7b786d36cd62744c0315757cdb4b64f7d`.
+
+## D05: Apply-Flag und angewandter Parameterwert sind getrennt
+
+transition_configuration_for_valid_apply_v1 setzt runtime_applied und consumer_bound True, aber threshold_value_ratified und candidate_value_applied False. Execution-Boundary unterscheidet READY und COMPLETED und prüft eigene Freigabe-/Phasenbedingungen.
+
+Belegbereich: SCOPED_CONFIGURATION_TRANSITION.
+Grenze: runtime_applied=True allein beweist keinen gelernten numerischen Wert am Consumer. Owner-Aufzeichnungen, Materialisierung und alle dynamischen Aufrufer sind nicht vollständig geprüft; kein allgemeines Urteil über sämtliche Apply-Pfade.
+- `src/governance/f1_m9_scoped_owner_apply_authority_v1.py` Zeilen 251–285, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `c6820d65b168980a3f9745b3a0cccd5d3180430e`.
+- `src/governance/f1_m9_productive_apply_execution_boundary_v1.py` Zeilen 235–414, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `ba03651e4517e7b43736290868ebaec5ab6faf2b`.
+
+## D06: F1/M9-Frischeprüfung kann zunächst Alpha sperren
+
+Bei autorisierter numerischer Schwelle und aufgelöster Age werden FRESH/STALE-Gründe gebildet. apply_bounded_enforcement_to_double_play_alpha_v1 liefert bei angewandter STALE-Enforcement False; sonst den Baseline-Wert. Consumer-Wiring ruft diesen Reducer auf.
+
+Belegbereich: LOCAL_CONSUMER_EFFECT.
+Grenze: Das ist die lokale Wirkung dieses Consumers, nicht zwingend die endgültige Double-Play-Zulassung. Der nächste Adapter ist entscheidend.
+- `src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py` Zeilen 100–201, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `e4e347452c117c36823146967f342166b80690d4`.
+- `src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py` Zeilen 204–216, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `e4e347452c117c36823146967f342166b80690d4`.
+- `src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py` Zeilen 160–300, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `6326fe34ba607884bfefcb7e597ae66e4170a935`.
+
+## D07: September-Kompatibilität nimmt bewusst einen anderen Zulassungswert
+
+Der Replay reicht presence_gate und consumer_path an resolve_alpha_scope_entry_for_integrated_replay_v1. Bei aktivierter Kompatibilitätsentscheidung gibt dieser presence_alpha statt enforced_alpha zurück. Am Pin sind owner_go, enabled und integrated_replay_presence_alpha_at_dp_boundary im Decision-JSON True.
+
+Belegbereich: DOWNSTREAM_SEMANTIC_SELECTION.
+Grenze: Die vorhandene Frischeprüfung bleibt damit nicht automatisch ein blockierendes Gate an dieser DP-Grenze. Historischer Auftrag vom 29.09. verlangt genau diese lokale Wiederherstellung, keine globale Abschaltung. Fachliche Angemessenheit und Laufzeit sind gesonderte Fragen.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` Zeilen 1544, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `9cb35e5c966049010a5c95647e8d24115026f229`.
+- `src/trading/master_v2/double_play_old_effective_host_contract_v1.py` Zeilen 66–79, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `cd259d66a0fa113e30052f814f8fd00a7811a96e`.
+- `config/governance/double_play_old_effective_host_contract_v1_decision_v1.json` Zeilen 6, Commit `5d1c838c15369507c5247834db4dd0df25592169`, Blob `1e5b8451466b37e09fd4951fb0c1e2e988ab50ea`.
+
+## D08: Historische Vektoren dokumentieren genau diese Aufspaltung
+
+Die am Commit a21d8606 gesicherten Vektoren zeigen im STALE-Fall consumer_alpha=False und presence_alpha=True; das aufgezeichnete Replay-Ergebnis ist in beiden Seiten gleich: no_action, replay_pass=True, keine fail_reasons.
+
+Belegbereich: HISTORICAL_REPORTED_HARNESS_OUTPUT.
+Grenze: Datenvergleich wurde neu durchgeführt; der damalige Harness-Lauf selbst wurde nicht erneut ausgeführt oder vollständig auf Manipulationsfreiheit geprüft. Dies ist ein begrenzter historischer Testdatensatz, kein heutiger Live-/Systemnachweis.
+- `evidence/ops/double_play_compatibility_boundary_patch_v1/20260929T214800Z/wp3_side_current_post_patch.json` Zeilen 207, Commit `a21d86060e6b407ec382ce1de736c78e5279f65a`, Blob `43f897bd4a270cb6ca0c5eb59cdc3e064fc7ba8b`.
+- `evidence/ops/double_play_compatibility_boundary_patch_v1/20260929T214800Z/wp3_side_historical_reference.json` Zeilen 177, Commit `a21d86060e6b407ec382ce1de736c78e5279f65a`, Blob `8daf1757f75ab716764ac9ad6f837d4216248762`.
+- `evidence/ops/double_play_compatibility_boundary_patch_v1/20260929T214800Z/WP_DOUBLE_PLAY_COMPATIBILITY_BOUNDARY_PATCH_V1.md` Zeilen 103, Commit `a21d86060e6b407ec382ce1de736c78e5279f65a`, Blob `af29b411c2c0a6d17641bb9b3d61c7aa7742ac1c`.
+
+## Verbleibende Fragen
+
+Die vollständig rekonstruierten Funktionsbereiche sind hier nicht behauptet. Insbesondere offen: komplette Ursprünge vor Shallow-Grenzen, ursprüngliche fachliche Ebenen aller Universen, reale Primärarchive, sämtliche Promotion-/Apply-Varianten, Host-Erreichbarkeit und externe Laufzeitwirkung.
+
+Die nächsten zusammenhängenden Quellenfragen stehen in `investigation-frontier.json`. Sie erhalten auch nicht benannte Bereiche und andere unabhängige Systemketten im Umfang. Es wurde kein produktiver Consumer, keine Config, kein Test und kein ursprüngliches Archiv verändert.

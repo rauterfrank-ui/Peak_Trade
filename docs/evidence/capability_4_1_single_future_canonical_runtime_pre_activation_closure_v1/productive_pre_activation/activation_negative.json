@@ -1,0 +1,9 @@
+{
+  "ACTIVATED_FORBIDDEN": true,
+  "ACTIVATED_NO_LIVE_ORDERS_FORBIDDEN": true,
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "READY_FOR_ACTIVATION",
+  "LIVE_FORBIDDEN": true,
+  "RUNTIME_ACTIVATED": false,
+  "attempted_activation": false,
+  "ok": true
+}

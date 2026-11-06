@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: balance_semantics_guardrail_stub
+STATUS: docs_draft_ready
+BRANCH: feat/balance-semantics-guardrail-stub
+MODE: paper_stability_guard
+
+GOAL
+- define a docs-first stub for a future balance-semantics guardrail
+
+OUTPUTS
+- docs/ops/reviews/balance_semantics_guardrail_stub/NOTE.md
+- docs/ops/reviews/balance_semantics_guardrail_stub/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- balance_semantics_guardrail_runtime_plan

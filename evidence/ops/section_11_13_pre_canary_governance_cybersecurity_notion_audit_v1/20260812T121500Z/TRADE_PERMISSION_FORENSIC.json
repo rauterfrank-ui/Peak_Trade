@@ -1,0 +1,28 @@
+{
+  "ACCOUNT_SCOPE": "856964404452495999",
+  "AUTOMATIC_API_KEY_PERMISSION_CHANGE": false,
+  "DISTINCTION": "ACTUALLY_NOT_PERMITTED",
+  "DOCUMENT_CLASS": "SECTION_11_13_5_TRADE_PERMISSION_FORENSIC_V1",
+  "ENTITY": "OKX Europe Limited",
+  "EVIDENCE_REQUIRED_AFTERWARDS": "1) Owner attestation flags READ=true TRADE=true WITHDRAW=false; 2) GET-only permission/config proof under a future canary execute GO (not this authoring GO); 3) SecretRef URI with /live-canary-minimum-exposure/ path marker; 4) redacted authorization_binding.json without secret values.",
+  "OWNER_UI_ACTION": "On OKX EEA (eea.okx.com) API Management for account 856964404452495999: create or select a LIVE production API key with Trade=enabled and Withdraw=disabled (Read remains enabled). Do not reuse the dry-run/read-only SecretRef. Store material only in local vault under secretref://vault/peak-trade/live-canary-minimum-exposure/okx. Credential class must be LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY.",
+  "OWNER_UI_ACTION_REQUIRED": true,
+  "PRIOR_BINDING_SOURCE": "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/",
+  "PRIOR_PERMISSION_ATTESTATION": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false
+  },
+  "REGION": "EEA/DE",
+  "REQUIRED_FOR_CANARY_SUBMIT": {
+    "READ": true,
+    "TRADE": true,
+    "WITHDRAW": false
+  },
+  "REST_HOST": "eea.okx.com",
+  "SECRET_VALUE_ACCESS": "NONE",
+  "TRADE_ATTESTATION": false,
+  "TRADE_ATTESTATION_BLOCKER": "PRIOR_LIVE_DRY_RUN_KEY_CLASS_ATTESTED_TRADE_FALSE;CANARY_REQUIRES_SEPARATE_TRADE_CAPABLE_API_KEY_AND_ATTESTATION",
+  "VENUE": "OKX",
+  "ok": true
+}

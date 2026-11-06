@@ -1,0 +1,32 @@
+{
+  "callgraph_canonical_decision": [
+    "run_bridge_cycle_v1",
+    "run_integrated_offline_trading_logic_replay_v1",
+    "CanonicalTradingDecisionEvidenceV1",
+    "state.last_canonical_decision_evidence",
+    "persist_canonical_decision_evidence_source_v1",
+    "export_canonical_decision_evidence_to_archive_sibling_v1",
+    "materialize_canonical_decision_presentation_projection_v1"
+  ],
+  "callgraph_dynamic_scope": [
+    "run_bridge_cycle_v1",
+    "ensure_host_dynamic_scope_binding_v1",
+    "run_integrated_offline_trading_logic_replay_v1",
+    "commit_host_dynamic_scope_after_replay_v1",
+    "HostDynamicScopeBindingV1.to_canonical_state",
+    "persist_dynamic_scope_state_atomic_v1",
+    "export_dynamic_scope_state_to_archive_sibling_v1",
+    "materialize_dynamic_scope_presentation_projection_v1"
+  ],
+  "capability_id": "CAPABILITY_PRODUCTIVE_DECISION_HOST_ACTIVE_ARCHIVE_THREE_FAMILY_BINDING_V1",
+  "dashboard_authority_effect": "NONE",
+  "double_play": {
+    "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH": true,
+    "productive_callsite_added": false,
+    "reason": "IntegratedOfflineReplayIntermediateV1 lacks Decision-typed inputs for build_dashboard_display_snapshot without new mapping semantics"
+  },
+  "o2_unchanged_dashboard_only": true,
+  "productive_host_module": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+  "productive_host_symbol": "run_bridge_cycle_v1",
+  "runtime_mode": "INTERNAL_SIMULATED_EXECUTION_PUBLIC_MD_CAPABLE_NO_ORDER"
+}

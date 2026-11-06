@@ -1,0 +1,12 @@
+BOUNDARY strategy_signal ENTRY cycle=+1 entry_side=NONE
+  resolve_agreement_bound_directional_cycle = None
+  price_path_unbound_prior = (3600.0, 3600.0)
+  price_path_market_prior = (3500.0, 3600.0)
+  suitability LONG/SHORT = StrategySideAgreementV1.AGREE StrategySideAgreementV1.AGREE
+  DA strengths L/S = 0.02857142857142857 -0.02857142857142857
+  composition.selected_side = CompositionSelectedSide.LONG
+  decision_outcome = enter_long
+  canonical_order_intent_bound = True
+  execution_eligible = False
+FIRST_VALUE_LOSS_BEFORE_FIX=project_mv2_agreement_bound_price_path (flat without prior / strategy direction)
+AFTER_FIX=market prior path feeds DA; composition LONG; ENTER_LONG; OI bound

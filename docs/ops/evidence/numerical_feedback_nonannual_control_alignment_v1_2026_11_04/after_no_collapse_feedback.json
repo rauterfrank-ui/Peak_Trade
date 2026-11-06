@@ -1,0 +1,1050 @@
+{
+  "content_digest": "b9220eb285c80811483ab68104819c01fdeff25db45f88db425c3f739e9728a7",
+  "experiment_execution_performed": false,
+  "meta_input_binding": {
+    "content_digest": "63c534056083517b60b187a82ed270b5ef64a29ddb423b8d91ed0e61672ab13a",
+    "meta_learning_record": {
+      "autonomous_champion_swap": false,
+      "autonomous_promotion": false,
+      "champion_experiment_id": null,
+      "comparable_cohorts": [
+        {
+          "cohort_id": "ab03b483ba23342fe75caf491777a4a555b948eb41d7c3dc6cdcc896370d5ee0",
+          "experiment_ids": [
+            "44b5d647ab88fbfde823fe5e7539e7287e3e86f9839b90ddfdf1cacb31ab2c0c",
+            "84d3f295dfd2600f8a46c3ef7af6ea3279fb13624a68f668899c03c42365384c",
+            "e4dcec400fcd34d50c228228f640bfcec955c61fed1230ac793ec5cff2072f80"
+          ]
+        }
+      ],
+      "comparison_pair_results": [
+        {
+          "left_experiment_id": "44b5d647ab88fbfde823fe5e7539e7287e3e86f9839b90ddfdf1cacb31ab2c0c",
+          "overall_comparability": "COMPARABLE",
+          "rejection_reasons": [],
+          "right_experiment_id": "84d3f295dfd2600f8a46c3ef7af6ea3279fb13624a68f668899c03c42365384c"
+        },
+        {
+          "left_experiment_id": "44b5d647ab88fbfde823fe5e7539e7287e3e86f9839b90ddfdf1cacb31ab2c0c",
+          "overall_comparability": "COMPARABLE",
+          "rejection_reasons": [],
+          "right_experiment_id": "e4dcec400fcd34d50c228228f640bfcec955c61fed1230ac793ec5cff2072f80"
+        },
+        {
+          "left_experiment_id": "84d3f295dfd2600f8a46c3ef7af6ea3279fb13624a68f668899c03c42365384c",
+          "overall_comparability": "COMPARABLE",
+          "rejection_reasons": [],
+          "right_experiment_id": "e4dcec400fcd34d50c228228f640bfcec955c61fed1230ac793ec5cff2072f80"
+        }
+      ],
+      "completeness": "COMPLETE",
+      "correlation_is_not_causality": true,
+      "created_at": "2026-08-18T16:00:00Z",
+      "digest_algorithm": "sha256",
+      "evaluation_policy": {
+        "evaluation_policy_version": "canonical_meta_learning_policy_v1",
+        "min_parameter_stability": 0.5,
+        "min_recurrence_count": 2,
+        "min_sample_size_associative": 8,
+        "min_sample_size_descriptive": 3
+      },
+      "historical_record_mutation": false,
+      "input_lineage": {
+        "contract_versions": {
+          "comparison_ssot": "canonical_comparison_ssot_v1",
+          "experiment_identity": "canonical_experiment_identity_v1",
+          "experiment_memory": "canonical_experiment_memory_v1",
+          "failure_memory": "canonical_failure_memory_v1",
+          "meta_learning": "canonical_meta_learning_v1",
+          "metric_definitions": "canonical_robustness_metrics_v1",
+          "reality_gap_store": "canonical_reality_gap_store_v1",
+          "robustness_suite": "canonical_robustness_suite_v1"
+        },
+        "experiment_ids": [
+          "44b5d647ab88fbfde823fe5e7539e7287e3e86f9839b90ddfdf1cacb31ab2c0c",
+          "84d3f295dfd2600f8a46c3ef7af6ea3279fb13624a68f668899c03c42365384c",
+          "e4dcec400fcd34d50c228228f640bfcec955c61fed1230ac793ec5cff2072f80"
+        ],
+        "failure_record_ids": [],
+        "identity_digests": [
+          "75c5bc986060f25e3b6b329d8e8880d20e41e8b23fb41be57aedd7f5cc34e943",
+          "952178415a3b3f94e8edc56f3be1f9539eb0a212c115a85e23ce1516c4931dae",
+          "38662157ace192098fa114a3376a4d701e8e1ee2d7419c74652e774da088200b"
+        ],
+        "reality_gap_record_ids": [
+          "16b321e5879b5b1f413a4f7136a2b4de872cc895484fbd5773deddf98b2c8666",
+          "48c5bb50e2794ff996f22072481e63f2d95cc20bcdfae6acd4cef4e3995a118f",
+          "6ae96be7ac433db5e244574cacd4557cb8ab8649d5eb293345411b7870653084"
+        ]
+      },
+      "integrity": {
+        "content_sha256": "39f06387c8844fa9defb31beca471d2c52c5ea1e89c8ad9a448a8299e7910f5a"
+      },
+      "learning_may_autonomously_replace_core_logic": false,
+      "meta_learning_authority": "RESEARCH_ONLY",
+      "meta_learning_can_arm": false,
+      "meta_learning_can_authorize_canary": false,
+      "meta_learning_can_create_confirm_token": false,
+      "meta_learning_can_enable": false,
+      "meta_learning_can_fund": false,
+      "meta_learning_can_increase_leverage": false,
+      "meta_learning_can_increase_risk": false,
+      "meta_learning_can_mutate_live_config": false,
+      "meta_learning_can_promote": false,
+      "meta_learning_can_promote_to_live": false,
+      "meta_learning_can_submit_order": false,
+      "meta_learning_can_use_confirm_token": false,
+      "meta_learning_can_write_live_config": false,
+      "meta_learning_domain": "peak_trade.canonical_meta_learning.v1",
+      "meta_learning_has_runtime_authority": false,
+      "meta_learning_identity": "2222e810a46bec75ed751f46900709acaaaace86c9ab7a2f9b4beda214532dde",
+      "meta_learning_present": true,
+      "no_lookahead": true,
+      "no_silent_zero_default": true,
+      "overall_status": "META_LEARNING_COMPLETE",
+      "phase_12_started": false,
+      "productive_config_mutation": false,
+      "promotion_authority": "NONE",
+      "questions": [
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 3,
+          "question_id": "STRATEGY_FAMILY_OOS_SURVIVAL",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 3
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 3,
+          "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 3
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 3,
+          "question_id": "SEARCH_SPACE_FALSE_POSITIVES",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 3
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_SAMPLE",
+          "findings": [],
+          "missing_evidence_count": 0,
+          "question_id": "ROBUSTNESS_REALITY_GAP_ASSOCIATION",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 3
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 3,
+          "question_id": "BACKTEST_METRIC_PREDICTIVE_ASSOCIATION",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 3
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "DESCRIPTIVE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "COMPUTED",
+          "findings": [
+            {
+              "causal_claim": false,
+              "cohort_id": "ab03b483ba23342fe75caf491777a4a555b948eb41d7c3dc6cdcc896370d5ee0",
+              "cost_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+              "dimension": "fee",
+              "experiment_ids": [
+                "44b5d647ab88fbfde823fe5e7539e7287e3e86f9839b90ddfdf1cacb31ab2c0c",
+                "84d3f295dfd2600f8a46c3ef7af6ea3279fb13624a68f668899c03c42365384c",
+                "e4dcec400fcd34d50c228228f640bfcec955c61fed1230ac793ec5cff2072f80"
+              ],
+              "sample_size": 3,
+              "underestimation_count": 3,
+              "within_or_overestimate_count": 0
+            }
+          ],
+          "missing_evidence_count": 0,
+          "question_id": "COST_MODEL_REALITY_UNDERESTIMATION",
+          "rejected_comparability_count": 0,
+          "research_proposals": [
+            {
+              "applies_to_champion": false,
+              "authority": "RESEARCH_ONLY",
+              "claim_type": "DESCRIPTIVE",
+              "kind": "INVESTIGATE",
+              "promotion_authority": "NONE",
+              "proposal_id": "a2b9821ef439322351179ec5231fe62c4b4d839e33c0622182d8a913e78185d6",
+              "question_id": "COST_MODEL_REALITY_UNDERESTIMATION",
+              "reason": "COST_MODEL_UNDERESTIMATION",
+              "target": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+              "target_kind": "cost_model"
+            }
+          ],
+          "sample_size": 3
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 3,
+          "question_id": "REGIME_RECURRING_FAILURE_MODES",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 3
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 3,
+          "question_id": "PARAMETER_INSTABILITY",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 0
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "DESCRIPTIVE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "COMPUTED",
+          "findings": [
+            {
+              "causal_claim": false,
+              "cohort_id": "ab03b483ba23342fe75caf491777a4a555b948eb41d7c3dc6cdcc896370d5ee0",
+              "experiment_ids": [
+                "44b5d647ab88fbfde823fe5e7539e7287e3e86f9839b90ddfdf1cacb31ab2c0c",
+                "84d3f295dfd2600f8a46c3ef7af6ea3279fb13624a68f668899c03c42365384c",
+                "e4dcec400fcd34d50c228228f640bfcec955c61fed1230ac793ec5cff2072f80"
+              ],
+              "failed_count": 0,
+              "hypothesis_kind": "trend_following",
+              "observed_count": 3
+            }
+          ],
+          "missing_evidence_count": 3,
+          "question_id": "HYPOTHESIS_KIND_POOR_RESULTS",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 3
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 3,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 3,
+          "question_id": "RESEARCH_PATH_INFORMATION_GAIN",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 3
+        }
+      ],
+      "ranked_experiment_ids": [],
+      "research_proposals": [
+        {
+          "applies_to_champion": false,
+          "authority": "RESEARCH_ONLY",
+          "claim_type": "DESCRIPTIVE",
+          "kind": "INVESTIGATE",
+          "promotion_authority": "NONE",
+          "proposal_id": "a2b9821ef439322351179ec5231fe62c4b4d839e33c0622182d8a913e78185d6",
+          "question_id": "COST_MODEL_REALITY_UNDERESTIMATION",
+          "reason": "COST_MODEL_UNDERESTIMATION",
+          "target": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+          "target_kind": "cost_model"
+        }
+      ],
+      "runtime_authority_impact": "NONE",
+      "schema_version": "canonical_meta_learning_v1",
+      "self_learning_not_self_authorizing": true,
+      "self_learning_self_authorizing_separation": true
+    },
+    "missing_later_outcome_inferred": false,
+    "missing_parameter_stability_inferred": false,
+    "productive_apply_authorized": false,
+    "research_execution_performed": false,
+    "schema_version": "canonical_research_result_to_meta_input_v1",
+    "source_bindings": [
+      {
+        "comparison_identity": "16d7b43de1be3d2fa3ee34331447519393d2f21b999c7df8b5a9b823c275da8e",
+        "experiment_id": "44b5d647ab88fbfde823fe5e7539e7287e3e86f9839b90ddfdf1cacb31ab2c0c",
+        "observation_binding": {
+          "binding_domain": "peak_trade.canonical_identity_bound_offline_observation_binding.v1",
+          "bounded_auto_allowed": false,
+          "experiment_id": "44b5d647ab88fbfde823fe5e7539e7287e3e86f9839b90ddfdf1cacb31ab2c0c",
+          "identity_digest": "75c5bc986060f25e3b6b329d8e8880d20e41e8b23fb41be57aedd7f5cc34e943",
+          "identity_reinterpreted": false,
+          "observation_owner": "OFFLINE_EXPERIMENT_OBSERVATIONS_V1",
+          "persist": {
+            "experiment_record_id": null
+          },
+          "promotion_apply_allowed": false,
+          "runtime_authority_effect": false,
+          "schema_version": "canonical_identity_bound_offline_observation_binding_v1",
+          "status": "BOUND"
+        },
+        "research_loop_content_sha256": "4fcbbd8345a914c50b9594932f1ffa177f4291e0a5503a8962ee3a341c923c90",
+        "research_loop_identity": "9b7b120775f78169984f4e43b5bc788ea59e101cc8b4884e0bfc9eff07d8d088",
+        "robustness_content_sha256": "923f1f5671ddf2d479ad61b370506bcd18e003d799362ad2a457c48818dde740",
+        "search_content_sha256": "c1ba5a729660dcc5b787673e5790d409d32ae0cd753bc67e428926be38ee2b47",
+        "search_identity": "2e34af9275d023458f7e45877f56d8db3a88ed0de638efc7a27d9e6725c2c42a"
+      },
+      {
+        "comparison_identity": "fefe2a30254b1ee3702bee0d2cf50a0cd601f6e191d0e226d14c0934274d0956",
+        "experiment_id": "84d3f295dfd2600f8a46c3ef7af6ea3279fb13624a68f668899c03c42365384c",
+        "observation_binding": {
+          "binding_domain": "peak_trade.canonical_identity_bound_offline_observation_binding.v1",
+          "bounded_auto_allowed": false,
+          "experiment_id": "84d3f295dfd2600f8a46c3ef7af6ea3279fb13624a68f668899c03c42365384c",
+          "identity_digest": "952178415a3b3f94e8edc56f3be1f9539eb0a212c115a85e23ce1516c4931dae",
+          "identity_reinterpreted": false,
+          "observation_owner": "OFFLINE_EXPERIMENT_OBSERVATIONS_V1",
+          "persist": {
+            "experiment_record_id": null
+          },
+          "promotion_apply_allowed": false,
+          "runtime_authority_effect": false,
+          "schema_version": "canonical_identity_bound_offline_observation_binding_v1",
+          "status": "BOUND"
+        },
+        "research_loop_content_sha256": "719f62cf73e192f5450cc5ac8035e35a11dabc2a36b6ee0561c11a739a91e85d",
+        "research_loop_identity": "d9eb8c9afcc278c552928fabf7abfa26a13657d0a249f7c481500d7973555739",
+        "robustness_content_sha256": "30b6b5b6484acdfd6719eb258456cde98403610334de4591ef1467f8a07a54df",
+        "search_content_sha256": "17df50443bdb6faece93b1ef5512c7a04db68d6f6a6a6b24684c76989869c397",
+        "search_identity": "e7dbdcded22ea235a8e677a9ef8d72f2da84de1abf01d7248c1f9c9d11985907"
+      },
+      {
+        "comparison_identity": "073adfa5ac862a8e14452f0a181d2198d4802b6dacf8fb0c84dbcd2807ad74da",
+        "experiment_id": "e4dcec400fcd34d50c228228f640bfcec955c61fed1230ac793ec5cff2072f80",
+        "observation_binding": {
+          "binding_domain": "peak_trade.canonical_identity_bound_offline_observation_binding.v1",
+          "bounded_auto_allowed": false,
+          "experiment_id": "e4dcec400fcd34d50c228228f640bfcec955c61fed1230ac793ec5cff2072f80",
+          "identity_digest": "38662157ace192098fa114a3376a4d701e8e1ee2d7419c74652e774da088200b",
+          "identity_reinterpreted": false,
+          "observation_owner": "OFFLINE_EXPERIMENT_OBSERVATIONS_V1",
+          "persist": {
+            "experiment_record_id": null
+          },
+          "promotion_apply_allowed": false,
+          "runtime_authority_effect": false,
+          "schema_version": "canonical_identity_bound_offline_observation_binding_v1",
+          "status": "BOUND"
+        },
+        "research_loop_content_sha256": "2042c377e861f26d6d2b9254fd4a4f88744f67b83766fd4d00a98c72df5cdf91",
+        "research_loop_identity": "7c75183199cb5f2d53bf5f0efb7cc597e6950e60195dc115f297b76099d1a8f4",
+        "robustness_content_sha256": "51e6f494b759d974d30464e87e55164b4422cfac8c9f39ac4eb568010ea6b930",
+        "search_content_sha256": "cc3a232bb8bb0a1179b940f48d4185afaae2b1d1d70226455b258bb582cb846b",
+        "search_identity": "645ce7681164631e9eabd058bb6969d5ca787a390c0f55102b1a17287420c581"
+      }
+    ]
+  },
+  "next_search_record": {
+    "advanced_search_authority": "RESEARCH_ONLY",
+    "advanced_search_domain": "peak_trade.canonical_advanced_search.v1",
+    "advanced_search_present": true,
+    "autonomous_champion_swap": false,
+    "autonomous_promotion": false,
+    "best_sharpe_is_not_auto_winner": true,
+    "budget": 1,
+    "candidates": [
+      {
+        "candidate_ref": "eef01cecc8e3bfe3e2fd79a38fda111dfe9cd9017648ef3c791c98d4a80be3c6",
+        "duplicate_assessment": {
+          "actions": [
+            "NONE"
+          ],
+          "automatic_research_ban": false,
+          "detected": false,
+          "duplicate_detected_is_not_automatic_research_ban": true,
+          "failure_memory_has_runtime_authority": false,
+          "hypothesis_fingerprint": "5125592360c647db691c97daf2329258ed1c60e6f1fddb78407f46884b02ae61",
+          "matching_failure_record_ids": [],
+          "matching_record_count": 0,
+          "previously_rejected": false,
+          "same_failure_mode_known": false,
+          "same_parameter_region_repeatedly_unstable": false,
+          "same_parameter_region_seen": false
+        },
+        "experiment_id": "c1e37e9f5b9b091f5795bf6355ec3517f499886bf9e2112f5e979275c6a8c303",
+        "experiment_identity": {
+          "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+          "canonical_trading_decision_core_bound": true,
+          "completeness": "COMPLETE",
+          "cost_model_digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+          "dataset_digest": "b09738e8a866185239ac9e5b07ad4568f5ca076237b5afa4600e135f204d3076",
+          "digest_algorithm": "sha256",
+          "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+          "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+          "environment": {
+            "identity_schema_version": "canonical_experiment_identity_v1",
+            "python_implementation": "CPython",
+            "python_version": "3.11.15"
+          },
+          "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+          "experiment_identity_has_runtime_authority": false,
+          "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+          "fee_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+          "funding_model_digest": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+          "git_sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+          "identity_digest": "26c922b3bb9b84870959491832c9fb63dd090801c9dac4b104282205a381e9e2",
+          "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+          "integrity": {
+            "content_sha256": "8ec77a011040281c431153b328594c38dccb7861c00f30298e4528abb5f7ba68"
+          },
+          "learning_may_autonomously_replace_core_logic": false,
+          "learning_may_research_core_logic_changes": true,
+          "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+          "parent_lineage": {
+            "kind": "ROOT",
+            "parent_lineage_ref": null
+          },
+          "portfolio_digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+          "risk_policy_digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+          "runtime_authority_impact": "NONE",
+          "schema_version": "canonical_experiment_identity_v1",
+          "seed": 12,
+          "self_learning_must_learn_from_canonical_trading_decision_path": true,
+          "slippage_model_digest": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+          "split_policy_digest": "0e4dc34c861bc85188cb435115bbe9ed62d4c1ef449816282b2dabecf5212035",
+          "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+          "strategy_identity": "ma_crossover.v1",
+          "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+          "strategy_params_digest": "f30a6778f9ff534f62c20a3e9270d15296690e5e6138825aa10098859a30bd6a",
+          "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+          "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+          "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+          "working_tree_status": "CLEAN"
+        },
+        "failure_signals": {
+          "failure_classes": [],
+          "known_failure": false,
+          "known_failure_class": false,
+          "known_reality_gap_failure": false,
+          "known_rejected_parameter_region": false,
+          "known_robustness_failure": false,
+          "matching_failure_record_ids": [],
+          "matching_reality_gap_record_ids": [],
+          "reason": "no known failure"
+        },
+        "hypothesis_fingerprint": "5125592360c647db691c97daf2329258ed1c60e6f1fddb78407f46884b02ae61",
+        "hypothesis_id": "hyp.ma-crossover.v1.431227f1f1d8",
+        "hypothesis_kind": "trend_following",
+        "matched_meta_learning_proposal_ids": [],
+        "offline_experiment_request": null,
+        "parameter_region": {
+          "fast": 10,
+          "slow": 100
+        },
+        "reason": "eligible candidate excluded by explicit search budget",
+        "search_priority_score": 0,
+        "search_score_is_not_canonical_ranking": true,
+        "search_space_id": "search.ma.v1",
+        "status": "BUDGET_EXCLUDED",
+        "strategy_family": "ma_crossover"
+      },
+      {
+        "candidate_ref": "1dd2445b254cd8a04a2de8ec4749027a47d1f07016cf8be76e1b95e3856df1eb",
+        "duplicate_assessment": {
+          "actions": [
+            "NONE"
+          ],
+          "automatic_research_ban": false,
+          "detected": false,
+          "duplicate_detected_is_not_automatic_research_ban": true,
+          "failure_memory_has_runtime_authority": false,
+          "hypothesis_fingerprint": "93027a64bdf7191d405288d0f905573adddf6f1fbe88c5dba6351ec65dbda7da",
+          "matching_failure_record_ids": [],
+          "matching_record_count": 0,
+          "previously_rejected": false,
+          "same_failure_mode_known": false,
+          "same_parameter_region_repeatedly_unstable": false,
+          "same_parameter_region_seen": false
+        },
+        "experiment_id": "62c49e2eec0ffffe026c7dcd57458bfce208afe691f81468f2fdd57ef2ef3be1",
+        "experiment_identity": {
+          "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+          "canonical_trading_decision_core_bound": true,
+          "completeness": "COMPLETE",
+          "cost_model_digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+          "dataset_digest": "b09738e8a866185239ac9e5b07ad4568f5ca076237b5afa4600e135f204d3076",
+          "digest_algorithm": "sha256",
+          "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+          "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+          "environment": {
+            "identity_schema_version": "canonical_experiment_identity_v1",
+            "python_implementation": "CPython",
+            "python_version": "3.11.15"
+          },
+          "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+          "experiment_identity_has_runtime_authority": false,
+          "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+          "fee_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+          "funding_model_digest": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+          "git_sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+          "identity_digest": "972c3b6f25be5f7aab7373d37e346d5d5bb5a737404fac5e079cd5c7ed9b118c",
+          "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+          "integrity": {
+            "content_sha256": "82204e84218fb864adf7d3928768adf65e0fe5fc1db990fb862cc12c010e8fb1"
+          },
+          "learning_may_autonomously_replace_core_logic": false,
+          "learning_may_research_core_logic_changes": true,
+          "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+          "parent_lineage": {
+            "kind": "ROOT",
+            "parent_lineage_ref": null
+          },
+          "portfolio_digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+          "risk_policy_digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+          "runtime_authority_impact": "NONE",
+          "schema_version": "canonical_experiment_identity_v1",
+          "seed": 12,
+          "self_learning_must_learn_from_canonical_trading_decision_path": true,
+          "slippage_model_digest": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+          "split_policy_digest": "0e4dc34c861bc85188cb435115bbe9ed62d4c1ef449816282b2dabecf5212035",
+          "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+          "strategy_identity": "ma_crossover.v1",
+          "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+          "strategy_params_digest": "3ad95784e803f78585d33abdb5e066652711df7177426638586859c8486161ea",
+          "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+          "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+          "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+          "working_tree_status": "CLEAN"
+        },
+        "failure_signals": {
+          "failure_classes": [],
+          "known_failure": false,
+          "known_failure_class": false,
+          "known_reality_gap_failure": false,
+          "known_rejected_parameter_region": false,
+          "known_robustness_failure": false,
+          "matching_failure_record_ids": [],
+          "matching_reality_gap_record_ids": [],
+          "reason": "no known failure"
+        },
+        "hypothesis_fingerprint": "93027a64bdf7191d405288d0f905573adddf6f1fbe88c5dba6351ec65dbda7da",
+        "hypothesis_id": "hyp.ma-crossover.v1.0b1a3d288e86",
+        "hypothesis_kind": "trend_following",
+        "matched_meta_learning_proposal_ids": [],
+        "offline_experiment_request": {
+          "executed": false,
+          "experiment_id": "62c49e2eec0ffffe026c7dcd57458bfce208afe691f81468f2fdd57ef2ef3be1",
+          "identity_digest": "972c3b6f25be5f7aab7373d37e346d5d5bb5a737404fac5e079cd5c7ed9b118c",
+          "loop_started": false,
+          "parameter_region": {
+            "fast": 10,
+            "slow": 50
+          },
+          "regime": "controlled_hourly_scenario",
+          "request_kind": "OFFLINE_EXPERIMENT_REQUEST",
+          "schema_version": "canonical_automated_offline_research_loop_v1",
+          "selected_hypothesis_id": "hyp.ma-crossover.v1.0b1a3d288e86"
+        },
+        "parameter_region": {
+          "fast": 10,
+          "slow": 50
+        },
+        "reason": "eligible research candidate",
+        "search_priority_score": 0,
+        "search_score_is_not_canonical_ranking": true,
+        "search_space_id": "search.ma.v1",
+        "status": "PROPOSED",
+        "strategy_family": "ma_crossover"
+      },
+      {
+        "candidate_ref": "15e2931665a88d1011158a1acc70255608130268dd02a82b11500a4386e42435",
+        "duplicate_assessment": {
+          "actions": [
+            "NONE"
+          ],
+          "automatic_research_ban": false,
+          "detected": false,
+          "duplicate_detected_is_not_automatic_research_ban": true,
+          "failure_memory_has_runtime_authority": false,
+          "hypothesis_fingerprint": "320355c52cfd22b35de606a1ef7aed3df60d4d05b05f2703105aec883ad60e9a",
+          "matching_failure_record_ids": [],
+          "matching_record_count": 0,
+          "previously_rejected": false,
+          "same_failure_mode_known": false,
+          "same_parameter_region_repeatedly_unstable": false,
+          "same_parameter_region_seen": false
+        },
+        "experiment_id": "09b1545ac649d8de93f18beb311601a303c4e1d69c1822a01caf2faeb3fdd34e",
+        "experiment_identity": {
+          "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+          "canonical_trading_decision_core_bound": true,
+          "completeness": "COMPLETE",
+          "cost_model_digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+          "dataset_digest": "b09738e8a866185239ac9e5b07ad4568f5ca076237b5afa4600e135f204d3076",
+          "digest_algorithm": "sha256",
+          "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+          "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+          "environment": {
+            "identity_schema_version": "canonical_experiment_identity_v1",
+            "python_implementation": "CPython",
+            "python_version": "3.11.15"
+          },
+          "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+          "experiment_identity_has_runtime_authority": false,
+          "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+          "fee_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+          "funding_model_digest": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+          "git_sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+          "identity_digest": "7e2afb8b5b654f2d412c230f90475413609cb99f6abb1fb7ae415179c7ffdcbd",
+          "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+          "integrity": {
+            "content_sha256": "4f01897ce956e451cac278b4f47e19f7c50aac40e26945ef2609288d348d3441"
+          },
+          "learning_may_autonomously_replace_core_logic": false,
+          "learning_may_research_core_logic_changes": true,
+          "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+          "parent_lineage": {
+            "kind": "ROOT",
+            "parent_lineage_ref": null
+          },
+          "portfolio_digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+          "risk_policy_digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+          "runtime_authority_impact": "NONE",
+          "schema_version": "canonical_experiment_identity_v1",
+          "seed": 12,
+          "self_learning_must_learn_from_canonical_trading_decision_path": true,
+          "slippage_model_digest": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+          "split_policy_digest": "0e4dc34c861bc85188cb435115bbe9ed62d4c1ef449816282b2dabecf5212035",
+          "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+          "strategy_identity": "ma_crossover.v1",
+          "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+          "strategy_params_digest": "6ae74710e6b176115d0fa6ad86327f0280b1c50e0a3531070fb23b307c1efca4",
+          "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+          "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+          "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+          "working_tree_status": "CLEAN"
+        },
+        "failure_signals": {
+          "failure_classes": [],
+          "known_failure": false,
+          "known_failure_class": false,
+          "known_reality_gap_failure": false,
+          "known_rejected_parameter_region": false,
+          "known_robustness_failure": false,
+          "matching_failure_record_ids": [],
+          "matching_reality_gap_record_ids": [],
+          "reason": "no known failure"
+        },
+        "hypothesis_fingerprint": "320355c52cfd22b35de606a1ef7aed3df60d4d05b05f2703105aec883ad60e9a",
+        "hypothesis_id": "hyp.ma-crossover.v1.91df10817b02",
+        "hypothesis_kind": "trend_following",
+        "matched_meta_learning_proposal_ids": [],
+        "offline_experiment_request": null,
+        "parameter_region": {
+          "fast": 15,
+          "slow": 100
+        },
+        "reason": "eligible candidate excluded by explicit search budget",
+        "search_priority_score": 0,
+        "search_score_is_not_canonical_ranking": true,
+        "search_space_id": "search.ma.v1",
+        "status": "BUDGET_EXCLUDED",
+        "strategy_family": "ma_crossover"
+      },
+      {
+        "candidate_ref": "6c590e03a7115410e88f6361f0facd9e6cdd3651049fa95fec8426818fcfbb70",
+        "duplicate_assessment": {
+          "actions": [
+            "NONE"
+          ],
+          "automatic_research_ban": false,
+          "detected": false,
+          "duplicate_detected_is_not_automatic_research_ban": true,
+          "failure_memory_has_runtime_authority": false,
+          "hypothesis_fingerprint": "92857fa0da096a0e77d618341579b6a414ac4d48d4e7259f5a11fdbec3f49c3d",
+          "matching_failure_record_ids": [],
+          "matching_record_count": 0,
+          "previously_rejected": false,
+          "same_failure_mode_known": false,
+          "same_parameter_region_repeatedly_unstable": false,
+          "same_parameter_region_seen": false
+        },
+        "experiment_id": "ec784647f157b1efd65bf033da06c3d69d8b98e83f0d63cf42856c693d74097a",
+        "experiment_identity": {
+          "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+          "canonical_trading_decision_core_bound": true,
+          "completeness": "COMPLETE",
+          "cost_model_digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+          "dataset_digest": "b09738e8a866185239ac9e5b07ad4568f5ca076237b5afa4600e135f204d3076",
+          "digest_algorithm": "sha256",
+          "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+          "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+          "environment": {
+            "identity_schema_version": "canonical_experiment_identity_v1",
+            "python_implementation": "CPython",
+            "python_version": "3.11.15"
+          },
+          "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+          "experiment_identity_has_runtime_authority": false,
+          "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+          "fee_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+          "funding_model_digest": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+          "git_sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+          "identity_digest": "e0373dae8cb4f998d60fc7f232fc4a759c7ece9636fbe303000f44cf47e2cbf0",
+          "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+          "integrity": {
+            "content_sha256": "184d720efc19b2336fd6d2d7899625af6ea20b9678c67d255d9e9fa8899308ba"
+          },
+          "learning_may_autonomously_replace_core_logic": false,
+          "learning_may_research_core_logic_changes": true,
+          "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+          "parent_lineage": {
+            "kind": "ROOT",
+            "parent_lineage_ref": null
+          },
+          "portfolio_digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+          "risk_policy_digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+          "runtime_authority_impact": "NONE",
+          "schema_version": "canonical_experiment_identity_v1",
+          "seed": 12,
+          "self_learning_must_learn_from_canonical_trading_decision_path": true,
+          "slippage_model_digest": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+          "split_policy_digest": "0e4dc34c861bc85188cb435115bbe9ed62d4c1ef449816282b2dabecf5212035",
+          "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+          "strategy_identity": "ma_crossover.v1",
+          "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+          "strategy_params_digest": "944dcba9621b5bd8f5e2b836ca7fb96de599ccdf48ab0f5461ef37c6deeff76d",
+          "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+          "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+          "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+          "working_tree_status": "CLEAN"
+        },
+        "failure_signals": {
+          "failure_classes": [],
+          "known_failure": false,
+          "known_failure_class": false,
+          "known_reality_gap_failure": false,
+          "known_rejected_parameter_region": false,
+          "known_robustness_failure": false,
+          "matching_failure_record_ids": [],
+          "matching_reality_gap_record_ids": [],
+          "reason": "no known failure"
+        },
+        "hypothesis_fingerprint": "92857fa0da096a0e77d618341579b6a414ac4d48d4e7259f5a11fdbec3f49c3d",
+        "hypothesis_id": "hyp.ma-crossover.v1.96d5145430fa",
+        "hypothesis_kind": "trend_following",
+        "matched_meta_learning_proposal_ids": [],
+        "offline_experiment_request": null,
+        "parameter_region": {
+          "fast": 15,
+          "slow": 50
+        },
+        "reason": "eligible candidate excluded by explicit search budget",
+        "search_priority_score": 0,
+        "search_score_is_not_canonical_ranking": true,
+        "search_space_id": "search.ma.v1",
+        "status": "BUDGET_EXCLUDED",
+        "strategy_family": "ma_crossover"
+      }
+    ],
+    "champion_experiment_id": null,
+    "completeness": "COMPLETE",
+    "constraint": {
+      "cannot_arm": true,
+      "cannot_authorize_canary": true,
+      "cannot_create_or_use_confirm_token": true,
+      "cannot_enable": true,
+      "cannot_fund": true,
+      "cannot_increase_leverage": true,
+      "cannot_increase_risk": true,
+      "cannot_promote": true,
+      "cannot_submit_order": true,
+      "cannot_write_live_config": true,
+      "cannot_write_testnet_config": true,
+      "constraint_id": "SEARCH_AUTHORITY_AND_COST_INVARIANT_V1",
+      "constraint_version": "canonical_advanced_search_constraint_v1",
+      "search_score_is_not_canonical_ranking": true
+    },
+    "created_at": "2026-08-18T16:01:00Z",
+    "digest_algorithm": "sha256",
+    "duplicate_assessments": [
+      {
+        "actions": [
+          "NONE"
+        ],
+        "automatic_research_ban": false,
+        "detected": false,
+        "duplicate_detected_is_not_automatic_research_ban": true,
+        "failure_memory_has_runtime_authority": false,
+        "hypothesis_fingerprint": "5125592360c647db691c97daf2329258ed1c60e6f1fddb78407f46884b02ae61",
+        "matching_failure_record_ids": [],
+        "matching_record_count": 0,
+        "previously_rejected": false,
+        "same_failure_mode_known": false,
+        "same_parameter_region_repeatedly_unstable": false,
+        "same_parameter_region_seen": false
+      },
+      {
+        "actions": [
+          "NONE"
+        ],
+        "automatic_research_ban": false,
+        "detected": false,
+        "duplicate_detected_is_not_automatic_research_ban": true,
+        "failure_memory_has_runtime_authority": false,
+        "hypothesis_fingerprint": "93027a64bdf7191d405288d0f905573adddf6f1fbe88c5dba6351ec65dbda7da",
+        "matching_failure_record_ids": [],
+        "matching_record_count": 0,
+        "previously_rejected": false,
+        "same_failure_mode_known": false,
+        "same_parameter_region_repeatedly_unstable": false,
+        "same_parameter_region_seen": false
+      },
+      {
+        "actions": [
+          "NONE"
+        ],
+        "automatic_research_ban": false,
+        "detected": false,
+        "duplicate_detected_is_not_automatic_research_ban": true,
+        "failure_memory_has_runtime_authority": false,
+        "hypothesis_fingerprint": "320355c52cfd22b35de606a1ef7aed3df60d4d05b05f2703105aec883ad60e9a",
+        "matching_failure_record_ids": [],
+        "matching_record_count": 0,
+        "previously_rejected": false,
+        "same_failure_mode_known": false,
+        "same_parameter_region_repeatedly_unstable": false,
+        "same_parameter_region_seen": false
+      },
+      {
+        "actions": [
+          "NONE"
+        ],
+        "automatic_research_ban": false,
+        "detected": false,
+        "duplicate_detected_is_not_automatic_research_ban": true,
+        "failure_memory_has_runtime_authority": false,
+        "hypothesis_fingerprint": "92857fa0da096a0e77d618341579b6a414ac4d48d4e7259f5a11fdbec3f49c3d",
+        "matching_failure_record_ids": [],
+        "matching_record_count": 0,
+        "previously_rejected": false,
+        "same_failure_mode_known": false,
+        "same_parameter_region_repeatedly_unstable": false,
+        "same_parameter_region_seen": false
+      }
+    ],
+    "historical_record_mutation": false,
+    "hypotheses": [
+      {
+        "experiment_id": "62c49e2eec0ffffe026c7dcd57458bfce208afe691f81468f2fdd57ef2ef3be1",
+        "hypothesis_fingerprint": "93027a64bdf7191d405288d0f905573adddf6f1fbe88c5dba6351ec65dbda7da",
+        "hypothesis_id": "hyp.ma-crossover.v1.0b1a3d288e86",
+        "hypothesis_kind": "trend_following",
+        "identity_digest": "972c3b6f25be5f7aab7373d37e346d5d5bb5a737404fac5e079cd5c7ed9b118c",
+        "parameter_region": {
+          "fast": 10,
+          "slow": 50
+        },
+        "status": "PROPOSED"
+      }
+    ],
+    "input_lineage": {
+      "contract_versions": {
+        "advanced_search": "canonical_advanced_search_v1",
+        "experiment_identity": "canonical_experiment_identity_v1",
+        "experiment_memory": "canonical_experiment_memory_v1",
+        "failure_memory": "canonical_failure_memory_v1",
+        "meta_learning": "canonical_meta_learning_v1",
+        "offline_research_loop": "canonical_automated_offline_research_loop_v1",
+        "reality_gap_store": "canonical_reality_gap_store_v1",
+        "robustness_suite": "canonical_robustness_suite_v1"
+      },
+      "failure_record_ids": [],
+      "generated_candidate_refs": [
+        "eef01cecc8e3bfe3e2fd79a38fda111dfe9cd9017648ef3c791c98d4a80be3c6",
+        "1dd2445b254cd8a04a2de8ec4749027a47d1f07016cf8be76e1b95e3856df1eb",
+        "15e2931665a88d1011158a1acc70255608130268dd02a82b11500a4386e42435",
+        "6c590e03a7115410e88f6361f0facd9e6cdd3651049fa95fec8426818fcfbb70"
+      ],
+      "identity_digest": "972c3b6f25be5f7aab7373d37e346d5d5bb5a737404fac5e079cd5c7ed9b118c",
+      "meta_learning_identity": "2222e810a46bec75ed751f46900709acaaaace86c9ab7a2f9b4beda214532dde",
+      "parent_experiment_id": null,
+      "parent_hypothesis_id": "hyp.ma-crossover.v1",
+      "reality_gap_record_ids": []
+    },
+    "integrity": {
+      "content_sha256": "d6aaa681bc865dfa116165900a5a0ab561f7c881374dda894f9324f8611f7c54"
+    },
+    "learning_may_autonomously_replace_core_logic": false,
+    "objective": {
+      "objective_id": "SEARCH_PRIORITY_INFORMATION_GAIN_V1",
+      "objective_version": "canonical_advanced_search_objective_v1",
+      "search_score_is_not_canonical_ranking": true,
+      "sharpe_is_not_auto_winner": true
+    },
+    "offline_experiment_requests": [
+      {
+        "executed": false,
+        "experiment_id": "62c49e2eec0ffffe026c7dcd57458bfce208afe691f81468f2fdd57ef2ef3be1",
+        "identity_digest": "972c3b6f25be5f7aab7373d37e346d5d5bb5a737404fac5e079cd5c7ed9b118c",
+        "loop_started": false,
+        "parameter_region": {
+          "fast": 10,
+          "slow": 50
+        },
+        "regime": "controlled_hourly_scenario",
+        "request_kind": "OFFLINE_EXPERIMENT_REQUEST",
+        "schema_version": "canonical_automated_offline_research_loop_v1",
+        "selected_hypothesis_id": "hyp.ma-crossover.v1.0b1a3d288e86"
+      }
+    ],
+    "overall_status": "SEARCH_COMPLETE",
+    "parameter_region_proposals": [
+      {
+        "hypothesis_id": "hyp.ma-crossover.v1.431227f1f1d8",
+        "parameter_region": {
+          "fast": 10,
+          "slow": 100
+        },
+        "status": "BUDGET_EXCLUDED"
+      },
+      {
+        "hypothesis_id": "hyp.ma-crossover.v1.0b1a3d288e86",
+        "parameter_region": {
+          "fast": 10,
+          "slow": 50
+        },
+        "status": "PROPOSED"
+      },
+      {
+        "hypothesis_id": "hyp.ma-crossover.v1.91df10817b02",
+        "parameter_region": {
+          "fast": 15,
+          "slow": 100
+        },
+        "status": "BUDGET_EXCLUDED"
+      },
+      {
+        "hypothesis_id": "hyp.ma-crossover.v1.96d5145430fa",
+        "parameter_region": {
+          "fast": 15,
+          "slow": 50
+        },
+        "status": "BUDGET_EXCLUDED"
+      }
+    ],
+    "phase_13_started": false,
+    "productive_config_mutation": false,
+    "promotion_authority": "NONE",
+    "ranked_experiment_ids": [],
+    "runtime_authority_impact": "NONE",
+    "schema_version": "canonical_advanced_search_v1",
+    "search_can_arm": false,
+    "search_can_authorize_canary": false,
+    "search_can_autonomously_replace_core_logic": false,
+    "search_can_create_confirm_token": false,
+    "search_can_create_hypotheses": true,
+    "search_can_create_research_candidates": true,
+    "search_can_enable": false,
+    "search_can_fund": false,
+    "search_can_increase_leverage": false,
+    "search_can_increase_risk": false,
+    "search_can_mutate_live_config": false,
+    "search_can_promote": false,
+    "search_can_promote_to_live": false,
+    "search_can_propose_parameter_regions": true,
+    "search_can_replace_productive_champion": false,
+    "search_can_request_offline_experiments": true,
+    "search_can_submit_order": false,
+    "search_can_use_confirm_token": false,
+    "search_can_use_meta_learning_signals": true,
+    "search_can_write_live_config": false,
+    "search_can_write_testnet_config": false,
+    "search_evidence": {
+      "candidate_count": 4,
+      "deprioritized_known_failure_count": 0,
+      "proposed_count": 1,
+      "rejected_constraint_count": 0,
+      "rejected_duplicate_count": 0,
+      "rejected_identity_count": 0,
+      "search_score_is_not_canonical_ranking": true
+    },
+    "search_has_runtime_authority": false,
+    "search_identity": "5fae9d3f3c66745da839ed54bbe758bc3b672ebb9ca0a376f62f0be8759b5460",
+    "search_is_authority_mechanism": false,
+    "search_method": "BOUNDED_DETERMINISTIC_CONSTRAINED_REGION_SEARCH",
+    "search_method_version": "canonical_advanced_search_method_v1",
+    "search_space": {
+      "axes": [
+        {
+          "name": "fast",
+          "values": [
+            10,
+            15
+          ]
+        },
+        {
+          "name": "slow",
+          "values": [
+            50,
+            100
+          ]
+        }
+      ],
+      "search_space_id": "search.ma.v1"
+    },
+    "search_space_digest": "b94f15e39e80b5d077a8a86a9a7437e8797b261f23ce3e925c7b27a33efff87f",
+    "seed": 12,
+    "self_learning_not_self_authorizing": true,
+    "self_learning_self_authorizing_separation": true,
+    "supported_search_mechanisms": [
+      "BOUNDED_DETERMINISTIC_CONSTRAINED_REGION_SEARCH"
+    ]
+  },
+  "productive_apply_authorized": false,
+  "schema_version": "canonical_research_result_meta_search_feedback_v1"
+}

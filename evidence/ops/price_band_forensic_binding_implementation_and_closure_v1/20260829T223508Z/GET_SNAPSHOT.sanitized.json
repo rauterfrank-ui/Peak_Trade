@@ -1,0 +1,98 @@
+{
+  "AUTHENTICATION_REQUIREMENT": "NONE_PUBLIC",
+  "AUTH_CLASS": "PUBLIC_UNSIGNED_GET",
+  "AUTH_HEADER_SENT": false,
+  "AUTH_REQUIRED": false,
+  "BOUND_ORIGIN_MAIN_SHA": "e50930dbb80fc31aacad5d5a1cf9a1fc2c6a883f",
+  "COOKIE_HEADER_SENT": false,
+  "DOCUMENT_CLASS": "PRICE_BAND_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1",
+  "DOCUMENT_ROLE": "GET_ONLY_FRESH_EVIDENCE_NON_SSOT_NOT_OPERATIVE_CACHE",
+  "ENDPOINT": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+  "EVIDENCE_READ_ONLY": true,
+  "FRESHNESS_POLICY": "FRESH_GET_PER_PRETRADE_DECISION",
+  "GET_REQUEST_COUNT_AUTHENTICATED": 0,
+  "GET_REQUEST_COUNT_PUBLIC": 1,
+  "HISTORICAL_REUSE_PATH_EXISTS": false,
+  "HOST": "eea.okx.com",
+  "MARKPX_SUBSTITUTION_USED": false,
+  "METHOD": "GET",
+  "NO_POST": true,
+  "OWNER_GO": "PEAK_TRADE_PRICE_BAND_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1",
+  "PERCENT_FIELD_RECONSTRUCTION_USED": false,
+  "PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE": false,
+  "POST_COUNT": 0,
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_INSTRUMENT": "SUI-USD_UM_XPERP-310404",
+  "TARGET_VENUE": "OKX_EEA",
+  "TS_AGE_BOUND": "UNBOUND",
+  "ZERO_NORMALIZATION_PERFORMED": false,
+  "http_evidence": {
+    "SECRET_VALUES_INCLUDED": false,
+    "body_byte_len": 161,
+    "body_sha256": "18da4860a27993e0c2b077c24e1d9216bacaa46c1ebad6f56e86c5276787b0a3",
+    "http_status": 200,
+    "json_parse_ok": true,
+    "okx_code": "0",
+    "okx_msg": "",
+    "response_headers_safe": {
+      "Content-Type": "application/json",
+      "Date": "Sat, 29 Aug 2026 22:35:08 GMT",
+      "Server": "cloudflare"
+    }
+  },
+  "observation": {
+    "auth_header_sent": false,
+    "body_sha256": "18da4860a27993e0c2b077c24e1d9216bacaa46c1ebad6f56e86c5276787b0a3",
+    "buy_lmt_raw": "0.7461",
+    "enabled_raw": "true",
+    "endpoint": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+    "get_performed": true,
+    "historical_reuse": false,
+    "http_status": 200,
+    "inst_type_raw": "FUTURES",
+    "instrument_id": "SUI-USD_UM_XPERP-310404",
+    "method": "GET",
+    "observed_at_utc": "2026-08-29T22:35:08.786566Z",
+    "pretrade_decision_id": "owner-go-price-band-e50930dbb80fc31aacad5d5a1cf9a1fc2c6a883f",
+    "price_domain": "VENUE_LIMIT_PRICE",
+    "rest_host": "eea.okx.com",
+    "sell_lmt_raw": "0.7385",
+    "ts_raw": "1788042908790",
+    "venue": "OKX_EEA",
+    "venue_code": "0"
+  },
+  "payload": {
+    "code": "0",
+    "data": [
+      {
+        "buyLmt": "0.7461",
+        "enabled": true,
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "instType": "FUTURES",
+        "sellLmt": "0.7385",
+        "ts": "1788042908790"
+      }
+    ],
+    "msg": ""
+  },
+  "raw_fields": {
+    "HTTP_STATUS": 200,
+    "VENUE_CODE": "0",
+    "VENUE_MSG": "",
+    "buyLmt_raw": "0.7461",
+    "enabled_raw": true,
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "instType": "FUTURES",
+    "sellLmt_raw": "0.7385",
+    "ts_raw": "1788042908790"
+  },
+  "request_event_time": "2026-08-29T22:35:08.549091Z",
+  "response_event_time": "2026-08-29T22:35:08.786566Z",
+  "validated": {
+    "buy_lmt": "0.7461",
+    "comparison_domain": "VENUE_LIMIT_PRICE",
+    "enabled": true,
+    "observation_class": "SUCCESS_NUMERIC",
+    "sell_lmt": "0.7385"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "AUTHORITY_ESCALATION": false,
+  "EVIDENCE_PROVENANCE": {
+    "evidence_class": "PRODUCTIVE_VENUE_EVIDENCE",
+    "expected_credential_uid": "856964404452495999",
+    "fixture_or_injected": false,
+    "freshness_max_age_ms": 300000,
+    "historical_reuse": false,
+    "observed_at_unix_ms": 1789944123105,
+    "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+    "venue_live_contact": true
+  },
+  "EXTERNAL_EFFECT_MINTED": false,
+  "F1_PRODUCTIVE_VENUE_GET_PASS": true,
+  "F2_NE_TF_001_PERMISSION_GET_PASS": true,
+  "F3_TREASURY_CAPABILITY_NEGATIVE_PASS": true,
+  "F4_VENUE_PERMISSION_UNKNOWN_CLEARED": true,
+  "JOIN_SEAM_ID": "PL_TF_002_NETWORK_EVIDENCE_VERIFIER_V1",
+  "LIVE_MINTED": false,
+  "NORMALIZED_PERMISSION_FACTS": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false,
+    "identity_field": "data[0].uid",
+    "normalization_contract": "OKX_ACCOUNT_CONFIG_PERM_COMMA_TOKENS_V1",
+    "perm_raw": "read_only",
+    "perm_tokens": [
+      "read_only"
+    ],
+    "source_field": "data[0].perm",
+    "uid": "856964404452495999"
+  },
+  "PL_TF_002_CLOSURE_RESULT": {
+    "closed": true,
+    "standing_status_unchanged": "FROZEN_PENDING_NETWORK_EVIDENCE",
+    "standing_venue_permission_get_performed": false,
+    "standing_venue_permission_unknown": true,
+    "status_if_closed": "CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN"
+  },
+  "RAW_VENUE_RESPONSE_BOUND": true,
+  "REASONS": [],
+  "RISK_ADMISSIBLE_MINTED": false,
+  "TREASURY_AUTHORITY_MINTED": false,
+  "VERIFICATION_RESULT": "PASS"
+}

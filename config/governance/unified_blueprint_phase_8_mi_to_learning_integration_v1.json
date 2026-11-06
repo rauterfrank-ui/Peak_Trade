@@ -1,0 +1,38 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1",
+  "authorized_baseline_sha": "2702c25c8698ad4c0ae779a866e1bd2c21d5b3f3",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_8_closure_status": "PROVEN_COMPLETE",
+  "d02_edge_id": "d02_mi_to_learning",
+  "authority_invariants": {
+    "forecast_is_not_decision": true,
+    "confidence_is_not_authority": true,
+    "learning_is_not_promotion": true,
+    "optimization_is_not_promotion": true,
+    "no_automatic_promotion": true,
+    "no_self_deploy": true,
+    "productive_ddo_reducer_unchanged": true,
+    "mv2_dp_unchanged": true,
+    "n_bars_normative_semantics_unchanged": true,
+    "no_promotion_authority_created": true,
+    "no_external_effect_path": true,
+    "d02_mi_to_learning_status": "IMPLEMENTED"
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_store_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+    "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+    "tests/governance/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 9 — M4 experiment/search consumption of MI-enriched optimization research input (d02_mi_to_optimization beyond offline ACK)",
+  "next_implementation_boundary": "Phase 9 MI→Optimization M4 binding only; Phase 10 and multi-cycle MI-crossing replay remain separate authorization"
+}

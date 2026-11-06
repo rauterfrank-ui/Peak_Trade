@@ -1,0 +1,61 @@
+# Gesamtbericht und semantische Verbindbarkeit der Architektur
+
+Stand: 02.11.2026. Die neu übergebene Datei wurde vollständig gelesen. Historische Arbeitsanweisungen, STOP-Vermerke und frühere Freigaben darin wurden als Quelleninhalt behandelt, nicht als aktuelle Aufträge. Es wurde nichts integriert oder aktiviert.
+
+## Einschätzung
+
+Die Datei ist wertvoll, weil sie die Host-Einbettung mehrerer Bausteine wesentlich genauer beschreibt als die Obsidian-Register allein. Ihre Erkenntnisse stammen aus einer zusätzlichen Chat-Untersuchungsreihe auf demselben Git-Tree wie der Vault-Pin. Ein historischer Gesamtfunktionsnachweis ist für die weitere Untersuchung keine notwendige Voraussetzung. Dass ein solcher Nachweis nie existierte, ist damit aber ebenfalls nicht bewiesen.
+
+Die konstruktive Frage ist: Welche vorhandenen Bereiche können das gewollte fachliche Verhalten gemeinsam tragen? Für mehrere Übergänge ist das anhand vorhandener Datenverarbeitung und Codepfade konkret begründbar. Einige brauchen eine korrekte Versorgung oder Bindung vorhandener Bausteine; andere benötigen eine fachliche Überarbeitung der Verarbeitung. Ob das Gesamtsystem sein Ziel erfüllt, lässt sich erst nach Rekonstruktion der bereichsspezifischen Absichten und anschließender Prüfung ihrer gemeinsamen Wirkung entscheiden. Nicht alle vorhandenen Module müssen dafür verbunden werden.
+
+## Herkunft der Datei und ihr Verhältnis zu Obsidian
+
+Der Bericht liegt außerhalb des Vaults auf dem Desktop. Er war über RUN-0070, Zeile 74, bereits indirekt referenziert. Sein heutiger SHA256 9133acb14bda56f03562b4d3a8064dc4a505b6014b1751bac87a7b334305cbed stimmt exakt mit dem dort angegebenen SHA überein. Es ist damit derselbe damals erwähnte Bericht. Mein vorheriger Registervergleich hatte seine vollständigen Inhalte nicht mit ausgewertet. Die indirekte Fundstelle bedeutet keine vollständige Integration seiner Aussagen in die Register.
+
+Der Bericht konsolidiert sieben lokale Abschlussantworten und verweist für die einzelnen Befunde auf Originalchats. Die 7/7-Abdeckung betrifft diese Chat-Serie, nicht das Gesamtsystem. Seine eigene Registerbestandsaufnahme endet bei RUN-0069; heute enthalten die führenden Register RUN-0076. Dieser datierte Bestandsunterschied wird beibehalten. Die historischen HEAD-/Dirty-Angaben des Berichts gelten ebenfalls nicht automatisch für den heutigen Checkout.
+
+Der zusätzliche Wert liegt insbesondere in den Abschnitten 6–8, 9.6, 15–18 und 22: getrennte Hosts, echte versus injizierte Datenquellen, Capture-Zweig, Cursor-Schreiber und ihre Einbettung. Die Zahlen aus der früheren AST-Inventur wurden hier nicht neu vermessen. Die fünf für die folgenden Präzisierungen verwendeten Dateien wurden direkt am Pin 5d1c838c15369507c5247834db4dd0df25592169 gelesen und als Snapshots gesichert.
+
+Quelle: [Originalbericht](/Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md); [gesicherte Identität und Bezug zur Vault-Referenz](./attachment-provenance.json); [Pin-Snapshots](./sources.json).
+
+## Drei konkrete Präzisierungen des letzten Abgleichs
+
+Erstens ist der äußere DDO-Versorger jetzt statisch identifiziert. Der Master-V2-Cycle baut bei gesetztem ddo_durable_evidence_ledger_path ein Binding. Er ruft dann run_integrated_offline_replay_with_productive_ddo_capture_v1 auf. Dieser Join bindet die Capture-Session um den Replay-Aufruf, setzt sie anschließend zurück und ruft die Cycle-Erfassung auf. Ohne Ledger-Pfad bleibt der direkte Replay-Zweig. Der letzte Bericht hatte den Decorator gefunden und den äußeren Versorger noch offengelassen; diese lokale Lücke ist nun enger belegt. Welche Hosts den Ledger-Pfad tatsächlich setzen und ob gespeicherte Records vorliegen, ist damit nicht global beantwortet.
+
+Zweitens endet der codierte Weg nicht bei der Capture-Zusammenfassung. Ist deren ok-Feld wahr, ruft der Cycle einen Offline-Export-Join auf. Dieser delegiert Decision-Auflösung, N-Bars-Horizon, Evaluation, Learning-Ingest, Evidence-Export und Validierung des Optimization-Eingangs. Das ist eine implementierte Folge von Aufrufen, kein hier neu beobachteter Lauf. Der Evidence-Export übergibt code_sha=UNKNOWN und config_hash=UNKNOWN; die tatsächliche Aussagekraft dieser Records bleibt entsprechend begrenzt.
+
+Drittens ist die Confirmation-Persistenz stärker eingebettet als ein isoliertes persist=False vermuten lässt. compose_occupied_lane_mv2_dp_durable_cycle_v1 stellt den Zustand wieder her, verlangt erzeugte Outgoing-Cursor und ruft anschließend deren Persistenz auf. Der innere Cycle und der umgebende Host besitzen unterschiedliche Schreibrollen. Die Aussagen persist=False und Host schreibt sind daher beide richtig. Restart-Korrektheit folgt daraus noch nicht ohne Zustands- und Ablaufprüfung.
+
+Zusätzlich ist der GGE-Aufruf aus Layer-C direkt am Pin bestätigt: resolve_layer_c_event_distances_from_canonical_market_context_v1 importiert GGE funktionslokal, berechnet die Magnitude und reicht sie an die Distanzbindung weiter. Eine frühere Grenze eines Importresolvers ist damit kein fachlicher Beweis für eine fehlende Verbindung.
+
+Belege: [Cycle](./current_productive_master_v2_runtime_cycle_v1.py), Zeilen 1024–1079; [Capture-Join](./current_productive_master_v2_ddo_learning_capture_join_v1.py), Zeilen 34 ff.; [Export-Join](./current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py), Zeilen 179 ff.; [Compose-Persistenz](./addressing_join_v1.py), Zeilen 830–915; [Layer-C](./layer_c_scope_event_distance_binding_v1.py), Zeilen 127 ff.
+
+## Der wichtigste semantische Befund: spätere Zeiten sind keine späteren Beobachtungen
+
+Im vorhandenen Export-Join erzeugt build_pt1h_bar_producer_from_finalized_closes_v1 einen Bar-Producer. Die Funktion nimmt die letzten n_bars Werte aus finalized_closes. Für jeden dieser bereits übergebenen Werte setzt sie den Event-Zeitpunkt auf anchor plus eine beziehungsweise mehrere Stunden; der Anchor stammt aus dem Decision-Event oder ersatzweise dem letzten finalisierten Event. Die Werte werden als normalisierte Mark-Events mit einem Mark-Price-Endpoint und anschließend finalisierten Bars eingestellt.
+
+Damit werden im selben Aufruf vorhandene Schlusskurswerte auf Zeitpunkte nach der Entscheidung gesetzt. Die Funktion wartet nicht auf künftige Marktbeobachtungen und liest dort keine Originalbars dieser zukünftigen Zeitpunkte. Das kann eine mechanische Seed-Verkettung ermöglichen. Es ist jedoch kein Nachweis, dass der Markt nach der Entscheidung so verlaufen ist. Ebenso ist aus der bloßen Stundenabstand-Zuweisung keine echte Stundenaggregation der ursprünglichen Preise bewiesen.
+
+Für das Ziel „aus tatsächlichen späteren Ergebnissen lernen“ genügt deshalb kein weiterer Dateiadapter. Benötigt werden die echte Entscheidung als Ausgangspunkt, danach eintreffende finale Daten desselben Instruments mit ihren tatsächlichen Zeitstempeln und eine ehrliche Behandlung noch nicht verfügbarer Zukunft. Ein unvollständiger Horizon bleibt unvollständig. Falls dagegen ein ausdrücklich modelliertes Test-Szenario gewünscht ist, müssen die erzeugten Daten diese Bedeutung tragen. Welche beabsichtigte Rolle dieser konkrete Seed ursprünglich hatte, ist separat historisch zu klären.
+
+Dieser Befund ist auf die gelesene Funktion und ihre direkte Einbindung beschränkt. Er bedeutet nicht, dass jeder vorhandene DDO-/N-Bars-Pfad dieselbe Datenherkunft benutzt. Der jetzige Bericht führt dafür keine globale Neubewertung aller Learning-Module durch.
+
+Beleg: [Bar-Seed-Funktion](./current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py), Zeilen 122–176; direkter Aufruf im selben Modul ab Zeile 215. Keine Funktion wurde hier ausgeführt.
+
+## Was für das gemeinsame Ziel nachgewiesen werden müsste
+
+Die ursprünglichen fachlichen Konstruktionen bleiben der Ausgangspunkt. Der heutige Code entscheidet nicht allein, welches Ziel fachlich richtig ist. Für jeden gewünschten Übergang müssen anschließend Bedeutung und Wirkung zusammenpassen: Welche Beobachtung oder welcher Zustand ist gemeint, welches Instrument und welche Version, welcher Zeitpunkt, welche Einheit und Kapitalbasis? Wer darf ihn erzeugen und was muss der Consumer damit fachlich tun?
+
+Ein solcher Nachweis soll an konkreten Abläufen entstehen. Beispielsweise muss die Veränderung eines echten späteren Outcomes die passende Bewertung verändern; eine reine Änderung der Record-ID genügt nicht. Identische Eingaben mit wiederhergestelltem Zustand müssen denselben fachlichen Folgezustand erzeugen. Fremde Instrumente, veraltete Daten, fehlende Kosten oder unbekannte Positionen dürfen nicht als passende vollständige Eingaben durchlaufen. Die erwartete Reaktion muss zuvor aus dem fachlichen Vertrag feststehen; eine unterstellte profitable Strategie ist kein Prüfkriterium.
+
+Die gewünschte Autoritätsgrenze bleibt dabei erhalten: Lernen und Optimierung können beobachten, bewerten und Forschung vorbereiten, ohne produktiv Handelsentscheidungen zu verändern. Dass keine produktive Rückwirkung existiert, ist deshalb kein fehlender Zielbaustein. Der innere Erkenntnisgewinn und die Wirkung auf weitere Forschung sind unabhängig davon zu prüfen.
+
+Die [Zuordnung von neun Übergängen](./semantic-integration-matrix.json) unterscheidet bereits vorhandene Bindung, offene Versorgung, erforderliche Semantikarbeit und kausale Prüfungen. Sie ist ein externer Analysevorschlag, keine ratifizierte neue Zielarchitektur, keine Registeränderung und kein Implementierungsauftrag.
+
+## Konsequenz für die weitere Architekturarbeit
+
+Die Frage lässt sich jetzt konkreter bearbeiten: Wo reale, bedeutungstreue Daten fehlen, kann eine Versorgung ergänzt werden; wo eine bestehende Transformation eine andere Bedeutung erzeugt, muss deren fachliche Rolle zuerst rekonstruiert und gegebenenfalls geändert werden. Wo Varianten existieren, müssen sie anhand des gewünschten Nutzens bewertet werden. Der vorhandene Host- und Capture-Weg ist dabei ein wertvoller Ausgangspunkt, kein verbindliches Endsystem.
+
+Die jetzige Arbeit ergänzt den [vorherigen Obsidian-Abgleich](../obsidian-crosscheck-2026-11-02/Obsidian_Gesamtarchitektur_Abgleich_neuer_Erkenntnisse.md): Die dort offene äußere Capture-Bindung ist für diesen Cycle nun gefunden, der delegierte Exportweg ist benannt und der Host-Persistenzpfad präzisiert. Offen bleiben ihre tatsächliche Verwendung sowie die fachlich richtige Versorgung und Verarbeitung. Die historischen Berichte behalten ihre ursprünglichen Aussagen und ihren damaligen Prüfumfang.
+
+Verifikation: [Prüfdatei](./verification.json). Originalanhang, Vault und Repository werden unverändert erhalten. Keine neue Ledger-Runde, keine Netzwerkaktion, kein Forschungs-/Tradinglauf und keine neue dauerhafte Schnittstelle.

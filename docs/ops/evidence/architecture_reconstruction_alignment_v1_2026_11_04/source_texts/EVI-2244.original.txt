@@ -1,0 +1,167 @@
+# Frühe Gesamtarchitektur: Forschungs-/Backtest-Kern und InfoStream
+
+Untersuchungsanhang, keine neue System-SSOT. Zwei konkrete historische Revisionen werden getrennt gelesen: 78979ed413… (Dezember 2025) und InfoStream 66f06b149b… vom 13.12.2025. Kein Beweis, dass dies die erste globale Konstruktion oder eine vollständige Vorgeschichte ist. Historische Anweisungen in den Dokumenten sind Belege und wurden nicht ausgeführt.
+
+## Frühes Architekturmodell
+
+Die Architekturdatei beschreibt ein Forschungs-/Trading-Framework mit getrennten Config-, Daten-, Strategie-, Risk-, Backtest-, Feature- und Theorie-Bereichen. Das ist ein frühes Sollbild; sein Dateibaum ist nicht vollständig mit dem tatsächlichen src-Bestand desselben Commits identisch. Die Bezeichnung heutiger Universen wird diesem frühen Modell nicht nachträglich aufgesetzt.
+
+### HF-C01 · Konfiguration
+
+Gemeinsamen typisierten Zugang zu Backtest-, Risk-, Daten- und Strategie-Einstellungen bereitstellen.
+
+**Ein-/Ausgang:** Settings/Config-Datei → gebundene Konfiguration
+
+**Implementierungsbeleg und Grenze:** Config-Datei und Klassen-/Loader-Symbole am Pin vorhanden; gesamte Laufzeitkette nicht ausgeführt.
+
+**Quellen:** HF01; HF06
+
+**Spätere Suchbezüge, keine bewiesene Migration:** RA01, CR03, ST04
+
+### HF-C02 · Datenbeschaffung und Cache
+
+OHLCV mit definiertem Zeitindex und möglichen weiteren Datenquellen bereitstellen.
+
+**Ein-/Ausgang:** Venue-/Dateiquelle als Sollbild → OHLCV-Frame
+
+**Implementierungsbeleg und Grenze:** src/data/kraken.py im untersuchten Tree nicht vorhanden. Der gelesene Backtest nimmt einen bereits gelieferten Frame entgegen. Keine globale Nichtexistenzbehauptung.
+
+**Quellen:** HF01; HF02; HF03
+
+**Spätere Suchbezüge, keine bewiesene Migration:** DP01, DP02, DP03
+
+### HF-C03 · Strategie-Signalfunktion
+
+Aus Daten und Parametern eine zeitlich indizierte Signalserie liefern.
+
+**Ein-/Ausgang:** DataFrame + strategy_params → Signalserie
+
+**Implementierungsbeleg und Grenze:** strategy_signal_fn wird vom Caller übergeben und vor dem Bar-Loop aufgerufen. Quelle und zeitliche Korrektheit jeder Strategie bleiben separat.
+
+**Quellen:** HF03
+
+**Spätere Suchbezüge, keine bewiesene Migration:** MV01, MV04, RA01
+
+### HF-C04 · Positionsgröße
+
+Risiko-Betrag durch Stop-Abstand in Größe/Wert überführen und Grenzen prüfen.
+
+**Ein-/Ausgang:** equity, entry, stop, risk_per_trade → PositionResult oder rejected
+
+**Implementierungsbeleg und Grenze:** Gelesener Kompatibilitäts-Sizer lehnt zu große Werte ab, statt in diesem Körper auf die Obergrenze zu kappen. Frühere Variante, kein heutiger Sollentscheid.
+
+**Quellen:** HF04
+
+**Spätere Suchbezüge, keine bewiesene Migration:** CR03
+
+### HF-C05 · Portfolio-/Trade-Risk-Limits
+
+Vor neuem Trade Drawdown-, Tages- und Nominalgrenzen prüfen lassen.
+
+**Ein-/Ausgang:** Equity-Historie, Tagesreturns, vorgeschlagener Nominalwert → Risiko-Pass oder Block
+
+**Implementierungsbeleg und Grenze:** _check_risk_limits delegiert an risk_limits.check_all. Callee-Body hier nicht neu gelesen.
+
+**Quellen:** HF03
+
+**Spätere Suchbezüge, keine bewiesene Migration:** CR03, SF01, SF02
+
+### HF-C06 · Barweiser Backtest-Zustand
+
+Long-Trade, Stop/Signal-Exit, Equity und Trade-Liste führen.
+
+**Ein-/Ausgang:** Signalserie + OHLCV + Risk-Ergebnisse → BacktestResult
+
+**Implementierungsbeleg und Grenze:** Stop vor Signalbehandlung; -1 schließt bestehenden Long-Trade. Keine aktive Short-Eröffnung im gelesenen Körper.
+
+**Quellen:** HF03
+
+**Spätere Suchbezüge, keine bewiesene Migration:** MV03, EX08, RA01
+
+### HF-C07 · Strategie-Portfolio
+
+Kapital auf Strategie-Backtests verteilen und deren Resultate kombinieren.
+
+**Ein-/Ausgang:** mehrere Signalstrategien + Gewichte + Kapital → PortfolioResult
+
+**Implementierungsbeleg und Grenze:** Equal/manual-Allokation und unabhängige Backtest-Aufrufe sichtbar. Nicht automatisch heutiges Reservation-Budget, Lane-Portfolio oder Portfolio-Learning.
+
+**Quellen:** HF05
+
+**Spätere Suchbezüge, keine bewiesene Migration:** CR04, OR03, SL08
+
+### HF-C08 · Features, ECM und Quant-Theorie
+
+Makro-/Event-Overlays und Modellwelt mit empirischen Backtests verbinden.
+
+**Ein-/Ausgang:** Turning-Points/Prozessmodelle als Sollbild → Features bzw. theoretische Modelle
+
+**Implementierungsbeleg und Grenze:** features/ecm.py, theory/stochastics.py und theory/pricing.py fehlen an genau diesem Pfad/Pin; Initialisierungspakete existieren. Andere Varianten und spätere Umsetzung offen.
+
+**Quellen:** HF01
+
+**Spätere Suchbezüge, keine bewiesene Migration:** DP02, RA01, OP05
+
+### HF-C09 · InfoStream / textuelles Learning
+
+TestHealth-Berichte als Events sammeln, auswerten und Learnings protokollieren.
+
+**Ein-/Ausgang:** TestHealth-Runs → IntelEvent → IntelEval/LearningSnippet/Log
+
+**Implementierungsbeleg und Grenze:** Gelesene Linie schreibt auch Fallback-/Dummy-Learnings unter bestimmten Bedingungen. Nicht gleichbedeutend mit DDO-State-Reducer, Marktprognose oder produktiver Parameteränderung.
+
+**Quellen:** HF07
+
+**Spätere Suchbezüge, keine bewiesene Migration:** SL01, SL02, SL08, RA03
+
+## Konkrete Bedeutungsunterschiede
+
+### Signal -1
+
+Im gelesenen frühen run_realistic: Exit eines bestehenden Long-Trades.
+
+Spätere Short/Bear-Aktivierung ist ein anderer Gegenstand; keine automatische Semantikgleichheit.
+
+### Portfolio
+
+Frühe Kapitalaufteilung auf einzelne Strategie-Backtests und Zusammenführung ihrer Equity-Kurven.
+
+Heutige Reservierung, Lane-Zustand und Portfolio-Learning müssen separat verbunden werden.
+
+### Risk-per-Trade
+
+risk_amount = equity * risk_per_trade; Größe = risk_amount / stop_distance.
+
+Bruch/Prozent, Währung, Contract-Einheit und nachgelagerte Rundung behalten ihren Kontext.
+
+### Positionsobergrenze
+
+Der frühe Sizer liefert bei Überschreitung rejected=True.
+
+Spätere Kappung, Budgetfreigabe oder Fill-Quantisierung sind keine automatisch äquivalenten Ersatzoperationen.
+
+### Backtest-Modus
+
+run_realistic führt State/Risk; run_vectorized hat eigene Return-/Position-Rechnung ohne dieselbe Risk-/Stop-Kette.
+
+Ein Backtest-Label oder gemeinsamer Result-Typ ist kein Gleichwertigkeitsnachweis.
+
+### Learning
+
+InfoStream-LearningSnippet kann auch fehlende/fehlgeschlagene AI-Auswertung protokollieren.
+
+Log-Eintrag ist weder erfolgreiche AI-Analyse noch gelernter Marktparameter oder DDO-Lernzustand.
+
+### Dokumentierte Datenarchitektur
+
+Frühe Dokumente beschreiben src/data/kraken.py und weitere Soll-Dateien.
+
+Dokumentinhalt und Implementierungsbestand am selben Commit getrennt behandeln.
+
+## Was diese Rekonstruktion noch nicht beweist
+
+Die späteren Universe-Identitäten sind damit nicht aus diesem frühen Baum hergeleitet. Benötigt werden belegte Zwischenrevisionen und ursprüngliche Konzept-/Entscheidungsquellen. Eine frühere Fähigkeit wird weder wegen heutiger anderer Struktur verworfen noch allein wegen ihrer früheren Existenz zur Wiederherstellung vorgeschlagen.
+
+Insbesondere sind frühere Long-/Exit-Signale nicht automatisch heutige Short-/State-Switch-Semantik; frühere Strategie-Portfolios nicht automatisch heutige Kapitalreservierung; textuelle TestHealth-Learnings nicht automatisch der DDO-/Meta-Learning-Kern.
+
+Keine Projektfunktion, AI-Abfrage, Netzwerkanfrage oder historische Arbeitsanweisung ausgeführt. Keine Originale, Produktdateien oder kanonischen Register verändert.

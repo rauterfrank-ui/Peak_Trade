@@ -1,0 +1,19 @@
+{
+  "paths": [
+    "config/research/canonical_volatility_numeric_max_age_additional_evidence_critical_surface_manifest_v2.json",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/__init__.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/architecture_guards_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/authorization_binding_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/constants_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/contract_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/critical_surface_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/git_binding_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/models_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/readiness_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/uniqueness_v2.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/validate_v2.py"
+  ],
+  "repository_binding_mode": "IMMUTABLE_ANCESTOR_SHA",
+  "schema_name": "canonical_volatility_numeric_max_age_additional_evidence_critical_surface_manifest",
+  "schema_version": "v2"
+}

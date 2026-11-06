@@ -1,0 +1,1522 @@
+# ============================================================================
+# Peak_Trade Konfiguration
+# ============================================================================
+# Stand: Dezember 2024
+# WICHTIG: Keine Secrets hier! API-Keys gehören in .env oder Umgebungsvariablen
+# ============================================================================
+
+# ============================================================================
+# PHASE 79: REAL-MARKET SMOKES CONFIGURATION
+# ============================================================================
+# Konfiguration für Real-Market-Smoke-Tests mit lokalem Market-Data-Cache (Parquet).
+# WICHTIG: Rein Offline - keine Netzwerk-Calls, nur lokale Parquet-Dateien!
+# ============================================================================
+
+[real_market_smokes]
+# Basis-Pfad für lokale Market-Data-Cache-Files (Produktiv)
+base_path = "data/cache"
+
+# Override-Base für Tests (in pytest über Fixture gesetzt)
+test_base_path = "tests/data/market_data_smoke"
+
+# Default-Parameter für Real-Market-Smokes
+default_market = "BTC/EUR"
+default_timeframe = "1h"
+default_lookback_days = 30
+
+# Data-Quality-Control Thresholds
+min_bars = 500
+
+# Liste konfigurierter Real-Market-Szenarien
+markets = ["BTC/EUR"]
+timeframes = ["1h"]
+
+[backtest]
+# Startkapital für Backtests
+initial_cash = 10000.0
+
+# Verzeichnis für Backtest-Ergebnisse
+results_dir = "results"
+
+# Kanonische Default-Kostenparameter (STEP 29J — versioniert, reproduzierbar)
+cost_model_version = "backtest_cost_v0"
+fee_model_version = "backtest_fee_taker_symmetric_v0"
+slippage_model_version = "backtest_slippage_symmetric_v0"
+fee_bps = 10.0
+slippage_bps = 5.0
+
+[risk]
+# ===== Position Sizing =====
+# Methode: "fixed_fractional" oder "kelly"
+position_sizing_method = "fixed_fractional"
+
+# Maximales Risiko pro Trade (1% = 0.01)
+# KRITISCH: Niemals über 2% gehen!
+risk_per_trade = 0.01
+
+# Maximale Positionsgröße (% des Kontos)
+# NIEMALS über 50% einer einzelnen Position!
+max_position_size = 0.25
+
+# Minimaler Positionswert in USD
+# Verhindert zu kleine Positionen (Gebühren!)
+min_position_value = 50.0
+
+# Minimale Stop-Distanz (%)
+# Zu enge Stops = Noise-Trading
+min_stop_distance = 0.005
+
+# Kelly-Criterion Scaling (nur wenn method="kelly")
+# Typisch: 0.25 - 0.5 (konservativ)
+kelly_scaling = 0.5
+
+# ===== Portfolio Risk Limits =====
+# Maximaler Tagesverlust (Kill-Switch)
+# Bei Erreichen: Alle Positionen schließen, Trading stoppen
+max_daily_loss = 0.03
+
+# Maximaler Portfolio-Drawdown
+# Überschreitung führt zu Trading-Stop
+max_drawdown = 0.20
+
+# Maximale Anzahl paralleler Positionen
+max_positions = 2
+
+# Maximales Gesamt-Exposure (Summe aller Positionswerte / Equity)
+max_total_exposure = 0.75
+
+# ============================================================================
+# RISK LAYER (Advanced Risk Management)
+# ============================================================================
+# Phase 0: Architecture Alignment (Config Anchor)
+# Future Phases: VaR/CVaR, Stress Testing, Monte Carlo, Validation
+# ============================================================================
+[risk_layer]
+# Master-Switch für Advanced Risk Layer
+# WICHTIG: MUST remain false by default. Enabling requires:
+#   - Governance Go/No-Go approval
+#   - Operator runbook + manual-only operation
+#   - Shadow/testnet validation first (never enable in live without review)
+# false = nur Basic Risk (siehe [risk]), true = Full Risk Layer (requires governance)
+enabled = false
+
+# VaR/CVaR Configuration (Phase R1)
+var_confidence = 0.95
+var_horizon_days = 1
+cvar_enabled = false
+
+# Stress Testing (Phase R3)
+stress_testing_enabled = false
+stress_scenarios = []
+
+# Validation & Backtesting (Phase R2)
+validation_frequency_days = 7
+kupiec_test_enabled = false
+
+# Monitoring & Alerting (Phase R5)
+alert_threshold_utilization = 0.80
+alert_channels = ["log"]
+
+[data]
+# Standard-Timeframe für OHLCV-Daten
+default_timeframe = "1h"
+
+# Daten-Verzeichnis (nicht ins Repo!)
+data_dir = "data"
+
+# Cache-Settings
+use_cache = true
+cache_format = "parquet"
+
+# ============================================================================
+# STRATEGIEN-REGISTRY (Zentrale Verwaltung aller Strategien)
+# ============================================================================
+[strategies]
+# Liste aller aktuell AKTIVEN Strategien für Backtests/Portfolio
+# Reihenfolge = Priorität im Portfolio-Allokations-Algorithmus
+active = ["ma_crossover", "momentum_1h", "rsi_strategy"]
+
+# Alle verfügbaren Strategien (Dokumentation / Discovery)
+# Strategien in dieser Liste müssen einen [strategy.NAME]-Block haben
+available = [
+    "ma_crossover",
+    "momentum_1h",
+    "rsi_strategy",
+    "bollinger_bands",
+    "macd",
+    "ecm_cycle"
+]
+
+# ============================================================================
+# PHASE 75: v1.1 CURATED STRATEGIES
+# ============================================================================
+# Kuratierte Strategien für v1.1 mit einheitlicher Config-Struktur.
+# Diese ersetzen die Legacy-Configs für Production-Use.
+# ============================================================================
+
+# --- v1.1 TREND-FOLLOWING STRATEGIES ---
+
+[strategies.ma_crossover]
+enabled = true
+category = "trend"
+timeframes = ["1h", "4h", "1d"]
+risk_level = "medium"
+description = "Moving Average Crossover Strategy (Fast/Slow MA)"
+v11_official = true
+
+[strategies.ma_crossover.defaults]
+fast_window = 20
+slow_window = 50
+price_col = "close"
+
+[strategies.trend_following]
+enabled = true
+category = "trend"
+timeframes = ["1h", "4h", "1d"]
+risk_level = "medium"
+description = "ADX-basierte Trend-Following-Strategie mit optionalem MA-Filter"
+v11_official = true
+
+[strategies.trend_following.defaults]
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 50
+use_ma_filter = true
+
+[strategies.macd]
+enabled = true
+category = "trend"
+timeframes = ["4h", "1d"]
+risk_level = "medium"
+description = "MACD Trend-Following (EMA-Crossover)"
+v11_official = true
+
+[strategies.macd.defaults]
+fast_ema = 12
+slow_ema = 26
+signal_ema = 9
+
+# --- v1.1 MEAN-REVERSION STRATEGIES ---
+
+[strategies.rsi_reversion]
+enabled = true
+category = "mean_reversion"
+timeframes = ["15m", "1h", "4h"]
+risk_level = "medium"
+description = "RSI Mean-Reversion mit optionalem Trendfilter"
+v11_official = true
+
+[strategies.rsi_reversion.defaults]
+rsi_window = 14
+lower = 30.0
+upper = 70.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+
+[strategies.mean_reversion]
+enabled = true
+category = "mean_reversion"
+timeframes = ["1h", "4h"]
+risk_level = "medium"
+description = "Z-Score Mean-Reversion mit optionalem Volatilitaetsfilter"
+v11_official = true
+
+[strategies.mean_reversion.defaults]
+lookback = 20
+entry_threshold = -2.0
+exit_threshold = 0.0
+use_vol_filter = false
+vol_window = 20
+max_vol_percentile = 70.0
+
+[strategies.bollinger_bands]
+enabled = true
+category = "mean_reversion"
+timeframes = ["1h", "4h", "1d"]
+risk_level = "medium"
+description = "Bollinger Bands Mean-Reversion"
+v11_official = true
+
+[strategies.bollinger_bands.defaults]
+bb_period = 20
+bb_std = 2.0
+entry_threshold = 0.95
+exit_threshold = 0.50
+
+# --- v1.1 MOMENTUM STRATEGIES ---
+
+[strategies.momentum_1h]
+enabled = true
+category = "momentum"
+timeframes = ["1h", "4h"]
+risk_level = "medium_high"
+description = "Momentum-basierte Trend-Following-Strategie"
+v11_official = true
+
+[strategies.momentum_1h.defaults]
+lookback_period = 20
+entry_threshold = 0.02
+exit_threshold = -0.01
+
+# --- v1.1 BREAKOUT STRATEGIES ---
+
+[strategies.breakout]
+enabled = true
+category = "breakout"
+timeframes = ["1h", "4h"]
+risk_level = "medium_high"
+description = "N-Bar Breakout mit SL/TP, Trailing-Stop und ATR-Filter"
+v11_official = true
+
+[strategies.breakout.defaults]
+lookback_breakout = 20
+atr_lookback = 14
+use_atr_filter = false
+exit_on_opposite_breakout = true
+risk_mode = "symmetric"
+stop_loss_pct = 0.03
+take_profit_pct = 0.06
+price_col = "close"
+
+# --- v1.1 META/FILTER STRATEGIES ---
+
+[strategies.vol_regime_filter]
+enabled = true
+category = "meta"
+timeframes = ["1h", "4h"]
+risk_level = "-"
+description = "Volatilitaets-Regime-Filter (Overlay fuer andere Strategien)"
+v11_official = true
+
+[strategies.vol_regime_filter.defaults]
+vol_window = 14
+vol_method = "atr"
+vol_percentile_low = 25
+vol_percentile_high = 75
+lookback_percentile = 100
+min_bars = 30
+regime_mode = false
+invert = false
+
+# --- EXPERIMENTAL (nicht v1.1-offiziell) ---
+
+[strategies.composite]
+enabled = false
+category = "meta"
+timeframes = []
+risk_level = "varies"
+description = "Multi-Strategy Composite (experimental)"
+v11_official = false
+
+[strategies.regime_aware_portfolio]
+enabled = false
+category = "meta"
+timeframes = []
+risk_level = "varies"
+description = "Regime-Aware Portfolio Strategy (experimental)"
+v11_official = false
+
+# Default-Parameter für ALLE Strategien (sofern nicht überschrieben)
+[strategies.defaults]
+# Risk Management Defaults
+stop_pct = 0.02              # Standard Stop-Loss: 2%
+take_profit_pct = 0.05       # Standard Take-Profit: 5%
+use_trailing_stop = false    # Trailing-Stop aktivieren?
+trailing_stop_pct = 0.015    # Trailing-Stop-Distanz: 1.5%
+
+# Position Sizing Defaults
+position_fraction = 0.25     # 25% des Kapitals pro Trade
+min_position_value = 50.0    # Min. Tradegröße in USD (überschreibt [risk])
+
+# Lifecycle / Timing Defaults
+min_hold_bars = 3            # Min. Haltedauer in Bars (verhindert Over-Trading)
+max_hold_bars = 100          # Max. Haltedauer (Timeout-Exit nach N Bars)
+warmup_bars = 200            # Min. Bars für Indikator-Initialisierung
+
+# Circuit Breakers
+max_consecutive_losses = 3   # Kill-Switch nach N Verlusten in Folge
+cooldown_after_stop = 5      # Bars Pause nach Stop-Loss-Trigger
+
+# Strategien-Metadaten (für Analyse/Reporting)
+[strategies.metadata]
+# Strategie-Typ-Kategorisierung
+[strategies.metadata.ma_crossover]
+type = "trend_following"
+risk_level = "medium"
+best_market_regime = "trending"
+recommended_timeframes = ["1h", "4h", "1d"]
+
+[strategies.metadata.momentum_1h]
+type = "trend_following"
+risk_level = "medium_high"
+best_market_regime = "trending"
+recommended_timeframes = ["1h", "4h"]
+
+[strategies.metadata.rsi_strategy]
+type = "mean_reversion"
+risk_level = "medium"
+best_market_regime = "ranging"
+recommended_timeframes = ["15m", "1h", "4h"]
+
+[strategies.metadata.bollinger_bands]
+type = "mean_reversion"
+risk_level = "medium"
+best_market_regime = "ranging"
+recommended_timeframes = ["1h", "4h", "1d"]
+
+[strategies.metadata.macd]
+type = "trend_following"
+risk_level = "medium"
+best_market_regime = "trending"
+recommended_timeframes = ["4h", "1d"]
+
+[strategies.metadata.ecm_cycle]
+type = "macro_cycle"
+risk_level = "low"
+best_market_regime = "any"
+recommended_timeframes = ["1d", "1w"]
+
+# ============================================================================
+# STRATEGIE-SPEZIFISCHE PARAMETER (bestehende Blöcke - UNVERÄNDERT)
+# ============================================================================
+
+[strategy.ma_crossover]
+# Moving Average Crossover Parameter
+fast_period = 10
+slow_period = 30
+
+# Stop-Loss in Prozent
+stop_pct = 0.02
+
+# Optional: Take-Profit
+# take_profit_pct = 0.05
+
+[live]
+# WARNUNG: Nur für Paper-Trading verwenden!
+# Live-Trading NIEMALS ohne min. 6 Monate erfolgreiche Backtests!
+enabled = false
+mode = "paper"  # "paper" oder "live" (GEFÄHRLICH!)
+
+# ============================================================================
+# LIVE PROFILE: STRATEGY SWITCH CONFIGURATION
+# ============================================================================
+# Definiert welche Strategien für Live-Trading erlaubt sind und welche
+# aktuell aktiv ist. KEIN automatisches Switching - nur manuelle Auswahl!
+# ============================================================================
+
+[live_profile.strategy_switch]
+# Aktuell aktive Strategie für Live-Trading
+active_strategy_id = "ma_crossover"
+
+# Liste der für Live-Trading freigegebenen Strategien
+# Nur kuratierte, live-ready Strategien erlaubt (keine R&D!)
+allowed = ["ma_crossover", "rsi_reversion", "breakout"]
+
+# Automatisches Switching deaktiviert (Governance!)
+auto_switch_enabled = false
+
+# Manuelle Switch-Bestätigung erforderlich
+require_confirmation = true
+
+# Target venue: OKX Europe EEA (credentials via OKX_EEA_* env vars — separate operator setup).
+# Kraken live profile decommissioned; Kraken adapter modules are removed and not selectable.
+exchange = "okx_europe_eea"
+default_pair = "ETH/USD"
+
+[validation]
+# Mindestanforderungen für Live-Trading-Freigabe
+min_sharpe = 1.5
+max_drawdown = -0.15
+min_trades = 50
+min_profit_factor = 1.3
+min_backtest_months = 6
+
+[strategy.momentum_1h]
+# Momentum-Strategie basierend auf Kursänderung über N Perioden
+lookback_period = 20      # Lookback-Fenster für Momentum
+entry_threshold = 0.02    # Min. 2% Momentum für Entry
+exit_threshold = -0.01    # Exit bei -1% Momentum
+stop_pct = 0.025          # 2.5% Stop-Loss
+
+
+[portfolio]
+# Multi-Strategy-Portfolio-Einstellungen
+enabled = true
+max_strategies_active = 3     # Max. gleichzeitig aktive Strategien
+min_correlation = -0.3        # Min. Korrelation zwischen Strategien
+rebalance_frequency = 24      # Rebalancing alle N Bars
+
+# Capital Allocation
+allocation_method = "equal"   # "equal", "risk_parity", "sharpe_weighted"
+total_capital = 10000.0       # Gesamtkapital für Portfolio
+
+# Portfolio-Level Risk
+portfolio_max_dd = -0.20      # Max. Portfolio-Drawdown (20%)
+portfolio_stop_loss = -0.05   # Daily Portfolio Stop-Loss (5%)
+
+# Strategy Weights (bei manueller Allocation)
+[portfolio.weights]
+ma_crossover = 0.33
+momentum_1h = 0.33
+rsi_strategy = 0.34
+
+[strategy.rsi_strategy]
+# RSI Mean-Reversion-Strategie
+rsi_period = 14          # RSI-Berechnungsperiode
+oversold = 30            # Oversold-Level (Entry)
+overbought = 70          # Overbought-Level (Exit)
+stop_pct = 0.02          # 2% Stop-Loss
+
+[strategy.bollinger_bands]
+# Bollinger Bands Mean-Reversion
+bb_period = 20           # Periode für Moving Average
+bb_std = 2.0             # Standard-Abweichungen (2 = 95%)
+entry_threshold = 0.95   # Entry bei 95% der unteren Band
+exit_threshold = 0.50    # Exit bei Mittel-Band
+stop_pct = 0.03          # 3% Stop-Loss
+
+[strategy.macd]
+# MACD Trend-Following
+fast_ema = 12            # Schnelle EMA
+slow_ema = 26            # Langsame EMA
+signal_ema = 9           # Signal-Linie
+entry_threshold = 0.0    # Entry bei MACD > Signal
+exit_threshold = 0.0     # Exit bei MACD < Signal
+stop_pct = 0.025         # 2.5% Stop-Loss
+
+[strategy.ecm_cycle]
+# ECM (Economic Confidence Model) - Armstrong's 8.6 Year Cycle
+ecm_cycle_days = 3141        # Pi * 1000 Tage (8.6 Jahre)
+ecm_confidence_threshold = 0.6  # Confidence-Level für Entry
+lookback_bars = 100          # Lookback für Trend-Bestimmung
+use_pi_harmonics = true      # Pi-Harmonics verwenden (1/4, 1/2, 3/4)
+stop_pct = 0.03              # 3% Stop-Loss
+
+# ECM-Turning-Points (beispielhaft - später aus docs/armstrong_notes.md)
+# Format: YYYY-MM-DD
+ecm_reference_date = "2020-01-18"  # Letzter bekannter ECM-Peak
+
+# ============================================================================
+# PHASE 40+: STRATEGY LIBRARY ERWEITERUNGEN (Breakout & Vol-Regime)
+# ============================================================================
+
+# Neue Breakout-Variante mit erweiterten Features
+[strategy.breakout_basic]
+type = "breakout"
+lookback_high = 20
+lookback_low = 20
+atr_lookback = 14
+atr_multiplier = 1.0
+use_atr_filter = true
+exit_on_opposite_breakout = true
+risk_mode = "symmetric"
+price_col = "close"
+
+# Vol-Regime-Filter mit Threshold-basierter Klassifikation
+[strategy.vol_regime_basic]
+type = "vol_regime_filter"
+vol_lookback = 20            # Alias für vol_window
+vol_metric = "atr"           # Alias für vol_method
+low_vol_threshold = 0.5      # Vol < threshold → Regime = 1 (Risk-On)
+high_vol_threshold = 2.0     # Vol > threshold → Regime = -1 (Risk-Off)
+min_bars = 30                # Minimum an Bars vor Klassifikation
+regime_mode = true           # Aktiviert Regime-Modus (1/-1/0 statt 1/0)
+
+# ============================================================================
+# PHASE 40: STRATEGY LIBRARY ERWEITERUNGEN (Legacy)
+# ============================================================================
+
+[strategy.breakout]
+# Breakout/Momentum Strategy mit Stop-Loss und Take-Profit
+lookback_breakout = 20       # Standard-Lookback-Fenster für Hoch/Tief
+# lookback_high = 20        # Optional: Separates Lookback für Long-Breakout
+# lookback_low = 20         # Optional: Separates Lookback für Short-Breakout
+# ATR-Filter Optionen
+atr_lookback = 14            # ATR-Fenster für Filter
+# atr_multiplier = 1.0      # Optional: Mindest-ATR-Level (ATR > multiplier * Baseline)
+use_atr_filter = false       # ATR-Filter aktivieren/deaktivieren
+exit_on_opposite_breakout = true  # Exit bei gegenteiligem Breakout
+risk_mode = "symmetric"      # "symmetric", "long_only", "short_only"
+# Legacy: side (wird zu risk_mode gemappt)
+side = "both"                # "long", "short" oder "both" (Legacy, bevorzugt risk_mode)
+stop_loss_pct = 0.03         # Stop-Loss: 3%
+take_profit_pct = 0.06       # Take-Profit: 6%
+# trailing_stop_pct = 0.02   # Optional: Trailing-Stop (2%)
+price_col = "close"
+
+[strategy.vol_regime_filter]
+# Volatilitäts-Regime-Filter
+# Erlaubt Trades nur wenn Volatilität im definierten Bereich liegt
+# ODER gibt Regime-Signale zurück (Low-Vol/High-Vol/Neutral)
+vol_window = 14              # ATR/Volatility-Berechnung Fenster
+vol_method = "atr"           # "atr", "std", "realized" oder "range"
+# Threshold-basierte Regime-Klassifikation
+# low_vol_threshold = 0.5    # Optional: Vol < threshold → Regime = 1 (Risk-On)
+# high_vol_threshold = 2.0   # Optional: Vol > threshold → Regime = -1 (Risk-Off)
+min_bars = 30                # Minimum an Bars vor Klassifikation
+regime_mode = false          # Wenn true: gibt Regime-Signale (1/-1/0) statt Filter (1/0)
+# Perzentil-basierter Filter (alternativ)
+vol_percentile_low = 25      # Trading nur wenn Vol > 25. Perzentil
+vol_percentile_high = 75     # Trading nur wenn Vol < 75. Perzentil
+lookback_percentile = 100    # Lookback für Perzentil-Berechnung
+# Absolute Thresholds (alternativ)
+# min_vol = 50.0             # Optional: Absoluter Min-Vol-Schwellwert
+# max_vol = 500.0            # Optional: Absoluter Max-Vol-Schwellwert
+# atr_threshold = 100.0      # Optional: ATR muss > Threshold sein
+invert = false               # Invertiert die Filterlogik
+
+[strategy.rsi_reversion_v1]
+# RSI Mean-Reversion (erweitertes Beispiel)
+rsi_window = 14
+lower = 30.0                 # Oversold-Level für Long
+upper = 70.0                 # Overbought-Level für Short
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false     # Optional: MA-Trendfilter
+trend_ma_window = 50
+use_wilder = true            # Wilder-Smoothing (stabiler)
+price_col = "close"
+
+[strategy.breakout_v1]
+# Breakout-Strategie Beispiel-Config
+lookback_breakout = 15
+stop_loss_pct = 0.025        # 2.5% Stop-Loss
+take_profit_pct = 0.05       # 5% Take-Profit
+trailing_stop_pct = 0.02     # 2% Trailing-Stop
+side = "long"                # Nur Long-Trades
+price_col = "close"
+
+[strategy.composite]
+# Multi-Strategy Composite (Kombiniert mehrere Strategien)
+components = ["rsi_reversion", "breakout"]
+weights = [0.5, 0.5]
+aggregation = "weighted"     # "weighted", "voting", "unanimous", "any_long", "any_short"
+signal_threshold = 0.3       # Long wenn > 0.3, Short wenn < -0.3
+require_all_valid = false
+# filter = "vol_regime_filter"  # Optional: Filter-Strategie
+
+[strategy.portfolio_phase40_example]
+# Beispiel-Portfolio für Phase 40
+components = ["rsi_reversion", "breakout", "ma_crossover"]
+weights = [0.4, 0.3, 0.3]
+aggregation = "weighted"
+signal_threshold = 0.25
+
+# ============================================================================
+# REGIME-AWARE PORTFOLIO STRATEGIES (Phase XX)
+# ============================================================================
+
+[portfolio.regime_aware_breakout_rsi]
+# Regime-Aware Portfolio: Breakout + RSI mit Vol-Regime-Filter
+type = "regime_aware_portfolio"
+components = ["breakout", "rsi_reversion"]
+base_weights = { breakout = 0.6, rsi_reversion = 0.4 }
+regime_strategy = "vol_regime_filter"
+mode = "scale"              # "scale" oder "filter"
+risk_on_scale = 1.0         # Volle Gewichte bei Risk-On
+neutral_scale = 0.5         # Halbe Gewichte bei Neutral
+risk_off_scale = 0.0        # Keine Gewichte bei Risk-Off
+signal_threshold = 0.3      # Schwelle für Long/Short-Entscheidung
+
+[portfolio.regime_aware_conservative]
+# Konservatives Regime-Aware Portfolio (nur Risk-On)
+type = "regime_aware_portfolio"
+components = ["breakout", "ma_crossover"]
+base_weights = { breakout = 0.5, ma_crossover = 0.5 }
+regime_strategy = "vol_regime_filter"
+mode = "filter"             # Filter-Mode: Risk-Off → Flat
+risk_on_scale = 1.0
+neutral_scale = 0.3         # Sehr reduzierte Gewichte bei Neutral
+risk_off_scale = 0.0
+signal_threshold = 0.25
+
+# ============================================================================
+# PHASE 31: SHADOW/PAPER LIVE-SESSION CONFIGURATION
+# ============================================================================
+# Konfiguration für Shadow-/Paper-Trading mit echten Exchange-Marktdaten.
+# WICHTIG: Es werden KEINE echten Orders an die Exchange gesendet!
+#          Nur public market data wird verwendet.
+# ============================================================================
+
+[shadow_paper]
+# Shadow-/Paper-Session aktivieren
+enabled = true
+
+# Modus: "shadow" oder "paper"
+# - shadow: Strategie läuft parallel, Orders werden nur geloggt
+# - paper: Vollständige Paper-Trading-Simulation
+mode = "paper"
+
+# Trading-Symbol
+symbol = "BTC/EUR"
+
+# Timeframe für Candles ("1m", "5m", "15m", "1h", "4h", "1d")
+timeframe = "1m"
+
+# Polling-Intervall in Sekunden (wie oft neue Daten geholt werden)
+poll_interval_seconds = 60.0
+
+# Anzahl Warmup-Candles für Indikator-Initialisierung
+warmup_candles = 200
+
+# Start-Balance für Paper-Trading in EUR
+start_balance = 10000.0
+
+# Position-Sizing: Anteil des Kapitals pro Trade (0.0 - 1.0)
+position_fraction = 0.1
+
+# Fee-Rate für Simulation (z.B. 0.0026 = 26 bps = 0.26%)
+fee_rate = 0.0026
+
+# Slippage in Basispunkten für Simulation
+slippage_bps = 5.0
+
+[live_exchange]
+# Exchange-Konfiguration für Live-Marktdaten
+# WICHTIG: Nur public market data! Keine Order-APIs!
+# Kraken public OHLCV path is not selectable — OKX EEA is the active venue target.
+name = "okx_europe_eea"
+
+# Sandbox/Public-Only Modus (MUSS true sein für Phase 31)
+use_sandbox = true
+
+# OKX Europe EEA REST host (public market data probes)
+base_url = "https://eea.okx.com"
+
+# Rate-Limit-Einstellungen
+rate_limit_ms = 1000
+
+# Retry-Einstellungen bei Netzwerkfehlern
+max_retries = 3
+retry_delay_seconds = 5.0
+
+# ============================================================================
+# LIVE RISK LIMITS (Phase 31 - Shadow/Paper spezifisch)
+# ============================================================================
+
+[live_alerts]
+# Live Alerts & Notifications (Phase 49 + 50)
+# ============================================
+# Konfiguration für Alert-System bei Risk-Violations und kritischen Zuständen.
+#
+# enabled: Ob Alerts aktiviert sind
+# min_level: Minimaler Alert-Level ("info", "warning", "critical")
+# sinks: Liste der aktiven Sink-Namen (z.B. ["log", "stderr", "webhook", "slack_webhook"])
+# log_logger_name: Logger-Name für Logging-Sink
+# webhook_urls: Liste von generischen HTTP-Webhook-URLs (Phase 50)
+# slack_webhook_urls: Liste von Slack-Webhook-URLs (Phase 50)
+# webhook_timeout_seconds: Timeout für HTTP-Requests in Sekunden (Phase 50)
+enabled = true
+min_level = "warning"
+sinks = ["log"]
+log_logger_name = "peak_trade.live.alerts"
+
+# Phase 50: Webhook & Slack
+webhook_urls = []
+slack_webhook_urls = []
+webhook_timeout_seconds = 3.0
+
+[live_risk]
+# Live-Risk-Limits aktivieren
+enabled = true
+
+# Basis-Währung für Limits
+base_currency = "EUR"
+
+# Maximales Notional pro einzelner Order (EUR)
+max_order_notional = 25.0
+
+# Max. aggregiertes Notional pro Symbol (EUR)
+max_symbol_exposure_notional = 2000.0
+
+# Max. Gesamt-Notional aller Orders (EUR)
+max_total_exposure_notional = 500.0
+
+# Max. Anzahl verschiedener Symbole/Positionen
+max_open_positions = 1
+
+# Absoluter max. Tagesverlust (EUR)
+max_daily_loss_abs = 25.0
+
+# Prozentualer max. Tagesverlust (bezogen auf start_balance)
+max_daily_loss_pct = 5.0
+
+# Bei Limit-Verletzung Orders blockieren
+block_on_violation = true
+
+# Tages-PnL aus Experiments-Registry verwenden
+use_experiments_for_daily_pnl = true
+
+# ============================================================================
+# ENVIRONMENT CONFIGURATION (Safety Layer)
+# ============================================================================
+
+[environment]
+# Trading-Umgebung: "paper", "testnet", "live"
+# WICHTIG: Für Phase 31 NUR "paper" verwenden!
+mode = "paper"
+
+# Live-Trading explizit deaktivieren (Safety)
+enable_live_trading = false
+
+# Bestätigungs-Token für Live-Trading erforderlich
+require_confirm_token = true
+
+# Testnet Dry-Run Modus (Safety)
+testnet_dry_run = true
+
+# Alle Orders loggen
+log_all_orders = true
+
+# ============================================================================
+# PHASE 32: SHADOW/PAPER RUN LOGGING CONFIGURATION
+# ============================================================================
+# Konfiguration für das Logging von Shadow-/Paper-Runs.
+# Erzeugt strukturierte Logs für jeden Run, die für Reporting verwendet werden.
+# ============================================================================
+
+[shadow_paper_logging]
+# Run-Logging aktivieren
+enabled = true
+
+# Basis-Verzeichnis für Run-Logs
+base_dir = "live_runs"
+
+# Flush-Intervall (alle N Steps werden Events persistiert)
+flush_interval_steps = 50
+
+# Format für Events-Datei ("parquet" oder "csv")
+format = "parquet"
+
+# Automatisch Markdown-Report beim Beenden generieren
+write_markdown_report_on_finish = false
+
+# Detailliertes Event-Logging (inkl. OHLC pro Step)
+log_ohlc_details = true
+
+# Order-Details loggen (Side, Size, Price, etc.)
+log_order_details = true
+
+# Risk-Check-Details loggen (Reasons, Metrics)
+log_risk_details = true
+
+# ============================================================================
+# PHASE 33: LIVE MONITORING CONFIGURATION
+# ============================================================================
+# Konfiguration für das CLI-Monitoring von Shadow-/Paper-Runs.
+# Erlaubt Echtzeit-Beobachtung laufender Sessions.
+# ============================================================================
+
+[live_monitoring]
+# Standard-Refresh-Intervall in Sekunden
+default_interval_seconds = 2.0
+
+# Anzahl der Tail-Zeilen (letzte Events)
+default_tail_rows = 15
+
+# ANSI-Farben im Terminal verwenden
+use_colors = true
+
+# ============================================================================
+# PHASE 34: ALERTS CONFIGURATION
+# ============================================================================
+# Alert-System für Shadow-/Paper-Runs.
+# Generiert Warnungen bei Risk-Verletzungen, großen Verlusten etc.
+# ============================================================================
+
+[alerts]
+# ============================================================================
+# PHASE 82: ALERT-PIPELINE (Slack/Mail) v1
+# ============================================================================
+# Robuste, konfigurierbare Alert-Pipeline für Live-/Shadow-/Testnet-Trading.
+# Sendet kritische Ereignisse automatisch an menschliche Operatoren.
+#
+# Trigger-Events:
+# - Risk Severity Transitions (GREEN↔YELLOW↔RED)
+# - Hard Limit Breaches (Daily Loss, Drawdown, Exposure)
+# - Optional: Execution-Fehler, System-Health-Checks (v1.1)
+# ============================================================================
+
+# Alerts global aktivieren/deaktivieren
+enabled = true
+
+# Default-Minimum-Severity für alle Channels ("INFO", "WARN", "CRITICAL")
+default_min_severity = "WARN"
+
+# Sekunden zwischen gleichen Alerts (Debouncing)
+debounce_seconds = 60
+
+# Recovery-Alerts senden (RED→YELLOW, RED→GREEN)?
+send_recovery_alerts = true
+
+# ============================================================================
+# SLACK ALERT CHANNEL
+# ============================================================================
+# Primärer Alert-Kanal über Slack Incoming Webhook.
+# Setup: Slack App → Incoming Webhooks → Webhook-URL kopieren
+# ============================================================================
+
+[alerts.slack]
+# Slack-Channel aktivieren
+enabled = false
+
+# Slack Incoming Webhook URL (NICHT committen, besser aus .env laden!)
+# Format: https://hooks.slack.com/services/XXX/YYY/ZZZ
+webhook_url = ""
+
+# Minimale Severity für Slack-Alerts ("INFO", "WARN", "CRITICAL")
+min_severity = "WARN"
+
+# Slack-Channel Override (optional, z.B. "#peak-trade-alerts")
+# Wenn leer, wird der Default-Channel des Webhooks verwendet
+channel = ""
+
+# Bot-Username (erscheint als Absender)
+username = "peak-trade-bot"
+
+# Bot-Emoji (erscheint als Avatar)
+icon_emoji = ":rotating_light:"
+
+# HTTP-Timeout in Sekunden
+timeout_seconds = 5.0
+
+# ============================================================================
+# EMAIL ALERT CHANNEL (Optional, v1.1)
+# ============================================================================
+# Sekundärer Alert-Kanal für kritische Events via SMTP.
+# Empfohlen für CRITICAL-Alerts als Backup zu Slack.
+# ============================================================================
+
+[alerts.email]
+# Email-Channel aktivieren
+enabled = false
+
+# Minimale Severity für Email-Alerts (empfohlen: "CRITICAL")
+min_severity = "CRITICAL"
+
+# SMTP-Server-Konfiguration
+smtp_host = "smtp.example.com"
+smtp_port = 587
+use_tls = true
+
+# SMTP-Authentifizierung
+# WICHTIG: Passwort NICHT hier speichern! Nutze Environment-Variable!
+username = "peak-trade-alerts@example.com"
+password_env_var = "PEAK_TRADE_SMTP_PASSWORD"
+
+# Absender-Adresse
+from_addr = "peak-trade-alerts@example.com"
+
+# Empfänger-Adressen (Liste)
+to_addrs = ["ops-oncall@example.com"]
+
+# SMTP-Timeout in Sekunden
+timeout_seconds = 30.0
+
+# ============================================================================
+# LEGACY: Alert-Rules (Phase 34, weiterhin unterstützt)
+# ============================================================================
+
+[alerts.rules]
+# Risk-Blocked-Regel (orders durch Risk-Limits blockiert)
+enable_risk_blocked = true
+
+# Absolute Verlust-Regel
+enable_large_loss_abs = true
+large_loss_abs_threshold = -500.0
+
+# Prozentuale Verlust-Regel
+enable_large_loss_pct = true
+large_loss_pct_threshold = -10.0
+
+# Drawdown-Regel (aktuell deaktiviert, da nicht im Snapshot)
+enable_drawdown = false
+drawdown_threshold = -15.0
+
+# ============================================================================
+# PHASE 34: WEB UI CONFIGURATION
+# ============================================================================
+# Einfache Web-UI für Run-Monitoring (lokal).
+# ============================================================================
+
+[web_ui]
+# Web-UI aktivieren
+enabled = true
+
+# Host für den Web-Server
+host = "127.0.0.1"
+
+# Port für den Web-Server
+port = 8000
+
+# Auto-Refresh-Intervall im Browser (Sekunden)
+auto_refresh_seconds = 5
+
+# ============================================================================
+# PHASE 38: EXCHANGE CLIENT CONFIGURATION
+# ============================================================================
+# Konfiguration für den Exchange-Client-Layer.
+# default_type bestimmt, welcher Client für Trading verwendet wird.
+#
+# Verfügbare Typen:
+# - "dummy": In-Memory-Client für Tests (keine echten API-Calls)
+# Kraken trading types are not selectable.
+# ============================================================================
+
+[exchange]
+# Standard-Client-Typ für Trading
+default_type = "dummy"
+
+# Dummy-Client Einstellungen (nur wenn default_type = "dummy")
+[exchange.dummy]
+btc_eur_price = 50000.0
+eth_eur_price = 3000.0
+btc_usd_price = 55000.0
+fee_bps = 10.0
+slippage_bps = 5.0
+
+# ============================================================================
+# PHASE 35: TESTNET EXCHANGE INTEGRATION
+# ============================================================================
+# Kraken testnet/live exchange tables are not selectable. Canonical venue
+# configuration is [exchange.okx_europe_eea] below.
+# ============================================================================
+
+# ============================================================================
+# OKX EUROPE EEA (Package E / INV-033) — target venue (credentials external)
+# ============================================================================
+# Keys/passphrases ONLY via environment variables or local bounded secret files.
+# Demo/simulation REST uses header x-simulated-trading: 1 on https://eea.okx.com
+# Runtime remains fail-closed until operator credentials + explicit GO.
+
+[exchange.okx_europe_eea]
+enabled = false
+rest_host = "https://eea.okx.com"
+# DEMO_ONLY (wseeapap): not production authority for ratified WP-A/WP-B observation runtimes.
+# Production public/private WS authority: wseea.okx.com (see governance policy artifacts).
+public_ws_host = "wss://wseeapap.okx.com:8443/ws/v5/public"
+private_ws_host = "wss://wseeapap.okx.com:8443/ws/v5/private"
+public_ws_host_production_ratified = "wss://wseea.okx.com:8443/ws/v5/public"
+private_ws_host_production_ratified = "wss://wseea.okx.com:8443/ws/v5/private"
+websocket_port = 8443
+simulation_header_name = "x-simulated-trading"
+simulation_header_value = "1"
+demo_instrument_id = "ETH-USD_UM_XPERP-310328"
+production_instrument_id = "ETH-USD_UM_XPERP-310404"
+public_api_key_env_var = "OKX_EEA_PUBLIC_API_KEY"
+readonly_api_key_env_var = "OKX_EEA_READONLY_API_KEY"
+readonly_api_secret_env_var = "OKX_EEA_READONLY_API_SECRET"
+readonly_api_passphrase_env_var = "OKX_EEA_READONLY_API_PASSPHRASE"
+trade_api_key_env_var = "OKX_EEA_TRADE_API_KEY"
+trade_api_secret_env_var = "OKX_EEA_TRADE_API_SECRET"
+trade_api_passphrase_env_var = "OKX_EEA_TRADE_API_PASSPHRASE"
+validate_only = true
+timeout_seconds = 30.0
+max_retries = 3
+rate_limit_ms = 1000
+
+# ============================================================================
+# TESTNET SESSION CONFIGURATION (Phase 35)
+# ============================================================================
+# Konfiguration fuer Testnet-Trading-Sessions.
+# Analog zu shadow_paper, aber mit echten (Testnet-)Orders.
+# ============================================================================
+
+[testnet_session]
+# Fail-closed until OKX EEA credentials + bounded runtime GO (Kraken testnet decommissioned).
+enabled = false
+
+# Default-Exchange fuer Testnet (target venue)
+default_exchange = "okx_europe_eea"
+
+# Trading-Symbol (OKX EEA X-Perp demo reference instrument)
+symbol = "ETH-USD_UM_XPERP-310328"
+
+# Timeframe fuer Candles
+timeframe = "1m"
+
+# Polling-Intervall in Sekunden
+poll_interval_seconds = 60.0
+
+# Anzahl Warmup-Candles
+warmup_candles = 200
+
+# Start-Balance fuer Tracking (informativ, wird nicht von Exchange gelesen)
+start_balance = 10000.0
+
+# Position-Sizing: Anteil des Kapitals pro Trade
+position_fraction = 0.1
+
+# Simulierte Fee-Rate fuer PnL-Tracking (tatsaechliche Fees kommen vom Exchange)
+fee_rate = 0.0026
+
+# Simulierte Slippage in bps (fuer Vergleich mit realem Fill)
+slippage_bps = 5.0
+
+# ============================================================================
+# PHASE 37: TESTNET LIMITS & BUDGETS
+# ============================================================================
+# Kontrollierte Testnet-Limits fuer planbare, reproduzierbare Testlaeufe.
+# Diese Limits ergaenzen die LiveRiskLimits um eine zusaetzliche Schicht.
+#
+# WICHTIG: Diese Limits gelten nur fuer Testnet-Trading, nicht fuer Live!
+# ============================================================================
+
+[testnet_limits.run]
+# Limits pro einzelnem Testnet-Run
+max_notional_per_run = 1000.0    # Max. Handelsvolumen pro Run (EUR)
+max_trades_per_run = 50         # Max. Anzahl Trades pro Run
+max_duration_minutes = 240      # Max. Laufzeit pro Run (4 Stunden)
+
+[testnet_limits.daily]
+# Tages-Limits fuer Testnet-Trading
+max_notional_per_day = 5000.0   # Max. Gesamt-Notional pro Tag (EUR)
+max_trades_per_day = 200        # Max. Anzahl Trades pro Tag
+
+[testnet_limits.symbols]
+# Symbol-Whitelist fuer Testnet-Trading
+# Nur diese Symbole sind im Testnet erlaubt
+allowed = ["BTC/EUR", "ETH/EUR"]
+
+# ============================================================================
+# PHASE 37: TESTNET-SESSION-PROFILE
+# ============================================================================
+# Vordefinierte Profile fuer standardisierte Testnet-Sessions.
+# Jedes Profil beschreibt eine spezifische Test-Konfiguration.
+#
+# Verwendung: python -m scripts.orchestrate_testnet_runs --profile <name>
+# ============================================================================
+
+[testnet_profiles.ma_crossover_small]
+# Kleiner Intraday-Test mit MA-Crossover
+strategy = "ma_crossover"
+symbol = "BTC/EUR"
+timeframe = "1m"
+duration_minutes = 60
+max_notional = 500.0
+max_trades = 20
+description = "Kleiner BTC/EUR Intraday-Test (1h)"
+
+[testnet_profiles.eth_swing]
+# ETH Swing-Test mit laengerer Laufzeit
+strategy = "ma_crossover"
+symbol = "ETH/EUR"
+timeframe = "15m"
+duration_minutes = 180
+max_notional = 2000.0
+max_trades = 40
+description = "ETH Swing-Test (3h)"
+
+[testnet_profiles.btc_momentum]
+# BTC Momentum-Test mit Momentum-Strategie
+strategy = "momentum_1h"
+symbol = "BTC/EUR"
+timeframe = "5m"
+duration_minutes = 120
+max_notional = 1000.0
+max_trades = 30
+description = "BTC Momentum-Test (2h)"
+
+[testnet_profiles.quick_smoke]
+# Schneller Smoke-Test (5 Minuten)
+strategy = "ma_crossover"
+symbol = "BTC/EUR"
+timeframe = "1m"
+duration_minutes = 5
+max_notional = 100.0
+max_trades = 5
+description = "Schneller Smoke-Test (5min)"
+
+# ============================================================================
+# PHASE 37: TESTNET-ORCHESTRATION
+# ============================================================================
+# Konfiguration fuer den Testnet-Orchestrator (CLI).
+# Steuert Pfade, Auto-Reports und weitere Orchestrierungs-Optionen.
+# ============================================================================
+
+[testnet_orchestration]
+# Basisverzeichnis fuer Testnet-Runs
+runs_base_dir = "test_runs/"
+
+# Verzeichnis fuer generierte Reports
+reports_dir = "test_results/reports/"
+
+# Automatisch Report nach Run-Ende generieren
+auto_generate_report = true
+
+# Report-Format ("markdown", "html", "both")
+report_format = "markdown"
+
+# Altes Usage-Daten behalten (Tage)
+usage_retention_days = 30
+
+# ============================================================================
+# PHASE 53: STRATEGY & PORTFOLIO LIBRARY PUSH
+# ============================================================================
+# Klar benannte Strategie-Konfigurationen für unterschiedliche Timeframes
+# und Volatilitäts-Umgebungen mit expliziten Risk-Profilen.
+# ============================================================================
+
+# --- RSI Reversion BTC ---
+
+[strategy.rsi_reversion_btc_conservative]
+# Konservative RSI-Reversion-Strategie für BTC (1h, längere Lookbacks)
+rsi_window = 21
+lower = 25.0
+upper = 75.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.03
+take_profit_pct = 0.06
+
+[strategy.rsi_reversion_btc_moderate]
+# Moderate RSI-Reversion-Strategie für BTC (1h, balanced)
+rsi_window = 14
+lower = 30.0
+upper = 70.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.04
+take_profit_pct = 0.08
+
+[strategy.rsi_reversion_btc_aggressive]
+# Aggressive RSI-Reversion-Strategie für BTC (15m, höhere Trade-Frequenz)
+rsi_window = 10
+lower = 20.0
+upper = 80.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.05
+take_profit_pct = 0.10
+
+# --- RSI Reversion ETH ---
+
+[strategy.rsi_reversion_eth_conservative]
+# Konservative RSI-Reversion-Strategie für ETH (1h, längere Lookbacks)
+rsi_window = 21
+lower = 25.0
+upper = 75.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.03
+take_profit_pct = 0.06
+
+[strategy.rsi_reversion_eth_moderate]
+# Moderate RSI-Reversion-Strategie für ETH (1h, balanced)
+rsi_window = 14
+lower = 30.0
+upper = 70.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.04
+take_profit_pct = 0.08
+
+[strategy.rsi_reversion_eth_aggressive]
+# Aggressive RSI-Reversion-Strategie für ETH (15m, höhere Trade-Frequenz)
+rsi_window = 10
+lower = 20.0
+upper = 80.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.05
+take_profit_pct = 0.10
+
+# --- MA Crossover BTC ---
+
+[strategy.ma_trend_btc_conservative]
+# Konservative MA-Trend-Strategie für BTC (4h, längere MAs)
+fast_window = 20
+slow_window = 100
+price_col = "close"
+stop_pct = 0.04
+take_profit_pct = 0.12
+
+[strategy.ma_trend_btc_moderate]
+# Moderate MA-Trend-Strategie für BTC (1h, balanced)
+fast_window = 20
+slow_window = 60
+price_col = "close"
+stop_pct = 0.05
+take_profit_pct = 0.15
+
+[strategy.ma_trend_btc_aggressive]
+# Aggressive MA-Trend-Strategie für BTC (30m, kürzere MAs)
+fast_window = 10
+slow_window = 40
+price_col = "close"
+stop_pct = 0.06
+take_profit_pct = 0.20
+
+# --- Trend Following ETH ---
+
+[strategy.trend_following_eth_conservative]
+# Konservative Trend-Following-Strategie für ETH (4h, längere Lookbacks)
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 50
+use_ma_filter = true
+stop_pct = 0.04
+take_profit_pct = 0.12
+
+[strategy.trend_following_eth_moderate]
+# Moderate Trend-Following-Strategie für ETH (1h, balanced)
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 30
+use_ma_filter = true
+stop_pct = 0.05
+take_profit_pct = 0.15
+
+[strategy.trend_following_eth_aggressive]
+# Aggressive Trend-Following-Strategie für ETH (30m, kürzere Lookbacks)
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 20
+use_ma_filter = true
+stop_pct = 0.06
+take_profit_pct = 0.20
+
+# ============================================================================
+# R&D-STRATEGIEN – nur Offline/Research (NICHT für Live-Trading!)
+# ============================================================================
+# Diese Strategien sind ausschließlich für Research-Zwecke gedacht.
+# Sie haben IS_LIVE_READY=false und dürfen nicht in Testnet/Live verwendet werden.
+# ============================================================================
+
+[strategy.el_karoui_vol_model]
+key = "el_karoui_vol_model"
+class_path = "strategies.el_karoui.el_karoui_vol_model_strategy.ElKarouiVolModelStrategy"
+tier = "r_and_d"
+is_live_ready = false
+allowed_environments = ["offline_backtest", "research"]
+description = "R&D: El-Karoui-Volatilitäts-/Regime-Modell (nur Research/Backtests, nicht live)."
+tags = ["r_and_d", "volatility", "regime", "research"]
+# Default-Parameter
+vol_window = 20
+vol_threshold_low = 0.3
+vol_threshold_high = 0.7
+use_ewm = true
+annualization_factor = 252.0
+
+# ============================================================================
+# PHASE 85: ESCALATION & ON-CALL INTEGRATION
+# ============================================================================
+# Optionale Eskalations-Schicht für kritische Alerts.
+# Sendet Alerts an On-Call-Dienste (PagerDuty, OpsGenie, etc.).
+#
+# WICHTIG: Phase 85 verwendet nur Stubs - keine echten API-Calls!
+# Echte Integration in späteren Phasen.
+#
+# Safety: Eskalations-Fehler blockieren NIEMALS Alerts.
+# ============================================================================
+
+[escalation]
+# Eskalation global aktivieren/deaktivieren
+enabled = false
+
+# Umgebungen in denen eskaliert wird (z.B. nur "live")
+enabled_environments = ["live"]
+
+# Provider für Eskalation ("null", "pagerduty_stub")
+# Phase 85: "null" oder "pagerduty_stub" (kein echter API-Call)
+provider = "null"
+
+# Severities die eskaliert werden
+critical_severities = ["CRITICAL"]
+
+# ============================================================================
+# ESCALATION TARGETS (On-Call-Ziele)
+# ============================================================================
+# Definiert wohin eskaliert wird. Mehrere Targets möglich.
+# ============================================================================
+
+[escalation.targets.primary]
+# Primäres On-Call-Target
+name = "Primary Risk On-Call"
+provider = "pagerduty_stub"
+# routing_key = ""  # PagerDuty-Routing-Key (in späteren Phasen)
+min_severity = "CRITICAL"
+enabled = true
+
+# ============================================================================
+# ESCALATION PROVIDERS CONFIG
+# ============================================================================
+# Provider-spezifische Konfiguration.
+# ============================================================================
+
+[escalation.providers.pagerduty]
+# PagerDuty Events API (Phase 85: nur Stub)
+api_url = "https://events.pagerduty.com/v2/enqueue"
+# Enable real API calls (Phase 85: IMMER false!)
+enable_real_calls = false
+
+[escalation.providers.null]
+# Null-Provider für Tests/Non-Live
+log_would_escalate = true
+
+# ============================================================================
+# KNOWLEDGE DATABASES & AI INTEGRATION
+# ============================================================================
+# Integration von externen Wissensdatenbanken für KI-basierte Research- und
+# Entscheidungsprozesse. Siehe docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md
+# ============================================================================
+
+[knowledge]
+# Globale Aktivierung
+enabled = true
+
+# Standard Vector-DB-Backend ("chroma", "qdrant", "pinecone")
+vector_db_backend = "chroma"
+
+# Standard Time-Series-DB-Backend ("parquet", "influxdb")
+timeseries_db_backend = "parquet"
+
+# RAG (Retrieval-Augmented Generation) aktivieren
+rag_enabled = true
+
+# API-Sicherheit: Key-Rotation-Intervall (Tage)
+api_key_rotation_interval_days = 90
+
+# API Rate-Limit (Requests pro Stunde)
+api_rate_limit_per_hour = 1000
+
+# ============================================================================
+# VECTOR DATABASE CONFIGURATION
+# ============================================================================
+
+[knowledge.vector_db]
+# ChromaDB (lokale Embedding-Suche)
+[knowledge.vector_db.chroma]
+persist_directory = "./data/chroma_db"
+collection_name = "peak_trade"
+# Keine API-Keys nötig für lokale Instanz
+
+# Pinecone (Cloud-basiert, optional)
+[knowledge.vector_db.pinecone]
+# API-Key via Umgebungsvariable: PINECONE_API_KEY
+environment = "us-west1-gcp"
+index_name = "peak-trade"
+# Kosten: ~$70/Monat für Starter Plan
+
+# Qdrant (lokal/cloud, optional)
+[knowledge.vector_db.qdrant]
+# API-Key via Umgebungsvariable: QDRANT_API_KEY (für Cloud)
+url = ":memory:"  # ":memory:" für In-Memory, oder "http://localhost:6333" für Server
+collection_name = "peak_trade"
+
+# ============================================================================
+# TIME-SERIES DATABASE CONFIGURATION
+# ============================================================================
+
+[knowledge.timeseries_db]
+# Parquet (einfache Datei-basierte Lösung, kein Setup nötig)
+[knowledge.timeseries_db.parquet]
+base_path = "./data/timeseries"
+
+# InfluxDB (professionelle Time-Series-DB, optional)
+[knowledge.timeseries_db.influxdb]
+# Token via Umgebungsvariable: INFLUXDB_TOKEN
+url = "http://localhost:8086"
+org = "peak_trade"
+bucket = "market_data"
+
+# ============================================================================
+# RAG (Retrieval-Augmented Generation) CONFIGURATION
+# ============================================================================
+
+[knowledge.rag]
+# Maximale Kontext-Länge für RAG-Queries
+max_context_length = 3000
+
+# Anzahl der Top-K Dokumente für Kontext-Retrieval
+default_top_k = 5
+
+# System-Prompts für verschiedene RAG-Typen
+[knowledge.rag.prompts]
+# Standard Trading-Assistant
+default = "You are a trading strategy assistant for Peak_Trade with access to a knowledge base of strategies, market analysis, and performance data."
+
+# Strategy-Recommendations
+strategy = "You are a trading strategy expert. Provide data-driven recommendations based on historical performance, risk metrics, and market conditions."
+
+# Market-Analysis
+market_analysis = "You are a market analysis expert. Provide insights based on historical patterns, regime changes, and correlation studies."
+
+# ============================================================================
+# KNOWLEDGE SOURCES CONFIGURATION
+# ============================================================================
+# Registrierte Wissensquellen (siehe docs/KNOWLEDGE_SOURCES_REGISTRY.md)
+# ============================================================================
+
+[knowledge.sources]
+# Interne Backtest-Reports
+[knowledge.sources.backtest_reports]
+enabled = true
+category = "internal"
+trust_level = "high"
+update_frequency = "on_demand"  # Nach jedem Research-Run
+source_path = "results/"
+
+# Portfolio-Performance-Historien
+[knowledge.sources.portfolio_history]
+enabled = true
+category = "internal"
+trust_level = "high"
+update_frequency = "daily"
+source_module = "src.portfolio"
+
+# Strategie-Metadaten & Beschreibungen
+[knowledge.sources.strategy_docs]
+enabled = true
+category = "internal"
+trust_level = "high"
+update_frequency = "on_change"
+source_path = "src/strategies/"
+
+# Externe Marktdaten (geplant)
+[knowledge.sources.market_data]
+enabled = false
+category = "market_data"
+trust_level = "medium_high"
+update_frequency = "hourly"
+# API-Keys via Umgebungsvariablen
+
+# Research Papers (geplant)
+[knowledge.sources.research_papers]
+enabled = false
+category = "research"
+trust_level = "medium"
+update_frequency = "monthly"
+# Manuelle Selektion & Review erforderlich

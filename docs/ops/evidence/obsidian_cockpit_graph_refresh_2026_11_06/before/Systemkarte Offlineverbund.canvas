@@ -1,0 +1,26 @@
+{
+	"nodes":[
+		{"id":"title","type":"text","x":0,"y":-260,"width":1960,"height":170,"text":"# PeakTrade · Aktuelles System\n\n**Lokal implementierter synthetischer Offlineverbund**\n1.509 Tests · 39 Pflichtfälle · 31 Schnittstellenbewertungen\n\n[[Start|Startseite]] · [[01 System/Gesamtarchitektur|Gesamtarchitektur]] · [[01 System/Abnahmestand|Belegter Umfang]]"},
+		{"id":"data","type":"text","x":0,"y":0,"width":410,"height":310,"text":"## 1 · Marktdaten & MI\n\nOriginalfacts → Zweckadmission → echte numerische Consumer.\n\nEvent / Capture / KnownAt und Instrument bleiben gebunden.\n\n[[10 Fachbereiche/Marktdaten und Marktintelligenz|Daten und Forecast/Kalibrierung öffnen]]"},
+		{"id":"rank","type":"text","x":515,"y":0,"width":410,"height":310,"text":"## 2 · Ranking & Auswahl\n\nB05 → Cap22 → Membership → stabile Lanes → Cap23/24.\n\n**5 Slots ≠ 5 Positionen. MaxPos bleibt 1.**\n\n[[10 Fachbereiche/Ranking und Auswahl|Auswahl und Instrumentbindung öffnen]]"},
+		{"id":"core","type":"text","x":1030,"y":0,"width":410,"height":310,"text":"## 3 · Double Play & Position\n\nObservation / C3 / Survival / Suitability / Composition / Scope / Entry-Exit.\n\nOriginaler Cursor und bestätigte Episode.\n\n[[10 Fachbereiche/Double Play und Positionsfuehrung|Core und Exit öffnen]]"},
+		{"id":"money","type":"text","x":1545,"y":0,"width":410,"height":310,"text":"## 4 · Kapital, Risiko, Accounting\n\nOriginales Sizing → Riskveto → dauerhafter Hold → Envelope → interner Fill.\n\nTeilclose / Reload / bestätigtes Flat.\n\n[[10 Fachbereiche/Kapital Risiko Ausfuehrung und Accounting|Kapital- und Positionsfluss öffnen]]"},
+		{"id":"ops","type":"text","x":1545,"y":445,"width":410,"height":275,"text":"## Gemeinsame Runtime\n\nManifest · Source/Configgeneration · originale Owner · Leases · Stop · Attemptgrenzen.\n\nKeine Budgeterneuerung durch Restart.\n\n[[01 System/Laufzeit und Persistenz|Laufzeit und Persistenz]]"},
+		{"id":"learn","type":"text","x":1030,"y":445,"width":410,"height":275,"text":"## 5 · Outcome & Lernen\n\nExakte Decision → Pending → spätere O4-Messung → echte DDO-/Optimization-/MI-Consumer → ACK.\n\n[[20 Wirkungsketten/C Entscheidung Outcome und Lernen|Wirkungskette C öffnen]]"},
+		{"id":"research","type":"text","x":515,"y":445,"width":410,"height":275,"text":"## Forschung & Rückkopplung\n\nGeschlossener Consumer als Admission / Elternlineage.\n\nMemory / Meta / Search → **50 → 100 tatsächlich gemessen**.\n\n[[20 Wirkungsketten/D Gemessene Forschung und naechster Versuch|Wirkungskette D öffnen]]"},
+		{"id":"eval","type":"text","x":0,"y":445,"width":410,"height":275,"text":"## 6 · Evaluation & Governance\n\n5 echte Evaluatoren · 20 Returns · volle Resultate und Originalzahlen nachladbar.\n\nMechanismus PASS / Qualität BLOCKED.\n\n[[10 Fachbereiche/Evaluation und Governance|Bewertung öffnen]]"},
+		{"id":"semantics","type":"text","x":0,"y":855,"width":925,"height":190,"text":"## Bedeutungen bleiben getrennt\n\nLane / Instrument / Episode · Event / Capture / KnownAt · Mark / Fill / Entry · Equity / Sizingkapital / Reservierung · Marktreturn / Forecastfehler / PnL / Researchmetrik\n\n[[01 System/Identitaeten und Zahlenbedeutung|Semantik und Verbindungen ansehen]]"},
+		{"id":"limits","type":"text","x":1030,"y":855,"width":925,"height":190,"text":"## Aktuelle Grenzen\n\nSynthetische Inputs und benannte Fixtureports. Natürliche Quellen, produktive Policies und positiver Qualitätsvergleich bleiben offen. Keine Betriebs-/Orderfreigabe.\n\n[[01 System/Offene Grenzen|Offene Grenzen öffnen]]","color":"2"}
+	],
+	"edges":[
+		{"id":"a1","fromNode":"data","fromSide":"right","toNode":"rank","toSide":"left","toEnd":"arrow"},
+		{"id":"a2","fromNode":"rank","fromSide":"right","toNode":"core","toSide":"left","toEnd":"arrow"},
+		{"id":"a3","fromNode":"core","fromSide":"right","toNode":"money","toSide":"left","toEnd":"arrow"},
+		{"id":"a4","fromNode":"core","fromSide":"bottom","toNode":"learn","toSide":"top","toEnd":"arrow"},
+		{"id":"a5","fromNode":"learn","fromSide":"left","toNode":"research","toSide":"right","toEnd":"arrow"},
+		{"id":"a6","fromNode":"research","fromSide":"left","toNode":"eval","toSide":"right","toEnd":"arrow"},
+		{"id":"a7","fromNode":"money","fromSide":"bottom","toNode":"ops","toSide":"top","toEnd":"arrow"},
+		{"id":"a8","fromNode":"ops","fromSide":"left","toNode":"learn","toSide":"right","toEnd":"arrow"},
+		{"id":"a9","fromNode":"data","fromSide":"bottom","toNode":"eval","toSide":"top","toEnd":"arrow"}
+	]
+}

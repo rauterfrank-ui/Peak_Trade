@@ -1,0 +1,13 @@
+diff --git a/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py b/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py
+index 69472dca8..da1cf8b5f 100644
+--- a/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py
++++ b/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py
+@@ -121,7 +121,7 @@ def _normalized_from_ingest_detail_v1(
+             venue="okx_eea",
+             mark_px=float(detail["mark_px"]),
+             event_ts_unix=float(detail["event_ts_unix"]),
+-            receive_ts_unix=float(detail.get("receive_ts_unix") or detail["event_ts_unix"]) + 1.0,
++            receive_ts_unix=float(detail["receive_ts_unix"]),
+             mark_price_endpoint=str(detail.get("mark_price_endpoint") or "/pending-outcome/replay"),
+             mark_price_field="markPx",
+             mapping_digest="natural-enter-pending-outcome-v1",

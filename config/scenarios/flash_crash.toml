@@ -1,0 +1,59 @@
+# config/scenarios/flash_crash.toml
+# =============================================================================
+# Peak_Trade Research Scenario: Flash Crash (Phase 82)
+# =============================================================================
+#
+# Simuliert einen schnellen, harten Drawdown ähnlich einem Flash Crash.
+# Typisch: Kurzer, starker Preisverfall gefolgt von teilweiser Erholung.
+#
+# Verwendung:
+# - E2E-Tests für Strategie-Robustheit
+# - Stress-Test-Szenario für Research-QA
+# - Baseline-Expectations für Regression-Detection
+#
+
+[scenario]
+name = "flash_crash"
+description = "Schneller, harter Drawdown (Flash Crash) mit teilweiser Erholung"
+category = "stress"
+severity = 0.8
+
+[scenario.market_conditions]
+# Marktbedingungen während des Szenarios
+volatility = "extreme"          # low, medium, high, extreme
+trend = "sharp_decline"         # up, down, sideways, sharp_decline, sharp_rise
+duration_bars = 50              # Anzahl der Bars für das Szenario
+recovery_ratio = 0.6            # Erholungsgrad nach dem Crash (0-1)
+
+[scenario.price_impact]
+# Preisbewegungen
+max_drawdown_percent = -25.0    # Maximaler Preisrückgang
+crash_duration_bars = 10        # Bars bis zum Tiefpunkt
+recovery_duration_bars = 40     # Bars für Erholung
+
+[scenario.test_expectations]
+# Erwartete Strategie-Performance unter diesem Szenario
+# Diese Werte sind grobe Baselines - werden bei signifikanter Abweichung gewarnt
+baseline_max_portfolio_drawdown = -30.0  # % - erwarteter Portfolio-Drawdown
+baseline_min_sharpe = -1.0               # Sharpe während des Szenarios
+allow_negative_returns = true            # Negative Returns sind akzeptabel
+max_acceptable_drawdown = -50.0          # % - absolutes Limit
+
+[scenario.applicable_strategies]
+# Strategien, für die dieses Szenario besonders relevant ist
+primary = ["trend_following", "ma_crossover", "breakout"]
+secondary = ["rsi_reversion", "bollinger_bands", "macd"]
+not_applicable = []
+
+[scenario.notes]
+description = """
+Flash Crash Szenario basiert auf historischen Events wie:
+- 6. Mai 2010 Flash Crash (Dow -9.2% in Minuten)
+- August 2015 Flash Crash
+- Crypto Flash Crashes (häufig -15% bis -30% in Stunden)
+
+Testet:
+- Stop-Loss-Mechanismen unter extremer Volatilität
+- Slippage-Auswirkungen bei schnellen Preisbewegungen
+- Erholungsfähigkeit der Strategie nach dem Crash
+"""

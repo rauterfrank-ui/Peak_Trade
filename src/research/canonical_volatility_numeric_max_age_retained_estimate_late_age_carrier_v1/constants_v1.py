@@ -1,0 +1,34 @@
+"""R1 retained-estimate late-age carrier constants (research evidence only)."""
+
+from __future__ import annotations
+
+PACKAGE_MARKER = (
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_RETAINED_ESTIMATE_LATE_AGE_CARRIER_V1=true"
+)
+
+CAPABILITY_ID = (
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_RETAINED_ESTIMATE_LATE_AGE_CARRIER_V1"
+)
+REVIEW_MODE_ID = CAPABILITY_ID
+OWNER = "research.canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1"
+
+SCHEMA_NAME = "canonical_volatility_numeric_max_age_retained_estimate_lifecycle_carrier"
+SCHEMA_VERSION = f"{SCHEMA_NAME}/v1"
+
+CARRIER_FILENAME = "retained_estimate_lifecycle_carrier_v1.json"
+
+PRODUCTION_AUTHORITY_EFFECT = "NONE"
+MV2_DOUBLE_PLAY_AUTHORITY_CHANGED = False
+TRADING_SELECTION_SIZING_SAFETY_EXECUTION_AUTHORITY = False
+M9_ENFORCEMENT_ACTIVATED = False
+REGIME_PIPELINE_MUTATED = False
+MARK_HISTORY_SCHEMA_MUTATED = False
+SYNTHETIC_AGING_ALLOWED = False
+BACKDATING_ALLOWED = False
+HISTORICAL_EVIDENCE_MUTATION_ALLOWED = False
+
+SPEC_REL_PATH = (
+    "docs/ops/specs/"
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_RETAINED_ESTIMATE_"
+    "LATE_AGE_CARRIER_V1.md"
+)

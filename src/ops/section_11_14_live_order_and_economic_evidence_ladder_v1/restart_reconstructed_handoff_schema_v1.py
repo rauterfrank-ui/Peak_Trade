@@ -1,0 +1,55 @@
+"""Bound Peak_Trade Live durable pre-restart handoff schema.
+
+This is a clarification of the already bound LIVE_RESTART_RECONSTRUCTED
+identity equation. It does not invent a new Live policy. It does not write
+productive runtime state.
+"""
+
+from __future__ import annotations
+
+REQUIRED_HANDOFF_FIELDS: tuple[str, ...] = (
+    "clOrdId",
+    "ordId",
+    "instId",
+    "posSide",
+    "pos",
+)
+OPTIONAL_TEMPORAL_FIELDS: tuple[str, ...] = (
+    "captured_at_utc",
+    "written_at_utc",
+)
+OPTIONAL_ENVELOPE_PROVENANCE_FIELDS: tuple[str, ...] = (
+    "execution_envelope_id",
+    "execution_envelope_version",
+    "fee_provenance",
+    "slippage_provenance",
+    "expected_fee",
+    "expected_fee_ccy",
+    "planned_fill_price",
+    "worst_case_fill_price",
+    "order_qty",
+    "order_qty_unit",
+    "instrument_id",
+)
+HANDOFF_DOCUMENT_CLASS = "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_V1"
+HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET = True
+CONTEMPORANEOUS_PROVENANCE_CLASS = "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE"
+FORBIDDEN_PROVENANCE_CLASSES: frozenset[str] = frozenset(
+    {
+        "RETROACTIVE_SYNTHESIS",
+        "VENUE_GET_COPY",
+        "TIMESTAMP_BACKFILL",
+        "POST_HOC_IDENTITY_MATCH",
+        "ACCOUNTING_ONLY",
+        "EVIDENCE_PACK_RECLASSIFIED_AS_CONTROL_HANDOFF",
+    }
+)
+VENUE_GET_ARTIFACT_NAMES: frozenset[str] = frozenset(
+    {
+        "GET_FILLS.raw.json",
+        "GET_POSITIONS.raw.json",
+        "GET_ORDER_STATUS.raw.json",
+        "ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json",
+        "ACCOUNTING_IDENTITY.json",
+    }
+)

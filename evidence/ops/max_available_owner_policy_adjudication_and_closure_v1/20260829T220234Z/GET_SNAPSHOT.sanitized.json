@@ -1,0 +1,91 @@
+{
+  "AUTHENTICATION_REQUIREMENT": "AUTHENTICATED_PRIVATE_GET",
+  "AUTH_HEADER_SENT": true,
+  "AUTH_REQUIRED": true,
+  "BOUND_ORIGIN_MAIN_SHA": "ef6d555bee94a8a6ccce78bd94b1742328764c97",
+  "COOKIE_HEADER_SENT": false,
+  "DOCUMENT_CLASS": "MAX_AVAILABLE_OWNER_POLICY_ADJUDICATION_AND_CLOSURE_V1",
+  "DOCUMENT_ROLE": "GET_ONLY_FRESH_EVIDENCE_NON_SSOT_NOT_OPERATIVE_CACHE",
+  "ENDPOINT": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.7396",
+  "EVIDENCE_READ_ONLY": true,
+  "GET_REQUEST_COUNT_AUTHENTICATED": 1,
+  "HISTORICAL_REUSE_PATH_EXISTS": false,
+  "HOST": "eea.okx.com",
+  "LEVERAGE_REQUEST_POLICY": "OMIT",
+  "MAX_AVAIL_SIZE_FALLBACK_USED": false,
+  "METHOD": "GET",
+  "NO_POST": true,
+  "OWNER_GO": "PEAK_TRADE_MAX_AVAILABLE_OWNER_POLICY_ADJUDICATION_AND_CLOSURE_V1",
+  "PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE": false,
+  "POST_COUNT": 0,
+  "PUBLIC_GET_COUNT_FOR_LIMIT_PX": 2,
+  "PX_SENT": "0.7396",
+  "PX_SOURCE": "ORDER_PLAN_LIMIT_PX",
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_INSTRUMENT": "SUI-USD_UM_XPERP-310404",
+  "TARGET_SIDE": "BUY",
+  "TARGET_TDMODE": "cross",
+  "TARGET_VENUE": "OKX_EEA",
+  "ZERO_NORMALIZATION_PERFORMED": false,
+  "http_evidence": {
+    "SECRET_VALUES_INCLUDED": false,
+    "body_byte_len": 122,
+    "body_sha256": "5f877ef730a9a7ba112d0997d051cd8969a687bf3c1288dce9728ac16a1c0acd",
+    "http_status": 200,
+    "json_parse_ok": true,
+    "okx_code": "0",
+    "okx_msg": "",
+    "response_headers_safe": {
+      "Content-Type": "application/json",
+      "Date": "Sat, 29 Aug 2026 22:02:34 GMT",
+      "Server": "cloudflare"
+    }
+  },
+  "observation": {
+    "auth_header_sent": true,
+    "body_sha256": "5f877ef730a9a7ba112d0997d051cd8969a687bf3c1288dce9728ac16a1c0acd",
+    "endpoint": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.7396",
+    "get_performed": true,
+    "historical_reuse": false,
+    "http_status": 200,
+    "instrument_id": "SUI-USD_UM_XPERP-310404",
+    "max_available_unit": "contracts",
+    "max_buy_raw": "0",
+    "max_sell_raw": "0",
+    "method": "GET",
+    "observed_at_utc": "2026-08-29T22:02:34.509031Z",
+    "pretrade_decision_id": "owner-go-max-available-ef6d555bee94a8a6ccce78bd94b1742328764c97",
+    "px_sent": "0.7396",
+    "quantity_domain": "VENUE_CONTRACT_COUNT",
+    "rest_host": "eea.okx.com",
+    "td_mode": "cross",
+    "venue": "OKX_EEA",
+    "venue_code": "0"
+  },
+  "payload": {
+    "code": "0",
+    "data": [
+      {
+        "ccy": "",
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "maxBuy": "0",
+        "maxSell": "0",
+        "tradeQuoteCcy": ""
+      }
+    ],
+    "msg": ""
+  },
+  "request_event_time": "2026-08-29T22:02:34.280894Z",
+  "response_event_time": "2026-08-29T22:02:34.509031Z",
+  "validated": {
+    "account_mode": "UNPROVEN",
+    "account_mode_proof_status": "UNPROVEN",
+    "account_mode_support_for_max_size_cross_derivatives": "PROVEN_SUPPORTED",
+    "comparison_domain": "VENUE_CONTRACT_COUNT",
+    "max_buy": "0",
+    "max_sell": "0",
+    "observation_class": "SUCCESS_NUMERIC",
+    "selected_field": "maxBuy",
+    "selected_value": "0"
+  }
+}

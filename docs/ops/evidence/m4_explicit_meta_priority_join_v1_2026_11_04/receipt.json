@@ -1,0 +1,18 @@
+{
+  "schema": "m4_explicit_meta_priority_join_v1",
+  "source_commit": "15f9440114fd59001c6cacc70f6ab5f282b5dc22",
+  "source_path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+  "before_sha256": "468bd79c771bdd1cea3e8e81c99b197285c2b71cedea3da93ffb5e49e853114c",
+  "after_sha256": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e",
+  "tests": "27 passed including four new outer-M4 ingress cases; overlaps earlier focused scopes and is not summed with them.",
+  "default_input_output_identical_to_prechange_capture": true,
+  "conditional_provenance": "Only explicit valid Phase-11 research proposals produce search_meta_priority_evidence. It retains source Meta identity, supplied proposal IDs and actual Search candidate priorities/matches/statuses.",
+  "no_inferred_inputs": [
+    "No Meta ID invented",
+    "M7 budget metadata is not a Phase-11 proposal",
+    "No prior feedback silently converted to a new request",
+    "No real numeric outcome inferred from supplied/default scores"
+  ],
+  "remaining": "Caller must provide the explicit reviewed research inputs. Automatic outer planner, alternative targets, measured experiment results, G2 provenance and natural learning cycle remain open.",
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b"
+}

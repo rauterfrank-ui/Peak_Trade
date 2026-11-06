@@ -1,0 +1,51 @@
+{
+  "baseline_cases": [
+    {
+      "synthetic_u04": "0",
+      "ct_output": "1000",
+      "ct_produced": "true",
+      "final_risk_output": "1000",
+      "final_u04_applied": "false",
+      "final_provenance": "f7f8a64ed38750384605a1104ae3f1f3e844c7f8fae24dc075b4b6fb7f2b1360",
+      "handoff_fail_closed": false
+    },
+    {
+      "synthetic_u04": "25",
+      "ct_output": "975",
+      "ct_produced": "true",
+      "final_risk_output": "1000",
+      "final_u04_applied": "false",
+      "final_provenance": "f7f8a64ed38750384605a1104ae3f1f3e844c7f8fae24dc075b4b6fb7f2b1360",
+      "handoff_fail_closed": false
+    },
+    {
+      "synthetic_u04": "1001",
+      "ct_output": "",
+      "ct_produced": "false",
+      "final_risk_output": "",
+      "final_u04_applied": "false",
+      "final_provenance": "",
+      "handoff_fail_closed": true
+    }
+  ],
+  "capture_with_active_context": {
+    "records": 2,
+    "producer_ids": [
+      "capital_risk_sizing_v1",
+      "canonical_order_intent_v1"
+    ],
+    "risk_seam_present": true,
+    "intent_seam_present": true,
+    "risk_snapshot_refs": [
+      null,
+      null
+    ],
+    "decision_types": [
+      "UNKNOWN",
+      "UNKNOWN"
+    ]
+  },
+  "join_after_context_reset_appends_to_same_capture": false,
+  "raw_probe_dir": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/peaktrade-u04-causal-probe-_fmatgt8",
+  "scope": "Injected synthetic branch sensitivity and explicit capture context; not account evidence or a learner/promotion run"
+}

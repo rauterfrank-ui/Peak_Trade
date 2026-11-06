@@ -1,0 +1,33 @@
+{
+  "authority": "NONE",
+  "cases": [
+    {
+      "id": "E2E-CRASH-CHILD-RC1",
+      "symptom": "Crash worker subprocess returned 1 with empty stderr; in-process replay raised KILL_SWITCH_GATE_DENIED:KILL_SWITCH_EVIDENCE_NOT_TRUSTED:MISSING.",
+      "cause": "The parent autouse fixture anchors the kill switch only in the parent process. The child is a new process and therefore reads the canonical root, which has no attested ACTIVE state.",
+      "class": "STALE_TEST_HARNESS",
+      "fix": "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py re-anchors risk_gate._KILL_SWITCH_STATE_ROOT to a per-test root and the parent writes an attested ACTIVE state there before spawn. Same pattern as tests/ops/_current_productive_post_hard_crash_harness_v1.py. Production kill-switch code unchanged."
+    },
+    {
+      "id": "E2E-RESTART-REPLAY",
+      "symptom": "After a crash before durable consume, the restart raised GLOBAL_REPLAY_DENIED:OWNER_AUTHORIZATION_IDENTITY instead of completing one fake POST.",
+      "cause": "GlobalVenueEffectAuthorityLedgerV1.claim_v1 writes the OWNER_AUTHORIZATION_IDENTITY marker when the claim is created, which is before transport. A later process cannot claim the same owner authorization. The first claim stays CLAIMED and unresolved.",
+      "class": "CURRENT_CONTRACT_TEST_EXPECTATION_STALE",
+      "fix": "Restart tests now assert the replay deny, zero fake posts, and the same unresolved CLAIMED claim. The ledger was not weakened."
+    },
+    {
+      "id": "E2E-PERMIT-REUSE",
+      "symptom": "Second chain raised GlobalVenueEffectReplayDeniedError instead of CurrentProductiveOneShotFreshEnvelopeJoinError CONSUMED_PERMIT.",
+      "cause": "B6 denies the replay at the global ledger claim, before the one-shot join checks the consumed permit.",
+      "class": "CURRENT_CONTRACT_TEST_EXPECTATION_STALE",
+      "fix": "The test asserts GLOBAL_REPLAY_DENIED:OWNER_AUTHORIZATION_IDENTITY, one fake post, and no unresolved claim after the successful first chain."
+    },
+    {
+      "id": "LIVE-HANDOFF",
+      "symptom": "none",
+      "cause": "All 12 section_11_14_live_handoff files passed on the unchanged production modules.",
+      "class": "NO_DEFECT",
+      "fix": "none"
+    }
+  ]
+}

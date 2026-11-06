@@ -1,0 +1,36 @@
+{
+  "schema": "kraken_futures_public_market_data_probe_report_v1",
+  "provider": "kraken_futures",
+  "provider_id": "kraken_futures_public_market_data_only",
+  "source_stage": "market_data_view_only",
+  "fetched_at": "2026-06-08T21:56:06Z",
+  "auth_used": false,
+  "no_orders": true,
+  "no_secrets": true,
+  "no_truth_go": true,
+  "no_selected_tradable_future": true,
+  "instruments_count": 5,
+  "futures_only_count": 3,
+  "tickers_count": 4,
+  "top20_candidate_preview": [
+    {
+      "rank": 1,
+      "symbol": "PF_ADAUSD",
+      "preview_only": true,
+      "not_selected": true
+    },
+    {
+      "rank": 2,
+      "symbol": "PF_ETHUSD",
+      "preview_only": true,
+      "not_selected": true
+    },
+    {
+      "rank": 3,
+      "symbol": "PF_XBTUSD",
+      "preview_only": true,
+      "not_selected": true
+    }
+  ],
+  "top20_candidate_preview_note": "preview only, not selected, not signal, not truth-go, not tradable authority"
+}

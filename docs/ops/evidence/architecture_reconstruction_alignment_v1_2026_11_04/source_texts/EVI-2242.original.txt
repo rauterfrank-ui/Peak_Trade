@@ -1,0 +1,1050 @@
+# Lokale Aufgaben der Golden Happy und Vector Fundstellen
+
+Stand 2. November 2026. Die Begriffe werden unabhängig in ihrem jeweiligen Bereich beurteilt. Eine gemeinsame Benennung ist kein Verbindungsnachweis und keine Aufforderung, die Fundstellen zu integrieren.
+
+Für alle 275 PR-Treffer liegt eine kontextbezogene Aufgabenzuordnung vor. Die 63 Beschreibungen unten sind eine analytische Gliederung von Verwendungen und Belegarten, keine Zählung unabhängiger implementierter Systembausteine. Jede Beschreibung nennt Datenbedeutung, Consumer und Aussagegrenze. Die konkrete Quellenstärke steht unmittelbar dabei.
+
+## Wesentliche Unterschiede
+
+Golden kann eine Berechnung benennen, einen festen numerischen Sollfall, einen gespeicherten Bytevergleich, eine synthetische Eingabe, einen wiederholbaren Report oder lediglich einen vorgesehenen Werkzeugablauf. Vector kann ein Suchinterface, lexikalisches Scoring, Performance-Vektorisierung, einen Kalender-Sollfall oder PromQL-Syntax bezeichnen. Happy path kann ausschließlich Testterminologie sein. Diese Bedeutungen werden lokal festgehalten.
+
+Besonders klar unterscheiden sich die produktiv verdrahtete GGE-Formel, die bewusst ungebundenen Cap-6.3-Prüfvektoren, das Happy-Raw-Szenario, der echte Equity-Curve-Bytevergleich, die strukturellen VaR-Report-Tests und die GVEF-Artefaktprüfer. Bei GHOSV werden Execution-Beobachtung, deaktivierter Safety-Adapter, MV2-Checker und generische Guardian-Instrumente getrennt beschrieben.
+
+## Belegumfang
+
+- 275 Fundstellen aus der abgeschlossenen PR-/Pfadfilterung; davon 270 gemergt und fünf ohne Merge geschlossen. Die ungemergten Treffer sind #174, #1055, #6819, #6832 und #7061.
+- 268 vollständige von GitHub gelieferte PR-Diffs lokal erfasst und 16.555 lexikalische Diff-Fundstellen indexiert. Die Indexierung ist automatisiert; fachliche Aussagen unten beziehen sich auf gezielt gelesene Kontexte und Quellstellen, nicht auf eine Vollprüfung jeder Diff-Zeile.
+- Drei Diffs scheiterten an GitHub-Grenzen: #7132 und #7084 über 20.000 Zeilen, #6821 über 300 Dateien. Vier weitere große PRs wurden ohne Gesamtdiff behandelt: #215, #1080, #6819, #6832. Beschreibung und vollständige Pfade bleiben verfügbar; diese sieben Fälle sind markiert.
+- 38 zusätzliche historische Quellensnapshots mit Revision, Pfad, PR-Status und SHA-256; zusätzlich die zehn vorhandenen Snapshots am Vergleichspin. Quellen eines ungemergten PRs sind Kandidatenquellen und keine Mergebelege.
+- Datum in Registern: Merge-Datum, sonst Erstellung, UTC. Die Erhebung ist ein datierter Bestand, keine laufende Synchronisation.
+
+## Register und Rohbelege
+
+- [Interaktive Aufgaben- und Fundstellenansicht](</Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-golden-vector-pr-register.canvas.tsx>).
+- [Alle 275 lokalen Verwendungen mit Originalkontext](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/all-275-pr-local-uses.json>).
+- [Aufgabenbeschreibungen mit Quellen](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/local-function-dossiers.json>).
+- [Historische Quellensnapshots und Hashes](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/source-manifest.json>).
+- [Diff-Index mit 16.555 Fundstellen](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/diff-occurrences.json>).
+- [Erster PR-Filter und Primärdaten](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/Golden_Vector_Happy_PR_Filter_und_semantische_Spuren.md>).
+
+## Aufgaben im jeweiligen Bereich
+
+### Golden Geometry Engine
+
+Berechnet eine positive endliche Basisdistanz D = volatility_estimate × mark_price. Golden ist hier Teil des Namens einer Rechenfunktion.
+
+**Daten und Bedeutung:** Instrument, Markpreis, aufgelöste Volatilität; Ausgabe mit Einheit canonical_mark_price_unit, Modell-ID, Input-Digest sowie mitgeführtem Zeit-/Lineagebezug.
+
+**Verwendung:** Statisch verdrahtet in Scope-Initialisierung und weiteren Distanz-/Replay-Seams.
+
+**Grenze:** Keine Aussage über eine ausgeführte heutige Trading-Session. Die im selben Modul vorhandene Kontrollformel ist ausdrücklich nicht autoritativ.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7064](https://github.com/rauterfrank-ui/Peak_Trade/pull/7064), [#7065](https://github.com/rauterfrank-ui/Peak_Trade/pull/7065), [#7090](https://github.com/rauterfrank-ui/Peak_Trade/pull/7090).
+
+Quelle: [src/trading/master_v2/golden_geometry_engine_v1.py:99](https://github.com/rauterfrank-ui/Peak_Trade/blob/dd4c23da1f3f519413fe8c9f04ddd0050ff3f026/src/trading/master_v2/golden_geometry_engine_v1.py#L99), Revision `dd4c23da1f3f519413fe8c9f04ddd0050ff3f026`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7064-src__trading__master_v2__golden_geometry_engine_v1.py>).
+Quelle für die Consumer-Verwendung: [src/trading/master_v2/canonical_scope_initialization_v1.py:471](https://github.com/rauterfrank-ui/Peak_Trade/blob/dd4c23da1f3f519413fe8c9f04ddd0050ff3f026/src/trading/master_v2/canonical_scope_initialization_v1.py#L471), Revision `dd4c23da1f3f519413fe8c9f04ddd0050ff3f026`.
+
+
+### Golden-Vektoren für Scope-Distanzen
+
+Liefert gültige und ungültige Prüfeingaben für die reine Ableitung von drei Distanzen.
+
+**Daten und Bedeutung:** Für Band 25.0: up=25.0, adverse=10.0, reversal=15.0. Ungültige Fälle enthalten NaN, Inf, Null, Integer, Bool und String.
+
+**Verwendung:** Tests von derive_scope_event_distances_v1 vergleichen Resultate und Ablehnungen.
+
+**Grenze:** Am PR-Stand bewusst ohne produktive Consumer-Bindung; 200.0 ist ein Formelvergleich, keine neue Markt- oder Runtime-Autorität.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#6536](https://github.com/rauterfrank-ui/Peak_Trade/pull/6536), [#6537](https://github.com/rauterfrank-ui/Peak_Trade/pull/6537), [#6548](https://github.com/rauterfrank-ui/Peak_Trade/pull/6548).
+
+Quelle: [src/ops/derive_scope_event_distances_v1/golden_vectors_v1.py:53](https://github.com/rauterfrank-ui/Peak_Trade/blob/69164b604f42b4ba40fdecdb0e8f97bfdb16b7fd/src/ops/derive_scope_event_distances_v1/golden_vectors_v1.py#L53), Revision `69164b604f42b4ba40fdecdb0e8f97bfdb16b7fd`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-6537-src__ops__derive_scope_event_distances_v1__golden_vectors_v1.py>).
+
+Quelle: [src/ops/derive_scope_event_distances_v1/derive_v1.py:27](https://github.com/rauterfrank-ui/Peak_Trade/blob/69164b604f42b4ba40fdecdb0e8f97bfdb16b7fd/src/ops/derive_scope_event_distances_v1/derive_v1.py#L27), Revision `69164b604f42b4ba40fdecdb0e8f97bfdb16b7fd`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-6537-src__ops__derive_scope_event_distances_v1__derive_v1.py>).
+
+### Happy Raw Input
+
+Baut die kanonische JSON-fähige Rohform eines erfolgreichen Master-V2-Szenarios.
+
+**Daten und Bedeutung:** Aus SCENARIO_HAPPY_LIVE_GATED übernommene Felder: correlation_id, staged und vorhandene Handoff-Pakete.
+
+**Verwendung:** Input-Adapter, Wire-Smoke und lokale Debug-/Vertragstests.
+
+**Grenze:** Kein eigener Marktfeed, kein neuer Berechnungsproduzent und keine Live-Freigabe.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#2824](https://github.com/rauterfrank-ui/Peak_Trade/pull/2824), [#2825](https://github.com/rauterfrank-ui/Peak_Trade/pull/2825), [#3306](https://github.com/rauterfrank-ui/Peak_Trade/pull/3306), [#4296](https://github.com/rauterfrank-ui/Peak_Trade/pull/4296), [#4298](https://github.com/rauterfrank-ui/Peak_Trade/pull/4298).
+
+Quelle: [src/trading/master_v2/happy_raw_input_v1.py:16](https://github.com/rauterfrank-ui/Peak_Trade/blob/be0320920a772f1c8201dd321bcac8404a9cd46f/src/trading/master_v2/happy_raw_input_v1.py#L16), Revision `be0320920a772f1c8201dd321bcac8404a9cd46f`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-2825-src__trading__master_v2__happy_raw_input_v1.py>).
+
+### Happy path als Bezeichnung eines positiven Testfalls
+
+Bezeichnet den erwarteten erfolgreichen Ablauf des jeweils lokalen Vertrags.
+
+**Daten und Bedeutung:** Gültige Eingaben des jeweiligen Tests; Erwartungen sind dessen Assertions.
+
+**Verwendung:** Jeweiliger Testowner, etwa Claim/Consume, Sizing, Meta-Comparison, CLI oder Evidence-Binding.
+
+**Grenze:** Der Ausdruck allein bezeichnet weder ein gespeichertes Vektorobjekt noch einen universenübergreifenden Datenweg.
+
+**Belegart:** PR-Beschreibung und Pfade.
+
+### Vectorization und Golden-Referenz bei Performanceänderungen
+
+Ersetzt lokale Pandas-apply-Pfade durch Schleifen oder Masken; Golden-Referenzen prüfen erhaltene Berechnungssemantik.
+
+**Daten und Bedeutung:** Zeitreihen, Fenster, NaN-/Tie-Fälle und Schwellen. _rolling_last_pct_rank verwendet 0–100, _rolling_vol_quantile_rank 0–1.
+
+**Verwendung:** Volatilitätsfilter und Regimeklassifikation sowie ihre Tests; #4327 betrifft CI-Auswahl, #4330 die Dokumentation der Arbeiten.
+
+**Grenze:** Diese Vektorisierung ist kein Golden-Vektor-Datenvertrag. Unterschiedliche Rangskalen machen die Helper nicht austauschbar.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#4320](https://github.com/rauterfrank-ui/Peak_Trade/pull/4320), [#4321](https://github.com/rauterfrank-ui/Peak_Trade/pull/4321), [#4322](https://github.com/rauterfrank-ui/Peak_Trade/pull/4322), [#4323](https://github.com/rauterfrank-ui/Peak_Trade/pull/4323), [#4324](https://github.com/rauterfrank-ui/Peak_Trade/pull/4324), [#4325](https://github.com/rauterfrank-ui/Peak_Trade/pull/4325), [#4326](https://github.com/rauterfrank-ui/Peak_Trade/pull/4326), [#4327](https://github.com/rauterfrank-ui/Peak_Trade/pull/4327), [#4328](https://github.com/rauterfrank-ui/Peak_Trade/pull/4328), [#4329](https://github.com/rauterfrank-ui/Peak_Trade/pull/4329), [#4330](https://github.com/rauterfrank-ui/Peak_Trade/pull/4330).
+
+Quelle: [src/strategies/vol_breakout.py:27](https://github.com/rauterfrank-ui/Peak_Trade/blob/bd662b6a3f44112631d8fa34636fcc6394ecb22d/src/strategies/vol_breakout.py#L27), Revision `bd662b6a3f44112631d8fa34636fcc6394ecb22d`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-4320-src__strategies__vol_breakout.py>).
+
+Quelle: [src/experiments/armstrong_elkaroui_combi_experiment.py:314](https://github.com/rauterfrank-ui/Peak_Trade/blob/0ce71c4154c8ed5ec71ddc2a41df9d1e16530a1c/src/experiments/armstrong_elkaroui_combi_experiment.py#L314), Revision `0ce71c4154c8ed5ec71ddc2a41df9d1e16530a1c`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-4329-src__experiments__armstrong_elkaroui_combi_experiment.py>).
+
+### Vector DB und Knowledge-Suche
+
+Speichert beziehungsweise sucht Dokumenttexte und Metadaten über eine VectorDB-Schnittstelle; WebUI-Verfügbarkeit und Fallback sind eigene lokale Verträge.
+
+**Daten und Bedeutung:** Dokumenttext, IDs, Metadaten und Query; Backend liefert Dokumente, Score oder Distanz und Metadaten.
+
+**Verwendung:** Knowledge-/RAG-Komponenten und Availability-/Endpoint-Tests.
+
+**Grenze:** Nicht alle Backends besitzen dieselbe implementierte Einbettungslogik. Backendname und API-Verfügbarkeit beweisen keine Nutzung durch die Universen.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#170](https://github.com/rauterfrank-ui/Peak_Trade/pull/170), [#388](https://github.com/rauterfrank-ui/Peak_Trade/pull/388), [#389](https://github.com/rauterfrank-ui/Peak_Trade/pull/389), [#390](https://github.com/rauterfrank-ui/Peak_Trade/pull/390), [#2290](https://github.com/rauterfrank-ui/Peak_Trade/pull/2290), [#3288](https://github.com/rauterfrank-ui/Peak_Trade/pull/3288).
+
+Quelle: [src/knowledge/vector_db.py:70](https://github.com/rauterfrank-ui/Peak_Trade/blob/03b432287b53c603fed6ca5cb24ac1755be91c79/src/knowledge/vector_db.py#L70), Revision `03b432287b53c603fed6ca5cb24ac1755be91c79`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-170-src__knowledge__vector_db.py>).
+
+### MemoryVectorAdapter
+
+Implementiert einen speicherinternen Suchadapter ohne Embeddings.
+
+**Daten und Bedeutung:** Tokenmengen: Score = gemeinsame Query-/Dokumenttokens geteilt durch Querytokens; Metadatenfilter und Top-k-Sortierung.
+
+**Verwendung:** VectorDBFactory.create("memory", {}) und lokale Adaptertests.
+
+**Grenze:** Vector im Klassennamen bedeutet hier keine berechnete semantische Embedding-Repräsentation.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#2131](https://github.com/rauterfrank-ui/Peak_Trade/pull/2131).
+
+Quelle: [src/knowledge/vector_db.py:304](https://github.com/rauterfrank-ui/Peak_Trade/blob/6ef048b586e38f7216f00707dbcc0f7fde1e7935/src/knowledge/vector_db.py#L304), Revision `6ef048b586e38f7216f00707dbcc0f7fde1e7935`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-2131-src__knowledge__vector_db.py>).
+
+### VectorMemory im ungemergten AI-Framework
+
+Entwirft Agenten-Dokumentgedächtnis; die Klasse nennt sich ausdrücklich Placeholder.
+
+**Daten und Bedeutung:** Gespeicherte Texte und Metadaten; Suche per kleingeschriebenem Teilstring, auf k Treffer begrenzt.
+
+**Verwendung:** Vorgesehene Agenten-Speicheroberfläche des PR-Kandidaten.
+
+**Grenze:** PR geschlossen ohne Merge. Weder integrierte Chroma-Suche noch Übernahme in main ist dadurch belegt.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#174](https://github.com/rauterfrank-ui/Peak_Trade/pull/174).
+
+Quelle: [src/ai/memory.py:160](https://github.com/rauterfrank-ui/Peak_Trade/blob/ef4413b5ae19bb600426df9d16a491a3d85d95c9/src/ai/memory.py#L160), Revision `ef4413b5ae19bb600426df9d16a491a3d85d95c9` — ungemergter Kandidat. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-174-src__ai__memory.py>).
+
+### Ledger-PnL-Golden
+
+Prüft einen festen WAC-Buchungsfall und einen exakt erwarteten Export.
+
+**Daten und Bedeutung:** Start 10.000; Käufe 10@100 und 10@110, Verkauf 15@120, Gebühren je 1, Mark 115. Soll: Rest 5, Durchschnitt 105, realisiert 225, unrealisiert 50, Cash 9.697.
+
+**Verwendung:** Ledger-Test gegen WAC-/Legacy-Engine; Importanpassungen erhalten diese Zuständigkeit bei FIFO-Erweiterung.
+
+**Grenze:** #1055 ist ungemergt. Dieser WAC-Sollfall ist kein Test der FIFO-Lot-Zuordnung.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#926](https://github.com/rauterfrank-ui/Peak_Trade/pull/926), [#1055](https://github.com/rauterfrank-ui/Peak_Trade/pull/1055), [#1057](https://github.com/rauterfrank-ui/Peak_Trade/pull/1057), [#1058](https://github.com/rauterfrank-ui/Peak_Trade/pull/1058), [#1322](https://github.com/rauterfrank-ui/Peak_Trade/pull/1322).
+
+Quelle: [tests/execution/test_ledger_pnl_golden.py:10](https://github.com/rauterfrank-ui/Peak_Trade/blob/ec03fc95b9ec845894a53a0890de2888c08a0d3a/tests/execution/test_ledger_pnl_golden.py#L10), Revision `ec03fc95b9ec845894a53a0890de2888c08a0d3a`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-926-tests__execution__test_ledger_pnl_golden.py>).
+
+### Equity-Curve-Golden der BetaEventBridge
+
+Vergleicht die erzeugte Equity-Curve bytegleich mit einer gespeicherten Golden-JSONL-Datei.
+
+**Daten und Bedeutung:** Minimale Eventfixture, IntLedgerEngine und explizite Preis-/Geld-/Mengen-Skalen; optional gesamtes Artefaktmanifest mit SHA-256.
+
+**Verwendung:** test_slice3_equity_curve_golden_byte_identical und Operator-Update-Skript.
+
+**Grenze:** Integer-Skalen sind Teil dieses lokalen Vertrags. #930 dokumentiert den Test, erzeugt keinen weiteren Produzenten.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#929](https://github.com/rauterfrank-ui/Peak_Trade/pull/929), [#930](https://github.com/rauterfrank-ui/Peak_Trade/pull/930).
+
+Quelle: [tests/execution/test_beta_event_bridge_equity_curve_golden.py:32](https://github.com/rauterfrank-ui/Peak_Trade/blob/392c1e054a89d56e893cd76fef9718f8927ccffb/tests/execution/test_beta_event_bridge_equity_curve_golden.py#L32), Revision `392c1e054a89d56e893cd76fef9718f8927ccffb`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-929-tests__execution__test_beta_event_bridge_equity_curve_golden.py>).
+
+### Replay-Pack-Goldens
+
+Sichert deterministische Bundle-Serialisierung; v2 ergänzt FIFO-Artefakte und erhält gemeinsame v1-Dateien bytegleich.
+
+**Daten und Bedeutung:** Execution-Events, Manifest, Datei-Hashes; Tests frieren Umgebung und Erstellzeit ein.
+
+**Verwendung:** Builder-/Validator-/Loader- und CLI-Verträge für Replay-Packs.
+
+**Grenze:** Wiederholbarkeit und v1-Kompatibilität belegen für sich keine fachliche Richtigkeit einer gesamten Handelshistorie.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#932](https://github.com/rauterfrank-ui/Peak_Trade/pull/932), [#1061](https://github.com/rauterfrank-ui/Peak_Trade/pull/1061), [#1063](https://github.com/rauterfrank-ui/Peak_Trade/pull/1063), [#1065](https://github.com/rauterfrank-ui/Peak_Trade/pull/1065).
+
+Quelle: [tests/replay_pack/test_golden_bundle_v2.py:74](https://github.com/rauterfrank-ui/Peak_Trade/blob/a962e92cb170dff9951b36e3b9e112dd7646c262/tests/replay_pack/test_golden_bundle_v2.py#L74), Revision `a962e92cb170dff9951b36e3b9e112dd7646c262`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-1061-tests__replay_pack__test_golden_bundle_v2.py>).
+
+Quelle: [tests/replay_pack/test_golden_bundle_v2.py:125](https://github.com/rauterfrank-ui/Peak_Trade/blob/a962e92cb170dff9951b36e3b9e112dd7646c262/tests/replay_pack/test_golden_bundle_v2.py#L125), Revision `a962e92cb170dff9951b36e3b9e112dd7646c262`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-1061-tests__replay_pack__test_golden_bundle_v2.py>).
+
+### Golden für normalisierte Validator-Reports
+
+Fixiert die Normalisierung eines L4-Determinismusreports und die stabile Report-/Hashform.
+
+**Daten und Bedeutung:** Legacy-Report, normalisierte Golden-JSON; volatile Laufzeitkontexte werden in deterministischen Vergleichen ausgeschlossen.
+
+**Verwendung:** Normalizer-Tests und L4-Replay-Validator-Vertragsprüfung.
+
+**Grenze:** Dies prüft die Darstellung und Normalisierung des Validatorergebnisses, nicht selbst die fachliche Güte einer Handelsentscheidung.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#656](https://github.com/rauterfrank-ui/Peak_Trade/pull/656), [#1242](https://github.com/rauterfrank-ui/Peak_Trade/pull/1242).
+
+Quelle: [tests/ai_orchestration/test_validator_report_normalized.py:478](https://github.com/rauterfrank-ui/Peak_Trade/blob/8574c672507d54a127451f786b2cf12edd917ba3/tests/ai_orchestration/test_validator_report_normalized.py#L478), Revision `8574c672507d54a127451f786b2cf12edd917ba3`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-656-tests__ai_orchestration__test_validator_report_normalized.py>).
+
+### Golden Fixtures der L2-Market-Outlook-Kapsel
+
+Stellt drei deterministische Erwartungsszenarien für den Kapselrunner bereit.
+
+**Daten und Bedeutung:** baseline: NEUTRAL/no_trade=false; high_vol: HIGH_VOL/no_trade=true/VOL_EXTREME; illiquid: NEUTRAL/no_trade=true/MISSING_FEATURES.
+
+**Verwendung:** Market-Outlook-Runner-Smoke- und Evidence-Determinismustests.
+
+**Grenze:** Lokale Research-/Outlook-Erwartungen; keine belegte produktive Auswahl- oder Orderautorität.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#1522](https://github.com/rauterfrank-ui/Peak_Trade/pull/1522).
+
+Quelle: [tests/fixtures/p4c_l2_market_outlook/README.md:3](https://github.com/rauterfrank-ui/Peak_Trade/blob/87136581e9c32ea77b3d2a37fd2796ef84667366/tests/fixtures/p4c_l2_market_outlook/README.md#L3), Revision `87136581e9c32ea77b3d2a37fd2796ef84667366`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-1522-tests__fixtures__p4c_l2_market_outlook__README.md>).
+
+### Golden genannte VaR-Report-Tests
+
+Prüft JSON-/Markdown-Struktur, wiederholbar identische Ausgaben, Schlüsselreihenfolge, p-Wert-Rundung und Konfidenzformat.
+
+**Daten und Bedeutung:** Synthetische Renditen und VaR-Serie; formatiertes Suite-Ergebnis.
+
+**Verwendung:** tests/risk/validation/test_suite_golden.py.
+
+**Grenze:** Der gelesene Test öffnet keine feste Golden-Ergebnisdatei. Die Formulierung matches golden file in der Docstring ist stärker als diese konkrete Assertion.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#544](https://github.com/rauterfrank-ui/Peak_Trade/pull/544).
+
+Quelle: [tests/risk/validation/test_suite_golden.py:38](https://github.com/rauterfrank-ui/Peak_Trade/blob/fe4f40b53b92463031a213e9494b88d47f502ebc/tests/risk/validation/test_suite_golden.py#L38), Revision `fe4f40b53b92463031a213e9494b88d47f502ebc`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-544-tests__risk__validation__test_suite_golden.py>).
+
+### Golden-Session-Fixtures für Execution-Telemetrie
+
+Liefert saubere, fehlerhafte und mit bekannten Zeitabständen versehene JSONL-Testdaten.
+
+**Daten und Bedeutung:** Session-/Intent-/Order-IDs, Zeitstempel, Eventtypen und bekannte beschädigte Zeilen.
+
+**Verwendung:** Telemetry-Parser, Zusammenfassung, Filter und Regression-Gates; #917 nennt Golden-JSONL für den read-only Viewer.
+
+**Grenze:** Die Simulation von Telemetriedaten beweist keine echte Venue-Ausführung.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#185](https://github.com/rauterfrank-ui/Peak_Trade/pull/185), [#917](https://github.com/rauterfrank-ui/Peak_Trade/pull/917).
+
+Quelle: [tests/execution/test_telemetry_regression_gates.py:84](https://github.com/rauterfrank-ui/Peak_Trade/blob/28ee02187c8ee00fe8511d00420bce6646080c03/tests/execution/test_telemetry_regression_gates.py#L84), Revision `28ee02187c8ee00fe8511d00420bce6646080c03`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-185-tests__execution__test_telemetry_regression_gates.py>).
+
+### Golden Schema der Health-Snapshots
+
+Prüft Pflichtschlüssel, Metrikschlüssel, Schema-Version und erlaubte Severity-Werte.
+
+**Daten und Bedeutung:** HealthSnapshot.to_dict mit schema_version, ts_utc, severity, metrics und checks.
+
+**Verwendung:** test_snapshot_schema_golden.
+
+**Grenze:** Subset-/Typprüfung, kein vollständiger Vergleich eines eingefrorenen Snapshotinhalts.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#192](https://github.com/rauterfrank-ui/Peak_Trade/pull/192).
+
+Quelle: [tests/execution/test_telemetry_health_trends.py:374](https://github.com/rauterfrank-ui/Peak_Trade/blob/91e7f8319a487296d9c25fc535d3ef7d22566839/tests/execution/test_telemetry_health_trends.py#L374), Revision `91e7f8319a487296d9c25fc535d3ef7d22566839`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-192-tests__execution__test_telemetry_health_trends.py>).
+
+### Golden Corpus für Dokumentationsreferenzen
+
+Testet gültige Markdown-Referenzen, relative Auflösung, ignorierte Muster und fehlende Zielpfade.
+
+**Daten und Bedeutung:** Pass-/Fail-/Relative-Repo-Fixtures mit Links, Anchors, Queries und Angle-Brackets.
+
+**Verwendung:** verify_docs_reference_targets.sh und dessen Tests; spätere PRs dokumentieren oder verschieben Referenzen darauf.
+
+**Grenze:** Dokumentationswerkzeug, kein Trading- oder Universumsdatensatz. Ein verschobener Merge-Log-Pfad ist kein neuer Corpus.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#350](https://github.com/rauterfrank-ui/Peak_Trade/pull/350), [#351](https://github.com/rauterfrank-ui/Peak_Trade/pull/351), [#352](https://github.com/rauterfrank-ui/Peak_Trade/pull/352), [#587](https://github.com/rauterfrank-ui/Peak_Trade/pull/587), [#593](https://github.com/rauterfrank-ui/Peak_Trade/pull/593), [#594](https://github.com/rauterfrank-ui/Peak_Trade/pull/594), [#888](https://github.com/rauterfrank-ui/Peak_Trade/pull/888).
+
+Quelle: [tests/ops/test_verify_docs_reference_targets_script.py:97](https://github.com/rauterfrank-ui/Peak_Trade/blob/ca71cfa2c39827d7fedbec75b76a286a9555950e/tests/ops/test_verify_docs_reference_targets_script.py#L97), Revision `ca71cfa2c39827d7fedbec75b76a286a9555950e`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-350-tests__ops__test_verify_docs_reference_targets_script.py>).
+
+### Research Golden Path
+
+Bündelt vorgesehene Research-Schritte und CLI-Aufrufe; explizite Dummy-Daten sind ein eigener Eingabevertrag.
+
+**Daten und Bedeutung:** Strategie-/Profil-/Experimentparameter und CLI-Argumente.
+
+**Verwendung:** scripts/run_research_golden_path.py sowie research_cli und Tests.
+
+**Grenze:** Golden bezeichnet hier den vorgesehenen Arbeitsablauf. Keine Aktivierungs-, Promotion- oder produktive Lernbefugnis.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#1080](https://github.com/rauterfrank-ui/Peak_Trade/pull/1080), [#2612](https://github.com/rauterfrank-ui/Peak_Trade/pull/2612), [#6212](https://github.com/rauterfrank-ui/Peak_Trade/pull/6212).
+
+Quelle: [scripts/run_research_golden_path.py:382](https://github.com/rauterfrank-ui/Peak_Trade/blob/fee3fe72359fe21e0cc68e6e3efb432a885b8d5e/scripts/run_research_golden_path.py#L382), Revision `fee3fe72359fe21e0cc68e6e3efb432a885b8d5e`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-6212-scripts__run_research_golden_path.py>).
+
+### PromQL vector(0)
+
+Erzeugt einen Instant-Vektor mit Null als Fallback für leere Messreihen oder Anzeigen.
+
+**Daten und Bedeutung:** Prometheus-Messreihen und Abfrageausdruck, etwa or on() vector(0).
+
+**Verwendung:** Grafana-Panels für Signalraten, Entscheidungen, Alter und Anteile.
+
+**Grenze:** Kein gespeicherter Golden-Testvektor. Null im Dashboard ist nicht automatisch ein nachgewiesener Nullwert des zugrunde liegenden Systems.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#778](https://github.com/rauterfrank-ui/Peak_Trade/pull/778), [#961](https://github.com/rauterfrank-ui/Peak_Trade/pull/961), [#968](https://github.com/rauterfrank-ui/Peak_Trade/pull/968), [#970](https://github.com/rauterfrank-ui/Peak_Trade/pull/970), [#1000](https://github.com/rauterfrank-ui/Peak_Trade/pull/1000).
+
+Diff-Anker: [#778 docs/webui/observability/grafana/dashboards/peaktrade-overview.json:92 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/778/files); [#961 docs/webui/observability/DASHBOARD_WORKFLOW.md:89 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/961/files); [#968 tests/obs/test_ai_live_drilldown_v1.py:80 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/968/files); [#970 tests/obs/test_ai_live_ux_v2_contract.py:99 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/970/files); [#1000 docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json:502 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/1000/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Golden Queries des Shadow-MVS-Smokes
+
+Bezeichnet ausgewählte PromQL-Abfragen, die erwartete Messreihen und verwertbare Ergebnisse prüfen.
+
+**Daten und Bedeutung:** Prometheus-Targets/Metriken; leere oder NaN-Ergebnisse können im Warmup begrenzt wiederholt werden.
+
+**Verwendung:** shadow_mvs_local_verify.sh und archivierte PASS-Ausgaben.
+
+**Grenze:** Ein datierter PASS ist ein Nachweis seines damaligen Prüfumfangs, keine heutige globale Betriebsbereitschaft.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#768](https://github.com/rauterfrank-ui/Peak_Trade/pull/768), [#770](https://github.com/rauterfrank-ui/Peak_Trade/pull/770), [#776](https://github.com/rauterfrank-ui/Peak_Trade/pull/776), [#783](https://github.com/rauterfrank-ui/Peak_Trade/pull/783).
+
+Diff-Anker: [#768 scripts/obs/shadow_mvs_local_verify.sh:206 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/768/files); [#770 docs/webui/observability/SHADOW_MVS_CONTRACT.md:177 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/770/files); [#776 docs/ops/evidence/SHADOW_MVS_VERIFY_PASS_20260118T034113Z.md:28 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/776/files); [#783 docs/ops/evidence/SHADOW_MVS_VERIFY_PASS_20260118T072706Z.md:25 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/783/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Golden Smoke Pattern
+
+Speichert Query-JSON in einer Datei und parst daraus, statt eine störanfällige Raw-Pipe zu verwenden.
+
+**Daten und Bedeutung:** Prometheus-JSON, Datei und Parserdiagnostik.
+
+**Verwendung:** Obs-Smoke-Skripte und Hilfs-/Policytests.
+
+**Grenze:** Golden benennt ein empfohlenes Parsingmuster; resultType=vector ist daneben ein Prometheus-Datentyp.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#948](https://github.com/rauterfrank-ui/Peak_Trade/pull/948), [#949](https://github.com/rauterfrank-ui/Peak_Trade/pull/949).
+
+Diff-Anker: [#948 tests/obs/test_prom_json_safe_parse.py:15 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/948/files); [#949 docs/webui/observability/DASHBOARD_WORKFLOW.md:275 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/949/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Golden Rule der Dokumentationspolicy
+
+Bezeichnet die Dokumentationsregel zum Kodieren von Schrägstrichen und dazugehörige Fehlerbehebung.
+
+**Daten und Bedeutung:** Markdown-/Policytexte.
+
+**Verwendung:** Dokumentationspflege und Policyprüfung.
+
+**Grenze:** Kein Vektor oder ausführender Golden-Baustein.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#692](https://github.com/rauterfrank-ui/Peak_Trade/pull/692).
+
+Diff-Anker: [#692 docs/ops/PR_691_MERGE_LOG.md:150 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/692/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Roll-Date-Vektoren
+
+Ordnet Jahr/Monat konkrete erwartete CME-Rolldaten zu.
+
+**Daten und Bedeutung:** Vier feste Datumsfälle, etwa September 2026 → 14.09.2026.
+
+**Verwendung:** test_roll_policy_import_and_vectors__smoke gegen cme_equity_index_roll_date.
+
+**Grenze:** Lokaler Kalender-Smoke; optionale Module können die Sammlung überspringen.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#1091](https://github.com/rauterfrank-ui/Peak_Trade/pull/1091).
+
+Diff-Anker: [#1091 tests/data/continuous/test_continuous_contract.py:83 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/1091/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Master-V2-Conformance-Vektoren
+
+Prüft einzeln CMC-Vertrauen, Scope-Initialisierung, Trailing, C1-DISTINCT, getrennte Bestätigungsuhren, Auswahlzuständigkeit, SideState, Entry/Exit und KILL_ALL; S14 verbindet eine begrenzte LONG-Folge.
+
+**Daten und Bedeutung:** Explizite Testeingaben und bestehende lokale Owner-Erwartungen.
+
+**Verwendung:** Jeweilige S01–S09-/S14-Tests; #6637 verwendet nichtinterferierende Replay-Vergleiche.
+
+**Grenze:** S14 verneint ausdrücklich globalen Konformitäts-, Golden-Vector- und Live-Bereitschaftsnachweis.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#6550](https://github.com/rauterfrank-ui/Peak_Trade/pull/6550), [#6551](https://github.com/rauterfrank-ui/Peak_Trade/pull/6551), [#6552](https://github.com/rauterfrank-ui/Peak_Trade/pull/6552), [#6553](https://github.com/rauterfrank-ui/Peak_Trade/pull/6553), [#6554](https://github.com/rauterfrank-ui/Peak_Trade/pull/6554), [#6555](https://github.com/rauterfrank-ui/Peak_Trade/pull/6555), [#6556](https://github.com/rauterfrank-ui/Peak_Trade/pull/6556), [#6557](https://github.com/rauterfrank-ui/Peak_Trade/pull/6557), [#6558](https://github.com/rauterfrank-ui/Peak_Trade/pull/6558), [#6563](https://github.com/rauterfrank-ui/Peak_Trade/pull/6563), [#6637](https://github.com/rauterfrank-ui/Peak_Trade/pull/6637).
+
+Quelle: [tests/trading/test_s14_joined_happy_path_conformance_v1.py:132](https://github.com/rauterfrank-ui/Peak_Trade/blob/44946b4b85076f8c7ed17cbcb4ba4cda5f8695c5/tests/trading/test_s14_joined_happy_path_conformance_v1.py#L132), Revision `44946b4b85076f8c7ed17cbcb4ba4cda5f8695c5`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-6563-tests__trading__test_s14_joined_happy_path_conformance_v1.py>).
+
+### Owner-composed Golden ohne eingefrorenen Corpus
+
+Bildet erwartete Tupel aus bestehenden 29P-/Safety-/29Q-Ownern und prüft Replay-/Host-Verwendung.
+
+**Daten und Bedeutung:** Erfasste Replay-Eingaben und Ergebnisse bereits vorhandener Owner; Fälle A–K in der Host-Prüfung.
+
+**Verwendung:** Paritäts- und Full-chain-Host-Vertragstests.
+
+**Grenze:** NEW_GOLDEN_VECTOR_CORPUS=false; kein neuer JSON-Corpus. Eine aus Ownern gebildete Erwartung ist von einer unabhängig festgelegten Referenz zu unterscheiden.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#6136](https://github.com/rauterfrank-ui/Peak_Trade/pull/6136), [#6138](https://github.com/rauterfrank-ui/Peak_Trade/pull/6138).
+
+Diff-Anker: [#6136 tests/trading/master_v2/test_master_v2_integrated_replay_appendix_a_core_logic_parity_post_6135_contract_v1.py:3 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/6136/files); [#6138 tests/ops/test_master_v2_section_5_3_host_graph_ssot_adjudication_v1.py:84 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/6138/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### TV-Vektoren des Forensic-Transformers
+
+Prüft ID-Räume, zulässige Joins, Nichtinferenz und Verlustlosigkeit der gebundenen Transformation.
+
+**Daten und Bedeutung:** Gebundene Quelldaten/Sidecar und TV-001 bis TV-012; später abgeleitete Manifeste und Checksummen.
+
+**Verwendung:** Transformer-Tests; #6061 hält abgeleitete Ergebnisse fest.
+
+**Grenze:** Der Output bleibt abgeleitet und nicht autoritativ; offene fachliche Residuen werden nicht durch grüne Tests geschlossen.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#6060](https://github.com/rauterfrank-ui/Peak_Trade/pull/6060), [#6061](https://github.com/rauterfrank-ui/Peak_Trade/pull/6061).
+
+Diff-Anker: [#6060 tests/forensic_structure_schema_v1/test_contract_vectors_and_properties.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/6060/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Szenariovektoren für External Signoff
+
+Beschreibt deterministische Szenarien für Posture, Truth-Precedence, Trace und Replay des Klassifikationsstapels.
+
+**Daten und Bedeutung:** Handoff Packet, LB_APR_001 und External Signoff.
+
+**Verwendung:** Dokumentierter Drift-/Replay-Atlas.
+
+**Grenze:** Dokumentationsfund; daraus allein folgt keine implementierte Ausführung dieser Szenarien.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#2756](https://github.com/rauterfrank-ui/Peak_Trade/pull/2756).
+
+Diff-Anker: [#2756 docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TO_LB_APR_001_EXTERNAL_SIGNOFF_EVIDENCE_CLASSIFICATION_DRIFT_DETECTION_REPLAY_SCENARIO_ATLAS_V1.md:6 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/2756/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GoldenHappy und weitere GVEF-Vektorklassen
+
+Benennung von Klassen wie GoldenHappy, GoldenNeutral, GoldenHold, GoldenReject und GoldenNaturalEnter.
+
+**Daten und Bedeutung:** Enum-/Vertragswerte und Vector-Spezifikation.
+
+**Verwendung:** GVEF-Verträge und Corpus-/Runner-Kontext.
+
+**Grenze:** Die Klasse beschreibt eine Fallart. Sie ist nicht gleichbedeutend mit einem ausgeführten GHV-Produktpfad.
+
+**Belegart:** Quelltext am Vergleichspin statisch geprüft.
+
+PR-Anker: [#7039](https://github.com/rauterfrank-ui/Peak_Trade/pull/7039).
+
+Quelle: [src/evaluation/golden_vectors/contracts/enums.py:1](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/evaluation/golden_vectors/contracts/enums.py), Revision `5d1c838c15369507c5247834db4dd0df25592169`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/pin-src__evaluation__golden_vectors__contracts__enums.py>).
+
+### GVEF GenericRunner und Corpus-Gate
+
+Verknüpft bereitgestellten Corpus, Replay-Adapter, Evaluator, Gates, Digestprüfung und Registry.
+
+**Daten und Bedeutung:** Versiegelte Fall-/Run-Verträge; ReplayTrace für Baseline und Kandidat.
+
+**Verwendung:** Deterministischer Evaluationsrunner; initialer PR verwendet synthetische Fixtures.
+
+**Grenze:** Abhängigkeiten sind injiziert; Existenz des Runners belegt nicht die automatische Anbindung sämtlicher ursprünglicher Datenproduzenten.
+
+**Belegart:** Quelltext am Vergleichspin statisch geprüft.
+
+PR-Anker: [#7039](https://github.com/rauterfrank-ui/Peak_Trade/pull/7039), [#7042](https://github.com/rauterfrank-ui/Peak_Trade/pull/7042).
+
+Quelle: [src/evaluation/golden_vectors/runner/generic_runner_v1.py:1](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/evaluation/golden_vectors/runner/generic_runner_v1.py), Revision `5d1c838c15369507c5247834db4dd0df25592169`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/pin-src__evaluation__golden_vectors__runner__generic_runner_v1.py>).
+
+### GVEF Self-Learning-Evaluator
+
+Prüft Learning-Artefakte aus ReplayTrace-Einträgen und verbotenen produktiven Writeback; bildet Ergebnis-Digests.
+
+**Daten und Bedeutung:** kind=self_learning mit learning_artifact sowie Autoritätskennzeichen.
+
+**Verwendung:** GVEF-Domänenbewertung von Baseline und Kandidat.
+
+**Grenze:** Führt den ursprünglichen Lernproduzenten dadurch nicht aus.
+
+**Belegart:** Quelltext am Vergleichspin statisch geprüft.
+
+PR-Anker: [#7039](https://github.com/rauterfrank-ui/Peak_Trade/pull/7039).
+
+Quelle: [src/evaluation/golden_vectors/evaluators/self_learning_v1.py:1](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/evaluation/golden_vectors/evaluators/self_learning_v1.py), Revision `5d1c838c15369507c5247834db4dd0df25592169`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/pin-src__evaluation__golden_vectors__evaluators__self_learning_v1.py>).
+
+### GVEF Optimization-Evaluator
+
+Vergleicht übergebene Baseline-/Kandidatenparameter und prüft Autoritätsgrenzen.
+
+**Daten und Bedeutung:** Optimierungs-Replay-Artefakt, Parameterwerte und deklarierte Wirkungsflags.
+
+**Verwendung:** GVEF-Ergebnis mit Differenzen und Invarianten.
+
+**Grenze:** Kein automatischer Optimierungslauf oder produktiver Apply.
+
+**Belegart:** Quelltext am Vergleichspin statisch geprüft.
+
+PR-Anker: [#7039](https://github.com/rauterfrank-ui/Peak_Trade/pull/7039).
+
+Quelle: [src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py:1](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py), Revision `5d1c838c15369507c5247834db4dd0df25592169`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/pin-src__evaluation__golden_vectors__evaluators__optimization_universe_v1.py>).
+
+### GVEF Market-Intelligence-Evaluator
+
+Prüft ein MI-Kontextbundle auf vorhandene Evidence und Invarianten wie Leakage und fehlende produktive Materialisierung.
+
+**Daten und Bedeutung:** mi_context_bundle im Replay; Run-/Labelbezug, freshness_token und Evidence-Flags.
+
+**Verwendung:** MI-Domänenergebnis und Bundle-Digest.
+
+**Grenze:** Ein deklarierter freshness_token ersetzt keine selbst durchgeführte aktuelle Marktbeobachtung.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7039](https://github.com/rauterfrank-ui/Peak_Trade/pull/7039).
+
+Quelle: [src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py:32](https://github.com/rauterfrank-ui/Peak_Trade/blob/9539b55ee4e572b3a0607e97008375bccb36814e/src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py#L32), Revision `9539b55ee4e572b3a0607e97008375bccb36814e`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7039-src__evaluation__golden_vectors__evaluators__market_intelligence_v1.py>).
+
+### GVEF Ranking-Universe-Evaluator
+
+Vergleicht Membership und Ordering von Baseline/Kandidat und erzeugt Ranking-Manifeste und Deltas.
+
+**Daten und Bedeutung:** Ranking-Replay-Slices und getrennte geschützte Digests.
+
+**Verwendung:** GVEF-Domänenbewertung; Selection-Mutation und Cap2.3-Ownership-Claims werden zurückgewiesen.
+
+**Grenze:** Prüfer ist kein neuer Selection-Owner; Teststubs sind kein produktiver Ranking-Feed.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7044](https://github.com/rauterfrank-ui/Peak_Trade/pull/7044).
+
+Quelle: [src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py:46](https://github.com/rauterfrank-ui/Peak_Trade/blob/46eb31040eb85623b533f04dcf4550640d562d1f/src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py#L46), Revision `46eb31040eb85623b533f04dcf4550640d562d1f`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7044-src__evaluation__golden_vectors__evaluators__ranking_universe_v1.py>).
+
+### GVEF Productive-Trading-Path-Evaluator
+
+Ergänzt die PTP-Bewertung um CRS-/Sizing-Evidence und deren lokale Vertragsgrenzen.
+
+**Daten und Bedeutung:** PTP-Replay und verschachtelte Evidence-Bundles; deterministische Stubs in der Integration.
+
+**Verwendung:** GVEF-PTP-Domänenresultat.
+
+**Grenze:** Die Bezeichnung productive beschreibt die geprüfte Domäne, nicht die Ausführung einer echten produktiven Order.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7043](https://github.com/rauterfrank-ui/Peak_Trade/pull/7043).
+
+Diff-Anker: [#7043 src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py:239 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7043/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GVEF Constraints und geschützte Digests
+
+Prüft deklarierte Signal-/Autoritätskanten und vergleicht kanonische semantische Digests.
+
+**Daten und Bedeutung:** Constraint-Matrix, erlaubte/verbotene Deltas und getrennte RU-/Selection-Digests.
+
+**Verwendung:** Pre-/Post-Gates und fail-closed Digestvergleich.
+
+**Grenze:** Digestgleichheit ist kein Nachweis fehlender unbekannter Semantik oder voll erfasster Laufzeitwirkung.
+
+**Belegart:** Quelltext am Vergleichspin statisch geprüft.
+
+PR-Anker: [#7040](https://github.com/rauterfrank-ui/Peak_Trade/pull/7040), [#7041](https://github.com/rauterfrank-ui/Peak_Trade/pull/7041).
+
+Quelle: [src/evaluation/golden_vectors/constraints/post_constraint_gate_v1.py:1](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/evaluation/golden_vectors/constraints/post_constraint_gate_v1.py), Revision `5d1c838c15369507c5247834db4dd0df25592169`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/pin-src__evaluation__golden_vectors__constraints__post_constraint_gate_v1.py>).
+
+### GVEF PromotionEvidenceAdapter
+
+Erzeugt bei erfüllten Prüfbedingungen einen unveränderlichen Promotion-Evidence-Umschlag.
+
+**Daten und Bedeutung:** Bundle-Digest, Post-Constraint-Ergebnis, Fehlerfreiheit und externer Status.
+
+**Verwendung:** Nachgelagerte Promotion-Bewertung; Default-Passthrough liefert None.
+
+**Grenze:** Übergabe allein promoviert oder aktiviert nichts.
+
+**Belegart:** Quelltext am Vergleichspin statisch geprüft.
+
+PR-Anker: [#7039](https://github.com/rauterfrank-ui/Peak_Trade/pull/7039).
+
+Quelle: [src/evaluation/golden_vectors/promotion/promotion_evidence_adapter_v1.py:1](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/evaluation/golden_vectors/promotion/promotion_evidence_adapter_v1.py), Revision `5d1c838c15369507c5247834db4dd0df25592169`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/pin-src__evaluation__golden_vectors__promotion__promotion_evidence_adapter_v1.py>).
+
+### GHV Natural-Market-Data-Capture
+
+Delegiert vorhandene read-only GETs und speichert erfolgreiche Payloads für spätere Auswertung.
+
+**Daten und Bedeutung:** Unveränderte GET-Antworten unter Evidence-Root des Runs.
+
+**Verwendung:** Read-only Signal-Liveness-Auswertung.
+
+**Grenze:** Default deaktiviert, keine zusätzlichen GETs; CORRELATION_STATUS=PARTIAL und keine vollständigen Poll-Bundles zugesichert.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#6998](https://github.com/rauterfrank-ui/Peak_Trade/pull/6998).
+
+Quelle: [src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py:46](https://github.com/rauterfrank-ui/Peak_Trade/blob/ba4391ec0647ee0a6929ea8b5e42b94d6f405784/src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py#L46), Revision `ba4391ec0647ee0a6929ea8b5e42b94d6f405784`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-6998-src__ops__full_core_live_path_composition_root_v1__productive_natural_market_data_capture_sink_v1.py>).
+
+### GHV Signal-, Scope- und Switch-Trace
+
+Schreibt vorhandene Signal-/Schwellen-/Scope-Informationen und später L10-Switch-Felder in forensische Artefakte.
+
+**Daten und Bedeutung:** Vorhandene produktive Zwischenwerte, Entry-State-Snapshot, Instrument-/Cycle-/Provenienzbezug.
+
+**Verwendung:** Forensische Leser und spätere Vergleichsläufe.
+
+**Grenze:** Die Beobachtung berechnet das Signal nicht neu und besitzt keine zusätzliche Entscheidungsautorität.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#6999](https://github.com/rauterfrank-ui/Peak_Trade/pull/6999), [#7001](https://github.com/rauterfrank-ui/Peak_Trade/pull/7001), [#7090](https://github.com/rauterfrank-ui/Peak_Trade/pull/7090).
+
+Quelle: [src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py:92](https://github.com/rauterfrank-ui/Peak_Trade/blob/45c4455288184ccd391bdd72b554a73518725e82/src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py#L92), Revision `45c4455288184ccd391bdd72b554a73518725e82`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-6999-src__ops__full_core_live_path_composition_root_v1__productive_golden_happy_vector_forensic_observability_v1.py>).
+
+### GHV Synthetic-ENTER-Overlay
+
+Erzwingt unter forensischen Guards einen synthetischen ENTER-Fall, um nachgelagerte Übergaben prüfen zu können.
+
+**Daten und Bedeutung:** Markiertes synthetisches Entscheidungsergebnis und bestehender Cycle-/Marktkontext.
+
+**Verwendung:** Nachgelagerte S5-/Sizing-/PRE_EXTERNAL-Prüfpfade.
+
+**Grenze:** Ein erzwungener ENTER belegt keine natürlich aus Marktdaten entstandene Entscheidung. Die PRs reparieren unterschiedliche lokale Bindungen.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7006](https://github.com/rauterfrank-ui/Peak_Trade/pull/7006), [#7007](https://github.com/rauterfrank-ui/Peak_Trade/pull/7007), [#7008](https://github.com/rauterfrank-ui/Peak_Trade/pull/7008), [#7010](https://github.com/rauterfrank-ui/Peak_Trade/pull/7010), [#7011](https://github.com/rauterfrank-ui/Peak_Trade/pull/7011), [#7012](https://github.com/rauterfrank-ui/Peak_Trade/pull/7012), [#7013](https://github.com/rauterfrank-ui/Peak_Trade/pull/7013), [#7019](https://github.com/rauterfrank-ui/Peak_Trade/pull/7019).
+
+Diff-Anker: [#7006 src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py:757 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7006/files); [#7007 tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7007/files); [#7008 tests/ops/test_persistent_natural_enter_live_29p_get_wiring_v1.py:76 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7008/files); [#7010 tests/ops/test_ghv_protective_stop_synthetic_enter_live_29p_join_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7010/files); [#7011 tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7011/files); [#7012 tests/ops/test_ghv_pre_external_offline_convergence_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7012/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Golden-Happy-Offline-Witness
+
+Versorgt forensischen Replay mit Natural-Checkpoint-Lineage statt reinem Memory-G17-Harness; isoliert Producer-/Store-Lebenszyklen je Probe.
+
+**Daten und Bedeutung:** Gespeicherter Checkpoint, G17-Produzenten, Probe-/Flight-ID.
+
+**Verwendung:** Offline-Witness-Adjudikation und Forensic-Probe.
+
+**Grenze:** Eine getestete Replay-Versorgung ist von fortlaufender produktiver Datenerfassung zu unterscheiden.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7000](https://github.com/rauterfrank-ui/Peak_Trade/pull/7000), [#7057](https://github.com/rauterfrank-ui/Peak_Trade/pull/7057).
+
+Diff-Anker: [#7000 scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py:2 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7000/files); [#7057 tests/ops/test_ghv_forensic_probe_g17_flight_binding_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7057/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV Flight Recorder und Continuation
+
+Erfasst Cycles und Wiederaufnahmezustand; vergleicht beobachtete Laufzeitoberflächen mit modellierten Oberflächen.
+
+**Daten und Bedeutung:** Cycle-Evidence, Lane-/Run-Snapshots und Trace-Korrelation.
+
+**Verwendung:** Continuation-Harness und forensische Materialisierung.
+
+**Grenze:** Modeled graph und observed graph bleiben getrennt; ein eingeführter Recorder ist kein ausgeführter Product-Run.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7014](https://github.com/rauterfrank-ui/Peak_Trade/pull/7014), [#7015](https://github.com/rauterfrank-ui/Peak_Trade/pull/7015), [#7016](https://github.com/rauterfrank-ui/Peak_Trade/pull/7016).
+
+Diff-Anker: [#7014 src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py:390 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7014/files); [#7015 src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py:839 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7015/files); [#7016 src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_snapshot_hydration_v1.py:41 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7016/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV Startability anhand einer Referenzfixture
+
+Liest eine gespeicherte Natural-Enter-/PRE_EXTERNAL-Referenz und prüft ausgewählte vorhandene Verträge.
+
+**Daten und Bedeutung:** Manifest, Selection, Scope-Cursor, Report und DDO-Learning-Capture der Fixture.
+
+**Verwendung:** StartabilityEvaluationReport mit getrennten strukturellen und Current-Input-Flags.
+
+**Grenze:** Fixture-Replay erzeugt keine frischen Marktinputs und keine Start-/Trading-Autorisierung.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7067](https://github.com/rauterfrank-ui/Peak_Trade/pull/7067).
+
+Quelle: [src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py:177](https://github.com/rauterfrank-ui/Peak_Trade/blob/b74fa827b9dd645195f45f673fa5880a2ec0414c/src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py#L177), Revision `b74fa827b9dd645195f45f673fa5880a2ec0414c`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7067-src__ops__full_core_live_path_composition_root_v1__current_productive_golden_happy_vector_startability_evaluator_v1.py>).
+
+### GHV Current-Input-Observation-Adapter
+
+Verwendet bestehenden GET-Transport, G17 und G17→CMC-Bindung zur Klassifikation beobachteter Eingänge.
+
+**Daten und Bedeutung:** Gebundenes Instrument, Mark-/Indexpreis, Volatilität, CMC, Frische und Provenienz.
+
+**Verwendung:** CurrentProductiveGhvInputObservation und Startability-Evaluator.
+
+**Grenze:** Adapter dispatcht keine Trading-Cycles; gespeicherte Fixture ist ausdrücklich keine Current-Input-Quelle.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7068](https://github.com/rauterfrank-ui/Peak_Trade/pull/7068).
+
+Quelle: [src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_current_input_observation_adapter_v1.py:109](https://github.com/rauterfrank-ui/Peak_Trade/blob/2bcf835a3ef00085be1d6325b38b22031d3b0416/src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_current_input_observation_adapter_v1.py#L109), Revision `2bcf835a3ef00085be1d6325b38b22031d3b0416`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7068-src__ops__full_core_live_path_composition_root_v1__current_productive_golden_happy_vector_current_input_observation_adapter_v1.py>).
+
+### GHV Forensic Crosswalk und Traversierung
+
+Validiert und verknüpft Census-/Landscape-/Graphquellen, klassifiziert Kanten und erlaubt begrenzte Traversierung sowie konservative Wirkungsanalyse.
+
+**Daten und Bedeutung:** Commit-/Tree-/Snapshotbezug, explizite Knoten und Kanten, Herkunft und unaufgelöste Endpunkte.
+
+**Verwendung:** Offline-Crosswalk, Inspection-Adapter und Living CURRENT Matrix.
+
+**Grenze:** Graphnachbarschaft, statischer Aufruf und beobachtete Laufzeit sind unterschiedliche Befunde; NAVIGATION_ONLY ist kein STRICT_CURRENT-Nachweis.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7114](https://github.com/rauterfrank-ui/Peak_Trade/pull/7114), [#7115](https://github.com/rauterfrank-ui/Peak_Trade/pull/7115), [#7116](https://github.com/rauterfrank-ui/Peak_Trade/pull/7116), [#7117](https://github.com/rauterfrank-ui/Peak_Trade/pull/7117), [#7120](https://github.com/rauterfrank-ui/Peak_Trade/pull/7120), [#7129](https://github.com/rauterfrank-ui/Peak_Trade/pull/7129), [#7136](https://github.com/rauterfrank-ui/Peak_Trade/pull/7136), [#7148](https://github.com/rauterfrank-ui/Peak_Trade/pull/7148).
+
+Quelle: [scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py:70](https://github.com/rauterfrank-ui/Peak_Trade/blob/13a53f371983ba9337cef15a8211530e81db850d/scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py#L70), Revision `13a53f371983ba9337cef15a8211530e81db850d`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7114-scripts__ops__ghv_forensic_whole_system_crosswalk_v1__compose_v1.py>).
+
+### GHOSV Execution
+
+Ingestiert und korreliert Execution-Evidence, prüft Semantik, aggregiert Ampeln/Incidents und beurteilt belegte Lifecycle-Stufen.
+
+**Daten und Bedeutung:** Recon-/Portfolio-/Cycle-/Transition-/optionale G004-Evidence mit Trade-/Run-/Cycle-Identität.
+
+**Verwendung:** Bounded Offline Observer und Findings/Response-Witness.
+
+**Grenze:** POST_COUNT=0 ist keine Submission; lokale Submission ist nicht automatisch Venue-ACK. Fehlende Feeds bleiben UNKNOWN. Kein vollständiger Execution-Lifecycle zugesichert.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7121](https://github.com/rauterfrank-ui/Peak_Trade/pull/7121), [#7122](https://github.com/rauterfrank-ui/Peak_Trade/pull/7122), [#7123](https://github.com/rauterfrank-ui/Peak_Trade/pull/7123), [#7124](https://github.com/rauterfrank-ui/Peak_Trade/pull/7124), [#7125](https://github.com/rauterfrank-ui/Peak_Trade/pull/7125), [#7126](https://github.com/rauterfrank-ui/Peak_Trade/pull/7126), [#7127](https://github.com/rauterfrank-ui/Peak_Trade/pull/7127).
+
+Quelle: [src/ops/ghosv_bounded_context_v1/pipeline_v1.py:33](https://github.com/rauterfrank-ui/Peak_Trade/blob/57b9bb00935ad442ca3e80cff44475cc38fd859b/src/ops/ghosv_bounded_context_v1/pipeline_v1.py#L33), Revision `57b9bb00935ad442ca3e80cff44475cc38fd859b`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7121-src__ops__ghosv_bounded_context_v1__pipeline_v1.py>).
+
+Quelle: [src/ops/ghosv_bounded_context_v1/execution_lifecycle_adjudication_v1.py:23](https://github.com/rauterfrank-ui/Peak_Trade/blob/be8861538a8f6bc64df1679644a79d358072a636/src/ops/ghosv_bounded_context_v1/execution_lifecycle_adjudication_v1.py#L23), Revision `be8861538a8f6bc64df1679644a79d358072a636`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7126-src__ops__ghosv_bounded_context_v1__execution_lifecycle_adjudication_v1.py>).
+
+### GHOSV Safety-Authority-Adapter
+
+Beschreibt eine mögliche Incident-Übergabe an vorhandene Safety-Autoritäten und meldet im deaktivierten Modus keine Zustellung.
+
+**Daten und Bedeutung:** Critical-Incidents und Adaptermodus; STUB_TEST kann nur simulierte Annahme abbilden.
+
+**Verwendung:** GHOSV-AdapterDecision und Safety-Response-Witness.
+
+**Grenze:** Produktive Aktivierung wird zurückgewiesen; kein Kill-Switch-Trigger aus diesem Prüfer.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7121](https://github.com/rauterfrank-ui/Peak_Trade/pull/7121).
+
+Quelle: [src/ops/ghosv_bounded_context_v1/s06_safety_authority_adapter_v1.py:26](https://github.com/rauterfrank-ui/Peak_Trade/blob/57b9bb00935ad442ca3e80cff44475cc38fd859b/src/ops/ghosv_bounded_context_v1/s06_safety_authority_adapter_v1.py#L26), Revision `57b9bb00935ad442ca3e80cff44475cc38fd859b`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7121-src__ops__ghosv_bounded_context_v1__s06_safety_authority_adapter_v1.py>).
+
+### Master-V2-GHOSV und Current-Tree-Adapter
+
+Prüft gelieferte Adapter-/Graphbefunde gegen einen begrenzten MV2-Anforderungskatalog; Double-Play-Symbolpräsenz ist eine weitere eigene Beobachtung.
+
+**Daten und Bedeutung:** Code-/Tree-Pin, Contract-Referenz, Call-Kanten und Projektion.
+
+**Verwendung:** Findings mit Coverage-/Uncertainty-Feldern; kein zweiter Trading-Owner.
+
+**Grenze:** MV2-02 bis MV2-08 bleiben NOT_TESTED; Vertragshash wird extern übergeben. Execution-GHOSV wird dabei nicht aufgerufen.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7145](https://github.com/rauterfrank-ui/Peak_Trade/pull/7145), [#7151](https://github.com/rauterfrank-ui/Peak_Trade/pull/7151), [#7152](https://github.com/rauterfrank-ui/Peak_Trade/pull/7152).
+
+Quelle: [scripts/ops/ghosv_master_v2_bounded_context_v1/check_v1.py:92](https://github.com/rauterfrank-ui/Peak_Trade/blob/d3a1c1ae54b9dabc080379acd4565fabe75ba7eb/scripts/ops/ghosv_master_v2_bounded_context_v1/check_v1.py#L92), Revision `d3a1c1ae54b9dabc080379acd4565fabe75ba7eb`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7145-scripts__ops__ghosv_master_v2_bounded_context_v1__check_v1.py>).
+
+Quelle: [scripts/ops/ghosv_master_v2_bounded_context_v1/check_v1.py:230](https://github.com/rauterfrank-ui/Peak_Trade/blob/d3a1c1ae54b9dabc080379acd4565fabe75ba7eb/scripts/ops/ghosv_master_v2_bounded_context_v1/check_v1.py#L230), Revision `d3a1c1ae54b9dabc080379acd4565fabe75ba7eb`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7145-scripts__ops__ghosv_master_v2_bounded_context_v1__check_v1.py>).
+
+### Scoped GHV und generischer GHOSV im Guardian-Werkzeug
+
+Bindet Pin und Scope, untersucht explizit gelieferte Kandidatenknoten/-kanten und beobachtet zugelassene Findings über generische Instrumentverträge.
+
+**Daten und Bedeutung:** Aufrufergelieferter Kandidat, Scope, Provenienz und Commit-/Tree-Identität; spätere Execution-Mission-Bindung.
+
+**Verwendung:** Read-only Guardian-/Parent-Instrumentberichte.
+
+**Grenze:** Der scoped Adapter erzeugt keinen fehlenden Graphen aus dem Nichts und erfindet keine Kanten.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7154](https://github.com/rauterfrank-ui/Peak_Trade/pull/7154), [#7155](https://github.com/rauterfrank-ui/Peak_Trade/pull/7155), [#7156](https://github.com/rauterfrank-ui/Peak_Trade/pull/7156), [#7166](https://github.com/rauterfrank-ui/Peak_Trade/pull/7166), [#7167](https://github.com/rauterfrank-ui/Peak_Trade/pull/7167), [#7168](https://github.com/rauterfrank-ui/Peak_Trade/pull/7168), [#7169](https://github.com/rauterfrank-ui/Peak_Trade/pull/7169).
+
+Quelle: [scripts/ops/scoped_ghv_crosswalk_adapter_v1/adapt_v1.py:52](https://github.com/rauterfrank-ui/Peak_Trade/blob/37e51e3c7988026d2caa8c9a83ff46a056e416a8/scripts/ops/scoped_ghv_crosswalk_adapter_v1/adapt_v1.py#L52), Revision `37e51e3c7988026d2caa8c9a83ff46a056e416a8`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7166-scripts__ops__scoped_ghv_crosswalk_adapter_v1__adapt_v1.py>).
+
+Quelle: [scripts/ops/generic_ghosv_kernel_v1/observe_v1.py:51](https://github.com/rauterfrank-ui/Peak_Trade/blob/37e51e3c7988026d2caa8c9a83ff46a056e416a8/scripts/ops/generic_ghosv_kernel_v1/observe_v1.py#L51), Revision `37e51e3c7988026d2caa8c9a83ff46a056e416a8`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7166-scripts__ops__generic_ghosv_kernel_v1__observe_v1.py>).
+
+### GV-Nummern im Guardian-Planungsfixture
+
+Kennzeichnet Verantwortungsflächen wie GV-07 Account Equity oder GV-10 CRS/Sizing in einem Planungsfixture.
+
+**Daten und Bedeutung:** Flächennamen und Zuordnungen; mehrere Flächen bleiben UNASSIGNED.
+
+**Verwendung:** Authorityloser Planning-Coordinator.
+
+**Grenze:** ID im Plan ist kein implementierter Vektor und keine ratifizierte Systemzuständigkeit.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7157](https://github.com/rauterfrank-ui/Peak_Trade/pull/7157).
+
+Diff-Anker: [#7157 scripts/ops/guardian_planning_fixture_v1/constants_v1.py:50 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7157/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Golden-Erwartungsgrenze bei dynamischen Marktwerten
+
+Trennt stabile Invarianten, aktuelle Laufzeitwerte und gleichkontextuelle Identitätsrelationen.
+
+**Daten und Bedeutung:** Run-/Instrument-/Cyclebezug, beobachtete Werte und relationale Evidence.
+
+**Verwendung:** Dynamischer Evidence-Vertrag und Cross-Run-Expectation-Guard.
+
+**Grenze:** Ein beobachteter Marktwert darf nicht als absoluter Golden-Sollwert für beliebige andere Runs übernommen werden.
+
+**Belegart:** Quelltext an konkreter Revision statisch geprüft.
+
+PR-Anker: [#7017](https://github.com/rauterfrank-ui/Peak_Trade/pull/7017), [#7018](https://github.com/rauterfrank-ui/Peak_Trade/pull/7018).
+
+Quelle: [src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py:50](https://github.com/rauterfrank-ui/Peak_Trade/blob/579b4af22a6b7af52507309133f26ff3ceb0d582/src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py#L50), Revision `579b4af22a6b7af52507309133f26ff3ceb0d582`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7018-src__ops__full_core_live_path_composition_root_v1__dynamic_market_selection_evidence_contract_v1.py>).
+
+### Golden Vector oder GHV als lokaler Prüfbezug
+
+Kennzeichnet die zur jeweiligen Änderung genannte forensische Vergleichs-/Nachprüfung oder einen ausdrücklichen Ausschluss beziehungsweise STALE-Status.
+
+**Daten und Bedeutung:** PR-spezifische Evidence, Kontrollfälle oder Referenz auf einen bestehenden Prüfer.
+
+**Verwendung:** Review-/Evidence-Aussage für genau diese lokale Änderung.
+
+**Grenze:** Die betreffende Hauptänderung ist nicht automatisch selbst ein neuer GHV-Baustein. Status- und Negativformulierungen bleiben erhalten.
+
+**Belegart:** PR-Beschreibung und Pfade.
+
+### Golden oder Happy als dokumentierter Ablauf oder Nachweis
+
+Beschreibt einen lokalen Sollablauf, hält einen datierten Nachweis fest oder referenziert bereits vorhandene Komponenten.
+
+**Daten und Bedeutung:** Beispiele, Merge-Logs, Fixpoint-/Governance-Aufzeichnungen und Prüfergebnisse.
+
+**Verwendung:** Leser, Operatoren und Dokumentationsprüfungen.
+
+**Grenze:** Beispielrechnung, Fertigmeldung und Dokumentdatei sind unterschiedliche Belegarten und kein heutiger Gesamtnachweis.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#52](https://github.com/rauterfrank-ui/Peak_Trade/pull/52), [#1005](https://github.com/rauterfrank-ui/Peak_Trade/pull/1005), [#7083](https://github.com/rauterfrank-ui/Peak_Trade/pull/7083), [#7084](https://github.com/rauterfrank-ui/Peak_Trade/pull/7084), [#7086](https://github.com/rauterfrank-ui/Peak_Trade/pull/7086), [#7133](https://github.com/rauterfrank-ui/Peak_Trade/pull/7133), [#7144](https://github.com/rauterfrank-ui/Peak_Trade/pull/7144).
+
+Diff-Anker: [#52 docs/ops/LIVE_SESSION_EVALUATION.md:181 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/52/files); [#1005 docs/ops/specs/PEAK_TRADE_PROJECT_SUMMARY_OUTLINE_V2.md:24 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/1005/files); [#7083 config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json:21 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7083/files); [#7086 config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json:11 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7086/files); [#7133 .cursor/rules/README.md:18 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7133/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Erhaltung Entfernung oder Formatierung vorhandener Fundstellen
+
+Verschiebt, formatiert, entfernt oder konsolidiert bereits bestehende Referenzen beziehungsweise Implementierungen.
+
+**Daten und Bedeutung:** Vorhandene Dateien und deren Referenzen.
+
+**Verwendung:** Repository-Bestand und verbleibende Aufrufer.
+
+**Grenze:** Keine neue Funktion allein aus einem Dateitreffer. #6819 und #6832 sind geschlossen ohne Merge; #7076 entfernt die in #7074/#7075 eingeführte Parallelvariante.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#215](https://github.com/rauterfrank-ui/Peak_Trade/pull/215), [#6819](https://github.com/rauterfrank-ui/Peak_Trade/pull/6819), [#6821](https://github.com/rauterfrank-ui/Peak_Trade/pull/6821), [#6832](https://github.com/rauterfrank-ui/Peak_Trade/pull/6832), [#7072](https://github.com/rauterfrank-ui/Peak_Trade/pull/7072), [#7076](https://github.com/rauterfrank-ui/Peak_Trade/pull/7076), [#7128](https://github.com/rauterfrank-ui/Peak_Trade/pull/7128), [#7132](https://github.com/rauterfrank-ui/Peak_Trade/pull/7132), [#7165](https://github.com/rauterfrank-ui/Peak_Trade/pull/7165).
+
+Diff-Anker: [#7072 scripts/ops/peak_trade_canonical_entrypoint_discovery_v2.py:15 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7072/files); [#7076 src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py:49 left](https://github.com/rauterfrank-ui/Peak_Trade/pull/7076/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV-referenzierte Intelligence-Offline-Komposition
+
+Komponiert vorhandenen M4–M8-Loop, Optimierungsevidence, Governance-Ingress und M10; bindet Lineage und lokale Reproof-Invarianten.
+
+**Daten und Bedeutung:** Validierter Learning-Input und vom Aufrufer gelieferter plane_request; Output mit HARD STOP ohne Owner-Autorisierung.
+
+**Verwendung:** Offline-Cycle-Ergebnis und lokale Digest-/Lineage-Prüfung.
+
+**Grenze:** Die lokale GVEF-artige Reproof-Funktion ist kein Aufruf des GVEF-GenericRunners. Kein Nachweis automatischer Meta-zu-Search-Anpassung.
+
+**Belegart:** Quelltext am Vergleichspin statisch geprüft.
+
+PR-Anker: [#7081](https://github.com/rauterfrank-ui/Peak_Trade/pull/7081).
+
+Quelle: [src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py:1](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py), Revision `5d1c838c15369507c5247834db4dd0df25592169`. [Lokaler Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/pin-src__governance__ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py>).
+
+### GHV-Reconciliation-Flights und Forward Join
+
+Verwendet lokale Prüfszenarien/Stages für Submit-Outcome, Snapshot, Reconciliation-Entscheidung und Recovery; einige PRs nennen GHV nur als begleitenden Reproof.
+
+**Daten und Bedeutung:** Deterministische oder injizierte Szenarien, Ergebnis-/Identitäts-/Persistenzbezüge und jeweilige Fail-closed-Erwartungen.
+
+**Verwendung:** Reconciliation-/Lifecycle-Vertragstests und Evidence-Berichte.
+
+**Grenze:** Default-off oder injizierte Prüfanbindung nicht mit produktiver Netzaktivierung verwechseln. Pro PR ist die konkrete Erwähnung im Fundstellenbeleg ausgewiesen.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7091](https://github.com/rauterfrank-ui/Peak_Trade/pull/7091), [#7092](https://github.com/rauterfrank-ui/Peak_Trade/pull/7092), [#7093](https://github.com/rauterfrank-ui/Peak_Trade/pull/7093), [#7094](https://github.com/rauterfrank-ui/Peak_Trade/pull/7094), [#7095](https://github.com/rauterfrank-ui/Peak_Trade/pull/7095), [#7096](https://github.com/rauterfrank-ui/Peak_Trade/pull/7096), [#7097](https://github.com/rauterfrank-ui/Peak_Trade/pull/7097), [#7098](https://github.com/rauterfrank-ui/Peak_Trade/pull/7098), [#7099](https://github.com/rauterfrank-ui/Peak_Trade/pull/7099), [#7100](https://github.com/rauterfrank-ui/Peak_Trade/pull/7100), [#7101](https://github.com/rauterfrank-ui/Peak_Trade/pull/7101), [#7102](https://github.com/rauterfrank-ui/Peak_Trade/pull/7102), [#7103](https://github.com/rauterfrank-ui/Peak_Trade/pull/7103), [#7106](https://github.com/rauterfrank-ui/Peak_Trade/pull/7106), [#7107](https://github.com/rauterfrank-ui/Peak_Trade/pull/7107), [#7108](https://github.com/rauterfrank-ui/Peak_Trade/pull/7108), [#7109](https://github.com/rauterfrank-ui/Peak_Trade/pull/7109), [#7112](https://github.com/rauterfrank-ui/Peak_Trade/pull/7112), [#7113](https://github.com/rauterfrank-ui/Peak_Trade/pull/7113), [#7118](https://github.com/rauterfrank-ui/Peak_Trade/pull/7118), [#7119](https://github.com/rauterfrank-ui/Peak_Trade/pull/7119).
+
+Diff-Anker: [#7091 src/ops/section_11_13_5_live_canary_minimum_exposure_v1/ghv_canary_capital_guard_observability_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7091/files); [#7092 src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py:51 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7092/files); [#7093 src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py:31 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7093/files); [#7094 src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py:246 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7094/files); [#7095 src/ops/full_core_live_path_composition_root_v1/full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py:44 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7095/files); [#7096 src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py:77 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7096/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV Demo-GET-Variante
+
+Bündelt eine historische Demo-GET-/PRE_EXTERNAL-Variante mit eigener Credential-Bindung und Preflight.
+
+**Daten und Bedeutung:** Demo-Konfiguration und GET-Evidence; hier nur statisch gelesen.
+
+**Verwendung:** Historischer Demo-Preflight und Observation-Wrapper.
+
+**Grenze:** #7076 entfernt diese parallele Infrastruktur. Kein Credential-Zugriff oder Demo-Run in dieser Untersuchung.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7074](https://github.com/rauterfrank-ui/Peak_Trade/pull/7074), [#7075](https://github.com/rauterfrank-ui/Peak_Trade/pull/7075), [#7076](https://github.com/rauterfrank-ui/Peak_Trade/pull/7076).
+
+Diff-Anker: [#7074 src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py:49 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7074/files); [#7075 src/ops/full_core_live_path_composition_root_v1/ghv_full_system_testnet_observation_pre_external_v1/demo_credential_bind_v1.py:23 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7075/files); [#7076 src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py:49 left](https://github.com/rauterfrank-ui/Peak_Trade/pull/7076/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV-Corpus-Provenienz
+
+Unterscheidet den E2E-Erhaltungscorpus von Labor-Smoke-/Full-JSONL-Artefakten.
+
+**Daten und Bedeutung:** Benannte Corpus-Owner, erwartete Flights/Cycles und Provenienzmarker.
+
+**Verwendung:** Shadow-/Reproof-Verträge und deren Tests.
+
+**Grenze:** Die im Code genannten historischen Zählwerte sind keine absolute Erwartung für beliebige aktuelle Marktläufe.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7045](https://github.com/rauterfrank-ui/Peak_Trade/pull/7045).
+
+Diff-Anker: [#7045 src/ops/ghv_regression_corpus_provenance_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7045/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV PRE_EXTERNAL Tail Bind
+
+Bindet den nachgelagerten Prüfpfad an den Pre-Decision-Cursor desselben Evidence-Cycles statt an einen bereits nach ENTER fortgeschrittenen Cursor.
+
+**Daten und Bedeutung:** GHV-Evidence-Cycle und Lane-Cursor.
+
+**Verwendung:** E2E-Harness mit produktiven Closure-Ownern.
+
+**Grenze:** Der Modultext grenzt Harness-Integration ausdrücklich von produktiver Runtime ab.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7038](https://github.com/rauterfrank-ui/Peak_Trade/pull/7038).
+
+Diff-Anker: [#7038 src/ops/full_core_live_path_composition_root_v1/ghv_e2e_productive_pre_external_tail_bind_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7038/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV-referenzierter ökonomischer Differential Walk
+
+Vergleicht an benannten lokalen Knoten ökonomische Ledger-/Evidence-Zustände mit GHV-Referenzinvarianten.
+
+**Daten und Bedeutung:** Aktuelle Offline-Replay-Snapshots, Ledger-/Positionstruth-Evidence und Knoteninvarianten.
+
+**Verwendung:** run_ghv_current_ledger_economic_differential_walk_bounded_v1.py.
+
+**Grenze:** GHV ist Referenz, nicht ökonomischer Wahrheitsproduzent. Der komplette neue ökonomische Pfad ist hier nicht als Ganzes funktional verifiziert.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7085](https://github.com/rauterfrank-ui/Peak_Trade/pull/7085).
+
+Diff-Anker: [#7085 src/ops/integrated_offline_economic_evidence_v1/current_offline_decision_equivalence_v1.py:52 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7085/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV Natural-Evidence-Forensic-Adapter
+
+Liest kanonische PRE_EXTERNAL-Konvergenz-Evidence und erzeugt einen kombinierten forensischen Bericht.
+
+**Daten und Bedeutung:** Gebundener natürlicher Run und dessen kanonische Evidence.
+
+**Verwendung:** Bounded-Natural-Evidence-Integrationswerkzeug.
+
+**Grenze:** Reference-only-Auswertung; Bericht ergänzt keine fehlenden Quellereignisse.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7089](https://github.com/rauterfrank-ui/Peak_Trade/pull/7089).
+
+Diff-Anker: [#7089 src/ops/full_core_live_path_composition_root_v1/ghv_current_bounded_natural_evidence_forensic_adapter_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7089/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### GHV Shadow Dry Probes
+
+Prüft den begrenzten Übergang von PRE_EXTERNAL-Evidence in simulierte Shadow-Fortsetzung mit vorhandenen Gates.
+
+**Daten und Bedeutung:** GHV-Pre-external-Events, simulierte Sinks und Beobachtungsfreigaben.
+
+**Verwendung:** Shadow-Forensik und begrenzter Run-Orchestrator.
+
+**Grenze:** Dry-/Simulationsbefunde verleihen keine operative Autorisierung.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7046](https://github.com/rauterfrank-ui/Peak_Trade/pull/7046), [#7047](https://github.com/rauterfrank-ui/Peak_Trade/pull/7047).
+
+Diff-Anker: [#7046 src/ops/canonical_shadow_runtime_enablement_v1/ghv_shadow_forensics_v1.py:1 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7046/files); [#7047 src/ops/paper_shadow_bounded_orchestrator_v1/productive_composition_v1.py:12 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7047/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### Vector-Pfad in automatisch erzeugter Integrationskarte
+
+Listet Knowledge-/Vector-Dateien als Such- oder Integrationskandidaten in generiertem Rechercheoutput auf.
+
+**Daten und Bedeutung:** Dateipfade und Suchtreffer im out/ops/runbook_b-Output.
+
+**Verwendung:** Leser der Integrationskarte.
+
+**Grenze:** Die eigentliche PR-Änderung an ArmedGate/RiskGate/Reconciliation bindet dadurch keinen Vector-Store in den Orderfluss.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#1208](https://github.com/rauterfrank-ui/Peak_Trade/pull/1208).
+
+Diff-Anker: [#1208 tests/ops/test_risk_gate.py:50 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/1208/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+### API3-Golden-Fixture bei DPO-Korrelation
+
+Verwendet die gespeicherte API3-Referenz zur Absicherung der nach Instrument und Kerzenzeit präzisierten DPO-Korrelation.
+
+**Daten und Bedeutung:** Golden-Manifest und DDO-/Konvergenz-Evidence der vorhandenen Fixture.
+
+**Verwendung:** test_15_api3_golden_fixture_compatibility und Reporting-Tests.
+
+**Grenze:** Die Fixture ist hier ein bestehender Kompatibilitätsfall; epoch-only Korrelation und Live-Gesamtbeweis sind damit nicht gleichzusetzen.
+
+**Belegart:** PR-Diff-Kontext und Beschreibung.
+
+PR-Anker: [#7137](https://github.com/rauterfrank-ui/Peak_Trade/pull/7137).
+
+Diff-Anker: [#7137 tests/ops/test_dpo_correlation_remediation_v1.py:537 right](https://github.com/rauterfrank-ui/Peak_Trade/pull/7137/files). Konkrete Zeilen und Originaltext stehen im Fundstellenregister.
+
+## Noch offene Bedeutungstiefe
+
+Die vollständige Fundstellenzuordnung ersetzt keine vollständige Funktionsprüfung aller PR-Änderungen. Besonders die allgemeine Gruppe der Prüf-/Referenzbezüge enthält PRs, in denen Golden oder GHV lediglich als bestehender Test, Nachweis, Gegenbeispiel, ausdrücklicher Nichtanspruch oder STALE-Hinweis erwähnt wird. Der genaue Wortlaut bleibt je PR erhalten. Für diese Einträge ist damit die lokale Erwähnungsaufgabe eingeordnet; die gesamte referenzierte Prüfkette wurde nicht jeweils rekursiv neu verifiziert.
+
+Heutige Erhaltung, tatsächliche Aktivierung, Consumer-Vollversorgung und Laufzeitwirkung sind getrennte nachfolgende Fragestellungen. Es wurden keine Trading-, Testnet-, Netzaufnahme-, Research- oder Reproof-Runs gestartet. Repository und bestehende Vault-Dateien bleiben unverändert; geändert wurden nur Rechercheartefakte außerhalb dieser Bereiche.

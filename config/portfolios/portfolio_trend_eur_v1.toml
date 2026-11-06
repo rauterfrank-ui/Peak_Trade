@@ -1,0 +1,45 @@
+# =============================================================================
+# Peak_Trade Asset Portfolio: PORTFOLIO_TREND_EUR_V1 (R&D)
+# =============================================================================
+# Trend-fokussiertes Portfolio für EUR-Märkte.
+# Status: R&D – noch nicht in Health-Automation integriert.
+# =============================================================================
+
+[portfolio]
+portfolio_id = "PORTFOLIO_TREND_EUR_V1"
+portfolio_name = "Trend EUR Portfolio"
+description = "Trend-Portfolio mit BTC/ETH/SOL (EUR-Quote) – höhere Volatilität"
+universe_id = "MARKET_UNIVERSE_CRYPTO_EUR_V1"
+quote_currency = "EUR"
+version = "1.0"
+status = "r_and_d"  # Nicht für Health-Automation
+
+# Asset-Allokation (Trend-Assets)
+[[portfolio.assets]]
+symbol = "BTCEUR"
+weight = 0.40
+enabled = true
+
+[[portfolio.assets]]
+symbol = "ETHEUR"
+weight = 0.30
+enabled = true
+
+[[portfolio.assets]]
+symbol = "SOLEUR"
+weight = 0.30
+enabled = true
+
+# Portfolio-Metadaten
+[portfolio.meta]
+risk_profile = "growth"
+rebalance_freq = "weekly"
+max_single_asset_weight = 0.50
+tags = ["trend", "eur", "crypto", "growth", "r_and_d", "v1"]
+created = "2024-12-10"
+
+# Backtest-Defaults
+[portfolio.backtest_defaults]
+lookback_days = 180
+strategy_key = "momentum"
+allocation_method = "manual"

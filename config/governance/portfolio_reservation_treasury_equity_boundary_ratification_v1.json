@@ -1,0 +1,65 @@
+{
+  "contract_name": "portfolio_reservation_treasury_equity_boundary_ratification_v1",
+  "contract_id": "POST_6828_PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1",
+  "contract_version": "v1",
+  "schema_version": "portfolio_reservation_treasury_equity_boundary_ratification_schema_v1",
+  "ssot_doc": "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "7cb1c5c57bfc486449cf4da361cb621a809e6075",
+  "workpackage_id": "POST_6828_ARCHITECTURE_CLOSURE_WP_C",
+  "semantics": "AUTHORITY_BOUNDARY_RATIFICATION_ONLY_NO_N5_ACTIVATION_NO_MULTI_FUTURE",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_POST_6828_ARCHITECTURE_CLOSURE_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO"
+  },
+  "owners": {
+    "portfolio_budget_owner": "portfolio_capital_reservation_budget_owner_v1",
+    "reservation_owner": "portfolio_capital_reservation_budget_owner_v1",
+    "treasury_observation_handoff_owner": "execute_current_productive_treasury_single_source_capital_handoff_v1",
+    "q0_owner": "ops.governed_productive_account_equity_authority_producer_v1",
+    "q1_owner": "src.governance.capital_risk_sizing_v1",
+    "capital_authority_owner_count_full_core": 1,
+    "duplicate_capital_authority_count": 0
+  },
+  "implemented_graph_current_n1": {
+    "description": "Treasury read-only observation → 29P equity producer → optional portfolio budget admit → Q1 sizing → atomic reservation (enter-live optional threading)",
+    "edges": [
+      "treasury_single_source_handoff → produce_current_productive_29p_risk_capital_v1",
+      "29p_output → PortfolioCapitalReservationBudgetOwnerV1.admit (canonical_available from producer output only)",
+      "sizing_input → evaluate_capital_risk_sizing_v1 (Q1)",
+      "resulting_notional → try_reserve_v1 atomic budget hold"
+    ],
+    "enter_live_optional_threading": "join_current_productive_enter_live_29p_before_venue_plan_v1 portfolio_budget_owner + portfolio_slot pair"
+  },
+  "authority_flags": {
+    "can_portfolio_reservation_create_capital": false,
+    "can_portfolio_reservation_change_account_equity": false,
+    "can_portfolio_reservation_bypass_q0": false,
+    "can_portfolio_reservation_bypass_q1": false,
+    "can_q1_overbook_portfolio_reservation": false,
+    "can_slot_bypass_reservation": false,
+    "can_execution_reassign_capital": false,
+    "portfolio_is_budget_concurrency_owner_not_equity_source": true,
+    "treasury_is_equity_observation_source_not_reservation_owner": true
+  },
+  "restart": {
+    "canonical_restart_reconstructable": false,
+    "classification": "N5_ACTIVATION_REQUIREMENT",
+    "current_n1_core_requirement_satisfied_without_reconstructable_reservation": true,
+    "note": "CANONICAL_RESTART_RECONSTRUCTABLE=false is explicit in portfolio contract; CURRENT N=1 enter-live path does not require durable multi-slot reservation replay for core closure."
+  },
+  "n5_multi_future": {
+    "multi_future_runtime_authorized": false,
+    "max_positions_effective": 1,
+    "n5_activation_performed": false
+  },
+  "markers": {
+    "PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "EXTERNAL_EFFECT_AUTHORIZED": false,
+    "POST_ALLOWED": false
+  }
+}

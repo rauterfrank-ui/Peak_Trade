@@ -1,0 +1,492 @@
+# Shadow Preparation Readiness Gate v0
+#
+# Static, versioned, non-activating metadata for
+# ops.shadow_preparation_readiness_gate_v0.
+#
+# This file does not authorize Shadow, Paper, Testnet, Scheduler, Runtime,
+# Live, or Orders. It does not implement canonical STEP 29U Shadow Mode.
+# Closing PR #5529 did not resolve MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY.
+# Landscape V2 (PR #5548+) later ratified INTRABAR_CAPABILITY=PASS; this config
+# projects that resolved readiness state and does not own Dashboard truth.
+
+schema_version = "shadow_preparation_readiness_gate.v0"
+producer_family = "ops.shadow_preparation_readiness_gate_v0"
+authority_effect = "NONE"
+
+# Known canonical authority identifiers (references only; no authority transfer).
+known_canonical_authority_identifiers = [
+  "trading.master_v2",
+  "trading.double_play",
+  "safety.independent_veto",
+  "runtime_bridge.BOUND_NOT_ACTIVATED",
+  "runbook.STEP_29U.shadow_absent",
+  "runbook.STEP_29V.paper_absent",
+]
+
+# Single repository-relative STEP 29U semantics/runbook reference.
+# Existence proves the reference file is present only — not binding, not
+# implementation, and not activation authority.
+canonical_step_29u_semantics_reference = "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md"
+
+dashboard_blocker_id = "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY"
+dashboard_blocker_state = "RESOLVED_ON_LANDSCAPE_V2"
+dashboard_blocker_resolved = true
+dashboard_blocker_waived = false
+dashboard_blocker_accepted_as_done = false
+
+runtime_bridge_state = "BOUND_NOT_ACTIVATED"
+economic_validity_offline_gate_pass = false
+
+# All activation-related values must remain false.
+shadow_activation_authorized = false
+paper_activation_authorized = false
+testnet_activation_authorized = false
+scheduler_activation_authorized = false
+runtime_activation_authorized = false
+live_authorized = false
+orders_authorized = false
+
+# Durable readiness projection output (generated evidence only).
+# Not an activation input. Not written by evaluate/import; requires explicit writer call.
+readiness_projection_output_path = "out/ops/shadow_preparation_readiness_projection_v0.json"
+
+required_preparation_gates = [
+  "CANONICAL_STEP_29U_BOUND",
+  "PAPER_SHADOW_OBSERVATION_READINESS_PASS",
+  "DASHBOARD_BLOCKER_RESOLVED",
+  "RUNTIME_BRIDGE_ACTIVATION_AUTHORIZED_SEPARATELY",
+  "PAPER_SHADOW_OBSERVATION_OPERATOR_GO",
+]
+
+# Pre-Economic Zero-Order Evidence stage (GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1).
+# Additive reference only. This readiness gate does NOT evaluate or authorize that stage.
+# ECONOMIC_VALIDITY_OFFLINE_GATE_PASS is LEGACY offline sub-evidence only and does NOT
+# alone block Paper-Shadow observation readiness. System ECONOMIC_VALIDITY_PASS requires
+# INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED (offline + paper-shadow).
+# See docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md
+# See docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md
+legacy_offline_gate_role = "LEGACY_OFFLINE_SUB_EVIDENCE_ONLY"
+paper_shadow_observation_readiness_does_not_require_legacy_offline_gate_pass = true
+paper_shadow_observation_authorized = false
+integrated_economic_evidence_bundle_verified = false
+economic_validity_pass = false
+integrated_paper_shadow_economic_validity_pipeline_ref = "ops.integrated_paper_shadow_economic_validity_pipeline_v1"
+pre_economic_zero_order_evidence_stage_defined = true
+pre_economic_zero_order_evidence_session_contract = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1"
+pre_economic_zero_order_evidence_authority_effect = "NONE"
+pre_economic_zero_order_evidence_activation_effect = "NONE"
+pre_economic_zero_order_evidence_economic_gate_effect = "NONE"
+pre_economic_zero_order_evidence_orders_allowed = false
+pre_economic_zero_order_evidence_broker_writes_allowed = false
+pre_economic_zero_order_evidence_max_duration_seconds = 21600
+pre_economic_zero_order_evidence_default_state = "BLOCKED"
+pre_economic_zero_order_evidence_runtime_execution = "BLOCKED"
+pre_economic_zero_order_evidence_does_not_satisfy_shadow_preparation = true
+pre_economic_zero_order_evidence_does_not_set_economic_validity_offline_gate_pass = true
+pre_economic_zero_order_evidence_contract_ref = "docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md"
+# Implementation readiness capability (additive). Does NOT authorize a 6h session,
+# does NOT set Economic PASS, does NOT clear Shadow preparation.
+pre_economic_zero_order_evidence_implementation_readiness = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1"
+pre_economic_zero_order_evidence_implementation_readiness_present = true
+pre_economic_zero_order_evidence_session_execution_authorized = false
+pre_economic_zero_order_evidence_session_evidence = "NOT_AUTHORIZED"
+pre_economic_zero_order_evidence_six_hour_session_executed = false
+pre_economic_zero_order_evidence_implementation_does_not_authorize_session = true
+pre_economic_zero_order_evidence_implementation_does_not_weaken_economic_gate = true
+pre_economic_zero_order_evidence_implementation_does_not_weaken_shadow_gate = true
+pre_economic_zero_order_evidence_implementation_runner_ref = "src/ops/pre_economic_zero_order_evidence_session_runner_v1.py"
+pre_economic_zero_order_evidence_implementation_verifier_ref = "src/ops/pre_economic_zero_order_evidence_session_verifier_v1.py"
+pre_economic_zero_order_evidence_implementation_config_ref = "config/ops/pre_economic_zero_order_evidence_session_v1.toml"
+# Authorization + execution implementation readiness (additive). Still NOT a live
+# Operator-GO and NOT a production 6h session.
+pre_economic_zero_order_evidence_authorization_and_execution = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION"
+pre_economic_zero_order_evidence_authorization_and_execution_present = true
+pre_economic_zero_order_evidence_authorization_and_execution_implementation_readiness = true
+pre_economic_zero_order_evidence_operator_go_granted = false
+pre_economic_zero_order_evidence_operator_go_required_later = true
+pre_economic_zero_order_evidence_session_evidence_valid = false
+pre_economic_zero_order_evidence_authorization_execution_ref = "docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION_V1.md"
+pre_economic_zero_order_evidence_authorization_config_ref = "config/ops/pre_economic_zero_order_evidence_session_authorization_v1.toml"
+pre_economic_zero_order_evidence_production_runner_ref = "src/ops/pre_economic_zero_order_evidence_session_production_runner_v1.py"
+pre_economic_zero_order_evidence_production_verifier_ref = "src/ops/pre_economic_zero_order_evidence_session_production_verifier_v1.py"
+
+# Integrated Paper-Shadow Observation Session capability (additive).
+# Implements observation path surfaces only. Does NOT authorize a session,
+# does NOT grant Operator-GO, does NOT set Economic PASS.
+integrated_paper_shadow_observation_session_capability = "INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1"
+integrated_paper_shadow_observation_session_capability_present = true
+integrated_paper_shadow_observation_authorized = false
+integrated_paper_shadow_observation_wallclock_execution_allowed = false
+integrated_paper_shadow_observation_operator_go_granted = false
+integrated_paper_shadow_observation_entrypoint_ref = "src/ops/integrated_paper_shadow_observation_session_v1/entrypoint_v1.py"
+integrated_paper_shadow_observation_readiness_producer_ref = "src/ops/integrated_paper_shadow_observation_session_v1/readiness_producer_v1.py"
+integrated_paper_shadow_observation_contract_ref = "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md"
+
+# Historical / shadow-named surfaces. Name presence ≠ STEP 29U equivalence.
+[[historical_surfaces]]
+surface_id = "phase24_shadow_order_executor"
+path = "src/orders/shadow.py"
+classification = "NON_CANONICAL_STEP29U"
+notes = "Phase-24 ShadowOrderExecutor; executor without canonical STEP 29U binding."
+
+[[historical_surfaces]]
+surface_id = "phase24_run_shadow_execution_script"
+path = "scripts/run_shadow_execution.py"
+classification = "NON_CANONICAL_STEP29U"
+notes = "Phase-24 shadow/dry-run script; historical offline simulation path."
+
+[[historical_surfaces]]
+surface_id = "phase31_shadow_paper_session"
+path = "src/live/shadow_session.py"
+classification = "NON_CANONICAL_STEP29U"
+notes = "Phase-31 ShadowPaperSession; not automatic STEP 29U equivalence."
+
+[[historical_surfaces]]
+surface_id = "shadow_247_futures_wrapper_skeleton"
+path = "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
+classification = "PREPARATION_ONLY"
+notes = "Shadow-247 wrapper skeleton; STOP_IDLE / non-authorizing preparation."
+
+[[historical_surfaces]]
+surface_id = "shadow_247_governance_charter"
+path = "docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md"
+classification = "PREPARATION_ONLY"
+notes = "Governance charter planning only; not canonical STEP 29U."
+
+[[historical_surfaces]]
+surface_id = "paper_shadow_247_preflight"
+path = "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+classification = "PREPARATION_ONLY"
+notes = "Blocked preflight contract; does not authorize activation."
+
+[[historical_surfaces]]
+surface_id = "shadow_no_order_proof"
+path = "src/shadow_no_order_proof/__init__.py"
+classification = "EVIDENCE_ONLY"
+notes = "Declarative no-order proof markers; not a runtime entrypoint."
+
+[[historical_surfaces]]
+surface_id = "data_shadow_pipeline"
+path = "src/data/shadow/__init__.py"
+classification = "OFFLINE_REPLAY"
+notes = "Shadow trading data pipeline (tick→OHLCV); blocked from live mode."
+
+[[historical_surfaces]]
+surface_id = "webui_paper_shadow_summary_readmodel"
+path = "src/webui/paper_shadow_summary_readmodel_v0/__init__.py"
+classification = "HISTORICAL"
+notes = "Paper/shadow WebUI readmodel; observability only; non-authorizing."
+
+[[historical_surfaces]]
+surface_id = "shadow_order_executor_pipeline_binding"
+path = "src/execution/pipeline.py"
+classification = "EXECUTOR_WITHOUT_CANONICAL_BINDING"
+notes = "Execution pipeline may reference ShadowOrderExecutor; no STEP 29U binding."
+
+
+# STEP 29U Mindestkontrakt gap inventory (preparation classification only).
+# Stable order; unique component_id; no implicit PRESENT promotion.
+# NOT_STEP_29U_IMPLEMENTATION — absence is evidence.
+[[mindestkontrakt_components]]
+component_id = "canonical_mode_identity"
+required_for_step29u = true
+preparation_status = "UNBOUND"
+canonical_owner = "runbook.STEP_29U"
+implementation_path = ""
+evidence_paths = [
+  "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md",
+]
+blockers = [
+  "CANONICAL_STEP_29U_ACTIVATION_UNAUTHORIZED=true",
+  "CANONICAL_SHADOW_MODE_ACTIVATION_ABSENT=true",
+  "SEPARATE_OPERATOR_GO_REQUIRED_FOR_ACTIVATION=true",
+]
+activation_relevance = "blocks_activation_until_operator_go"
+notes = "Offline composition binding may be present (CANONICAL_STEP_29U_BOUND observed separately). This inventory row tracks activation absence, not composition absence. CANONICAL_SHADOW_MODE_EXISTS for activatable wallclock mode remains false while activation is unauthorized."
+
+[[mindestkontrakt_components]]
+component_id = "lifecycle_owner"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_SHADOW_LIFECYCLE_OWNER",
+  "STEP_29U_IMPLEMENTED=false",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U lifecycle owner exists."
+
+[[mindestkontrakt_components]]
+component_id = "session_state_machine"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_SHADOW_SESSION_STATE_MACHINE",
+  "STEP_29U_IMPLEMENTED=false",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U session state machine exists."
+
+[[mindestkontrakt_components]]
+component_id = "canonical_decision_consumption"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_DECISION_TO_SHADOW_CONSUMPTION_BINDING",
+  "MASTER_V2_DOUBLE_PLAY_NOT_BOUND_TO_STEP29U_SESSION",
+]
+activation_relevance = "required_before_activation"
+notes = "Master V2 / Double Play remain authorities but are not bound to a STEP 29U session."
+
+[[mindestkontrakt_components]]
+component_id = "execution_simulation_boundary"
+required_for_step29u = true
+preparation_status = "LEGACY_NON_CANONICAL"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = [
+  "src/orders/shadow.py",
+  "src/live/shadow_session.py",
+]
+blockers = [
+  "NO_CANONICAL_STEP29U_EXECUTION_SIMULATION_BOUNDARY",
+  "LEGACY_SURFACES_NON_EQUIVALENT",
+  "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U",
+]
+activation_relevance = "required_before_activation"
+notes = "Legacy Phase-24/31 simulators exist but are LEGACY_NON_CANONICAL for STEP 29U."
+
+[[mindestkontrakt_components]]
+component_id = "fill_ownership"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_STEP29U_FILL_OWNER",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U fill owner."
+
+[[mindestkontrakt_components]]
+component_id = "fee_ownership"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_STEP29U_FEE_OWNER",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U fee owner."
+
+[[mindestkontrakt_components]]
+component_id = "slippage_ownership"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_STEP29U_SLIPPAGE_OWNER",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U slippage owner."
+
+[[mindestkontrakt_components]]
+component_id = "position_projection"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_STEP29U_POSITION_PROJECTION",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U position projection."
+
+[[mindestkontrakt_components]]
+component_id = "account_projection"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_STEP29U_ACCOUNT_PROJECTION",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U account projection."
+
+[[mindestkontrakt_components]]
+component_id = "durable_restart_contract"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_STEP29U_DURABLE_RESTART_CONTRACT",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U durable restart/resume contract."
+
+[[mindestkontrakt_components]]
+component_id = "failure_handling_contract"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = []
+blockers = [
+  "NO_CANONICAL_STEP29U_FAILURE_HANDLING_CONTRACT",
+]
+activation_relevance = "required_before_activation"
+notes = "No canonical STEP 29U failure-handling contract."
+
+[[mindestkontrakt_components]]
+component_id = "audit_evidence_contract"
+required_for_step29u = true
+preparation_status = "MISSING"
+canonical_owner = ""
+implementation_path = ""
+evidence_paths = [
+  "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+]
+blockers = [
+  "NO_CANONICAL_STEP29U_AUDIT_EVIDENCE_CONTRACT",
+]
+activation_relevance = "required_before_activation"
+notes = "Primary-evidence docs exist for other lanes; no STEP 29U canonical audit contract."
+
+[[mindestkontrakt_components]]
+component_id = "activation_boundary"
+required_for_step29u = true
+preparation_status = "DOCS_ONLY"
+canonical_owner = "ops.shadow_preparation_readiness_gate_v0"
+implementation_path = ""
+evidence_paths = [
+  "src/ops/shadow_preparation_readiness_gate_v0.py",
+  "docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md",
+]
+blockers = [
+  "SHADOW_ACTIVATION_AUTHORIZED=false",
+  "SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_ACTIVATION_STAGE",
+]
+activation_relevance = "fail_closed_activation_lock"
+notes = "Preparation gate documents fail-closed activation boundary; not STEP 29U implementation."
+
+[[mindestkontrakt_components]]
+component_id = "operator_go_requirement"
+required_for_step29u = true
+preparation_status = "DOCS_ONLY"
+canonical_owner = "runbook.STEP_29U"
+implementation_path = ""
+evidence_paths = [
+  "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md",
+  "docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md",
+]
+blockers = [
+  "SEPARATE_GO_REQUIRED_FOR_IMPLEMENTATION=true",
+  "SEPARATE_GO_REQUIRED_FOR_ACTIVATION=true",
+]
+activation_relevance = "requires_separate_operator_go"
+notes = "Separate operator GO required for STEP 29U implementation and any activation stage."
+
+[[mindestkontrakt_components]]
+component_id = "economic_gate_relationship"
+required_for_step29u = true
+preparation_status = "DOCS_ONLY"
+canonical_owner = "runbook.STEP_29U"
+implementation_path = ""
+evidence_paths = [
+  "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md",
+  "config/ops/shadow_preparation_readiness_gate_v0.toml",
+]
+blockers = [
+  "LEGACY_OFFLINE_ECONOMIC_GATE_SUB_EVIDENCE_NOT_PASS",
+  "ECONOMIC_VALIDITY_PASS=false",
+  "INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED=false",
+]
+activation_relevance = "blocks_activation_sequencing_not_observation_readiness"
+notes = "Legacy offline gate is sub-evidence only; does not alone block Paper-Shadow observation readiness. System ECONOMIC_VALIDITY_PASS still required before Promotion/Testnet/Live."
+
+[[mindestkontrakt_components]]
+component_id = "promotion_gate_relationship"
+required_for_step29u = true
+preparation_status = "DOCS_ONLY"
+canonical_owner = "runbook.STEP_29N"
+implementation_path = ""
+evidence_paths = [
+  "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+]
+blockers = [
+  "PROMOTION_INELIGIBLE",
+  "NO_PROMOTION_AUTHORITY_FROM_THIS_GATE",
+]
+activation_relevance = "blocks_promotion_not_offline_preparation"
+notes = "Promotion remains fail-closed; this gate grants no promotion authority."
+
+[[mindestkontrakt_components]]
+component_id = "runtime_bridge_relationship"
+required_for_step29u = true
+preparation_status = "DOCS_ONLY"
+canonical_owner = "runtime_bridge.BOUND_NOT_ACTIVATED"
+implementation_path = ""
+evidence_paths = [
+  "config/ops/shadow_preparation_readiness_gate_v0.toml",
+]
+blockers = [
+  "RUNTIME_BRIDGE_STATE=BOUND_NOT_ACTIVATED",
+  "RUNTIME_ACTIVATION_AUTHORIZED=false",
+]
+activation_relevance = "blocks_runtime_activation"
+notes = "Runtime bridge remains BOUND_NOT_ACTIVATED."
+
+[[mindestkontrakt_components]]
+component_id = "order_side_effect_prohibition"
+required_for_step29u = true
+preparation_status = "DOCS_ONLY"
+canonical_owner = "ops.shadow_preparation_readiness_gate_v0"
+implementation_path = ""
+evidence_paths = [
+  "src/ops/shadow_preparation_readiness_gate_v0.py",
+  "src/shadow_no_order_proof/__init__.py",
+]
+blockers = [
+  "ORDERS_AUTHORIZED=false",
+  "SHADOW_MODE_ALLOWED=false",
+]
+activation_relevance = "orders_forbidden"
+notes = "Orders remain unauthorized; producer has no order side effects."
+
+[[mindestkontrakt_components]]
+component_id = "legacy_surface_non_equivalence"
+required_for_step29u = true
+preparation_status = "PRESENT"
+canonical_owner = "ops.shadow_preparation_readiness_gate_v0"
+implementation_path = ""
+evidence_paths = [
+  "config/ops/shadow_preparation_readiness_gate_v0.toml",
+  "src/orders/shadow.py",
+  "src/live/shadow_session.py",
+  "src/orders/paper.py",
+  "src/execution/paper/engine.py",
+]
+blockers = [
+  "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U",
+  "LEGACY_PAPER_SHADOW_NOT_CANONICAL_STEP29U",
+]
+activation_relevance = "prevents_legacy_activation_equivalence"
+notes = "Historical Shadow/Paper surfaces classified non-equivalent; not silent canonical promotion."

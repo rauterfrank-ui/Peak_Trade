@@ -1,0 +1,21 @@
+REASON_CODE=WORKTREE_ENV_ISOLATION_PASS
+EXIT_CODE=0
+DIAGNOSTIC=per-worktree environment isolation proven
+UV_LOCK_SHA256=2d92f8ab66a07e293b27f171dc80a4632ef52c7ccbf54f1e89bc17df6b03b8f2
+PYPROJECT_SHA256=7ef8f54894a9811bce57f2c0fed5279de8ce4be39be4b3cca00a6de0d6a4c9ab
+SOURCE_BINDING=/Users/frnkhrz/Peak_Trade/src
+Traceback (most recent call last):
+  File "<stdin>", line 11, in <module>
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/Users/frnkhrz/Peak_Trade/docs/ops/evidence/simulated_hold_mark_equity_v1_2026_11_04/model_before.py.txt", line 12, in <module>
+    from src.ops.integrated_paper_shadow_observation_session_v1.simulated_economics_round_trip_ledger_v1 import (
+  File "/Users/frnkhrz/Peak_Trade/src/ops/integrated_paper_shadow_observation_session_v1/__init__.py", line 11, in <module>
+    from src.ops.integrated_paper_shadow_observation_session_v1.bundle_verifier_v1 import (
+  File "/Users/frnkhrz/Peak_Trade/src/ops/integrated_paper_shadow_observation_session_v1/bundle_verifier_v1.py", line 19, in <module>
+    from src.ops.integrated_paper_shadow_observation_session_v1.evidence_v1 import (
+  File "/Users/frnkhrz/Peak_Trade/src/ops/integrated_paper_shadow_observation_session_v1/evidence_v1.py", line 21, in <module>
+    from src.ops.integrated_paper_shadow_observation_session_v1.entrypoint_v1 import (
+  File "/Users/frnkhrz/Peak_Trade/src/ops/integrated_paper_shadow_observation_session_v1/entrypoint_v1.py", line 39, in <module>
+    from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1 import (
+ImportError: cannot import name 'PORTFOLIO_ECONOMICS_MODEL_ID' from 'src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1' (/Users/frnkhrz/Peak_Trade/docs/ops/evidence/simulated_hold_mark_equity_v1_2026_11_04/model_before.py.txt)

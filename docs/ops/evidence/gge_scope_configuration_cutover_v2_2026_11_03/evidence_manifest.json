@@ -1,0 +1,18 @@
+{
+  "source_binding": "source_binding.json",
+  "artifacts": {
+    "cutover_contract_tests.xml": "7769d9b4d3ac20be18d3a227e784b957db745afe25c5e64740fe042e9a6cbac6",
+    "document_checks.json": "b00953fccc6e820ee3fb72dff95b013ec4b292512d4ff2a30f042b397174ddd4",
+    "focused_tests.xml": "d2d7e02e7bf7460fe9e014383b04d4cc44bdb6181625c578c967e2129288a4ff",
+    "preexisting_failures.json": "e8f16ad9c50c2f82e7461a84c8d39809d34d3ec107f6129f18a192e4f15db396",
+    "scale_probe.json": "275ae0a7d679845f5fde98c6bae1d0d1f13bed4e32ad8876fb8669b8059669ec",
+    "source_binding.json": "2337d20e247fd277dbe474cf0970b63aa64b0e1305d80c81bc363e95d1169757",
+    "tests.xml": "4b99ddb21a897460dd524f37d1bc63732b5307249480340d5de53ae35c0b7ec7",
+    "trace_persistence_tests.xml": "3c5823894821dccb819fdf14166517b453b12e042f02228cd4fd16f959e0bc97"
+  },
+  "junit_formatting": {
+    "tests.xml": "Trailing whitespace normalized; assertions and results unchanged.",
+    "raw_sha256": "696ffe1da251682828baa55565a2d85dcb8decf42a932c174baf0192478a41f7",
+    "raw_copy": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/BLUEPRINTS/gge_predecessor_check_2026_11_03/cutover_broad_tests_raw.xml"
+  }
+}

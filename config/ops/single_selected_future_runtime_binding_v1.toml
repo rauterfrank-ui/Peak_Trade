@@ -1,0 +1,30 @@
+# CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1
+# Productive single-selected-future runtime binding config.
+# Does not authorize live/testnet/paper orders or runtime activation.
+
+capability_id = "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1"
+owner = "ops.single_selected_future_runtime_binding_v1"
+schema_version = "single_selected_future_runtime_binding.v1"
+producer_version = "single_selected_future_runtime_binding.v1"
+
+selection_authority_owner = "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1"
+selected_future_count = 1
+max_positions_effective = 1
+single_selected_future = true
+multi_future_runtime_authorized = false
+
+dashboard_authority_effect = false
+dashboard_role = "READ_ONLY_CONSUMER"
+allowlist_selection_authority = false
+direct_instrument_override_allowed = false
+core_logic_change = false
+activation_changed = false
+live_path_changed = false
+runtime_activation_allowed = false
+live_authorized = false
+orders_authorized = false
+paper_execution_authorized = false
+testnet_authorized = false
+network_trading_session_allowed = false
+volatility_numeric_max_age_enforcing = false
+authorization_consumed = false

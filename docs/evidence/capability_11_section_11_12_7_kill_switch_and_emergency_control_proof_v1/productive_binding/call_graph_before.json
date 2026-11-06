@@ -1,0 +1,14 @@
+{
+  "cap_11_5_adapter": "contracts_only_not_activated",
+  "kill_switch_and_emergency_control": "cap_11_5_fixture_contract_only",
+  "kill_switch_contract": "bound_not_activated",
+  "network_submit": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_6_RestartWithOpenOrderAndOpenPosition",
+    "Cap11_5_KillSwitchAndEmergencyControl_FixtureOnly",
+    "SimulatedExecutionPort"
+  ],
+  "section_11_12_7": "forbidden_until_section_11_12_6_closed",
+  "section_11_12_8": "not_started"
+}

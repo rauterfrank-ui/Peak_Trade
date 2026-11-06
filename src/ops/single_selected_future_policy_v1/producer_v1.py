@@ -1,0 +1,636 @@
+"""Productive Single Selected Future Policy entrypoint (Capability 2.3)."""
+
+from __future__ import annotations
+
+from contextlib import contextmanager
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Mapping, Optional
+
+from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
+    load_and_validate_ranking_snapshot_v1,
+)
+from src.ops.single_selected_future_policy_v1.constants_v1 import (
+    CAPABILITY_ID,
+    DEFAULT_HYSTERESIS_RANK_IMPROVEMENT,
+    DEFAULT_MAX_RANKING_AGE_SECONDS,
+    DEFAULT_MIN_DATA_QUALITY_STATUS,
+    DEFAULT_MIN_HISTORY_SAMPLES,
+    DEFAULT_MIN_HOLDING_PERIOD_SECONDS,
+    DEFAULT_REFRESH_CADENCE_SECONDS,
+    PRODUCER_VERSION,
+    SCHEMA_VERSION,
+    SELECTION_POLICY_ID,
+    SELECTION_POLICY_PROVENANCE,
+    SELECTION_POLICY_VERSION,
+    STATE_NO_SELECTION,
+)
+from src.ops.single_selected_future_policy_v1.governed_pin_v1 import (
+    GovernedCap23InstrumentPinV1,
+)
+from src.ops.single_selected_future_policy_v1.models_v1 import (
+    SelectionProduceResultV1,
+    SingleSelectedFutureSelectionV1,
+)
+from src.ops.single_selected_future_policy_v1.persistence_v1 import (
+    SelectionPersistenceError,
+    load_and_validate_selection_v1,
+    persist_selection_bundle_atomic_v1,
+)
+from src.ops.single_selected_future_policy_v1.policy_v1 import policy_descriptor_v1
+from src.ops.single_selected_future_policy_v1.reason_codes_v1 import SelectionFailureCodeV1
+from src.ops.single_selected_future_policy_v1.selection_v1 import (
+    produce_single_selected_future_v1,
+)
+from src.ops.single_selected_future_policy_v1.residency_eligibility_gate_v1 import (
+    Cap23ResidencyEligibilityGateConfigV1,
+    ResidencyCompletionRefV1,
+    apply_cap23_residency_eligibility_gate_v1,
+)
+from src.ops.single_selected_future_policy_v1.single_writer_v1 import (
+    DuplicateSelectionWriterError,
+    SingleSelectedFutureSingleWriterV1,
+)
+from src.ops.top20_opportunity_evaluation_residency_v1.models_v1 import ResidencyRuntimeConfigV1
+
+
+@dataclass(frozen=True)
+class PreparedLaneSelectionV1:
+    writer: SingleSelectedFutureSingleWriterV1
+    produced: SelectionProduceResultV1
+    previous: SingleSelectedFutureSelectionV1 | None
+
+    @property
+    def publication_selection(self) -> SingleSelectedFutureSelectionV1:
+        selection, previous = self.produced.selection, self.previous
+        if (
+            previous is not None
+            and self.produced.ok
+            and not self.produced.hard_stop
+            and selection.selection_id == previous.selection_id
+            and selection.selection_input_digest == previous.selection_input_digest
+            and selection.state == previous.state
+        ):
+            return previous
+        return selection
+
+
+@contextmanager
+def prepare_lane_selection_v1(
+    *,
+    state_root: Path,
+    ranking_snapshot: Mapping[str, Any],
+    repository_sha: str,
+    producer_observed_at_unix: float,
+    governed_pin: GovernedCap23InstrumentPinV1,
+    expected_previous_instrument: str | None,
+    open_position_instrument_id: str | None = None,
+):
+    """Assess with the existing policy while holding the existing selection lock.
+
+    Unlike the legacy entrypoint, missing/corrupt lane continuity is never
+    silently converted into a new initial selection. No bundle is written here.
+    """
+    writer = SingleSelectedFutureSingleWriterV1(state_root=Path(state_root))
+    writer.acquire(now_unix=producer_observed_at_unix)
+    try:
+        previous = None
+        from src.ops.single_selected_future_policy_v1.constants_v1 import SELECTION_FILENAME
+
+        if expected_previous_instrument is not None or (state_root / SELECTION_FILENAME).exists():
+            loaded = load_and_validate_selection_v1(state_root)
+            if not loaded.ok or loaded.selection is None:
+                raise SelectionPersistenceError("LANE_SELECTION_CONTINUITY_UNPROVEN", loaded.detail)
+            previous = loaded.selection
+            if previous.instrument_id != expected_previous_instrument:
+                raise SelectionPersistenceError("LANE_SELECTION_TOPOLOGY_MISMATCH")
+        produced = produce_single_selected_future_v1(
+            ranking_snapshot=ranking_snapshot,
+            repository_sha=repository_sha,
+            producer_observed_at_unix=producer_observed_at_unix,
+            previous_selection=previous,
+            open_position_instrument_id=open_position_instrument_id,
+            governed_pin=governed_pin,
+            lane_state_root=state_root,
+        )
+        yield PreparedLaneSelectionV1(writer, produced, previous)
+    finally:
+        writer.release()
+
+
+def commit_prepared_lane_selection_v1(
+    prepared: PreparedLaneSelectionV1,
+) -> SingleSelectedFutureSelectionV1:
+    """Persist and read back an already assessed result under its held owner lock."""
+    prepared.writer.assert_held()
+    produced, previous = prepared.produced, prepared.previous
+    selection = produced.selection
+    if not produced.ok or produced.hard_stop:
+        raise SelectionPersistenceError("LANE_SELECTION_NOT_ADMITTED")
+    # Exact same input/decision identity is an observation replay, not a new
+    # selection-history edge pointing to itself. Preserve the original receipt.
+    if previous is not None and prepared.publication_selection is previous:
+        return previous
+    evidence = build_selection_evidence_v1(
+        produced=produced,
+        persistence_path=str(prepared.writer.state_root),
+        persistence_verification=None,
+        restart_verification=None,
+        previous_selection=None if previous is None else previous.to_dict(),
+    )
+    persist_selection_bundle_atomic_v1(
+        state_root=prepared.writer.state_root,
+        writer=prepared.writer,
+        selection=selection,
+        evidence=evidence,
+    )
+    restart = prove_restart_load_v1(
+        state_root=prepared.writer.state_root, expected_selection=selection
+    )
+    if not restart["ok"]:
+        raise SelectionPersistenceError("LANE_SELECTION_READBACK_FAILED")
+    return selection
+
+
+def prepared_lane_publication_evidence_v1(prepared: PreparedLaneSelectionV1) -> dict[str, Any]:
+    import json
+    from src.ops.single_selected_future_policy_v1.constants_v1 import EVIDENCE_FILENAME
+
+    if prepared.publication_selection is prepared.previous:
+        return json.loads((prepared.writer.state_root / EVIDENCE_FILENAME).read_text())
+    return build_selection_evidence_v1(
+        produced=prepared.produced,
+        persistence_path=str(prepared.writer.state_root),
+        persistence_verification=None,
+        restart_verification=None,
+        previous_selection=None if prepared.previous is None else prepared.previous.to_dict(),
+    )
+
+
+def resume_lane_selection_publication_v1(
+    *,
+    writer: SingleSelectedFutureSingleWriterV1,
+    selection: SingleSelectedFutureSelectionV1,
+    previous_digest: str | None,
+    evidence: Mapping[str, Any],
+) -> None:
+    """Finish a sealed local publication, only from its recorded old/new state.
+
+    This never evaluates a new trading decision or repairs unknown corruption.
+    """
+    import json
+    from src.ops.single_selected_future_policy_v1.constants_v1 import SELECTION_FILENAME
+    from src.ops.single_selected_future_policy_v1.persistence_v1 import (
+        validate_selection_bindings_v1,
+    )
+
+    writer.assert_held()
+    if not validate_selection_bindings_v1(selection).ok:
+        raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_PLAN_INVALID")
+    path = writer.state_root / SELECTION_FILENAME
+    if path.exists():
+        try:
+            current = SingleSelectedFutureSelectionV1.from_dict(json.loads(path.read_text()))
+        except (ValueError, TypeError, KeyError) as exc:
+            raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_UNKNOWN_STATE") from exc
+        if not validate_selection_bindings_v1(current).ok or current.integrity_digest not in {
+            previous_digest,
+            selection.integrity_digest,
+        }:
+            raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_UNKNOWN_STATE")
+    elif previous_digest is not None:
+        raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_PREVIOUS_MISSING")
+    if (
+        evidence.get("selection_id") != selection.selection_id
+        or evidence.get("integrity_digest") != selection.integrity_digest
+    ):
+        raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_EVIDENCE_INVALID")
+    persist_selection_bundle_atomic_v1(
+        state_root=writer.state_root,
+        writer=writer,
+        selection=selection,
+        evidence=evidence,
+    )
+    if not prove_restart_load_v1(state_root=writer.state_root, expected_selection=selection)["ok"]:
+        raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_READBACK_FAILED")
+
+
+def produce_from_ranking_state_root_v1(
+    *,
+    ranking_state_root: Path,
+    repository_sha: str,
+    producer_observed_at_unix: float,
+    previous_selection: Mapping[str, Any] | SingleSelectedFutureSelectionV1 | None = None,
+    open_position_instrument_id: str | None = None,
+    instrument_status_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    max_ranking_age_seconds: float = DEFAULT_MAX_RANKING_AGE_SECONDS,
+    refresh_cadence_seconds: float = DEFAULT_REFRESH_CADENCE_SECONDS,
+    min_holding_period_seconds: float = DEFAULT_MIN_HOLDING_PERIOD_SECONDS,
+    hysteresis_rank_improvement: int = DEFAULT_HYSTERESIS_RANK_IMPROVEMENT,
+    min_history_samples: int = DEFAULT_MIN_HISTORY_SAMPLES,
+    min_data_quality_status: str = DEFAULT_MIN_DATA_QUALITY_STATUS,
+    governed_pin: GovernedCap23InstrumentPinV1 | None = None,
+    lane_state_root: Path | str | None = None,
+) -> SelectionProduceResultV1:
+    loaded = load_and_validate_ranking_snapshot_v1(Path(ranking_state_root))
+    if not loaded.ok or loaded.snapshot is None:
+        return produce_single_selected_future_v1(
+            ranking_snapshot=None,
+            repository_sha=repository_sha,
+            producer_observed_at_unix=producer_observed_at_unix,
+            previous_selection=previous_selection,
+            open_position_instrument_id=open_position_instrument_id,
+            instrument_status_by_id=instrument_status_by_id,
+            max_ranking_age_seconds=max_ranking_age_seconds,
+            refresh_cadence_seconds=refresh_cadence_seconds,
+            min_holding_period_seconds=min_holding_period_seconds,
+            hysteresis_rank_improvement=hysteresis_rank_improvement,
+            min_history_samples=min_history_samples,
+            min_data_quality_status=min_data_quality_status,
+            governed_pin=governed_pin,
+            lane_state_root=lane_state_root,
+        )
+    return produce_single_selected_future_v1(
+        ranking_snapshot=loaded.snapshot.to_dict(),
+        repository_sha=repository_sha,
+        producer_observed_at_unix=producer_observed_at_unix,
+        previous_selection=previous_selection,
+        open_position_instrument_id=open_position_instrument_id,
+        instrument_status_by_id=instrument_status_by_id,
+        max_ranking_age_seconds=max_ranking_age_seconds,
+        refresh_cadence_seconds=refresh_cadence_seconds,
+        min_holding_period_seconds=min_holding_period_seconds,
+        hysteresis_rank_improvement=hysteresis_rank_improvement,
+        min_history_samples=min_history_samples,
+        min_data_quality_status=min_data_quality_status,
+        governed_pin=governed_pin,
+        lane_state_root=lane_state_root,
+    )
+
+
+def run_single_selected_future_policy_v1(
+    *,
+    state_root: Path,
+    ranking_snapshot: Mapping[str, Any] | None = None,
+    ranking_state_root: Path | None = None,
+    repository_sha: str,
+    producer_observed_at_unix: float,
+    session_id: str = "default",
+    previous_selection: Mapping[str, Any] | None = None,
+    load_previous_from_state: bool = True,
+    open_position_instrument_id: str | None = None,
+    instrument_status_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    max_ranking_age_seconds: float = DEFAULT_MAX_RANKING_AGE_SECONDS,
+    refresh_cadence_seconds: float = DEFAULT_REFRESH_CADENCE_SECONDS,
+    min_holding_period_seconds: float = DEFAULT_MIN_HOLDING_PERIOD_SECONDS,
+    hysteresis_rank_improvement: int = DEFAULT_HYSTERESIS_RANK_IMPROVEMENT,
+    min_history_samples: int = DEFAULT_MIN_HISTORY_SAMPLES,
+    min_data_quality_status: str = DEFAULT_MIN_DATA_QUALITY_STATUS,
+    simulate_partial_write: bool = False,
+    simulate_write_failure: bool = False,
+    simulate_crash_after_persist_before_confirm: bool = False,
+    release_writer: bool = True,
+    dashboard_payload: Mapping[str, Any] | None = None,
+    allowlist_payload: Mapping[str, Any] | None = None,
+    legacy_selection_payload: Mapping[str, Any] | None = None,
+    manual_override_payload: Mapping[str, Any] | None = None,
+    governed_pin: GovernedCap23InstrumentPinV1 | None = None,
+    residency_eligibility_gate: Cap23ResidencyEligibilityGateConfigV1 | None = None,
+    residency_runtime_config: ResidencyRuntimeConfigV1 | None = None,
+) -> dict[str, Any]:
+    """Full productive call graph: select → persist → verify (no runtime activation)."""
+    writer = SingleSelectedFutureSingleWriterV1(state_root=Path(state_root), session_id=session_id)
+    try:
+        writer.acquire(now_unix=producer_observed_at_unix)
+    except DuplicateSelectionWriterError as exc:
+        return {
+            "ok": False,
+            "hard_stop": True,
+            "failure_codes": (exc.failure_code,),
+            "alpha_allowed": False,
+            "alpha_blocked": True,
+            "persistence": None,
+            "selection": None,
+            "restart": None,
+            "evidence": {
+                "capability_id": CAPABILITY_ID,
+                "failure_codes": [exc.failure_code],
+                "duplicate_writer_rejected": True,
+            },
+        }
+
+    try:
+        prev = previous_selection
+        if prev is None and load_previous_from_state:
+            existing = load_and_validate_selection_v1(
+                Path(state_root),
+                require_manifest=False,
+            )
+            if existing.ok and existing.selection is not None:
+                prev = existing.selection.to_dict()
+            elif (Path(state_root) / "single_selected_future_selection_v1.json").is_file():
+                # Corrupt/mismatched previous → treat as no previous; alpha blocked later.
+                prev = None
+
+        if ranking_snapshot is None and ranking_state_root is not None:
+            produced = produce_from_ranking_state_root_v1(
+                ranking_state_root=Path(ranking_state_root),
+                repository_sha=repository_sha,
+                producer_observed_at_unix=producer_observed_at_unix,
+                previous_selection=prev,
+                open_position_instrument_id=open_position_instrument_id,
+                instrument_status_by_id=instrument_status_by_id,
+                max_ranking_age_seconds=max_ranking_age_seconds,
+                refresh_cadence_seconds=refresh_cadence_seconds,
+                min_holding_period_seconds=min_holding_period_seconds,
+                hysteresis_rank_improvement=hysteresis_rank_improvement,
+                min_history_samples=min_history_samples,
+                min_data_quality_status=min_data_quality_status,
+                governed_pin=governed_pin,
+                lane_state_root=state_root,
+            )
+        else:
+            produced = produce_single_selected_future_v1(
+                ranking_snapshot=ranking_snapshot,
+                repository_sha=repository_sha,
+                producer_observed_at_unix=producer_observed_at_unix,
+                previous_selection=prev,
+                open_position_instrument_id=open_position_instrument_id,
+                instrument_status_by_id=instrument_status_by_id,
+                max_ranking_age_seconds=max_ranking_age_seconds,
+                refresh_cadence_seconds=refresh_cadence_seconds,
+                min_holding_period_seconds=min_holding_period_seconds,
+                hysteresis_rank_improvement=hysteresis_rank_improvement,
+                min_history_samples=min_history_samples,
+                min_data_quality_status=min_data_quality_status,
+                dashboard_payload=dashboard_payload,
+                allowlist_payload=allowlist_payload,
+                legacy_selection_payload=legacy_selection_payload,
+                manual_override_payload=manual_override_payload,
+                governed_pin=governed_pin,
+                lane_state_root=state_root,
+            )
+
+        ranking_snapshot_for_gate: Mapping[str, Any] | None = ranking_snapshot
+        if ranking_snapshot_for_gate is None and ranking_state_root is not None:
+            loaded_rank = load_and_validate_ranking_snapshot_v1(Path(ranking_state_root))
+            if loaded_rank.ok and loaded_rank.snapshot is not None:
+                ranking_snapshot_for_gate = loaded_rank.snapshot.to_dict()
+
+        residency_completion_ref: ResidencyCompletionRefV1 | None = None
+        gate_cfg = residency_eligibility_gate or Cap23ResidencyEligibilityGateConfigV1()
+        residency_cfg = residency_runtime_config or ResidencyRuntimeConfigV1()
+        if ranking_snapshot_for_gate is not None:
+            produced, residency_completion_ref = apply_cap23_residency_eligibility_gate_v1(
+                produced=produced,
+                ranking_snapshot=ranking_snapshot_for_gate,
+                gate=gate_cfg,
+                residency_config=residency_cfg,
+                producer_observed_at_unix=producer_observed_at_unix,
+            )
+
+        evidence = build_selection_evidence_v1(
+            produced=produced,
+            persistence_path=str(Path(state_root)),
+            persistence_verification=None,
+            restart_verification=None,
+            previous_selection=prev,
+            residency_completion_ref=residency_completion_ref,
+        )
+        try:
+            persistence = persist_selection_bundle_atomic_v1(
+                state_root=Path(state_root),
+                writer=writer,
+                selection=produced.selection,
+                evidence=evidence,
+                simulate_partial_write=simulate_partial_write,
+                simulate_write_failure=simulate_write_failure,
+                simulate_crash_after_persist_before_confirm=(
+                    simulate_crash_after_persist_before_confirm
+                ),
+            )
+        except SelectionPersistenceError as exc:
+            evidence = build_selection_evidence_v1(
+                produced=produced,
+                persistence_path=str(Path(state_root)),
+                persistence_verification={"ok": False, "failure_code": exc.failure_code},
+                restart_verification=None,
+                previous_selection=prev,
+                extra_failure_codes=(exc.failure_code,),
+            )
+            return {
+                "ok": False,
+                "hard_stop": True,
+                "failure_codes": tuple(sorted(set(produced.failure_codes + (exc.failure_code,)))),
+                "alpha_allowed": False,
+                "alpha_blocked": True,
+                "selection": produced.selection.to_dict(),
+                "persistence": {"ok": False, "failure_code": exc.failure_code},
+                "restart": None,
+                "evidence": evidence,
+            }
+
+        restart = prove_restart_load_v1(
+            state_root=Path(state_root),
+            expected_selection=produced.selection,
+        )
+        evidence = build_selection_evidence_v1(
+            produced=produced,
+            persistence_path=persistence["persistence_path"],
+            persistence_verification=persistence,
+            restart_verification=restart,
+            previous_selection=prev,
+            residency_completion_ref=residency_completion_ref,
+        )
+        persist_selection_bundle_atomic_v1(
+            state_root=Path(state_root),
+            writer=writer,
+            selection=produced.selection,
+            evidence=evidence,
+        )
+        return {
+            "ok": produced.ok and bool(persistence.get("ok")) and bool(restart.get("ok")),
+            "hard_stop": produced.hard_stop or not restart.get("ok"),
+            "failure_codes": produced.failure_codes,
+            "alpha_allowed": False,
+            "alpha_blocked": True,
+            "selection": produced.selection.to_dict(),
+            "persistence": persistence,
+            "restart": restart,
+            "evidence": evidence,
+            "selected_future_count": produced.selection.selected_future_count,
+            "max_positions_effective": produced.selection.max_positions_effective,
+            "state": produced.selection.state,
+            "policy": policy_descriptor_v1(),
+        }
+    finally:
+        if release_writer:
+            writer.release()
+
+
+def prove_restart_load_v1(
+    *,
+    state_root: Path,
+    expected_selection: SingleSelectedFutureSelectionV1,
+) -> dict[str, Any]:
+    loaded = load_and_validate_selection_v1(
+        Path(state_root),
+        expected_repository_sha=expected_selection.repository_sha,
+        expected_config_digest=expected_selection.config_digest,
+    )
+    if not loaded.ok or loaded.selection is None:
+        return {
+            "ok": False,
+            "identical_canonical_truth": False,
+            "alpha_allowed_after_restart": False,
+            "alpha_blocked_after_restart": True,
+            "state_after_restart": STATE_NO_SELECTION,
+            "failure_codes": list(loaded.failure_codes)
+            + [SelectionFailureCodeV1.ALPHA_BLOCKED.value],
+            "detail": loaded.detail,
+            "reconstructed": False,
+        }
+    identical = loaded.selection.integrity_digest == expected_selection.integrity_digest
+    identical = identical and loaded.selection.to_dict() == expected_selection.to_dict()
+    return {
+        "ok": identical,
+        "identical_canonical_truth": identical,
+        "alpha_allowed_after_restart": False,
+        "alpha_blocked_after_restart": True,
+        "state_after_restart": loaded.selection.state,
+        "loaded_selection_id": loaded.selection.selection_id,
+        "loaded_integrity_digest": loaded.selection.integrity_digest,
+        "loaded_config_digest": loaded.selection.config_digest,
+        "loaded_repository_sha": loaded.selection.repository_sha,
+        "loaded_valid_from": loaded.selection.valid_from,
+        "loaded_valid_until": loaded.selection.valid_until,
+        "expected_integrity_digest": expected_selection.integrity_digest,
+        "reconstructed": True,
+        "failure_codes": [],
+    }
+
+
+def restart_fail_closed_to_no_selection_v1(
+    *,
+    state_root: Path,
+    expected_repository_sha: str | None = None,
+    expected_config_digest: str | None = None,
+) -> dict[str, Any]:
+    """Restart recovery: invalid selection → NO_SELECTION + alpha block."""
+    loaded = load_and_validate_selection_v1(
+        Path(state_root),
+        expected_repository_sha=expected_repository_sha,
+        expected_config_digest=expected_config_digest,
+    )
+    if loaded.ok and loaded.selection is not None:
+        return {
+            "ok": True,
+            "state": loaded.selection.state,
+            "alpha_blocked": loaded.alpha_blocked,
+            "selection": loaded.selection.to_dict(),
+            "failure_codes": [],
+        }
+    return {
+        "ok": False,
+        "state": STATE_NO_SELECTION,
+        "alpha_blocked": True,
+        "selection": None,
+        "failure_codes": list(loaded.failure_codes) + [SelectionFailureCodeV1.ALPHA_BLOCKED.value],
+        "detail": loaded.detail,
+    }
+
+
+def build_selection_evidence_v1(
+    *,
+    produced: SelectionProduceResultV1,
+    persistence_path: str,
+    persistence_verification: Optional[Mapping[str, Any]],
+    restart_verification: Optional[Mapping[str, Any]],
+    previous_selection: Mapping[str, Any] | None,
+    extra_failure_codes: tuple[str, ...] = (),
+    residency_completion_ref: ResidencyCompletionRefV1 | None = None,
+) -> dict[str, Any]:
+    sel = produced.selection
+    recomputed = sel.compute_integrity_digest()
+    prev_state = (
+        str(previous_selection.get("state"))
+        if isinstance(previous_selection, Mapping)
+        else STATE_NO_SELECTION
+    )
+    evidence = {
+        "capability_id": CAPABILITY_ID,
+        "schema_version": SCHEMA_VERSION,
+        "producer_version": PRODUCER_VERSION,
+        "selection_policy_id": SELECTION_POLICY_ID,
+        "selection_policy_version": SELECTION_POLICY_VERSION,
+        "selection_policy_provenance": SELECTION_POLICY_PROVENANCE,
+        "policy_descriptor": policy_descriptor_v1(),
+        "repository_sha": sel.repository_sha,
+        "config_digest": sel.config_digest,
+        "selection_input_digest": sel.selection_input_digest,
+        "ranking_snapshot_id": sel.ranking_snapshot_id,
+        "ranking_integrity_digest": sel.ranking_integrity_digest,
+        "ranking_event_time": sel.ranking_event_time,
+        "ranking_policy_id": sel.ranking_policy_id,
+        "ranking_policy_version": sel.ranking_policy_version,
+        "ranking_config_digest": sel.ranking_config_digest,
+        "upstream_rank_order_witness": sel.upstream_rank_order_witness,
+        "cap22_rank_consumed_by_cap23": True,
+        "cap23_rescore_count": 0,
+        "cap23_rerank_count": 0,
+        "anti_churn_authority_class": "SELECTION_OVERLAY_ON_UPSTREAM_RANK",
+        "selection_id": sel.selection_id,
+        "instrument_id": sel.instrument_id,
+        "venue_native_id": sel.venue_native_id,
+        "integrity_digest": sel.integrity_digest,
+        "state": sel.state,
+        "previous_state": prev_state,
+        "new_state": sel.state,
+        "reason_codes": list(sel.reason_codes),
+        "selected_at_event_time": sel.selected_at_event_time,
+        "selected_at_wall_time": sel.selected_at_wall_time,
+        "valid_from": sel.valid_from,
+        "valid_until": sel.valid_until,
+        "selected_future_count": sel.selected_future_count,
+        "max_positions_effective": sel.max_positions_effective,
+        "single_selected_future": sel.single_selected_future,
+        "multi_future_runtime_authorized": False,
+        "open_position_present": sel.open_position_present,
+        "open_position_instrument_id": sel.open_position_instrument_id,
+        "replacement_instrument_id": sel.replacement_instrument_id,
+        "alpha_authority_for_replacement": False,
+        "persistence_path": persistence_path,
+        "persistence_digest": sel.integrity_digest,
+        "persistence_verification": dict(persistence_verification or {}),
+        "restart_verification": dict(restart_verification or {}),
+        "deterministic_replay_verification": {
+            "ok": recomputed == sel.integrity_digest,
+            "recomputed_integrity_digest": recomputed,
+            "selection_integrity_digest": sel.integrity_digest,
+        },
+        "authority_verification": dict(sel.authority),
+        "residency_completion_ref": (
+            residency_completion_ref.to_dict() if residency_completion_ref is not None else None
+        ),
+        "dashboard_authority": False,
+        "dashboard_input_used": False,
+        "allowlist_input_used": False,
+        "manual_override_used": False,
+        "core_logic_change": False,
+        "activation_changed": False,
+        "runtime_activation_allowed": False,
+        "live_path_changed": False,
+        "alpha_allowed": False,
+        "alpha_blocked": True,
+        "failure_codes": sorted(set(list(produced.failure_codes) + list(extra_failure_codes))),
+        "CODE_EXISTS": True,
+        "BOUND": True,
+        "RUNTIME_REACHABLE": True,
+        "PERSISTED": bool((persistence_verification or {}).get("ok")),
+        "RESTART_PROVEN": bool((restart_verification or {}).get("ok")),
+        "ACTIVATED": False,
+        "SINGLE_SELECTED_FUTURE_CLOSED": True,
+        "MULTI_FUTURE_CLOSED": False,
+        "RUNTIME_BINDING_CLOSED": False,
+    }
+    return evidence

@@ -1,0 +1,60 @@
+{
+  "cases": {
+    "http_429_retry_after_backoff": {
+      "http_429_count": 1,
+      "ok": true,
+      "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1",
+      "scheduled_backoff_seconds": 2.0
+    },
+    "http_429_session_budget_exceeded": {
+      "error": "RATE_LIMIT_SESSION_BUDGET_EXCEEDED",
+      "http_429_count": 2,
+      "ok": true,
+      "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1"
+    },
+    "pacing_no_zero_interval": {
+      "ok": true,
+      "owner": "research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+      "zero_rejected": true
+    },
+    "rate_limit_classified_reconnectable": {
+      "class_a": "TRANSPORT_FAILURE",
+      "class_b": "TRANSPORT_FAILURE",
+      "ok": true,
+      "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1",
+      "reconnectable_a": true,
+      "reconnectable_b": true
+    },
+    "rate_limit_metric_hygiene": {
+      "count": 2,
+      "ok": true,
+      "owner": "ops.phase_9_2_public_md_session_preflight_v1.rate_limit_metric_v1"
+    },
+    "reconnect_state_transitions": {
+      "ok": true,
+      "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1",
+      "reconnect_attempt_limit": 3
+    },
+    "stale_data_gate": {
+      "kill": "STALE_DATA",
+      "ok": true,
+      "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1",
+      "status": "kill"
+    }
+  },
+  "claims": {
+    "BOUNDED_BACKOFF_USED": true,
+    "GOVERNED_FAULT_PATH_BOUND": true,
+    "HTTP_429_BUDGET_ENFORCED": true,
+    "HTTP_429_CLASSIFIED": true,
+    "NO_IMPROVISED_HARNESS": true,
+    "RATE_LIMIT_METRIC_BOUND": true,
+    "RECONNECT_STATE_BOUND": true,
+    "STALE_DATA_GATE_BOUND": true,
+    "ZERO_INTERVAL_RETRY": false
+  },
+  "deterministic_injection_only": true,
+  "fault_session_started": false,
+  "network_session_started": false,
+  "ok": true
+}

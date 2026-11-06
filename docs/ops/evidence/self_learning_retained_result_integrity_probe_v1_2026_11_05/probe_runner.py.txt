@@ -1,0 +1,57 @@
+"""Follow-up to executed repeatability failures: retained-object integrity."""
+from pathlib import Path
+import json
+import socket
+import pytest
+from src.evaluation.golden_vectors.contracts.models import MetricResultV1, contract_digest_hex
+from src.evaluation.golden_vectors.contracts.enums import FailureClassification
+from src.evaluation.golden_vectors.runner.deterministic_stubs_v1 import DeterministicDomainEvaluatorV1
+from src.evaluation.golden_vectors.runner.generic_runner_v1 import GenericRunnerV1,GvefRunRequestV1
+from src.evaluation.golden_vectors.runner.states import RunnerState
+from tests.evaluation.golden_vectors.test_gvef_generic_runner_v1 import _deps
+from tests.evaluation.golden_vectors.runner_fixtures_v1 import parsed_context
+
+OUT=Path(__file__).resolve().parent/'retained_result_observations';OUT.mkdir(exist_ok=True)
+
+@pytest.fixture(autouse=True)
+def offline_only(monkeypatch):
+    def deny(*args,**kwargs):raise AssertionError('NETWORK_FORBIDDEN')
+    monkeypatch.setattr(socket.socket,'connect',deny)
+
+class RetainedMutation(DeterministicDomainEvaluatorV1):
+    def __init__(self,target=None):
+        super().__init__();self.target=target;self.first_baseline=None;self.first_candidate=None;self.first_candidate_digest=None
+    def evaluate_baseline(self,*,context,replay):
+        result=super().evaluate_baseline(context=context,replay=replay)
+        if self.baseline_calls==1:self.first_baseline=result
+        if self.baseline_calls==2 and self.target=='candidate_during_baseline_repeat':
+            self.first_candidate.metrics.append(MetricResultV1(metric_id='offline.late_mutation',value=17))
+        return result
+    def evaluate_candidate(self,*,context,replay):
+        result=super().evaluate_candidate(context=context,replay=replay)
+        if self.candidate_calls==1:
+            self.first_candidate=result;self.first_candidate_digest=contract_digest_hex(result)
+        if (self.target=='baseline_first' and self.candidate_calls==1) or (self.target=='baseline_second' and self.candidate_calls==2):
+            self.first_baseline.metrics.append(MetricResultV1(metric_id='offline.late_mutation',value=17))
+        return result
+
+@pytest.fixture(scope='module')
+def unchanged_control():
+    return GenericRunnerV1().execute(GvefRunRequestV1(parsed_context()),_deps(evaluator=RetainedMutation()))
+
+@pytest.mark.parametrize('target',['baseline_first','baseline_second','candidate_during_baseline_repeat'])
+def test_retained_result_integrity(target,unchanged_control):
+    evaluator=RetainedMutation(target);r=GenericRunnerV1().execute(GvefRunRequestV1(parsed_context()),_deps(evaluator=evaluator))
+    baseline_actual=contract_digest_hex(r.baseline_result)
+    candidate_actual=contract_digest_hex(r.candidate_result) if r.candidate_result else None
+    if target=='baseline_first':
+        assert r.state is RunnerState.FAILED and r.failure_classification is FailureClassification.INVARIANT_FAILURE
+        status='EXISTING_GUARD_CONFIRMED'
+    else:
+        assert r.state is RunnerState.REGISTERED
+        assert r.protected_output_digest==unchanged_control.protected_output_digest
+        if target=='baseline_second':assert baseline_actual!=r.baseline_result_digest
+        else:assert candidate_actual!=evaluator.first_candidate_digest
+        status='ADDITIONAL_OFFLINE_GAP_REPRODUCED'
+    observation=dict(probe=target,status=status,final_state=r.state,failure_classification=r.failure_classification,retained_baseline_differs_from_bound_snapshot=baseline_actual!=r.baseline_result_digest,retained_candidate_differs_from_initial_snapshot=candidate_actual!=evaluator.first_candidate_digest,protected_output_equal_to_unchanged_control=r.protected_output_digest==unchanged_control.protected_output_digest,scope='Adversarial injected offline evaluator mutates nested metric lists; not observed productive corruption',product_implementation_changed=False)
+    (OUT/(target+'.json')).write_text(json.dumps(observation,indent=2,default=str)+'\n')

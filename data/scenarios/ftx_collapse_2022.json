@@ -1,0 +1,22 @@
+{
+  "name": "FTX Collapse November 2022",
+  "date": "2022-11-08",
+  "description": "Major exchange FTX collapsed due to insolvency and fraud. Contagion hit all crypto assets. SOL particularly affected due to Alameda holdings. Bitcoin dropped but held key support.",
+  "asset_shocks": {
+    "BTC-EUR": -0.20,
+    "BTC-USDT": -0.20,
+    "ETH-EUR": -0.25,
+    "ETH-USDT": -0.25,
+    "XRP-EUR": -0.18,
+    "XRP-USDT": -0.18,
+    "ADA-EUR": -0.22,
+    "ADA-USDT": -0.22,
+    "SOL-EUR": -0.55,
+    "SOL-USDT": -0.55,
+    "FTT-EUR": -0.95,
+    "FTT-USDT": -0.95,
+    "default": -0.25
+  },
+  "probability": "rare",
+  "historical_frequency": "exchange_failure"
+}

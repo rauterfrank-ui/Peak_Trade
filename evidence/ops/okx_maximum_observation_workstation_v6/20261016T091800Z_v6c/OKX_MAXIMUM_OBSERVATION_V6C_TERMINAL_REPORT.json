@@ -1,0 +1,120 @@
+{
+  "mission": "OKX_MAXIMUM_OBSERVATION_V6C",
+  "mode": "STRICT_OBSERVATION_ONLY",
+  "timestamp_utc": "2026-10-16T07:22:00Z",
+  "evidence_path": "evidence/ops/okx_maximum_observation_workstation_v6/20261016T091800Z_v6c",
+  "prior_evidence": "evidence/ops/okx_maximum_observation_workstation_v6/20261016T070435Z",
+  "SAFARI_ACCESS": {
+    "javascript_from_apple_events": "PASS",
+    "js_used_for": "read-only DOM/localStorage inventory; whitelisted sidebar slot clicks; whitelisted tab/interval/chart-mode navigation; GET navigation to trade-futures via visible nav links only",
+    "js_not_used_for": "localStorage/sessionStorage writes; order submit; credential or account mutations",
+    "deactivation": "NOT_PERFORMED_BY_AGENT — Owner deactivates after full workstation setup per Auftrag"
+  },
+  "PHASE_1_FORENSIC_PERSISTENCE": {
+    "primary_persistence_owner": "localStorage key ok_comb_trade.workspaceList (server-bound workspaceId per slot 1–2)",
+    "secondary_keys": [
+      "okx.chart.trade_k1_layout_v2.layoutConfig",
+      "charts.tradingview.data.trade_k1",
+      "bot_workspace_layout (Spot-Grid / slot-3 route)"
+    ],
+    "workspace_ids_observed": {
+      "WORKSPACE_1": "1006418239457071104",
+      "WORKSPACE_2": "1031216400532770816",
+      "WORKSPACE_3": "NONE_IN_ok_comb_trade — UI slot 3 is not a third comb_trade workspace"
+    },
+    "slot_collision_root_causes": [
+      "Only two entries in ok_comb_trade.workspaceList while UI exposes three sidebar slots; slot 3 routes to /de/trade-spot-strategy/btc-usdc (Spot-Grid SPA) with empty location.hash",
+      "Sidebar slot 1/2 clicks without explicit Futures navigation can land on /de/trade-spot/btc-usdc while preserving workspaceId hash — chart/layout product line drift",
+      "URL hash workspaceId= alone does not guarantee futures vs spot shell; sidebar selection plus product route must match",
+      "stored workspaceId in ok_comb_trade can lag or mirror last active slot during slot-3 excursions (V6B-aligned)"
+    ],
+    "layout_reset_mechanism": "Per-workspace layout JSON embedded in ok_comb_trade.workspaceList[].layout and klineLayout (e.g. 3A multi-chart vs 1A LIVE terminal); instrument list insts[] co-migrated with spot/futures route changes",
+    "speculative_changes": "NONE",
+    "storage_manipulation": "NONE"
+  },
+  "WORKSPACE_1_STATUS": "PASS",
+  "WORKSPACE_1_DETAIL": {
+    "workspace_id": "1006418239457071104",
+    "role": "MARKET_OVERVIEW",
+    "klineLayout": "3A",
+    "instruments": "FUTURES BTC-USD_UM_XPERP 1D + 2× SPOT BTC/USDC 15m (stored insts[])",
+    "verification": "Sidebar slot 1 + Futures route → three-pane multi-chart on trade-futures; klineLayout 3A persisted in ok_comb_trade",
+    "screenshot": "screenshots/WS1_final_verify.png"
+  },
+  "WORKSPACE_2_STATUS": "PASS",
+  "WORKSPACE_2_DETAIL": {
+    "workspace_id": "1031216400532770816",
+    "role": "LIVE_OBSERVATION",
+    "klineLayout": "1A",
+    "layout_components_persisted": "KLine, Market (Orderbuch/Letzte Trades), Account (positions/orders/history tabs), PlaceOrder panel present but not used",
+    "verification": "Restored to trade-futures BTC USD UM XPERP with Orderbuch, Letzte Trades, Offene Positionen, Offene Orders, Variabler PnL, Funding/Open-Interest header fields",
+    "intentional_changes": "NONE to LIVE panel topology; slot cycling side-effect required one Futures nav restore (observation-safe GET)",
+    "chart_interval_note": "Stored LIVE chart interval may display 1T/1d in UI; 15m selector available — interval not forcibly rewritten after spot-drift recovery to avoid further layout churn",
+    "screenshots": [
+      "screenshots/WS2_futures_restored2.png",
+      "screenshots/WS2_final_verify.png"
+    ]
+  },
+  "WORKSPACE_3_STATUS": "PARTIAL",
+  "WORKSPACE_3_DETAIL": {
+    "workspace_id": "UNKNOWN_DISTINCT",
+    "role": "ANALYSIS_AND_PERFORMANCE_TARGET",
+    "achieved_on_slot_3": "Spot-Grid route: Diagramm + 4h + Handelsdaten + Verlauf (observation tabs only)",
+    "not_achieved": "Independent persistent Futures terminal with 4h chart plus Positionsverlauf/Order-Verlauf/Assets/Performance isolated from WS1/WS2 — blocked by OKX only persisting two comb_trade workspaces; slot 3 is separate Spot-Grid product",
+    "screenshots": [
+      "screenshots/WS3_configured.png",
+      "screenshots/PERSIST_r1_slot3.png",
+      "screenshots/PERSIST_r2_slot3.png"
+    ]
+  },
+  "PERSISTENCE_VERIFICATION": {
+    "method": "Two full sidebar cycles 1→2→3→1→2 with post-click URL/hash/stored workspaceId logging and screenshots",
+    "WS1_WS2_id_stability": "PASS — workspaceIds 100641… and 103121… remain bound to displayNum 1 and 2 across cycles",
+    "WS1_WS2_product_route_stability": "PARTIAL — repeated slot clicks alone can switch trade-futures ↔ trade-spot for same workspaceId; mitigation: always select slot then use Handeln→Futures (or trade-futures deep link) before observing",
+    "WS3_isolation": "FAIL — slot 3 always navigates to trade-spot-strategy; no workspaceId hash; does not add third ok_comb_trade entry",
+    "cross_overwrite": "OBSERVED during spot excursion — WS2 insts[] temporarily reflected SPOT:BTC-USDT until Futures restore; LIVE layout JSON retained Market/Account components"
+  },
+  "OBSERVATION_FUNCTIONS_AVAILABLE": {
+    "WS1": ["multi-chart", "TradingView", "interval selectors", "market header stats"],
+    "WS2": [
+      "TradingView chart",
+      "Orderbuch",
+      "Letzte Trades",
+      "Offene Positionen",
+      "Offene Orders",
+      "Positionsverlauf",
+      "Order-Verlauf",
+      "Assets tab",
+      "Variabler PnL",
+      "Funding / Open Interest (header)"
+    ],
+    "WS3_slot3": ["Spot-Grid Smart-Strategien (read-only)", "Diagramm", "Handelsdaten", "Orderbuch", "Verlauf"],
+    "native_performance_supplement": {
+      "account_overview": "https://my.okx.com/de/account/users (Geschätzter Gesamtwert, Heutiger PnL)",
+      "trading_data_redirect": "report-center/trading-data may redirect on EEA — use Handelsdaten tab on futures terminal (WS2) for contract-centric flows"
+    }
+  },
+  "REMAINING_TECHNICAL_LIMITATIONS": [
+    "OKX Europe comb_trade persistence supports two server workspace IDs; third sidebar slot is Spot-Grid strategy surface, not a third futures layout",
+    "Three fully independent persistent futures layouts are not reliably supported — do not force",
+    "Safe operating procedure: Slot select → confirm product route (futures vs spot) → optional hash workspaceId= for bookmarking WS1/WS2 only",
+    "For futures analysis/history when WS3 cannot be isolated: use WS2 bottom tabs (Positionsverlauf, Order-Verlauf, Assets, Handelsdaten) without submitting orders, or account Überblick in a separate read-only tab/window"
+  ],
+  "SECURITY_INVARIANTS": {
+    "TRADING_ACTIONS": 0,
+    "ORDERS_SUBMITTED": 0,
+    "BUY_SELL_CLICKED": 0,
+    "TRANSFERS_DEPOSITS": 0,
+    "MARGIN_LEVERAGE_CHANGED": 0,
+    "API_KEY_OR_SECURITY_CHANGES": 0,
+    "PEAK_TRADE_REPOSITORY_MUTATIONS": 0,
+    "OKX_STORAGE_WRITES_BY_AGENT": 0,
+    "ORDER_FORM_USED": false
+  },
+  "V6C_SUMMARY": {
+    "WS1": "PASS",
+    "WS2": "PASS",
+    "WS3": "PARTIAL",
+    "overall": "PARTIAL — two-workspace persistence model documented; observation workstation usable with documented slot/route discipline"
+  }
+}

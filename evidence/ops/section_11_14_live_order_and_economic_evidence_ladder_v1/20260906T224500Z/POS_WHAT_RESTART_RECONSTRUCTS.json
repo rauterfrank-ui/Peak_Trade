@@ -1,0 +1,25 @@
+{
+  "ACCOUNTING_ONLY_IS_NOT_RESTART": true,
+  "DIRECTION_OUT_OF_SCOPE_FOR_THIS_FIELD": true,
+  "DOCUMENT_CLASS": "SECTION_11_14_WHAT_RESTART_RECONSTRUCTS_V1",
+  "FLATTEN_SIGN_IS_LATER_SCHEMA_IF_NEEDED": true,
+  "HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET": true,
+  "LIVE_RESTART_RECONSTRUCTED_CANONICAL_DEFINITION": "LIVE_RESTART_RECONSTRUCTED is the tenth \u00a711.14 Live proof-claim field. It is true iff LIVE_ACCOUNTING_RECONSTRUCTED is already true and persisted Live artifacts for the acknowledged Live submit contain a Peak_Trade durable pre-restart handoff state for that identity, distinct from the fill/fee/position venue-GET artifacts used for LIVE_ACCOUNTING_RECONSTRUCTED, from which an offline reconstruction using canonical restart semantics (reconstruct without re-submit and without silent reinitialization) yields a post-restart identity whose clOrdId, ordId, instId, posSide, and Decimal pos equal the bound Live submit/fill/position identity, and whose reconstructed pos is present, nonempty, Decimal-parseable, and is not zero when bound fillSz is nonzero. Accounting reconstruction, position reconciliation, fill/fee observation, ACK observation, Cap 11.5 and \u00a711.12.6 fixtures, \u00a711.12.9.14 TESTNET_RESTART_PROVEN, \u00a711.17 LIVE_RESTART_PROVEN, historical implementation capability, and fixture/testnet/simulated sources are each insufficient. Absence of a durable Live pre-restart handoff or of a reconstructable post-restart identity fails closed and is not replaced by accounting closure. True does not imply LIVE_AUTONOMOUS_RECOVERY_OBSERVED, LIVE_END_TO_END_EVIDENCE_PROVEN, LIVE_RESTART_PROVEN, or \u00a711.14 complete. A fresh process restart is not required when those persisted Live restart-handoff artifacts already exist; this field does not authorize restart execution.",
+  "RECONSTRUCTS_ECONOMIC_POSITION_NOTIONAL": false,
+  "RECONSTRUCTS_EXCHANGE_ACCOUNTING_STATE": false,
+  "RECONSTRUCTS_EXECUTION_INTENT": false,
+  "RECONSTRUCTS_FILLED_EXECUTION_STATE_AS_FILLSZ": false,
+  "RECONSTRUCTS_PEAK_TRADE_CONTROL_STATE": true,
+  "RECONSTRUCTS_STRATEGY_STATE": false,
+  "REQUIRED_HANDOFF_FIELDS": [
+    "clOrdId",
+    "ordId",
+    "instId",
+    "posSide",
+    "pos"
+  ],
+  "RESTART_IDENTITY_EQUATION": "reconstructed_handoff.identity = {clOrdId, ordId, instId, posSide, pos} from durable pre-restart Peak_Trade state, without re-submit and without silent reinitialization, Decimal-equal to the bound Live submit/fill/position identity",
+  "SCHEMA_SPLIT_REQUIRED_NOW": false,
+  "SINGLE_FIELD_POS_OVERLOAD_REQUIRED": false,
+  "WHAT_SECTION_11_14_RESTART_RECONSTRUCTS": "Peak_Trade durable pre-restart control-state identity for the bound Live canary attempt, distinct from venue GET / accounting, from which offline reconstruction proceeds without re-submit and without silent reinitialization. Not exchange/accounting state, not execution intent, not filled execution state as fillSz, not economic notional, and not strategy state."
+}

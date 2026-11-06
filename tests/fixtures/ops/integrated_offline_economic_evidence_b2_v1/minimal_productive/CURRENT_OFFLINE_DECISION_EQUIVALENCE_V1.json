@@ -1,0 +1,54 @@
+{
+  "authority_effect": "NONE",
+  "comparison_rows": [
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "current_decision_v1": {
+        "canonical_order_intent_present": false,
+        "decision": "ENTER_LONG",
+        "double_play_transition": "ARMED_TO_ENTER",
+        "risk_result": "ALLOW",
+        "scope_gge_outcome": "ALLOW",
+        "selected_strategy_ref": "double_play:v0",
+        "side": "long",
+        "sizing_result": "SIZED",
+        "suitability_ranking_outcome": "SELECTED"
+      },
+      "decision_input_binding_v1": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "capital_context_digest_sha256": "bd08022e8fb80701512cd13c5f36b2ee06065bcde73329f41423dbd086c27281",
+        "component_version_digest_sha256": "7b12be43febc6e18259dd77c004315b4143d570234e0f15acf5f9d7b79c371b5",
+        "decision_config_digest_sha256": "737b80ba3aa7d3a488446fde8fd9ce9f258c710d3d931e864524c6d4fcbbccca",
+        "market_data_bridge_attestation_digest_sha256": "eb4f0a72fe3ababf79e312a6cd90744c9a1e8093cbf04b9b7a91fa312ff4bb1d",
+        "policy_version_digest_sha256": "5b3a02e57af9b55aae545b599baa6a6798a364d8d2798a38536249f77e30fe5f",
+        "productive_gate_bindings_digest_sha256": "0319a73d9e793714c3ffccc6e134d8334df6cd467234fd93e12d025d6ff12c43",
+        "strategy_registry_snapshot_digest_sha256": "872491a30d60d598962de6e7b834ab76b2aa65fbab102c6ebaaae6acdc238822"
+      },
+      "decision_input_fingerprint_digest_sha256": "d2be450b5d643503d8f8b867bd472b2b4819ce83b688d445b4487cb9279d7bb8",
+      "epoch_id": "epoch-1",
+      "observation_id": "obs-1",
+      "offline_decision_v1": {
+        "canonical_order_intent_present": false,
+        "decision": "ENTER_LONG",
+        "double_play_transition": "ARMED_TO_ENTER",
+        "risk_result": "ALLOW",
+        "scope_gge_outcome": "ALLOW",
+        "selected_strategy_ref": "double_play:v0",
+        "side": "long",
+        "sizing_result": "SIZED",
+        "suitability_ranking_outcome": "SELECTED"
+      },
+      "required": true,
+      "row_id": "row-0"
+    }
+  ],
+  "equivalence_class": "PRODUCTIVE_CURRENT",
+  "productive_gate_binding_v1": {
+    "cap61_observation_acceptance_binding_mode": "MUST_REPLAY",
+    "confirmation_progression_binding_mode": "MUST_REPLAY",
+    "g17_typed_volatility_binding_mode": "MUST_RECONSTRUCT"
+  },
+  "schema_id": "ops.current_offline_decision_equivalence.v1",
+  "schema_version": "v1",
+  "verifier_id": "ops.current_offline_decision_equivalence_verifier.v1"
+}

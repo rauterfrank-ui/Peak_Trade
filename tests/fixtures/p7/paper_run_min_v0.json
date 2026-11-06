@@ -1,0 +1,14 @@
+{
+  "schema_version": "p7.paper_run.v0",
+  "asof_utc": "2026-02-11T13:40:00Z",
+  "initial_cash": 1000.0,
+  "fee_rate": 0.001,
+  "slippage_bps": 10.0,
+  "mid_prices": {
+    "BTC": 100.0
+  },
+  "orders": [
+    {"symbol": "BTC", "side": "BUY", "qty": 1.0},
+    {"symbol": "BTC", "side": "SELL", "qty": 1.0}
+  ]
+}

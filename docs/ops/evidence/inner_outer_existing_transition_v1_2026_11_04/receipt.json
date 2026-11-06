@@ -1,0 +1,29 @@
+{
+  "source_commit": "3b56ababb9a791817f7fea053171f7c991c85e9f",
+  "tests": "No runtime tests: source/contract reconciliation only. No previous PASS re-run or re-certification.",
+  "ruff_status": "NOT_APPLICABLE_NO_CHANGED_PYTHON",
+  "boundaries": [
+    "Existing mechanical paths evidenced statically, no natural execution claim",
+    "Original G2 intent supports reuse but full synthetic identity/dataset and metric conformity unresolved",
+    "Numeric supplier contract and whole fast/medium/slow feedback effect remain open",
+    "No new wiring; U04 and GAP-0370 deferred; no network, activation or external media writes"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/inner_outer_existing_transition_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 202,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_NO_CHANGED_PYTHON",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

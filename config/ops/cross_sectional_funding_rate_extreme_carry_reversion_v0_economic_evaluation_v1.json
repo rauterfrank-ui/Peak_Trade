@@ -1,0 +1,87 @@
+{
+  "binding_digest": "281739a366bf1605f94c75292321df3b6fa9f8991b11276c3202f88c7d68749a",
+  "config_digest": "2fff46dd3357dabe756be361140e78accfb829d4a628208c33d45ef46cf1b761",
+  "config_schema_version": "cross_sectional_funding_rate_extreme_carry_reversion_v0_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "cross_sectional_evaluation_binding_v1": {
+    "binding_digest": "281739a366bf1605f94c75292321df3b6fa9f8991b11276c3202f88c7d68749a",
+    "candidate_binding_ref": "config/research/cross_sectional_funding_rate_extreme_carry_reversion_v0_versioned_research_binding_v0.json",
+    "candidate_id": "cross_sectional_funding_rate_extreme_carry_reversion/v0",
+    "config_digest": "2fff46dd3357dabe756be361140e78accfb829d4a628208c33d45ef46cf1b761",
+    "data_contract_digest": "fe2cb0975f73a4c115ce14d230e74869155afeaaff973c22dbb89175bfa5137f",
+    "data_digest": "fe2cb0975f73a4c115ce14d230e74869155afeaaff973c22dbb89175bfa5137f",
+    "dataset_binding": {
+      "bar_interval": "PT1H",
+      "binding_version": "v0",
+      "credential_access_forbidden": true,
+      "dataset_extension": "extended_chronological_with_funding_v1",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "dataset_version": "v1",
+      "duplicate_bars_policy": "fail_closed",
+      "funding_fields": [
+        "funding_rate"
+      ],
+      "funding_usage": "funding_rate_for_extreme_carry_reversion_computation",
+      "instrument_key": "instrument_id",
+      "missing_bars_policy": "exclude_non_selected_for_epoch",
+      "narrow_adapter": "pit_okx_pt1h_panel_funding_field_materialization.v0",
+      "network_access_forbidden": true,
+      "ohlcv_fields": [
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "out_of_order_bars_policy": "fail_closed",
+      "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+      "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+      "panel_funding_dataset_manifest_ref": "pit_okx_pt1h_panel_funding_dataset_v1:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:extended_chronological_with_funding_v1",
+      "panel_schema": "pit_okx_pt1h_panel_funding_dataset_manifest_v1",
+      "price_usage": "close_for_execution_reference_only",
+      "timestamp_key": "timestamp_utc",
+      "timezone": "UTC",
+      "warmup_bars": 2
+    },
+    "hypothesis_id": "CROSS_SECTIONAL_FUNDING_RATE_EXTREME_CARRY_REVERSION_NON_BITCOIN_PERPETUALS_V0",
+    "implementation_digest": "08835cb9b6b975e66aedca5f6c6b348c9bea420e8d38aa43369e7de91286a125",
+    "parameter_binding": {
+      "binding_version": "v0",
+      "funding_level_spread_forbidden": true,
+      "funding_observation_field": "funding_rate",
+      "funding_signal_lag": 1,
+      "min_abs_zscore_for_entry": 1.0,
+      "min_panel_funding_dispersion": 1e-05,
+      "operator_decision_digest": "95a01a8d43572ebbeb68eacd20c41efdd0042ae04d7b987ce007865a1aef7418",
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "funding_smoothing_window_bars": 1,
+        "max_bar_staleness_bars": 1,
+        "min_abs_zscore_for_entry": 1.0,
+        "min_eligible_members": 5,
+        "min_panel_funding_dispersion": 1e-05,
+        "rebalance_interval_bars": 1,
+        "signal_lag_bars": 1,
+        "switch_entry_delay_epochs": 1
+      },
+      "rank_delta_reuse_forbidden": true,
+      "score_formula_expression": "score_i = -funding_rate_i[t-lag] after optional smoothing over funding_smoothing_window_bars; long_leg = instrument with minimum funding_rate; short_leg = instrument with maximum funding_rate; single_slot selects leg with larger absolute funding extremeness",
+      "score_formula_version": "cross_sectional_funding_rate_rank_long_low_short_high_v0",
+      "unchanged_retry_of_failed_bindings_forbidden": true
+    },
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1"
+  },
+  "fail_closed_contract": {
+    "economic_evaluation_executed_must_be_false_for_recovery": true,
+    "forbid_parameter_search": true,
+    "forbid_runtime_or_order_effect": true,
+    "require_bound_data_digest_match": true
+  },
+  "implementation_digest": "08835cb9b6b975e66aedca5f6c6b348c9bea420e8d38aa43369e7de91286a125",
+  "strategy_id": "cross_sectional_funding_rate_extreme_carry_reversion",
+  "strategy_version": "v0",
+  "timeout_contract": {
+    "max_runtime_seconds": 1500,
+    "timeout_policy": "fail_closed"
+  }
+}

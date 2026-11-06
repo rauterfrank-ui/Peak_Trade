@@ -1,0 +1,412 @@
+{
+  "artifact_kind": "v6_failure_attribution_evidence_only",
+  "attribution_arithmetic_valid": true,
+  "authority_effect": "NONE",
+  "backtest_or_replay_executed": false,
+  "base_sha": "98aede46fcecc7dffb5b515f4bd87b06fd2eecb7",
+  "candidate_explanation_tests": [
+    {
+      "detail": "11 shared-entry end_of_data\u2192signal truncations; net_pnl_delta_sum=-4754.424004101058; holding collapses from multi-hundred hours to <=48h.",
+      "evidence_strength": "SUPPORTED",
+      "id": "midband_exit_cuts_winners_prematurely",
+      "verdict": "SUPPORTED"
+    },
+    {
+      "detail": "Treatment signal exits include 93 losers with class-level net +12165.6112; cannot prove unfinished MR without bar-path reconstruction.",
+      "evidence_strength": "INCONCLUSIVE",
+      "id": "midband_exit_realizes_losses_before_mean_reversion_completes",
+      "verdict": "INCONCLUSIVE"
+    },
+    {
+      "detail": "T-only trades=458 (all short); after-signal next-entries=305; gap<=24h=184; T-only net=-1369.4191998731199; T-only cost=2773.5391669063965.",
+      "evidence_strength": "SUPPORTED",
+      "id": "forced_exits_create_repeated_reentry_churn",
+      "verdict": "SUPPORTED"
+    },
+    {
+      "detail": "gross_delta=1506.0912303533437; cost_drag_delta=2776.692195603584; net_delta=-1270.6009652502403; cost_delta > gross_delta.",
+      "evidence_strength": "PROVEN",
+      "id": "cost_drag_dominates_gross_edge_change",
+      "verdict": "PROVEN"
+    },
+    {
+      "detail": "long_net_delta=620.2857362209058; short_net_delta=-1890.8867014711457; short_trade_count_delta=457.",
+      "evidence_strength": "PROVEN",
+      "id": "short_side_behavior_dominates_degradation",
+      "verdict": "PROVEN"
+    },
+    {
+      "detail": "neg_instruments=11/33; worst5_net_delta_sum=-3701.24547014003 vs total=-1270.6009652502403; concentration is material but offset by 19 improvers (mixed/broad+concentrated).",
+      "evidence_strength": "SUPPORTED",
+      "id": "small_instrument_subset_dominates_degradation",
+      "verdict": "SUPPORTED"
+    },
+    {
+      "detail": "max_holding_exit_count=10; proxy signal hold==48 trades=10; proxy net=1457.4271155151173 (positive); not a primary loss channel.",
+      "evidence_strength": "SUPPORTED",
+      "id": "max_hold_interaction_is_material",
+      "verdict": "NOT_SUPPORTED"
+    }
+  ],
+  "causal_chain_supported": [
+    "signal",
+    "entry",
+    "position",
+    "exit_eligibility",
+    "forced_exit",
+    "reentry",
+    "ledger",
+    "costs",
+    "portfolio_aggregation"
+  ],
+  "claims": [
+    {
+      "claim_id": "C1_totals_reconcile",
+      "strength": "PROVEN",
+      "text": "Baseline/treatment trade counts and forced/midband/max-hold counters match summary/exit_attribution/metrics."
+    },
+    {
+      "claim_id": "C2_dual_trigger_overlap",
+      "strength": "PROVEN",
+      "text": "midband+max_hold-forced=2 dual midband_and_max_holding counter overlaps."
+    },
+    {
+      "claim_id": "C3_trade_count_increase_reentry",
+      "strength": "SUPPORTED",
+      "text": "Trade-count rise 109\u2192566 explained by earlier exits on shared entries plus short-side re-entry churn (458 T-only shorts)."
+    },
+    {
+      "claim_id": "C4_forced_vs_signal_gap",
+      "strength": "INCONCLUSIVE",
+      "text": "forced_exits=326 vs ledger signal exits=320; gap=6 not trade-grain proven."
+    },
+    {
+      "claim_id": "C5_cost_drag_primary",
+      "strength": "PROVEN",
+      "text": "Cost-drag increase exceeds gross-PnL improvement and accounts for net degradation."
+    },
+    {
+      "claim_id": "C6_short_side_primary",
+      "strength": "PROVEN",
+      "text": "Short-side net delta dominates degradation; long-side improved."
+    },
+    {
+      "claim_id": "C7_eod_winner_truncation",
+      "strength": "PROVEN",
+      "text": "11 baseline end_of_data winners truncated to signal exits with large negative shared-pair net delta."
+    },
+    {
+      "claim_id": "C8_sl_rescue_offset",
+      "strength": "PROVEN",
+      "text": "55 stop_loss\u2192signal shared pairs improve net (positive delta), offsetting part of truncation loss."
+    },
+    {
+      "claim_id": "C9_reentry_cost_channel",
+      "strength": "SUPPORTED",
+      "text": "T-only re-entry trades carry large fee+slippage cost and negative net contribution."
+    },
+    {
+      "claim_id": "C10_maxhold_not_loss_driver",
+      "strength": "SUPPORTED",
+      "text": "Max-hold class is small and proxy economics are positive."
+    },
+    {
+      "claim_id": "C11_regime_vol_buckets",
+      "strength": "NOT_OBSERVABLE",
+      "text": "No committed regime/volatility bucket fields in V6 ledgers/metrics."
+    },
+    {
+      "claim_id": "C12_bar_path_mr_incomplete",
+      "strength": "NOT_OBSERVABLE",
+      "text": "Cannot prove unfinished mean-reversion path without raw panel/bar reconstruction (forbidden)."
+    },
+    {
+      "claim_id": "C13_earliest_causal_boundary",
+      "strength": "SUPPORTED",
+      "text": "Earliest evidenced causal boundary is forced exit eligibility / forced midband-or-maxhold exit, then re-entry and cost aggregation."
+    },
+    {
+      "claim_id": "C14_concentration_mixed",
+      "strength": "SUPPORTED",
+      "text": "Degradation is mixed: short-side broad churn plus concentrated instrument losers (APE/ENS/MANA/LUNA/EGLD)."
+    }
+  ],
+  "claims_strength_counts": {
+    "INCONCLUSIVE": 1,
+    "NOT_OBSERVABLE": 2,
+    "PROVEN": 6,
+    "SUPPORTED": 5
+  },
+  "degradation_decomposition": {
+    "cost_drag_contribution": 2776.692195603584,
+    "cost_drag_delta": 2776.692195603584,
+    "eod_to_signal_net_pnl_delta": -4754.424004101058,
+    "eod_to_signal_shared_pairs": 11,
+    "exit_reason_baseline": {
+      "end_of_data": {
+        "fees": 37.430012840488196,
+        "gross_pnl": 5624.0217621944075,
+        "mean_holding_period_hours": 1053.3636363636363,
+        "net_pnl": 5567.876742933675,
+        "slippage": 18.715006420244098,
+        "trade_count": 11
+      },
+      "stop_loss": {
+        "fees": 389.53916679017004,
+        "gross_pnl": -4835.0169202490015,
+        "mean_holding_period_hours": 138.25510204081633,
+        "net_pnl": -5419.325670434259,
+        "slippage": 194.76958339508502,
+        "trade_count": 98
+      }
+    },
+    "exit_reason_treatment": {
+      "end_of_data": {
+        "fees": 23.589734793024142,
+        "gross_pnl": 330.67908946042905,
+        "mean_holding_period_hours": 12.666666666666666,
+        "net_pnl": 295.2944872708928,
+        "slippage": 11.794867396512071,
+        "trade_count": 6
+      },
+      "signal": {
+        "fees": 1274.6405994434042,
+        "gross_pnl": 14077.572069433085,
+        "mean_holding_period_hours": 14.61875,
+        "net_pnl": 12165.611170267994,
+        "slippage": 637.3202997217021,
+        "trade_count": 320
+      },
+      "stop_loss": {
+        "fees": 979.8669757966197,
+        "gross_pnl": -12113.155086594768,
+        "mean_holding_period_hours": 7.8625,
+        "net_pnl": -13582.955550289696,
+        "slippage": 489.93348789830986,
+        "trade_count": 240
+      }
+    },
+    "expectancy_baseline": {
+      "avg_loser_net": -55.29924153504343,
+      "avg_trade_expectancy_net": 1.3628538761414555,
+      "avg_winner_net": 506.17061299397045,
+      "trade_count": 109,
+      "win_rate": 0.10091743119266056
+    },
+    "expectancy_treatment": {
+      "avg_loser_net": -44.16665863396081,
+      "avg_trade_expectancy_net": -1.9824203052134666,
+      "avg_winner_net": 58.74833659910383,
+      "trade_count": 566,
+      "win_rate": 0.4098939929328622
+    },
+    "fees_delta": 1851.1281304023908,
+    "gross_pnl_delta": 1506.0912303533437,
+    "instrument_concentration": {
+      "broad_or_concentrated": "MIXED_BROAD_SHORT_CHURN_PLUS_CONCENTRATED_INSTRUMENT_LOSSES",
+      "instruments_better": 19,
+      "instruments_unchanged": 3,
+      "instruments_worse": 11,
+      "top_loss_instruments": [
+        {
+          "baseline_net_pnl": 804.3564865161165,
+          "cost_delta": 309.44714175446404,
+          "gross_pnl_delta": -984.9130668806004,
+          "instrument_id": "okx:linear_perpetual:APE:USDT:USDT:perp",
+          "net_pnl_delta": -1294.3602086350643,
+          "trade_count_delta": 52,
+          "treatment_net_pnl": -490.0037221189478
+        },
+        {
+          "baseline_net_pnl": 297.5898303492793,
+          "cost_delta": 224.38262109108527,
+          "gross_pnl_delta": -560.6739049490911,
+          "instrument_id": "okx:linear_perpetual:ENS:USDT:USDT:perp",
+          "net_pnl_delta": -785.0565260401764,
+          "trade_count_delta": 38,
+          "treatment_net_pnl": -487.46669569089715
+        },
+        {
+          "baseline_net_pnl": 335.0455726128481,
+          "cost_delta": 192.18786992072205,
+          "gross_pnl_delta": -429.91672503696475,
+          "instrument_id": "okx:linear_perpetual:MANA:USDT:USDT:perp",
+          "net_pnl_delta": -622.1045949576869,
+          "trade_count_delta": 32,
+          "treatment_net_pnl": -287.05902234483875
+        },
+        {
+          "baseline_net_pnl": 856.9330751866755,
+          "cost_delta": 255.54394223067786,
+          "gross_pnl_delta": -287.7923604983637,
+          "instrument_id": "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+          "net_pnl_delta": -543.3363027290413,
+          "trade_count_delta": 41,
+          "treatment_net_pnl": 313.59677245763413
+        },
+        {
+          "baseline_net_pnl": 381.9325980732771,
+          "cost_delta": 103.48131880851795,
+          "gross_pnl_delta": -352.9065189695433,
+          "instrument_id": "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+          "net_pnl_delta": -456.3878377780612,
+          "trade_count_delta": 17,
+          "treatment_net_pnl": -74.45523970478413
+        }
+      ],
+      "worst10_net_pnl_delta_sum": -4587.268772522699,
+      "worst5_as_fraction_of_total_net_delta": 2.912988083092699,
+      "worst5_net_pnl_delta_sum": -3701.24547014003
+    },
+    "long_net_pnl_delta": 620.2857362209058,
+    "long_short_concentration": {
+      "long_net_pnl_delta": 620.2857362209058,
+      "short_net_pnl_delta": -1890.8867014711457,
+      "short_share_of_signed_degradation": 0.7529895888826363
+    },
+    "maxhold_contribution_proxy_net": 1457.4271155151173,
+    "maxhold_proxy_gross_pnl": 1515.1905976318712,
+    "maxhold_proxy_net_pnl": 1457.4271155151173,
+    "mean_holding_period_hours_delta": -218.8722890394528,
+    "midband_exit_contribution_proxy": {
+      "eod_winner_truncation_shared_net_delta": -4754.424004101058,
+      "note": "Direct midband class is net-positive in treatment ledger; degradation arises from truncating baseline long-hold winners and enabling costly re-entry churn.",
+      "stop_loss_rescue_shared_net_delta": 4822.093647965568,
+      "treatment_signal_exit_class_net_pnl": 12165.611170267994
+    },
+    "net_pnl_delta": -1270.6009652502403,
+    "net_profit_factor_delta": -0.10347395570190743,
+    "net_return_delta": -0.0020491191597689085,
+    "primary_degradation_channel": "COST_DRAG_FROM_SHORT_SIDE_REENTRY_CHURN_AFTER_FORCED_MIDBAND_EXITS",
+    "reentry_churn_contribution_net": -1369.4191998731199,
+    "regime_or_volatility_bucket": "NOT_OBSERVABLE",
+    "shared_pair_net_pnl_delta": 43.056834060378804,
+    "short_net_pnl_delta": -1890.8867014711457,
+    "side_baseline": {
+      "long": {
+        "avg_loser": -55.85053319940476,
+        "avg_winner": null,
+        "fees": 82.83954812499991,
+        "gross_pnl": -1048.601875,
+        "mean_holding_period_hours": 54.523809523809526,
+        "net_pnl": -1172.8611971874996,
+        "slippage": 41.419774062499954,
+        "trade_count": 21,
+        "win_rate": 0.0
+      },
+      "short": {
+        "avg_loser": -55.148889262944884,
+        "avg_winner": 506.17061299397045,
+        "fees": 344.12963150565844,
+        "gross_pnl": 1837.6067169454068,
+        "mean_holding_period_hours": 272.625,
+        "net_pnl": 1321.412269686918,
+        "slippage": 172.06481575282922,
+        "trade_count": 88,
+        "win_rate": 0.125
+      }
+    },
+    "side_treatment": {
+      "long": {
+        "avg_loser": -46.26400093560908,
+        "avg_winner": 58.4781387346902,
+        "fees": 83.47134025179966,
+        "gross_pnl": -427.368450588894,
+        "mean_holding_period_hours": 13.0,
+        "net_pnl": -552.5754609665937,
+        "slippage": 41.73567012589983,
+        "trade_count": 21,
+        "win_rate": 0.19047619047619047
+      },
+      "short": {
+        "avg_loser": -44.05418286384087,
+        "avg_winner": 58.753076912514594,
+        "fees": 2194.625969781248,
+        "gross_pnl": 2722.4645228876448,
+        "mean_holding_period_hours": 11.684403669724771,
+        "net_pnl": -569.4744317842276,
+        "slippage": 1097.312984890624,
+        "trade_count": 545,
+        "win_rate": 0.41834862385321103
+      }
+    },
+    "slippage_delta": 925.5640652011954,
+    "stop_loss_to_signal_net_pnl_delta": 4822.093647965568,
+    "stop_loss_to_signal_shared_pairs": 55,
+    "treatment_only_cost": 2773.5391669063965,
+    "treatment_only_gross_pnl": 1404.1199670332792,
+    "treatment_only_net_pnl": -1369.4191998731199,
+    "turnover_delta": 457.0
+  },
+  "earliest_causal_boundary": "forced_exit_eligibility_or_forced_midband_or_maxhold_exit",
+  "evaluation_runner_executed": false,
+  "holdout_data_accessed": false,
+  "orders_sent": false,
+  "origin_main_expected": "98aede46fcecc7dffb5b515f4bd87b06fd2eecb7",
+  "promotion_authorized": false,
+  "raw_development_panel_accessed": false,
+  "runtime_activated": false,
+  "runtime_effect": "NONE",
+  "schema_version": "attribute_bollinger_mr_midband_exit_efficiency_v6_failure_summary.v1",
+  "slice_class": "EVIDENCE_ONLY_FAILURE_ATTRIBUTION",
+  "source_artifacts_mutated": false,
+  "source_decision_reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+  "source_evidence_refs": [
+    "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v6/",
+    "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json"
+  ],
+  "source_hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V6",
+  "source_preregistration_digest": "9ddcd32d78b3b3f60c168321404b2270a770409d46a3bff036f7dbc5eefd8fa5",
+  "source_result_digest": "608b1ff80333ffdb3f79566b419e57f3aeb2ac51b4edb98071b571e834bf4330",
+  "source_run_count_after": 1,
+  "source_run_count_before": 1,
+  "source_terminal_classification": "FAIL",
+  "top_v7_candidate_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7_CANDIDATE",
+  "top_v7_candidate_rationale": "V6 shows +457 short trades via earlier forced exits then re-entry; T-only trades net negative with large cost drag while gross improves insufficiently.",
+  "totals_reconciliation": {
+    "baseline_ledger_exit_reasons": {
+      "end_of_data": 11,
+      "stop_loss": 98
+    },
+    "baseline_trade_count": 109,
+    "dual_trigger_overlap_count": 2,
+    "exits_forced_by_gate": 326,
+    "forced_vs_signal_exit_gap": 6,
+    "max_holding_exit_count": 10,
+    "midband_exit_count": 318,
+    "overlap_semantics": "midband_and_max_holding increments both subtype counters for one forced exit bar",
+    "signal_hold_eq_48_proxy_maxhold": 10,
+    "signal_hold_lt_48_proxy_midband": 310,
+    "treatment_ledger_exit_reasons": {
+      "end_of_data": 6,
+      "signal": 320,
+      "stop_loss": 240
+    },
+    "treatment_trade_count": 566
+  },
+  "trade_count_increase_explanation": {
+    "baseline_only_entry_keys": 1,
+    "label": "EARLIER_EXIT_FOLLOWED_BY_REENTRY_CHURN",
+    "long_trade_count_delta": 0,
+    "notes": "Not primarily new independent entry signals; fragmentation via earlier forced exits then short re-entries.",
+    "shared_earlier_exit_count": 66,
+    "shared_entry_keys": 108,
+    "shared_later_exit_count": 0,
+    "shared_reason_changes": {
+      "end_of_data->signal": 11,
+      "stop_loss->signal": 55,
+      "stop_loss->stop_loss": 42
+    },
+    "shared_same_exit_count": 42,
+    "short_trade_count_delta": 457,
+    "treatment_only_entry_keys": 458,
+    "treatment_only_side_counts": {
+      "short": 458
+    },
+    "treatment_only_trades": 458
+  },
+  "v6_remains_terminal_fail": true,
+  "v7_candidate_count": 3,
+  "v7_preregistration_created": false
+}

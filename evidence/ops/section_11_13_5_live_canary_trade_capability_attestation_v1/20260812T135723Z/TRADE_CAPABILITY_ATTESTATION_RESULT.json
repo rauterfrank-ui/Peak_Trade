@@ -1,0 +1,229 @@
+{
+  "ACCOUNT_MUTATION_EFFECT": "NONE",
+  "ACCOUNT_SCOPE": "856964404452495999",
+  "BLOCKERS": [],
+  "BLOCKS_NEW_ENTRY": true,
+  "CANARY_INSTRUMENT": "BTC-USDT-SWAP",
+  "CANARY_TRADE_KEY_BINDING": "PROVEN",
+  "CANONICAL_NEXT_STEP": "OWNER_GO_EXCHANGE_TRUTH_ADOPTION",
+  "DOCUMENT_CLASS": "SECTION_11_13_5_C_LIVE_CANARY_TRADE_KEY_ATTESTATION_V1",
+  "EARLIEST_UNRESOLVED_DEPENDENCY": "OWNER_GO_EXCHANGE_TRUTH_ADOPTION",
+  "EXCHANGE_TRUTH_ADOPTION_AUTHORIZED_BY_THIS_GO": false,
+  "EXCHANGE_TRUTH_ADOPTION_STATUS": "OWNER_POLICIES_REQUIRED_NOT_ADOPTED",
+  "HARD_STOP_REASONS": [],
+  "INTENDED_KEY_TRADE_CAPABLE_VERIFIED": true,
+  "INTENDED_KEY_WITHDRAWAL_DISABLED_VERIFIED": true,
+  "KEY_BINDING_STATUS": "PROVEN",
+  "KEY_CLASS": "LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY",
+  "LEGAL_ENTITY": "OKX Europe Limited",
+  "LIVE_AUTHORIZED": false,
+  "LIVE_CANARY_CYBERSECURITY_GATE": "NOT_PASSED",
+  "LIVE_CANARY_CYBERSECURITY_GATE_EVAL": {
+    "ACCOUNT_BINDING_SECURITY": {
+      "account_scope": "856964404452495999",
+      "status": "BOUND_FROM_SEALED_PRIOR_PROOF"
+    },
+    "BLOCKERS": [
+      "LIVE_RECONCILIATION_PROVEN_FALSE",
+      "BLOCKS_NEW_ENTRY_OR_UNRESOLVED_DIVERGENCE"
+    ],
+    "CYBERSECURITY_RUNBOOK_VERSION": "V2_1",
+    "DOCUMENT_CLASS": "SECTION_11_13_LIVE_CANARY_CYBERSECURITY_GATE_EVAL_V1",
+    "ELIGIBLE_FOR_LIVE_CANARY_EVALUATION": false,
+    "EVIDENCE_SECURITY_STATUS": "NO_SECRET_VALUES_IN_AUTHORING_EVIDENCE",
+    "EXPOSURE_BLAST_RADIUS_STATUS": {
+      "automatic_escalation": false,
+      "minimum_ratified_notional_only": true,
+      "order_count_limit": 1,
+      "position_count_limit": 1,
+      "status": "CONTRACT_BOUNDED"
+    },
+    "HISTORICAL_PRE_LIVE_PASS_CARRY_FORWARD_FORBIDDEN": true,
+    "INSTRUMENT_BINDING_SECURITY": {
+      "instrument_id": "BTC-USDT-SWAP",
+      "min_executable_size": "REQUIRES_VENUE_INSTRUMENT_METADATA_AT_EXECUTE",
+      "status": "BOUND_INSTRUMENT_ID_ONLY_PENDING_MINSZ"
+    },
+    "LIVE_AUTHORIZED": false,
+    "LIVE_CANARY_CYBERSECURITY_GATE": "NOT_PASSED",
+    "NETWORK_BINDING_SECURITY": {
+      "demo_testnet_fallback_forbidden": true,
+      "rest_host": "eea.okx.com",
+      "status": "BOUND_FROM_SEALED_PRIOR_PROOF_PENDING_CANARY_SECRETREF",
+      "venue": "OKX"
+    },
+    "NEW_CANARY_OWNER_GO_GRANTED": false,
+    "ORDER_SAFETY_SECURITY": {
+      "idempotency_policy": "ONE_SHOT_CLORDID_PER_OWNER_GO_BINDING",
+      "kill_switch_interaction": "CANCEL_FLATTEN_HALT",
+      "status": "CONTRACT_DEFINED_NOT_EXECUTED",
+      "unknown_submit_handling": "BOUNDED_POLL_THEN_HALT"
+    },
+    "PRE_LIVE_CYBERSECURITY_GATE": "PASS",
+    "PRIOR_CANARY_OWNER_GO": "OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE@0f21b53e001e94085941c774a43a27562a1743fe",
+    "PRIOR_CANARY_OWNER_GO_STATUS": "CONSUMED_ONCE_FAIL_CLOSED_NO_EXECUTE",
+    "READ_ATTESTATION": true,
+    "SECRET_MANAGEMENT_STATUS": "PASS_AUTHORING_NO_SECRET_MATERIAL",
+    "SUPPLY_CHAIN_SECURITY_STATUS": "DEFERRED_TO_REPO_DEFINED_PRE_LIVE_ARTIFACTS_NO_UNCONTROLLED_UPGRADES",
+    "TRADE_ATTESTATION": true,
+    "TRADE_ATTESTATION_BLOCKER": null,
+    "TRADE_ATTESTATION_DISTINCTION": "TRADE_PERMISSION_ATTESTED_TRUE",
+    "WITHDRAW_ATTESTATION": false,
+    "ok": true
+  },
+  "LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED": false,
+  "LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN": false,
+  "LIVE_RECONCILIATION_PROVEN": false,
+  "NETWORK_EFFECT": "NONE",
+  "NEW_CANARY_OWNER_GO_GRANTED": false,
+  "ORDER_EFFECT": "NONE",
+  "ORIGIN_MAIN_SHA": "20f2eb51d933f67b7ff0d57d7aef94b767e68f99",
+  "OWNER_GO_BOUND": "OWNER_GO_LIVE_CANARY_TRADE_KEY_ATTESTATION",
+  "OWNER_GO_STATUS": "CONSUMED",
+  "PRIOR_CANARY_OWNER_GO_REUSED": false,
+  "PRIOR_DRY_RUN_KEY_REUSED": false,
+  "PRIOR_DRY_RUN_PERMISSION_ATTESTATION_SEALED": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false
+  },
+  "PRODUCTIVE_PRIVATE_READ_EFFECT": "NONE",
+  "READ_ATTESTATION": true,
+  "REGION": "EEA/DE",
+  "REQUIRED_API_KEY_CAPABILITY": {
+    "READ": true,
+    "TRADE": true,
+    "WITHDRAW": false
+  },
+  "REST_HOST": "eea.okx.com",
+  "SEALED_PRIOR_PERMISSION_FORENSIC": {
+    "ACCOUNT_SCOPE": "856964404452495999",
+    "AUTOMATIC_API_KEY_PERMISSION_CHANGE": false,
+    "DISTINCTION": "ACTUALLY_NOT_PERMITTED",
+    "DOCUMENT_CLASS": "SECTION_11_13_5_TRADE_PERMISSION_FORENSIC_V1",
+    "ENTITY": "OKX Europe Limited",
+    "EVIDENCE_REQUIRED_AFTERWARDS": "1) Owner attestation flags READ=true TRADE=true WITHDRAW=false; 2) GET-only permission/config proof under a future canary execute GO (not this authoring GO); 3) SecretRef URI with /live-canary-minimum-exposure/ path marker; 4) redacted authorization_binding.json without secret values.",
+    "OWNER_UI_ACTION": "On OKX EEA (eea.okx.com) API Management for account 856964404452495999: create or select a LIVE production API key with Trade=enabled and Withdraw=disabled (Read remains enabled). Do not reuse the dry-run/read-only SecretRef. Store material only in local vault under secretref://vault/peak-trade/live-canary-minimum-exposure/okx. Credential class must be LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY.",
+    "OWNER_UI_ACTION_REQUIRED": true,
+    "PRIOR_BINDING_SOURCE": "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/",
+    "PRIOR_PERMISSION_ATTESTATION": {
+      "READ": true,
+      "TRADE": false,
+      "WITHDRAW": false
+    },
+    "REGION": "EEA/DE",
+    "REQUIRED_FOR_CANARY_SUBMIT": {
+      "READ": true,
+      "TRADE": true,
+      "WITHDRAW": false
+    },
+    "REST_HOST": "eea.okx.com",
+    "SECRET_VALUE_ACCESS": "NONE",
+    "TRADE_ATTESTATION": false,
+    "TRADE_ATTESTATION_BLOCKER": "PRIOR_LIVE_DRY_RUN_KEY_CLASS_ATTESTED_TRADE_FALSE;CANARY_REQUIRES_SEPARATE_TRADE_CAPABLE_API_KEY_AND_ATTESTATION",
+    "VENUE": "OKX",
+    "ok": true
+  },
+  "SECRETREF_PROBE": {
+    "CANARY_SECRETREF_FOUND_ELSEWHERE": [],
+    "CANARY_SECRETREF_SHAPE_META": {
+      "field_length_meta": {
+        "api_key_len": 36,
+        "api_secret_len": 32,
+        "passphrase_len": 14
+      },
+      "present": true,
+      "secret_values_included": false,
+      "top_fields": [
+        "api_key",
+        "api_secret",
+        "passphrase"
+      ],
+      "uri": "secretref://vault/peak-trade/live-canary-minimum-exposure/okx"
+    },
+    "CANARY_SECRETREF_URI_PRESENT": true,
+    "CANARY_VAULT_PRESENT": true,
+    "CANARY_VAULT_RELATIVE": "section_11_13_5_live_canary_minimum_exposure/secrets/secretref_vault.json",
+    "CROSS_PACKAGE_URI_COLLISION_WITH_FORBIDDEN_MARKERS": false,
+    "DOCUMENT_CLASS": "SECTION_11_13_5_C_CANARY_TRADE_KEY_SECRETREF_PROBE_V1",
+    "OPS_LOCAL_ROOT_PRESENT": true,
+    "PRIOR_DRY_RUN_OR_RO_MATERIAL_PRESENT": true,
+    "PRIOR_PACKAGE_MATERIALS_IDENTICAL": true,
+    "PRIOR_PACKAGE_SECRETREFS": [
+      {
+        "field_length_meta": {
+          "api_key_len": 36,
+          "api_secret_len": 32,
+          "passphrase_len": 14
+        },
+        "present": true,
+        "sealed_permission_attestation": {
+          "READ": true,
+          "TRADE": false,
+          "WITHDRAW": false
+        },
+        "top_fields": [
+          "api_key",
+          "api_secret",
+          "passphrase"
+        ],
+        "uri": "secretref://vault/peak-trade/live-private-ro/okx",
+        "vault_relative": "section_11_13_2_live_private_read_only/secrets/secretref_vault.json"
+      },
+      {
+        "field_length_meta": {
+          "api_key_len": 36,
+          "api_secret_len": 32,
+          "passphrase_len": 14
+        },
+        "present": true,
+        "sealed_permission_attestation": {
+          "READ": true,
+          "TRADE": false,
+          "WITHDRAW": false
+        },
+        "top_fields": [
+          "api_key",
+          "api_secret",
+          "passphrase"
+        ],
+        "uri": "secretref://vault/peak-trade/live-shadow-recon/okx",
+        "vault_relative": "section_11_13_3_live_shadow_with_exchange_reconciliation/secrets/secretref_vault.json"
+      },
+      {
+        "field_length_meta": {
+          "api_key_len": 36,
+          "api_secret_len": 32,
+          "passphrase_len": 14
+        },
+        "present": true,
+        "sealed_permission_attestation": {
+          "READ": true,
+          "TRADE": false,
+          "WITHDRAW": false
+        },
+        "top_fields": [
+          "api_key",
+          "api_secret",
+          "passphrase"
+        ],
+        "uri": "secretref://vault/peak-trade/live-dry-run-order-plan/okx",
+        "vault_relative": "section_11_13_4_live_dry_run_order_plan/secrets/secretref_vault.json"
+      }
+    ],
+    "REQUIRED_SECRETREF_PATH_MARKER": "/live-canary-minimum-exposure",
+    "REQUIRED_SECRETREF_URI": "secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
+    "SECRET_DIGESTS_PERSISTED": false,
+    "SECRET_VALUES_PERSISTED": false,
+    "SECRET_VALUE_ACCESS": "NONE",
+    "ok": true
+  },
+  "SECRETREF_STATUS": "RESOLVED",
+  "SECRETREF_URI_CONTRACT": "secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
+  "SECRET_VALUE_ACCESS": "NONE",
+  "TERMINAL_STATE": "TRADE_KEY_ATTESTATION_PROVEN_AWAITING_EXCHANGE_TRUTH_ADOPTION",
+  "TRADE_ATTESTATION": true,
+  "VENUE": "OKX",
+  "WITHDRAW_ATTESTATION": false,
+  "ok": true
+}

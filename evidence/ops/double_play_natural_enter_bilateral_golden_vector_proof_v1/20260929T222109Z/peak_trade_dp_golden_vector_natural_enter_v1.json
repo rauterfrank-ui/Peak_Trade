@@ -1,0 +1,489 @@
+{
+  "wp": "DOUBLE_PLAY_GOLDEN_VECTOR_NATURAL_ENTER_PROOF_V1",
+  "generated_at_utc": "2026-09-29T22:13:01Z",
+  "baseline_sha": "0688318245043065a32c6b68e072147291993a87",
+  "worktree": "/Users/frnkhrz/Peak_Trade/.wt_dp_gv_natural_enter_proof_v1",
+  "worktree_isolated": true,
+  "repo_files_changed": false,
+  "POST_ALLOWED": false,
+  "EXTERNAL_EFFECT_AUTHORIZED": false,
+  "REAL_VENUE_POST_ALLOWED": false,
+  "REAL_KEYCHAIN_ACCESS_AUTHORIZED": false,
+  "golden_vector": {
+    "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+    "golden_vector_source": "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py::run_natural_enter_long_sequence_for_governed_pre_external_v1",
+    "golden_harness_source": "evidence/ops/double_play_productive_host_e2e_golden_vector_v1/20260929T220100Z/e2e_forensic_harness_v1.py::_forensic_productive_enter_long / contract FORENSIC_PRODUCTIVE_ENTER_LONG",
+    "expected_decision": "enter_long",
+    "expected_side": "LONG",
+    "expected_confirmation": "CONFIRMED",
+    "expects_enter": true,
+    "current_decision": "enter_long",
+    "current_side": "LONG",
+    "natural_enter_pass": true,
+    "pre_external_reached": true,
+    "disposition": "",
+    "mark_px": 1635.0,
+    "enter_ts": 1789527900.0,
+    "mark_increment": 5.0,
+    "decision_ssot_layers": [
+      "C1_OBSERVATION_ACCEPTANCE",
+      "C2_CONFIRMATION_PROGRESS",
+      "C3_DIRECTIONAL_ASSESSMENT_STATUS",
+      "SURVIVAL_DOMAIN",
+      "SUITABILITY_DOMAIN",
+      "COMPOSITION_CONFIRMED_ADMISSIBILITY",
+      "DOUBLE_PLAY_STATE_TRANSITION",
+      "ENTRY_EXIT_POLICY"
+    ],
+    "epochs": [
+      {
+        "epoch_label": "origin",
+        "cycle_id": "gv-natural-enter-origin",
+        "decision_outcome": "no_action",
+        "disposition": "",
+        "INPUTS": {
+          "closes_tail": [
+            1560.0,
+            1570.0,
+            1580.0,
+            1590.0,
+            1600.0,
+            1610.0,
+            1620.0,
+            1630.0
+          ],
+          "closes_len": 64,
+          "mark_px": 1000.0,
+          "incoming_side_state": null
+        },
+        "SCOPE": {
+          "event_type": "noop",
+          "mark_price": 1000.0,
+          "momentum_feature_set": {
+            "rsi": 99.9,
+            "roc": 0.63
+          },
+          "runtime_scope_after_anchor": 1000.0
+        },
+        "BULL": null,
+        "BEAR": null,
+        "CANDIDATE": {
+          "side": null,
+          "state": null,
+          "reason": "no_candidate"
+        },
+        "CONFIRMATION": {
+          "before": null,
+          "after": {
+            "bull": {
+              "assessment_state": "observe",
+              "distinct_count": 0,
+              "latest_epoch": "MarketObservationEpoch(value=0)"
+            },
+            "bear": {
+              "assessment_state": "observe",
+              "distinct_count": 0,
+              "latest_epoch": "MarketObservationEpoch(value=0)"
+            }
+          },
+          "epoch": "origin",
+          "reset": false
+        },
+        "SIDESTATE_SWITCH": {
+          "next_side_state": "neutral_observe",
+          "outgoing_cursor_side_state": "neutral_observe",
+          "transition_decision": {
+            "allowed": true,
+            "reason_code": "NOOP",
+            "live_authorization_granted": false
+          }
+        },
+        "ENTRY_POLICY": {
+          "decision_outcome": "no_action",
+          "previous_direction_state": "neutral",
+          "reason_codes": [
+            "no_action"
+          ]
+        },
+        "COMPOSITION": {
+          "composition_status": "no_action"
+        },
+        "FINAL_DECISION": "no_action",
+        "FINAL_REASON": [
+          "no_action"
+        ]
+      },
+      {
+        "epoch_label": "upscope_candidate",
+        "cycle_id": "gv-natural-enter-upscope-candidate",
+        "decision_outcome": "observe",
+        "disposition": "",
+        "INPUTS": {
+          "closes_tail": [
+            1560.0,
+            1570.0,
+            1580.0,
+            1590.0,
+            1600.0,
+            1610.0,
+            1620.0,
+            1630.0
+          ],
+          "closes_len": 64,
+          "mark_px": 1630.0,
+          "incoming_side_state": null
+        },
+        "SCOPE": {
+          "event_type": "upscope_candidate",
+          "mark_price": 1630.0,
+          "momentum_feature_set": {
+            "rsi": 99.9,
+            "roc": 0.63
+          },
+          "runtime_scope_after_anchor": 1000.0
+        },
+        "BULL": {
+          "side": "long",
+          "status": "candidate",
+          "signal_strength": 0.38650306748466257,
+          "confidence": 1.0,
+          "operands": {
+            "signal_strength": 0.38650306748466257,
+            "feature_refs": [
+              "feat-momentum-v1"
+            ],
+            "reason_codes": [
+              "c3_confirmation_progress",
+              "ACCEPTED_DISTINCT_PROGRESS",
+              "assessment_signal_confirmed",
+              "confirmation_state_candidate"
+            ]
+          },
+          "thresholds": {
+            "observe": 0.001,
+            "candidate": 0.005,
+            "confirmation": 0.01
+          },
+          "comparison": {
+            "signal_vs_observe": true,
+            "signal_vs_candidate": true,
+            "signal_vs_confirmation": true,
+            "result_status": "candidate"
+          }
+        },
+        "BEAR": null,
+        "CANDIDATE": {
+          "side": "LONG",
+          "state": "candidate",
+          "reason": "bull_status=candidate signal=0.38650306748466257"
+        },
+        "CONFIRMATION": {
+          "before": {
+            "bull": {
+              "assessment_state": "observe",
+              "distinct_count": 0,
+              "latest_epoch": "MarketObservationEpoch(value=0)"
+            },
+            "bear": {
+              "assessment_state": "observe",
+              "distinct_count": 0,
+              "latest_epoch": "MarketObservationEpoch(value=0)"
+            }
+          },
+          "after": {
+            "bull": {
+              "assessment_state": "candidate",
+              "distinct_count": 1,
+              "latest_epoch": "MarketObservationEpoch(value=2)"
+            },
+            "bear": {
+              "assessment_state": "observe",
+              "distinct_count": 0,
+              "latest_epoch": "MarketObservationEpoch(value=0)"
+            }
+          },
+          "epoch": "upscope_candidate",
+          "reset": false
+        },
+        "SIDESTATE_SWITCH": {
+          "next_side_state": "neutral_observe",
+          "outgoing_cursor_side_state": "neutral_observe",
+          "transition_decision": {
+            "allowed": true,
+            "reason_code": "CANDIDATE_ACK",
+            "live_authorization_granted": false
+          }
+        },
+        "ENTRY_POLICY": {
+          "decision_outcome": "observe",
+          "previous_direction_state": "neutral",
+          "reason_codes": [
+            "observe_only"
+          ]
+        },
+        "COMPOSITION": {
+          "composition_status": "observe"
+        },
+        "FINAL_DECISION": "observe",
+        "FINAL_REASON": [
+          "observe_only"
+        ]
+      },
+      {
+        "epoch_label": "enter",
+        "cycle_id": "gv-natural-enter-long",
+        "decision_outcome": "enter_long",
+        "disposition": "",
+        "INPUTS": {
+          "closes_tail": [
+            1570.0,
+            1580.0,
+            1590.0,
+            1600.0,
+            1610.0,
+            1620.0,
+            1630.0,
+            1635.0
+          ],
+          "closes_len": 65,
+          "mark_px": 1635.0,
+          "incoming_side_state": null
+        },
+        "SCOPE": {
+          "event_type": "upscope_confirmed",
+          "mark_price": 1635.0,
+          "momentum_feature_set": {
+            "rsi": 99.9,
+            "roc": 0.635
+          },
+          "runtime_scope_after_anchor": 1000.0
+        },
+        "BULL": {
+          "side": "long",
+          "status": "confirmed",
+          "signal_strength": 0.38837920489296635,
+          "confidence": 1.0,
+          "operands": {
+            "signal_strength": 0.38837920489296635,
+            "feature_refs": [
+              "feat-momentum-v1"
+            ],
+            "reason_codes": [
+              "c3_confirmation_progress",
+              "ACCEPTED_DISTINCT_CONFIRMED",
+              "assessment_signal_confirmed",
+              "confirmation_state_confirmed"
+            ]
+          },
+          "thresholds": {
+            "observe": 0.001,
+            "candidate": 0.005,
+            "confirmation": 0.01
+          },
+          "comparison": {
+            "signal_vs_observe": true,
+            "signal_vs_candidate": true,
+            "signal_vs_confirmation": true,
+            "result_status": "confirmed"
+          }
+        },
+        "BEAR": null,
+        "CANDIDATE": {
+          "side": "LONG",
+          "state": "confirmed",
+          "reason": "bull_status=confirmed signal=0.38837920489296635"
+        },
+        "CONFIRMATION": {
+          "before": {
+            "bull": {
+              "assessment_state": "candidate",
+              "distinct_count": 1,
+              "latest_epoch": "MarketObservationEpoch(value=2)"
+            },
+            "bear": {
+              "assessment_state": "observe",
+              "distinct_count": 0,
+              "latest_epoch": "MarketObservationEpoch(value=0)"
+            }
+          },
+          "after": {
+            "bull": {
+              "assessment_state": "confirmed",
+              "distinct_count": 2,
+              "latest_epoch": "MarketObservationEpoch(value=3)"
+            },
+            "bear": {
+              "assessment_state": "observe",
+              "distinct_count": 0,
+              "latest_epoch": "MarketObservationEpoch(value=0)"
+            }
+          },
+          "epoch": "enter",
+          "reset": false
+        },
+        "SIDESTATE_SWITCH": {
+          "next_side_state": "long_armed_neutral_start",
+          "outgoing_cursor_side_state": "long_armed_neutral_start",
+          "transition_decision": {
+            "allowed": true,
+            "reason_code": "NEUTRAL_TO_LONG_ARMED",
+            "live_authorization_granted": false
+          }
+        },
+        "ENTRY_POLICY": {
+          "decision_outcome": "enter_long",
+          "previous_direction_state": "long_armed",
+          "reason_codes": [
+            "entry_long_eligible"
+          ]
+        },
+        "COMPOSITION": {
+          "composition_status": "long_selected"
+        },
+        "FINAL_DECISION": "enter_long",
+        "FINAL_REASON": [
+          "entry_long_eligible"
+        ]
+      }
+    ],
+    "bull_candidate_observed": true,
+    "bear_candidate_observed": false,
+    "confirmation_progress_observed": true,
+    "max_confirmation_state": "confirmed:2",
+    "dp_required_fields_map": {
+      "mark_price": true,
+      "momentum_feature_set": true,
+      "instrument_id": true,
+      "price_path_closes": true,
+      "side_state_cursor": true,
+      "confirmation_carrier": true,
+      "runtime_scope_state": true,
+      "typed_vol_joined_via_g17": true
+    },
+    "dp_input_boundary": "IntegratedOfflineReplayInputV1 / productive oneshot _cycle \u2192 MV2+DP intermediate",
+    "bound_instrument": "BoundInstrumentV1(instrument_id='inst-eth-usdt-perp', venue_native_id='inst-eth-usdt-perp', ranking_snapshot_id='rank-cursor-join', ranking_integrity_digest='rank-cursor-join-digest', universe_snapshot_id='uni-cursor-join', selection_id='sel-cursor-join', selection_integrity_digest='sel-cursor-join-digest', selection_state='SELECTED', selected_future_count=1, max_positions_effective=1, ranking_policy_id='', ranking_policy_version='', upstream_rank_order_witness='')",
+    "ENTER_WAS_FORCED": false,
+    "STRATEGY_THRESHOLDS_CHANGED": false
+  },
+  "GOLDEN_VECTOR_FOUND": true,
+  "GOLDEN_VECTOR_SOURCE": "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py::run_natural_enter_long_sequence_for_governed_pre_external_v1",
+  "GOLDEN_VECTOR_EXPECTS_ENTER": true,
+  "GOLDEN_VECTOR_EXPECTED_SIDE": "LONG",
+  "GOLDEN_VECTOR_EXPECTED_DECISION": "enter_long",
+  "GOLDEN_VECTOR_EXPECTED_CONFIRMATION": "CONFIRMED",
+  "GOLDEN_VECTOR_CURRENT_DECISION": "enter_long",
+  "GOLDEN_VECTOR_CURRENT_SIDE": "LONG",
+  "BULL_CANDIDATE_OBSERVED": true,
+  "BEAR_CANDIDATE_OBSERVED": false,
+  "CONFIRMATION_PROGRESS_OBSERVED": true,
+  "MAX_CONFIRMATION_STATE": "confirmed:2",
+  "GOLDEN_VECTOR_NATURAL_ENTER_PASS": true,
+  "PRE_EXTERNAL_REACHED": true,
+  "ENTER_WAS_FORCED": false,
+  "STRATEGY_THRESHOLDS_CHANGED": false,
+  "FIRST_DIVERGENT_STAGE": "NONE",
+  "FIRST_DIVERGENT_FIELD": "NONE",
+  "EXPECTED_VALUE": "NONE",
+  "ACTUAL_VALUE": "NONE",
+  "live_wiring": {
+    "fresh_live_get_performed": true,
+    "live_selected_future": "0G-USDT-SWAP",
+    "live_bound_instrument": "0G-USDT-SWAP",
+    "live_to_dp_boundary_reached": true,
+    "dp_required_fields_present": true,
+    "dp_input_schema_match": true,
+    "dp_input_provenance_valid": true,
+    "get_count": 4,
+    "post_count": 0,
+    "path": "acquire_eea_universe_inventory_v1 \u2192 run_cap21_to_cap23_persist_productive_v1 \u2192 run_single_selected_future_runtime_binding_gate_v1",
+    "error": null,
+    "golden_dp_fields_reference": {
+      "mark_price": true,
+      "momentum_feature_set": true,
+      "instrument_id": true,
+      "price_path_closes": true,
+      "side_state_cursor": true,
+      "confirmation_carrier": true,
+      "runtime_scope_state": true,
+      "typed_vol_joined_via_g17": true
+    },
+    "acquisition_ok": true,
+    "acquisition_provenance": {
+      "ACQUISITION_OWNER": "CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_ACQUISITION_V1",
+      "HOST": "eea.okx.com",
+      "VENUE": "okx_eea",
+      "SOURCE_KIND": "okx_eea_public_instruments",
+      "NETWORK_METHODS": [
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "ENDPOINTS": [
+        "/api/v5/public/instruments?instType=FUTURES",
+        "/api/v5/public/mark-price?instType=FUTURES",
+        "/api/v5/public/instruments?instType=SWAP",
+        "/api/v5/public/mark-price?instType=SWAP"
+      ],
+      "POST_COUNT": "0",
+      "INST_TYPES": [
+        "FUTURES",
+        "SWAP"
+      ],
+      "INSTID_FORCED": false,
+      "CREDENTIALS_USED": false,
+      "CAP21_NETWORK_OWNER": false,
+      "CANARY_INSTRUMENT_AUTHORITY_IMPORTED": false,
+      "INSTRUMENTS_DIGEST": "f68fc3e1c24c56b9e170a63b6883e3db19aefd3a422060f2ae1b163a389a8cf8",
+      "MARK_PRICE_DIGEST": "44512e5e28e9355435e242cec66c937c99a6c1141a85b58ffacce1d5947291b7",
+      "INSTRUMENT_ROW_COUNT": 743,
+      "MARK_PRICE_ROW_COUNT": 743,
+      "VENUE_LIVE_CONTACT": true,
+      "FAILURE_CODES": [],
+      "SOFT_FAILURE_CODES": []
+    },
+    "endpoints_used": [
+      "/api/v5/public/instruments?instType=FUTURES",
+      "/api/v5/public/mark-price?instType=FUTURES",
+      "/api/v5/public/instruments?instType=SWAP",
+      "/api/v5/public/mark-price?instType=SWAP"
+    ],
+    "cap21_23_ok": true,
+    "cap21_23_status": "PASS",
+    "binding_ok": true,
+    "bound_canonical_instrument_id": "okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
+    "live_mark_price": "0.3289",
+    "live_mark_map_size": 743,
+    "live_fields": {
+      "mark_price": true,
+      "momentum_feature_set": false,
+      "instrument_id": true,
+      "price_path_closes": false,
+      "side_state_cursor": false,
+      "confirmation_carrier": false,
+      "runtime_scope_state": false,
+      "typed_vol_joined_via_g17": false,
+      "venue_instrument_id": true,
+      "acquisition_provenance": true,
+      "selection_present": true,
+      "binding_present": true
+    },
+    "note": "Live proves Cap24 identity+mark provenance into DP host boundary; golden vector CMC feature values are deterministic fixtures and must not be substituted."
+  },
+  "FRESH_LIVE_GET_PERFORMED": true,
+  "LIVE_SELECTED_FUTURE": "0G-USDT-SWAP",
+  "LIVE_BOUND_INSTRUMENT": "0G-USDT-SWAP",
+  "LIVE_TO_DP_BOUNDARY_REACHED": true,
+  "DP_REQUIRED_FIELDS_PRESENT": true,
+  "DP_INPUT_SCHEMA_MATCH": true,
+  "DP_INPUT_PROVENANCE_VALID": true,
+  "GET_COUNT": 4,
+  "POST_COUNT": 0,
+  "STATUS": "GOLDEN_VECTOR_ENTER_PROVEN",
+  "LIVE_NATURAL_ENTER_REQUIRED": false,
+  "DP_SEMANTICS_CHANGED": false,
+  "TRADING_THRESHOLDS_CHANGED": false,
+  "FORCED_SIGNAL_USED": false,
+  "GOLDEN_VECTOR_INJECTED_AS_LIVE_DATA": false,
+  "NEXT_MINIMAL_ACTION": "Deterministic Natural-Enter intact; live Cap24\u2192DP identity/mark boundary populated. Optional next: Owner-GO bounded PRE_EXTERNAL continuous Fresh-C1 cycle (no POST) \u2014 do not wait for live-market ENTER."
+}

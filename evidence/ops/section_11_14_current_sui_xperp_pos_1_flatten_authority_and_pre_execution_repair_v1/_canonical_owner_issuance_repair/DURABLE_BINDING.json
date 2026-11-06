@@ -1,0 +1,25 @@
+{
+  "authority_id": "2c2c228866e6cbfe5aa23ecafe4eec7c747cba230b95057ee2206c2a52bf8041",
+  "bind_fields": [
+    "schema_version",
+    "authority_type",
+    "section",
+    "purpose",
+    "action",
+    "origin_main_sha",
+    "exact_envelope_id",
+    "instrument_id",
+    "expected_signed_position",
+    "order_side",
+    "order_qty",
+    "order_qty_unit",
+    "reduce_only",
+    "single_use"
+  ],
+  "consumed": false,
+  "durable_consumed": false,
+  "recomputed_authority_id": "2c2c228866e6cbfe5aa23ecafe4eec7c747cba230b95057ee2206c2a52bf8041",
+  "resubmit_allowed": false,
+  "retry_allowed": false,
+  "second_submit_allowed": false
+}

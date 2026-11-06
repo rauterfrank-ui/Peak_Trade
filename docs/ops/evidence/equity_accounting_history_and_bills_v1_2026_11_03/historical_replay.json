@@ -1,0 +1,73 @@
+{
+  "schema": "peaktrade.historical_accounting_sources_replay.v1",
+  "historical_trade_reproduced": true,
+  "historical_trade_result": "-0.000374",
+  "historical_restart_proven": false,
+  "historical_anchor_cross_artifact_links_match": true,
+  "historical_anchor_as_of": "2026-09-14T17:45:07Z",
+  "historical_links_are_not_new_ratification": true,
+  "historical_bills_audit": {
+    "schema": "peaktrade.account_bills_observation_audit.v1",
+    "page_digests": [
+      "9e9e5a94be7bf66f2f9ac79ca2892c2ec7ce7d9b6329eb808b6ffd71243a38a3",
+      "bdf1545a4b47620dfb181b11af0e6d96b90c7d934e64015f9736fe8aaf01ab83"
+    ],
+    "account_binding_digest": "00c354f2d247f5a64e33efb31f8be155b8557e847868335ccb15cd4f7ca9d7c4",
+    "unique_bill_count": 36,
+    "identical_duplicate_count": 22,
+    "observed_type_subtype_tokens": [
+      "1/11",
+      "1/12",
+      "2/1",
+      "2/2",
+      "27/318",
+      "27/319",
+      "8/173"
+    ],
+    "currencies": [
+      {
+        "currency": "EUR",
+        "row_count": 4,
+        "first_event_ms": 1782665960473,
+        "last_event_ms": 1788474402575,
+        "continuity_comparison_count": 3,
+        "continuity_break_count": 0,
+        "observed_chain_consistent": true,
+        "opening_balance_authorized": false
+      },
+      {
+        "currency": "USDC",
+        "row_count": 32,
+        "first_event_ms": 1788474402575,
+        "last_event_ms": 1789315200770,
+        "continuity_comparison_count": 31,
+        "continuity_break_count": 0,
+        "observed_chain_consistent": true,
+        "opening_balance_authorized": false
+      }
+    ],
+    "observed_chain_consistent": true,
+    "empty_observation": false,
+    "empty_means_zero_events": false,
+    "classified_event_stream_complete": false,
+    "equity_reconstructed": false,
+    "capital_admitted": false,
+    "authority_effect": "NONE"
+  },
+  "sources_sha256": {
+    "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/GET_FILLS.raw.json": "de429030b71b4db50923deb60731c8d12887300605e0bb194126465e2efe61ef",
+    "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/GET_POSITIONS.raw.json": "a428f9f023f2b130301bfdf11b9d050cf377c4140f2354ead409c4be290c8959",
+    "evidence/ops/full_core_live_equity_stock_today_declaration_governed_binding_contract_wp1/2026-09-14T174507Z/system_bound_today_initial_stock_candidate_v1.json": "b4216f1343b608135f363aafd0ab4e3aaea80b4185b57cce01d03154ec970a1c",
+    "evidence/ops/full_core_live_equity_stock_today_initial_stock_ratification_wp1/2026-09-14T182100Z/today_initial_stock_owner_ratification_v1.json": "4adb5da03c7bfb7d788825c05f7122d5192765ca8e2b2ec20b5c10bf4750d458",
+    "evidence/ops/full_core_live_equity_stock_today_initial_stock_anchor_wp1/2026-09-14T205500Z/today_initial_stock_anchor_v1.json": "14636cd939e3eadb6cd162a587b0f8cfb36119cc184933660e0d45465ee73356",
+    "evidence/ops/full_core_live_equity_stock_today_initial_stock_kind_set_membership_wp1/2026-09-14T212500Z/today_initial_stock_kind_set_membership_v1.json": "bd54313e40c1eab87797dfd9c76581fe0621b609d136517f10029e75b94a570f",
+    "evidence/ops/full_core_d6_path_b_package_1_observation_execution_v1/2026-09-13T182521Z/s4_account_bills_observation_v1.json": "f3d8b2148c2b8ab46d8da190eb32bd947899906aa38e808edc0bfab3a6317aa9",
+    "evidence/ops/full_core_d6_path_b_package_1_observation_execution_v1/2026-09-13T182521Z/s4_account_bills_archive_observation_v1.json": "5b7e881c318ffa1121be35c4aa81d232b5856a686887f74a9991b0862ee95ed1"
+  },
+  "today_equity_reconstructed": false,
+  "historical_anchor_adopted_as_current": false,
+  "account_identity_continuity_to_today_proven": false,
+  "complete_stream_between_anchor_and_today_proven": false,
+  "authority_effect": "NONE",
+  "network_requests": 0
+}

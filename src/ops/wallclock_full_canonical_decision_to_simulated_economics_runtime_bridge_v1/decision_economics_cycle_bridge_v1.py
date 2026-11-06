@@ -1,0 +1,2120 @@
+"""Session-stateful wallclock decision→economics cycle bridge.
+
+Sole decision authority: run_integrated_offline_trading_logic_replay_v1.
+Analytical portfolio only. No orders / credentials / live activation.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import tempfile
+from dataclasses import dataclass, field, replace
+from datetime import datetime, timezone
+from decimal import Decimal
+from pathlib import Path
+from typing import Any, Mapping, Optional, Sequence
+
+from src.governance.live_mode_gate import ExecutionEnvironment
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    DdoCaptureBindingV0,
+    bind_host_cycle_capture_context_v0,
+    record_productive_cycle_capture_v0,
+    with_ddo_capture_session_v0,
+)
+from src.ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1.account_identity_boundary_v1 import (
+    AccountIdentityRecordV1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_learning_outcome_evidence_ingest_host_binding_v1 import (
+    apply_learning_state_feedback_to_next_cycle_v1,
+    invoke_productive_learning_outcome_evidence_ingest_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_evaluation_runtime_host_binding_v1 import (
+    invoke_productive_n_bars_evaluation_runtime_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_horizon_observation_host_binding_v1 import (
+    invoke_productive_n_bars_horizon_observation_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_horizon_upstream_from_cycle_capture_v1 import (
+    maybe_bind_ddo_n_bars_horizon_decision_from_cycle_capture_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_n_bars_public_plane_convergence_v1 import (
+    maybe_materialize_ddo_o4_n_bars_snapshot_from_public_plane_convergence_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_canonical_bar_producer_session_binding_v1 import (
+    maybe_ingest_accepted_observation_into_ddo_o4_producer_v1,
+)
+from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.canonical_bar_producer_v1 import (
+    CanonicalPublicMdBarProducerV1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_observation_host_scope_binding_v1 import (
+    DdoHostScopeInputError,
+    DdoObservationHostScopeInputsV1,
+    annotate_ddo_host_ledger_binding_on_capture_v1,
+    apply_ddo_observation_host_scope_to_capture_binding_v1,
+    assert_ddo_observation_host_scope_stable_v1,
+    maybe_bind_ddo_observation_host_scope_from_optional_inputs_v1,
+    observe_ddo_host_scope_conflict_v1,
+)
+from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
+from src.ops.phase_9_2_productive_decision_graph_actionability_forensic_telemetry_v1.host_binding_v1 import (
+    ActionabilityTelemetryBindingV1,
+    record_productive_cycle_telemetry_v1,
+)
+from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1 import (
+    SimulatedFillV1,
+    SimulatedPortfolioEconomicsModelV1,
+)
+from src.ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1 import (
+    ProductiveFuturesAccountingSessionV1,
+)
+from src.ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1 import (
+    apply_intended_action_via_canonical_accounting_v1,
+    ensure_accounting_session_v1,
+)
+from src.ops.productive_futures_accounting_runtime_binding_v1.constants_v1 import (
+    CALL_GRAPH_RISK_STEP as ACCOUNTING_RISK_STEP,
+    CALL_GRAPH_STEP as ACCOUNTING_CALL_GRAPH_STEP,
+    FUTURES_ACCOUNTING_RUNTIME_BOUND,
+    SINGLE_WRITER_IDENTITY as ACCOUNTING_SINGLE_WRITER_IDENTITY,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.constants_v1 import (
+    CALL_GRAPH_STEP as RECON_CALL_GRAPH_STEP,
+    SINGLE_WRITER_IDENTITY,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
+    PortfolioTruthSnapshotV1,
+    PositionTruthV1,
+    ProductiveReconciliationEvidenceV1,
+    ProductiveReconciliationGateResultV1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.startup_gate_v1 import (
+    run_productive_reconciliation_startup_gate_v1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.taxonomy_v1 import (
+    ProductiveReconciliationClass,
+)
+from src.ops.single_selected_future_runtime_binding_v1.binding_gate_v1 import (
+    run_single_selected_future_runtime_binding_gate_v1,
+)
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+    CALL_GRAPH_BINDING_PREFIX as SELECTION_BINDING_PREFIX,
+    CALL_GRAPH_STEP as SELECTION_BINDING_STEP,
+)
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+    RuntimeBindingGateResultV1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1 import (
+    AUTHORITY_EFFECT_NONE,
+    CAPABILITY_ID,
+    DECISION_AUTHORITY_OWNER,
+    ECONOMIC_VALIDITY_PASS,
+    EXECUTION_CLASS_ANALYTICAL,
+    FEATURE_WINDOW_MIN,
+    LIVE_AUTHORIZED,
+    MIN_PRICE_PATH_LEN,
+    ORDER_EFFECT_NONE,
+    ORDERS_AUTHORIZED,
+    OWNER,
+    PACKAGE_MARKER,
+    PAPER_EXECUTION_AUTHORIZED,
+    PRICE_PATH_MAX_LEN,
+    PROMOTION_PASS,
+    RUNTIME_BRIDGE_LIVE_ACTIVATED,
+    RUNTIME_EFFECT_NONE,
+    SCHEMA_VERSION,
+    TESTNET_AUTHORIZED,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.feature_regime_pipeline_v1 import (
+    compute_feature_regime_from_mid_prices_v1,
+)
+from src.ops.stateful_confirmation_and_c1_productive_binding_v1.constants_v1 import (
+    CALL_GRAPH_C1_RESULT_STEP,
+    CALL_GRAPH_C1_STEP,
+    CALL_GRAPH_C2_STEP,
+    CALL_GRAPH_C3_STEP,
+    CALL_GRAPH_COMMIT_STEP,
+    DEFAULT_VENUE as CONFIRMATION_DEFAULT_VENUE,
+)
+from src.ops.stateful_confirmation_and_c1_productive_binding_v1.host_binding_v1 import (
+    HostConfirmationBindingV1,
+    ObservationCycleKindV1,
+    commit_host_confirmation_after_replay_v1,
+    confirmation_config_digest_v1,
+    ensure_host_confirmation_binding_v1,
+    evaluate_host_observation_acceptance_v1,
+)
+from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
+    CANONICAL_CONFIRMATION_EPOCHS,
+)
+from src.ops.decision_config_ownership_and_consumer_closure_v1.constants_v1 import (
+    CALL_GRAPH_CONFIG_BIND_STEP,
+)
+from src.ops.decision_config_ownership_and_consumer_closure_v1.host_binding_v1 import (
+    HostDecisionConfigBindingV1,
+    ensure_host_decision_config_binding_v1,
+    require_bound_decision_config_v1,
+)
+from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
+    CALL_GRAPH_PREVIOUS_SCOPE_STEP,
+    CALL_GRAPH_SCOPE_COMMIT_STEP,
+    CALL_GRAPH_SCOPE_TRANSITION_STEP,
+    DEFAULT_VENUE as DYNAMIC_SCOPE_DEFAULT_VENUE,
+)
+from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
+    CALL_GRAPH_EXIT_PRODUCER_STEP,
+    CALL_GRAPH_EXIT_STATE_COMMIT_STEP,
+    FROZEN_PROFIT_PROTECTION_DISTANCE,
+)
+from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
+    HostExitPolicyBindingV1,
+    commit_host_exit_policy_state_v1,
+    ensure_host_exit_policy_binding_v1,
+    evaluate_host_exit_policy_producers_v1,
+    exit_policy_config_digest_v1,
+)
+from src.ops.single_future_stateful_no_order_runtime_activation_v1.host_binding_v1 import (
+    HostActivationBindingV1,
+    ensure_host_activation_binding_v1,
+    host_simulated_execution_port_v1,
+)
+from src.ops.full_decision_path_atomic_restart_closure_v1.constants_v1 import (
+    CALL_GRAPH_ATOMIC_COMMIT_STEP,
+    CALL_GRAPH_PENDING_EVIDENCE_STEP,
+)
+from src.ops.full_decision_path_atomic_restart_closure_v1.host_binding_v1 import (
+    HostDecisionPathAtomicBindingV1,
+    commit_host_decision_path_atomic_v1,
+    ensure_host_decision_path_atomic_binding_v1,
+)
+from src.ops.dynamic_scope_persistence_binding_v1.host_binding_v1 import (
+    HostDynamicScopeBindingV1,
+    commit_host_dynamic_scope_after_replay_v1,
+    dynamic_scope_config_digest_v1,
+    ensure_host_dynamic_scope_binding_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.intended_action_mapper_v1 import (
+    IntendedAnalyticalActionV1,
+    map_replay_result_to_intended_analytical_action_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.sidestate_restore_v1 import (
+    SideStateRestoreError,
+    parse_persisted_side_state_v1,
+)
+from trading.master_v2.canonical_market_context_v1 import (
+    CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
+    FEATURE_CONTRACT_VERSION,
+    BarFinalityStatus,
+    CanonicalMarketContextBindingStateV1,
+    CanonicalMarketContextV1,
+    ClockTrustStatus,
+    DataIntegrityStatus,
+    WarmupStatus,
+    with_computed_input_digest,
+)
+from trading.master_v2.canonical_scope_initialization_v1 import (
+    CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
+    CanonicalScopeInitializationPolicyV1,
+    SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
+    SCOPE_INITIALIZATION_POLICY_VERSION,
+    ScopeInitializationPrerequisitesV1,
+    ScopeReinitializationGuardV1,
+    default_instrument_relative_scope_initialization_policy_v1,
+)
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    layer_c_derived_dynamic_scope_persistence_config_digest_v1,
+    layer_c_derived_exit_policy_adverse_config_digest_v1,
+    resolve_layer_c_event_distances_from_mark_and_volatility_v1,
+)
+from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
+    quarantine_explicit_replay_default_volatility_v1,
+    require_admitted_legacy_volatility_float_v1,
+)
+from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+    CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
+)
+from trading.master_v2.deterministic_scope_event_generator_v1 import (
+    DETERMINISTIC_SCOPE_EVENT_GENERATOR_LAYER_VERSION,
+    SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+    ScopeConfirmationStateV1,
+    ScopeCooldownStateV1,
+    ScopeDirectionState,
+    ScopeEventGeneratorPolicyV1,
+)
+from trading.master_v2.directional_assessment_v1 import (
+    DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
+    DirectionalAssessmentPolicyV1,
+    DirectionalAssessmentSide,
+    DirectionalConfirmationStateV1,
+)
+from trading.master_v2.double_play_composition_matrix_v1 import (
+    DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
+    BothCandidateOutcome,
+    BothInvalidOutcome,
+    CompositionDirectionState,
+    DoublePlayCompositionPolicyV1,
+    PositionManagementContext,
+)
+from trading.master_v2.double_play_entry_exit_policy_v0 import (
+    ENTRY_EXIT_POLICY_VERSION,
+    DoublePlayEntryExitPolicyV0,
+    EntryExitDirectionState,
+    ExistingPositionSide,
+    PositionState,
+    ReconciliationState,
+    TradingGate,
+)
+from trading.master_v2.double_play_futures_input import FuturesMarketType
+from trading.master_v2.double_play_state import SideState
+from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+    INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
+    IntegratedOfflineReplayPoliciesV1,
+    _side_state_to_entry_exit_direction,
+    build_integrated_offline_replay_input_v1,
+    run_integrated_offline_trading_logic_replay_v1,
+    scope_direction_from_side_state_v1,
+)
+from trading.master_v2.suitability_binding_v1 import (
+    SUITABILITY_RANKING_POLICY_VERSION,
+    SuitabilityBindingStatus,
+    SuitabilityRankingPolicyV1,
+    SuitabilityRegimeStatus,
+    SuitabilityStrategyEntryV1,
+    SuitabilityStrategyRegistryV1,
+)
+from trading.master_v2.survival_assessment_v1 import (
+    SURVIVAL_ASSESSMENT_POLICY_VERSION,
+    SurvivalAssessmentPolicyV1,
+)
+
+_IMPL_DIGEST = hashlib.sha256(
+    b"wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1-impl"
+).hexdigest()
+
+_LAYER_C_VOL_QUARANTINE = quarantine_explicit_replay_default_volatility_v1(
+    source_file_or_component=(
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/"
+        "decision_economics_cycle_bridge_v1.py:_LAYER_C_VOL_QUARANTINE"
+    ),
+)
+
+
+def _resolve_layer_c_volatility_estimate_v1(raw_volatility_estimate: float) -> float:
+    vol = float(raw_volatility_estimate)
+    if vol > 0.0 and vol == vol:
+        return vol
+    return require_admitted_legacy_volatility_float_v1(_LAYER_C_VOL_QUARANTINE)
+
+
+def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
+    return IntegratedOfflineReplayPoliciesV1(
+        scope_initialization=default_instrument_relative_scope_initialization_policy_v1(),
+        scope_event_generator=ScopeEventGeneratorPolicyV1(
+            hard_max_scope_distance=1000.0,
+            hard_max_adverse_distance=500.0,
+            hard_max_reversal_distance=800.0,
+            policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+        ),
+        directional=DirectionalAssessmentPolicyV1(
+            observe_signal_threshold=0.001,
+            candidate_signal_threshold=0.005,
+            confirmation_signal_threshold=0.01,
+            confirmation_epochs=int(CANONICAL_CONFIRMATION_EPOCHS),
+            validity_epochs=3,
+            policy_version=DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
+        ),
+        survival=SurvivalAssessmentPolicyV1(
+            min_net_edge=0.001,
+            min_volatility_survival_ratio=0.5,
+            min_sequence_survival_ratio=0.5,
+            min_drawdown_survival_ratio=0.5,
+            min_liquidation_buffer_ratio=0.1,
+            validity_epochs=3,
+            policy_version=SURVIVAL_ASSESSMENT_POLICY_VERSION,
+        ),
+        suitability=SuitabilityRankingPolicyV1(
+            validity_epochs=3,
+            no_match_status=SuitabilityBindingStatus.FAIL,
+            policy_version=SUITABILITY_RANKING_POLICY_VERSION,
+        ),
+        composition=DoublePlayCompositionPolicyV1(
+            validity_epochs=3,
+            both_candidate_outcome=BothCandidateOutcome.OBSERVE,
+            both_invalid_outcome=BothInvalidOutcome.BLOCKED,
+            policy_version=DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
+        ),
+        entry_exit=DoublePlayEntryExitPolicyV0(policy_version=ENTRY_EXIT_POLICY_VERSION),
+    )
+
+
+def _component_versions() -> dict[str, str]:
+    return {
+        "canonical_market_context": CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
+        "canonical_scope_initialization": CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
+        "deterministic_scope_event_generator": DETERMINISTIC_SCOPE_EVENT_GENERATOR_LAYER_VERSION,
+        "directional_assessment": "v1",
+        "survival_assessment": "v1",
+        "suitability_binding": "v1",
+        "double_play_composition_matrix": "v1",
+        "double_play_entry_exit_policy": "v0",
+        "double_play_state": "v0",
+        "integrated_offline_trading_logic_replay": INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
+        "canonical_trading_decision_evidence": CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
+    }
+
+
+def _policy_versions() -> dict[str, str]:
+    return {
+        "scope_initialization": SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
+        "scope_event_generator": SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+        "directional": DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
+        "survival": SURVIVAL_ASSESSMENT_POLICY_VERSION,
+        "suitability": SUITABILITY_RANKING_POLICY_VERSION,
+        "composition": DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
+        "entry_exit": ENTRY_EXIT_POLICY_VERSION,
+    }
+
+
+def _strategy_registry() -> SuitabilityStrategyRegistryV1:
+    return SuitabilityStrategyRegistryV1(
+        entries=(
+            SuitabilityStrategyEntryV1(
+                strategy_id="strat-momentum-v1",
+                supported_regime_ids=("trending", "ranging", "volatile"),
+                supported_sides=(DirectionalAssessmentSide.LONG, DirectionalAssessmentSide.SHORT),
+                priority_rank=10,
+                disabled=False,
+                confidence_score=0.75,
+            ),
+        )
+    )
+
+
+def _iso_now(ts: float) -> str:
+    return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
+
+
+@dataclass
+class BridgeSessionStateV1:
+    instrument_id: str = PRODUCTION_INSTRUMENT_ID
+    trading_epoch: int = 1
+    mid_prices: list[float] = field(default_factory=list)
+    side_state: SideState = SideState.LONG_ARMED
+    direction_state: EntryExitDirectionState = EntryExitDirectionState.LONG_ARMED
+    scope_direction_state: ScopeDirectionState = ScopeDirectionState.LONG
+    previous_composition_direction_state: CompositionDirectionState = (
+        CompositionDirectionState.NEUTRAL
+    )
+    position_state: PositionState = PositionState.FLAT_RECONCILED
+    existing_position_side: ExistingPositionSide = ExistingPositionSide.NONE
+    position_management_context: PositionManagementContext = PositionManagementContext.FLAT
+    venue_flat: bool = True
+    last_evaluated_trading_epoch: int = 0
+    cycle_index: int = 0
+    portfolio: SimulatedPortfolioEconomicsModelV1 = field(
+        default_factory=SimulatedPortfolioEconomicsModelV1
+    )
+    fill_ledger: list[dict[str, Any]] = field(default_factory=list)
+    cycle_ledger: list[dict[str, Any]] = field(default_factory=list)
+    # Capability 1.1 — productive reconciliation startup gate (no implicit RECONCILED).
+    reconciliation_gate_completed: bool = False
+    reconciliation_alpha_enabled: bool = False
+    reconciliation_state: ReconciliationState = ReconciliationState.RECONCILIATION_REQUIRED
+    reconciliation_evidence: Optional[dict[str, Any]] = None
+    reconciliation_state_root: Optional[str] = None
+    portfolio_single_writer_identity: str = SINGLE_WRITER_IDENTITY
+    # Capability 2.4 — single selected future runtime binding (sole productive instrument authority).
+    selection_binding_completed: bool = False
+    selection_alpha_enabled: bool = False
+    selection_binding_evidence: Optional[dict[str, Any]] = None
+    selection_state_root: Optional[str] = None
+    ranking_state_root: Optional[str] = None
+    universe_state_root: Optional[str] = None
+    venue_native_id: str = ""
+    require_selection_binding: bool = True
+    mark_price_by_native_id: dict[str, Any] = field(default_factory=dict)
+    # Capability 3.1 — canonical futures accounting after fill, before portfolio/risk persist.
+    futures_accounting_bound: bool = FUTURES_ACCOUNTING_RUNTIME_BOUND
+    accounting_session: Optional[ProductiveFuturesAccountingSessionV1] = None
+    accounting_state_root: Optional[str] = None
+    accounting_single_writer_identity: str = ACCOUNTING_SINGLE_WRITER_IDENTITY
+    last_accounting_result: Optional[dict[str, Any]] = None
+    # Capability 6.1 — stateful C1/C2/C3 confirmation binding (caller-owned durable cursor).
+    confirmation_binding: HostConfirmationBindingV1 = field(
+        default_factory=HostConfirmationBindingV1
+    )
+    confirmation_state_root: Optional[str] = None
+    last_confirmation_commit: Optional[dict[str, Any]] = None
+    # Capability 6.2 — Dynamic Scope persistence binding (caller-owned durable RuntimeScopeState).
+    dynamic_scope_binding: HostDynamicScopeBindingV1 = field(
+        default_factory=HostDynamicScopeBindingV1
+    )
+    dynamic_scope_state_root: Optional[str] = None
+    last_dynamic_scope_commit: Optional[dict[str, Any]] = None
+    # Capability 6.3 — canonical decision-runtime config ownership (typed consumer binding).
+    decision_config_binding: HostDecisionConfigBindingV1 = field(
+        default_factory=HostDecisionConfigBindingV1
+    )
+    decision_config_state_root: Optional[str] = None
+    # Capability 6.4 — full decision-path atomic restart coordinator (cross-root commit).
+    decision_path_atomic_binding: HostDecisionPathAtomicBindingV1 = field(
+        default_factory=HostDecisionPathAtomicBindingV1
+    )
+    decision_path_atomic_state_root: Optional[str] = None
+    last_decision_path_atomic_commit: Optional[dict[str, Any]] = None
+    # Capability 6.5 — exit-policy producer binding (no unbound false stubs).
+    exit_policy_binding: HostExitPolicyBindingV1 = field(default_factory=HostExitPolicyBindingV1)
+    exit_policy_state_root: Optional[str] = None
+    last_exit_policy_commit: Optional[dict[str, Any]] = None
+    # Capability 7.2 — single-future stateful no-order runtime activation (opt-in).
+    activation_binding: HostActivationBindingV1 = field(default_factory=HostActivationBindingV1)
+    activation_state_root: Optional[str] = None
+    activation_config_path: Optional[str] = None
+    # Phase 9.2 — actionability forensic telemetry (observe-only; never decision authority).
+    actionability_telemetry_binding: ActionabilityTelemetryBindingV1 = field(
+        default_factory=ActionabilityTelemetryBindingV1
+    )
+    last_actionability_telemetry: Optional[dict[str, Any]] = None
+    # WP-FA-04 — observation-only DDO capture (never decision/risk/safety/selection authority).
+    ddo_capture_binding: DdoCaptureBindingV0 = field(default_factory=DdoCaptureBindingV0)
+    last_ddo_capture: Optional[dict[str, Any]] = None
+    # DDO durable-evidence host binding. Explicitly unbound until
+    # bind_ddo_observation_host_scope_v1 injects the existing-owner triple
+    # and resolves ledger_path. Default construction remains None.
+    ddo_durable_evidence_runtime_state_root: Optional[str] = None
+    ddo_evidence_environment: Optional[str] = None
+    ddo_evidence_account_scope: Optional[str] = None
+    ddo_evidence_environment_binding_status: str = "UNBOUND"
+    ddo_evidence_account_binding_status: str = "UNBOUND"
+    ddo_observation_host_scope: Optional[DdoObservationHostScopeInputsV1] = None
+    ddo_durable_ledger_path: Optional[str] = None
+    # Productive archive-binding capture: last cycle CanonicalTradingDecisionEvidenceV1
+    # export payload (wiring only; no decision recomputation).
+    last_canonical_decision_evidence: Optional[dict[str, Any]] = None
+    # Pure-Stack display Decision host binding: last integrated replay intermediate
+    # (TransitionDecision passthrough; full seven-Decision bundle requires Owner-
+    # ratified input authorities — absent authorities fail closed).
+    last_replay_intermediate: Optional[Any] = None
+    last_replay_regime_id: Optional[str] = None
+    last_replay_regime_status: Optional[str] = None
+    # Cap 7.1 / integrated offline replay — CRS boundary (dynamic mark/stop; offline algebra).
+    capital_risk_sizing_boundary_state_file: Optional[Any] = None
+    last_replay_execution_safety: Optional[Any] = None
+    last_pure_stack_display_decision_result: Optional[dict[str, Any]] = None
+    ddo_n_bars_horizon_decision_event: Optional[dict[str, Any]] = None
+    ddo_o4_n_bars_bar_evidence_snapshot: Optional[dict[str, Any]] = None
+    ddo_o4_n_bars_bar_evidence_snapshot_locked: bool = False
+    ddo_canonical_public_md_bar_producer: Optional[CanonicalPublicMdBarProducerV1] = None
+    public_md_store_root: Optional[str] = None
+    ddo_n_bars_horizon_n_bars: int = 2
+    last_ddo_o4_bar_producer_ingest: Optional[dict[str, Any]] = None
+    last_ddo_o4_public_plane_convergence: Optional[dict[str, Any]] = None
+    ddo_n_bars_outcome_scalar_kind: str = "LOG_RETURN"
+    ddo_n_bars_economic_score: Optional[str] = None
+    last_ddo_n_bars_horizon_observation: Optional[dict[str, Any]] = None
+    ddo_n_bars_evaluation_identity: Optional[dict[str, Any]] = None
+    last_ddo_n_bars_evaluation_runtime: Optional[dict[str, Any]] = None
+    ddo_account_identity_record: Optional[AccountIdentityRecordV1] = None
+    last_ddo_learning_state: Optional[dict[str, Any]] = None
+    last_ddo_learning_outcome_ingest: Optional[dict[str, Any]] = None
+    # Capital-slot display state: no ratified init authority → remains unbound.
+    capital_slot_config_bound: bool = False
+    capital_slot_state_bound: bool = False
+    capital_slot_authority_status: str = "BLOCKED_CANONICAL_INPUT_AUTHORITY_ABSENT"
+
+    def append_mid(self, mid: float) -> None:
+        self.mid_prices.append(float(mid))
+        if len(self.mid_prices) > PRICE_PATH_MAX_LEN:
+            self.mid_prices = self.mid_prices[-PRICE_PATH_MAX_LEN:]
+
+
+@dataclass
+class BridgeCycleResultV1:
+    ok: bool
+    capability_id: str
+    package_marker: str
+    schema_version: str
+    owner: str
+    cycle_index: int
+    trading_epoch: int
+    instrument_id: str
+    decision_authority_owner: str
+    feature_regime: dict[str, Any]
+    decision_outcome: str
+    direction: str
+    selected_side: str
+    risk_sizing_result: str
+    safety_result: str
+    intended_action: dict[str, Any]
+    fill: Optional[dict[str, Any]]
+    portfolio_snapshot: dict[str, Any]
+    economic_metrics: dict[str, Any]
+    reason_codes: tuple[str, ...]
+    blockers: tuple[str, ...]
+    call_graph: tuple[str, ...]
+    authority_effect: str
+    runtime_effect: str
+    order_effect: str
+    orders_authorized: bool
+    testnet_authorized: bool
+    live_authorized: bool
+    paper_execution_authorized: bool
+    economic_validity_pass: bool
+    promotion_pass: bool
+    runtime_bridge_live_activated: bool
+    execution_class: str
+    execution_eligible: bool
+    notes: tuple[str, ...] = ()
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "ok": self.ok,
+            "capability_id": self.capability_id,
+            "package_marker": self.package_marker,
+            "schema_version": self.schema_version,
+            "owner": self.owner,
+            "cycle_index": self.cycle_index,
+            "trading_epoch": self.trading_epoch,
+            "instrument_id": self.instrument_id,
+            "decision_authority_owner": self.decision_authority_owner,
+            "feature_regime": dict(self.feature_regime),
+            "decision_outcome": self.decision_outcome,
+            "direction": self.direction,
+            "selected_side": self.selected_side,
+            "risk_sizing_result": self.risk_sizing_result,
+            "safety_result": self.safety_result,
+            "intended_action": dict(self.intended_action),
+            "fill": None if self.fill is None else dict(self.fill),
+            "portfolio_snapshot": dict(self.portfolio_snapshot),
+            "economic_metrics": dict(self.economic_metrics),
+            "reason_codes": list(self.reason_codes),
+            "blockers": list(self.blockers),
+            "call_graph": list(self.call_graph),
+            "authority_effect": self.authority_effect,
+            "runtime_effect": self.runtime_effect,
+            "order_effect": self.order_effect,
+            "orders_authorized": self.orders_authorized,
+            "testnet_authorized": self.testnet_authorized,
+            "live_authorized": self.live_authorized,
+            "paper_execution_authorized": self.paper_execution_authorized,
+            "economic_validity_pass": self.economic_validity_pass,
+            "promotion_pass": self.promotion_pass,
+            "runtime_bridge_live_activated": self.runtime_bridge_live_activated,
+            "execution_class": self.execution_class,
+            "execution_eligible": self.execution_eligible,
+            "notes": list(self.notes),
+        }
+
+
+def _fill_to_dict(fill: SimulatedFillV1) -> dict[str, Any]:
+    return {
+        "instrument_id": fill.instrument_id,
+        "side": fill.side,
+        "quantity": str(fill.quantity),
+        "mark_price": str(fill.mark_price),
+        "fill_price": str(fill.fill_price),
+        "fee": str(fill.fee),
+        "slippage_cost": str(fill.slippage_cost),
+        "notional": str(fill.notional),
+    }
+
+
+def _position_fields_from_portfolio(
+    portfolio: SimulatedPortfolioEconomicsModelV1, instrument_id: str
+) -> tuple[PositionState, ExistingPositionSide, PositionManagementContext, bool]:
+    snap = portfolio.snapshot()
+    state = snap.get("state") or {}
+    positions = state.get("positions") or {}
+    pos = positions.get(instrument_id) or {}
+    try:
+        qty = Decimal(str(pos.get("quantity", "0")))
+    except Exception:  # noqa: BLE001
+        qty = Decimal("0")
+    if qty == 0:
+        return (
+            PositionState.FLAT_RECONCILED,
+            ExistingPositionSide.NONE,
+            PositionManagementContext.FLAT,
+            True,
+        )
+    if qty > 0:
+        return (
+            PositionState.OPEN_FULL,
+            ExistingPositionSide.LONG,
+            PositionManagementContext.LONG_POSITION,
+            False,
+        )
+    return (
+        PositionState.OPEN_FULL,
+        ExistingPositionSide.SHORT,
+        PositionManagementContext.SHORT_POSITION,
+        False,
+    )
+
+
+def _update_session_state_from_replay(
+    state: BridgeSessionStateV1,
+    *,
+    result: Any,
+) -> None:
+    if result.intermediate is None:
+        state.last_evaluated_trading_epoch = state.trading_epoch
+        state.trading_epoch += 1
+        (
+            state.position_state,
+            state.existing_position_side,
+            state.position_management_context,
+            state.venue_flat,
+        ) = _position_fields_from_portfolio(state.portfolio, state.instrument_id)
+        return
+    inter = result.intermediate
+    try:
+        state.side_state = SideState(inter.state_switch.next_side_state)
+    except Exception:  # noqa: BLE001
+        pass
+    # Next-cycle Entry/Exit cursor consumes the Replay mapping owner.
+    # PENDING rows are not re-adjudicated here.
+    state.direction_state = _side_state_to_entry_exit_direction(state.side_state)
+    sel = str(inter.composition_result.selected_side.value).lower()
+    if sel == "long":
+        state.previous_composition_direction_state = CompositionDirectionState.LONG
+    elif sel == "short":
+        state.previous_composition_direction_state = CompositionDirectionState.SHORT
+    else:
+        state.previous_composition_direction_state = CompositionDirectionState.NEUTRAL
+    # ScopeDirectionState is a SideState projection, not a composition overlay.
+    state.scope_direction_state = scope_direction_from_side_state_v1(state.side_state)
+    state.last_evaluated_trading_epoch = state.trading_epoch
+    state.trading_epoch += 1
+    (
+        state.position_state,
+        state.existing_position_side,
+        state.position_management_context,
+        state.venue_flat,
+    ) = _position_fields_from_portfolio(state.portfolio, state.instrument_id)
+
+
+CALL_GRAPH_V1: tuple[str, ...] = (
+    "repository_config_integrity_check",
+    "no_order_mode_validation",
+    "activation_state_validation",
+    *SELECTION_BINDING_PREFIX,
+    SELECTION_BINDING_STEP,
+    RECON_CALL_GRAPH_STEP,
+    CALL_GRAPH_CONFIG_BIND_STEP,
+    "stateful_decision_runtime",
+    "canonical_intent",
+    "simulated_execution_port",
+    "okx_public_market_data",
+    CALL_GRAPH_C1_STEP,
+    CALL_GRAPH_C1_RESULT_STEP,
+    "feature_pipeline",
+    "regime_pipeline",
+    CALL_GRAPH_C2_STEP,
+    CALL_GRAPH_C3_STEP,
+    CALL_GRAPH_PREVIOUS_SCOPE_STEP,
+    CALL_GRAPH_EXIT_PRODUCER_STEP,
+    "master_v2_double_play_integrated_offline_replay",
+    CALL_GRAPH_SCOPE_TRANSITION_STEP,
+    CALL_GRAPH_COMMIT_STEP,
+    CALL_GRAPH_SCOPE_COMMIT_STEP,
+    CALL_GRAPH_ATOMIC_COMMIT_STEP,
+    CALL_GRAPH_EXIT_STATE_COMMIT_STEP,
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    ACCOUNTING_CALL_GRAPH_STEP,
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    ACCOUNTING_RISK_STEP,
+    "simulated_economics_no_order_path",
+    CALL_GRAPH_PENDING_EVIDENCE_STEP,
+    "evidence",
+    "full_economic_reconstruction_verifier",
+)
+
+
+def _observed_portfolio_truth_from_bridge_state(
+    state: BridgeSessionStateV1,
+    *,
+    event_ts_unix: float,
+) -> PortfolioTruthSnapshotV1:
+    """Read canonical analytical execution/position state for reconciliation."""
+    snap = state.portfolio.snapshot()
+    positions_raw = (snap.get("state") or {}).get("positions") or {}
+    positions: list[PositionTruthV1] = []
+    for instrument_id, pos in sorted(positions_raw.items()):
+        positions.append(
+            PositionTruthV1.from_signed(
+                instrument_id=str(instrument_id),
+                signed_quantity=pos.get("quantity", "0"),
+                source_id="analytical_execution_state",
+                mark_price=None,
+                event_time_unix=event_ts_unix,
+                wall_time_unix=event_ts_unix,
+            )
+        )
+    cash = (snap.get("state") or {}).get("cash")
+    return PortfolioTruthSnapshotV1(
+        positions=tuple(positions),
+        cash=None if cash is None else Decimal(str(cash)),
+        source_id="analytical_execution_state",
+        event_time_unix=event_ts_unix,
+        wall_time_unix=event_ts_unix,
+    )
+
+
+def ensure_single_selected_future_runtime_binding_v1(
+    state: BridgeSessionStateV1,
+    *,
+    session_id: str,
+    event_ts_unix: float,
+    repository_sha: str,
+    observed: Optional[PortfolioTruthSnapshotV1] = None,
+    direct_instrument_override: str | None = None,
+) -> RuntimeBindingGateResultV1:
+    """Capability 2.4: bind Cap 2.3 selection before reconciliation/alpha."""
+    if state.selection_binding_completed:
+        if not state.selection_alpha_enabled and state.require_selection_binding:
+            raise RuntimeError("SELECTION_BINDING_ALPHA_BLOCKED")
+        ev = state.selection_binding_evidence or {}
+        bound = None
+        if state.instrument_id:
+            from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+                BoundInstrumentV1,
+            )
+
+            bound = BoundInstrumentV1(
+                instrument_id=state.instrument_id,
+                venue_native_id=state.venue_native_id,
+                ranking_snapshot_id=str(ev.get("ranking_snapshot_id") or ""),
+                ranking_integrity_digest=str(ev.get("ranking_integrity_digest") or ""),
+                universe_snapshot_id=str(ev.get("universe_snapshot_id") or ""),
+                selection_id=str(ev.get("selection_id") or ""),
+                selection_integrity_digest=str(ev.get("selection_integrity_digest") or ""),
+                selection_state=str(ev.get("selection_state") or ""),
+            )
+        from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+            RuntimeBindingEvidenceV1,
+        )
+
+        return RuntimeBindingGateResultV1(
+            ok=True,
+            alpha_enabled=bool(state.selection_alpha_enabled),
+            new_alpha_allowed=bool(state.selection_alpha_enabled),
+            exit_risk_safety_preserved=True,
+            hard_stop=False,
+            selection_state=str(ev.get("selection_state") or ""),
+            bound=bound,
+            evidence=RuntimeBindingEvidenceV1(
+                capability_id="CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+                schema_version="single_selected_future_runtime_binding.v1",
+                producer_version="single_selected_future_runtime_binding.v1",
+                owner="ops.single_selected_future_runtime_binding_v1",
+                ok=True,
+                alpha_enabled=bool(state.selection_alpha_enabled),
+                new_alpha_allowed=bool(state.selection_alpha_enabled),
+                exit_risk_safety_preserved=True,
+                hard_stop=False,
+                selection_state=str(ev.get("selection_state") or ""),
+                instrument_id=state.instrument_id,
+                venue_native_id=state.venue_native_id,
+                selection_id=str(ev.get("selection_id") or ""),
+                selection_integrity_digest=str(ev.get("selection_integrity_digest") or ""),
+                ranking_snapshot_id=str(ev.get("ranking_snapshot_id") or ""),
+                ranking_integrity_digest=str(ev.get("ranking_integrity_digest") or ""),
+                universe_snapshot_id=str(ev.get("universe_snapshot_id") or ""),
+                repository_sha=repository_sha,
+                config_digest=str(ev.get("config_digest") or ""),
+                reconciliation_before_alpha=True,
+                reconciliation_alpha_enabled=bool(state.reconciliation_alpha_enabled),
+                reason_codes=("CACHED_SESSION_SELECTION_BINDING",),
+                failure_codes=(),
+                call_graph=SELECTION_BINDING_PREFIX,
+            ),
+            blockers=(),
+        )
+
+    if not state.require_selection_binding:
+        # Explicit non-productive research escape hatch — not selection authority.
+        state.selection_binding_completed = True
+        state.selection_alpha_enabled = True
+        state.selection_binding_evidence = {
+            "selection_state": "LEGACY_RESEARCH_UNBOUND",
+            "notes": ["REQUIRE_SELECTION_BINDING_FALSE_NON_PRODUCTIVE"],
+        }
+        from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+            RuntimeBindingEvidenceV1,
+        )
+
+        return RuntimeBindingGateResultV1(
+            ok=True,
+            alpha_enabled=True,
+            new_alpha_allowed=True,
+            exit_risk_safety_preserved=True,
+            hard_stop=False,
+            selection_state="LEGACY_RESEARCH_UNBOUND",
+            bound=None,
+            evidence=RuntimeBindingEvidenceV1(
+                capability_id="CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+                schema_version="single_selected_future_runtime_binding.v1",
+                producer_version="single_selected_future_runtime_binding.v1",
+                owner="ops.single_selected_future_runtime_binding_v1",
+                ok=True,
+                alpha_enabled=True,
+                new_alpha_allowed=True,
+                exit_risk_safety_preserved=True,
+                hard_stop=False,
+                selection_state="LEGACY_RESEARCH_UNBOUND",
+                instrument_id=state.instrument_id,
+                venue_native_id=state.venue_native_id,
+                selection_id="",
+                selection_integrity_digest="",
+                ranking_snapshot_id="",
+                ranking_integrity_digest="",
+                universe_snapshot_id="",
+                repository_sha=repository_sha,
+                config_digest="",
+                reconciliation_before_alpha=False,
+                reconciliation_alpha_enabled=False,
+                reason_codes=("LEGACY_RESEARCH_UNBOUND",),
+                failure_codes=(),
+                call_graph=SELECTION_BINDING_PREFIX,
+                notes=("NON_PRODUCTIVE_ESCAPE_HATCH",),
+            ),
+            blockers=(),
+        )
+
+    if direct_instrument_override:
+        raise RuntimeError("DIRECT_INSTRUMENT_OVERRIDE_REJECTED")
+    if (
+        not state.selection_state_root
+        or not state.ranking_state_root
+        or not state.universe_state_root
+    ):
+        raise RuntimeError("SELECTION_BINDING_ROOTS_REQUIRED")
+    if state.reconciliation_state_root is None:
+        state.reconciliation_state_root = str(
+            Path(tempfile.mkdtemp(prefix="peak_trade_recon_bridge_"))
+        )
+
+    observed_snap = observed or _observed_portfolio_truth_from_bridge_state(
+        state, event_ts_unix=event_ts_unix
+    )
+    gate = run_single_selected_future_runtime_binding_gate_v1(
+        selection_state_root=Path(state.selection_state_root),
+        ranking_state_root=Path(state.ranking_state_root),
+        universe_state_root=Path(state.universe_state_root),
+        repository_sha=repository_sha,
+        session_id=session_id,
+        now_unix=event_ts_unix,
+        reconciliation_state_root=Path(state.reconciliation_state_root),
+        observed_portfolio=observed_snap,
+        mark_price_by_native_id=state.mark_price_by_native_id,
+        direct_instrument_override=direct_instrument_override,
+        allow_research_direct_instrument=False,
+    )
+    state.selection_binding_completed = True
+    state.selection_alpha_enabled = bool(gate.alpha_enabled)
+    state.selection_binding_evidence = gate.evidence.to_dict()
+    if gate.bound is not None:
+        # Cap 2.4: venue-native id is the runtime market-data binding key.
+        state.instrument_id = gate.bound.venue_native_id
+        state.venue_native_id = gate.bound.venue_native_id
+    # Cap 2.4 gate already executed Cap 1.1 reconciliation before alpha.
+    if gate.reconciliation_result is not None:
+        state.reconciliation_gate_completed = True
+        state.reconciliation_alpha_enabled = bool(gate.reconciliation_result.get("alpha_enabled"))
+        state.reconciliation_evidence = dict(gate.reconciliation_result)
+        try:
+            state.reconciliation_state = ReconciliationState(
+                str(
+                    gate.reconciliation_result.get("master_v2_reconciliation_state")
+                    or ReconciliationState.RECONCILIATION_REQUIRED.value
+                )
+            )
+        except Exception:  # noqa: BLE001
+            state.reconciliation_state = ReconciliationState.RECONCILIATION_REQUIRED
+    return gate
+
+
+def ensure_productive_reconciliation_startup_gate_v1(
+    state: BridgeSessionStateV1,
+    *,
+    session_id: str,
+    event_ts_unix: float,
+    repository_sha: str,
+    state_root: Optional[Path] = None,
+    observed: Optional[PortfolioTruthSnapshotV1] = None,
+) -> ProductiveReconciliationGateResultV1:
+    """Mandatory pre-alpha reconciliation; idempotent per session state."""
+    if state.reconciliation_gate_completed:
+        if not state.reconciliation_alpha_enabled:
+            raise RuntimeError("RECONCILIATION_ALPHA_BLOCKED")
+        ev = state.reconciliation_evidence or {}
+        return ProductiveReconciliationGateResultV1(
+            ok=True,
+            alpha_enabled=True,
+            classification=ProductiveReconciliationClass.MATCH,
+            master_v2_reconciliation_state=state.reconciliation_state.value,
+            hard_stop=False,
+            evidence=ProductiveReconciliationEvidenceV1(
+                capability_id="CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
+                schema_version="productive_reconciliation_runtime_binding.v1",
+                owner="ops.productive_reconciliation_runtime_binding_v1",
+                classification=str(ev.get("classification") or "MATCH"),
+                alpha_enabled=True,
+                pre_state_digest=str(ev.get("pre_state_digest") or ""),
+                observed_state_digest=str(ev.get("observed_state_digest") or ""),
+                post_state_digest=str(ev.get("post_state_digest") or ""),
+                reconciliation_decision="CACHED_SESSION_GATE",
+                repository_sha=repository_sha,
+                single_writer_identity=state.portfolio_single_writer_identity,
+            ),
+            blockers=(),
+        )
+
+    root = Path(state_root) if state_root is not None else None
+    if root is None and state.reconciliation_state_root:
+        root = Path(state.reconciliation_state_root)
+    if root is None:
+        root = Path(tempfile.mkdtemp(prefix="peak_trade_recon_bridge_"))
+    state.reconciliation_state_root = str(root)
+
+    observed_snap = observed or _observed_portfolio_truth_from_bridge_state(
+        state, event_ts_unix=event_ts_unix
+    )
+    gate = run_productive_reconciliation_startup_gate_v1(
+        state_root=root,
+        observed=observed_snap,
+        session_id=session_id,
+        repository_sha=repository_sha,
+        now_unix=event_ts_unix,
+        writer_identity=state.portfolio_single_writer_identity,
+    )
+    state.reconciliation_gate_completed = True
+    state.reconciliation_alpha_enabled = bool(gate.alpha_enabled)
+    state.reconciliation_evidence = gate.evidence.to_dict()
+    try:
+        state.reconciliation_state = ReconciliationState(gate.master_v2_reconciliation_state)
+    except Exception:  # noqa: BLE001
+        state.reconciliation_state = ReconciliationState.RECONCILIATION_REQUIRED
+    return gate
+
+
+@with_ddo_capture_session_v0
+def run_bridge_cycle_v1(
+    state: BridgeSessionStateV1,
+    *,
+    mid_price: float,
+    event_ts_unix: float,
+    session_id: str = "wallclock-bridge-session",
+    repository_sha: str = "OFFLINE_DETERMINISTIC_EVIDENCE",
+    reconciliation_state_root: Optional[Path] = None,
+    direct_instrument_override: str | None = None,
+    observation_cycle_kind: ObservationCycleKindV1 | str = ObservationCycleKindV1.MARKET_SAMPLE,
+    force_observation_event_time: float | None = None,
+    confirmation_state_root: Optional[Path] = None,
+    persist_confirmation: bool = True,
+    dynamic_scope_state_root: Optional[Path] = None,
+    persist_dynamic_scope: bool = True,
+    decision_config_state_root: Optional[Path] = None,
+    persist_decision_config: bool = True,
+    decision_path_atomic_state_root: Optional[Path] = None,
+    accounting_state_root_override: Optional[Path] = None,
+    persist_via_atomic_coordinator: bool = False,
+    exit_policy_state_root: Optional[Path] = None,
+    persist_exit_policy: bool = True,
+    activation_state_root: Optional[Path] = None,
+    activation_config_path: Optional[Path] = None,
+    ddo_durable_evidence_runtime_state_root: Optional[Path] = None,
+    ddo_evidence_environment: Optional[ExecutionEnvironment] = None,
+    ddo_account_identity_record: Optional[AccountIdentityRecordV1] = None,
+    ddo_runtime_state_root_config: Optional[Mapping[str, Any]] = None,
+) -> BridgeCycleResultV1:
+    """Execute one full analytical decision→economics cycle on a mid tick."""
+    if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
+        raise RuntimeError("INVARIANT_VIOLATION_AUTHORITY_FLAGS")
+    maybe_bind_ddo_observation_host_scope_from_optional_inputs_v1(
+        state,
+        runtime_state_root=ddo_durable_evidence_runtime_state_root,
+        environment=ddo_evidence_environment,
+        account_identity_record=ddo_account_identity_record,
+        runtime_state_root_config=ddo_runtime_state_root_config,
+    )
+    if ddo_account_identity_record is not None:
+        state.ddo_account_identity_record = ddo_account_identity_record
+
+    if reconciliation_state_root is not None:
+        state.reconciliation_state_root = str(reconciliation_state_root)
+    if confirmation_state_root is not None:
+        state.confirmation_state_root = str(confirmation_state_root)
+    if dynamic_scope_state_root is not None:
+        state.dynamic_scope_state_root = str(dynamic_scope_state_root)
+    if decision_config_state_root is not None:
+        state.decision_config_state_root = str(decision_config_state_root)
+    if decision_path_atomic_state_root is not None:
+        state.decision_path_atomic_state_root = str(decision_path_atomic_state_root)
+    if accounting_state_root_override is not None:
+        state.accounting_state_root = str(accounting_state_root_override)
+    if exit_policy_state_root is not None:
+        state.exit_policy_state_root = str(exit_policy_state_root)
+    if activation_state_root is not None:
+        state.activation_state_root = str(activation_state_root)
+    if activation_config_path is not None:
+        state.activation_config_path = str(activation_config_path)
+    use_atomic = bool(persist_via_atomic_coordinator and state.decision_path_atomic_state_root)
+
+    # Capability 7.2: when enabled, activation/no-order/config gates run before selection.
+    # Selected-future + reconciliation remain Cap 2.4 / Cap 1.1 alpha gates (next steps).
+    if state.activation_binding.enabled:
+        activation_gate = ensure_host_activation_binding_v1(
+            state.activation_binding,
+            instrument_id=state.instrument_id,
+            repository_sha=repository_sha,
+            state_root=(Path(state.activation_state_root) if state.activation_state_root else None),
+            writer_session_id=session_id,
+            config_path=(
+                Path(state.activation_config_path) if state.activation_config_path else None
+            ),
+            selected_future_present=True,
+            instrument_binding_valid=True,
+            reconciliation_ok=True,
+            persist=True,
+        )
+        if activation_gate.alpha_blocked or not activation_gate.alpha_enabled:
+            raise RuntimeError(
+                "ACTIVATION_ALPHA_BLOCKED:"
+                + ",".join(
+                    activation_gate.blockers
+                    or (str(activation_gate.claims.get("alpha_block_reason") or "blocked"),)
+                )
+            )
+
+    # Capability 2.4: persisted selection binds the trading instrument before recon/alpha.
+    selection_gate = ensure_single_selected_future_runtime_binding_v1(
+        state,
+        session_id=session_id,
+        event_ts_unix=event_ts_unix,
+        repository_sha=repository_sha,
+        direct_instrument_override=direct_instrument_override,
+    )
+    if state.require_selection_binding and not selection_gate.alpha_enabled:
+        raise RuntimeError(
+            "SELECTION_BINDING_ALPHA_BLOCKED:"
+            + ",".join(selection_gate.blockers or (selection_gate.selection_state,))
+        )
+
+    # Capability 1.1: reconciliation is a mandatory startup gate before alpha.
+    # When Cap 2.4 already ran reconciliation, this call is idempotent/cached.
+    gate = ensure_productive_reconciliation_startup_gate_v1(
+        state,
+        session_id=session_id,
+        event_ts_unix=event_ts_unix,
+        repository_sha=repository_sha,
+        state_root=reconciliation_state_root,
+    )
+    if not gate.alpha_enabled:
+        raise RuntimeError(
+            "RECONCILIATION_ALPHA_BLOCKED:"
+            + ",".join(gate.blockers or (gate.classification.value,))
+        )
+    if state.reconciliation_state is not ReconciliationState.RECONCILED:
+        raise RuntimeError("RECONCILIATION_STATE_NOT_RECONCILED")
+
+    # Capability 6.3: bind typed canonical decision-runtime config before confirmation/scope/alpha.
+    ensure_host_decision_config_binding_v1(
+        state.decision_config_binding,
+        repository_sha=repository_sha,
+        state_root=(
+            Path(state.decision_config_state_root) if state.decision_config_state_root else None
+        ),
+        predecessor_config_digest_cap61=confirmation_config_digest_v1(),
+        predecessor_config_digest_cap62=dynamic_scope_config_digest_v1(),
+        persist=bool(persist_decision_config and state.decision_config_state_root),
+    )
+    if state.decision_config_binding.alpha_blocked:
+        raise RuntimeError(
+            "DECISION_CONFIG_ALPHA_BLOCKED:" + state.decision_config_binding.alpha_block_reason
+        )
+    decision_cfg = require_bound_decision_config_v1(state.decision_config_binding)
+
+    # Capability 6.4: recover atomic coordinator before confirmation/scope/alpha advances.
+    if use_atomic or state.decision_path_atomic_state_root:
+        ensure_host_decision_path_atomic_binding_v1(
+            state.decision_path_atomic_binding,
+            instrument_id=state.instrument_id,
+            repository_sha=repository_sha,
+            config_digest=str(decision_cfg.config_digest()),
+            state_root=(
+                Path(state.decision_path_atomic_state_root)
+                if state.decision_path_atomic_state_root
+                else None
+            ),
+        )
+        if state.decision_path_atomic_binding.alpha_blocked:
+            raise RuntimeError(
+                "DECISION_PATH_ATOMIC_ALPHA_BLOCKED:"
+                + state.decision_path_atomic_binding.alpha_block_reason
+            )
+
+    # Capability 6.1: bind C1 acceptor + stable confirmation session before features/decision.
+    kind = (
+        observation_cycle_kind
+        if isinstance(observation_cycle_kind, ObservationCycleKindV1)
+        else ObservationCycleKindV1(str(observation_cycle_kind))
+    )
+    ensure_host_confirmation_binding_v1(
+        state.confirmation_binding,
+        instrument_id=state.instrument_id,
+        venue=CONFIRMATION_DEFAULT_VENUE,
+        venue_instrument_id=state.venue_native_id or state.instrument_id,
+        repository_sha=repository_sha,
+        config_digest=confirmation_config_digest_v1(
+            confirmation_epochs=int(decision_cfg.confirmation_epochs)
+        ),
+        state_root=(Path(state.confirmation_state_root) if state.confirmation_state_root else None),
+    )
+    # Capability 6.2: load persisted RuntimeScopeState before restart cursor reconstruction.
+    ensure_host_dynamic_scope_binding_v1(
+        state.dynamic_scope_binding,
+        instrument_id=state.instrument_id,
+        venue=DYNAMIC_SCOPE_DEFAULT_VENUE,
+        repository_sha=repository_sha,
+        config_digest=layer_c_derived_dynamic_scope_persistence_config_digest_v1(),
+        state_root=(
+            Path(state.dynamic_scope_state_root) if state.dynamic_scope_state_root else None
+        ),
+    )
+    if state.dynamic_scope_binding.alpha_blocked:
+        raise RuntimeError(
+            "DYNAMIC_SCOPE_ALPHA_BLOCKED:" + state.dynamic_scope_binding.alpha_block_reason
+        )
+    # Restart restore of host cursors required for scope continuity (no silent re-seed).
+    if (
+        state.dynamic_scope_binding.prior_commit_seen
+        and state.dynamic_scope_binding.runtime_scope_state is not None
+        and state.cycle_index == 0
+    ):
+        state.cycle_index = int(state.dynamic_scope_binding.runtime_scope_state.now_tick)
+        state.trading_epoch = int(state.dynamic_scope_binding.host_trading_epoch)
+        try:
+            state.side_state = parse_persisted_side_state_v1(state.dynamic_scope_binding.side_state)
+        except SideStateRestoreError as exc:
+            raise RuntimeError(
+                "SIDESTATE_RESTORE_ALPHA_BLOCKED:" + exc.reason_code + ":" + exc.detail
+            ) from exc
+        # Model 2: ScopeDirectionState is rebuilt from SideState. Persisted tokens
+        # are schema-compat only and must not affect generator orientation.
+        state.scope_direction_state = scope_direction_from_side_state_v1(state.side_state)
+        if state.dynamic_scope_binding.price_path_tail and not state.mid_prices:
+            state.mid_prices = [float(x) for x in state.dynamic_scope_binding.price_path_tail]
+    # Only market samples (incl. duplicate/out-of-order classifications) append price path.
+    if (
+        kind is ObservationCycleKindV1.MARKET_SAMPLE
+        or kind is ObservationCycleKindV1.DUPLICATE_SAMPLE
+    ):
+        state.append_mid(mid_price)
+    elif kind is ObservationCycleKindV1.OUT_OF_ORDER:
+        state.append_mid(mid_price)
+    state.cycle_index += 1
+    bind_host_cycle_capture_context_v0(
+        state.ddo_capture_binding
+        if isinstance(state.ddo_capture_binding, DdoCaptureBindingV0)
+        else None,
+        event_ts_unix=float(event_ts_unix),
+        session_id=session_id,
+        cycle_index=int(state.cycle_index),
+        repository_sha=repository_sha,
+    )
+    observation_acceptance_result = evaluate_host_observation_acceptance_v1(
+        state.confirmation_binding,
+        mid_price=float(mid_price),
+        event_ts_unix=float(event_ts_unix),
+        cycle_index=int(state.cycle_index),
+        kind=kind,
+        force_event_time=force_observation_event_time,
+    )
+    try:
+        state.last_ddo_o4_bar_producer_ingest = (
+            maybe_ingest_accepted_observation_into_ddo_o4_producer_v1(
+                state,
+                observation_acceptance_result,
+                session_id=session_id,
+                repository_sha=repository_sha,
+                receive_ts_unix=float(event_ts_unix),
+                runtime_cycle_index=int(state.cycle_index),
+            )
+        )
+    except Exception as _o4_ingest_exc:  # noqa: BLE001
+        state.last_ddo_o4_bar_producer_ingest = {
+            "ok": False,
+            "error": f"{type(_o4_ingest_exc).__name__}:{_o4_ingest_exc}",
+            "decision_unchanged": True,
+        }
+    features = compute_feature_regime_from_mid_prices_v1(state.mid_prices)
+    price_path = tuple(state.mid_prices[-PRICE_PATH_MAX_LEN:])
+    if len(price_path) < MIN_PRICE_PATH_LEN:
+        # Seed deterministic second point for contract (warmup still incomplete for features).
+        price_path = (float(mid_price), float(mid_price))
+
+    warmup_status = (
+        WarmupStatus.WARMUP_COMPLETE if features.warmup_complete else WarmupStatus.WARMUP_REQUIRED
+    )
+    mark = float(features.mark_price or mid_price)
+    layer_c_vol = _resolve_layer_c_volatility_estimate_v1(float(features.volatility_estimate))
+    layer_c_event_distances = resolve_layer_c_event_distances_from_mark_and_volatility_v1(
+        mark_price=mark,
+        volatility_estimate=layer_c_vol,
+    )
+    if not layer_c_event_distances.ok:
+        codes = ":".join(layer_c_event_distances.failure_codes or ("layer_c_binding_failed",))
+        raise RuntimeError(f"LAYER_C_EVENT_DISTANCE_BINDING_FAILED:{codes}")
+    cycle_up_distance = float(layer_c_event_distances.up_distance)
+    cycle_adverse_exit_distance = float(layer_c_event_distances.adverse_exit_distance)
+    cycle_reversal_distance = float(layer_c_event_distances.reversal_distance)
+
+    ensure_host_exit_policy_binding_v1(
+        state.exit_policy_binding,
+        instrument_id=state.instrument_id,
+        repository_sha=repository_sha,
+        config_digest=layer_c_derived_exit_policy_adverse_config_digest_v1(
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
+        ),
+        state_root=(Path(state.exit_policy_state_root) if state.exit_policy_state_root else None),
+    )
+    if state.exit_policy_binding.alpha_blocked:
+        raise RuntimeError(
+            "EXIT_POLICY_ALPHA_BLOCKED:" + state.exit_policy_binding.alpha_block_reason
+        )
+
+    input_material = json.dumps(
+        {
+            "capability_id": CAPABILITY_ID,
+            "session_id": session_id,
+            "cycle": state.cycle_index,
+            "trading_epoch": state.trading_epoch,
+            "mid": mark,
+            "regime": features.regime_id,
+        },
+        sort_keys=True,
+    )
+    input_digest = hashlib.sha256(input_material.encode("utf-8")).hexdigest()
+
+    # Capability 6.5 — evaluate canonical exit producers (no unbound PolicySignalV0 stubs).
+    has_open_position = not bool(state.venue_flat)
+    entry_price = None
+    if state.accounting_session is not None and getattr(state.accounting_session, "position", None):
+        pos = state.accounting_session.position
+        if pos is not None and getattr(pos, "entry_price", None) is not None:
+            try:
+                entry_price = float(pos.entry_price)
+            except Exception:  # noqa: BLE001
+                entry_price = None
+    if entry_price is None and state.exit_policy_binding.entry_price is not None:
+        entry_price = float(state.exit_policy_binding.entry_price)
+    obs_digest = ""
+    if (
+        observation_acceptance_result is not None
+        and observation_acceptance_result.observation_identity is not None
+    ):
+        ident = observation_acceptance_result.observation_identity
+        obs_digest = hashlib.sha256(
+            f"{ident.venue}:{ident.canonical_instrument_id}:{ident.venue_event_time}:"
+            f"{ident.mark_price}".encode()
+        ).hexdigest()
+    metrics0 = state.portfolio.economic_metrics()
+    _exit_bundle, exit_signals, exit_safety_mode, exit_trading_gate = (
+        evaluate_host_exit_policy_producers_v1(
+            state.exit_policy_binding,
+            mark_price=float(mark),
+            event_ts_unix=float(event_ts_unix),
+            observation_digest=obs_digest,
+            has_open_position=has_open_position,
+            existing_position_side=str(state.existing_position_side.value),
+            entry_price=entry_price,
+            entry_event_time=(
+                float(state.exit_policy_binding.entry_event_time)
+                if state.exit_policy_binding.entry_event_time is not None
+                else float(event_ts_unix)
+                if has_open_position
+                else None
+            ),
+            entry_trading_epoch=(
+                int(state.exit_policy_binding.entry_trading_epoch)
+                if state.exit_policy_binding.entry_trading_epoch is not None
+                else int(state.trading_epoch)
+                if has_open_position
+                else None
+            ),
+            confirmation_binding=state.confirmation_binding,
+            data_integrity_trusted=True,
+            adverse_exit_distance=cycle_adverse_exit_distance,
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
+            warmup_complete=bool(features.warmup_complete),
+            regime_ok=bool(features.ok),
+            price_basis_ok=bool(mark > 0),
+            max_drawdown=float(metrics0.drawdown),
+        )
+    )
+
+    market_context = with_computed_input_digest(
+        CanonicalMarketContextV1(
+            context_id=f"ctx-{state.instrument_id}-epoch{state.trading_epoch}-wc-bridge-v1",
+            instrument_id=state.instrument_id,
+            market_type=FuturesMarketType.PERPETUAL,
+            trading_epoch=state.trading_epoch,
+            market_event_time=_iso_now(event_ts_unix),
+            decision_time=_iso_now(event_ts_unix + 0.001),
+            bar_interval="tick",
+            bar_finality_status=BarFinalityStatus.FINALIZED,
+            mark_price=mark,
+            index_price=mark,
+            best_bid=mark * 0.9999,
+            best_ask=mark * 1.0001,
+            spread=mark * 0.0002,
+            volume=1_000_000.0,
+            open_interest=50_000_000.0,
+            funding_rate=0.0001,
+            volatility_estimate=float(features.volatility_estimate),
+            trend_feature_set=dict(features.trend_features),
+            momentum_feature_set=dict(features.momentum_features),
+            liquidity_feature_set=dict(features.liquidity_features),
+            market_structure_feature_set=dict(features.market_structure_features),
+            data_integrity_status=DataIntegrityStatus.TRUSTED,
+            clock_trust_status=ClockTrustStatus.TRUSTED,
+            warmup_status=warmup_status,
+            feature_contract_version=FEATURE_CONTRACT_VERSION,
+            input_digest="",
+        )
+    )
+
+    if state.capital_risk_sizing_boundary_state_file is None:
+        from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.simulated_economics_crs_boundary_binding_v1 import (
+            build_simulated_economics_crs_boundary_state_file_v1,
+        )
+
+        state.capital_risk_sizing_boundary_state_file = (
+            build_simulated_economics_crs_boundary_state_file_v1(
+                instrument_id=state.instrument_id,
+            )
+        )
+
+    replay_input = build_integrated_offline_replay_input_v1(
+        replay_id=f"{session_id}-cycle-{state.cycle_index}",
+        instrument_id=state.instrument_id,
+        trading_epoch=state.trading_epoch,
+        canonical_market_context=market_context,
+        market_context_binding_state=CanonicalMarketContextBindingStateV1(),
+        scope_prerequisites=ScopeInitializationPrerequisitesV1(
+            required_window_complete=features.warmup_complete,
+            instrument_metadata_valid=True,
+            finalized_market_context=True,
+        ),
+        scope_reinitialization_guard=ScopeReinitializationGuardV1(),
+        # Capability 6.2 — previous canonical scope + RuntimeScopeState (no silent None reset).
+        existing_scope=state.dynamic_scope_binding.existing_scope,
+        scope_direction_state=state.scope_direction_state,
+        scope_confirmation_state=ScopeConfirmationStateV1(
+            candidate_kind=None,
+            candidate_count=1 if features.warmup_complete else 0,
+            last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
+        ),
+        scope_cooldown_state=ScopeCooldownStateV1(
+            active=False,
+            remaining_epochs=0,
+            policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+        ),
+        up_distance=cycle_up_distance,
+        adverse_exit_distance=cycle_adverse_exit_distance,
+        reversal_distance=cycle_reversal_distance,
+        confirmation_epochs=int(decision_cfg.confirmation_epochs),
+        current_price=mark,
+        price_path=price_path,
+        directional_confirmation_state=DirectionalConfirmationStateV1(
+            candidate_count=1 if features.warmup_complete else 0,
+            last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
+            last_signal_strength=float(features.momentum_features.get("roc", 0.0)),
+        ),
+        strategy_registry=_strategy_registry(),
+        regime_id=features.regime_id if features.ok else "unclassified",
+        regime_status=(
+            SuitabilityRegimeStatus.KNOWN if features.ok else SuitabilityRegimeStatus.UNKNOWN
+        ),
+        previous_composition_direction_state=state.previous_composition_direction_state,
+        position_management_context=state.position_management_context,
+        last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
+        side_state=state.side_state,
+        direction_state=state.direction_state,
+        position_state=state.position_state,
+        reconciliation_state=state.reconciliation_state,
+        trading_gate=exit_trading_gate,
+        safety_mode=exit_safety_mode,
+        existing_position_side=state.existing_position_side,
+        venue_flat=state.venue_flat,
+        cooldown_pass=True,
+        scope_adverse_exit_signal=exit_signals["scope_adverse_exit_signal"],
+        profit_protection_signal=exit_signals["profit_protection_signal"],
+        time_exit_signal=exit_signals["time_exit_signal"],
+        strategy_invalidation_signal=exit_signals["strategy_invalidation_signal"],
+        hard_risk_reduction_signal=exit_signals["hard_risk_reduction_signal"],
+        safety_exit_signal=exit_signals["safety_exit_signal"],
+        policies=_default_policies(),
+        component_versions=_component_versions(),
+        policy_versions=_policy_versions(),
+        config_digest=str(decision_cfg.config_digest()),
+        implementation_digest=_IMPL_DIGEST,
+        input_digest=input_digest,
+        expected_component_contracts=_component_versions(),
+        context_reference=f"wallclock-bridge-context-epoch-{state.trading_epoch}",
+        now_tick=state.cycle_index,
+        # Capability 6.1 — real C1 result + caller-owned C3 carrier (no non-advancing placeholder).
+        directional_confirmation_progress=state.confirmation_binding.confirmation_side_carrier,
+        observation_acceptance_result=observation_acceptance_result,
+        confirmation_progress_session_id=state.confirmation_binding.confirmation_session_id,
+        confirmation_progress_venue=state.confirmation_binding.venue,
+        confirmation_progress_instrument=state.confirmation_binding.instrument_key(),
+        # Capability 6.2 — bind previous RuntimeScopeState into the next transition.
+        runtime_scope_state=state.dynamic_scope_binding.runtime_scope_state,
+        runtime_scope_bound_instrument_id=(
+            (state.dynamic_scope_binding.runtime_scope_bound_instrument_id or state.instrument_id)
+            if state.dynamic_scope_binding.runtime_scope_state is not None
+            else None
+        ),
+        explicit_runtime_scope_reset=False,
+    )
+    replay_input = replace(
+        replay_input,
+        current_instrument_capital_risk_sizing_boundary_state_file=(
+            state.capital_risk_sizing_boundary_state_file
+        ),
+    )
+
+    if state.ddo_capture_binding is not None and state.ddo_capture_binding.enabled:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
+            productive_scope_learning_config_hash_v1,
+        )
+
+        state.ddo_capture_binding.capture_scope_config_hash = "UNKNOWN"
+        try:
+            state.ddo_capture_binding.capture_scope_config_hash = productive_scope_learning_config_hash_v1(
+                replay_input
+            )
+        except (ValueError, TypeError, AttributeError) as exc:
+            state.ddo_capture_binding.last_error = f"scope_config_capture:{type(exc).__name__}"
+    # Feedback is checked against this cycle's resolved configuration, not the
+    # previous cycle's binding before a possible policy/owner change.
+    apply_learning_state_feedback_to_next_cycle_v1(state)
+    replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
+    # Durable source capture for archive sibling export (semantics-free serialization).
+    from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+        serialize_canonical_trading_decision_evidence_canonical,
+    )
+
+    _evidence_payload = json.loads(
+        serialize_canonical_trading_decision_evidence_canonical(replay.evidence)
+    )
+    _evidence_payload["semantic_digest"] = str(replay.evidence.semantic_digest or "")
+    state.last_canonical_decision_evidence = dict(_evidence_payload)
+    # Retain intermediate for Pure-Stack display Decision passthrough/export wiring.
+    # Does not alter trading authority or ResultV1 Decision path.
+    state.last_replay_intermediate = replay.intermediate
+    state.last_replay_regime_id = str(replay_input.regime_id)
+    state.last_replay_regime_status = replay_input.regime_status.value
+    state.last_replay_execution_safety = replay.replay_execution_safety
+    try:
+        from src.ops.productive_pure_stack_display_decision_host_binding_v1.host_cycle_v1 import (
+            run_pure_stack_display_decision_host_cycle_v1,
+        )
+
+        _ps_result = run_pure_stack_display_decision_host_cycle_v1(
+            replay_intermediate=replay.intermediate,
+            cycle_id=f"{session_id}:cycle:{state.cycle_index}",
+            cycle_index=int(state.cycle_index),
+            instrument_id=str(state.instrument_id),
+            trading_epoch=int(state.trading_epoch),
+            state_root=(
+                Path(state.decision_path_atomic_state_root)
+                if state.decision_path_atomic_state_root
+                else None
+            ),
+            allow_runtime_mutation=False,
+        )
+        state.last_pure_stack_display_decision_result = _ps_result.to_dict()
+    except Exception as _ps_exc:  # noqa: BLE001
+        state.last_pure_stack_display_decision_result = {
+            "ok": False,
+            "status": "BLOCKED_CANONICAL_INPUT_AUTHORITY_ABSENT",
+            "error": f"{type(_ps_exc).__name__}:{_ps_exc}",
+            "runtime_mutated": False,
+            "archive_mutated": False,
+        }
+    intended = map_replay_result_to_intended_analytical_action_v1(
+        replay,
+        instrument_id=state.instrument_id,
+        portfolio_snapshot=state.portfolio.snapshot(),
+    )
+
+    # Capability 3.1: simulated fill → canonical futures_accounting → portfolio/risk.
+    if state.accounting_session is None:
+        state.accounting_session = ensure_accounting_session_v1(
+            instrument_id=state.instrument_id,
+            state_root=(Path(state.accounting_state_root) if state.accounting_state_root else None),
+        )
+    # Cap 7.2: activated no-order host must use SimulatedExecutionPort only.
+    # When activation is disabled (Cap 7.1 path), keep the direct productive delegate.
+    if state.activation_binding.enabled:
+        execution_port = host_simulated_execution_port_v1(state.activation_binding)
+        accounting_apply = execution_port.apply_intended_action(
+            session=state.accounting_session,
+            portfolio=state.portfolio,
+            instrument_id=state.instrument_id,
+            side=intended.intended_side,
+            quantity=intended.intended_quantity,
+            mark_price=Decimal(str(mark)),
+            session_id=session_id,
+            cycle_index=state.cycle_index,
+            reduce_only=False,
+            state_root=Path(state.accounting_state_root) if state.accounting_state_root else None,
+            persist=bool(state.accounting_state_root) and not use_atomic,
+            writer_session_id=session_id,
+        )
+    else:
+        accounting_apply = apply_intended_action_via_canonical_accounting_v1(
+            session=state.accounting_session,
+            portfolio=state.portfolio,
+            instrument_id=state.instrument_id,
+            side=intended.intended_side,
+            quantity=intended.intended_quantity,
+            mark_price=Decimal(str(mark)),
+            session_id=session_id,
+            cycle_index=state.cycle_index,
+            reduce_only=False,
+            state_root=Path(state.accounting_state_root) if state.accounting_state_root else None,
+            # Cap 6.4: defer accounting persist into the atomic coordinator when enabled.
+            persist=bool(state.accounting_state_root) and not use_atomic,
+            writer_session_id=session_id,
+        )
+    state.last_accounting_result = dict(accounting_apply.get("accounting") or {})
+    fill_dict = accounting_apply.get("fill")
+    if fill_dict is not None:
+        fill_dict = dict(fill_dict)
+        fill_dict["cycle_index"] = state.cycle_index
+        fill_dict["trading_epoch"] = state.trading_epoch
+        fill_dict["fill_input_digest"] = (accounting_apply.get("accounting") or {}).get(
+            "fill_input_digest"
+        )
+        fill_dict["accounting_output_digest"] = (accounting_apply.get("accounting") or {}).get(
+            "accounting_output_digest"
+        )
+        fill_dict["canonical_futures_accounting"] = True
+        state.fill_ledger.append(dict(fill_dict))
+
+    _update_session_state_from_replay(state, result=replay)
+
+    # Capability 6.1 — commit C1 acceptance + C3 carrier; optional durable persistence.
+    carrier_after = None
+    if replay.intermediate is not None:
+        carrier_after = replay.intermediate.directional_confirmation_progress_after
+    state.last_confirmation_commit = dict(
+        commit_host_confirmation_after_replay_v1(
+            state.confirmation_binding,
+            observation_acceptance_result=observation_acceptance_result,
+            confirmation_side_carrier_after=carrier_after,
+            persist=bool(persist_confirmation and state.confirmation_state_root and not use_atomic),
+            writer_session_id=session_id,
+        )
+    )
+
+    # Capability 6.2 — commit RuntimeScopeState + CanonicalScopeSnapshot; no silent reinit.
+    current_scope_after = None
+    runtime_scope_after = None
+    runtime_scope_reinitialized = False
+    if replay.intermediate is not None:
+        current_scope_after = replay.intermediate.current_scope
+        runtime_scope_after = replay.intermediate.runtime_scope_state_after
+        runtime_scope_reinitialized = bool(replay.intermediate.runtime_scope_reinitialized)
+    obs_state = state.confirmation_binding.observation_acceptance_state
+    market_epoch = None if obs_state is None else int(obs_state.market_observation_epoch.value)
+    last_event_time = None
+    if (
+        observation_acceptance_result is not None
+        and observation_acceptance_result.observation_identity is not None
+    ):
+        last_event_time = float(observation_acceptance_result.observation_identity.venue_event_time)
+    state.last_dynamic_scope_commit = dict(
+        commit_host_dynamic_scope_after_replay_v1(
+            state.dynamic_scope_binding,
+            observation_acceptance_result=observation_acceptance_result,
+            current_scope=current_scope_after,
+            runtime_scope_state_after=runtime_scope_after,
+            confirmation_session_id=state.confirmation_binding.confirmation_session_id,
+            market_observation_epoch=market_epoch,
+            last_market_event_time=last_event_time,
+            position_context={
+                "position_state": str(state.position_state),
+                "existing_position_side": str(state.existing_position_side),
+                "venue_flat": bool(state.venue_flat),
+                "has_open_position": not bool(state.venue_flat),
+            },
+            scope_direction_state=str(scope_direction_from_side_state_v1(state.side_state).value),
+            side_state=str(state.side_state.value),
+            host_trading_epoch=int(state.trading_epoch),
+            price_path_tail=tuple(float(x) for x in state.mid_prices[-PRICE_PATH_MAX_LEN:]),
+            persist=bool(
+                persist_dynamic_scope and state.dynamic_scope_state_root and not use_atomic
+            ),
+            writer_session_id=session_id,
+            runtime_scope_reinitialized=runtime_scope_reinitialized,
+        )
+    )
+
+    # Capability 6.4 — versioned multi-record transaction across decision-path state roots.
+    if use_atomic:
+        from src.ops.decision_config_ownership_and_consumer_closure_v1.models_v1 import (
+            DecisionConfigBindingStateV1,
+        )
+
+        obs_epoch = 0
+        if state.confirmation_binding.observation_acceptance_state is not None:
+            obs_epoch = int(
+                state.confirmation_binding.observation_acceptance_state.market_observation_epoch.value
+            )
+        fill_key = ""
+        if fill_dict is not None and fill_dict.get("fill_id"):
+            fill_key = str(fill_dict["fill_id"])
+        cfg_state = None
+        if state.decision_config_binding.initialized:
+            # Cap6.3 TOML fields below: LEGACY_FROZEN_CONFIG_EVIDENCE only — not Layer-C runtime authority.
+            cfg_state = DecisionConfigBindingStateV1(
+                state_version="v1",
+                config_version=str(decision_cfg.config_version),
+                schema_version=str(decision_cfg.schema_version),
+                config_digest=str(decision_cfg.config_digest()),
+                confirmation_epochs=int(decision_cfg.confirmation_epochs),
+                up_distance=float(decision_cfg.up_distance),
+                adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+                reversal_distance=float(decision_cfg.reversal_distance),
+                owner=str(decision_cfg.owner),
+                repository_sha=repository_sha,
+                predecessor_capability="CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+                predecessor_config_digest_cap61=confirmation_config_digest_v1(
+                    confirmation_epochs=int(decision_cfg.confirmation_epochs)
+                ),
+                predecessor_config_digest_cap62=layer_c_derived_dynamic_scope_persistence_config_digest_v1(),
+                commit_sequence=int(state.decision_config_binding.commit_sequence or 0),
+                source_path=str(getattr(decision_cfg, "source_path", "") or ""),
+            )
+        scope_canonical = None
+        scope_advanced = bool((state.last_dynamic_scope_commit or {}).get("scope_advanced"))
+        if state.dynamic_scope_binding.initialized and scope_advanced:
+            try:
+                scope_canonical = state.dynamic_scope_binding.to_canonical_state()
+            except Exception:  # noqa: BLE001
+                scope_canonical = None
+        state.last_decision_path_atomic_commit = dict(
+            commit_host_decision_path_atomic_v1(
+                state.decision_path_atomic_binding,
+                confirmation_state=state.confirmation_binding.to_canonical_state(),
+                confirmation_state_root=Path(state.confirmation_state_root),
+                dynamic_scope_state=scope_canonical,
+                dynamic_scope_state_root=(
+                    Path(state.dynamic_scope_state_root) if state.dynamic_scope_state_root else None
+                ),
+                decision_config_state=cfg_state,
+                decision_config_state_root=(
+                    Path(state.decision_config_state_root)
+                    if state.decision_config_state_root
+                    else None
+                ),
+                accounting_session=state.accounting_session,
+                accounting_state_root=(
+                    Path(state.accounting_state_root) if state.accounting_state_root else None
+                ),
+                observation_epoch=obs_epoch,
+                fill_idempotency_key=fill_key,
+                writer_session_id=session_id,
+                evidence_payload={
+                    "capability_id": CAPABILITY_ID,
+                    "session_id": session_id,
+                    "cycle_index": state.cycle_index,
+                    "observation_epoch": obs_epoch,
+                    "fill_id": fill_key,
+                },
+                persist_scope=bool(scope_canonical is not None and state.dynamic_scope_state_root),
+                persist_accounting=bool(state.accounting_state_root and state.accounting_session),
+                persist_config=bool(cfg_state is not None and state.decision_config_state_root),
+            )
+        )
+        # Mirror member commit cursors from coordinator result.
+        atomic_out = state.last_decision_path_atomic_commit
+        conf_meta = dict(atomic_out.get("confirmation") or {})
+        if conf_meta.get("commit_sequence") is not None:
+            state.confirmation_binding.commit_sequence = int(conf_meta["commit_sequence"])
+            state.confirmation_binding.prior_commit_seen = True
+        scope_meta = dict(atomic_out.get("dynamic_scope") or {})
+        if scope_meta.get("commit_sequence") is not None:
+            state.dynamic_scope_binding.commit_sequence = int(scope_meta["commit_sequence"])
+            state.dynamic_scope_binding.prior_commit_seen = True
+
+    # Capability 6.5 — commit exit-policy state (same host cycle as Cap 6.4 atomic boundary).
+    if fill_dict is not None and not state.venue_flat:
+        if state.exit_policy_binding.entry_event_time is None:
+            state.exit_policy_binding.entry_event_time = float(event_ts_unix)
+            state.exit_policy_binding.entry_trading_epoch = int(state.trading_epoch)
+        if state.accounting_session is not None and getattr(
+            state.accounting_session, "position", None
+        ):
+            pos = state.accounting_session.position
+            if pos is not None and getattr(pos, "entry_price", None) is not None:
+                try:
+                    state.exit_policy_binding.entry_price = float(pos.entry_price)
+                except Exception:  # noqa: BLE001
+                    pass
+        state.exit_policy_binding.has_open_position = True
+        state.exit_policy_binding.existing_position_side = str(state.existing_position_side.value)
+    if state.venue_flat:
+        state.exit_policy_binding.has_open_position = False
+    state.last_exit_policy_commit = dict(
+        commit_host_exit_policy_state_v1(
+            state.exit_policy_binding,
+            persist=bool(persist_exit_policy and state.exit_policy_state_root),
+            writer_session_id=session_id,
+        )
+    )
+
+    sizing_result = str(replay.evidence.risk_sizing_effect or "NONE")
+    if replay.intermediate and replay.intermediate.capital_risk_sizing_decision is not None:
+        sizing_result = str(replay.intermediate.capital_risk_sizing_decision.outcome.value)
+
+    safety_result = "PASS"
+    if _exit_bundle.safety_exit.triggered:
+        safety_result = "BOUND_SAFETY"
+    if any("safety" in str(x).lower() for x in replay.evidence.reason_codes):
+        safety_result = "BOUND_SAFETY"
+    if intended.safety_blocked or exit_trading_gate is TradingGate.BLOCKED:
+        safety_result = "BLOCKED_HOLD"
+
+    blockers: list[str] = []
+    if not features.warmup_complete:
+        blockers.append("FEATURE_WARMUP_INCOMPLETE")
+    if not replay.replay_pass and features.warmup_complete:
+        blockers.extend(str(x) for x in replay.fail_reasons)
+
+    cycle = BridgeCycleResultV1(
+        ok=True,  # analytical cycle completed; warmup/observe is still ok for bridge
+        capability_id=CAPABILITY_ID,
+        package_marker=PACKAGE_MARKER,
+        schema_version=SCHEMA_VERSION,
+        owner=OWNER,
+        cycle_index=state.cycle_index,
+        trading_epoch=state.trading_epoch - 1,  # epoch used for this cycle
+        instrument_id=state.instrument_id,
+        decision_authority_owner=DECISION_AUTHORITY_OWNER,
+        feature_regime=features.to_dict(),
+        decision_outcome=str(replay.evidence.decision_outcome),
+        direction=str(
+            replay.evidence.next_direction_state or replay.evidence.previous_direction_state
+        ),
+        selected_side=str(replay.evidence.selected_side),
+        risk_sizing_result=sizing_result,
+        safety_result=safety_result,
+        intended_action=intended.to_dict(),
+        fill=fill_dict,
+        portfolio_snapshot=dict(state.portfolio.snapshot()),
+        economic_metrics=state.portfolio.economic_metrics().to_dict(),
+        reason_codes=tuple(replay.evidence.reason_codes),
+        blockers=tuple(blockers),
+        call_graph=CALL_GRAPH_V1,
+        authority_effect=AUTHORITY_EFFECT_NONE,
+        runtime_effect=RUNTIME_EFFECT_NONE,
+        order_effect=ORDER_EFFECT_NONE,
+        orders_authorized=ORDERS_AUTHORIZED,
+        testnet_authorized=TESTNET_AUTHORIZED,
+        live_authorized=LIVE_AUTHORIZED,
+        paper_execution_authorized=PAPER_EXECUTION_AUTHORIZED,
+        economic_validity_pass=ECONOMIC_VALIDITY_PASS,
+        promotion_pass=PROMOTION_PASS,
+        runtime_bridge_live_activated=RUNTIME_BRIDGE_LIVE_ACTIVATED,
+        execution_class=EXECUTION_CLASS_ANALYTICAL,
+        execution_eligible=bool(replay.evidence.execution_eligible),
+        notes=(
+            "ANALYTICAL_SIMULATION_ONLY",
+            "NO_ORDERS",
+            "NO_BROKER_WRITES",
+            "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
+            "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+            "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
+            "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+            "C1_C2_C3_CONFIRMATION_PRODUCTIVELY_BOUND",
+            f"FUTURES_ACCOUNTING_RUNTIME_BOUND={state.futures_accounting_bound}",
+            f"ACCOUNTING_SINGLE_WRITER={state.accounting_single_writer_identity}",
+            f"PORTFOLIO_SINGLE_WRITER={state.portfolio_single_writer_identity}",
+            f"CONFIRMATION_SESSION_ID={state.confirmation_binding.confirmation_session_id}",
+            f"DYNAMIC_SCOPE_SESSION_ID={state.dynamic_scope_binding.scope_session_id}",
+            f"DYNAMIC_SCOPE_ADVANCED={state.dynamic_scope_binding.last_scope_advanced}",
+            f"FEATURE_WINDOW_MIN={FEATURE_WINDOW_MIN}",
+            "DYNAMIC_SCOPE_PRODUCTIVELY_BOUND",
+        ),
+    )
+    if cycle.execution_eligible:
+        # Hard fail-closed: bridge must never claim broker execution eligibility.
+        raise RuntimeError("EXECUTION_ELIGIBLE_MUST_REMAIN_FALSE")
+
+    # Phase 9.2 — observe-only actionability forensic telemetry.
+    # TELEMETRY_FAILURE_CHANGES_DECISION=false: never alter the already-computed cycle.
+    try:
+        exit_signal_maps: dict[str, Any] = {}
+        for _k, _sig in (exit_signals or {}).items():
+            if _sig is None:
+                continue
+            if hasattr(_sig, "to_dict"):
+                exit_signal_maps[str(_k)] = dict(_sig.to_dict())
+            elif isinstance(_sig, Mapping):
+                exit_signal_maps[str(_k)] = dict(_sig)
+            else:
+                exit_signal_maps[str(_k)] = {"triggered": bool(getattr(_sig, "triggered", False))}
+        state.last_actionability_telemetry = dict(
+            record_productive_cycle_telemetry_v1(
+                state.actionability_telemetry_binding,
+                repository_sha=repository_sha,
+                config_digest=str(decision_cfg.config_digest()),
+                runtime_session_id=session_id,
+                decision_cycle_id=f"{session_id}:cycle:{state.cycle_index}",
+                instrument_id=state.instrument_id,
+                market_event_time=float(event_ts_unix),
+                observation_acceptance_result=observation_acceptance_result,
+                observation_cycle_kind=str(kind.value if hasattr(kind, "value") else kind),
+                confirmation_binding=state.confirmation_binding,
+                features=features,
+                replay=replay,
+                intended=intended,
+                fill=fill_dict,
+                exit_signals=exit_signal_maps,
+                has_open_position=not bool(state.venue_flat),
+                position_state=str(state.position_state),
+                scope_state=str(state.scope_direction_state),
+                safety_result=safety_result,
+                risk_sizing_result=sizing_result,
+                decision_cfg=decision_cfg,
+                fail_closed=False,
+            )
+        )
+    except Exception as _telemetry_exc:  # noqa: BLE001
+        state.last_actionability_telemetry = {
+            "ok": False,
+            "error": f"{type(_telemetry_exc).__name__}:{_telemetry_exc}",
+            "decision_unchanged": True,
+        }
+
+    # WP-FA-04 — observe-only DDO capture after the authoritative producer decision.
+    # CAPTURE_FAILURE_CHANGES_DECISION=false: never alter the already-computed cycle.
+    scope_conflict: DdoHostScopeInputError | None = None
+    try:
+        assert_ddo_observation_host_scope_stable_v1(state)
+        apply_ddo_observation_host_scope_to_capture_binding_v1(state)
+    except DdoHostScopeInputError as exc:
+        scope_conflict = exc
+    try:
+        state.last_ddo_capture = dict(
+            record_productive_cycle_capture_v0(
+                state.ddo_capture_binding,
+                repository_sha=repository_sha,
+                session_id=session_id,
+                cycle_index=int(state.cycle_index),
+                event_ts_unix=float(event_ts_unix),
+                observation_acceptance_result=observation_acceptance_result,
+                features=features,
+                replay=replay,
+                intended=intended,
+                fill=fill_dict,
+                confirmation_binding=state.confirmation_binding,
+                dynamic_scope_binding=state.dynamic_scope_binding,
+                exit_policy_binding=state.exit_policy_binding,
+            )
+        )
+    except Exception as _ddo_exc:  # noqa: BLE001
+        payload: dict[str, Any] = {
+            "ok": False,
+            "error": f"{type(_ddo_exc).__name__}:{_ddo_exc}",
+            "decision_unchanged": True,
+            "capture_failure_changes_current_decision": False,
+        }
+        failure_class = getattr(_ddo_exc, "failure_class", None)
+        if isinstance(failure_class, str):
+            payload["failure_class"] = failure_class
+            payload["retryability"] = getattr(_ddo_exc, "retryable", None)
+        binding = state.ddo_capture_binding
+        if isinstance(binding, DdoCaptureBindingV0) and binding.last_durability_evidence:
+            payload["durability"] = dict(binding.last_durability_evidence)
+        state.last_ddo_capture = payload
+        annotate_ddo_host_ledger_binding_on_capture_v1(state)
+    if scope_conflict is not None:
+        observe_ddo_host_scope_conflict_v1(state, scope_conflict)
+    elif state.last_ddo_capture is not None:
+        annotate_ddo_host_ledger_binding_on_capture_v1(state)
+
+    capture_binding = state.ddo_capture_binding
+    ddo_corr = (
+        capture_binding.capture_correlation_id
+        if isinstance(capture_binding, DdoCaptureBindingV0)
+        and capture_binding.capture_correlation_id
+        else None
+    )
+    if ddo_corr:
+        maybe_bind_ddo_n_bars_horizon_decision_from_cycle_capture_v1(
+            state,
+            correlation_id=ddo_corr,
+            cycle_id=f"{session_id}:cycle:{state.cycle_index}",
+        )
+    decision_ref: str | None = None
+    if state.ddo_n_bars_horizon_decision_event is not None:
+        decision_ref = str(state.ddo_n_bars_horizon_decision_event.get("record_id") or "") or None
+    maybe_materialize_ddo_o4_n_bars_snapshot_from_public_plane_convergence_v1(
+        state,
+        decision_event_ref=decision_ref,
+        n_bars=state.ddo_n_bars_horizon_n_bars,
+    )
+
+    try:
+        state.last_ddo_n_bars_horizon_observation = invoke_productive_n_bars_horizon_observation_v1(
+            state,
+            decision_event=state.ddo_n_bars_horizon_decision_event,
+            o4_snapshot=state.ddo_o4_n_bars_bar_evidence_snapshot,
+            event_ts_unix=float(event_ts_unix),
+            outcome_scalar_kind=state.ddo_n_bars_outcome_scalar_kind,
+            economic_score=state.ddo_n_bars_economic_score,
+        )
+    except Exception as _horizon_exc:  # noqa: BLE001
+        state.last_ddo_n_bars_horizon_observation = {
+            "ok": False,
+            "error": f"{type(_horizon_exc).__name__}:{_horizon_exc}",
+            "decision_unchanged": True,
+            "capture_failure_changes_current_decision": False,
+        }
+
+    try:
+        corr = f"ddo.corr.{session_id}"[:128]
+        state.last_ddo_n_bars_evaluation_runtime = invoke_productive_n_bars_evaluation_runtime_v1(
+            state,
+            decision_event=state.ddo_n_bars_horizon_decision_event,
+            identity=state.ddo_n_bars_evaluation_identity,
+            horizon_result=state.last_ddo_n_bars_horizon_observation,
+            correlation_id=corr,
+        )
+    except Exception as _eval_exc:  # noqa: BLE001
+        state.last_ddo_n_bars_evaluation_runtime = {
+            "ok": False,
+            "error": f"{type(_eval_exc).__name__}:{_eval_exc}",
+            "decision_unchanged": True,
+            "capture_failure_changes_current_decision": False,
+        }
+
+    try:
+        state.last_ddo_learning_outcome_ingest = (
+            invoke_productive_learning_outcome_evidence_ingest_v1(
+                state,
+                evaluation_runtime=state.last_ddo_n_bars_evaluation_runtime,
+                session_id=session_id,
+                correlation_id=ddo_corr,
+                cycle_id=f"{session_id}:cycle:{state.cycle_index}",
+            )
+        )
+    except Exception as _ingest_exc:  # noqa: BLE001
+        state.last_ddo_learning_outcome_ingest = {
+            "ok": False,
+            "error": f"{type(_ingest_exc).__name__}:{_ingest_exc}",
+            "decision_unchanged": True,
+        }
+
+    state.cycle_ledger.append(cycle.to_dict())
+    return cycle
+
+
+def run_bridge_cycles_from_mids_v1(
+    mid_prices: Sequence[float],
+    *,
+    start_ts_unix: float = 1_700_000_000.0,
+    session_id: str = "wallclock-bridge-probe",
+    instrument_id: str = PRODUCTION_INSTRUMENT_ID,
+    repository_sha: str = "OFFLINE_DETERMINISTIC_EVIDENCE",
+    reconciliation_state_root: Optional[Path] = None,
+    selection_state_root: Optional[Path] = None,
+    ranking_state_root: Optional[Path] = None,
+    universe_state_root: Optional[Path] = None,
+    mark_price_by_native_id: Optional[Mapping[str, Any]] = None,
+    require_selection_binding: bool = True,
+    allow_direct_instrument_override: bool = False,
+    accounting_state_root: Optional[Path] = None,
+    ddo_durable_evidence_runtime_state_root: Optional[Path] = None,
+    ddo_evidence_environment: Optional[ExecutionEnvironment] = None,
+    ddo_account_identity_record: Optional[AccountIdentityRecordV1] = None,
+    ddo_runtime_state_root_config: Optional[Mapping[str, Any]] = None,
+    ddo_n_bars_horizon_decision_event: Optional[Mapping[str, Any]] = None,
+    ddo_o4_n_bars_bar_evidence_snapshot: Optional[Mapping[str, Any]] = None,
+    ddo_n_bars_outcome_scalar_kind: str = "LOG_RETURN",
+    ddo_n_bars_economic_score: str | None = None,
+    ddo_n_bars_evaluation_identity: Optional[Mapping[str, Any]] = None,
+    ddo_canonical_public_md_bar_producer: CanonicalPublicMdBarProducerV1 | None = None,
+    ddo_n_bars_horizon_n_bars: int = 2,
+) -> tuple[BridgeSessionStateV1, list[BridgeCycleResultV1]]:
+    if require_selection_binding and instrument_id != PRODUCTION_INSTRUMENT_ID:
+        if not allow_direct_instrument_override:
+            raise RuntimeError("DIRECT_INSTRUMENT_OVERRIDE_REJECTED")
+    state = BridgeSessionStateV1(
+        instrument_id=instrument_id,
+        require_selection_binding=require_selection_binding,
+    )
+    if reconciliation_state_root is not None:
+        state.reconciliation_state_root = str(reconciliation_state_root)
+    if selection_state_root is not None:
+        state.selection_state_root = str(selection_state_root)
+    if ranking_state_root is not None:
+        state.ranking_state_root = str(ranking_state_root)
+    if universe_state_root is not None:
+        state.universe_state_root = str(universe_state_root)
+    if mark_price_by_native_id is not None:
+        state.mark_price_by_native_id = dict(mark_price_by_native_id)
+    if accounting_state_root is not None:
+        state.accounting_state_root = str(accounting_state_root)
+    maybe_bind_ddo_observation_host_scope_from_optional_inputs_v1(
+        state,
+        runtime_state_root=ddo_durable_evidence_runtime_state_root,
+        environment=ddo_evidence_environment,
+        account_identity_record=ddo_account_identity_record,
+        runtime_state_root_config=ddo_runtime_state_root_config,
+    )
+    if ddo_n_bars_horizon_decision_event is not None:
+        state.ddo_n_bars_horizon_decision_event = dict(ddo_n_bars_horizon_decision_event)
+    if ddo_o4_n_bars_bar_evidence_snapshot is not None:
+        state.ddo_o4_n_bars_bar_evidence_snapshot = dict(ddo_o4_n_bars_bar_evidence_snapshot)
+        state.ddo_o4_n_bars_bar_evidence_snapshot_locked = True
+    state.ddo_n_bars_outcome_scalar_kind = ddo_n_bars_outcome_scalar_kind
+    state.ddo_n_bars_economic_score = ddo_n_bars_economic_score
+    if ddo_n_bars_evaluation_identity is not None:
+        state.ddo_n_bars_evaluation_identity = dict(ddo_n_bars_evaluation_identity)
+    if ddo_canonical_public_md_bar_producer is not None:
+        state.ddo_canonical_public_md_bar_producer = ddo_canonical_public_md_bar_producer
+    if ddo_n_bars_horizon_n_bars > 0:
+        state.ddo_n_bars_horizon_n_bars = int(ddo_n_bars_horizon_n_bars)
+    results: list[BridgeCycleResultV1] = []
+    for i, mid in enumerate(mid_prices):
+        results.append(
+            run_bridge_cycle_v1(
+                state,
+                mid_price=float(mid),
+                event_ts_unix=start_ts_unix + float(i),
+                session_id=session_id,
+                repository_sha=repository_sha,
+                reconciliation_state_root=reconciliation_state_root,
+                direct_instrument_override=(
+                    instrument_id
+                    if allow_direct_instrument_override
+                    and instrument_id != PRODUCTION_INSTRUMENT_ID
+                    else None
+                ),
+            )
+        )
+    return state, results

@@ -1,0 +1,19 @@
+{
+  "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS": false,
+  "PROMOTION_ELIGIBLE": 0,
+  "break_even_cost_bps": 30.0,
+  "expectancy_gross": -49.68884987759745,
+  "fees": 0.0,
+  "gross_pnl": -694.2799001873407,
+  "gross_return": -0.06942799001873406,
+  "long_trade_count": 1,
+  "max_drawdown": -0.02962749064373438,
+  "net_pnl": -694.2799001873407,
+  "net_return": -0.06942799001873427,
+  "profit_factor_gross": 0.0,
+  "required_gross_edge_for_break_even": 30.0,
+  "sharpe": "NOT_AVAILABLE",
+  "short_trade_count": 13,
+  "slippage_drag": 140.0,
+  "trade_count_total": 14
+}

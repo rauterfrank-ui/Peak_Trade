@@ -1,0 +1,32 @@
+{
+  "AUTH_HEADER_PERSISTED": false,
+  "BODY_SHA256": "a8970a3e4f9ce4d8993216224827707fc25a9f65e90fe9bf5caf8a01e2c74b4f",
+  "EDGE_ID": "PRICE_BAND",
+  "ENDPOINT": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+  "HTTP_STATUS": 200,
+  "OKX_CODE": "0",
+  "OKX_MSG": "",
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_ROW": {
+    "buyLmt": "0.7255",
+    "enabled": true,
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "instType": "FUTURES",
+    "sellLmt": "0.7182",
+    "ts": "1788196184718"
+  },
+  "payload": {
+    "code": "0",
+    "data": [
+      {
+        "buyLmt": "0.7255",
+        "enabled": true,
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "instType": "FUTURES",
+        "sellLmt": "0.7182",
+        "ts": "1788196184718"
+      }
+    ],
+    "msg": ""
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "basel_traffic_light": "GREEN",
+  "breaches": 5,
+  "christoffersen_cc_pvalue": 0.85,
+  "christoffersen_cc_result": "PASS",
+  "christoffersen_ind_pvalue": 0.75,
+  "christoffersen_ind_result": "PASS",
+  "confidence_level": 0.95,
+  "kupiec_pof_pvalue": 0.65,
+  "kupiec_pof_result": "PASS",
+  "observations": 250,
+  "overall_result": "PASS"
+}

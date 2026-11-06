@@ -1,0 +1,26 @@
+# Peak_Trade – Parameter-Grid für Mean-Reversion-Strategie (Phase 18)
+# ====================================================================
+#
+# Dieses Grid definiert die Parameterkombinationen für einen Strategy-Sweep.
+# Verwendet mit: python scripts/run_sweep_strategy.py --strategy mean_reversion --grid config/sweeps/mean_reversion.toml
+#
+# Die Mean-Reversion-Strategie nutzt Z-Scores um überkaufte/überverkaufte
+# Situationen zu identifizieren. Funktioniert am besten in Range-Märkten.
+
+[grid]
+# Lookback-Periode für MA und Standard-Abweichung
+lookback = [10, 15, 20, 30]
+
+# Z-Score Entry-Schwelle (negativ = überverkauft)
+# Niedriger = konservativer, wartet auf stärkere Abweichungen
+entry_threshold = [-3.0, -2.5, -2.0, -1.5]
+
+# Z-Score Exit-Schwelle (typisch: nahe 0 = Mittelwert)
+exit_threshold = [-0.5, 0.0, 0.5]
+
+# Volatilitätsfilter verwenden?
+# Wenn true, nur handeln bei niedriger Volatilität
+use_vol_filter = [true, false]
+
+# Beispiel-Berechnung:
+# 4 × 4 × 3 × 2 = 96 Kombinationen

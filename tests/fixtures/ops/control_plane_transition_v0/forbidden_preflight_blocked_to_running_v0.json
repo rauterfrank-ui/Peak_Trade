@@ -1,0 +1,21 @@
+{
+  "case_id": "forbidden_preflight_blocked_to_running_v0",
+  "initial_state": "PREFLIGHT_BLOCKED",
+  "target_state": "RUNNING",
+  "steps": ["PREFLIGHT_BLOCKED", "RUNNING"],
+  "expected_forbidden": true,
+  "required_intermediate_states": [],
+  "expected_machine_lines": {
+    "RUNTIME_START_REQUIRED": false,
+    "SCHEDULER_START_REQUIRED": false,
+    "SUPERVISOR_START_REQUIRED": false,
+    "DAEMON_START_REQUIRED": false,
+    "PAPER_SHADOW_TESTNET_LIVE_START_REQUIRED": false,
+    "AWS_REMOTE_REQUIRED": false,
+    "S3_UPLOAD_REQUIRED": false,
+    "SSH_REQUIRED": false,
+    "NETWORK_REQUIRED": false,
+    "LIVE_AUTHORITY_CHANGED": false,
+    "MASTER_V2_DOUBLE_PLAY_TOUCHED": false
+  }
+}

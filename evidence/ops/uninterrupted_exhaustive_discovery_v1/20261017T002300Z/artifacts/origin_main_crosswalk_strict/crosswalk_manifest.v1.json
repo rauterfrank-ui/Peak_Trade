@@ -1,0 +1,14 @@
+{
+  "CAUSAL_CLOSURE_PROVEN": false,
+  "CURRENT_GRAPH_VERIFIED": false,
+  "CURRENT_ONLY_FILTER_APPLIED": false,
+  "CURRENT_ONLY_GRAPH": false,
+  "GLOBAL_NON_INTERFERENCE_PROVEN": false,
+  "GRAPH_AUTHORITY": "STRICT_CURRENT",
+  "GRAPH_MODE": "STRICT_CURRENT",
+  "SNAPSHOT_BINDING_VERIFIED": false,
+  "SOURCE_VALIDATION_PASS": false,
+  "node_count": 0,
+  "schema_version": "crosswalk_manifest.v1",
+  "snapshot_id": "4a8338cb292b89d566731abc647b0529"
+}

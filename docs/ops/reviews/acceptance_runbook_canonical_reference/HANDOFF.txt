@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: acceptance_runbook_canonical_reference
+STATUS: docs_draft_ready
+BRANCH: feat/acceptance-runbook-canonical-reference
+MODE: paper_stability_guard
+
+GOAL
+- add the canonical accepted-and-filled closeout as the preferred example in the acceptance operator runbook
+
+OUTPUT
+- docs/ops/runbooks/ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md
+
+NEXT SUGGESTED STEP
+- use the canonical accepted-and-filled reference consistently in future operator docs and governance packaging

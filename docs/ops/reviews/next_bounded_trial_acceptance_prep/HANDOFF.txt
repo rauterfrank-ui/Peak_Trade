@@ -1,0 +1,50 @@
+PROJECT: Peak_Trade
+TOPIC: next_bounded_trial_acceptance_prep
+STATUS: ready_for_next_step_prep
+BRANCH: main baseline after Trial-5 fix verification
+MODE: paper_stability_guard
+
+STARTING POINT
+- Trial-5 execution-events gap fixed and merged
+- post-fix verification completed successfully
+- session-scoped evidence confirmed for rejected live-order attempts
+
+VERIFIED EVIDENCE
+- session_id: session_20260318_164528_bounded_pilot_9c239f
+- path: out/ops/execution_events/sessions/session_20260318_164528_bounded_pilot_9c239f/execution_events.jsonl
+- observed events:
+  - order_submit
+  - order_reject
+
+NEXT STEP OPTIONS
+1) next bounded trial
+   - objective: continue bounded-pilot sequence with evidence intact
+   - prerequisites:
+     - Entry-Contract prerequisites confirmed
+     - Go/No-Go prerequisites confirmed
+     - Dry Validation confirmed
+     - Ops Cockpit reviewed
+     - supervisor remains stopped unless intentionally needed
+
+2) acceptance-oriented step
+   - objective: verify actual exchange acceptance with valid credentials
+   - prerequisites:
+     - valid Kraken credentials present in the intended execution environment
+     - operator approval for acceptance-oriented run
+     - bounded scope and evidence capture confirmed
+     - explicit decision whether the run is expected to submit an actually acceptable order
+
+RECOMMENDED PREP
+- perform a read-only preflight before the next bounded trial / acceptance run
+- confirm no interfering bounded-pilot processes remain
+- confirm execution-events remain enabled where needed
+- confirm the intended run goal:
+  - rejected-order evidence only
+  - or actual exchange acceptance
+
+KEY FILES
+- docs/ops/evidence/TRIAL5_EXEC_EVENTS_POST_FIX_VERIFICATION_CLOSEOUT.md
+- src/execution/pipeline.py
+- tests/test_execution_pipeline.py
+- docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md
+- docs/ops/specs/FIRST_BOUNDED_LIVE_ORDER_CONTRACT.md

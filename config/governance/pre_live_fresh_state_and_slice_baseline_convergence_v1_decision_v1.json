@@ -1,0 +1,15 @@
+{
+  "workpackage_id": "PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1",
+  "normative_spec": "docs/ops/specs/PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1.md",
+  "owner_go": true,
+  "owner_go_token": "PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1",
+  "baseline_origin_main_sha": "fca07afa1fa74a94cdecde3876c9c30ad79ba828",
+  "cap24_canonical_write_owner_go_token": "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1",
+  "venue_post_owner_go_consumed": false,
+  "external_effect_permit_minted": false,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "historical_post_store_mutated": false,
+  "next_genuine_blocker_after_successful_convergence": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1"
+}

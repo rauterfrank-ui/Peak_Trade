@@ -1,0 +1,222 @@
+{
+  "capability_id": "CAPABILITY_6_4_FULL_DECISION_PATH_ATOMIC_RESTART_CLOSURE_V1",
+  "failure_injection_results": {
+    "config_digest_mismatch": {
+      "code": "CONFIG_DIGEST_MISMATCH",
+      "ok": true
+    },
+    "corrupt_checkpoint": {
+      "code": "COMMIT_MARKER_CORRUPT",
+      "ok": true
+    },
+    "crash_after_fill_before_portfolio": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "ok": true
+    },
+    "crash_after_portfolio_before_evidence_cursor": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "ok": true
+    },
+    "crash_after_runtime_before_evidence": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "ok": true,
+      "runtime_commit_present": true
+    },
+    "crash_after_state_before_marker": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "ok": true
+    },
+    "crash_before_state_write": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "ok": true,
+      "prior_marker_retained": true
+    },
+    "crash_during_state_write": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "journal_discarded": true,
+      "ok": true
+    },
+    "duplicate_observation_after_restart": {
+      "epoch_after": 3,
+      "epoch_before": 3,
+      "ok": true,
+      "scope_advanced": false,
+      "scope_sequence_after": 1,
+      "scope_sequence_before": 1
+    },
+    "duplicate_replay_after_restart": {
+      "commit_identity": "3ff0f6e0f37652a0d0dd9dbb48a315fe25d3d7f42e3ad0dea3709d145569f4b0",
+      "ok": true
+    },
+    "evidence_materialization_repeated_fail": {
+      "attempts": 2,
+      "ok": true
+    },
+    "missing_commit_marker": {
+      "ok": true,
+      "recovery": {
+        "discarded": {
+          "journal_discarded": true,
+          "ok": true,
+          "stagings_removed": 0
+        },
+        "ok": true,
+        "pending_evidence": null,
+        "reason": "NO_PRIOR_COMMIT",
+        "recovered": false
+      }
+    },
+    "ok": true,
+    "recovery_idempotent_restart": {
+      "digest": "5308a0c15f740158d2b87c1442379c074ce2f4b86b09654869fd1b111865f908",
+      "ok": true
+    },
+    "repository_sha_mismatch": {
+      "code": "REPOSITORY_SHA_MISMATCH",
+      "ok": true
+    },
+    "restart_during_active_dynamic_scope": {
+      "ok": true,
+      "session_stable": true
+    },
+    "restart_during_candidate": {
+      "ok": true,
+      "session_stable": true
+    },
+    "restart_during_confirmation_observe": {
+      "ok": true,
+      "session_stable": true
+    },
+    "restart_during_confirmed": {
+      "ok": true,
+      "session_stable": true
+    },
+    "restart_with_open_simulated_position": {
+      "ok": true,
+      "session_stable": true
+    },
+    "writer_conflict": {
+      "code": "CONFLICTING_WRITER",
+      "ok": true
+    }
+  },
+  "gate_flags": {
+    "AUTHORIZATION_NOT_CONSUMED": true,
+    "BULL_BEAR_PARITY_PROVEN": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CONFIG_DIGEST_MATCH_AFTER_RESTART": true,
+    "CORE_LOGIC_UNCHANGED": true,
+    "DECISION_PATH_RESTART_PROVEN": true,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DETERMINISTIC_REPLAY_PROVEN": true,
+    "DIGEST_MATCH_AFTER_RESTART": true,
+    "DOUBLE_PLAY_PARITY_PROVEN": true,
+    "DYNAMIC_SCOPE_RULE_PARITY_PROVEN": true,
+    "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": true,
+    "EVIDENCE_RECOVERY_IDEMPOTENT": true,
+    "EVIDENCE_VERIFIED": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "FAILURE_INJECTION_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "MASTER_V2_PARITY_PROVEN": true,
+    "NO_DUPLICATE_CONFIRMATION_ADVANCE": true,
+    "NO_DUPLICATE_FILL": true,
+    "NO_DUPLICATE_SCOPE_ADVANCE": true,
+    "NO_LIVE_ORDER_PATH": true,
+    "NO_LOST_SCOPE_TRANSITION": true,
+    "NO_MIXED_STATE_ROOT_COMMIT": true,
+    "NO_NETWORK_ACCESS": true,
+    "NO_PORTFOLIO_STATE_ROLLBACK": true,
+    "NO_TESTNET_ORDER_PATH": true,
+    "RECONCILIATION_BEFORE_ALPHA_AFTER_RESTART": true,
+    "RISK_PARITY_PROVEN": true,
+    "RUNTIME_NOT_ACTIVATED": true,
+    "RUNTIME_RESTART_DOES_NOT_RESET_TRADING_STATE": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "SILENT_CONFIRMATION_REINITIALIZATION_FALSE": true,
+    "SILENT_DYNAMIC_SCOPE_REINITIALIZATION_FALSE": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true
+  },
+  "ok": true,
+  "parity_results": {
+    "BULL_BEAR_PARITY_PROVEN": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CONFIRMATION_PARITY_PROVEN": true,
+    "CORE_LOGIC_CHANGE": false,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DOUBLE_PLAY_PARITY_PROVEN": true,
+    "DYNAMIC_SCOPE_PARITY_PROVEN": true,
+    "DYNAMIC_SCOPE_RULE_PARITY_PROVEN": true,
+    "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "MASTER_V2_PARITY_PROVEN": true,
+    "RISK_PARITY_PROVEN": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "decision_precedence_nodes": [
+      "master_v2_double_play_integrated_offline_replay",
+      "risk_position_sizing",
+      "safety_kernel",
+      "intended_side_quantity"
+    ],
+    "frozen_thresholds": {
+      "adverse_exit_distance": 80.0,
+      "candidate_signal_threshold": 0.005,
+      "confirmation_epochs": 2,
+      "confirmation_signal_threshold": 0.01,
+      "entry_exit_policy_version": "double_play_entry_exit_policy_v0",
+      "reversal_distance": 120.0,
+      "up_distance": 200.0
+    },
+    "inserted_wiring_edges_only": [
+      "decision_path_atomic_runtime_commit",
+      "pending_evidence_cursor_commit"
+    ]
+  },
+  "restart_results": {
+    "config_digest_match_after_restart": true,
+    "confirmation_session_stable": true,
+    "digest_match_after_restart": true,
+    "first_commit": "fae3697e15f06f8274974889ea315fc422c11ae83afbaa6f0cfafe7c74a9a1b2",
+    "ok": true,
+    "reconciliation_before_alpha_after_restart": true,
+    "recovery": {
+      "commit_identity": "3f0e05d48037dff22aeccbca3efd814f8cb0dbe1dc6290c8f0f28a17dbf85ae4",
+      "commit_sequence": 6,
+      "config_digest": "59f3062f719dcf4efe73aaa52b74527969aa1fb746b7cb9b12cdd69a5bdfc31b",
+      "discarded": {
+        "journal_discarded": false,
+        "ok": true,
+        "stagings_removed": 0
+      },
+      "evidence_status": "MATERIALIZED",
+      "member_digests": {
+        "accounting_portfolio": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+        "confirmation": "f151832530cd6d92b00c4d274304514ecf72b0eba83d852028466d06acef0d2e",
+        "decision_config": "f7a01c3a333a04d858c4ed9d2950664075c7bcc4fa106ba832a2d6502c956a75"
+      },
+      "observation_epoch": 4,
+      "ok": true,
+      "pending_evidence": {
+        "attempts": 1,
+        "commit_identity": "3f0e05d48037dff22aeccbca3efd814f8cb0dbe1dc6290c8f0f28a17dbf85ae4",
+        "commit_sequence": 6,
+        "evidence_path": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/docs/evidence/capability_6_4_full_decision_path_atomic_restart_closure_v1/productive_binding/work/restart/run_b/decision_path_atomic/cycle_evidence_v1.json",
+        "idempotency_key": "0e0bc43b78ddab683915c7ee8f8fe3c625cbd4d0a4c8f061169870874110b31f",
+        "last_error": "",
+        "materialized_digest": "da58a0e431b23370c72b52ea35855d44963151123b8b1b5e0458ff0cdb2ead12",
+        "state_version": "v1",
+        "status": "MATERIALIZED"
+      },
+      "portfolio_digest": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+      "recovered": true,
+      "repository_sha": "89d0c03f99ad883d0d748f7767db67cc25d83f74"
+    },
+    "runtime_restart_does_not_reset_trading_state": true,
+    "scope_session_stable": true,
+    "second_commit": "3f0e05d48037dff22aeccbca3efd814f8cb0dbe1dc6290c8f0f28a17dbf85ae4"
+  }
+}

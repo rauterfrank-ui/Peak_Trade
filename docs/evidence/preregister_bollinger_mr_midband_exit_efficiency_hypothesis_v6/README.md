@@ -1,0 +1,20 @@
+# Preregister Bollinger&#47;MR midband exit-efficiency hypothesis v6
+
+Definition-only evidence package. No evaluation executed.
+`EVALUATION_RUN_COUNT=0`. Holdout not accessed.
+V6 is not a rerun of V5, V4, V3, V2, or V1.
+V5 remains terminal `INFRASTRUCTURE_FAILURE`
+(`PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL`; run count 1;
+partial metrics non-authoritative) and is not reinterpreted as economic PASS or FAIL.
+V4&#47;V3&#47;V2&#47;V1 remain terminal and unchanged.
+V6 economic delta vs V5: composite side-aware midband-cross OR frozen
+max-holding-horizon=48h (from sealed `splits.max_holding_horizon_hours`).
+
+HYPOTHESIS_ID=BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V6
+PREDECESSOR_V5_HYPOTHESIS_ID=BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V5
+DATASET_ID=pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1
+PREREGISTRATION_STATE=DEFINITION_ONLY_PREREGISTERED
+OBSERVABILITY_SURFACE=EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1
+LIFECYCLE_CHECKPOINT_SURFACE=BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PROCESS_LIFECYCLE_CHECKPOINT_V5
+FALSY_ZERO_HYGIENE_SURFACE=PANEL_RUNNER_FALSY_ZERO_PREMEASUREMENT_HYGIENE
+BINDING_FIX_SURFACE=MV2_WIRING_MOD_CAPTURE_ALIAS_OPEN_SIDE_BINDING_FIX

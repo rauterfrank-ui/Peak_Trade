@@ -1,0 +1,546 @@
+{
+  "FAILURE_INJECTION_PROVEN": true,
+  "authorization_consumed": false,
+  "confirm_token_minted": false,
+  "credentials_used": false,
+  "network_session_started": false,
+  "ok": true,
+  "orders_submitted": false,
+  "results": {
+    "DASHBOARD_BACKEND_FAILURE": {
+      "authorization_consumed": false,
+      "evidence": {
+        "composite": {
+          "composite": {
+            "DASHBOARD_BACKEND_HEALTH": "DISCONNECTED",
+            "END_TO_END_DATA_HEALTH": "DISCONNECTED",
+            "HOST_HEALTH": "HEALTHY",
+            "MARKET_DATA_HEALTH": "HEALTHY",
+            "PERSISTENCE_HEALTH": "HEALTHY",
+            "READ_MODEL_HEALTH": "HEALTHY",
+            "RUNTIME_HEALTH": "HEALTHY"
+          },
+          "derived_not_guessed": true,
+          "end_to_end_blocks_stale_dashboard": true,
+          "may_render_green": false,
+          "ok": true,
+          "process_existence_alone_insufficient": true
+        }
+      },
+      "failure": {
+        "affected_component": "DASHBOARD_BACKEND",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700500700.0,
+        "last_good_time": 1700500695.0,
+        "owner_action_required": false,
+        "reason_code": "BACKEND_PROCESS_DOWN",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "DASHBOARD_BACKEND_FAILURE",
+        "session_id": "o6-db",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "DASHBOARD_BACKEND_FAILURE"
+    },
+    "DISCONNECTED_SOURCE_STATE": {
+      "authorization_consumed": false,
+      "evidence": {
+        "component_health": "DISCONNECTED",
+        "connection_state": "DISCONNECTED"
+      },
+      "failure": {
+        "affected_component": "MARKET_DATA",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700500500.0,
+        "last_good_time": 1700500490.0,
+        "owner_action_required": false,
+        "reason_code": "SOURCE_DISCONNECTED",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "DISCONNECTED_SOURCE_STATE",
+        "session_id": "o6-disc",
+        "state_divergence_possible": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "DISCONNECTED_SOURCE_STATE"
+    },
+    "DUPLICATE_MARKET_EVENT": {
+      "authorization_consumed": false,
+      "evidence": {
+        "epoch1": 1,
+        "epoch2": 1,
+        "second_advance": false
+      },
+      "failure": {
+        "affected_component": "MARKET_DATA",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700600100.0,
+        "last_good_time": 1700600100.0,
+        "owner_action_required": false,
+        "reason_code": "DUPLICATE_NO_ADVANCE",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "DUPLICATE_MARKET_EVENT",
+        "session_id": "o6-dup-md",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "DUPLICATE_MARKET_EVENT"
+    },
+    "DUPLICATE_OHLCV_FINALIZATION": {
+      "authorization_consumed": false,
+      "evidence": {
+        "duplicate_finalization_blocked": true
+      },
+      "failure": {
+        "affected_component": "MARKET_DATA",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700800050.0,
+        "last_good_time": 1700800050.0,
+        "owner_action_required": false,
+        "reason_code": "FINALIZED_IMMUTABLE",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "DUPLICATE_OHLCV_FINALIZATION",
+        "session_id": "o6-fin",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "DUPLICATE_OHLCV_FINALIZATION"
+    },
+    "DUPLICATE_SESSION_START": {
+      "authorization_consumed": false,
+      "evidence": {
+        "duplicate_session_start_blocked": true
+      },
+      "failure": {
+        "affected_component": "SUPERVISOR",
+        "automatic_recovery_allowed": false,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1785770768.2260008,
+        "last_good_time": 1785770768.2260008,
+        "owner_action_required": true,
+        "reason_code": "DUPLICATE_SESSION_BLOCKED",
+        "recovery_eligibility": "BLOCKED",
+        "root_cause_class": "DUPLICATE_SESSION_START",
+        "session_id": "o6-dup-new",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "DUPLICATE_SESSION_START"
+    },
+    "GRACEFUL_SHUTDOWN_TIMEOUT": {
+      "authorization_consumed": false,
+      "evidence": {
+        "escalated": true,
+        "graceful_shutdown_proven": true,
+        "graceful_timeout_seconds": 2.0,
+        "ok": true,
+        "stopped": true,
+        "timeout_path_classified": true
+      },
+      "failure": {
+        "affected_component": "SUPERVISOR",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "tmp=o6://external-temp/graceful_shutdown",
+        "first_failure_time": 1701000000.0,
+        "last_good_time": 1700999990.0,
+        "owner_action_required": false,
+        "reason_code": "STOP_ESCALATED_AFTER_TIMEOUT",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "GRACEFUL_SHUTDOWN_TIMEOUT",
+        "session_id": "o6-stop",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "GRACEFUL_SHUTDOWN_TIMEOUT"
+    },
+    "HEARTBEAT_LOSS": {
+      "authorization_consumed": false,
+      "evidence": {
+        "classification": "STALE"
+      },
+      "failure": {
+        "affected_component": "SUPERVISOR",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700500300.0,
+        "last_good_time": 1700500180.0,
+        "owner_action_required": false,
+        "reason_code": "HEARTBEAT_STALE",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "HEARTBEAT_LOSS",
+        "session_id": "o6-hb",
+        "state_divergence_possible": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "HEARTBEAT_LOSS"
+    },
+    "MISSED_OR_STALE_OHLCV_INTERVAL": {
+      "authorization_consumed": false,
+      "evidence": {
+        "missing": "MISSING_BAR",
+        "silent_gap_fill_forbidden": true,
+        "stale": "STALE_BAR"
+      },
+      "failure": {
+        "affected_component": "MARKET_DATA",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": true,
+        "detail": "",
+        "first_failure_time": 1700900000.0,
+        "last_good_time": 1700899000.0,
+        "owner_action_required": false,
+        "reason_code": "INTERVAL_GAP_OR_STALE",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "MISSED_OR_STALE_OHLCV_INTERVAL",
+        "session_id": "o6-interval",
+        "state_divergence_possible": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "MISSED_OR_STALE_OHLCV_INTERVAL"
+    },
+    "OUT_OF_ORDER_MARKET_EVENT": {
+      "authorization_consumed": false,
+      "evidence": {
+        "epoch1": 1,
+        "epoch2": 1,
+        "ooo": {
+          "accepted": false,
+          "advance": false,
+          "bar_key": "ETH-USDT-SWAP|PT1H|1700697600",
+          "classification": "out_of_order"
+        }
+      },
+      "failure": {
+        "affected_component": "MARKET_DATA",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700700200.0,
+        "last_good_time": 1700700200.0,
+        "owner_action_required": false,
+        "reason_code": "OUT_OF_ORDER_CLASSIFIED",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "OUT_OF_ORDER_MARKET_EVENT",
+        "session_id": "o6-ooo",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "OUT_OF_ORDER_MARKET_EVENT"
+    },
+    "PROCESS_START_FAILURE": {
+      "authorization_consumed": false,
+      "evidence": {
+        "preflight_blocked": true,
+        "start_blocked": true
+      },
+      "failure": {
+        "affected_component": "SUPERVISOR",
+        "automatic_recovery_allowed": false,
+        "data_loss_possible": false,
+        "detail": "CanonicalLauncherError:CanonicalLauncherError",
+        "first_failure_time": 1700500000.0,
+        "last_good_time": null,
+        "owner_action_required": true,
+        "reason_code": "CONFIG_OR_SPAWN_FAILED",
+        "recovery_eligibility": "OWNER_LOCK",
+        "root_cause_class": "PROCESS_START_FAILURE",
+        "session_id": "o6-start-fail",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "PROCESS_START_FAILURE"
+    },
+    "READ_MODEL_PROJECTION_FAILURE": {
+      "authorization_consumed": false,
+      "evidence": {
+        "projection_failed_closed": true
+      },
+      "failure": {
+        "affected_component": "READ_MODEL_PROJECTOR",
+        "automatic_recovery_allowed": false,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700500600.0,
+        "last_good_time": 1700500590.0,
+        "owner_action_required": true,
+        "reason_code": "CROSS_CONTAMINATION_OR_INVALID_ENVELOPE",
+        "recovery_eligibility": "BLOCKED",
+        "root_cause_class": "READ_MODEL_PROJECTION_FAILURE",
+        "session_id": "o6-rm-fail",
+        "state_divergence_possible": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "READ_MODEL_PROJECTION_FAILURE"
+    },
+    "RECOVERY_FROM_PERSISTED_ACTIVE_STATE": {
+      "authorization_consumed": false,
+      "evidence": {
+        "cursor": {
+          "bar_finalization_count": 2,
+          "config_digest": "cfg-rec",
+          "confirmation_advance_count": 1,
+          "evidence_cursor": 4,
+          "fenced": true,
+          "fill_count": 0,
+          "market_observation_epoch": 4,
+          "processing_allowed": true,
+          "read_model_commit_count": 3,
+          "reconciled": true,
+          "repository_sha": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "session_id": "o6-persist-rec",
+          "state_commit_position": 4
+        },
+        "invariants": {
+          "DUPLICATE_SESSION_START_BLOCKED": true,
+          "NO_DUPLICATE_BAR_FINALIZATION": true,
+          "NO_DUPLICATE_CONFIRMATION_ADVANCE": true,
+          "NO_DUPLICATE_FILL": true,
+          "NO_DUPLICATE_MARKET_OBSERVATION_ADVANCE": true,
+          "NO_DUPLICATE_READ_MODEL_COMMIT": true,
+          "NO_STALE_DASHBOARD_GREEN_STATE": true,
+          "PID_REUSE_SAFE": true,
+          "RECONCILIATION_BEFORE_RESUME": true,
+          "RECOVERY_HAS_ALPHA_AUTHORITY": false,
+          "SESSION_FENCED_BEFORE_RECOVERY": true,
+          "SINGLE_WRITER_ENFORCED": true,
+          "STALE_PID_FILE_SAFE": true
+        },
+        "ok": true,
+        "processing_allowed": true,
+        "reconciliation_before_resume": true,
+        "recovery_has_alpha_authority": false,
+        "session_fenced_before_recovery": true
+      },
+      "failure": {
+        "affected_component": "RUNTIME",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1701100000.0,
+        "last_good_time": 1701099000.0,
+        "owner_action_required": false,
+        "reason_code": "FENCE_RECONCILE_RESUME",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "RECOVERY_FROM_PERSISTED_ACTIVE_STATE",
+        "session_id": "o6-persist-rec",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "RECOVERY_FROM_PERSISTED_ACTIVE_STATE"
+    },
+    "STALE_MARKET_DATA_STATE": {
+      "authorization_consumed": false,
+      "evidence": {
+        "component_health": "STALE",
+        "connection_state": "STALE"
+      },
+      "failure": {
+        "affected_component": "MARKET_DATA",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700500400.0,
+        "last_good_time": 1700500200.0,
+        "owner_action_required": false,
+        "reason_code": "MARKET_DATA_STALE",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "STALE_MARKET_DATA_STATE",
+        "session_id": "o6-md-stale",
+        "state_divergence_possible": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "STALE_MARKET_DATA_STATE"
+    },
+    "STALE_PID_OR_SESSION_REGISTRY": {
+      "authorization_consumed": false,
+      "evidence": {
+        "pid_reuse_safe": true,
+        "recover": {
+          "action": "CLEARED_STALE_PID",
+          "ok": true,
+          "session": {
+            "capability_id": "CAPABILITY_O2_CANONICAL_LOCAL_LAUNCHER_AND_PROCESS_SUPERVISION_V1",
+            "config_digest": "cfg-stale",
+            "config_path": "docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/_tmp_failure_injection/stale_pid_or_session_registry/stale_pid/config/o6.json",
+            "created_at_unix": 1785770768.207458,
+            "evidence_root": "docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/_tmp_failure_injection/stale_pid_or_session_registry/stale_pid/evidence",
+            "heartbeat_path": "docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/_tmp_failure_injection/stale_pid_or_session_registry/stale_pid/state/canonical_local_launcher_v1/sessions/o6-stale-pid/heartbeat_v1.json",
+            "last_reason_code": "RECOVER_STALE_PID",
+            "lifecycle_state": "STOPPED",
+            "log_root": "docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/_tmp_failure_injection/stale_pid_or_session_registry/stale_pid/logs/o6-stale-pid",
+            "mode": "dashboard-only",
+            "o1_effective_environment_digest": "e",
+            "o1_environment_policy_id": "o1",
+            "o1_parent_environment_digest": "p",
+            "process_identity": null,
+            "recovered": true,
+            "repository_sha": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "safety_invariants": {},
+            "schema_version": "o2_canonical_local_launcher_and_process_supervision_v1",
+            "session_id": "o6-stale-pid",
+            "state_root": "docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/_tmp_failure_injection/stale_pid_or_session_registry/stale_pid/state",
+            "stop_escalated": false,
+            "supervision_backend": "repository_owned_supervisor",
+            "supervisor_identity": "peak_trade.canonical_local_launcher_supervisor_v1",
+            "supervisor_instance_id": "o6-stale",
+            "updated_at_unix": 1785770768.224525
+          }
+        },
+        "stale_pid_file_safe": true
+      },
+      "failure": {
+        "affected_component": "SUPERVISOR",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "CLEARED_STALE_PID",
+        "first_failure_time": 1785770768.207458,
+        "last_good_time": 1785770758.207458,
+        "owner_action_required": false,
+        "reason_code": "STALE_PID_CLEARED",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "STALE_PID_OR_SESSION_REGISTRY",
+        "session_id": "o6-stale-pid",
+        "state_divergence_possible": false
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "STALE_PID_OR_SESSION_REGISTRY"
+    },
+    "UNAVAILABLE_LOG_STATE_OR_EVIDENCE_PATH": {
+      "authorization_consumed": false,
+      "evidence": {
+        "created_root_ok": true,
+        "unavailable": {
+          "evidence_path_available": false,
+          "log_path_available": false,
+          "state_path_available": false
+        }
+      },
+      "failure": {
+        "affected_component": "PERSISTENCE",
+        "automatic_recovery_allowed": false,
+        "data_loss_possible": true,
+        "detail": "",
+        "first_failure_time": 1701200000.0,
+        "last_good_time": null,
+        "owner_action_required": true,
+        "reason_code": "PATH_UNAVAILABLE",
+        "recovery_eligibility": "OWNER_LOCK",
+        "root_cause_class": "UNAVAILABLE_LOG_STATE_OR_EVIDENCE_PATH",
+        "session_id": "o6-path",
+        "state_divergence_possible": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "UNAVAILABLE_LOG_STATE_OR_EVIDENCE_PATH"
+    },
+    "UNEXPECTED_CHILD_PROCESS_EXIT": {
+      "authorization_consumed": false,
+      "evidence": {
+        "classification": "DISCONNECTED",
+        "process_alive": false
+      },
+      "failure": {
+        "affected_component": "RUNTIME",
+        "automatic_recovery_allowed": true,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700500100.0,
+        "last_good_time": 1700500098.0,
+        "owner_action_required": false,
+        "reason_code": "CHILD_EXIT_DETECTED",
+        "recovery_eligibility": "ELIGIBLE",
+        "root_cause_class": "UNEXPECTED_CHILD_PROCESS_EXIT",
+        "session_id": "o6-child-exit",
+        "state_divergence_possible": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "UNEXPECTED_CHILD_PROCESS_EXIT"
+    },
+    "WRITER_CONFLICT": {
+      "authorization_consumed": false,
+      "evidence": {
+        "ok": true,
+        "single_writer_enforced": true
+      },
+      "failure": {
+        "affected_component": "PERSISTENCE",
+        "automatic_recovery_allowed": false,
+        "data_loss_possible": false,
+        "detail": "",
+        "first_failure_time": 1700500200.0,
+        "last_good_time": 1700500190.0,
+        "owner_action_required": true,
+        "reason_code": "SINGLE_WRITER_ENFORCED",
+        "recovery_eligibility": "BLOCKED",
+        "root_cause_class": "WRITER_CONFLICT",
+        "session_id": "o6-writer",
+        "state_divergence_possible": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "orders_submitted": false,
+      "scenario": "WRITER_CONFLICT"
+    }
+  },
+  "scenario_count": 17,
+  "scenarios": [
+    "PROCESS_START_FAILURE",
+    "UNEXPECTED_CHILD_PROCESS_EXIT",
+    "STALE_PID_OR_SESSION_REGISTRY",
+    "DUPLICATE_SESSION_START",
+    "WRITER_CONFLICT",
+    "HEARTBEAT_LOSS",
+    "STALE_MARKET_DATA_STATE",
+    "DISCONNECTED_SOURCE_STATE",
+    "READ_MODEL_PROJECTION_FAILURE",
+    "DASHBOARD_BACKEND_FAILURE",
+    "DUPLICATE_MARKET_EVENT",
+    "OUT_OF_ORDER_MARKET_EVENT",
+    "DUPLICATE_OHLCV_FINALIZATION",
+    "MISSED_OR_STALE_OHLCV_INTERVAL",
+    "GRACEFUL_SHUTDOWN_TIMEOUT",
+    "RECOVERY_FROM_PERSISTED_ACTIVE_STATE",
+    "UNAVAILABLE_LOG_STATE_OR_EVIDENCE_PATH"
+  ]
+}

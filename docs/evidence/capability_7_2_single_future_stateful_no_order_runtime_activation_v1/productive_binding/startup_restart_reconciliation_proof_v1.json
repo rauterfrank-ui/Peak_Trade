@@ -1,0 +1,15 @@
+{
+  "FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE": true,
+  "NO_DUPLICATE_CONFIRMATION_AFTER_RESTART": true,
+  "NO_DUPLICATE_FILL_AFTER_RESTART": true,
+  "NO_LOST_EXIT_AFTER_RESTART": true,
+  "PENDING_EVIDENCE_RECOVERY_IDEMPOTENT": true,
+  "RECONCILIATION_FAILURE_BLOCKS_ALPHA": true,
+  "RESTART_WHILE_FLAT_PROVEN": true,
+  "RESTART_WITH_OPEN_POSITION_PROVEN": true,
+  "SIMULATED_EXECUTION_ACTIVE": true,
+  "activation_restart_ok": true,
+  "activation_startup_ok": true,
+  "cap71_long_ok": true,
+  "ok": true
+}

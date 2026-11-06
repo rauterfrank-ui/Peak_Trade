@@ -1,0 +1,12 @@
+{
+  "existing_position_side": "none",
+  "fill_snapshot_unresolved": false,
+  "intent_snapshot_unresolved": false,
+  "order_snapshot_unresolved": false,
+  "position_state": "flat_reconciled",
+  "reconciliation_owner_digest_ref": "runtime_state_reconciliation_contract_v1",
+  "reconciliation_state": "reconciled",
+  "schema_version": "reconciliation_boundary_backtest_state_file_v0",
+  "state_file_digest_ref": "3475daedda9ec7d490f395972fd82356ac81288379fa708b43fc0a6c4870dcaf",
+  "venue_flat": true
+}

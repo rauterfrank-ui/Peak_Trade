@@ -1,0 +1,56 @@
+{
+  "schema_version": "step29m_execution_result_fail_closed_preconditions_not_admissible_v0",
+  "status": "binding_classification",
+  "authority_effect": "NONE",
+  "runtime_effect": "NONE",
+  "step": "STEP29M",
+  "execution_pipeline_verdict": "PASS_STEP29M_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "execution_runner_rc": 0,
+  "economic_evaluation_result_verdict": "FAIL_CLOSED_STEP29M_EXECUTION_PRECONDITIONS_NOT_ADMISSIBLE",
+  "economic_evaluation_executed": false,
+  "system_economic_evidence_admissible": false,
+  "runtime_rewire_admissible": false,
+  "live_authorized": false,
+  "orders_allowed": false,
+  "shadow_authorized": false,
+  "paper_authorized": false,
+  "testnet_authorized": false,
+  "reason_codes": [
+    "SYSTEM_ECONOMIC_EVIDENCE_NOT_ADMISSIBLE_FROM_PLAN_PRECONDITIONS"
+  ],
+  "failed_preconditions": {
+    "FULL_CANONICAL_CHAIN_WIRED": false,
+    "BACKTEST_RUNTIME_DECISION_PARITY_PASS": false,
+    "REALISTIC_COSTS_BOUND": false,
+    "ROBUSTNESS_EVIDENCE_PASS": false
+  },
+  "classification": {
+    "pipeline_materialization_pass": true,
+    "economic_execution_blocked_fail_closed": true,
+    "negative_or_positive_profitability_claim_created": false,
+    "promotion_candidate_created": false,
+    "runtime_authority_created": false
+  },
+  "next_step": "FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_AND_REWIRE_SCOPE",
+  "allowed_next_scope": [
+    "CORE_SYSTEM_COMPLETION",
+    "OFFLINE_PARITY_ASSESSMENT",
+    "NARROW_REUSE_FIRST_REWIRE"
+  ],
+  "disallowed_next_scope": [
+    "RUNTIME_EVIDENCE",
+    "SHADOW_EVIDENCE",
+    "PAPER_EVIDENCE",
+    "TESTNET_EVIDENCE",
+    "CANARY_EVIDENCE",
+    "LIVE_EVIDENCE",
+    "ORDER_SUBMISSION",
+    "CREDENTIAL_USE",
+    "ARMING"
+  ],
+  "source_evidence": {
+    "durable_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/step29m_offline_economic_evaluation_execution_v0_20260709T230849Z",
+    "manifest_verify_required": true,
+    "manifest_verify_rc": 0
+  }
+}

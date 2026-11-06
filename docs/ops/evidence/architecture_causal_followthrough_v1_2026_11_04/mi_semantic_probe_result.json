@@ -1,0 +1,39 @@
+{
+  "source_commit": "f69fc6f6d2cd5276d6447b24c0cff9b250a535f0",
+  "scope": "Synthetic fixture forecast/observation. Controlled in-memory MI builder/export calls, no natural forecast accuracy or real execution proof.",
+  "network": "socket creation/create_connection denied",
+  "fixture_sha256": {
+    "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py": "158b2c68fb29be3f9a6c279fed53850daac0aaa076a04e612986f784e9294a10",
+    "tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py": "4f2fc48f7dd542363ced6633a036315d80ce42a198bc308688717e6b2ea89966"
+  },
+  "same_forecast_and_outcome_ref": {
+    "forecast": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+    "outcome": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783"
+  },
+  "direction_up_result": {
+    "method": "BRIER_SCORE_V1",
+    "score": 0.5,
+    "realized_direction": "UP"
+  },
+  "direction_down_result": {
+    "method": "BRIER_SCORE_V1",
+    "score": 0.7,
+    "realized_direction": "DOWN"
+  },
+  "meaning": "The calibration owner uses separately supplied realized_direction. The joined outcome reference alone does not derive or verify that label. Caller/original measurement responsibility must be reconstructed before changing this contract.",
+  "typed_only_export": {
+    "consumer_route": "MI_TYPED_LEARNING_EVIDENCE_ONLY",
+    "mi_learning_evidence_id": "mi.learn.5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c8",
+    "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+    "legacy_learning_evidence_record_id": null,
+    "legacy_ddo_export_compatible": false,
+    "productive_ddo_reducer_mutated": false
+  },
+  "missing_outcome": {
+    "evaluability": "NOT_EVALUABLE",
+    "finalization": "INCOMPLETE"
+  },
+  "observation_unchanged": true,
+  "protected_learning_ledger_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "assertions_passed": true
+}

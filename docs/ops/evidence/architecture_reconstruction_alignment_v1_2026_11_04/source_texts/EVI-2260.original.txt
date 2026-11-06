@@ -1,0 +1,80 @@
+# Juli: Empfänger, Datenverträge und zeitliche Lücken
+
+Untersuchung vom 02.11.2026. Fortsetzung der Ergebnisdaten-Rekonstruktion; keine Evaluation oder Produktimporte ausgeführt. Keine historischen Anweisungen erneut vollzogen.
+
+## Was jetzt genauer belegt ist
+
+Die Juli-Ergebnisdateien hatten einen konkreten Folgeempfänger im Robustheits-/Attributionsaudit. Für den anderen Development-Test ist zusätzlich die Trennung zwischen Evaluation, Ergebnisprojektion und nachträglicher Fortschreibung der Forschungsverwaltung nachvollziehbar. Ein automatischer Anschluss dieser Resultate an das spätere Immutable Experiment Memory ist weiterhin nicht belegt. Ein älterer Vergleichsadapter existierte bereits, erwartet aber andere Eingabeformate und hat abweichende Zeit-/Identitätssemantik.
+
+## Quellen und Schnitte
+
+- Juli-Test: Commit 52282283f57d63fe0fa2f485bda259f9deace3fd, PR #5493, 23.07.2026. CLI, entry_point_v1.py, evaluate_path_v1.py, Ergebnis-Summary und Forschungsprogramm/Backlog als historische Snapshots gesichert.
+- Firewall-Schnitt: a7f4502e04e168b2dd12b56fecb745323bd6c783. Daraus BACKTEST-/EXPERIMENT-Adapter und comparability.py gelesen.
+- Späterer August-Schnitt: vollständiger SHA in pins.json (899e154d). Daraus Memory-Record und Store gelesen.
+- Zwei GitHub-Pfadhistorien bis zum August-Schnitt: BACKTEST-Adapter seit c336d526549dc5653f098dc36876e08ef2b50091, 27.06.2026 14:11:59 UTC, PR #4613; Immutable Memory seit e10f32f56fad0576cd250958401d13f044c5920d, 17.08.2026 18:38:47 UTC, PR #5929. Für diese Pfade nennt die jeweilige Historie bis zum Pin genau einen Änderungseintrag. Das datiert diese Module, nicht sämtliche früheren Gedächtnisvarianten.
+- Sieben Originalnachrichten aus den Gesprächen 9379d674…, f3cc8b76… und 31ac1deb… erneut gelesen und textgleich gegen den Suchindex abgeglichen. messages.json enthält Originalpfad/Zeile/SHA-256.
+- Historische Tool-Aufrufargumente zu Entwicklung und Nachbearbeitung gesichert. Insbesondere Zeile 81 und 82 des Gesprächs f3cc8b76-684c-495d-98f8-30642b489a94. Das sind Aufrufargumente, keine erhaltenen Prozessausgaben.
+
+sources.json enthält elf historische Git-Snapshots mit Revision, Pfad und SHA-256. Frühere 61 Ergebnis-Snapshots werden aus july-economic-result-lineage wiederverwendet.
+
+## 1. Was der Juli-Test tatsächlich weiterreicht
+
+Die CLI ruft run_evaluate_fail_closed in entry_point_v1.py auf; dieses delegiert an run_authorized_development_evaluation_v1. Der statische Pfad erzeugt einen Ergebnis-Summary, Registry-Metadaten und einen Run-Slot-Claim. Im Code ist ein optionaler counter_mutator vorgesehen. Ein Name wie Registry bedeutet hier noch keinen Import in ein lernendes Gedächtnis.
+
+Die originale historische Aufrufzeile 81 fordert genau diese CLI-Ausführung an. Zeile 82 zeigt einen separaten Python-Nachbearbeitungsauftrag: vorhandenen summary.json einlesen; gates.all_pass auswerten; terminalen FAIL ableiten; Vertrags-/Programm-/Backlog-Zähler auf 1 setzen; Run-Slot als verbraucht markieren; Autorisierungen zurücknehmen und Digest-/Validierungsbindungen fortschreiben. Anschließend werden registry.json und run_slot_claim.json ergänzt und run_result.json als Projektion aus dem Summary erzeugt. Dieser Schritt fügt außerdem Statusbehauptungen wie deterministic_reproducibility_verified=true hinzu, ohne an dieser Stelle einen zweiten deterministischen Vergleichslauf zu berechnen.
+
+Die eingecheckten Dateien passen zu dieser Projektion. Das ist eine konkrete Herkunftsspur für den gespeicherten Status und die Änderung der Forschungsverwaltung. Es ist kein nachgewiesener selbstlernender Rückfluss. Ein Tool-Aufruf plus passende Dateien beweist zudem nicht jede Laufzeitbehauptung des Nachbearbeitungsskripts. Vollständige rohe Prozessausgaben fehlen.
+
+Der Backlog verbleibt an #5493 OPEN_BACKLOG mit terminalem Development-FAIL, run_count=1, retry=false und next_canonical_step=AWAIT_OPERATOR_GO_FOR_PR_MERGE_THEN_TERMINAL_CLOSEOUT. automatic_successor_creation und create_successor_hypothesis sind false. Daraus folgt kein automatisch erzeugter nächster Versuch. Der Begriff productive_trading_logic_included=true in diesen Forschungsdateien ist keine Betriebsfreigabe; die expliziten Runtime-/Order-/Promotion-Grenzen bleiben geschlossen.
+
+## 2. Vier Zeitabschnitte sind hier keine vier wirtschaftlichen Teilauswertungen
+
+Konkrete Fundstelle: evaluate_path_v1.py, Zeilen 335–341 am Juli-Commit. Zunächst werden zulässige Rebalance-Beobachtungen echten Zeitabschnitten zugeordnet und pro Abschnitt gezählt. Danach wird per_seg_metrics als Zuordnung jedes nichtleeren Segments auf dasselbe Objekt canonical erstellt. Dieses Objekt enthält die Kennzahlen des gesamten Development-Fensters. _segment_results_from_metrics übergibt diese Gesamtkennzahlen zusammen mit der jeweiligen lokalen Beobachtungszahl an die Segment-Gates.
+
+Die archivierte Summary nennt Q1=436, Q2=441, Q3=441 und Q4=441 Beobachtungen, zusammen 1.759. Alle vier sind als FAIL ausgewiesen. Die unterschiedliche zeitliche Beobachtungsabdeckung ist daher konkret gespeichert. Der wirtschaftliche Gate-Input ist in diesem Codepfad dagegen nicht segmentlokal neu berechnet.
+
+Folge für beide Universen: Ein Consumer darf diese vier FAILs nicht als vier unabhängige zeitliche Wiederholungen desselben wirtschaftlichen Befunds oder als sauber ausgeführte OOS-Serie zählen. Das wäre eine zusätzliche Aussage, die der Producer nicht liefert. Der Gesamtlauf scheitert daneben auch an Net-PF, Kostenstress und Drawdown; deren Schwellenverletzungen stehen im Ergebnis. Hier wird weder der Gesamtlauf neu bewertet noch eine Reparatur vorgenommen. Die segmentbezogene Beweisgrenze wird präzisiert.
+
+## 3. Der ältere Vergleichsadapter: vorhanden, aber kein direkter Bundle-Import
+
+Der seit 27.06. vorhandene BACKTEST-Adapter verlangt insbesondere run_summary.json mit strikt validem FINISHED-Status, eine zum Summary passende BACKTEST-Lineage-Referenz, config_snapshot.json und trades.parquet. Equity wird über den Run-Verzeichnis-Loader eingelesen. Der EXPERIMENT-Adapter verlangt darüber hinaus ein validiertes Experiment-Identity-Manifest mit passender Referenz/Digest und ebenfalls einen abgeschlossenen Run mit den benötigten Artefakten.
+
+Die drei gesicherten Juli-Evidence-Verzeichnisse wurden dateigenau mit diesen Anforderungen verglichen (bundle-contract-comparison.json). Sie enthalten keine run_summary.json und keine trades.parquet. Die 454-Trade-Baseline hat stattdessen checkpoint_baseline_wf.json mit verschachtelten trades_compact und portfolio_equity.csv. Die Kennzahlenähnlichkeit macht das Evidence-Verzeichnis daher nicht direkt zum gültigen Adaptereingang.
+
+Das ist eine statische Vertragsdifferenz, kein durch ausgeführten Aufruf beobachteter Fehler. Ein separat erzeugtes Run-Verzeichnis oder eine anders benannte Zwischenkonvertierung bleibt möglich, ist für diese konkreten Ergebnisse jedoch nicht gefunden. Aus der Dateidifferenz folgt auch nicht, dass man fehlende Dateien einfach ergänzen sollte: Vor einer Integration wären die folgenden semantischen Unterschiede zu klären.
+
+### Zeit und Identität
+
+comparability_from_backtest_config_snapshot erhält als evaluation_start/evaluation_end die RunSummary-Felder started_at_utc und finished_at_utc. Dies sind Ausführungszeitangaben des Runs. Die Marktperiode der Juli-Baseline liegt dagegen im Mai–September 2024; der Lauf und seine Versionierung erfolgten im Juli 2026. Die beiden Zeitarten dürfen bei einer historischen Vergleichs-/Meta-Auswertung nicht vertauscht werden.
+
+Für dataset_lineage_digest berechnet dieser BACKTEST-Metadatenpfad einen Hash über ein Objekt mit dem Dataset-Referenznamen. Das ist ein Hash des Referenzstrings, kein Beweis der Gleichheit tatsächlicher Dataset-Inhalte. Ein Quell-Digest wird zusätzlich aus geladener Equity und Trade-Ledger berechnet; das belegt wiederum Ergebnisdaten-Identität, nicht automatisch Rohmarktpreis-Identität. Diese Digestarten sind auseinanderzuhalten.
+
+Außerdem setzt der Metadatenpfad bei fehlender expliziter Kostenmodellangabe PROVABLY_ZERO und leere Parameter ein. Das ist für die Juli-Baseline mit tatsächlich nichtnull Gebühren/Slippage keine sichere implizite Übernahme. Ein möglicher Adapter müsste ihre Kostensemantik ausdrücklich transportieren. Die Normierung auf ein gemeinsames Forschungsbuch mit 1/118 darf ebenfalls nicht durch eine beliebige Standard-Run-Aggregation ersetzt werden.
+
+## 4. Späteres Immutable Memory: zusätzlicher Producer-Vertrag
+
+Am Firewall-Commit ist das spätere canonical_experiment_memory_v1.py noch nicht im src/experiments-Baum vorhanden. Es erscheint nach GitHub-Pfadhistorie mit #5929 am 17.08.2026 um 18:38:47 UTC. Die Originalanweisung zur Phase 2 fordert zu diesem Zeitpunkt dessen Implementierung; der Abschlussbericht meldet zunächst einen offenen PR. Die spätere Git-Version belegt die Versionierung, nicht einen Juli-Import.
+
+Der Builder erwartet vom Aufrufer eine vollständige Canonical Experiment Identity, Hypothesen-ID/Fingerprint, optionale Eltern-/Ancestor-Linie, Strategie-Familie/Rolle, identity-gebundene Dataset-/Kosten-/Risiko-/Portfolio-Referenzen, numerische metrics/robustness_results/regime_results, Disposition und Artefaktreferenzen. Der Store persistiert einen validierten Record unter experiment_id/canonical_experiment_memory_record_v1.json, verhindert divergierende Überschreibung und liefert Records/Metadaten zurück.
+
+Dieser Builder rekonstruiert weder von selbst die Juli-Trades noch führt er ein Robustheitsverfahren aus. Ein caller muss erst die fachlich passenden Daten und Identitäten liefern. Die geprüften Module enthalten keinen Import der drei Juli-Bundles. Die früher bereits durchsuchten Dateiinventare enthalten auch keinen Treffer des exakten persistenten Record-Dateinamens. Das begründet eine begrenzte Suchlücke, keinen Beweis eines weltweit leeren Stores.
+
+## 5. Zwei unterschiedliche Panel-Datenlinien
+
+Die 454-Trade-Baseline nennt das 118-Instrumente-Research-Panel mit Marktperiode 01.05.–01.09.2024 und normalized_panel_digest e8437bc2300f936e16b3d6b3510c880d2fe678d4f68ee4c215f6bbfae9246fd7.
+
+Der andere Development-Test bindet hingegen pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1 mit Content-Digest 4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca. Originalnachrichten vom 21.07. beschreiben hierfür 46 Instrumente, 4.876 Raw-Dateien, 4.885 Dateien insgesamt, Manifest-Digest be953c559ac3dd797961bdda8cbc190076353c91d3299b9031ae1ee767d4b594 und eine damalige Quarantäne-Kopie unter Peak_Trade_data_archive/quarantine/dev_pre_holdout_panel_v1_20260720T2052Z.
+
+Die damalige Closure meldet unabhängig nachgerechnete Content-/Universe-Digests. Das bleibt ein historischer Bericht, weil die Dateien hier nicht vorliegen. Der gemeldete Common-Window-Rahmen beginnt 01.06.2022 03:55:17 UTC und endet 16.08.2023 05:55 UTC; die Development-Summary nennt stündliche tatsächliche Auswertungsgrenzen 04:00 beziehungsweise 05:00. Manifest-Rahmen und Bar-Zeiten sind gesonderte Angaben.
+
+Vier konkrete überlieferte lokale Kandidatenpfade (temporärer Pfad, Quarantäne, direktes Datenarchiv und ~/.peak_trade) existieren heute nicht. Die vorhandenen I01–I08-Dateiinventare und die Recovery-Code-Pfadinventare liefern bei der begrenzten Namenssuche keine genaue Panelkopie oder normalized_panel_bars-Datei. Kein neuer Recovery-Scan und kein Schreibzugriff auf externe Medien. Die Nichtexistenz an diesen Kandidatenpfaden bedeutet keinen globalen Verlustnachweis.
+
+## Konsequenz für die Gesamtübersicht
+
+Wir können jetzt unterscheiden: numerische Ergebnisproduktion; separater Robustheits-Consumer; nachträgliche Registry-/Budget-Fortschreibung; vorhandener, anders formatierter Vergleichsadapter; erst später versionierter Immutable-Memory-Vertrag. Diese Schritte bilden keinen durchgehend bewiesenen automatischen Loop.
+
+Für die weitere Untersuchung bleiben zwei konkrete Kanten: tatsächlicher Konverter/Import der Juli-Ergebnisse in vergleichbare oder lernende Records; anschließend ein belegter Consumer, der daraus eine neue Forschungsentscheidung ableitet. Die Suche nach der richtigen Panelkopie bleibt unabhängig davon sinnvoll. Der fehlende direkte produktive Zugriff beider Universen ist die gewünschte Autoritätsgrenze.
+
+## Verifikation
+
+Nur Dateien gelesen und historische Git-/GitHub-Metadaten ausgewertet; keine Tests oder Produktmodule gestartet. Originalnachrichten textgleich geprüft. Repository-Status vor/nach bytegleich verglichen, Ergebnis in verification.json. Canvas TypeScript geprüft; keine visuelle Laufzeitvorschau behauptet. Vorherige Analyseansichten und Originalquellen bleiben erhalten.

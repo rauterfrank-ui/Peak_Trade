@@ -1,0 +1,13 @@
+{
+  "LIVE_ORDER_PLAN_PARITY_ACTIVATED": false,
+  "LIVE_ORDER_PLAN_PARITY_CONTRACT_ACTIVATED": false,
+  "LIVE_ORDER_PLAN_PARITY_CONTRACT_BOUND": true,
+  "NO_AUTOMATIC_STAGE_PROMOTION": true,
+  "OWNER": "ops.capability_11_8_live_dry_run_order_plan_parity_v1",
+  "OWNER_GO_REQUIRED_FOR_STAGE_PROMOTION": true,
+  "activation_blocked": true,
+  "automatic_promotion_blocked": true,
+  "ok": true,
+  "parity_mismatch_reason": "CANONICAL_ORDER_PLAN_DIGEST_MISMATCH",
+  "parity_pass_sample": true
+}

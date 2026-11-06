@@ -1,0 +1,13 @@
+PROBE_START 1INCH okx:linear_perpetual:1INCH:USDT:USDT:perp
+ConfigRegistry: [strategy.*] blocks not listed in strategies.available: ['breakout_basic', 'vol_regime_basic', 'breakout', 'vol_regime_filter', 'rsi_reversion_v1', 'breakout_v1', 'composite', 'portfolio_phase40_example', 'rsi_reversion_btc_conservative', 'rsi_reversion_btc_moderate', 'rsi_reversion_btc_aggressive', 'rsi_reversion_eth_conservative', 'rsi_reversion_eth_moderate', 'rsi_reversion_eth_aggressive', 'ma_trend_btc_conservative', 'ma_trend_btc_moderate', 'ma_trend_btc_aggressive', 'trend_following_eth_conservative', 'trend_following_eth_moderate', 'trend_following_eth_aggressive', 'armstrong_cycle', 'el_karoui_vol_model']
+{"adverse_e": 31, "bear_c": 286, "bear_e": 2460, "bull_c": 2458, "bull_e": 284, "member": "1INCH", "noop": 118, "side_after": {"long_active": 25, "long_armed": 2, "long_blocked": 4, "short_active": 2543, "short_armed": 277, "switch_long_to_short_pending": 42}, "trades": 1}
+PROBE_START BONK okx:linear_perpetual:BONK:USDT:USDT:perp
+{"adverse_e": 13, "bear_c": 511, "bear_e": 1892, "bull_c": 2304, "bull_e": 923, "member": "BONK", "noop": 65, "side_after": {"long_active": 7, "long_armed": 17, "long_blocked": 428, "short_active": 1932, "short_armed": 114, "switch_long_to_short_pending": 395}, "trades": 0}
+PROBE_START AVAX okx:linear_perpetual:AVAX:USDT:USDT:perp
+{"adverse_e": 92, "bear_c": 327, "bear_e": 2251, "bull_c": 2249, "bull_e": 325, "member": "AVAX", "noop": 225, "side_after": {"long_active": 37, "long_armed": 4, "long_blocked": 16, "short_active": 2477, "short_armed": 332, "switch_long_to_short_pending": 27}, "trades": 0}
+PROBE_START SOL okx:linear_perpetual:SOL:USDT:USDT:perp
+{"adverse_e": 34, "bear_c": 72, "bear_e": 2674, "bull_c": 2706, "bull_e": 104, "member": "SOL", "noop": 81, "side_after": {"long_active": 15, "long_armed": 11, "long_blocked": 47, "short_active": 2738, "short_armed": 39, "switch_long_to_short_pending": 43}, "trades": 0}
+{
+  "ok": true,
+  "summary": "/Users/frnkhrz/Peak_Trade/docs/evidence/post_fix_canonical_chain_reevaluation_v1/probe_summary.json"
+}

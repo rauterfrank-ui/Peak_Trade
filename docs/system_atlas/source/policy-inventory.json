@@ -1,0 +1,30 @@
+{
+  "schema": "peaktrade.frozen_policy_inventory.v1",
+  "source_tag": "freeze/visible-system-2026-11-06-v2",
+  "source_commit": "a8e1c0088e25651ad4bb29ebe02e10142a0a92b2",
+  "sha256": "d3ce063bf1a3c3531095bf25a77cb3dfdeb173bc3cb450b1394425d6d5e93006",
+  "bytes": 255407,
+  "count": 780,
+  "by_kind": {
+    "DEVELOPMENT_GUIDANCE": 10,
+    "MACHINE_CONFIGURATION": 285,
+    "DOCUMENTARY_INDEX_DATA": 7,
+    "DEVELOPMENT_CHECK_POLICY": 3,
+    "SOURCE_INTERFACE": 475
+  },
+  "parse_statuses": {
+    "NOT_STRUCTURED": 15,
+    "TOML_VALID": 4,
+    "JSON_VALID": 287,
+    "YAML_VALID": 3,
+    "PYTHON_AST_VALID": 471
+  },
+  "static_reference_count": 9940,
+  "no_static_reference_discovered": 52,
+  "scope": "Frozen src/config paths containing policy/policies/governance/law/rule, src/risk and src/risk_layer, policy_packs and .cursor/rules; documentary law-map inputs and docs gate selectors are excluded.",
+  "runtime_use_inferred": false,
+  "economic_or_compliance_pass_inferred": false,
+  "excluded_documentation": [
+    "config/governance/current_system_census_graph_v1/README.md"
+  ]
+}

@@ -1,0 +1,380 @@
+{
+  "method": "Literal .py path mentions in three recovered Sep30 reports; existence and missing-path exact historical git check only; not exhaustive dependency inventory",
+  "rows": [
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/authority_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/challenger_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/common_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/decision_event_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/errors_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/evaluation_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/hindsight_guard_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/incident_record_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_records_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/lineage_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/outcome_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/reason_codes_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/registry_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/serialization_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/supervisor_records_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/supervisor_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/validation_artifacts_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "tests/experiments/test_canonical_meta_to_optimization_feedback_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "path": "tests/learning/test_meta_learning_ingest_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_optimization_experiment_evidence_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/experiments/canonical_self_learning_optimization_return_input_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "path": "tests/experiments/test_canonical_optimization_experiment_evidence_v1.py",
+      "current_exists": true
+    },
+    {
+      "report": "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "path": "tests/experiments/test_canonical_optimization_universe_experiment_plane_v1.py",
+      "current_exists": true
+    }
+  ]
+}

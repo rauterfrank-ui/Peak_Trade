@@ -1,0 +1,231 @@
+{
+  "AUTHORITY": "NONE",
+  "CURRENT_EXISTENCE_PROVEN": true,
+  "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+  "CURRENT_SEMANTICS_PROVEN": true,
+  "EVALUATOR_COUNT": 5,
+  "FABRIC_STAGES": [
+    {
+      "CONFIG": "vector JSON",
+      "FABRIC_STAGE": "GV_DEFINITION",
+      "INPUT": "JSON vector file",
+      "NEXT_STAGE": "REGISTRY_DISCOVERY",
+      "OUTPUT": "VectorManifestV1",
+      "OWNER": "VectorManifestV1",
+      "STATE": "immutable record",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "fixture_corpus_v1",
+      "FABRIC_STAGE": "REGISTRY_DISCOVERY",
+      "INPUT": "corpus_manifest.json",
+      "NEXT_STAGE": "LOADING",
+      "OUTPUT": "CorpusRegistryEntryV1",
+      "OWNER": "VectorCorpusRegistryV1",
+      "STATE": "validated digests",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "schema defaults",
+      "FABRIC_STAGE": "LOADING",
+      "INPUT": "JSON",
+      "NEXT_STAGE": "COMPOSITION",
+      "OUTPUT": "typed contracts",
+      "OWNER": "parse_*_v1 validators",
+      "STATE": "NONE",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "run manifest",
+      "FABRIC_STAGE": "COMPOSITION",
+      "INPUT": "protocols+context",
+      "NEXT_STAGE": "INPUT_STATE_BINDING",
+      "OUTPUT": "bound run request",
+      "OWNER": "GvefRunnerDependenciesV1 + DomainEvaluationContextV1",
+      "STATE": "CREATED/BOUND",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "corpus identity",
+      "FABRIC_STAGE": "INPUT_STATE_BINDING",
+      "INPUT": "RunManifestV1",
+      "NEXT_STAGE": "CONFIGURATION_GATES",
+      "OUTPUT": "bound record",
+      "OWNER": "GenericRunnerV1 + corpus gate",
+      "STATE": "BOUND",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "constraint_matrix_v1.json",
+      "FABRIC_STAGE": "CONFIGURATION_GATES",
+      "INPUT": "ConstraintMatrixV1",
+      "NEXT_STAGE": "EXECUTION_EVALUATION",
+      "OUTPUT": "BoundaryResultV1",
+      "OWNER": "pre/post constraint gates + matrix",
+      "STATE": "PRE/POST_CONSTRAINT_CHECKED",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "evaluator fixtures",
+      "FABRIC_STAGE": "EXECUTION_EVALUATION",
+      "INPUT": "replay+context",
+      "NEXT_STAGE": "SCORING_COMPARE",
+      "OUTPUT": "DomainEvaluationResultV1",
+      "OWNER": "DomainEvaluatorV1 implementations",
+      "STATE": "EVALUATED",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "NONE",
+      "FABRIC_STAGE": "SCORING_COMPARE",
+      "INPUT": "baseline/candidate digests",
+      "NEXT_STAGE": "EVIDENCE",
+      "OUTPUT": "DecisionDeltaManifestV1",
+      "OWNER": "ProtectedSemanticComparatorV1",
+      "STATE": "COMPARED/DELTA_MANIFEST_BUILT",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "NONE",
+      "FABRIC_STAGE": "EVIDENCE",
+      "INPUT": "run artifacts",
+      "NEXT_STAGE": "PERSISTENCE_REGISTRY",
+      "OUTPUT": "EvidenceBundleV1",
+      "OWNER": "EvidenceBundleBuilderV1",
+      "STATE": "EVIDENCE_BUILT",
+      "STATUS": "PROVEN"
+    },
+    {
+      "CONFIG": "NONE",
+      "FABRIC_STAGE": "PERSISTENCE_REGISTRY",
+      "INPUT": "EvidenceBundleV1",
+      "NEXT_STAGE": "CONSUMER_HANDOFF",
+      "OUTPUT": "registry_ref",
+      "OWNER": "GvefEvidenceRegistryV1",
+      "STATE": "REGISTERED",
+      "STATUS": "PROVEN_IN_MEMORY"
+    },
+    {
+      "CONFIG": "NONE",
+      "FABRIC_STAGE": "CONSUMER_HANDOFF",
+      "INPUT": "EvidenceBundleV1",
+      "NEXT_STAGE": "EXTERNAL_GOVERNANCE_OUTSIDE_GVEF",
+      "OUTPUT": "PromotionEvidenceEnvelopeV1",
+      "OWNER": "PromotionEvidenceAdapterV1",
+      "STATE": "post-REGISTERED",
+      "STATUS": "PROVEN_BOUNDARY"
+    },
+    {
+      "CONFIG": "NOT_FOUND",
+      "FABRIC_STAGE": "PRODUCTIVE_RUNTIME_JOIN",
+      "INPUT": "NOT_FOUND",
+      "NEXT_STAGE": "NONE",
+      "OUTPUT": "NOT_FOUND",
+      "OWNER": "NOT_FOUND",
+      "STATE": "NOT_FOUND",
+      "STATUS": "MISSING_BY_DESIGN_AUTHORITY_NONE"
+    }
+  ],
+  "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+  "GVEF_GHV_RELATIONSHIP": {
+    "EDGES": [
+      "GVEF VectorClass enum documents 'GHV vector taxonomy' labels (schema naming)",
+      "GHV look-ahead imports GVEF ptp_owners_v1 as read-only owner strings",
+      "GHV offline cycle emits gvef_reproof bundle (AUTHORITY=NONE) \u2014 not fabric runtime"
+    ],
+    "GHV_IS_NOT_DEFAULT_GVEF_VECTOR": true,
+    "GHV_IS_NOT_GVEF_DEFINITION": true,
+    "GHV_MAY_NOT_FILL_UNKNOWN_GVEF_SEMANTICS": true,
+    "NOTE": "Do not treat GHV productive readiness modules as GVEF fabric components.",
+    "STATUS": "PARTIAL_PROVEN_EDGES_ONLY"
+  },
+  "GV_ORCHESTRATOR_EXISTS": false,
+  "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+  "MANAGEMENT_MODEL": "SEPARATED_CORPUS_REGISTRY_PLUS_GENERIC_RUNNER_DI_NO_CENTRAL_GV_ASSIGNMENT_ORCHESTRATOR",
+  "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+  "PIPELINE": [
+    "GVEF.CORPUS.MANIFEST",
+    "GVEF.CORPUS.REGISTRY",
+    "GVEF.CORPUS.GATE",
+    "GVEF.RUN.CONTEXT",
+    "GVEF.RUN.DEPS",
+    "GVEF.RUN.GENERIC",
+    "GVEF.EVAL.RU",
+    "GVEF.EVAL.PTP",
+    "GVEF.EVAL.OU",
+    "GVEF.EVAL.SL",
+    "GVEF.EVAL.MI",
+    "GVEF.DIGEST.COMPARATOR",
+    "GVEF.CONSTRAINTS",
+    "GVEF.EVIDENCE.REGISTRY",
+    "GVEF.PROMOTION.ADAPTER",
+    "GVEF.GV.RU",
+    "GVEF.GV.PTP"
+  ],
+  "PRIMARY_CURRENT_PROOF": [
+    "GVEF_GV_NODEWISE_20261007T012700Z"
+  ],
+  "REGISTERED_GVS": [
+    {
+      "ADJUDICATOR": "ProtectedSemanticComparatorV1 + constraint gates",
+      "AUTHORITY": "NONE",
+      "CONFIG_REQUIREMENTS": "corpus_manifest membership + digests",
+      "CURRENT_INTEGRATION": "TEST_ONLY_SYNTHETIC corpus",
+      "ENTRY_NODE": "GVEF.CORPUS.VectorCorpusRegistryV1",
+      "EVALUATOR": "DomainEvaluatorV1 implementation selected by run context",
+      "EXPECTED_PATH": "corpus load \u2192 runner bind \u2192 domain evaluator \u2192 evidence",
+      "EXPECTED_TERMINAL": "REGISTERED EvidenceBundle or FAILED",
+      "GV_DEFINITION": "config/evaluation/golden_vectors/fixture_corpus_v1/vectors/vec-gvef-ptp-mechanism-001.json",
+      "GV_ID": "vec-gvef-ptp-mechanism-001",
+      "GV_NAME": "vec-gvef-ptp-mechanism-001",
+      "GV_OWNER": "config/evaluation/golden_vectors/fixture_corpus_v1",
+      "INPUT_REQUIREMENTS": {
+        "binding_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "selector_id": "mechanism_ptp_v1"
+      },
+      "OFFLINE_ONLY": true,
+      "PROVENANCE": {
+        "ref": "tests/evaluation/golden_vectors/corpus_fixtures_v1.py",
+        "source": "TEST_ONLY_SYNTHETIC"
+      },
+      "RUNTIME_CAPABLE": false,
+      "SCORER": "DomainEvaluationResultV1 metrics/invariants",
+      "STATE_REQUIREMENTS": "RunnerState machine",
+      "STATUS": "OFFLINE_TEST_ONLY",
+      "VECTOR_CLASS": "GoldenHappy"
+    },
+    {
+      "ADJUDICATOR": "ProtectedSemanticComparatorV1 + constraint gates",
+      "AUTHORITY": "NONE",
+      "CONFIG_REQUIREMENTS": "corpus_manifest membership + digests",
+      "CURRENT_INTEGRATION": "TEST_ONLY_SYNTHETIC corpus",
+      "ENTRY_NODE": "GVEF.CORPUS.VectorCorpusRegistryV1",
+      "EVALUATOR": "DomainEvaluatorV1 implementation selected by run context",
+      "EXPECTED_PATH": "corpus load \u2192 runner bind \u2192 domain evaluator \u2192 evidence",
+      "EXPECTED_TERMINAL": "REGISTERED EvidenceBundle or FAILED",
+      "GV_DEFINITION": "config/evaluation/golden_vectors/fixture_corpus_v1/vectors/vec-gvef-ru-mechanism-001.json",
+      "GV_ID": "vec-gvef-ru-mechanism-001",
+      "GV_NAME": "vec-gvef-ru-mechanism-001",
+      "GV_OWNER": "config/evaluation/golden_vectors/fixture_corpus_v1",
+      "INPUT_REQUIREMENTS": {
+        "binding_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "selector_id": "mechanism_ru_v1"
+      },
+      "OFFLINE_ONLY": true,
+      "PROVENANCE": {
+        "ref": "tests/evaluation/golden_vectors/corpus_fixtures_v1.py",
+        "source": "TEST_ONLY_SYNTHETIC"
+      },
+      "RUNTIME_CAPABLE": false,
+      "SCORER": "DomainEvaluationResultV1 metrics/invariants",
+      "STATE_REQUIREMENTS": "RunnerState machine",
+      "STATUS": "OFFLINE_TEST_ONLY",
+      "VECTOR_CLASS": "GoldenNeutral"
+    }
+  ],
+  "REGISTERED_GV_COUNT": 2,
+  "REMOVED_BY": null,
+  "SUPERSEDED_BY": null,
+  "TEMPORAL_STATUS": "PROVEN_CURRENT",
+  "TEMPORAL_VIEW": "CURRENT_ONLY"
+}

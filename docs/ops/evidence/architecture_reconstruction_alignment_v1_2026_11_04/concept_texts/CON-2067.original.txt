@@ -1,0 +1,9 @@
+### CON-2067 — Double Play als gesamte fachliche Konstruktion
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Double Play umfasst mehr als Dynamic Scope: Initialisierung, exklusive Bull/Bear-Seiten, dynamische Grenzen, Candidate/Confirmation, Survival, Suitability, Composition, Kapital-Slot und Entry/Exit. L1–L10 bleiben erhaltene Konstruktionsphasen. Naked-MV2 ist ein fachlicher Vergleichsanker, kein vollständig gebundener Known-Good-Gesamtstand.
+
+**Grenze:** Die Erinnerung zweimal Long/Short gegenüber gemischter Bewegung wird nicht pauschal mit einem heutigen Confirmation-Verfahren gleichgesetzt. Vollständige Gleichheit aller historischen und heutigen Pfade bleibt offen.
+
+Quellen: EVI-2204, EVI-2214, EVI-2239, EVI-2275, EVI-2276, EVI-2207.

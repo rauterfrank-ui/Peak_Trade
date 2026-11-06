@@ -1,0 +1,15 @@
+WALLCLOCK_SECONDS=44
+PYTEST_RC=0
+TARGET_MAX_SECONDS=840
+HARD_STOP_SECONDS=900
+MINIMUM_SAFETY_MARGIN_SECONDS=180
+SELECTOR_MODE=PR_BOUNDED_FULL
+COMMAND=pytest -q <pr_bounded_targets> <csrhr_owner_targets>
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534
+  /Users/frnkhrz/Peak_Trade/.worktrees/csrhr_v1_terminal_retirement_closeout_v0/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534: PytestCollectionWarning: cannot collect test class 'TestownerBudgetInventoryRow' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 757 passed, 5 warnings in 44.33s =======================

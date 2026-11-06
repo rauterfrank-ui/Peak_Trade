@@ -1,0 +1,583 @@
+[
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py",
+    "symbols": [
+      {
+        "name": "MeasuredReturnCalibrationError",
+        "line": 41,
+        "end_line": 42,
+        "kind": "ClassDef",
+        "doc": "Unspecified target semantics or mismatched measurement cannot yield a label."
+      },
+      {
+        "name": "_instant",
+        "line": 45,
+        "end_line": 46,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "prepare_explicit_measured_return_v1",
+        "line": 49,
+        "end_line": 132,
+        "kind": "FunctionDef",
+        "doc": "Require the exact target in forecast provenance before consuming the real scalar.\n\nTarget is only the supplier's first finalized close to last finalized close\nLOG_RETURN, not decision-price-to-close, mark-to-last or simple return. This\ndeclaration must already be part of the forecast's content digest; the adapter\ncannot relabel an existing unspecified forecast to make a join succeed."
+      },
+      {
+        "name": "calibrate_explicit_measured_return_v1",
+        "line": 135,
+        "end_line": 177,
+        "kind": "FunctionDef",
+        "doc": "Validate before writing, then reuse the original MI persistence owner."
+      },
+      {
+        "name": "read_measured_return_calibration_v1",
+        "line": 180,
+        "end_line": 199,
+        "kind": "FunctionDef",
+        "doc": "Load numerical calibration from the existing durable owner, not its ID projection."
+      }
+    ],
+    "sha256": "f737a856de745400d7c4392ca68f596b9fbf91f7bf31fa2250f8a090ad858fee",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py",
+    "symbols": [
+      {
+        "name": "attach_market_context_to_mi_offline_cycle_v1",
+        "line": 18,
+        "end_line": 35,
+        "kind": "FunctionDef",
+        "doc": "Compose market context for MI/Learning offline evidence (observation-only)."
+      },
+      {
+        "name": "read_market_context_from_mi_bridge_payload_v1",
+        "line": 38,
+        "end_line": 42,
+        "kind": "FunctionDef",
+        "doc": null
+      }
+    ],
+    "sha256": "19b81f5d07a3d34ee5776662ddb1dda1a16906097943480f7ad082b7c9a911d8",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
+    "symbols": [
+      {
+        "name": "ExistingFactMaterializationError",
+        "line": 90,
+        "end_line": 91,
+        "kind": "ClassDef",
+        "doc": "Fail-closed existing-fact materialization."
+      },
+      {
+        "name": "MaterializationRejection",
+        "line": 94,
+        "end_line": 104,
+        "kind": "ClassDef",
+        "doc": null
+      },
+      {
+        "name": "_parse_utc",
+        "line": 107,
+        "end_line": 109,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_ms_to_utc_iso",
+        "line": 112,
+        "end_line": 114,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_quality_finalized",
+        "line": 117,
+        "end_line": 121,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "GovernedCanonicalFactV1",
+        "line": 125,
+        "end_line": 132,
+        "kind": "ClassDef",
+        "doc": null
+      },
+      {
+        "name": "validate_governed_canonical_fact_v1",
+        "line": 135,
+        "end_line": 164,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_pit_observed_at_for_fact_v1",
+        "line": 167,
+        "end_line": 194,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_decimal_text",
+        "line": 197,
+        "end_line": 198,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_state_ref_for_family",
+        "line": 201,
+        "end_line": 211,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_present_slot_from_derivation",
+        "line": 214,
+        "end_line": 234,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "derive_price_state_slot_v1",
+        "line": 237,
+        "end_line": 287,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_signed_trade_notional_v1",
+        "line": 290,
+        "end_line": 301,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "derive_flow_state_slot_v1",
+        "line": 304,
+        "end_line": 348,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_ohlcv_facts_to_bars_frame_v1",
+        "line": 351,
+        "end_line": 373,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "derive_liquidity_microstructure_slot_v1",
+        "line": 376,
+        "end_line": 424,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "derive_volatility_state_slot_v1",
+        "line": 427,
+        "end_line": 472,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "build_information_set_identity_from_facts_v1",
+        "line": 475,
+        "end_line": 486,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "ExistingFactMaterializationRequestV1",
+        "line": 490,
+        "end_line": 500,
+        "kind": "ClassDef",
+        "doc": null
+      },
+      {
+        "name": "collect_fact_digests_from_request_v1",
+        "line": 503,
+        "end_line": 539,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "materialize_market_context_v1_from_existing_facts_v1",
+        "line": 542,
+        "end_line": 647,
+        "kind": "FunctionDef",
+        "doc": "Materialize MARKET_CONTEXT_V1 from governed existing facts (explicit inputs only)."
+      },
+      {
+        "name": "replay_market_context_serialization_v1",
+        "line": 650,
+        "end_line": 652,
+        "kind": "FunctionDef",
+        "doc": "Deterministic replay serialization contract for persisted contexts."
+      }
+    ],
+    "sha256": "19dcf5c7d58c5bad0ad76a46371c62fc6546e93682dacff4c89b328dbd4bac85",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py",
+    "symbols": [
+      {
+        "name": "load_cross_market_anchor_binding_v1",
+        "line": 72,
+        "end_line": 79,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "validate_phase_19_canonical_fact_v1",
+        "line": 82,
+        "end_line": 101,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_pit_for_phase_19_fact",
+        "line": 104,
+        "end_line": 115,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_mark_px_from_payload",
+        "line": 118,
+        "end_line": 123,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "Phase19OrthogonalMaterializationInputsV1",
+        "line": 127,
+        "end_line": 136,
+        "kind": "ClassDef",
+        "doc": null
+      },
+      {
+        "name": "derive_derivatives_state_slot_v1",
+        "line": 139,
+        "end_line": 238,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_marks_to_series",
+        "line": 241,
+        "end_line": 255,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "derive_cross_market_state_slot_v1",
+        "line": 258,
+        "end_line": 342,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "assert_phase_19_authority_invariants_v1",
+        "line": 345,
+        "end_line": 375,
+        "kind": "FunctionDef",
+        "doc": null
+      }
+    ],
+    "sha256": "4d24ebca8aaab630f578cfb71a948589894749f739ea7681f77c7caffdab094d",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+    "symbols": [
+      {
+        "name": "MiToLearningBridgeError",
+        "line": 42,
+        "end_line": 43,
+        "kind": "ClassDef",
+        "doc": "Fail-closed MI→Learning bridge error."
+      },
+      {
+        "name": "_parse_utc",
+        "line": 46,
+        "end_line": 48,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_assert_temporal_integrity_v1",
+        "line": 51,
+        "end_line": 77,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_assert_instrument_alignment_v1",
+        "line": 80,
+        "end_line": 92,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "compose_mi_to_learning_evidence_v1",
+        "line": 95,
+        "end_line": 246,
+        "kind": "FunctionDef",
+        "doc": null
+      }
+    ],
+    "sha256": "f26c985bd3d2fac37ac1a8413bb4b03488f3d1b9654ae1d720014cbbc19a99c5",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py",
+    "symbols": [
+      {
+        "name": "FactAdmissionReceiptV1",
+        "line": 38,
+        "end_line": 44,
+        "kind": "ClassDef",
+        "doc": null
+      },
+      {
+        "name": "ContextAdmissionPolicyV1",
+        "line": 48,
+        "end_line": 53,
+        "kind": "ClassDef",
+        "doc": "Explicit per-use freshness limits; no global TTL, units or default forecast."
+      },
+      {
+        "name": "_fact_groups",
+        "line": 56,
+        "end_line": 78,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_identity_and_time",
+        "line": 81,
+        "end_line": 107,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_validate_numbers_and_units",
+        "line": 110,
+        "end_line": 156,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "compose_admitted_intelligence_context_v1",
+        "line": 159,
+        "end_line": 323,
+        "kind": "FunctionDef",
+        "doc": "Admission → original formulas → resolvable sidecar → explicit no-provider abstention."
+      },
+      {
+        "name": "replay_admitted_intelligence_context_v1",
+        "line": 326,
+        "end_line": 401,
+        "kind": "FunctionDef",
+        "doc": "Revalidate source bytes and reproduce the original derivations at a later read."
+      }
+    ],
+    "sha256": "500f8ac9794dce0d44513bb8b5da09200c226a54deae5bf16a19ace5eb189ec4",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/exact_intelligence_evaluation_v1.py",
+    "symbols": [
+      {
+        "name": "intelligence_evaluation_bundle_v1",
+        "line": 18,
+        "end_line": 48,
+        "kind": "FunctionDef",
+        "doc": "Build exact values from already-read original artifacts, not caller-made scores."
+      },
+      {
+        "name": "evaluate_exact_intelligence_v1",
+        "line": 51,
+        "end_line": 138,
+        "kind": "FunctionDef",
+        "doc": "Strict source admission, then actual native baseline/candidate evaluator calls."
+      }
+    ],
+    "sha256": "d1077293a3609317c273bc284dec0935e6f6f9516f96070178282f759aa70c0b",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+    "symbols": [
+      {
+        "name": "validate_forecast_numbers_v1",
+        "line": 43,
+        "end_line": 54,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_lease",
+        "line": 58,
+        "end_line": 66,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "_append",
+        "line": 69,
+        "end_line": 91,
+        "kind": "FunctionDef",
+        "doc": "Publish complete bytes once; exact retry succeeds, divergent reuse rejects."
+      },
+      {
+        "name": "_read",
+        "line": 94,
+        "end_line": 95,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "freeze_existing_intelligence_forecast_v1",
+        "line": 98,
+        "end_line": 236,
+        "kind": "FunctionDef",
+        "doc": "Freeze already supplied evidence; this function does not execute model inference."
+      },
+      {
+        "name": "calibrate_frozen_intelligence_forecast_v1",
+        "line": 239,
+        "end_line": 327,
+        "kind": "FunctionDef",
+        "doc": "Original measurement/calibration/store, followed by exact cold numeric readback."
+      },
+      {
+        "name": "_readback",
+        "line": 330,
+        "end_line": 344,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "handoff_calibrated_intelligence_evidence_v1",
+        "line": 347,
+        "end_line": 431,
+        "kind": "FunctionDef",
+        "doc": "Separate typed Learning persistence and original OPT intake, never a PnL label."
+      },
+      {
+        "name": "read_calibrated_intelligence_v1",
+        "line": 434,
+        "end_line": 462,
+        "kind": "FunctionDef",
+        "doc": "Cold evidence read; never executes provider, engine, evaluator or calibration."
+      }
+    ],
+    "sha256": "bcfc10d0aa2aa4aba6f87e053ff0d2bbcf41a54b718af0382031a1c30336618c",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py",
+    "symbols": [
+      {
+        "name": "IntelligenceIntegrationError",
+        "line": 13,
+        "end_line": 14,
+        "kind": "ClassDef",
+        "doc": "A concrete offline consumer contract cannot be satisfied."
+      },
+      {
+        "name": "require_v1",
+        "line": 17,
+        "end_line": 19,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "text_v1",
+        "line": 22,
+        "end_line": 24,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "instant_v1",
+        "line": 27,
+        "end_line": 35,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "finite_v1",
+        "line": 38,
+        "end_line": 41,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "plain_v1",
+        "line": 44,
+        "end_line": 53,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "bytes_v1",
+        "line": 56,
+        "end_line": 64,
+        "kind": "FunctionDef",
+        "doc": "Versioned exact JSON values, including full float repr; no .12g normalization."
+      },
+      {
+        "name": "digest_v1",
+        "line": 67,
+        "end_line": 68,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "strict_json_v1",
+        "line": 71,
+        "end_line": 82,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "seal_v1",
+        "line": 85,
+        "end_line": 88,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "validate_seal_v1",
+        "line": 91,
+        "end_line": 97,
+        "kind": "FunctionDef",
+        "doc": null
+      },
+      {
+        "name": "IntelligenceIdentityV1",
+        "line": 101,
+        "end_line": 117,
+        "kind": "ClassDef",
+        "doc": "Full context identity; lane is one of five slots, never position authority."
+      },
+      {
+        "name": "assert_offline_v1",
+        "line": 120,
+        "end_line": 127,
+        "kind": "FunctionDef",
+        "doc": null
+      }
+    ],
+    "sha256": "d5643610897776253cfd158c98cc218dc7b52ebb1122bc2b2b614807af545695",
+    "revision": "63a3627598ac228ef37b3c61befe50b3bbfe450b"
+  }
+]

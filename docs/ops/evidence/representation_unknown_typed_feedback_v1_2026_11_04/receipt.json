@@ -1,0 +1,57 @@
+{
+  "source_commit": "e2177587b53f97dc1db83eaccda00a50fd8950d2",
+  "current_paths_sha256": {
+    "src/experiments/canonical_learning_representation_offline_evaluation_v1.py": "acf19867887ae6d88be828802b3cb9213be0ad5b0ec164d98694551bbdd4e8ea",
+    "tests/experiments/test_representation_unknown_fixture_admission_v1.py": "3e205f946704dd95bd0b482017b4f654f7595b81421ae95b9cad9aaef5a6d57d",
+    "tests/learning/test_representation_unknown_typed_feedback_v1.py": "d61a11a3976594b6b6f5d3d79825b4304e608987e3bdf9d06775b1ec43b8e61c",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1"
+  },
+  "tests": "Three initial actual LoopC failures resolved; 70 distinct connected PASS. Malformed plan/authority denial retained.",
+  "test_runs": {
+    "before.xml": {
+      "tests": 3,
+      "failures": 3,
+      "errors": 0
+    },
+    "after.xml": {
+      "tests": 52,
+      "failures": 0,
+      "errors": 0
+    },
+    "router_regression.xml": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "known_full_outputs": {
+    "cases": 10,
+    "result": "IDENTICAL complete output/digest"
+  },
+  "ruff_status": "PASS",
+  "boundaries": [
+    "Only valid plan with unsupported bounded fixture returns typed no-evaluation evidence; no numeric success fabricated",
+    "Original phase24 rejection retention supports replacing earlier exception branch, not weakening identity or apply guards",
+    "Natural representation evaluation and next measured adaptive iteration remain unproven; arbitrary multi-item plan semantics remain separate",
+    "No productive learning mutation, activation, network, original ledger mutation or push; U04/GAP-0370 deferred"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/representation_unknown_typed_feedback_v1_2026_11_04/README.md",
+      "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 230,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

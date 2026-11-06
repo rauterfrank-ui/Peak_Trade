@@ -1,0 +1,50 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_V1",
+  "authorized_baseline_sha": "11e0601b1b6f8124701247ae9bb98c195dd5646c",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_post_phase_15_dod_remediation_v1.py",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "post_phase_15_remediation_status": "PROVEN_COMPLETE",
+  "remediated_families": [
+    "DATA_SUBSTRATE",
+    "FAILURE_MEMORY",
+    "PARAMETER_LINEAGE"
+  ],
+  "bounded_scopes": {
+    "data_substrate": "WP-A/WP-B canonical producers, WP-C converged consumer census (zero competing productive transport truth), O4/N_BARS public-plane convergence; optimization_universe documentary CONFLICTING resolved to RESEARCH_ONLY without authority grant",
+    "failure_memory": "Canonical failure memory v1 on research/offline optimization-meta paths (D02 failure-memory edge, advanced search, automated offline research loop); not a fleet-wide productive runtime failure registry",
+    "parameter_lineage": "Auditable chain surface→candidate→evidence→governance→authorization→authorized promotion record→governed apply decision/record→productive parameter seam→CURRENT typed consumer (F1 M9); real runtime materialization/activation remains separately gated (AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false)"
+  },
+  "runtime_apply_out_of_scope": {
+    "authorized_promotion_implies_runtime_apply": false,
+    "runtime_apply_authority_owner_ratified": true,
+    "runtime_apply_authority_id": "GOVERNED_PRODUCTIVE_CONFIGURATION_APPLY_AUTHORITY_V1",
+    "owner_decision_required_for_runtime_apply": false,
+    "real_runtime_materialization_performed": false,
+    "runtime_apply_started": false,
+    "minimal_decision_surface": "F1/M9 scoped Owner apply execution or real runtime materialization from APPLY_AUTHORIZED record (separate Owner GO)"
+  },
+  "authority_invariants": {
+    "optimization_promotion_authority": "NONE",
+    "optimization_trading_decision_authority": "NONE",
+    "optimization_direct_productive_write": false,
+    "authorized_promotion_implies_runtime_apply": false,
+    "no_self_deploy": true,
+    "m11_started": false,
+    "runtime_apply_started": false,
+    "cap_2_3_selection_owner_unchanged": true,
+    "mv2_dp_trading_decision_authority_unchanged": true
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md",
+    "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
+    "src/governance/unified_blueprint_post_phase_15_dod_remediation_v1.py",
+    "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py",
+    "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+    "config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json"
+  ],
+  "first_unproven_dependency_after_closure": "Real runtime materialization / F1_M9 scoped Owner apply execution from APPLY_AUTHORIZED record (M11 optional automation remains outside default completion)",
+  "next_implementation_boundary": "Explicit Owner GO for productive configuration mutation or F1_M9 scoped apply ledger execution; APPLY_AUTHORIZED record does not imply runtime apply"
+}

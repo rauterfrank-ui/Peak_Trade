@@ -1,0 +1,152 @@
+# Optimierungsuniversum: Ursprung, Entwicklung und Übergaben zum Learning
+> Methodische Fortschreibung vom 02.11.2026: Die September-Datierung beschreibt die spätere explizite Universumsabgrenzung. Der fachliche Beginn wird jetzt anhand früherer Funktionen ab Ende Januar rekonstruiert; Dezember bleibt historischer Vergleich. Siehe [Fachlicher Beginn](functional-origins/Fachlicher_Beginn_vor_den_Universumsnamen.md).
+
+Stand 02.11.2026. Historische Rekonstruktion aus revisionsgebundenem Code, Verträgen, GitHub-Historie und Originalgesprächen. Keine Implementierung, Wiederherstellung oder Aktivierung. Die Erweiterung um Optimization ersetzt die bisherige Untersuchung der ursprünglichen Self-Learning-Architektur nicht.
+
+## Was sich jetzt einordnen lässt
+
+Die beiden Universen gemeinsam zu untersuchen ist fachlich begründet: Der erste gefundene ausdrücklich benannte Optimization-Universe-Merge enthält bereits Learning-Export, Input-Grenze, Experimentstrecke, Rückgabe, Meta-Projektion, Forschungsfeedback und Mehrzyklus-Replay. Dabei werden August-Bausteine wiederverwendet. Es handelt sich nicht einfach um eine lineare Fortsetzung des damaligen August-Loops.
+
+Drei Anfänge müssen getrennt bleiben:
+
+- **Vorhandene Optimierungswerkzeuge:** Ein Experiment-/Sweep-Runner ist spätestens am **06.12.2025, 22:38:57 Uhr Berlin** in der untersuchten, mit GitHub abgeglichenen Pfadhistorie vorhanden. Der Research-Playground folgt um 23:06:21 Uhr. Das ist ein früher Werkzeugvorläufer, kein Beweis eines damals schon abgegrenzten Optimization Universe.
+- **Ausdrücklich benannte Konzeptabsicht:** Ein Originalgespräch vom **19.09.2026, 11:23 Uhr** nennt Concept v1 bereits als Planungsquelle. Am selben Tag um 20:20 Uhr wird dessen Zielkreislauf im Auftrag ausdrücklich wiedergegeben. Das belegt die damalige Verwendung der Idee, nicht ihr erstmaliges Entstehen.
+- **Erster gefundener Merge der benannten Universumsgrenze:** **19.09.2026, 21:38:40 Uhr**, Commit `25b0518b93f91a9609d70c30fb8cd3bf96401a46`, PR **#6635**. Die GitHub-Pfadhistorien von Universe-Owner und Learning-Input-Grenze führen zu diesem Commit zurück. Seine 49 Dateien bündeln mehrere vorher lokal bearbeitete M-Schritte.
+
+**Der absolute Konzeptursprung bleibt offen.** Die vollständigen Originale von Concept v1/v2 wurden in den hier abgefragten lokalen Attachment-/Quelleninventaren nicht gefunden. Ihre Inhalte werden nur soweit rekonstruiert, wie konkrete Originalnachrichten oder damalige Verträge sie belegen. Spätere Konzeptfassungen werden nicht rückwirkend zum Ursprung erklärt.
+
+## 1. Historische Entwicklung und unterschiedliche Varianten
+
+### Dezember 2025 bis Januar 2026: Werkzeuge für Parameterforschung
+
+`ExperimentRunner` nimmt eine Backtestfunktion entgegen, iteriert Parameterkombinationen und sammelt Ergebnisse je Run. Der damalige Default versucht einen Registry-Backtest und extrahiert dessen Stats. Das belegt den vorgesehenen codierten Aufruf; erfolgreiche damalige Ausführung und Existenz aller Gegenstellen sind in diesem Durchgang nicht nachgewiesen. Der Playground reicht Sweep-Konfiguration und eine optionale Backtestfunktion an diesen Runner weiter. [O27:597–810; O01:673–735]
+
+Am 28.01.2026 fügt `f37535c…` trainierte Parameterwahl im Walk-Forward hinzu: Kandidaten werden auf dem Trainingsfenster mit `run_realistic` bewertet; gewählte Parameter gehen anschließend in den getrennten Testfenster-Backtest. Im Code werden endexklusive Fenster verwendet. Dies ist ein konkreter innerer Optimierungszyklus mit anschließendem OOS-Test, kein Nachweis einer Anbindung an ein späteres Learning Universe. [O02:480–578; GitHub #1028]
+
+### August 2026: gemeinsame Forschungsbausteine vor der späteren Universumsgrenze
+
+Advanced Search entsteht am 18.08. mit Identitätstemplate, Suchraum, Budget und optionalen Failure-/Gap-/Meta-Signalen. Es kann Kandidaten und Offline-Anfragen bilden. Der ursprüngliche August-Loop bekommt dagegen bereits gelieferte Versuchswerte und bindet/bewertet diese. Diese Unterscheidung aus der vorherigen Untersuchung bleibt bestehen. [O03:284–306,337–413,1283–1301; voriger Bericht `self-learning-original-architecture/producer-trace/`]
+
+Bei den Suchmethoden ist ebenfalls zu trennen: Der August-Vertrag unterstützt nur die begrenzte deterministische Regionensuche; Bayesian Optimization, Optuna und Evolutionary Search werden dort ausdrücklich als nicht unterstützt geführt. Am Vergleichspin vorhandene Legacy-Skripte wie `scripts/run_optuna_study.py` sind ein weiterer Untersuchungszweig; ihre Existenz beweist keine Universe-Anbindung. [O03:105–117,1419–1425]
+
+Die September-Foundation registriert unter anderem Experimentidentität/-gedächtnis, Failure Memory, Vergleichbarkeit, Reality Gap, Robustheit und den Meta-Analysator zur Forschungswiederverwendung. Registry-Mitgliedschaft ist weder Funktionsaufruf noch Aktivierung. Der Foundation-Vertrag nimmt insbesondere den automatisierten Offline-Loop-Executor nicht als solchen auf. Historische Bausteinzuordnung und spätere Wiederverwendung sind deshalb getrennt zu halten. [O07:75 ff.; O21:48–74]
+
+### 19.09.2026: Konzept → getrennte Räume → gebündelte Codierung
+
+Der Originalauftrag 26058 unterscheidet ausdrücklich:
+
+1. Self-Learning: Outcomes/Markt-/System-Evidence zu Learning-Evidence;
+2. Optimization: Hypothesen, Kandidaten, Challenger, OOS und Robustheit;
+3. Governance/Risk: erlaubte Optimierungsflächen, harte Grenzen und Freigaben.
+
+Er beschreibt sowohl den Weg bis zum Proposal an Governance als auch einen späteren Forschungsrückfluss von Optimization über Learning/Meta-Evidence zu besserer Experimentwahl. Das ist belegte damalige Absicht, noch kein Implementierungsnachweis.
+
+Originalnachricht 262687 vom 20:37-Uhr-Auftrag schärft Concept v2: Universe-Foundation und Optimizable Envelope sind verschiedene Dinge; ein Universum soll ohne produktiv freigegebene Ziele existieren können. PR #6635 materialisiert dann mehrere dieser Schritte gemeinsam. **M1–M9 sind hier Entwicklungsschritte/Verträge, keine bewiesene Hierarchie semantischer Ebenen und keine zeitlich getrennten Merges.**
+
+### Weitere belegte Übergänge
+
+- **19.09., 21:50:50 — #6636 / `45c45253…`:** F2-Kostenraster als eigene Research-Surface. Der zuerst eingeführte Executor konstruiert das erlaubte Raster und Kandidatenidentitäten; seine Bezeichnung „Research Execution“ allein belegt keinen numerischen Backtest. [O28]
+- **19.09., 23:27:20 — #6639 / `59025613…`:** separater Optimization-Proposal-Eingang für Governance-Review. Admission ist kein Apply; der Code weist entsprechende angeforderte Rechte zurück. [O30:135–254,444 ff.]
+- **24.09., 22:21:01 — #6793 / `892bc879…`:** zusätzliche föderierte Rückgabe und Mehrzyklus-Auswertung. Eingang ist schon vorliegende Surface-Evidence; M4 wird in dieser Variante ausdrücklich nicht ausgeführt. Diese Variante ergänzt die synthetische M4-Strecke. [O15:287 ff.; O29:80–174]
+- **26.09., 11:07:56 — #6850 / `3a50f1f9…`:** MI-angereicherter M4-Eingang. MI-Evidence und kanonische Learning-Evidence werden getrennt validiert; die MI-Herkunftsreferenzen werden dem bestehenden Plane-Ergebnis angefügt. Daraus folgt noch keine durch MI veränderte Kandidatenbewertung. [O20:103–160,163–300]
+- **26.09., 22:41:38 — #6876 / `d4fd3bba…`:** zusätzlicher M4–M8-Einzelzyklus-Orchestrator komponiert vorhandene Funktionen und prüft Status-/Herkunftsübergaben. Ein neuer Wrapper ist kein neuer Messwertproduzent. [O16:113–174]
+- **26.09., 23:50:10 — #6880 / `23dccab7…`:** G2-Runtime-Learning-Input wird ohne DDO-Fixture-State in das bestehende Learning-Evidence-Schema projiziert. [O17]
+- **27.09., 00:02:23 — #6881 / `a220e443…`:** G2-Evidence wird an die M4–M8-Strecke gebunden. Der Request-Builder trägt Runtime-Lineage weiter, setzt aber Forschungsdataset-Digests, Suchraum und Vergleichsscores selbst. [O18]
+- **27.09., 00:11:42 — #6882 / `70391003…`:** zusätzliche Prüfung/Weitergabe der entstandenen M6-/M7-Ausgaben. Kein daraus belegter automatischer Start eines fachlich verbesserten Folgeexperiments. [O19:177–249]
+
+Weitere M9-/M10-, F1/F3/F5-, P5- und spätere Provenienzvarianten sind als nächste Untersuchungszweige zu erfassen; diese Auswahl erklärt zentrale Datenübergaben, ersetzt keinen vollständigen Audit aller Varianten oder die Prüfung jedes historischen COMPLETE-Labels.
+
+## 2. Was zwischen den Universen tatsächlich ausgetauscht wird
+
+### Learning → Optimization: zunächst Zustands-Evidence, keine Renditeserie
+
+`export_learning_evidence_from_state_v1` validiert einen Learning-State-Snapshot und kopiert unter anderem State-Referenz/-Version, Evaluation-Bundle-Fingerprint, Decision-Event, Beobachtungszeit, Outcome-Referenz, Horizont und `next_cycle_economic_score_label` in einen neuen `learning_evidence_record_v1`. Herkunft und Content-Hash machen den Snapshot wiedererkennbar. [O04:36–103]
+
+Die Bedeutung ist ausdrücklich begrenzt: `economic_score_label` ist ein opakes Label, kein numerischer Score; `evaluation_horizon` und `actual_outcome_ref` sind ebenfalls Token/Referenz. Das einzelne Exportobjekt ist keine Zeitreihe für Parametertraining und kein bereits vollständig übertragenes Experimentergebnis. [O05:FieldSpecs für economic_score_label/evaluation_horizon/actual_outcome_ref]
+
+M1 validiert Schema, Evidence-/Universe-Klasse, fehlende produktive Rechte und Digest. Seine Ausgabe ist ein Research-ACK mit dem Digest und State-Bezug. **ACK ist eine Annahmeentscheidung, kein Suchstart.** [O06:57–165]
+
+### Optimization intern: vorhandene Evidenz zulassen, Kandidaten bilden, Beobachtungen bewerten
+
+Der frühe M4-Request verlangt neben Learning-Evidence separat ein Identitätstemplate, einen Suchraum, Champion und beide Vergleichsscores. M4 ruft den August-Advanced-Search-Builder tatsächlich auf, nimmt den ersten vorgeschlagenen Kandidaten, bewertet ihn mit den gelieferten Scores und ruft Robustheitsbewertung auf. [O09:106–123,152–288]
+
+Die Learning-Evidence beeinflusst hier die Annahme und Herkunftsbindung. Im untersuchten Aufruf wird ihr wirtschaftliches Label **nicht in eine gelernte Suchrichtung, Zielfunktion oder neue Scoremessung übersetzt**; diese wesentlichen Eingaben kommen aus dem separaten Request.
+
+Ohne explizite `robustness_observations` benutzt der ursprüngliche M4-Code fest gesetzte Returns und Split-/Stresskennzahlen. Sein Vergleichszeitfenster ist fest auf 2020–2024 gesetzt, das Marktuniversum heißt `SYNTHETIC-OFFLINE-RESEARCH-ONLY`. Das ist eine codierte synthetische Forschungsstrecke. Ihre COMPLETE-Ausgabe beweist kein mit realen Marktdaten neu ausgeführtes Experiment. [O09:91–97,234–243,354–426]
+
+Die Flags `search_executed=False` in Replay-/Feedback-Ausgaben dürfen deshalb nicht als Beweis gelesen werden, es werde überhaupt kein Kandidatengenerator aufgerufen: M4 ruft ihn statisch nachweisbar auf. Kandidatenkonstruktion, Markt-/Backtestausführung und autorisierter weiterführender Suchlauf sind verschiedene Vorgänge.
+
+### Optimization → Learning: Experiment-Evidence und Rückgabe-ACK
+
+M5 projiziert das M4-Ergebnis in getrennte Evidence-Slices: Search, Challenger, OOS, Robustheit, Economic, Failure und Meta-Source-Referenz. Im frühen Pfad enthält der Economic-Slice ausdrücklich `OPAQUE_LINEAGE_REF_ONLY` mit dem Learning-Evidence-Digest; der OOS-Slice trägt eine Projektion samt Robustheitsintegrität. **Ein Slice-Name belegt hier weder neue ökonomische Messwerte noch einen frisch ausgeführten OOS-Backtest.** [O10:90–175]
+
+Die Rückgabegrenze validiert diese Evidence und kann sie als Offline-Input annehmen. Das frühe M5 verändert dabei keinen Learning-State und führt keine Meta-Analyse aus. [O11; O23]
+
+### Learning/Meta: ein zweiter, andersartiger Meta-Vertrag
+
+M6 baut aus den Evidence-Slices `meta_learning_evidence_v1`: Quell-Experiment-IDs, Envelope-/Provenienzbezüge, ein Pattern aus Challenger-Disposition und Failure-Anzahl, Robustheitsreferenzen und einen Reproduzierbarkeitsdigest. Im frühen Pfad entspricht `support_count` der Zahl der übertragenen Quell-Experiment-IDs; das kann genau ein Experiment sein. Das Wort „repeated“ im Feldnamen beweist keine Analyse einer Wiederholung über viele Versuche. [O12:177–280]
+
+Der August-Analysator wird als Referenz geführt; `canonical_analyzer_invoked` bleibt **false**. Suchmethode, Optimierungsfamilie, prädiktive Merkmale und Unsicherheit werden hier teilweise als `UNKNOWN_UNAVAILABLE` ausgegeben. Daher müssen wir zwei Dinge unterscheiden:
+
+- **August-Meta-Analyse:** eigene, vergleichbare Experimentserien und beschreibende/assoziative Fragen;
+- **September-M6-Meta-Evidence:** deterministische Projektion von Forschungsbefunden mit Herkunftsbezug.
+
+Beides kann in einem größeren Lernsystem sinnvoll sein. Ein belegter automatischer Übergang von der zweiten Form in die erste ist damit noch nicht gegeben. [O12:235–278; voriger August-Bericht]
+
+### Meta → Optimization: begrenztes Forschungsfeedback und tatsächliche Wirkung
+
+M7 kann bei vorhandenen Quell-Experiment-IDs eine Forschungspriorisierung ausgeben. Es leitet begrenzte Forschungsbudgeteinheiten aus `support_count` ab, prüft Suchmethoden gegen registrierte Fähigkeiten und kann eine opake Pattern-Referenz als Hypothesenvorschlag weiterreichen. Das ist konkrete lokale Verarbeitung, nicht bloß Dateiexistenz. Für den M6-Pfad mit unbekannter Suchmethode bleibt die Methodenwahl abgewiesen. [O13:154–292]
+
+M8 verbindet die Records mehrerer Zyklen und prüft, ob das vorherige Feedback identisch weitergereicht wird. An Zyklus N+1 werden anwendbare Dispositionen als `cycle_n_plus_1_input_semantics` dokumentiert. Der nächste `plane_request` stammt im untersuchten Code aber weiterhin aus der vom Caller gelieferten Zyklusspezifikation; die extrahierten Dispositionen ersetzen dort weder Suchraum noch Budget noch Experimentbeobachtungen. **Lineage-Rückkopplung ist belegt; eine dadurch tatsächlich veränderte Experimentwahl bleibt offen.** [O14:108–175,220–268,296–314]
+
+Dieser M8-Modulinhalt ist am bisherigen Vergleichspin noch bytegleich mit seiner Einführung. Das beweist nur den Verbleib dieser lokalen Semantik, nicht die Abwesenheit zusätzlicher externer Consumer.
+
+## 3. Spätere Eingänge verändern die Herkunft, nicht automatisch jede Verarbeitung
+
+**Föderierter Weg:** Surface-spezifische, bereits erzeugte Evidence geht über einen eigenen Return-Join nach M6 und M7. Der föderierte Replay erhält pro Zyklus ein fertiges Evidence-Objekt, prüft Surface-Ausführungsidentitäten und baut Feedback. Er baut keine M4-Experimente nach und erzeugt keine neuen Marktbeobachtungen. Die spätere Ingest-Erweiterung bleibt eine Meta-Projektion mit `canonical_analyzer_invoked=False`. [O15:287–520; O29:80–174,217–257]
+
+**MI-Weg:** Forecast-/Calibration-/Drift-/Research-Referenzen können einen zusätzlichen Kontext bilden. Der hier geprüfte Intake verlangt weiterhin passende kanonische Learning-Evidence, vergleicht deren Digest mit dem Plane-Request und hängt MI-Lineage an das bestehende Ergebnis. Ob diese zusätzlichen Informationen bei einem weiteren Consumer fachlich auf Suchprioritäten oder Bewertungswerte wirken, bleibt separat zu verfolgen. [O20:163–300]
+
+**G2-Runtime-Weg:** Die spätere Projektion verwendet Session-/Instrument-/Venue-/Zeitbezüge und Primärevidence-Digests. Ihr `economic_score_label` wird jedoch als `g2.review.<review_verdict>` gebaut; der Horizont lautet `g2.mode.<mode>.bounded_observation`. Der State-Bezug ist hier eine abgeleitete Referenz, kein in dieser Funktion aktualisierter DDO-State. Derselbe Feldname trägt damit eine andere Quelle als beim DDO-Economic-Label. Das muss beim Consumer sichtbar bleiben. [O17:209–293]
+
+Der anschließende M4-Builder bindet diese Runtime-Herkunft, verwendet aber unter anderem `sha256("g2-offline-dataset")`, einen fest definierten Zweiwerte-Suchraum, Champion-/Challenger-Scores 1,0/1,05 und keine explizit gelieferten Robustheitsbeobachtungen. Somit bleiben im untersuchten Pfad Teile der Forschungsbewertung synthetisch, obwohl die Eingangs-Lineage aus G2 stammt. Ein Verbot von DDO-Fixture-State ist kein Beweis, dass sämtliche nachgelagerten Messwerte reale Forschungsresultate sind. [O18:128–207]
+
+Der letzte geprüfte Continuation-Owner validiert den M4–M8-/M6-/M7-Herkunftszusammenhang und gibt Meta-Evidence sowie Feedback aus. Er führt dort kein neues Backtestexperiment und keine Parameteranpassung aus. [O19:177–249]
+
+## 4. Welches Arbeitsmodell daraus folgt
+
+Unser Untersuchungsmodell unterscheidet fünf Aufgaben; diese sind **keine behaupteten historischen Ebenennummern**:
+
+1. **Beobachten und Erfahrung binden:** echte Entscheidung, späteres Outcome, Markt-/Sessiondaten und deren Identität/Zeitbezug.
+2. **Forschungsbedarf ausdrücken:** Evidence-Export, Annahme, Hypothesen-/Suchkontext und Prioritäten.
+3. **Versuche erzeugen und bewerten:** Suchkandidaten, tatsächlich erzeugte Messwerte, Vergleichbarkeit, OOS und Robustheit. Kandidatengenerierung und Messwerterzeugung bleiben getrennt.
+4. **Forschungserfahrung auswerten:** Rückgabe, Meta-Projektion, gegebenenfalls wirkliche Analyse über mehrere Versuche.
+5. **Folgeentscheidung wirksam machen:** veränderte nächste Forschungswahl oder separat geregelter Governance-Vorschlag. Das Speichern/Weiterreichen einer Entscheidung ist nicht schon ihre Anwendung.
+
+Die Architektur hat damit mehrere Kreisläufe und seitliche Eingänge: den älteren inneren Walk-Forward-Zyklus, DDO-Zustands-/Outcome-Bezüge, den M4–M8-Evidence-Kreislauf, den föderierten Return-Weg, MI-/G2-Nachspeisung und den gesonderten Governance-Vorschlagsweg. Sie dürfen nicht zu einem einzigen geschlossenen Gesamtloop zusammengezogen werden.
+
+## 5. Geordnete nächste Nachweise
+
+**Zuerst Quellen-/Variantenregister vervollständigen:** Ursprung und Verfügbarkeit von Concept v1/v2/v3/v3.2 sowie spätere Änderungen getrennt verankern. Ein früheres fehlendes Dokument blockiert nicht die Untersuchung nachweisbarer Codeübergänge.
+
+**Danach je fachlichem Zweig einen vollständigen Datensatz verfolgen:** tatsächliche Eingangsdatei/Outcome-Evidence → Zeitraum/Einheiten → Identität → konkrete Messwerterzeugung → Experiment-Evidence → Meta-/Feedbackobjekt → nachweisbare Verwendung im nächsten Versuch. Insbesondere einen Consumer finden, der M7-Priorität/Budget/Hypothese wirklich in den nächsten Request überführt.
+
+**Datenverträge vergleichen:** DDO, G2, MI und föderierte Surface-Evidence darauf prüfen, welche Information beim Übergang erhalten bleibt, nur referenziert wird oder verloren geht.
+
+**Anschließend die einzelnen Surface-Familien prüfen:** F1/M9, F2 und weitere F3/F5-Varianten. Dabei jeweils zulässige Achse, Maßeinheit, tatsächlicher Evaluator, Baseline, Evidenzrückgabe und Consumer-Wirkung belegen. Die initiale F2-Kandidatenkonstruktion darf nicht mit späterer numerischer Sensitivitätsauswertung gleichgesetzt werden.
+
+**Governance-Seite getrennt halten:** Proposal, Review-Admission, autorisierter Parametertransport und tatsächliche Consumer-Verwendung sind unterschiedliche Übergaben. Keine Aktivierungsentscheidung aus dieser Rekonstruktion.
+
+## Belegreichweite
+
+30 revisionsgebundene Snapshots und acht gegen ihre Original-JSONL-Nachrichten abgeglichene Records sind gesichert. 13 ausgewählte GitHub-Commits und deren nicht gelöschte Datei-Blobs wurden mit lokalem Git verglichen. Vier konkrete GitHub-Pfadhistorien wurden bis zum letzten zurückgegebenen Eintrag gelesen; dies schließt umbenannte/andere Pfade, alle Branches oder externe Entstehungsgeschichte nicht aus. Lokales Git ist weiterhin shallow.
+
+Remote-main wurde in diesem Durchgang lesend als `5d1c838c15369507c5247834db4dd0df25592169` bestätigt. Lokaler HEAD bleibt `242b7974fc93f0bdb47706556101bd6f0c497414`; uncommittete Arbeit bleibt erhalten. Historische Aussagen sind an ihre damaligen Pins gebunden und werden nicht als heutiger Gesamtbeweis übernommen.
+
+Nur lokale Quelleninventare der Recovery-/Archivübersicht wurden zur Navigation abgefragt; keine externen Laufwerke gelesen oder beschrieben. Keine Produktimporte, Tests, Replay-/Lernläufe, Orders, Commits oder Repository-Änderungen. Die dargestellten Verbindungen sind statisch codierte Verarbeitung; reale Laufzeitwirkung und verbesserte Forschungs-/Handelsergebnisse sind damit nicht belegt.
+
+[Quellenregister mit vollständigen SHAs, Snapshotpfaden und Originalnachrichten](sources.json) · [Strukturierte Ergebnisse und Übergaberegister](learning-optimization-history.json)
+
+GitHub-Primäranker: [Experiment-Runner 2025](https://github.com/rauterfrank-ui/Peak_Trade/commit/7e10f418d5a30eccfe559ed1c877ad8c92c56ced), [Walk-Forward #1028](https://github.com/rauterfrank-ui/Peak_Trade/commit/f37535c65f2a4c7cc2f507aa3107604267accb24), [Universe-Foundation #6635](https://github.com/rauterfrank-ui/Peak_Trade/commit/25b0518b93f91a9609d70c30fb8cd3bf96401a46), [föderierter Return #6793](https://github.com/rauterfrank-ui/Peak_Trade/commit/892bc879e49c83e7c8a9b0d1587cfb743a3a65f4), [G2-Bindung #6880](https://github.com/rauterfrank-ui/Peak_Trade/commit/23dccab71eac79c8d39498bbe5bfc84bd54ebf9d).
+
+Abschlussprüfung: 30/30 Snapshots stimmen mit Git und registriertem SHA256 überein; die geprüften GitHub-Datei-Blobs stimmen überein. Bisherige Canvas-Daten und Ansichten sind erhalten, TypeScript mit tatsächlichem lokalem Canvas-SDK ohne Diagnosen. Repository-Status unverändert. Details: [verification.json](verification.json). Kein visueller Laufzeittest.

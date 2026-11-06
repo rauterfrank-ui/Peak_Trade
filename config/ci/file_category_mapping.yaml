@@ -1,0 +1,187 @@
+# Diff-aware CI test selection categories (fail-closed). See scripts/ops/ci_test_selection_v1.py
+categories:
+  docs_only:
+    mode: NO_OP
+    globs:
+      - "docs/**"
+      - "out/**"
+      - "**/*.md"
+    runtime_class: seconds
+  workflow_only:
+    mode: NO_OP
+    globs:
+      - ".github/workflows/**"
+    runtime_class: seconds
+    notes: "tests job NO_OP; Fast-Lane + workflow contract tests cover CI YAML"
+  static_contract:
+    mode: NO_OP
+    globs:
+      - "tests/ci/**"
+      - "tests/ops/**"
+      - "tests/webui/test_*_structure_contract*.py"
+      - "src/ops/*_contract_v0.py"
+      - "src/ops/*_contract_v1.py"
+    runtime_class: seconds
+  shadow_preparation_readiness_gate_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/shadow_preparation_readiness_gate_v0.py"
+      - "config/ops/shadow_preparation_readiness_gate_v0.toml"
+      - "tests/ops/test_shadow_preparation_readiness_gate_v0.py"
+      - "tests/ops/test_step29u_canonical_semantics_contract_v0.py"
+      - "docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+      - ".github/workflows/ci.yml"
+      - "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"
+    runtime_class: minutes
+    notes: "Exact offline Shadow-preparation readiness-gate owner FOCUSED; executable producer not static_contract; central_src/config_paths FULL preserved for unrelated paths"
+  scripts_focused:
+    mode: FOCUSED
+    globs:
+      - "scripts/**"
+    runtime_class: minutes
+  tests_focused:
+    mode: FOCUSED
+    globs:
+      - "tests/**"
+    runtime_class: minutes
+  strategy_regime_owner_focused:
+    mode: FOCUSED
+    globs:
+      - "src/strategies/**"
+      - "src/regime/**"
+    runtime_class: minutes
+    notes: "Single owner prod file + exactly one canonical test owner in diff; blocked for registry/shared paths"
+  durable_completion_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+      - "src/ops/durable_completion_validation/**"
+      - "tests/ops/test_durable_completion_validation_graph_v1.py"
+      - "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded durable completion validation graph refactor; central_src FULL preserved for unrelated src"
+  preflight_assembly_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded PE-26 preflight assembly + PE-31 reconciliation chain; central_src FULL preserved for unrelated src"
+  okx_europe_adapter_lifecycle_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/okx_europe_adapter_lifecycle_contract_v0.py"
+      - "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_okx_europe_adapter_lifecycle_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py"
+      - "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded OKX Europe adapter lifecycle owner + adapter capability digest hook + venue/AWS transitive testowner chain; central_src FULL preserved for unrelated src"
+  bounded_futures_testnet_contract_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/bounded_futures_testnet_contract_v0.py"
+      - "src/ops/bounded_futures_testnet_venue_binding_v0.py"
+      - "src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py"
+      - "tests/ops/test_order_capability_dry_validation_contract_v1.py"
+      - "tests/ops/test_archive_futures_testnet_harness_v0.py"
+      - "tests/ops/test_run_order_capability_dry_validation_adapter_v1.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded PF_ETHUSD offline contract SSOT + direct testowner chain; central_src FULL preserved for unrelated src"
+  risk_killswitch_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded PE-22 risk/killswitch + order-capability abort binding chain; central_src FULL preserved for unrelated src"
+  tiny_order_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py"
+      - "tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded PE-30 tiny-order + order-capability abort/cleanup proof chain; central_src FULL preserved for unrelated src"
+  reconciliation_primary_evidence_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded PE-21 position/order/fill reconciliation primary evidence; central_src FULL preserved for unrelated src"
+  central_src:
+    mode: FULL
+    globs:
+      - "src/**"
+    runtime_class: full_matrix
+  global_test_infra:
+    mode: FULL
+    globs:
+      - "pytest.ini"
+      - "**/conftest.py"
+      - "tests/conftest.py"
+    runtime_class: full_matrix
+  dependencies:
+    mode: FULL
+    globs:
+      - "requirements.txt"
+      - "requirements*.txt"
+      - "pyproject.toml"
+      - "uv.lock"
+    runtime_class: full_matrix
+  packaging:
+    mode: FULL
+    globs:
+      - "setup.cfg"
+      - "setup.py"
+    runtime_class: full_matrix
+  coverage_config:
+    mode: FULL
+    globs:
+      - ".coveragerc"
+    runtime_class: full_matrix
+  config_paths:
+    mode: FULL
+    globs:
+      - "config/**"
+      - "schemas/levelup/**"
+      - "Makefile"
+    runtime_class: full_matrix
+  unknown:
+    mode: FULL
+    globs: []
+    runtime_class: full_matrix

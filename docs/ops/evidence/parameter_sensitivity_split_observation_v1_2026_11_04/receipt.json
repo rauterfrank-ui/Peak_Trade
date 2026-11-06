@@ -1,0 +1,35 @@
+{
+  "boundaries": [
+    "Optional caller-owned transport, not a new persisted experiment identity or automatic Meta binding",
+    "Join split refs and final point status; partially observed failed points cannot be declared successful",
+    "Actual metrics and nonfinite missingness retained; no new metric definition or frequency correction",
+    "Synthetic study is not natural-market/core/futures/economic validity evidence",
+    "U04/GAP-0370 deferred; no productive activation or original-ledger mutation"
+  ],
+  "current_source_sha256": {
+    "src/backtest/parameter_sensitivity_v1.py": "2d6e67cde503a79d2e3fd4885a15cbfb2eadea8c84503bf4bc715890f14595d3",
+    "tests/backtest/test_parameter_sensitivity_split_observation_v1.py": "eff58bd761f6237ad6a644a4767ca0e9e1472968a0a26439b202c9c59e0c795b"
+  },
+  "ruff_status": "PASS; format PASS",
+  "runtime_activation_authorized": false,
+  "source_commit": "77d5eae0df8a57344da8c315b7f37c1610b43b40",
+  "tests": "25 connected PASS, including three new actual split-output, read-only/nonfinite, no-fabrication and partial observer failure controls; actual native-grid output with observer identical to complete pre-change record",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/parameter_sensitivity_split_observation_v1_2026_11_04/README.md",
+      "docs/ops/specs/PARAMETER_SENSITIVITY_SPLIT_OBSERVATION_TRANSPORT_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 231,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; format PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

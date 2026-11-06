@@ -1,0 +1,8 @@
+{
+  "commands": [
+    "python3 -m pytest tests/ops/test_canonical_local_launcher_and_process_supervision_v1.py tests/ops/test_canonical_runtime_environment_contract_v1.py -q --tb=line",
+    "python3 -m ruff format --check src/ops/canonical_local_launcher_and_process_supervision_v1 scripts/ops/peak_trade_runtime.py tests/ops/test_canonical_local_launcher_and_process_supervision_v1.py",
+    "python3 -m ruff check src/ops/canonical_local_launcher_and_process_supervision_v1 scripts/ops/peak_trade_runtime.py tests/ops/test_canonical_local_launcher_and_process_supervision_v1.py"
+  ],
+  "repository_sha": "0967d1c5888e656e961d3621faf50273f9f38bfc"
+}

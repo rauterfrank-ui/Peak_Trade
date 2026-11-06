@@ -1,0 +1,81 @@
+{
+  "ALL_CHANGE_EVENTS_FANOUT_TRAVERSED": true,
+  "GHV_ROOT_CHANGE_EVENT_ID": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "change_events": [
+    {
+      "CHANGE_EVENT_ID": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+      "affected_gates": [],
+      "changed_fields": [
+        "decision_outcome",
+        "selected_side"
+      ],
+      "cross_branch_conflicts": [],
+      "cycle_index": 1,
+      "decision_after": "enter_short",
+      "decision_before": "observe",
+      "direct_consumers": [
+        "join_current_productive_enter_live_29p_before_venue_plan_v1",
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "post_overlay_generation": "gen_ba58c3dfeafcf64da4b0ecc0",
+      "pre_overlay_generation": "gen_root",
+      "selected_side_after": "short",
+      "selected_side_before": "none",
+      "stale_generation_consumers": [],
+      "transitive_consumers": [
+        "compose_core_live_execution_intent_v1",
+        "try_bind_current_productive_venue_plan_v1"
+      ],
+      "unaffected_gates": [],
+      "unknown_fanout": [],
+      "unknown_impact": []
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_75a578a5706c6ca9ef5bdbc0"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "replay_execution_safety",
+        "decision_outcome",
+        "selected_side"
+      ],
+      "CHANGE_EVENT_ID": "PR7012_SAFETY_REPROJECTION",
+      "DIRECT_CONSUMERS": [
+        "try_bind_current_productive_venue_plan_v1"
+      ],
+      "TRANSITIVE_CONSUMERS": [
+        "compose_core_live_execution_intent_v1"
+      ],
+      "object_generation_id": "gen_cbdd4ad60de41a07b11588f9"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "replay_execution_safety"
+      ],
+      "CHANGE_EVENT_ID": "PR7013_FINAL_REPROJECTION",
+      "DIRECT_CONSUMERS": [
+        "try_bind_current_productive_venue_plan_v1"
+      ],
+      "object_generation_id": "gen_5322d20f5c856fa9ce9516c0"
+    },
+    {
+      "AFFECTED_GATES": [
+        "try_bind_current_productive_venue_plan_v1"
+      ],
+      "CHANGE_EVENT_ID": "VENUE_PLAN_GATE",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "reason": "29P_DENY,SIZING_OUTCOME:BLOCKED"
+    }
+  ],
+  "ghv_explicit_root": true,
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "schema_version": "ghv_pre_external_change_impact.v1"
+}

@@ -1,0 +1,132 @@
+# Rückwärts bis zum konkreten numerischen Anschluss
+
+Untersuchung vom 02.11.2026. Fortsetzung nach Franks Auftrag, hinter den Lücken einzelner späterer Module bis zu tatsächlich verknüpfbaren Datenwegen zurückzugehen. Keine Implementierung, Wiederherstellung, Evaluation oder Aktivierung. Bestehende Research- und Recovery-Originale bleiben erhalten.
+
+## Wo wir jetzt tatsächlich anknüpfen können
+
+Der fachlich konkrete Anschluss liegt unterhalb der späteren Universum-/Evidence-Namen: beim zahlenhaltigen Versuchsergebnis mit Parametern, Trades und zeitlich zugeordneter Netto-Equity. Dafür sind jetzt zwei unterschiedliche Verbindungstypen konkret rekonstruiert:
+
+1. **Ergebnis → nächste Forschungswahl → erneute Auswertung:** Im April-Strang werden Sweep-Messwerte und Trade-/Equity-Diagnostik zu ausgewählten Kandidaten; diese werden über einen eigens ergänzten Preset-Eingang wieder in Walk-Forward-Auswertungen eingespeist. Der tatsächliche Strategie-Consumer erhielt einen zusätzlichen Fix, damit ausgewählte Regime-Parameter dort nicht verloren gehen. Code und damalige Arbeitsfolge sind gepaart; die numerischen Originaldateien des April-Laufs fehlen weiterhin in den begrenzt geprüften Beständen.
+2. **Erhaltenes numerisches Resultat → Eingang eines späteren Learning-Bausteins:** Aus den tatsächlich erhaltenen 2.953 Juli-Equity-Punkten wurden hier 2.952 stündliche Netto-Returns als Analyseartefakt abgeleitet. Sie passen zum zahlenhaltigen Eingangsvertrag observations.returns der August-Robustheitssuite. Ihre Zeit-, Return-, Kapital- und Metriksemantik ist explizit abgeglichen. Das ist ein konkreter Datenanschluss, keine behauptete historische Ausführung dieses Imports.
+
+Damit ist die Verbindung nicht mehr nur ein Pfeil zwischen benannten Universen. Producer, Datensatz, Transformationsregel und numerischer Consumer sind benannt. Eine vollständige automatische Gesamtverkettung beider Universen wird dadurch nicht erfunden.
+
+## 1. Rückwärtssuche: vom späteren Vertrag zum früheren Verfahren
+
+Der August-Phase-10-Loop erhält OfflineExperimentObservations bereits vom Aufrufer. Der September-M4/M8-Strang verwendet synthetische Eingaben oder verkettet Evidence. Dort endete die vorherige Untersuchung zu früh.
+
+Weiter rückwärts existieren tatsächliche numerische Forschungsfunktionen:
+- 28.01.2026, f37535c65f2a4c7cc2f507aa3107604267accb24 / #1028: Walk-Forward-Train-Optimierung. Ein explizites Grid wird auf Trainingsdaten ausgewertet; die ausgewählten best_params werden als strategy_params im folgenden Testfenster verwendet. Das ist eine echte statisch codierte Wirkung von Messwerten auf Parameterwahl und anschließende Verarbeitung. Der damalige Standard-CLI lieferte das optionale Grid nicht selbst.
+- 29.04.2026: Ergebnisdiagnostik, explizite Kandidatenübergabe und Strategie-Override-Verbrauch werden in mehreren unmittelbar zusammenhängenden Änderungen ergänzt.
+- 14.06.2026, 1c20185aabd1a608c0329ab1ee94f563d2b497ea: Der ältere Optuna-Runner wird an den tatsächlichen Engine-/Signal-/Parametervertrag angepasst. Objective liest echte BacktestResult.stats und gibt sie an die Study zurück. Die Januar-Fassung a6de9942… war eine Wiederherstellung aus BK1 und hatte die ältere abweichende Engine-Anbindung. Ein vorhandener Study-Aufruf allein beweist deshalb keinen erfolgreichen historischen Trial. Kein passender Study-Datenbank-/Trial-Resultatbestand ist in den vorhandenen Dateiinventaren gefunden.
+
+Dezemberwege bleiben geerbter Hintergrund; sie werden hier nicht zum maßgeblichen Gesamtursprung erklärt. Der lokale Train→Auswahl→Test-Weg und eine adaptive Study sind keine automatisch bewiesene Verbindung zum späteren Canonical-Memory- oder Meta-Vertrag. Sie zeigen aber, dass numerische Optimierung nicht erst mit dessen späterem Namen entstand.
+
+## 2. Konkrete April-Kette: Datenquelle und erste Resultate
+
+Im Originalgespräch 6515e791-29e0-4d62-98a6-489e19b25f54 ist die Arbeitsfolge bis zur damaligen Datenbeschaffung zurückverfolgt. Zeile 168 enthält den historischen Fetch-Aufruf: öffentliche Binance-Spot-Klines-API, Symbol BTCEUR, Intervall 1m, Ziel 6.000 Zeilen; nach Open-Time deduplizieren und auf die letzten 6.000 Einträge begrenzen. Gespeichert werden timestamp/open/high/low/close/volume als Parquet und CSV sowie ein Fetch-Manifest.
+
+Die damalige Antwort Zeile 169 meldet 6.000 validierte Zeilen. Ein späterer Bericht nennt Marktzeiten vom 24.–29.04.2026. Die vollständigen ursprünglichen Zeitstempel und Bytes sind heute nicht vorhanden; die Zeitangabe bleibt historisch berichtet. Der Aufruf enthält keinen Inhaltsdigest des Preisgitters und keine ausdrückliche Prüfung auf ausschließlich abgeschlossene Kerzen. Diese Herkunft ist deshalb schwächer als die später unabhängig geprüfte August-Observation-Pack-Linie.
+
+Das ist **Binance BTC/EUR Spot**, nicht der 20-Bar-Kraken-Cache und nicht das spätere OKX-Futures-Research- oder Development-Panel. Gleichnamige BTC_EUR-Dateien dürfen nicht als identisch behandelt werden.
+
+Der Sweep verwendet regime_aware_portfolio, eine zunächst reduzierte Konfiguration und später ein fokussiertes 24-Kombinationen-Grid. Originalantworten nennen 24 erfolgreiche Auswertungen und zwei unterschiedliche Ergebnissignaturen. Für die Top-/Schwachgruppe werden 555 beziehungsweise 274 Trades und jeweils 6.001 Equity-Punkte berichtet. Das sind historische Laufangaben, hier keine nachgezählten Original-Trades.
+
+## 3. Warum die ursprüngliche Übergabe nicht nur einen Dateiadapter brauchte
+
+Die frühere Fehlerserie enthält konkrete fachliche Consumer-Lücken:
+
+- base_config mit Portfolio-Komponenten und Gewichten ging beim Grid-Laden verloren beziehungsweise kam erst nach der Konstruktorvalidierung an. Daher zunächst 0 von 8 erfolgreichen Läufen. Die Wiederherstellung dieser Übergabe und von Parquet-Input gehört zu #3145/#3146; für #3146 ist die GitHub-Merge-Bindung gesichert.
+- Regime-Overrides erreichten die eingebettete VolRegimeFilter-Konfiguration nicht. #3147 bindet die dotted Config-Werte vor der Konstruktion über param_overrides/Config-Overlay.
+- SweepResult transportierte Stats, aber nicht den gesamten BacktestResult. #3148 ergänzt diagnostics_callback mit dem tatsächlichen Resultat; der Export kann Trades, Equity und Drawdown pro Kombination festhalten.
+- Die vorhandene Walk-Forward-CLI konsumierte Top-N-Sweep-Ergebnisse, nicht die explizit ausgesuchten Kandidatenzeilen. #3149 ergänzt candidate-presets.
+- Der danach erreichte Legacy-Signaladapter ignorierte weiterhin die Komponenten-Overrides. #3150 korrigiert genau diesen letzten Consumer.
+
+Diese Folge ist relevant: Eine erfolgreiche Dateierzeugung oder ein laufender Backtest hätte die korrekte Bedeutung der gewählten Parameter allein nicht bewiesen. Hier lässt sich konkret verfolgen, wo ihre Wirkung verloren ging und später im Code wieder ankam.
+
+## 4. Vom Ergebnis zur nächsten Forschungsentscheidung
+
+Zeile 387 des Originalgesprächs führt den Sweep mit externem Parquet und Diagnostics-Export an. Zeile 397 enthält die Equity-Extraktion und Matrixbildung. Zunächst waren Kurvenwerte wegen eines unbekannten Serien-Spaltennamens nicht lesbar. Die spätere Extraktion berücksichtigt den tatsächlich berichteten Key 0 neben index; die Antwort meldet dann vollständige Abdeckung 24/24.
+
+Die ausgewerteten Zahlen werden wirklich verwendet. Die historische Auswahllogik bildet zunächst einen heuristischen Rangwert:
+
+rank = 100*total_return + 10*sharpe + 5*profit_factor + 3*win_rate - 50*abs(max_drawdown)
+
+Der spätere Selector in Zeile 400 verwendet:
+
+candidate_score = rank - trade_count/1000 - 25*abs(curve_drawdown)
+
+Er wählt best_composite, eine niedrigere Turnover-Alternative aus Zeilen mit rank>5 und einen schwachen Vergleichskandidaten. Doppelte combo_index werden entfernt. Der Bericht nennt danach zwei Zeilen: Combo 1 und Combo 23. Die Turnover-Auswahl fällt dort mit dem besten Kandidaten zusammen. Das ist eine konkrete deterministische Ableitung aus Versuchsdaten; die Gewichtung ist eine damalige Forschungsheuristik, kein nachgewiesenes optimales oder validiertes Auswahlgesetz.
+
+Der folgende Preset-Bau verwendet vollständiges base_config per deepcopy und überlagert nur echte Grid-Parameter aus der Ergebniszeile. Ein vorheriger Versuch hatte alle CSV-Spalten einschließlich String-Repräsentationen von components/base_weights und sogar Messwerten in params gemischt; genau das hatte Laufzeitfehler verursacht. Die Korrektur ist als historische Skriptänderung erhalten. Parametereingang und Messwertausgang dürfen also nicht blind gleichgesetzt werden.
+
+Wichtig: Die spätere Preset-Konvertierung rankt nach dem ursprünglichen rank und baut Top-/Schwach-Kandidaten; der Selector mit zusätzlicher Churn-/Drawdown-Strafe und dieser Konverter sind nicht wortgleich. Die überlieferten Berichte nennen dieselben Top-/Schwachzeilen, aber die fehlenden Original-CSV/TSV erlauben hier keine unabhängige Neuberechnung beider Rangfolgen. Diese feine Übergabegrenze bleibt ausdrücklich erhalten.
+
+## 5. Bis zum tatsächlichen Strategie-Consumer weiterverfolgt
+
+Am Commit #3149 liest load_walkforward_candidate_presets das Schema walkforward_candidate_presets/v0 und übernimmt name sowie params je Kandidat. run_walkforward_for_candidate_presets gibt exakt diese Parameter an run_walkforward_for_config weiter. Die Funktion übergibt sie beim Testlauf an BacktestEngine.run_realistic. Das ist eine konkrete Wiedereinspeisung ausgewählter Versuchskonfigurationen, keine bloße Speicherung eines Vorschlags.
+
+Beim Legacy-Signalpfad erzeugt #3150 generate_signals(df, params) aus den gewählten Werten die Portfolio-Konfiguration, extrahiert zusätzlich die VolRegimeFilter-Overrides und gibt sie an RegimeAwarePortfolioStrategy. Dessen Consumer liest Regime-Signale, bildet daraus risk_on/neutral/risk_off-Skalierung und vergleicht die skalierten gewichteten Komponentensignale mit signal_threshold. Die ausgewählten Skalen und Overrides besitzen damit eine konkrete statisch nachvollziehbare Stelle in der Signalverarbeitung.
+
+Das garantiert nicht, dass jeder unterschiedliche Grid-Wert auf jedem Marktfenster ein anderes Ergebnis erzeugt: Der historische Sweep hatte gerade viele gleiche Ergebnissignaturen. Die Änderung entfernt den nachgewiesenen Übergabeverlust; eine vollständige Sensitivität aller Achsen wurde dadurch nicht bewiesen.
+
+Der erste gemeldete erfolgreiche Preset-Smoke wechselte auf ma_crossover, weil die unvollständigen Portfolio-Params scheiterten. Das zählt nicht als Beleg des ursprünglichen Portfolio-Wegs. Erst danach meldet Zeile 477 einen Lauf mit vollständigen Portfolio-Params; nach dem #3150-Fix meldet Zeile 496 denselben Preset-/Parquet-Weg ohne die vorherige regime_mode=False-Warnung. Die 90d/30d-Anforderung passte nicht auf etwa vier Tage Minutenbars; die Smokes verwendeten 1d/12h. Auch das ist nur ein kurzer Verarbeitungsnachweis, kein belastbarer Profitabilitäts- oder allgemeiner OOS-Nachweis. Die Kandidatenauswahl hatte das gesamte kleine Datenfenster bereits gesehen.
+
+## 6. GitHub bindet die Übergabekorrekturen zeitlich
+
+Gelesene GitHub-PR-Metadaten bestätigen:
+- #3144: 28.04.2026 23:14:46 UTC, cb0cb3cfc9b72798c3f3730549d4da8ffb7bf2f0, externer OHLCV-Dateieingang.
+- #3145: 2026-04-29T00:31:47Z, 0e59edb2dbfb8d2a292ff1fca79fe1afd5c39aa1, feat(sweeps): merge base config into sweep parameter sets v0.
+- #3146: 29.04. 01:32:08 UTC, 8935e3b519729291be317749b7737a7e35d56b74, Parquet-Sweep-Eingang.
+- #3147: 02:13:09 UTC, 60bb27f3d9cb8ea82dfa24a6375e780b476fdfc4, Regime-Komponenten-Overrides.
+- #3148: 02:52:42 UTC, 4baebb390c97fea755c1d73964d2f73fb087ff95, Resultat-Diagnostics-Callback.
+- #3149: 03:24:34 UTC, 3cfe8f392502dcbdb98a62faf6711bd46c4da3ec, Kandidaten-Presets.
+- #3150: 03:49:48 UTC, 4fe1ce12b494f528c0c945f6c10a00417c71a7da, Override-Verbrauch im Signaladapter.
+
+Diese Versionierung passt zur damaligen Arbeitsfolge. Die wesentlichen Dateien sind direkt an den betreffenden Revisionen gelesen; #3148/#3150 zusätzlich mit Parent-Diff gesichert. Es werden keine heutigen Consumer rückwirkend eingesetzt.
+
+## 7. Erhaltene Juli-Daten mit dem August-Learning-Eingang verknüpft
+
+Die April-Dateien sind nur historisch beschrieben. Für einen wirklich bytegebundenen Zahlenanschluss wurde deshalb zusätzlich die bereits gesicherte Juli-Equity verwendet: docs/evidence/canonical_economic_reevaluation_post_5348_v1/portfolio_equity.csv am Commit 891044056537a4033e6136ba01652a0a2c6e76b7. Sie hat 2.953 streng stündliche Punkte und gehört zum korrigierten, mit 1/118 normierten gemeinsamen Forschungsbuch mit Anfangskapital 10.000.
+
+Die hier erzeugte Analysedatei july-equity-to-robustness-returns.json enthält Source-Revision/Pfad/SHA-256 und jeden der 2.952 tatsächlichen Return-Intervalle mit Start-/Endzeit. Berechnung: r[t] = equity[t]/equity[t-1]-1. Dies ist eine Ableitung aus erhaltenen Ergebnisdaten, kein erneuter Backtest und keine wiederhergestellte Marktpreisdatei.
+
+Unabhängig nachgerechnet:
+- Aufgezinster Netto-Return: 0,002325386071764468; direkter Equity-Return 0,00232538607176469. Abweichung im Rundungsbereich.
+- Stunden-Sharpe ohne Annualisierung, Stichproben-Standardabweichung: 0,002040460157128249.
+- Mit sqrt(8760) annualisiert: 0,19097660652229598; passend zur korrigierten Juli-Baseline.
+- Drawdown als positiver Verlustbetrag: 0,020480218347394885; die Juli-Datei berichtet dieselbe Größe mit negativem Vorzeichen.
+
+Am ursprünglichen Phase-4-Commit 2cd8f6b6e1c8051decb3506abc3a2250b4f228c5 / #5931 vom 17.08.2026 liest _optional_returns genau eine Liste endlicher numerischer Returns. _eval_monte_carlo gibt sie als Series an das vorhandene run_monte_carlo_from_returns mit _suite_stats weiter. _suite_stats verwendet den nichtannualisierten mean/std-Sharpe und einen positiven Drawdown-Betrag. Die Datenfrequenz und Metriktransformation sind damit konkret gepaart. Die Zahlen der Juli-Datei könnten fachlich an diesen bestehenden Returns-Consumer angeschlossen werden; der historische Import und die Gesamt-Requestbildung sind nicht belegt und wurden hier nicht implementiert oder ausgeführt.
+
+Die vollständige Phase-4-Suite benötigt weitere Beobachtungen und einen Identitäts-/Policy-Rahmen. Die Returnliste allein erzeugt keine echten Parameter-Sensitivitäts-, Funding-, Kostenstress- oder späteren Live-Outcomes. Ebenso werden 2.952 Stundenreturns nicht zu 2.952 unabhängigen Experimenten oder zu 454 Trade-Returns umgedeutet. Fehlende Dimensionen bleiben fehlend. Bestehende Suite-Fallbacks, die eine Returnserie rechnerisch aufteilen, beweisen keine erneute Strategieanpassung auf diesen Teilmengen.
+
+## 8. Welche Verbindung zwischen den Universen wir damit rekonstruieren können
+
+Die funktionale Arbeitsteilung ist jetzt an konkreten Stellen darstellbar:
+
+- Ergebnisproducer liefert je Versuch Parameter, Marktzeit, Trades, Netto-Equity und Kostenmodellbezug.
+- Numerische Erfahrung bleibt zeitlich geordnet und getrennt von Versuchsanweisung/Identität. Aus Equity entstehen Returns; aus Resultatserien können Bewertungen und Diagnostik gebildet werden.
+- Forschungsauswahl nutzt solche Resultate für explizite nächste Parameter-/Kandidatenkonfigurationen. Der April-Strang zeigt genau diese Rolle, damals teilweise durch ad-hoc Skripte und Operator/Agent-Schritte.
+- Ausführung nimmt die gewählte vollständige Konfiguration tatsächlich entgegen; der Consumer muss ihre Felder auch fachlich verwenden. #3150 ist dafür ein konkreter historischer Beleg.
+- Die späteren Self-Learning-/Memory-/Meta-Verträge verlangen eine zusätzliche Identitäts-/Vergleichs-/Beobachtungsverpackung. Sie dürfen diese numerische Herkunft nicht durch synthetische Standardwerte oder bloße Statuslabels ersetzen, wenn die Aussage sich auf den realen Versuch beziehen soll.
+
+Das ist unsere beleggestützte funktionale Verknüpfung, keine Behauptung, dass der April-Code historisch bereits ausdrücklich SELF_LEARNING_UNIVERSE oder OPTIMIZATION_UNIVERSE hieß. Seine Zuordnung zu den späteren Räumen ist eine analytische Einordnung und muss von damaliger Benennung/Autorität getrennt bleiben.
+
+Für den August-Phase-10-Loop ist die konkrete noch fehlende Kante jetzt eng abgegrenzt: Wer hat aus solchen echten Resultaten die vollständige OfflineExperimentObservations samt wahrer Experimentidentität, vergleichbarem Champion/Challenger-Bezug und Gap-Observations gebaut und aufgerufen? In der ursprünglichen Phase-10-Anweisung wird OFFLINE_EXPERIMENT_EXECUTION erlaubt; der damalige Abschluss erklärt es als Memory-Bindung aus Caller-Observations. Genau dort wird der Zahlenlieferant vorausgesetzt. Der Anschluss kann heute fachlich beschrieben werden, aber ein tatsächlich historisch ausgeführter Converter ist damit nicht erfunden.
+
+### Am Entstehungsmoment der neuen August-Verträge gegengeprüft
+
+Der direkte Caller-Abgleich am ursprünglichen Phase-12-Schnitt 899e154d findet für Phase 10 unter src/scripts/tests nur die Funktionsdefinition und Testaufrufe; der Request wird dort ausschließlich vom Test-Helper gebaut. MetaLearningExperimentUnitV1 wird unter diesen Verzeichnissen ebenfalls nur im Meta-Test konstruiert. Die vollständigen Treffer sind separat gespeichert. Ein dynamischer oder externer Aufrufer wird damit nicht ausgeschlossen; im versionierten untersuchten Standardcode ist jedoch kein numerischer Lieferadapter aus dem früheren Forschungsframework sichtbar.
+
+Noch entscheidender ist die originale Phase-10-Abschlussnachricht vom 18.08., Gespräch a1077f8e…, Zeile 38: Sie bezeichnet OFFLINE_EXPERIMENT_EXECUTION ausdrücklich als Phase-2-Memory aus Caller-Observations und nennt ausdrücklich keinen Trading-Engine-Lauf. Diese Nachricht ist textgleich gesichert. Der Lieferant fehlt also nicht erst an einem späteren September-Wrapper; schon der neue August-Loop wurde als Verarbeitung fertig gelieferter Beobachtungen gebaut. Das verbindet die historische Entstehung mit der heute konkret lokalisierbaren Adapterlücke. Die frühere numerische Forschung darunter existierte trotzdem.
+
+## 9. Beleggrenzen und heutige Lokalisierung
+
+Sechzehn Git-Snapshots, vier GitHub-Pfadhistorien, sieben GitHub-PR-Metadaten, elf textgleich abgeglichene Originalnachrichten sowie ausgewählte originale Aufruf-/Skriptzeilen sind gesichert. Historische Tool-Aufrufargumente sind keine erhaltenen Tool-Ergebnisse; viele Gesprächspassagen sind redigiert. Aus den Laufberichten werden deshalb keine neu unabhängig beobachteten April-Ergebnisse gemacht.
+
+Gezielte Suche nach den genauen April-Matrix-/Kandidaten-/Combo-/Fetch-Manifest-Dateinamen in acht vorhandenen lokalen/Backup-Pfadinventaren und dem bestehenden Recovery-Code-Inventar: kein exakter Treffer. Unter /tmp ist keine der konkret zugehörigen Arbeitsfamilien mehr vorhanden. Kein neuer Recovery-Scan. Die Aussage gilt nur für diesen Suchumfang, nicht für sämtliche persönlichen Dateien oder alle jemals existierenden Archive.
+
+Die gesicherte Juli-Equity dagegen liegt tatsächlich vor und wurde rechnerisch neu ausgewertet. Das ist der belastbare numerische Bezugspunkt für die rekonstruierte Verbindung zum späteren Returns-Vertrag.
+
+Repository-Status bleibt vor/nach bytegleich; keine Source-/Config-/Vault-/Recovery-Mutation. Nur neue Analyseartefakte und die bestehende Gesamtübersicht wurden ergänzt. TypeScript-Prüfung separat in verification.json; kein neuer Produktlauf und keine Aktivierung.

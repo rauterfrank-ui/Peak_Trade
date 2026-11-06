@@ -1,0 +1,30 @@
+{
+  "artifact_kind": "bouchaud_microstructure_ohlcv_proxy_v1_scope_separation_contract",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "data_class": "FINALIZED_OHLCV_BARS",
+  "depth_data_required": false,
+  "futures_only": true,
+  "hypothesis_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1",
+  "l2_data_required": false,
+  "orderbook_data_required": false,
+  "proxy_description": "BAR_LEVEL_PRESSURE_AND_IMPACT_PROXY_USING_FINALIZED_OHLCV_FEATURES",
+  "proxy_semantics": true,
+  "research_scope": "bouchaud_microstructure_ohlcv_proxy/v1",
+  "reserved_non_implemented_scopes": [
+    {
+      "research_scope": "bouchaud_microstructure_tick_l2/v1",
+      "status": "NOT_IMPLEMENTED_DATA_CAPABILITY_MISSING",
+      "tick_data_required": true,
+      "orderbook_data_required": true,
+      "l2_data_required": true,
+      "evaluation_admissible": false,
+      "ratification_allowed": false,
+      "registration_allowed": false
+    }
+  ],
+  "runtime_effect": "NONE",
+  "schema_version": "bouchaud_microstructure_ohlcv_proxy_v1_scope_separation_contract.v0",
+  "tick_data_required": false,
+  "true_tick_l2_microstructure": false
+}

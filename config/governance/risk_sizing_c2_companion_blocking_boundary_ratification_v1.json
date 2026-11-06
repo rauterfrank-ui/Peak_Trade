@@ -1,0 +1,85 @@
+{
+  "contract_name": "risk_sizing_c2_companion_blocking_boundary_ratification_v1",
+  "contract_id": "POST_6828_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_c2_companion_blocking_boundary_ratification_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "7cb1c5c57bfc486449cf4da361cb621a809e6075",
+  "workpackage_id": "POST_6828_ARCHITECTURE_CLOSURE_WP_B",
+  "semantics": "MECHANICAL_BLOCKING_BOUNDARY_RATIFICATION_NO_COMPANION_CONVERSION_NO_CANONICAL_SIZING_OWNER_RESOLUTION",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_POST_6828_ARCHITECTURE_CLOSURE_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO"
+  },
+  "c2_identity": {
+    "c2_symbol": "COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_CONVERSION_INPUT_AUTHORITIES",
+    "c2_definition": "B05 Companion conversion-input authority closure for Shadow/Live Fraction→Units; distinct from Master-V2 directional confirmation C2.",
+    "primary_census_ref": "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "fraction_handoff_semantics": "Companion paths pass FRACTION_DECIMAL_0_1 as absolute quantity without governed conversion handoff; conversion binding COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_INPUT_BINDING_V1 not ready.",
+    "c2_producer_paths": [
+      {
+        "path_id": "PATH_SHADOW_COMPANION",
+        "module": "src/live/shadow_session.py",
+        "symbol": "ShadowPaperSession.step_once"
+      },
+      {
+        "path_id": "PATH_LIVE_COMPANION",
+        "module": "src/execution/live_session.py",
+        "symbol": "LiveSessionRunner.step_once"
+      }
+    ],
+    "c2_consumer": {
+      "module": "src/execution/pipeline.py",
+      "symbol": "ExecutionPipeline.signal_to_orders",
+      "quantity_semantics": "absolute_units_pass_through_without_conversion"
+    },
+    "c2_runtime_reachable_on_companion_paths": true,
+    "c2_productive_full_core_enter_live_reachable": false,
+    "c2_authority_type": "COMPANION_CONVERSION_INPUT_AUTHORITY",
+    "c2_data_carried": [
+      "ACCOUNT_EQUITY_AVAILABLE_CAPITAL",
+      "REFERENCE_PRICE",
+      "INSTRUMENT_QUANTITY_METADATA"
+    ],
+    "c2_decision_carried": false
+  },
+  "blocking_boundary": {
+    "c2_blocks_q0": false,
+    "c2_blocks_q1": false,
+    "c2_blocks_treasury_enter_live": false,
+    "c2_blocks_mv2_dp": false,
+    "c2_blocks_pre_external": false,
+    "c2_blocks_external_effect": false,
+    "evidence": [
+      "config/governance/whole_core_completion_egress_q0_authority_v1.json",
+      "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "src/governance/capital_risk_sizing_v1.py evaluate_capital_risk_sizing_v1 (Full-Core; not Companion conversion producer)"
+    ]
+  },
+  "verdict": {
+    "c2_verdict": "C2_AUTHORITY_RATIFICATION_REQUIRED",
+    "c2_status": "UNRESOLVED",
+    "c2_input_authorities": "UNRESOLVED",
+    "c2_authority_owner": "UNRESOLVED",
+    "c2_closure_rule_satisfied": false,
+    "conversion_ready": false,
+    "canonical_risk_sizing_owner": "UNRESOLVED",
+    "note": "Full-Core Q0/Q1/Treasury enter-live paths are not blocked by Companion C2; resolving C2 requires separate Owner decision on Companion conversion + repo-wide canonical sizing owner — not invented in this WP."
+  },
+  "authority_conflict_audit": {
+    "c2_vs_mv2_dp": "NO_PRODUCTIVE_OVERLAP",
+    "c2_vs_q1_full_core": "CRS consumes equity/price/instrument on enter-live; does not satisfy Companion conversion handoff",
+    "c2_vs_portfolio_budget": "NO_DIRECT_EDGE",
+    "c2_vs_treasury": "Treasury single-source Q0 independent; C2 does not block enter-live",
+    "c2_vs_execution_full_core": "Full-Core external effect fail-closed; Companion C2 out of scope"
+  },
+  "markers": {
+    "RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false
+  }
+}

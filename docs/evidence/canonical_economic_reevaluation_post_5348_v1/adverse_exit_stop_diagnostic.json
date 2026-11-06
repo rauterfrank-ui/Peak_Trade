@@ -1,0 +1,6 @@
+{
+  "note": "Stop distance is sealed by offline_evaluation_sizing_contract_v1 config_digest; live stop-pct re-runs are blocked fail-closed.",
+  "stop_like_exits": 437,
+  "stop_stress_live_rerun": "NOT_AVAILABLE_SIZING_CONFIG_DIGEST_SEALED",
+  "trade_rows": 454
+}

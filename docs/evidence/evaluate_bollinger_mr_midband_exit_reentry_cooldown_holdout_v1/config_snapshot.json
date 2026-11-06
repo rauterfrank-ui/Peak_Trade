@@ -1,0 +1,29 @@
+{
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "cost_model": {
+    "adjustment_forbidden_after_preregistration": true,
+    "canonical_cost_multiplier_minimum": 1.0,
+    "cost_assumption_below_canonical_1x_forbidden": true,
+    "cost_drag_fully_included_in_net_metrics": true,
+    "cost_multiplier": 1.0,
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "fixed": true,
+    "half_spread_bps": 5.0,
+    "roundtrip_reference_bps": 30.0,
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0",
+    "source": "canonical_baseline_and_failure_decomposition_cost_freeze"
+  },
+  "dataset_class": "SEALED_HOLDOUT_FINAL_AUDIT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+  "decision_segment": {
+    "end_exclusive": "2024-09-01T00:00:00Z",
+    "start": "2023-08-16T05:55:00Z"
+  },
+  "development_preregistration_digest": "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c",
+  "holdout_preregistration_digest": "a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d",
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_HOLDOUT_V1",
+  "schema_version": "evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_config_snapshot.v1",
+  "seed": 20220601
+}

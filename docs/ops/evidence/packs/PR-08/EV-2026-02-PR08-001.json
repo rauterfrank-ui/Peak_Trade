@@ -1,0 +1,25 @@
+{
+  "evidence_id": "EV-2026-02-PR08-001",
+  "pr_id": "PR-08",
+  "component": "stage1_runner_gate",
+  "claim": "Stage1 runner scripts generate index.json and validation.json and fail fast when validation fails; required artifacts enforced (v1).",
+  "level": "E2",
+  "status": "enforced",
+  "artifacts": [
+    { "type": "script", "path": "scripts/obs/stage1_run_daily.sh" },
+    { "type": "script", "path": "scripts/obs/stage1_run_weekly.sh" },
+    { "type": "script", "path": "scripts/obs/run_stage1_monitoring.sh" },
+    { "type": "code", "path": "scripts/obs/validate_stage1_index.py" }
+  ],
+  "how_to_verify": {
+    "commands": [
+      "python3 scripts/obs/stage1_report_index.py --root tests/fixtures/stage1_reports/sample_a --out /tmp/stage1_index.json --run-date 2026-02-02",
+      "python3 scripts/obs/validate_stage1_index.py --root tests/fixtures/stage1_reports/sample_a --index /tmp/stage1_index.json --out /tmp/stage1_validation.json --require data.json --require report.md"
+    ],
+    "expected": [
+      "exit_code=0",
+      "index and validation written"
+    ]
+  },
+  "notes": "Offline-first: runs on fixtures without external dependencies. Required artifacts list is minimal and can be expanded."
+}

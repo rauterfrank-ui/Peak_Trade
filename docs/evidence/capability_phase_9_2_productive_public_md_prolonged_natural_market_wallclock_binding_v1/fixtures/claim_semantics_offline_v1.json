@@ -1,0 +1,112 @@
+{
+  "binding_claim_matrix": {
+    "claim_fields": [
+      "STEP5_RUNTIME_REACHABLE",
+      "STEP5_SESSION_STARTED",
+      "STEP5_DURATION_COMPLETED",
+      "STEP5_GRACEFUL_STOP_OBSERVED",
+      "STEP5_INTERRUPT_RECOVERY_OBSERVED",
+      "STEP5_RESTART_RECOVERY_OBSERVED",
+      "RECONNECT_PATH_REACHABLE",
+      "RECONNECT_NATURALLY_OCCURRED",
+      "RECONNECT_OBSERVED",
+      "STALE_DATA_NATURALLY_OCCURRED",
+      "STALE_DATA_OBSERVED",
+      "ENTRY_OBSERVED",
+      "REDUCE_OBSERVED",
+      "EXIT_OBSERVED",
+      "NO_ORDER_BOUNDARY_PROVEN",
+      "EVIDENCE_VERIFIED",
+      "CAPABILITY_CLOSED"
+    ],
+    "claims": {
+      "CAPABILITY_CLOSED": false,
+      "ENTRY_OBSERVED": false,
+      "EVIDENCE_VERIFIED": false,
+      "EXIT_OBSERVED": false,
+      "NO_ORDER_BOUNDARY_PROVEN": true,
+      "RECONNECT_NATURALLY_OCCURRED": false,
+      "RECONNECT_OBSERVED": false,
+      "RECONNECT_PATH_REACHABLE": true,
+      "REDUCE_OBSERVED": false,
+      "STALE_DATA_NATURALLY_OCCURRED": false,
+      "STALE_DATA_OBSERVED": false,
+      "STEP5_DURATION_COMPLETED": false,
+      "STEP5_GRACEFUL_STOP_OBSERVED": false,
+      "STEP5_INTERRUPT_RECOVERY_OBSERVED": false,
+      "STEP5_RESTART_RECOVERY_OBSERVED": false,
+      "STEP5_RUNTIME_REACHABLE": true,
+      "STEP5_SESSION_STARTED": false
+    },
+    "missing_claim_fields": [],
+    "notes": [
+      "BINDING_PR_LEAVES_CAPABILITY_CLOSED_FALSE=true",
+      "REACHABLE_NE_OBSERVED_NE_NATURALLY_OCCURRED_NE_CLOSED=true"
+    ],
+    "ok": true,
+    "reconnect_detail": {
+      "RECONNECT_NATURALLY_OCCURRED": false,
+      "RECONNECT_OBSERVED": false,
+      "RECONNECT_PATH_REACHABLE": true,
+      "RECONNECT_PATH_STATUS": "NOT_NATURALLY_OCCURRED_CLASSIFIED",
+      "notes": [
+        "REACHABLE_NE_NATURALLY_OCCURRED_NE_OBSERVED=true",
+        "RECONNECT_PATH_STATUS_NOT_NATURAL_NEVER_OBSERVED=True"
+      ]
+    },
+    "stale_detail": {
+      "STALE_DATA_NATURALLY_OCCURRED": false,
+      "STALE_DATA_OBSERVED": false,
+      "STALE_NATURAL_ABSENCE_IS_NOT_DEFECT": true
+    },
+    "trade_detail": {
+      "ENTRY_OBSERVED": false,
+      "EXIT_OBSERVED": false,
+      "NATURAL_ABSENCE_ALLOWED": true,
+      "REDUCE_OBSERVED": false,
+      "notes": [
+        "ZERO_TRADE_COUNTS_MAY_COEXIST_WITH_PASS=true",
+        "NATURAL_ABSENCE_IS_NOT_AUTOMATIC_FAIL=true"
+      ]
+    }
+  },
+  "blockers": [],
+  "claims": {
+    "CLAIM_SEMANTICS_BOUND": true,
+    "NATURAL_ABSENCE_ALLOWED": true,
+    "RECONNECT_PATH_STATUS_NOT_NATURAL_NEVER_OBSERVED": true
+  },
+  "fault_session_started": false,
+  "natural_absence": {
+    "RECONNECT_NATURALLY_OCCURRED": false,
+    "RECONNECT_OBSERVED": false,
+    "RECONNECT_PATH_REACHABLE": true,
+    "RECONNECT_PATH_STATUS": "NOT_NATURALLY_OCCURRED_CLASSIFIED",
+    "notes": [
+      "REACHABLE_NE_NATURALLY_OCCURRED_NE_OBSERVED=true",
+      "RECONNECT_PATH_STATUS_NOT_NATURAL_NEVER_OBSERVED=True"
+    ]
+  },
+  "natural_reconnect": {
+    "RECONNECT_NATURALLY_OCCURRED": true,
+    "RECONNECT_OBSERVED": true,
+    "RECONNECT_PATH_REACHABLE": true,
+    "RECONNECT_PATH_STATUS": "NATURALLY_OCCURRED_CLASSIFIED",
+    "notes": [
+      "REACHABLE_NE_NATURALLY_OCCURRED_NE_OBSERVED=true",
+      "RECONNECT_PATH_STATUS_NOT_NATURAL_NEVER_OBSERVED=False"
+    ]
+  },
+  "network_session_started": false,
+  "ok": true,
+  "trade_zero": {
+    "ENTRY_OBSERVED": false,
+    "EXIT_OBSERVED": false,
+    "NATURAL_ABSENCE_ALLOWED": true,
+    "REDUCE_OBSERVED": false,
+    "notes": [
+      "ZERO_TRADE_COUNTS_MAY_COEXIST_WITH_PASS=true",
+      "NATURAL_ABSENCE_IS_NOT_AUTOMATIC_FAIL=true"
+    ]
+  }
+}

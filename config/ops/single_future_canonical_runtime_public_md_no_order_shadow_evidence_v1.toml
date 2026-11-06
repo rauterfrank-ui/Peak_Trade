@@ -1,0 +1,56 @@
+# CAPABILITY_5_2_SINGLE_FUTURE_CANONICAL_RUNTIME_PUBLIC_MD_NO_ORDER_SHADOW_EVIDENCE_V1
+# Public-MD no-order shadow evidence. Authorizes public market-data network capture and
+# one-time authorization consumption only. Does not authorize live/testnet/paper orders
+# or runtime activation.
+
+capability_id = "CAPABILITY_5_2_SINGLE_FUTURE_CANONICAL_RUNTIME_PUBLIC_MD_NO_ORDER_SHADOW_EVIDENCE_V1"
+owner = "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1"
+schema_version = "single_future_canonical_runtime_public_md_no_order_shadow_evidence.v1"
+producer_version = "single_future_canonical_runtime_public_md_no_order_shadow_evidence.v1"
+capture_template_relpath = "config/ops/fixtures/single_future_canonical_runtime_deterministic_offline_market_data_fixture_v1.json"
+
+canonical_runtime_entrypoint_status = "READY_FOR_ACTIVATION"
+runtime_activated = false
+activated = false
+activated_no_live_orders = false
+live = false
+live_trading = false
+testnet_trading = false
+offline_replay_only = false
+public_md_no_order_shadow = true
+public_market_data_only = true
+network_session_allowed = true
+network_trading_session_allowed = false
+
+selected_future_count = 1
+max_positions_effective = 1
+multi_future_runtime_authorized = false
+dashboard_authority_effect = false
+dashboard_role = "READ_ONLY_CONSUMER"
+dashboard_consumer_only = true
+allowlist_selection_authority = false
+direct_instrument_override_allowed = false
+core_logic_change = false
+activation_changed = false
+live_path_changed = false
+runtime_activation_allowed = false
+live_authorized = false
+orders_authorized = false
+paper_execution_authorized = false
+paper_order_execution_allowed = false
+testnet_authorized = false
+authorization_consumption_allowed = true
+volatility_numeric_max_age_enforcing = false
+vol_max_age_enforcement_disabled = true
+vol_max_age_enforcement_enabled = false
+economic_validity_offline_gate_state = false
+economic_validity_offline_gate_state_explicit = true
+default_cycle_count = 8
+
+productive_runtime_host = "scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py"
+productive_runtime_entrypoint = "scripts/ops/run_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1.py"
+second_canonical_runtime_host_created = false
+parallel_runtime_authority_created = false
+parallel_selection_authority_created = false
+parallel_accounting_authority_created = false
+parallel_evidence_authority_created = false

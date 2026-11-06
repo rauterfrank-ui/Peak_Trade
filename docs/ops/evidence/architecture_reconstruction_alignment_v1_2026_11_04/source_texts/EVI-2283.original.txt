@@ -1,0 +1,217 @@
+# Self-Learning: zeitliche Entwicklung der Dateneingänge
+
+Begrenzte Rekonstruktion, 02.11.2026. Keine neue System-SSOT. Keine Ausführung historischer Befehle.
+
+## Ergebnis
+
+Schon in der August-Vertragslinie gibt es mehrere Empfänger mit verschiedenen Aufgaben. Reality Gap, Regimebewertung und Portfoliobewertung wurden vor dem koordinierenden Forschungsloop codiert. Der ursprüngliche Loop schließt Regime- und Portfolio-Evaluation als Loop-Schritte ausdrücklich aus. Aus Codierreihenfolge folgt deshalb keine vertikale Ebenenfolge. Der tatsächliche Erzeuger der ursprünglichen, vom Aufrufer gelieferten Experimentmesswerte bleibt offen.
+
+Diese zeitliche Rekonstruktion beginnt beim frühesten hier belegten August-Vertrag, nicht bei einer bewiesenen allerersten Idee. Das ursprüngliche übergreifende Master-Runbook ist weiterhin nicht verfügbar. Frühere Legacy-Learning-/Promotion-Vorgänger bleiben eine getrennte historische Linie.
+
+## Quellen und Untersuchungsgrenze
+
+Vergleichspin: `5d1c838c15369507c5247834db4dd0df25592169`. Die GitHub-Pfadhistorien von Loop und G2 wurden über alle zurückgegebenen API-Seiten bis zu diesem Pin erneut abgefragt und gespeichert. Die August-Einführungen verwenden die bereits GitHub-abgeglichenen Commit-/Blob-Anker; Code wurde für die hier gesicherten Revisionen erneut aus lokalem Git gelesen. Kein All-Branch- oder vollständiger Ursprungnachweis. Zeitangaben unten: Committer-Zeit, Europe/Berlin. PR-Beschreibungen sind historische Aussagen, keine neuen Test- oder Laufzeitbelege.
+
+## 2026-08-17T19:55:28+02:00 — Gemeinsame Experimentidentität
+
+Commit: [ecbe5b7b4f8a](https://github.com/rauterfrank-ui/Peak_Trade/commit/ecbe5b7b4f8a71d3a81443a65949fcce6a5de350).
+
+**Eingang:** Dataset, Code-/Logikbindung, Kosten-, Risiko- und Portfoliobezug als gebundene Eingaben
+
+**Andockstelle:** Identitätsvertrag
+
+**Änderung/Aufgabe:** Definiert, zu welchem Experiment Messwerte gehören. Kein Rohdatenlieferant.
+
+**Grenze:** Frühester belegter Schritt dieser August-Vertragslinie; kein Beweis der allerersten Konzeption.
+
+Quelle: `src/experiments/canonical_experiment_identity_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H01-canonical_experiment_identity_v1.py) · SHA256 `d9974edd7874393c2dae0f7b900d2f393d5b62d7a5284da7c21d2214e5113ef7`.
+
+## 2026-08-17T20:38:47+02:00 — Experimentgedächtnis nimmt Ergebnisse auf
+
+Commit: [e10f32f56fad](https://github.com/rauterfrank-ui/Peak_Trade/commit/e10f32f56fad0576cd250958401d13f044c5920d).
+
+**Eingang:** metrics, robustness_results, regime_results und Artefakt-/Identitätsreferenzen
+
+**Andockstelle:** Experiment Memory
+
+**Änderung/Aufgabe:** Einzelne Experimentergebnisse werden mit gemeinsamer Identität gespeichert.
+
+**Grenze:** Historische Tracking-/Live-Session-Register werden ausdrücklich nicht importiert/migriert.
+
+Quelle: `src/experiments/canonical_experiment_memory_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H02-canonical_experiment_memory_v1.py) · SHA256 `c9e938747965d22e9886132656dab1b8aaa2e16f7805848e2d9644237627f7cf`.
+
+## 2026-08-17T22:35:14+02:00 — Soll-/Ist-Abgleich als eigener Eingang
+
+Commit: [defa59f12813](https://github.com/rauterfrank-ui/Peak_Trade/commit/defa59f12813b961d6edce11c7ead91c6e369950).
+
+**Eingang:** Erwartete und beobachtete Messwerte mit Quelle SHADOW/PAPER_EXCHANGE/TESTNET/LIVE
+
+**Andockstelle:** Reality Gap
+
+**Änderung/Aufgabe:** Andere Aufgabe als Ergebnisspeicherung: Differenz zwischen Forschungsannahme und beobachteter Realität bewerten.
+
+**Grenze:** Beobachtungen sind caller-supplied; Quelle als Label beweist keinen Session-Anschluss.
+
+Quelle: `src/experiments/canonical_reality_gap_store_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H03-canonical_reality_gap_store_v1.py) · SHA256 `5dd07e13ed772321bed2043dde78d3076da522905a82afd4ad7ab4c6c9c30660`.
+
+## 2026-08-18T07:42:26+02:00 — Regimebezogene Evidenz erhält eigenen Empfänger
+
+Commit: [4fa4086ba6a9](https://github.com/rauterfrank-ui/Peak_Trade/commit/4fa4086ba6a96b0cec18d8171da70b1d1d8099d9).
+
+**Eingang:** Regime-Slices, Mapping-Vertrag, Core-Logic-Attribution, Bull/Bear-Qualität
+
+**Andockstelle:** Regime-Aware Evaluation
+
+**Änderung/Aufgabe:** Getrennte Auswertung nach Marktzustand; Research-/Runtime-Regime nicht stillschweigend identisch.
+
+**Grenze:** Keine belegte automatisch gespeiste Rohmarktstrecke; keine behauptete Layernummer.
+
+Quelle: `src/experiments/canonical_regime_aware_evaluation_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H04-canonical_regime_aware_evaluation_v1.py) · SHA256 `b56a4845eecc8966fd9cb29cde722bad27a58762e8ebad98ef58cac9a0ae89e9`.
+
+## 2026-08-18T14:37:25+02:00 — Portfoliozusammenhang separat bewertet
+
+Commit: [562345af2153](https://github.com/rauterfrank-ui/Peak_Trade/commit/562345af2153fa0c659ca261a71a9191b4b7210e).
+
+**Eingang:** Mitglieder, Paarbeobachtungen, Diversifikation/Konzentration, Drawdown, Turnover, Kapazität, Allokationsstabilität
+
+**Andockstelle:** Portfolio Learning
+
+**Änderung/Aufgabe:** Explizite Unterscheidung von Strategiequalität und Portfolioeignung.
+
+**Grenze:** Spätere Nummer in der Codierung bedeutet keine Position über der Regimebewertung.
+
+Quelle: `src/experiments/canonical_portfolio_learning_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H05-canonical_portfolio_learning_v1.py) · SHA256 `a70e3854f5f7d9497c55b68a773cf126f73426fd4bbd158932f4b684464b973b`.
+
+## 2026-08-18T15:12:29+02:00 — Forschungsloop koordiniert vorhandene Owner
+
+Commit: [7c36858bb6b9](https://github.com/rauterfrank-ui/Peak_Trade/commit/7c36858bb6b9ed036bba901170d370b61a805110).
+
+**Eingang:** Übergebene Offline-Beobachtungen, Hypothesen, Champion/Challenger-Werte, Gap-Dimensionen
+
+**Andockstelle:** Phase-10-Orchestrator und Owner 1–7
+
+**Änderung/Aufgabe:** Bindet übergebene Ergebnisse; OFFLINE_EXPERIMENT_EXECUTION ist ausdrücklich kein Lauf der produktiven Trading-Engine.
+
+**Grenze:** Regime-/Portfolio-Evaluation laut ursprünglichem Vertrag keine Loop-Schritte; Aufrufer-Ursprung offen.
+
+Quelle: `src/experiments/canonical_automated_offline_research_loop_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H06-canonical_automated_offline_research_loop_v1.py) · SHA256 `3290171ea806a48ad68d90e600c04d013efca872c698fb849e6ea75d38b1d31f`.
+
+## 2026-08-18T15:38:33+02:00 — Forschung über vorhandene Forschungsergebnisse
+
+Commit: [fc059d1285be](https://github.com/rauterfrank-ui/Peak_Trade/commit/fc059d1285be55e433a9ca59e89ce187e7a4b363).
+
+**Eingang:** Vergleichbare Experimentserien, Fehler-/Gap-Records, Backtest-Metriken, optionale spätere Outcomes
+
+**Andockstelle:** Meta-Learning
+
+**Änderung/Aufgabe:** Wiederkehrende/assoziative Eigenschaften des Forschungsprozesses untersuchen.
+
+**Grenze:** Eigener analytischer Empfänger, keine bewiesene kanonische Ebene und kein automatisch durchlaufener Kreislauf.
+
+Quelle: `src/experiments/canonical_meta_learning_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H07-canonical_meta_learning_v1.py) · SHA256 `b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331`.
+
+## 2026-08-18T16:04:39+02:00 — Vorhandene Evidenz beeinflusst weitere Suche
+
+Commit: [899e154d1bb0](https://github.com/rauterfrank-ui/Peak_Trade/commit/899e154d1bb095227c13690943e13284fb936972).
+
+**Eingang:** Deklarierter Suchraum, Fehler-/Gap-Records und optionale Meta-Learning-Signale
+
+**Andockstelle:** Advanced Search
+
+**Änderung/Aufgabe:** Erzeugt Forschungskandidaten und Offline-Experimentanfragen.
+
+**Grenze:** Anfragen sind kein Beweis eines ausgeführten Experiments oder einer lernenden Laufzeit.
+
+Quelle: `src/experiments/canonical_advanced_search_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H08-canonical_advanced_search_v1.py) · SHA256 `861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad`.
+
+## 2026-08-18T19:16:46+02:00 — Identitätsgebundener Beobachtungsadapter
+
+Commit: [c0a45f4ecf59](https://github.com/rauterfrank-ui/Peak_Trade/commit/c0a45f4ecf592d1618679f1ef5087e0a22c04fab).
+
+**Eingang:** Phase-1-Identität + bestehende Offline-Beobachtungen + Herkunftsbehauptungen
+
+**Andockstelle:** Identity-bound Offline Observation Binding
+
+**Änderung/Aufgabe:** Prüft Identität/Herkunft und bildet Phase-2-Record; schafft keinen neuen Messwertlieferanten.
+
+**Grenze:** Nicht mit Backtest-/Sessionausführung verwechseln.
+
+Quelle: `src/experiments/canonical_identity_bound_offline_observation_binding_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H09-canonical_identity_bound_offline_observation_binding_v1.py) · SHA256 `e973d50c3a4f85dd16ea6187986ba70745d94bc211b6a295dfed8f476f8af555`.
+
+## 2026-08-18T19:28:21+02:00 — Loop nutzt gemeinsamen Beobachtungsadapter
+
+Commit: [dfe2003fdd03](https://github.com/rauterfrank-ui/Peak_Trade/commit/dfe2003fdd03eb782725bd99eb56788320ae0592).
+
+**Eingang:** Weiterhin vom Aufrufer gelieferte experiment_observations
+
+**Andockstelle:** Phase-10-Loop → Binder → Memory
+
+**Änderung/Aufgabe:** Direkter Memory-Aufbau wird durch Identitätsadapter ersetzt.
+
+**Grenze:** Verstärkte Bindung/Persistenz, keine neue primäre Datenquelle.
+
+Quelle: `src/experiments/canonical_automated_offline_research_loop_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H10.patch) · SHA256 `d534e59849b498f3081be0629ec6e9de0c04d99fffa25b319f37d33f712e3788`.
+
+## 2026-08-18T19:55:13+02:00 — Persistenz an Beobachtungsadapter delegiert
+
+Commit: [eac9bbafeee9](https://github.com/rauterfrank-ui/Peak_Trade/commit/eac9bbafeee98ffb7bacb1bd407625c667e9d71e).
+
+**Eingang:** Weiterhin vom Aufrufer gelieferte experiment_observations
+
+**Andockstelle:** Phase-10-Loop → Binder → Memory
+
+**Änderung/Aufgabe:** Memory-Store wird an Binder übergeben; Loop liest persistierte Record-ID zurück.
+
+**Grenze:** Verstärkte Bindung/Persistenz, keine neue primäre Datenquelle.
+
+Quelle: `src/experiments/canonical_automated_offline_research_loop_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H11.patch) · SHA256 `1558c30ac4a130cb63f0642fb7c0dd60c4374693365f8ac17df61cb77f216c69`.
+
+## 2026-09-01T20:26:00+02:00 — DDO erfasst Ergebnisse vorhandener Producer
+
+Commit: [0a8ec8e8d735](https://github.com/rauterfrank-ui/Peak_Trade/commit/0a8ec8e8d73558c7b8a340b514fc86c0157dc525).
+
+**Eingang:** Universe/Ranking/Selection/Binding, Recon-Gate, simuliertes Execution-Ergebnis
+
+**Andockstelle:** Capture nach Producer-Aufruf
+
+**Änderung/Aufgabe:** Zusätzliche technische Herkunft: bestehende Producer werden beobachtet, wenn Capture gebunden/aktiviert.
+
+**Grenze:** Kein vollständiger Rohdaten-Snapshot; andere Entwicklungslinie als ursprünglicher August-Loop.
+
+Quelle: `src/learning/deterministic_decision_outcome_v0/capture_v0.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H12-capture_v0.py) · SHA256 `cc2c00d3b8743b4c91c5d1ff246b976c0f8b0c47a6310489a13fc252cc233196`.
+
+## 2026-09-26T09:27:03+02:00 — Marktpreisfakten für spätere Outcome-Bewertung
+
+Commit: [e8fd6d975152](https://github.com/rauterfrank-ui/Peak_Trade/commit/e8fd6d97515269fd672b6eb2608b1538fd6959b7).
+
+**Eingang:** Persistierte abgeschlossene/korrigierte PT1H-Bars
+
+**Andockstelle:** WP-A/WP-C → O4 → N_BARS-Snapshot
+
+**Änderung/Aufgabe:** Eigene nachgelagerte Datennutzung nach einer Entscheidung.
+
+**Grenze:** Kein Nachweis einer August-Rohdatenbasis oder tatsächlichen Session-Aufnahme.
+
+Quelle: `src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H13-ddo_o4_n_bars_public_plane_convergence_v1.py) · SHA256 `c67b5534c5469c5e7cc6e28c872c71e7a26d4813e77ca887c96819c4d1be25cf`.
+
+## 2026-09-26T23:37:27+02:00 — Paper-/Shadow-/Testnet-Archiv wird Forschungsinput
+
+Commit: [85d4d70cb910](https://github.com/rauterfrank-ui/Peak_Trade/commit/85d4d70cb910239c4809d24ae6a177672a813629).
+
+**Eingang:** Vorhandenes dauerhaftes Primärarchiv: Review-Metriken/-Urteil und Manifestreferenzen
+
+**Andockstelle:** G2 → Offline-Beobachtungen/Identitätsbindung und Runtime-Learning-Ingress
+
+**Änderung/Aufgabe:** Konkrete codierte Brücke von Test-/Runtime-Nachweisen zu Forschungseingaben.
+
+**Grenze:** Keine historische Session gestartet oder auf tatsächlichen Learning-Zufluss geprüft; mehrere fachliche Ergebnis-/Referenzfelder bleiben leer.
+
+Quelle: `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py` · [lokaler Snapshot/Diff](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/H14-governed_runtime_primary_to_offline_observation_projection_v1.py) · SHA256 `8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3`.
+
+## Was daraus für die Ebenenfrage folgt
+
+Erkennbar sind unterschiedliche fachliche Aufgaben und Zeithorizonte. Sie dienen als Suchraster für die ursprüngliche Architektur, noch nicht als neue Layerdefinition. Für eine Ebenenzuordnung brauchen wir zusätzlich historische Hierarchieaussagen, konkrete Zustands-/Datenverträge und Consumer-Verwendung. Weder Phasennummern noch Reihenfolge noch ein gemeinsamer Recordtyp beweisen eine hierarchische Ebene.
+
+## Offene nächste Verbindung
+
+Den Aufrufer hinter den ursprünglichen experiment_observations vor August Phase 10 auffinden und dessen Herkunft prüfen. Insbesondere Backtest-/Shadow-/Paper-Erzeuger, Markt-/Feature-Daten und Ergebnisaggregation getrennt verfolgen. Die bereits belegten Regime-/Portfolio-Empfänger unabhängig untersuchen; ihre fehlende Einbindung als Loop-Schritt bedeutet nicht automatisch fachliche Überflüssigkeit.

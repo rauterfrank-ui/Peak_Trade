@@ -1,0 +1,22 @@
+{
+  "claim_timestamp_utc": "2026-07-21T17:17:07Z",
+  "commit_sha": "c913dad125dc7dff45fa8f10c5685c6342e77a32",
+  "contract_ref": "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v5.json",
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_preregistration_digest": "b85903ebc76d1fefdb576075e88a1b72d9abb852ad4da5f1f8c5bc9c0bd21b2e",
+  "evaluation_run_count_after_claim": 1,
+  "evaluation_run_count_authorized": 1,
+  "evaluation_run_id": "evaluate_bollinger_mr_midband_exit_efficiency_development_v5",
+  "holdout_data_accessed": false,
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V5",
+  "note": "Atomic one-shot slot claim before panel access; slot remains consumed regardless of process outcome; no rerun authorized.",
+  "panel_class": "DEVELOPMENT_ONLY",
+  "process_id": 76068,
+  "run_limit": 1,
+  "runner_script": "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v5.py",
+  "runner_version": "v5",
+  "schema_version": "bollinger_mr_midband_exit_efficiency_development_v5_run_slot_claim.v1",
+  "slot_claimed": true,
+  "slot_consumed": true
+}

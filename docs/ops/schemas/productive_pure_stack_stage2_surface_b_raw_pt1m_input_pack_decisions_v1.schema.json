@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_decisions_v1.schema.json",
+  "title": "Stage-2 Surface B Raw PT1M Input Pack Owner Decisions v1",
+  "description": "Machine-readable Owner Decision manifest for Surface-B raw PT1M candle/mark input pack and campaign-instance binding. Does not authorize campaign start, productive numbers, INPUT_AUTHORITY, or runtime implementation.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "baseline_origin_main_sha",
+    "authority_surface",
+    "input_authority",
+    "runtime_implemented",
+    "campaign_start_authorized",
+    "raw_input_pack_materialization_authorized",
+    "productive_numeric_values_set",
+    "purge",
+    "embargo",
+    "fold_sizes",
+    "campaign_instance",
+    "decisions"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_decisions/v1"
+    },
+    "document_type": {
+      "const": "OWNER_AUTHORITY_DECISIONS_MANIFEST"
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_RAW_PT1M_CANDLE_MARK_INPUT_PACK_AND_CAMPAIGN_INSTANCE_BINDING"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "OWNER_DECISION_STRUCTURE_RATIFIED_INSTANCE_FIELDS_OPEN",
+        "OWNER_INSTANCE_FIELDS_RATIFIED_PACK_MATERIALIZATION_AUTHORIZED",
+        "OWNER_CAMPAIGN_START_AUTHORIZED"
+      ]
+    },
+    "baseline_origin_main_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "authority_surface": { "const": "B" },
+    "input_authority": { "const": false },
+    "runtime_implemented": { "const": false },
+    "campaign_start_authorized": { "type": "boolean" },
+    "raw_input_pack_materialization_authorized": { "type": "boolean" },
+    "productive_numeric_values_set": { "const": 0 },
+    "purge": { "type": "null" },
+    "embargo": { "type": "null" },
+    "fold_sizes": { "type": "null" },
+    "notion_ssot": { "const": false },
+    "repository_is_ssot": { "const": true },
+    "dashboard_authority_effect": { "const": "NONE" },
+    "campaign_instance": {
+      "type": "object",
+      "required": [
+        "campaign_id",
+        "dataset_id",
+        "scenario_id",
+        "instrument_binding",
+        "candle_authority",
+        "mark_price_authority",
+        "pack_provenance",
+        "seed",
+        "event_time_epoch_s",
+        "partition_boundaries_event_time_epoch_s",
+        "fold_ids",
+        "bootstrap_seeds",
+        "regime_coverage"
+      ]
+    },
+    "decisions": {
+      "type": "object",
+      "required": [
+        "INSTRUMENT_BINDING",
+        "CANDLE_AUTHORITY",
+        "MARK_PRICE_AUTHORITY",
+        "PIT_NO_LOOKAHEAD",
+        "PACK_IDENTITY",
+        "CAMPAIGN_INSTANCE_BINDING",
+        "FORBIDDEN_SOURCES"
+      ]
+    }
+  }
+}

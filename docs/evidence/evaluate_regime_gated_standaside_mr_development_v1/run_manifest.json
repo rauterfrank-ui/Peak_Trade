@@ -1,0 +1,58 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 2612,
+      "sha256": "2f8ae4225d52765d0aae56b0900bcd728f8f3d438cba8a0481968f040504cb4d"
+    },
+    "baseline_metrics.json": {
+      "bytes": 867,
+      "sha256": "922703e6ced44b5078a0f07114d4cc6615f3ac8f8331ce83e1c149da23a10414"
+    },
+    "code_config_hashes.json": {
+      "bytes": 470,
+      "sha256": "a912874b934dfd5a6c05a78a47e1eda1d5c23dd8a6b10f445257bed75e8740be"
+    },
+    "comparison_decision.json": {
+      "bytes": 853,
+      "sha256": "0a70b93187c3db6a65aee03d0063c2263c8cbce0b31245e3e33361ce3c355506"
+    },
+    "config_snapshot.json": {
+      "bytes": 2070,
+      "sha256": "4de8a0d71ea8bb2c5655b76f935c1ab8755ce1313a52eb226c9b9b47b5d4d751"
+    },
+    "feature_formula_freeze.json": {
+      "bytes": 1024,
+      "sha256": "f35319ed036cd6a7fd8bff9d02032fa41d0a4b9ff17805680f44885d0ea55b95"
+    },
+    "instrument_attribution.json": {
+      "bytes": 51260,
+      "sha256": "3d98e0c88ae301f3912e0040477ff38cfdf83a15b1117b61ef38e4bdd76b9b58"
+    },
+    "portfolio_equity_baseline.csv": {
+      "bytes": 92134,
+      "sha256": "33d16994eabd1dcc6fa620b68343af95f1b5e2ab59887480c46835b0c031edf9"
+    },
+    "portfolio_equity_treatment.csv": {
+      "bytes": 92134,
+      "sha256": "33d16994eabd1dcc6fa620b68343af95f1b5e2ab59887480c46835b0c031edf9"
+    },
+    "regime_attribution.json": {
+      "bytes": 369,
+      "sha256": "00c838f04643d7e01826d3c2eeb45e8877c215c16bf37e719919277e6c834c90"
+    },
+    "safety_attestation.md": {
+      "bytes": 621,
+      "sha256": "d0ad4be12ae662084849967c37bf982df3a8f0bb29fa7a454e65f2a199cec3bb"
+    },
+    "summary.json": {
+      "bytes": 5492,
+      "sha256": "28f71a13d163f3125bbbcedf3875c61436cfcda9667e5122f35cb1b257c71c72"
+    },
+    "treatment_metrics.json": {
+      "bytes": 867,
+      "sha256": "922703e6ced44b5078a0f07114d4cc6615f3ac8f8331ce83e1c149da23a10414"
+    }
+  },
+  "generated_at_utc": "2026-07-20T22:37:38Z",
+  "schema_version": "evaluate_regime_gated_standaside_mr_development_run_manifest.v1"
+}

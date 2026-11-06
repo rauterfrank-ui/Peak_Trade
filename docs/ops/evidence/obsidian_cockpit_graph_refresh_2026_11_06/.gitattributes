@@ -1,0 +1,2 @@
+# Preserve exact historical beforeimages, including their original blank EOF lines.
+before/** -whitespace

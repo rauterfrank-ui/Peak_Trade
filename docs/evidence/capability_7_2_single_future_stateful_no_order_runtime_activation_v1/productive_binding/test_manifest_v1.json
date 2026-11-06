@@ -1,0 +1,7 @@
+{
+  "network_session_started": false,
+  "offline_only": true,
+  "tests": [
+    "tests/ops/test_single_future_stateful_no_order_runtime_activation_v1.py"
+  ]
+}

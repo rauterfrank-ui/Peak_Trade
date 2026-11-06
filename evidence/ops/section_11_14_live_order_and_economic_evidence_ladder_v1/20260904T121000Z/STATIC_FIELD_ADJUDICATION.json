@@ -1,0 +1,32 @@
+{
+  "LIVE_EXECUTION_CODE_EXISTS": {
+    "adjudicated_value": false,
+    "admissibility_rule": "This GO forbids binding the field true merely because code is present. Unresolved semantic mapping fails closed. Repository file presence is supporting context, not the Live proof claim.",
+    "canonical_definition": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md ## 11.14 Live order and economic evidence ladder lists LIVE_EXECUTION_CODE_EXISTS as the first Live proof-claim field. The runbook does not define a proof criterion beyond the field name. Cap 11.7-11.11 keep the same field false as a contracts-only overclaim guard.",
+    "contradiction_check": "NO_CONTRADICTION. Files exist and Cap/Section contracts still refuse the Live proof claim. CODE_PRESENCE_IS_NOT_LIVE_EXECUTION_CODE_EXISTS=true.",
+    "evidence_paths": [
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+      "src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/execute_v1.py",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md \u00a74.9.4 SP-01",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+    ],
+    "observed_repo_fact": "SP01_FILE_EXISTS=true;FLATTEN_EXECUTE_FILE_EXISTS=true;SUBMIT_TRANSPORT_FILE_EXISTS=true",
+    "reason": "FAIL_CLOSED_UNRESOLVED_SEMANTIC_MAPPING;CODE_PRESENCE_ALONE_INADMISSIBLE;LIVE_EXECUTION_CODE_EXISTS=false"
+  },
+  "LIVE_EXECUTION_CODE_EXISTS_VALUE": false,
+  "LIVE_EXECUTION_PATH_REACHABLE": {
+    "adjudicated_value": false,
+    "admissibility_rule": "Reachable as a \u00a711.14 Live proof claim cannot be proven if it entails a runtime gate, authorization state, credential state, venue condition, or any other fact not provable offline. CURRENTLY_REACHABLE is not proven semantically identical.",
+    "canonical_definition": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md ## 11.14 Live order and economic evidence ladder lists LIVE_EXECUTION_PATH_REACHABLE as the second Live proof-claim field. The runbook does not equate it with \u00a74.9 CURRENTLY_REACHABLE.",
+    "contradiction_check": "NO_CONTRADICTION. Constructible code plus fail-closed gates is exactly the distinction this field must preserve. CURRENTLY_REACHABLE_IS_NOT_LIVE_EXECUTION_PATH_REACHABLE=true.",
+    "evidence_paths": [
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md \u00a74.9.4 SP-01",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py"
+    ],
+    "observed_repo_fact": "\u00a74.9 SP-01 CURRENTLY_REACHABLE=true means the Python surface is constructible. CAN_SUBMIT_ORDER_TODAY=false. Standing gates LIVE_ENABLED=false LIVE_ARMED=false SUBMIT_UNLOCKED=false LIVE_AUTHORIZED=false. Credential, venue, and runtime permit state are NOT_OBSERVED in this offline GO.",
+    "reason": "FAIL_CLOSED_RUNTIME_GATES_AUTHORIZATION_CREDENTIALS_VENUE_UNOBSERVED;NOT_EQUATED_WITH_SECTION_4_9_CURRENTLY_REACHABLE;LIVE_EXECUTION_PATH_REACHABLE=false"
+  },
+  "LIVE_EXECUTION_PATH_REACHABLE_VALUE": false
+}

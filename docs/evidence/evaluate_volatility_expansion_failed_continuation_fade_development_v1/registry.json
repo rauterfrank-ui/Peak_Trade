@@ -1,0 +1,18 @@
+{
+  "config_digest": "95d0ecac31ff451503c46d8f31cde0b691dd96a36700b3c9b83e4140b468cc1b",
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "evaluation_executed": true,
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_volatility_expansion_failed_continuation_fade_development_v1",
+  "evidence_ref": "docs/evidence/evaluate_volatility_expansion_failed_continuation_fade_development_v1/",
+  "holdout_accessed": false,
+  "hypothesis_id": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1",
+  "runner_start_count": 1,
+  "runner_started": true,
+  "schema_version": "evaluate_volatility_expansion_failed_continuation_fade_registry.v1",
+  "strategy_identity": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
+  "strategy_params_digest": "42317597e610280fd0cdbc66db19bd0e877cacdcadd5b4b44829989d2ef22de4",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
+}

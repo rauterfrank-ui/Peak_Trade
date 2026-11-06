@@ -1,0 +1,142 @@
+{
+  "mission": "OKX_SEVEN_TAB_UNIQUE_NAMING_V1",
+  "timestamp_utc": "2026-10-16T08:52:00Z",
+  "mode": "STRICT_OBSERVATION_ONLY",
+  "owner_required_tab_labels": [
+    "01 | LIVE · Chart & Orderbuch",
+    "02 | FLOW · Time & Sales",
+    "03 | ANALYTICS · OI & Funding",
+    "04 | MARKETS · Futures-Übersicht",
+    "05 | ACCOUNT · Vermögen & PnL",
+    "06 | HISTORY · Orders & Positionen",
+    "07 | MULTICHART · Marktübersicht"
+  ],
+  "native_safari_investigation": {
+    "individual_tab_rename_api": "NOT_AVAILABLE",
+    "applescript_tab_name_property": "READ_ONLY mirror of HTML document.title (name of tab)",
+    "apple_support_tab_groups": "Rename applies to Tab Group container only, not per-tab labels in tab bar",
+    "references": [
+      "https://support.apple.com/guide/safari/edit-and-customize-tab-groups-ibrwd0cea393/mac",
+      "https://support.apple.com/guide/safari/group-tabs-ibrwa2d73908/mac"
+    ],
+    "forbidden_by_owner_and_not_used": [
+      "document.title JavaScript mutation",
+      "extensions",
+      "CSS",
+      "storage writes",
+      "OKX source changes"
+    ]
+  },
+  "measured_tab_titles_after_setup": {
+    "method": "Safari AppleScript name of tab + read-only document.title per tab",
+    "tabs": [
+      {
+        "index": 1,
+        "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+        "visible_title": "82.200,0 BTC USD UM XPERP 5yearly Futures-Handel | OKX Europe",
+        "owner_label_required": "01 | LIVE · Chart & Orderbuch",
+        "unique_among_seven": false
+      },
+      {
+        "index": 2,
+        "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+        "visible_title": "82.200,0 BTC USD UM XPERP 5yearly Futures-Handel | OKX Europe",
+        "owner_label_required": "02 | FLOW · Time & Sales",
+        "unique_among_seven": false
+      },
+      {
+        "index": 3,
+        "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+        "visible_title": "82.200,0 BTC USD UM XPERP 5yearly Futures-Handel | OKX Europe",
+        "owner_label_required": "03 | ANALYTICS · OI & Funding",
+        "unique_among_seven": false
+      },
+      {
+        "index": 4,
+        "url": "https://my.okx.com/de/markets/prices",
+        "visible_title": "Kryptowährungskurse, Marktkapitalisierung und Charts | OKX Europe",
+        "owner_label_required": "04 | MARKETS · Futures-Übersicht",
+        "unique_among_seven": true,
+        "note": "Distinct native title; not exact owner string but semantically markets overview"
+      },
+      {
+        "index": 5,
+        "url": "https://my.okx.com/de/account/users",
+        "visible_title": "Überblick - Die führende globale Bitcoin-Börse | OKX",
+        "owner_label_required": "05 | ACCOUNT · Vermögen & PnL",
+        "unique_among_seven": true
+      },
+      {
+        "index": 6,
+        "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+        "visible_title": "82.200,0 BTC USD UM XPERP 5yearly Futures-Handel | OKX Europe",
+        "owner_label_required": "06 | HISTORY · Orders & Positionen",
+        "unique_among_seven": false
+      },
+      {
+        "index": 7,
+        "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1006418239457071104",
+        "visible_title": "82.200,0 BTC USD UM XPERP 5yearly Futures-Handel | OKX Europe",
+        "owner_label_required": "07 | MULTICHART · Marktübersicht",
+        "unique_among_seven": false,
+        "note": "WS1 hash differs but HTML title identical to WS2 futures tabs"
+      }
+    ],
+    "okx_internal_view_title_change": {
+      "tested": "Diagramm/Orderbuch, Letzte Trades, Handelsdaten, Positionsverlauf via UI navigation",
+      "document_title_changes_with_view": false,
+      "only_live_price_prefix_updates": true
+    },
+    "unique_visible_titles_count": 2,
+    "duplicate_futures_title_count": 5
+  },
+  "screenshot_evidence": {
+    "TAB_BAR_DUPLICATE_TITLES_EVIDENCE": "unique_naming_v1/TAB_BAR_DUPLICATE_TITLES_EVIDENCE.png",
+    "shows_owner_required_strings_in_tab_bar": false
+  },
+  "VERDICT": "BLOCKED",
+  "VERDICT_DETAIL": "Safari provides no native per-tab rename. OKX sets the same live-price futures title for tabs 1,2,3,6,7 regardless of workspace hash or in-page panel. Owner-mandatory strings cannot appear in the tab bar without forbidden title manipulation.",
+  "partial_credit": {
+    "tabs_natively_distinguishable_in_tab_bar": "2 of 7 (tabs 4 and 5 only)",
+    "pass_claim_allowed": false
+  },
+  "recommended_native_alternatives": [
+    {
+      "option": "A — Sieben Safari-Tab-Gruppen (je 1 Tab)",
+      "how": "Sidebar: sieben Gruppen exakt mit Owner-Namen anlegen (01 LIVE … 07 MULTICHART). Umschalten über Sidebar/Tab-Gruppen-Menü; Tab-Leiste zeigt weiterhin OKX-Seitentitel.",
+      "meets_exact_tab_bar_labels": false,
+      "meets_unique_identification": true,
+      "observation_only": true
+    },
+    {
+      "option": "B — Lesezeichen-Symbolleiste mit benannten Favoriten",
+      "how": "Ansicht → Lesezeichen-Symbolleiste einblenden; sieben Lesezeichen mit Owner-Namen auf die sieben OKX-URLs; Klick öffnet/fokussiert Tab.",
+      "meets_exact_tab_bar_labels": false,
+      "meets_unique_identification": true,
+      "observation_only": true
+    },
+    {
+      "option": "C — Tab-Übersicht (Vorschaubilder)",
+      "how": "Safari Sidebar → Tab-Gruppe → Tab-Übersicht anzeigen; nach konfigurierter Ansicht pro Tab visuell unterscheiden.",
+      "meets_exact_tab_bar_labels": false,
+      "meets_unique_identification": "visual_only",
+      "observation_only": true
+    },
+    {
+      "option": "D — LOCAL_READ_ONLY_WORKSTATION (Charter V1)",
+      "how": "Eigene UI mit festen Pane-Titeln; außerhalb Safari-only Scope.",
+      "requires_owner_go": true
+    }
+  ],
+  "security_status": {
+    "strict_observation_only": true,
+    "forbidden_actions_taken": false,
+    "okx_session_preserved": true,
+    "workspace_ids_preserved": {
+      "WS1": "1006418239457071104",
+      "WS2": "1031216400532770816"
+    }
+  },
+  "implementation": "NONE",
+  "commits_prs": "NONE"
+}

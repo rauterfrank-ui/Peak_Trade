@@ -1,0 +1,14 @@
+{
+  "canonical_wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+  "notes": [
+    "REUSES_PR5665_RESTART_HARNESS",
+    "REUSES_PR5666_ENTRYPOINT_IDENTITY",
+    "REUSES_PR5667_SESSION_GO",
+    "REUSES_PR5668_POST_UNLOCK_PATTERN",
+    "NO_SECOND_WALLCLOCK_RUNNER"
+  ],
+  "ok": true,
+  "parallel_productive_authority_detected": false,
+  "productive_entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_NETWORK_ENTRYPOINT_V1",
+  "productive_entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.py"
+}

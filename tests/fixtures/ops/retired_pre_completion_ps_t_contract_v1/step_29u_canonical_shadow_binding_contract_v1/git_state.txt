@@ -1,0 +1,10 @@
+BRANCH=capability/step-29u-canonical-shadow-binding-v0
+BASE_SHA=804a52769f4da4e9293e11e8aa512a6cfe8082d6
+IMPLEMENTATION_HEAD_SHA=b189dbc77684c5b0055fc88ab05838b44dd79060
+HEAD_SHA=b189dbc77684c5b0055fc88ab05838b44dd79060
+ORIGIN_MAIN=804a52769f4da4e9293e11e8aa512a6cfe8082d6
+PRIMARY_CHECKOUT_MUTATED=false
+WORKTREE=/Users/frnkhrz/.peak_trade_worktrees/step29u-canonical-shadow-binding-capability-v0
+COMMIT_SUBJECT=feat(ops): bind Step 29U into canonical OKX Futures Shadow no-order path
+EVIDENCE_NOTE=exact_head_pins_implementation_commit_before_evidence_commit
+FEATURE_TIP_SHA=2292ed249fb0ee753fb6d63a0d8454dc7336975d

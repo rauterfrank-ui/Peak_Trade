@@ -1,0 +1,30 @@
+{
+  "active_live_gate": false,
+  "adjudication": "evaluate_integrated_offline_economic_validity_v1 applies 50 only when evidence_scope_class is PRODUCTIVE_CURRENT",
+  "authority": "NONE",
+  "authority_effect": "NONE",
+  "bound_evidence_pack": "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001500Z",
+  "classification": "E",
+  "completed_trade_count": 1,
+  "live_post_import": false,
+  "loader_rule": "any minimum other than 50 raises CURRENT_POLICY_MINIMUM_TRADE_COUNT_NOT_RATIFIED",
+  "minimum_trade_count": 50,
+  "minimum_trade_count_policy_in_metrics": 50,
+  "net_pnl": "147.487436402526",
+  "optional_owner_decision": "bind this offline qualification to POST, or change the offline threshold",
+  "owner_decision_required_for_current_live_pins": false,
+  "policy_id": "ops.current_integrated_offline_economic_policy_v1",
+  "policy_path": "config/ops/current_integrated_offline_economic_policy_v1.toml",
+  "promotion_gate": {
+    "effect": "PROMOTION_CANDIDATE_ELIGIBLE only",
+    "execution_authority": "NONE",
+    "module": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+    "on_full_core_post_path": false
+  },
+  "proven_source_sha": "4b668c88dbf4e79af0a627216713aba759b70369",
+  "qualification": "NOT_QUALIFIED",
+  "rebound_to_769d13663": false,
+  "relaxation_risk": "Removing the offline 50-round-trip rule would let a one-trade simulated pack pass PRODUCTIVE_CURRENT economic adjudication. It would not by itself open POST, because POST does not call this adjudicator.",
+  "schema_version": "bwp_live_003_eco_adjudication.v1",
+  "trade_count_semantic": "COMPLETED_POSITION_ROUND_TRIP"
+}

@@ -1,0 +1,53 @@
+{
+  "accounting_logic_changed": false,
+  "allowlist_selection_authority": false,
+  "authority_map": {
+    "accounting": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+    "bridge_host": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+    "config_truth": "ops.config_truth_alignment_contract_v1",
+    "decision": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+    "double_play_parity": "trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0",
+    "offline_evidence": "ops.single_future_canonical_runtime_deterministic_offline_evidence_v1",
+    "pre_activation_closure": "ops.single_future_canonical_runtime_pre_activation_closure_v1",
+    "ranking": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+    "reconciliation": "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
+    "selection": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+    "selection_runtime_binding": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+    "typed_volatility_presence": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+    "universe": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+    "verifier": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1"
+  },
+  "capability_owners_not_duplicated": true,
+  "core_logic_changed": false,
+  "dashboard_authority_effect": false,
+  "dashboard_role": "READ_ONLY_CONSUMER",
+  "direct_instrument_override_allowed": false,
+  "double_play_changed": false,
+  "legacy_or_parallel_surfaces": [
+    {
+      "dashboard_authority_effect": false,
+      "path": "src/webui/market_dashboard_landscape_v2",
+      "productive_runtime_authority": false,
+      "role": "DASHBOARD_READ_ONLY_CONSUMER"
+    },
+    {
+      "notes": "Reused via Cap 4.1/2.4 host; not a second canonical host.",
+      "path": "scripts/ops/run_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py",
+      "productive_runtime_authority": false,
+      "role": "ANALYTICAL_BRIDGE_HELPER"
+    }
+  ],
+  "legacy_parallel_authority_absent": true,
+  "master_v2_changed": false,
+  "offline_evidence_authority": "ops.single_future_canonical_runtime_deterministic_offline_evidence_v1",
+  "offline_evidence_entrypoint": "scripts/ops/run_single_future_canonical_runtime_deterministic_offline_evidence_v1.py",
+  "parallel_accounting_authority_created": false,
+  "parallel_evidence_authority_created": false,
+  "parallel_runtime_authority_created": false,
+  "parallel_selection_authority_created": false,
+  "productive_runtime_host_reused": "scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py",
+  "risk_changed": false,
+  "safety_changed": false,
+  "second_canonical_runtime_host_created": false,
+  "selection_authority_unchanged": true
+}

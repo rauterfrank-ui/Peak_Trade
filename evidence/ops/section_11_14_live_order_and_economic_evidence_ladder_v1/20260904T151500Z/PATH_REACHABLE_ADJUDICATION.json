@@ -1,0 +1,62 @@
+{
+  "LIVE_PRIVATE_READ_ONLY_PROVEN": false,
+  "adjudicated_value": true,
+  "admissibility_rule": "LIVE_EXECUTION_PATH_REACHABLE is true iff every PART_OF_REACHABILITY constituent is proven true on current origin/main using the lowest authority admissible evidence. The field means the current productive Live canary path can be traversed to the pre-submit boundary: the static graph is complete and integrated, the entrypoint is selectable, fail-closed gates are evaluable, the urllib Live transport is constructible, required SecretRef credential material is present, the production EEA host is connectable, and a current authenticated private GET demonstrates functional authentication and account/venue read access, with no static blocker preventing that pre-submit boundary. Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, OWNER execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. \u00a74.9 CURRENTLY_REACHABLE, LIVE_EXECUTION_CODE_EXISTS, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN or any later ladder field, and does not authorize POST or submit.",
+  "canonical_definition": "LIVE_EXECUTION_PATH_REACHABLE is the second \u00a711.14 Live proof-claim field. It is true iff every bound PART_OF_REACHABILITY constituent is proven: the current productive Live canary static graph is complete and the entrypoint is integrated and selectable; fail-closed submit gates are evaluable; UrllibLiveCanaryTransportV1 is constructible; required SecretRef credential material is present without value disclosure; the production EEA host is currently connectable; a current authenticated private GET proves functional authentication and account/venue read access; and no static blocker prevents reaching the pre-submit boundary (refuse_submit_unless_gates_pass_v1). Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, Owner execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. File presence, LIVE_EXECUTION_CODE_EXISTS, \u00a74.9 CURRENTLY_REACHABLE, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN, LIVE_ORDER_PLAN_OBSERVED, any later ladder field, submit authorization, or POST.",
+  "conjunction": {
+    "adjudication": "TRUE_PRE_SUBMIT_PATH_REACHABLE",
+    "admissibility_predicate": "LIVE_EXECUTION_PATH_REACHABLE is true iff every PART_OF_REACHABILITY constituent is proven true on current origin/main using the lowest authority admissible evidence. The field means the current productive Live canary path can be traversed to the pre-submit boundary: the static graph is complete and integrated, the entrypoint is selectable, fail-closed gates are evaluable, the urllib Live transport is constructible, required SecretRef credential material is present, the production EEA host is connectable, and a current authenticated private GET demonstrates functional authentication and account/venue read access, with no static blocker preventing that pre-submit boundary. Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, OWNER execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. \u00a74.9 CURRENTLY_REACHABLE, LIVE_EXECUTION_CODE_EXISTS, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN or any later ladder field, and does not authorize POST or submit.",
+    "canonical_definition": "LIVE_EXECUTION_PATH_REACHABLE is the second \u00a711.14 Live proof-claim field. It is true iff every bound PART_OF_REACHABILITY constituent is proven: the current productive Live canary static graph is complete and the entrypoint is integrated and selectable; fail-closed submit gates are evaluable; UrllibLiveCanaryTransportV1 is constructible; required SecretRef credential material is present without value disclosure; the production EEA host is currently connectable; a current authenticated private GET proves functional authentication and account/venue read access; and no static blocker prevents reaching the pre-submit boundary (refuse_submit_unless_gates_pass_v1). Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, Owner execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. File presence, LIVE_EXECUTION_CODE_EXISTS, \u00a74.9 CURRENTLY_REACHABLE, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN, LIVE_ORDER_PLAN_OBSERVED, any later ladder field, submit authorization, or POST.",
+    "claim_value": true,
+    "constituents": {
+      "AUTHENTICATION_PATH_FUNCTIONAL": true,
+      "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL": true,
+      "CURRENT_RUNTIME_PATH_SELECTABLE": true,
+      "ENTRYPOINT_INTEGRATED": true,
+      "NO_STATIC_BLOCKER_PREVENTS_REACHING_PRE_SUBMIT_BOUNDARY": true,
+      "REQUIRED_CREDENTIAL_MATERIAL_AVAILABLE": true,
+      "REQUIRED_FAIL_CLOSED_GATES_EVALUABLE": true,
+      "STATIC_EXECUTION_GRAPH_COMPLETE": true,
+      "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE": true,
+      "TRANSPORT_CONSTRUCTIBLE": true
+    },
+    "false_required": [],
+    "later_ladder_fields_promoted": false,
+    "live_private_read_only_proven_promoted": false,
+    "reason": "FULL_CONJUNCTION_PROVEN",
+    "source_kind": "REPOSITORY_IMPLEMENTATION",
+    "submit_authorization_inferred": false,
+    "unobserved_required": []
+  },
+  "constituent_values": {
+    "AUTHENTICATION_PATH_FUNCTIONAL": true,
+    "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL": true,
+    "CURRENT_RUNTIME_PATH_SELECTABLE": true,
+    "ENTRYPOINT_INTEGRATED": true,
+    "NO_STATIC_BLOCKER_PREVENTS_REACHING_PRE_SUBMIT_BOUNDARY": true,
+    "REQUIRED_CREDENTIAL_MATERIAL_AVAILABLE": true,
+    "REQUIRED_FAIL_CLOSED_GATES_EVALUABLE": true,
+    "STATIC_EXECUTION_GRAPH_COMPLETE": true,
+    "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE": true,
+    "TRANSPORT_CONSTRUCTIBLE": true
+  },
+  "contradiction_check": "NO_CONTRADICTION. Submit-authorization gates remain false and are not PATH_REACHABLE constituents. GET evidence does not promote LIVE_PRIVATE_READ_ONLY_PROVEN. CURRENTLY_REACHABLE_IS_NOT_LIVE_EXECUTION_PATH_REACHABLE=true.",
+  "credential_presence": {
+    "CREDENTIAL_CLASS": "LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY",
+    "CREDENTIAL_FIELDS_COMPLETE": true,
+    "SECRETREF_URI": "secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
+    "SECRETREF_URI_BOUND": true,
+    "VALUES_INCLUDED": false,
+    "VAULT_FILE_PRESENT": true,
+    "available": true,
+    "reason": "CREDENTIAL_MATERIAL_AVAILABLE"
+  },
+  "evidence_paths": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md \u00a74.9.4 SP-01",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/path_reachable_predicate_v1.py"
+  ],
+  "observed_repo_fact": "CODE_EXISTS=true;CONJUNCTION=FULL_CONJUNCTION_PROVEN;PRIVATE_GET_PRESENT=true;CREDENTIAL_AVAILABLE=true;LIVE_AUTHORIZED=false;LIVE_EXECUTION_CODE_EXISTS_DOES_NOT_IMPLY_PATH_REACHABLE=true.",
+  "reason": "FULL_CONJUNCTION_PROVEN"
+}

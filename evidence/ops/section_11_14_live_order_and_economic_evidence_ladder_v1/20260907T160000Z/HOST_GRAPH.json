@@ -1,0 +1,82 @@
+{
+  "AUTHORIZED_RUNTIME_SURFACE": "NONE",
+  "CURRENT_RUNTIME_EXECUTION_AUTHORIZED": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_ORDER_PRE_RESTART_CAPTURE_HOST_GRAPH_V1",
+  "HOST_JOIN_SYMBOL": "run_live_order_pre_restart_handoff_capture_v1",
+  "LIVE_ARMED": false,
+  "LIVE_ENABLED": false,
+  "POST_ALLOWED": false,
+  "PRODUCTIVE_CAPTURE_OWNER": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+  "PRODUCTIVE_HOOK_CALLER": "call_pre_restart_handoff_capture_after_bound_fill_v1",
+  "PRODUCTIVE_HOOK_CALLER_UNIQUE": true,
+  "PRODUCTIVE_LIFECYCLE_EVENT": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+  "PRODUCTIVE_LIFECYCLE_HOOK": "run_capture_hook_after_bound_fill_before_restart_v1",
+  "STRUCTURAL_RUNTIME_BINDING_PROVEN": true,
+  "WIRE_SEND": false,
+  "edges": [
+    {
+      "event": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+      "from": "BOUND_FILL",
+      "to": "HOST_JOIN"
+    },
+    {
+      "from": "HOST_JOIN",
+      "to": "PRODUCTIVE_HOOK_CALLER"
+    },
+    {
+      "from": "PRODUCTIVE_HOOK_CALLER",
+      "to": "PRODUCTIVE_LIFECYCLE_HOOK"
+    },
+    {
+      "from": "PRODUCTIVE_LIFECYCLE_HOOK",
+      "to": "PRODUCTIVE_CAPTURE_OWNER"
+    },
+    {
+      "from": "PRODUCTIVE_LIFECYCLE_HOOK",
+      "order": "BEFORE",
+      "to": "RESTART_BOUNDARY"
+    }
+  ],
+  "nodes": [
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "PRODUCTION_REACHABLE": true,
+      "id": "BOUND_FILL",
+      "kind": "LIVE_IDENTITY_BOUND_VENUE_FILL"
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "PRODUCTION_REACHABLE": true,
+      "id": "PRODUCTIVE_HOOK_CALLER",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py",
+      "symbol": "call_pre_restart_handoff_capture_after_bound_fill_v1"
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "PRODUCTION_REACHABLE": true,
+      "id": "HOST_JOIN",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py",
+      "symbol": "run_live_order_pre_restart_handoff_capture_v1"
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "PRODUCTION_REACHABLE": true,
+      "id": "PRODUCTIVE_LIFECYCLE_HOOK",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+      "symbol": "run_capture_hook_after_bound_fill_before_restart_v1"
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "PRODUCTION_REACHABLE": true,
+      "id": "PRODUCTIVE_CAPTURE_OWNER",
+      "symbol": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1"
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "PRODUCTION_REACHABLE": true,
+      "id": "RESTART_BOUNDARY",
+      "path": "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+      "symbol": "SupervisorLifecycle.restart"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "candidate_source_artifacts": [
+    "canonical_optimization_experiment_evidence_v1",
+    "optimization_envelope_evidence_v1",
+    "p5_m4_m8_governed_evidence_binding_context_v1"
+  ],
+  "earliest_blocker": null,
+  "fields": [
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Governed P5 producer artifact validator on CURRENT main.",
+      "source_artifact": "optimization_envelope_evidence_v1",
+      "source_authority": "P5_PRODUCER_CLOSURE",
+      "source_field": "validate_optimization_envelope_evidence_v1",
+      "target_field": "target_schema_validator",
+      "transformation": "validate_module"
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Producer emits optimization_envelope_evidence_v1; does not equate raw canonical_optimization_experiment_evidence_v1.",
+      "source_artifact": "optimization_envelope_evidence_v1",
+      "source_authority": "P5_PRODUCER_CLOSURE",
+      "source_field": "evidence_kind",
+      "target_field": "evidence_kind",
+      "transformation": "identity"
+    },
+    {
+      "classification": "MECHANICAL_TRANSFORM",
+      "lossiness": "NONE",
+      "reason": "Instrument sourced from authoritative market_context_v1 via binding context.",
+      "source_artifact": "p5_m4_m8_governed_evidence_binding_context_v1",
+      "source_authority": "MARKET_CONTEXT_V1_BINDING",
+      "source_field": "instrument_ref",
+      "target_field": "instrument.instrument_id",
+      "transformation": "instrument_binding_from_ref_v1"
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Epoch supplied in binding context; not inferred from M5 plane_identity.",
+      "source_artifact": "p5_m4_m8_governed_evidence_binding_context_v1",
+      "source_authority": "GOVERNED_BINDING_CONTEXT",
+      "source_field": "market_observation_epoch",
+      "target_field": "market_observation_epoch",
+      "transformation": "identity"
+    },
+    {
+      "classification": "MECHANICAL_TRANSFORM",
+      "lossiness": "NONE",
+      "reason": "Timestamp from market_context_v1 observed_at only.",
+      "source_artifact": "p5_m4_m8_governed_evidence_binding_context_v1",
+      "source_authority": "MARKET_CONTEXT_V1_BINDING",
+      "source_field": "observed_at",
+      "target_field": "observed_at_unix",
+      "transformation": "parse_iso8601_utc_to_unix"
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "P5 envelope content_hash is A intake source digest.",
+      "source_artifact": "optimization_envelope_evidence_v1",
+      "source_authority": "P5_PRODUCER_CLOSURE",
+      "source_field": "content_hash",
+      "target_field": "source_evidence_digest",
+      "transformation": "identity"
+    },
+    {
+      "classification": "MECHANICAL_TRANSFORM",
+      "lossiness": "NONE",
+      "reason": "M5 research slices referenced by digest; no trading semantics added.",
+      "source_artifact": "canonical_optimization_experiment_evidence_v1",
+      "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+      "source_field": "reproducibility_digest",
+      "target_field": "typed_payload_semantics",
+      "transformation": "opaque_digest_ref_only"
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Producer id matches P2 registry optimization.envelope_evidence.producer.",
+      "source_artifact": "optimization_envelope_evidence_v1",
+      "source_authority": "P2_REGISTRY_ALIGNED",
+      "source_field": "producer_id",
+      "target_field": "producer_id",
+      "transformation": "identity"
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Binding context locks M5 content_hash before envelope emission.",
+      "source_artifact": "canonical_optimization_experiment_evidence_v1",
+      "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+      "source_field": "content_hash",
+      "target_field": "m5_lineage_lock",
+      "transformation": "binding_context.source_lineage_content_digest"
+    }
+  ],
+  "first_blocking_classification": null,
+  "first_blocking_field": null,
+  "first_blocking_reason": null,
+  "mandatory_field_count": 9,
+  "owner_schema_equivalence_declared": false,
+  "producer_bridge_allowed": true,
+  "schema_version": "master_v2_double_play_evidence_input_plane_p5_contract_crosswalk/v1",
+  "target_contract": "EvidenceIntakeRecordV1 + CanonicalMasterV2EvidenceEnvelopeV1 (P1/P2 A intake)",
+  "target_evidence_kind": "optimization_envelope_evidence_v1",
+  "verdict": "MECHANICALLY_ALLOWED"
+}

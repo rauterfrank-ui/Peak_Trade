@@ -1,0 +1,9 @@
+### CON-2102 — Scope-Änderungen brauchen ökonomische Identität
+
+Status im Quellenabgleich: **UNPROVEN** · Klasse: `DERIVED_INFERENCE`.
+
+Wenn Scope/Stop in einer später ausdrücklich erlaubten Forschung variiert wird, kann derselbe geometrische Vorteil bei bindendem Risikolimit andere Menge, Kosten und Exposition erzeugen. Vergleiche müssen deshalb Kapital-/Contract-/Kosten-/Sizing-Version und bindendes Limit mitführen; aus Preisbewegung allein folgt keine verbesserte Netto-Ökonomie.
+
+**Grenze:** Vorhandene Forschungsevaluator- und CRS-Pfade zuerst auf Wiederverwendung prüfen. Keine Änderung an Scope-Formel, Kapital oder Sizing freigegeben.
+
+Quellen: EVI-2203, EVI-2205, EVI-2207, EVI-2209, EVI-2211, EVI-2212, EVI-2213, EVI-2214, EVI-2216, EVI-2217, EVI-2224, EVI-2234, EVI-2235, EVI-2240, EVI-2246, EVI-2249, EVI-2250, EVI-2253, EVI-2258, EVI-2259, EVI-2260, EVI-2286, EVI-2292, EVI-2293, EVI-2297, EVI-2298, EVI-2299.

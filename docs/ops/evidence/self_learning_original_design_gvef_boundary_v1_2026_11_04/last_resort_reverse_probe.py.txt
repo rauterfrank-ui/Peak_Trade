@@ -1,0 +1,21 @@
+from pathlib import Path
+import json,subprocess
+from src.evaluation.golden_vectors.evaluators.self_learning_v1 import SelfLearningEvaluatorV1
+from src.evaluation.golden_vectors.runner.generic_runner_v1 import GenericRunnerV1,GvefRunRequestV1
+from src.evaluation.golden_vectors.contracts.validation import parse_domain_evaluation_context_v1
+from tests.evaluation.golden_vectors.evaluator_fixtures_v1 import sl_context
+from tests.evaluation.golden_vectors.test_gvef_domain_evaluators_bwp3_v1 import _runner_deps
+results=[]
+for name,base,candidate in [('empty_dictionary_not_source_authenticated',{},{}),('explicit_synthetic_different_artifacts',{'TEST_ONLY_SYNTHETIC':True,'model_id':'m1','epoch':1},{'TEST_ONLY_SYNTHETIC':True,'model_id':'m1','epoch':2}),('malformed_artifact',{},[])]:
+ ctx=sl_context().model_dump(mode='json',by_alias=True)
+ for item in ctx['replay_trace']['entries']:
+  item['learning_artifact']=base if item['label']=='baseline'else candidate
+ record=GenericRunnerV1().execute(GvefRunRequestV1(parse_domain_evaluation_context_v1(ctx)),_runner_deps(SelfLearningEvaluatorV1()))
+ results.append({'case':name,'baseline_input':base,'candidate_input':candidate,'runner_state':record.state.value,'baseline_result':record.baseline_result.model_dump(mode='json',by_alias=True)if record.baseline_result else None,'candidate_result':record.candidate_result.model_dump(mode='json',by_alias=True)if record.candidate_result else None,'failure_classification':record.failure_classification.value if record.failure_classification else None})
+assert results[0]['runner_state']=='REGISTERED'
+assert results[0]['candidate_result']['semantic_digest_deltas']['evidence_source_class']=='SEALED_EXISTING_EVIDENCE'
+assert results[1]['runner_state']=='REGISTERED'
+assert [m['metric_id']for m in results[1]['candidate_result']['metrics']]==['sl.artifact_digest']
+assert results[2]['runner_state']=='FAILED'
+Path('/tmp/peaktrade_sl_gvef_reverse_probe.json').write_text(json.dumps({'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'scope':'Controlled mechanism probes only; existing fixture identity/context and deterministic test doubles, no natural source or actual learning model','cases':results,'interpretation':'No-marker source-class label is not source authentication. Current canonical evaluator hashes generic artifacts and checks explicit authority flags; no numerical outcome/stability criterion reconstructed from this surface alone. No full Blueprint defect verdict without missing machine manifests/reconciliation.'},indent=2)+'\n')
+print([(r['case'],r['runner_state'])for r in results])

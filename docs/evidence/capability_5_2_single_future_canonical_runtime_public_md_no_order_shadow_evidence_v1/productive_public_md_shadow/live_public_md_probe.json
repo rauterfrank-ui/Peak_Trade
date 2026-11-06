@@ -1,0 +1,30 @@
+{
+  "capture_digest": "8d2d6e0ee9894e8039e5a244cc1e6dac94b695c791911a23613299c4337ffd51",
+  "envelope_count": 2,
+  "network_access_occurred": true,
+  "ok": true,
+  "orders_attempted": false,
+  "private_api_used": false,
+  "public_market_data_only": true,
+  "sample_envelope": {
+    "byte_size": 114,
+    "capture_started_at": "2026-08-02T06:32:10Z",
+    "captured_at": "2026-08-02T06:32:11Z",
+    "effective_at": "2026-08-02T06:32:11Z",
+    "http_status": 200,
+    "provider_code": "0",
+    "provider_message": "",
+    "provider_timestamp": "2026-08-02T06:32:11Z",
+    "query_parameters": {
+      "instId": "ADA-USDT-SWAP",
+      "instType": "SWAP"
+    },
+    "raw_body_utf8": "{\"code\":\"0\",\"data\":[{\"instId\":\"ADA-USDT-SWAP\",\"instType\":\"SWAP\",\"markPx\":\"0.1852\",\"ts\":\"1785652331046\"}],\"msg\":\"\"}",
+    "raw_payload_digest": "243ca00c26b671e9e7f491c1f6e8be9b8d51318cd217835a7d439c5366d65625",
+    "request_path": "/api/v5/public/mark-price",
+    "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+    "response_received_at": "2026-08-02T06:32:11Z"
+  },
+  "transport_mode": "LIVE_PUBLIC_MD_PROBE",
+  "venue_native_id": "ADA-USDT-SWAP"
+}

@@ -1,0 +1,23 @@
+{
+  "artifact_class": "V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_DECISION_V1",
+  "workpackage_id": "V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_V1",
+  "bound_origin_main_sha": "aaea8eb2a65528db818de5b7e750197f00afbfa3",
+  "predecessor_workpackage_id": "V32_D27_F5_SHADOW_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_V1",
+  "predecessor_pr": 6771,
+  "normative_spec": "docs/ops/specs/V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_V1.md",
+  "owner_module": "src/governance/v32_post_d27_test_entry_lifecycle_global_closure_adjudication_v1.py",
+  "d27_global_closure_implemented": true,
+  "d27_status": "PROVEN_CURRENT",
+  "d27_closure_proven": true,
+  "earliest_remaining_d27_gap": null,
+  "f5_lifecycle_decision": "config/governance/v32_d27_f5_shadow_test_entry_lifecycle_enforcement_v1_decision_v1.json",
+  "f1_f2_lifecycle_decision": "config/governance/v32_d27_test_entry_lifecycle_enforcement_forensic_bounded_completion_v1_decision_v1.json",
+  "next_true_blocker": "D28_D29_PROMOTION_AND_OPTIMIZATION_PRODUCTIVE_JOIN_REQUIRE_OWNER_POLICY",
+  "next_true_blocker_class": "OWNER_POLICY_REQUIRED",
+  "implementation_mode": "COMPOSE_EXISTING",
+  "productive_numeric_values_set_current": 0,
+  "promotion_authority": "NONE",
+  "trading_decision_authority_changed": false,
+  "new_authority_created": false,
+  "external_effect_authorized": false
+}

@@ -1,0 +1,71 @@
+{
+  "schema": "peaktrade.enter_29p_current_alignment.v1",
+  "base_revision": "040db81400cfde273258bb600447e3f04bc8bdb4",
+  "scope": "Resolve prior 18 cursor/29P failures and directly impacted consumer regressions; tests/docs only",
+  "production_source_changes": [],
+  "test_groups": {
+    "focused_tests.xml": {
+      "tests": 51,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    "impact_diagnostic_tests.xml.gz": {
+      "tests": 243,
+      "errors": 0,
+      "failures": 10,
+      "skipped": 0
+    },
+    "consumer_remediation_tests.txt": {
+      "tests": 85,
+      "failures": 0,
+      "errors": 0,
+      "source": "Captured pytest output; six complete test files, no deselection"
+    }
+  },
+  "overlap_warning": "Do not sum groups. Wider diagnostic is pre-remediation and deliberately retains failures.",
+  "ruff": "PASS: all 11 changed Python files",
+  "docs_tokens": {
+    "files_scanned": 7,
+    "violations": []
+  },
+  "atlas_validation": "PASS",
+  "atlas_generated_drift": [],
+  "unchanged_historical_learning_ledger_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "desktop_blueprint_sha256": "3ec41fff2aaf8cf2180b928530ae1b821d8a9cc2fcaf03c69627e833f2cb46ca",
+  "sha256": {
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md": "e84c56b7bd07ad0d785dd9c83fedbf80937622c1d49ebfd2ba709fb6c3c3f5d8",
+    "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md": "6aa89e0c22dade15cefb2c785283f945c5b6a54a4306b6dd9fde55cc204fafbb",
+    "docs/ops/evidence/ENTER_29P_CURRENT_CONFIGURATION_ALIGNMENT_2026_11_03.md": "f7a4483f72eaff4e2eff71815101cc62913fa0fd452c7fe58b4e3cc0cfb3e67c",
+    "docs/ops/evidence/enter_29p_current_configuration_alignment_v1_2026_11_03/focused_tests.xml": "11fe43efc9afb1817a863bd065c6ab35be273ddcd6d5907b187861c70856c4c0",
+    "docs/ops/evidence/enter_29p_current_configuration_alignment_v1_2026_11_03/impact_diagnostic_tests.xml.gz": "a235437b06fc2eb0f2ec8a4501ae14448ba18309f3a6c8928e374014c982650d",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1.md": "d73886229ca016357ffc42dfcca9baa22526f0595811fefe2d9ec12268ed13e3",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_V1.md": "060e153009a8f32e795326ffe5b049e00af7ea7a810fc340d6f2b96d60a147b2",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_CONFIRMATION_CURSOR_JOIN_V1.md": "edbbf9b1abb0ec174be709b883b964bf0eca6fc99d1d859f462f1589c72c52c2",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md": "91c638e449514c722668b54fde35ab64edd9d5b5f9c1307ddb9531b607c7c981",
+    "docs/system_atlas/entities/catalog.yaml": "326bb7c6419b3dca1a0ab99daa5d3b7ce2b9ccb91796b41d23e63d2fc5f7e850",
+    "tests/fixtures/ops/approved_reconfiguration_core_v1.json": "1f4d9e72c5d0149db8aef249b7f28acbe4ff12277bd782a95777679eb8f6a85f",
+    "tests/ops/_reconfiguration_protected_sources_v1.py": "6d2a7d361fc33ce934737edec5ce2334c23b07af6d95a45da88ee953ffd5ca2c",
+    "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py": "9ef5e124d97d48d10e7cffa11f95fa32dd15a007c065b264cae0db4c6f7fccc5",
+    "tests/ops/test_current_productive_natural_mv2_dp_enter_fixture_v1.py": "f2b382d8f0d103c03e7fe8537db68c9caf50644007ad8b3c911aa567a52e91f0",
+    "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py": "cc56042ebbe05f8a49aaaab7c1842cbdf6c3c702f228dace5ffdd245e75bf083",
+    "tests/ops/test_current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py": "16f69634e85c6d22494dacf720b038500c3e752c08e1745fdd9add055d6473ab",
+    "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py": "beb00efe934c30829ce9fa92291ce4261645045cec873abf376a4f15e4f5ebd3",
+    "tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py": "19a2b9db8c71727b76b9daa2063cd1991f475f2b2722bbe587727e23d40fa3d3",
+    "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py": "ac4b6b059d65519bafdbd7c7f6cf3cd2acaf26b4514e4299d36a387ad45aba44",
+    "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py": "75ba9dab9b435cddf54f1db6494e32a4892108e7659f760fa4f85fb0881db19b",
+    "tests/ops/test_p5_10_productive_activation_and_binding_v1.py": "3d9c5a58fba6a78ce1af220b32d84c1508eb7454d03f2f914ab7a04601052868",
+    "tests/ops/test_reconfiguration_protected_sources_v1.py": "faab589f2674e17e08dbaa4065797dbf839e3408653933f2211fadd0575df63e",
+    "docs/ops/evidence/enter_29p_current_configuration_alignment_v1_2026_11_03/consumer_remediation_tests.txt": "b830388288b54bc337094fc24cc8c5fd8b63ba1e4c83acfe67486b2c99c6e3d5"
+  },
+  "limits": [
+    "No real private GET, credentials, orders, transfer, activation or push",
+    "Not full repository/GitHub CI or Treasury closure"
+  ],
+  "docs_reference_targets": {
+    "result": "PASS",
+    "changed_md_files": 7,
+    "references": 459,
+    "implementation": "Existing extract_targets_from_line/resolve_target, same file-only/fence rules as reference gate"
+  }
+}

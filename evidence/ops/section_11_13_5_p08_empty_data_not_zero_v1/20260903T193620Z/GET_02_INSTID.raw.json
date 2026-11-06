@@ -1,0 +1,38 @@
+{
+  "AUTHORITY": "NONE",
+  "BODY_BYTES": 31,
+  "BODY_SHA256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+  "BODY_UTF8_EXACT": "{\"code\":\"0\",\"data\":[],\"msg\":\"\"}",
+  "BODY_WAS_JSON_RESERIALIZED": false,
+  "DOCUMENT_CLASS": "P08_EMPTY_DATA_NOT_ZERO_FIRST_PARTY_RAW_EXCHANGE_V1",
+  "DOCUMENT_ROLE": "FORENSIC_RAW_NOT_CANONICAL_NOT_ADJUDICATION",
+  "ELAPSED_SECONDS": 0.1112852499991277,
+  "ENDPOINT": "/api/v5/account/positions?instId=SUI-USD_UM_XPERP-310404",
+  "ENDPOINT_PATH": "/api/v5/account/positions",
+  "GET_ERROR": null,
+  "GET_INDEX": 2,
+  "GET_ROLE": "TARGET_INSTID_ACCOUNT_POSITIONS",
+  "HOST": "eea.okx.com",
+  "HTTP_STATUS": 200,
+  "METHOD": "GET",
+  "PARSE_ERROR": null,
+  "QUERY_PARAMETERS": {
+    "instId": "SUI-USD_UM_XPERP-310404"
+  },
+  "REDIRECT_FOLLOWED": false,
+  "REDIRECT_STATUS": null,
+  "REQUEST_TIME_UTC": "2026-09-03T19:36:20Z",
+  "RESPONSE_HEADERS_SAFE": {
+    "CF-RAY": "a35733e8a93958ea-TXL",
+    "Content-Length": "31",
+    "Content-Type": "application/json;charset=UTF-8",
+    "Date": "Thu, 03 Sep 2026 19:36:20 GMT",
+    "Server": "cloudflare",
+    "cf-cache-status": "DYNAMIC",
+    "x-content-type-options": "nosniff"
+  },
+  "RESPONSE_TIME_UTC": "2026-09-03T19:36:20Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "SEND_ATTEMPTED": true,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true
+}

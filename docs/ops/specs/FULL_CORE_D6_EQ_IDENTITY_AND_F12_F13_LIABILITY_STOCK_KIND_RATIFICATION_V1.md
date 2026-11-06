@@ -1,0 +1,55 @@
+---
+docs_token: DOCS_TOKEN_FULL_CORE_D6_EQ_IDENTITY_AND_F12_F13_LIABILITY_STOCK_KIND_RATIFICATION_V1
+status: active
+scope: Full-Core D6 eq-identity and F12/F13/U05 liability-stock kind ratification; sealed BH raw plus S1-S6 plus #6452/#6453/#6454 only; RATIFIED_EQ_IDENTITY=NONE; F12/F13/U05 remain UNKNOWN; F16-F18 unchanged UNKNOWN; no GET; no POST; no MS2; no D7; RAW_EQ_SOURCE_AUTHORITY=false; LEGACY_STRUCTURE_RESTORED=false; no LiveExecutionPort construction
+capability: FULL_CORE_D6_EQ_IDENTITY_AND_F12_F13_LIABILITY_STOCK_KIND_RATIFICATION_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-13
+---
+
+# Full Core D6 Eq Identity And F12 F13 Liability Stock Kind Ratification V1
+
+Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.BI.
+
+```text
+OWNER_GO=OWNER_GO_D6_EQ_IDENTITY_AND_F12_F13_LIABILITY_STOCK_KIND_RATIFICATION_V1
+OWNER_GO_STATUS=CONSUMED
+WORKPACKAGE=D6_EQ_IDENTITY_AND_F12_F13_LIABILITY_STOCK_KIND_RATIFICATION_V1
+SEALED_INPUT_ONLY=true
+VENUE_GET_COUNT=0
+POST_COUNT=0
+RATIFIED_EQ_IDENTITY=NONE
+F12_DECISION=REMAIN_UNKNOWN
+F13_DECISION=REMAIN_UNKNOWN
+U05_KIND_DECISION=REMAIN_UNKNOWN
+F16_DECISION=REMAIN_UNKNOWN
+F17_DECISION=REMAIN_UNKNOWN
+F18_DECISION=REMAIN_UNKNOWN
+KIND_SET_INCLUDE_EXCLUDE_BLOCKED_BY=F12_F13_EQ_IDENTITY_NONE_AND_AUTHORIZED_FRESH_BALANCE_GET_EMPTY_OR_ZERO_DOES_NOT_PROVE_ABSENCE
+EARLIEST_REMAINING_D6_BLOCKER=F12_F13_REMAIN_UNKNOWN_AFTER_EQ_IDENTITY_NONE_AND_AUTHORIZED_FRESH_BALANCE_GET_EMPTY_OR_ZERO_DOES_NOT_PROVE_ABSENCE
+RATIFIED_SOURCE_KINDS=NONE
+KIND_SET=EMPTY_FAIL_CLOSED
+KIND_SET_RESOLVED=false
+RAW_EQ_SOURCE_AUTHORITY=false
+EQ_RECONCILIATION_TARGET_ONLY=true
+LEGACY_STRUCTURE_RESTORED=false
+SEMANTIC_SALVAGE_RULE_APPLIED=true
+MS2_AUTHORIZED=false
+D6_FULLY_CLOSED=false
+D7_AUTHORIZED=false
+ATLAS_AUTHORITY=NONE
+C17_CREATED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+AUTHORITY_EFFECT=NONE
+```
+
+This persist re-reads sealed BH `GET &#47;api&#47;v5&#47;account&#47;balance`
+raw bytes, extracts forensic `eq` &#47; `cashBal` &#47; `upl` &#47; `liab*`
+tokens without rewriting the raw body, and inventories today's canonical
+semantic sources. No unique eq-composition proof is present. Algebraic
+identity is forbidden. D6 eq IDENTITY is therefore `NONE`. F12, F13,
+and U05 remain `REMAIN_UNKNOWN`. F16–F18 are not uniquely decided by that
+same identity and remain `REMAIN_UNKNOWN`. Legacy equity structure is
+not restored. C01–C16 remain rejected. Venue `eq` remains a
+reconciliation target only. Mini-Slice 2, D6 closeout, and D7 remain
+unauthorized.

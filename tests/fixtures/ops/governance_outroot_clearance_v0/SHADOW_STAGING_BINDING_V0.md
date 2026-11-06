@@ -1,0 +1,8 @@
+# Staging Binding v0 (shadow lane)
+
+RUN_ID=__RUN_ID__
+DURABLE_OUTROOT=__OUTROOT__
+STAGING_ROOT=__SHADOW_STAGING__
+LANE=shadow
+EMPTY_LAYOUT_ONLY=true
+RUNTIME_STARTED=false

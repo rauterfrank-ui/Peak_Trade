@@ -1,0 +1,156 @@
+{
+  "schema_name": "market_dashboard_projection_octet_upstream_artifact_creation_verify.v1",
+  "generated_at": "2026-08-05T00:21:11Z",
+  "owner_go": "UPSTREAM_PRESENTATION_PROJECTION_ARTIFACT_CREATION_V1",
+  "active_archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "resolved_archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "read_only": true,
+  "materializer_write_performed": false,
+  "exporter_write_performed": false,
+  "families": [
+    {
+      "family_id": "dynamic_scope",
+      "projection_path": "readmodels/dynamic_scope_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_valid": false,
+      "schema_invalid": false,
+      "loader_name": "try_load_dynamic_scope_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "DYNAMIC_SCOPE_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "fallback_or_substitution_used": false,
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE"
+    },
+    {
+      "family_id": "regime_bull_bear_switch",
+      "projection_path": "readmodels/bull_bear_regime_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_valid": false,
+      "schema_invalid": false,
+      "loader_name": "try_load_bull_bear_regime_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "BULL_BEAR_REGIME_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "fallback_or_substitution_used": false,
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE"
+    },
+    {
+      "family_id": "canonical_decision",
+      "projection_path": "readmodels/canonical_decision_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_valid": false,
+      "schema_invalid": false,
+      "loader_name": "try_load_canonical_decision_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "CANONICAL_DECISION_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "fallback_or_substitution_used": false,
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE"
+    },
+    {
+      "family_id": "double_play",
+      "projection_path": "readmodels/double_play_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_valid": false,
+      "schema_invalid": false,
+      "loader_name": "try_load_double_play_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "DOUBLE_PLAY_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "fallback_or_substitution_used": false,
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE"
+    },
+    {
+      "family_id": "safety_authority",
+      "projection_path": "readmodels/safety_authority.v1.json",
+      "artifact_present": false,
+      "schema_valid": false,
+      "schema_invalid": false,
+      "loader_name": "try_load_safety_authority_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "SAFETY_AUTHORITY_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "fallback_or_substitution_used": false,
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE"
+    },
+    {
+      "family_id": "risk_sizing_capital",
+      "projection_path": "readmodels/risk_sizing_capital_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_valid": false,
+      "schema_invalid": false,
+      "loader_name": "try_load_risk_sizing_capital_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "RISK_SIZING_CAPITAL_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "fallback_or_substitution_used": false,
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE"
+    },
+    {
+      "family_id": "execution_reconciliation",
+      "projection_path": "readmodels/execution_reconciliation_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_valid": false,
+      "schema_invalid": false,
+      "loader_name": "try_load_execution_reconciliation_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "EXECUTION_RECONCILIATION_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "fallback_or_substitution_used": false,
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE"
+    },
+    {
+      "family_id": "economic_summary",
+      "projection_path": "readmodels/economic_summary_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_valid": false,
+      "schema_invalid": false,
+      "loader_name": "try_load_economic_summary_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "ECONOMIC_SUMMARY_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "fallback_or_substitution_used": false,
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE"
+    }
+  ],
+  "summary": {
+    "PROJECTION_PRESENT_COUNT": 0,
+    "PROJECTION_ABSENT_COUNT": 8,
+    "SCHEMA_VALID_COUNT": 0,
+    "SCHEMA_INVALID_COUNT": 0,
+    "LOADER_SUCCESS_COUNT": 0,
+    "LOADER_MISSING_SOURCE_COUNT": 8,
+    "NONCANONICAL_FALLBACK_USED": false
+  },
+  "decision_strip_mapping_precondition": false,
+  "decision_strip_mapping_precondition_reason": "double_play projection absent in verified active archive; no blocker-field presenter transport proof without durable projection; template mapping not authorized and not implemented",
+  "browser_verification": "NOT_PERFORMED",
+  "consumer_invariants": {
+    "DASHBOARD_ROLE": "PURE_CONSUMER",
+    "AUTHORITY_EFFECT": "NONE",
+    "TRADING_LOGIC_CHANGED": false,
+    "TRADING_STATE_MUTATION_PATH_ADDED": false,
+    "CANONICAL_READMODEL_SEMANTICS_CHANGED": false,
+    "ORDER_OR_COMMAND_PATH_ADDED": false,
+    "NONCANONICAL_FALLBACK_USED": false,
+    "LIVE_TRADING_ENABLED": false,
+    "TESTNET_TRADING_ENABLED": false,
+    "PAPER_ORDER_EXECUTION_ENABLED": false
+  }
+}

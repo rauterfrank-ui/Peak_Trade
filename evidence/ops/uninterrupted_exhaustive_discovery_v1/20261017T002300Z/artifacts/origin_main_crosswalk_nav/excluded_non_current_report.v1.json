@@ -1,0 +1,3804 @@
+{
+  "excluded": [
+    {
+      "id": "SO-SRC-PKG:ai",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:ai_orchestration",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:aiops",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:backtest",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:experiments",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:levelup",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:live_eval",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:meta",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:r_and_d",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:research",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:sim",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:strategies",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-SRC-PKG:sweeps",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:canonical_r12_eg_i44_fund_dedicated_funding_accounting_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:canonical_r6_phase_8_1_policy_precondition_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:canonical_r6_s2_portfolio_risk_contracts_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:canonical_r6_s3_multi_future_runtime_architecture_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:canonical_r6_s4_multi_future_shadow_sim_evidence_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:canonical_r6_s5_bounded_authorization_preparation_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:canonical_realistic_sim_replay_semantics_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:cap22_offline_mvr_evidence_harness_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:offline_execution_permission_and_position_creation_producer_wiring_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:offline_funding_balance_read_producer_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:peak_trade_research_backtest_live_parity_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:peak_trade_robustness_and_stress_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:simulated_entry_reduce_exit_actionability_evidence_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:step_29u_offline_capability_v0",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SO-OPS-PKG:wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+      "kind": "census_object",
+      "reason": "OFFLINE_RESEARCH_without_productive_reachability",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SYSTEM:peak_trade",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "SUBSYSTEM:master_v2",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:external_data_archive_locator_consumers",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "FUNCTIONAL_CORE:double_play",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "RUNBOOK:canonical_master_runbook",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "NAVIGATION_INDEX:current_whole_system_functional_causal_model_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "NAVIGATION_INDEX:map_of_truth",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CONTRACT:t016_learning_blueprint_family_absorption_and_provenance_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "NAVIGATION_INDEX:current_universe_landscape_snapshot_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CONTRACT:elementary_direction_primitive_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:elementary_direction_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CONTRACT:mv2_c2_directional_confirmation_progress_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:directional_confirmation_progress_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "FORENSIC_REFERENCE:information_corpus_persistence_base",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNBOOK:vollautonomie_v4_4_12",
+      "kind": "atlas_entity",
+      "reason": "atlas_epistemic_excluded:HISTORICAL",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "OWNER_DECISION:cap23_exclusive_selection",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "OWNER_DECISION:btc_excluded",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_2_1_gfu",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_2_2_ranking",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:top20_opportunity_evaluation_residency_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghosv_current_execution_evidence_reader_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CAPABILITY:cap_economic_md_input",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:peak_trade_public_market_data_runtime_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:okx_eea_private_account_state_runtime_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CAPABILITY:market_data_private_state_runtime_convergence_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:cap22_economic_md_dual_input_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:peak_trade_ranking_matrix_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:peak_trade_ranking_feature_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap21_feature_production_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap22_peak_trade_ranking_runtime_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:future_profile_snapshot_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap22_research_backtest_live_parity_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap22_robustness_and_stress_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:operator_profile_explainability_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "EVIDENCE:ranking_selection_profile_blueprint_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CONTRACT:cap22_offline_policy_candidates_and_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:cap22_historical_evidence_time_semantics_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:cap22_append_only_15m_pit_persistence_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_full_autonomy_runtime_n5_completion_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_mf_n5_instrument_runtime_identity_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:mf_selection_context_boundary_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:mf_selector_consumption_and_anti_churn_ownership_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:mf_selection_and_anti_churn_semantics_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:mf_ranking_universe_and_single_egress_boundary_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:mf_canonical_single_egress_authority_handoff_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:mf_authoritative_next_active_set_ownership_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_2_3_single_selected_future",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_2_4_runtime_binding",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_1_1_reconciliation",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_3_1_futures_accounting",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_4_1_pre_activation_closure",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_7_2_stateful_no_order",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CAPABILITY:cap_11_13_5_live_canary",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:section_11_13_5_live_canary_capital_guard_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_recovery_guard_exposure_signals_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_current_okx_phase7_readiness_adjudication_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "UNIVERSE:governed_futures_universe",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SELECTOR:productive_futures_ranking",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SELECTOR:single_selected_future_policy",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "BINDER:bound_instrument_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "HOST:cap72_stateful_host",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:gfu_eligibility",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_futures_input",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_state",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_survival",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_suitability",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_capital_slot",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_composition",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "ADAPTER:okx_public_md_client",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "AUTH_PRIMITIVE:okx_hmac_sign",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:flatten_execute_authority",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:btc_exclusion",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "GATE:max_positions_1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "GATE:live_authorized_false",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "DATA_CONTRACT:bound_instrument_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "DATA_CONTRACT:governed_universe_instrument_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "VENUE:okx",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "VENUE:okx_eea",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SCRIPT:run_gfu_producer",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SCRIPT:run_cap23_policy",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "INVARIANT:missing_metadata_never_defaulted",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "OBSERVER:post_action_canary",
+      "kind": "atlas_entity",
+      "reason": "atlas_epistemic_excluded:OPEN",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "TEST:gfu_producer",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "PHASE:ddo_offline_foundation",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_capture_v0",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_current_decision_consumer_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_ledger_v0",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_validation_producer_bindings",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_experiment_identity_binding",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CAPABILITY:integrated_offline_replay_correctness_head_bound_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CAPABILITY:integrated_offline_economic_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "HOST:wallclock_decision_economics_cycle",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:recon_startup_gate_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:simulated_execution_port_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "EXPERIMENT:canonical_experiment_identity_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "SCRIPT:check_system_atlas_impact",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_package_init",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_core_wiring",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_entry_exit_policy",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_volatility_presence_gate",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_dashboard_display",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_sole_authority_quarantine",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_naked_mv2_double_play_core_authority_hardening",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_naked_mv2_dp_single_boundary_purification",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "CONTRACT:p4_l6_explicit_d_t_proposal_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_2_productive_cycle_seam_invoke_and_authority_bind_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_5_o_r2_semantic_authority_contracts_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_7_regime_sidestate_projection_mapping_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_8b_regime_sidestate_projection_phase_authority_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_9d_layered_mechanical_sidestate_fsm_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_10a_layered_tick_merge_epoch_orchestration_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_10b_layered_epoch_remaining_authority_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:hard_facts_system_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:n1_whole_system_hard_facts_integration_wp_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:n1_standing_pre_external_runtime_supervisor_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_wp02_default_productive_universe_handoff_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_wp03_live_scoped_observation_golden_convergence_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_wp04_standing_pre_external_admission_endgame_done_gate_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:whole_system_connection_closure_bounded_wp_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:pre_external_to_external_effect_boundary_bounded_wp_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_productive_activation_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_continuous_run_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:external_effect_boundary_forensic_review_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:external_effect_authorization_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:standing_external_effect_lift_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:external_effect_permit_mint_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:checkout_independent_credential_access_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:real_keychain_access_or_credential_material_load_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_native_full_cycle_host_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:current_productive_one_shot_enter_e2e_runtime_handoff_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:productive_activation_boundary_forensic_review_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "CONTRACT:p5_10_productive_activation_and_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "atlas_without_census_path_anchor",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_dynamic_scope_governed_real_market_evidence",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_evaluate_authority_boundary",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dp_offline_scenario_replay",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_post_confirmation_ssc",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_decision_packet",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_canonical_volatility",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_golden_geometry_engine",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_canonical_market_context",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_canonical_scope",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_directional_assessment",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_capital_risk_sizing",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_surface_p",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_runtime_bridge",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_scope_events",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_local_evaluator",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_input_happy_path",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:double_play_old_effective_host_contract",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_integrated_replay",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_parity_gap_assessment",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_strategy_identity",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_arithmetic_decimal",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_scenario_matrix",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mv2_offline_boundary_adapters",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_d01_d02_topology_adjudication_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_14_decision_attribution_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_15_final_dod_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_productive_learning_to_g2_primary_evidence_causal_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:simple_run_evidence_owner_retention_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:post_6948_productive_continuous_run_authority_live_c1_convergence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:od_account_equity_sizing_source_canonical_adjudication_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:od_29p_normative_pack_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:post_6942_external_effect_authorization_full_chain_forensic_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:post_6943_real_keychain_material_load_scoped_perform_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:pre_live_fresh_state_and_slice_baseline_convergence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_continuous_observation_budget_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:productive_natural_market_data_capture_sink_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_golden_happy_vector_startability_evaluator_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_golden_happy_vector_current_input_observation_adapter_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_e2e_productive_pre_external_tail_bind_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_pre_external_continuation_snapshot_hydration_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:materialize_ghv_pre_external_observability_from_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_current_bounded_natural_evidence_forensic_adapter_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dynamic_market_selection_evidence_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:dynamic_market_runtime_cross_run_expectation_guard_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:ghv_system_wide_canary_surface_discovery_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_16_cmc_non_price_census_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_17_normative_non_price_cmc_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mi_market_context_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_18_existing_fact_market_context_materialization_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mi_market_context_existing_fact_materialization_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_19_orthogonal_context_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mi_market_context_phase_19_orthogonal_materialization_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_20_behavior_join_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mi_market_context_realized_behavior_join_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_21_learning_integration_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mi_loop_a_conditioned_learning_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_22_incremental_research_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:mi_phase_22_incremental_research_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_23_meta_dual_routing_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:meta_evidence_dual_router_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_24_representation_feedback_loop_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_25_dp_attribution_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_26_final_closed_cycle_dod_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_12_productive_lineage_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_phase_11_surface_portfolio_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:m10_productive_parameter_lineage_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:owner_scoped_get_budget_enforcement_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:u05_p1_futures_bound_interest_accrued_usdc_scoped_get_acquisition_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_negative_completeness_closeout_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_max_evidence_campaign_to_next_real_blocker_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_currency_domain_completeness_witness_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_liability_event_class_governance_and_ratified_query_class_set_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_bounded_query_traversal_completeness_witness_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_final_closeout_pr1_of_2_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_observation_restart_durability_witness_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:b05_full_core_governed_authority_chain_closure_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:companion_c2_fraction_to_units_runtime_completion_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_live_path_composition_root_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "DATA_CONTRACT:full_core_live_path_models_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_live_path_frozen_pretrade_conjunction_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_live_path_execution_boundary_halt_before_wire_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_live_path_restart_gate_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_live_path_standing_live_gates_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_live_path_identity_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_durable_filegate_join_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_owner_one_shot_permit_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_fresh_pretrade_runtime_get_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_live_account_bound_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:full_core_capital_admission_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:treasury_phase_1_offline_contracts_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:treasury_phase_2_read_only_reconciliation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:treasury_separation_gate_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:treasury_pdf_current_head_rebind_and_census_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:treasury_phase_3_shadow_enforcement_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "DATA_CONTRACT:treasury_shadow_enforcement_result_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_productive_reference_price_authority_producer_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_productive_monetary_normalization_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:current_productive_available_for_sizing_base_binding_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "DATA_CONTRACT:account_equity_orchestration_ingress_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:kill_switch_durable_filegate_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "GATE:portfolio_capital_reservation_budget_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:governance_policy_critic_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "DATA_CONTRACT:ghv_regression_corpus_provenance_v1",
+      "kind": "atlas_entity",
+      "reason": "current_canonical=false",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_contains_master_v2",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_master_v2_has_dp",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_runbook_supersedes_vollautonomie",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_map_navigates_runbook",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_whole_system_functional_causal_model_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_universe_landscape_snapshot",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_universe_landscape_navigates_runbook",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_system_has_cap21",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_cap22",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_public_market_data_runtime_v1",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_public_md_runtime_reuses_economic_md_pt1m_validation",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_private_account_state_runtime_v1",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_private_state_runtime_adapts_fresh_pretrade_get",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_md_private_runtime_convergence_v1",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_wp_c_convergence_depends_on_public_md_runtime",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_wp_c_convergence_depends_on_private_state_runtime",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_wp_c_o4_n_bars_learning_handoff_to_wallclock_ddo",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_wp_c_preserves_cap23_selection_owner",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_economic_md_input",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_governed_by_economic_md_dual_input",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_economic_md_governed_by_dual_input",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_map_navigates_cap22_economic_md_dual_input",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_economic_md_input_producer",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_cap22_governed_by_peak_trade_ranking_matrix_policy_v1",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_governed_by_peak_trade_ranking_feature_contract_v1",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap21_feature_production_depends_on_economic_md_input",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap21_feature_production_governed_by_feature_contract",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_depends_on_cap21_feature_production",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_ranking_runtime_depends_on_cap22",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_future_profile_observes_cap21_feature_production",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_future_profile_observes_cap22_ranking_runtime",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_future_profile_observes_cap23_selection_reference",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_b09_research_backtest_live_parity",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b09_parity_depends_on_b05_feature_production",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b09_parity_depends_on_b06_ranking_runtime",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b09_parity_preserves_cap23_selection_owner",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_b10_robustness_and_stress",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b10_robustness_depends_on_b05_feature_production",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b10_robustness_depends_on_b06_ranking_runtime",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b10_robustness_preserves_cap23_selection_owner",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_b11_operator_profile_explainability",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b11_operator_view_depends_on_b07_future_profile",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b11_operator_view_depends_on_b06_ranking_witness",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b11_operator_view_depends_on_cap23_selection",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_b11_operator_view_depends_on_cap24_binding",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_b12_blueprint_closure_record",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_b12_closure_observes_b09_parity",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_b12_closure_observes_b10_robustness",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_b12_closure_observes_b11_operator_profile",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_cap22_governed_by_offline_policy_candidates_and_evidence",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_governed_by_offline_mvr_spread_comparison_keys",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_governed_by_offline_mvr_threshold_set_and_evidence_harness",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_governed_by_historical_evidence_time_semantics",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_governed_by_append_only_15m_pit_persistence",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_map_navigates_cap22_offline_policy_candidates_and_evidence",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_cap22_offline_mvr_spread_comparison_keys",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_cap22_offline_mvr_threshold_set_and_evidence_harness",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_cap22_historical_evidence_time_semantics",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_cap22_append_only_15m_pit_persistence",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_mf_membership_context",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_mf_selector_anti_churn",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_mf_selection_anti_churn_semantics",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_mf_ranking_universe_single_egress",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_mf_canonical_single_egress_handoff",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_ranking_universe_to_full_core_ssf_handoff",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_cap23_optionally_uses_current_mf_member_pinned_cap23_n1_adapter",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_current_mf_n5_lane_topology_optionally_uses_pinned_cap23_adapter",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_current_mf_n5_lane_topology_depends_on_mf_membership_semantics",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_durable_lane_assignment_persistence_depends_on_n5_lane_topology",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_recovered_topology_consumer_depends_on_n5_lane_topology",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_recovered_topology_consumer_depends_on_durable_lane_assignment",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_occupied_lane_pin_consumer_depends_on_recovered_topology_consumer",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_occupied_lane_pin_consumer_depends_on_n5_lane_topology",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_ranking_domain_occupied_lane_cap23_produce_join_depends_on_occupied_lane_pin_consumer",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_ranking_domain_occupied_lane_cap23_produce_join_depends_on_cap23",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap23_produce_join",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap24",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_full_autonomy_occupied_lane_bound_ingest_depends_on_cap24_bind_join",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_full_autonomy_occupied_lane_bound_ingest_depends_on_n5_lane_topology",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_occupied_lane_mv2_dp_handoff_depends_on_fa_bound_ingest",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_occupied_lane_mv2_dp_handoff_depends_on_n5_lane_topology",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_fa_occupied_lane_n1_host_join_readiness_depends_on_n1_consumer",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_runtime_n5_completion_depends_on_n1_host_join_readiness",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_staged_control_plane_depends_on_productive_orchestrator",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_staged_control_plane_depends_on_portfolio_budget",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_fa_productive_runtime_orchestrator_depends_on_n1_host_join_readiness",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_fa_productive_runtime_orchestrator_depends_on_portfolio_budget",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_fa_productive_runtime_orchestrator_depends_on_mv2_dp_handoff",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_map_navigates_mf_authoritative_next_active_set",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_system_has_cap23",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_cap24",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_cap11",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_cap31",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_cap41",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_cap72",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_system_has_cap11135",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap23_depends_cap22",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap22_depends_cap21",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap24_depends_cap23",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap72_depends_cap24",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap31_depends_cap24",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap41_depends_cap24",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap41_depends_cap11",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap41_depends_cap31",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap21_governed_by_btc",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap21_governed_by_never_default",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_universe_uses_gfu_schema",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_schema_gfu_defines_contract",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:INTERPRETATION",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_selection_uses_schema",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_binder_uses_schema",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_schema_binding_defines_dto",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_runbook_has_program_dod",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_runbook_has_closure_std",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_va_has_dod_tl",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_status=HISTORICAL",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_va_has_dod_econ",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_status=HISTORICAL",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_va_has_dod_safety",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_status=HISTORICAL",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_cap21_tested_by",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_cap23_governed_by_owner",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_venue_okx_contains_eea",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_forensic_reference_of_corpus",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_package_init",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_core_wiring",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_entry_exit_policy",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_volatility_presence_gate",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_dashboard_display",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_sole_authority_quarantine",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_naked_mv2_double_play_core_authority_hardening",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_naked_mv2_dp_single_boundary_purification",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_naked_mv2_dp_mechanical_core",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:dp_naked_mechanical_core_depends_on_purification_primitives",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_naked_mv2_dp_explicit_layered_core",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:dp_naked_mechanical_core_depends_on_explicit_layered_core",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_dynamic_scope_empirical_calibration_research",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:dp_dynamic_scope_empirical_calibration_depends_on_mechanical_core",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_dynamic_scope_governed_real_market_evidence",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:dp_dynamic_scope_governed_real_market_evidence_depends_on_empirical_calibration",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_evaluate_authority_boundary",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_offline_scenario_replay",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_post_confirmation_ssc",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_decision_packet",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_canonical_volatility",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_canonical_market_context",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_canonical_scope",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_canonical_trading_decision_evidence",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_directional_assessment",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_capital_risk_sizing",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_surface_p",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_runtime_bridge",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_scope_events",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_regime_bull_bear_readmodel",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_local_evaluator",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_input_happy_path",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_integrated_replay",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_parity_gap_assessment",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_strategy_identity",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_arithmetic_decimal",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_pr4985_materiality_classifier",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_scenario_matrix",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_mv2_offline_boundary_adapters",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_composition",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_survival",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_suitability",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_state",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_futures_input",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mv2_contains_dp_capital_slot",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_dp_contains_dp_composition",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_dp_contains_dp_survival",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_dp_contains_dp_suitability",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_dp_contains_dp_state",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_dp_contains_dp_futures_input",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_dp_contains_dp_capital_slot",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_dp_contains_dp_core_wiring",
+      "kind": "atlas_relation",
+      "reason": "endpoint_not_in_current_atlas_anchor_set",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "REL:s_ddo_phase_contains_capture",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_ddo_phase_contains_input_evidence",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_ddo_phase_contains_current_decision_learning_binding",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_ddo_phase_contains_current_decision_consumer",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_ddo_current_decision_consumer_depends_on_binding",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_ddo_phase_contains_ledger",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_ddo_phase_contains_experiment_identity_binding",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_ddo_experiment_identity_reference_of_canonical_owner",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_ddo_phase_contains_validation_producer_bindings",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_system_contains_full_core_live_path_composition_root",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_d01_d02_topology_adjudication_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_8_mi_to_learning_integration_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_14_decision_attribution_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_15_final_dod_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_post_phase_15_dod_remediation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_runtime_primary_to_offline_observation_projection_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_g2_projection_feeds_runtime_learning_optimization_binding",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_g2_binding_to_m4_m8_real_continuation",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_m4_m8_real_to_meta_optimization_feedback_continuation",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_m4_m8_meta_optimization_feedback_continuation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_meta_feedback_to_p5_adjudicator_a_real_continuation",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_real_m4_m8_p5_adjudicator_a_continuation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_p5_adjudicator_a_to_p3_p4_l6_real_continuation",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_real_component_a_p3_p4_l6_continuation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_p4_l6_seam_to_runtime_apply_materialization_real_continuation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_p4_l6_runtime_apply_materialization_continuation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_f1_m9_scoped_owner_apply_execution_real_continuation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_f1_m9_scoped_owner_apply_execution_continuation_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_governed_productive_configuration_apply_authority_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_16_cmc_non_price_census_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_17_normative_non_price_cmc_contract_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mi_stack_contains_market_context_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_18_existing_fact_market_context_materialization_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mi_stack_contains_market_context_existing_fact_materialization_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_19_orthogonal_context_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mi_stack_contains_market_context_phase_19_orthogonal_materialization_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_20_behavior_join_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mi_stack_contains_market_context_realized_behavior_join_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_21_learning_integration_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mi_stack_contains_loop_a_conditioned_learning_evidence_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_22_incremental_research_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_mi_stack_contains_phase_22_incremental_research_evidence_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_23_meta_dual_routing_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_phase_23_contains_meta_evidence_dual_router_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_24_representation_feedback_loop_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_phase_24_contains_loop_c_orchestrator_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_25_dp_attribution_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_phase_25_contains_dp_attribution_evidence_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_26_final_closed_cycle_dod_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_phase_26_references_phase_25_closure_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_13_m10_promotion_boundary_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_12_productive_lineage_closure_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_phase_11_surface_portfolio_closure_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_t016_learning_blueprint_provenance",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_elementary_direction_primitive",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_elementary_direction_implements_primitive_contract",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:NAVIGATION_ONLY",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "REL:s_top20_residency_depends_on_cap22_valid_snapshot",
+      "kind": "atlas_relation",
+      "reason": "relation_epistemic_unverified:FORENSIC_RAW",
+      "relevance_state": "UNKNOWN"
+    },
+    {
+      "id": "ranking_economics_to_b09_parity_proof",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-OPS-PKG:peak_trade_research_backtest_live_parity_v1=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "b09_parity_proof_preserves_selection_authority",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-OPS-PKG:peak_trade_research_backtest_live_parity_v1=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "parity_b09_to_closure_b12",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-OPS-PKG:peak_trade_research_backtest_live_parity_v1=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "robustness_b10_to_closure_b12",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-OPS-PKG:peak_trade_robustness_and_stress_v1=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "mi_offline_to_optimization_research_input",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "mi_offline_to_multi_cycle_m5_m8_replay",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "g2_binding_to_canonical_optimization_learning_input",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "g2_m4_m8_fixture_continuation",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "g2_runtime_to_m4_m8_real_mechanical_continuation",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "real_runtime_m4_m8_to_meta_learning_ingest",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "real_runtime_meta_learning_to_optimization_feedback",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:meta=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "real_runtime_g2_to_meta_optimization_feedback_continuation",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "real_runtime_p5_optimization_envelope_to_adjudicator_a",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "real_runtime_p5_meta_learning_routed_to_adjudicator_a",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:meta=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "learning_evidence_export_to_optimization",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "optimization_to_governance",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:experiments=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    },
+    {
+      "id": "meta_search_backflow",
+      "kind": "census_edge",
+      "reason": "endpoint_not_current:SO-SRC-PKG:meta=NON_CURRENT",
+      "relevance_state": "NON_CURRENT"
+    }
+  ],
+  "historical_edges_ingested": 0,
+  "historical_entities_ingested": 0
+}

@@ -1,0 +1,250 @@
+{
+  "CANARY_ACK_OMITS_INSTID": true,
+  "CANARY_ACK_OMITS_POS": true,
+  "CANARY_ACK_OMITS_POSSIDE": true,
+  "CANARY_ACK_RETURN_FIELDS": [
+    "sCode",
+    "sMsg",
+    "ordId",
+    "clOrdId",
+    "tag"
+  ],
+  "CANARY_REQUEST_HAS_SZ_NOT_POS": true,
+  "CANARY_REQUEST_OMITS_POSSIDE": true,
+  "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_HANDOFF_CAPTURE_MOMENT_CENSUS_V1",
+  "EARLIEST_COMPLETE_HANDOFF_CAPTURE_MOMENT": "NONE",
+  "EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN": false,
+  "EARLIEST_COMPLETE_HANDOFF_CAPTURE_SEAM": "UNPROVEN",
+  "MINIMAL_SAFE_ARCHITECTURE": "UNPROVEN",
+  "MISSING_FIELD_AT_EACH_CANDIDATE_SEAM": {
+    "T0_DECISION": [
+      "clOrdId",
+      "ordId",
+      "instId",
+      "posSide",
+      "pos"
+    ],
+    "T1_ORDER_PLAN": [
+      "ordId",
+      "posSide",
+      "pos"
+    ],
+    "T2_PRE_SUBMIT_GATES": [
+      "ordId",
+      "posSide",
+      "pos"
+    ],
+    "T3_WIRE_SEND": [
+      "ordId",
+      "posSide",
+      "pos"
+    ],
+    "T4_HTTP_VENUE_ACKNOWLEDGEMENT": [
+      "posSide",
+      "pos"
+    ],
+    "T5_ORDER_ACCEPTED_OPEN": [
+      "posSide",
+      "pos"
+    ],
+    "T6_PARTIAL_OR_FULL_FILLS": [
+      "pos"
+    ],
+    "T7_VENUE_POSITION_MUTATION": [
+      "clOrdId",
+      "ordId",
+      "pos"
+    ],
+    "T8_PEAK_TRADE_ACCOUNTING_RECONCILIATION_OBSERVATION": [
+      "pos"
+    ],
+    "T9_RESTART_BOUNDARY": [
+      "clOrdId",
+      "ordId",
+      "instId",
+      "posSide",
+      "pos"
+    ]
+  },
+  "POST_RESTART_READ_SEAM": "adjudicate_live_restart_reconstructed_v1",
+  "PRE_RESTART_CAPTURE_SEAM": "CANARY_ACK_RETURN_PARTIAL_IDENTITY_ONLY;COMPLETE_IDENTITY_INCLUDING_POS=UNPROVEN",
+  "moments": [
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": false,
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T0_DECISION",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": false,
+      "instId": false,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": false,
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T1_ORDER_PLAN",
+      "NOTE": "Plan sz exists. Plan sz is not handoff pos. posSide omitted.",
+      "PEAK_TRADE_OWNED": true,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": false,
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T2_PRE_SUBMIT_GATES",
+      "PEAK_TRADE_OWNED": true,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T3_WIRE_SEND",
+      "NOTE": "Request body sz is not handoff pos. posSide omitted on net-mode plan.",
+      "PEAK_TRADE_OWNED": true,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T4_HTTP_VENUE_ACKNOWLEDGEMENT",
+      "NOTE": "ACK data-entry allowlist is sCode,sMsg,ordId,clOrdId,tag. instId is Peak_Trade-owned from the request/plan, not ACK data.",
+      "PEAK_TRADE_OWNED": true,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": true,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T5_ORDER_ACCEPTED_OPEN",
+      "NOTE": "Order-state is not position proof.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": true,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "pos"
+      ],
+      "MOMENT": "T6_PARTIAL_OR_FULL_FILLS",
+      "NOTE": "fillSz and fill posSide are venue GET fills. Fill is not position proof.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": true,
+      "pos": false,
+      "posSide": true
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "pos"
+      ],
+      "MOMENT": "T7_VENUE_POSITION_MUTATION",
+      "NOTE": "Venue owns venue position. VENUE_OKX_EEA is not Peak_Trade handoff owner.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": false,
+      "instId": true,
+      "ordId": false,
+      "pos": false,
+      "posSide": true
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "pos"
+      ],
+      "MOMENT": "T8_PEAK_TRADE_ACCOUNTING_RECONCILIATION_OBSERVATION",
+      "NOTE": "GET /account/positions.pos is venue-native accounting path. VENUE_GET_COPY_IS_NOT_CONTEMPORANEOUS_HANDOFF. ACCOUNTING_ONLY_IS_NOT_RESTART.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": true,
+      "pos": false,
+      "posSide": true
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": false,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": false,
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T9_RESTART_BOUNDARY",
+      "NOTE": "No Peak_Trade durable pre-restart handoff exists.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": false,
+      "instId": false,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    }
+  ]
+}

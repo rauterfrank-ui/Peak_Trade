@@ -1,0 +1,505 @@
+{
+  "BULK_ID": "WSFC-GHV-BULK-05",
+  "sectors": [
+    {
+      "sector_id": "B05-S01",
+      "nodes": [
+        {
+          "NODE_ID": "B05-S01-N001",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "authority_declaration_v1",
+          "CANONICAL_SOURCE": "O5 rebuild",
+          "PURPOSE": "Authority pins",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N002",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "market_dashboard_landscape_v2",
+          "CANONICAL_SOURCE": "webui",
+          "PURPOSE": "Read-only SSR",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N003",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "workflow_dashboard_readmodel_v1",
+          "CANONICAL_SOURCE": "webui",
+          "PURPOSE": "Archive readmodel",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N004",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "architecture_guards_v0",
+          "CANONICAL_SOURCE": "webui tests",
+          "PURPOSE": "Import guards",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N005",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "project_o4_envelopes_to_o5",
+          "CANONICAL_SOURCE": "read model",
+          "PURPOSE": "Projection",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N006",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "isolation_proofs_v1",
+          "CANONICAL_SOURCE": "O5",
+          "PURPOSE": "Isolation",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N007",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "landscape autobind suite",
+          "CANONICAL_SOURCE": "webui",
+          "PURPOSE": "Fail-closed load",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N008",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "health_endpoint",
+          "CANONICAL_SOURCE": "webui",
+          "PURPOSE": "GET health",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N009",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "observability fidelity",
+          "CANONICAL_SOURCE": "webui",
+          "PURPOSE": "Snapshot only",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N010",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "persistent_local_host",
+          "CANONICAL_SOURCE": "webui",
+          "PURPOSE": "Host contract",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N011",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "presentation octet orchestrator",
+          "CANONICAL_SOURCE": "ops",
+          "PURPOSE": "Materializer nav",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N012",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "operator profile explainability",
+          "CANONICAL_SOURCE": "ops B11",
+          "PURPOSE": "Read path",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N013",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "shell_route_v0",
+          "CANONICAL_SOURCE": "webui",
+          "PURPOSE": "No write controls",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S01-N014",
+          "SECTOR_ID": "B05-S01",
+          "COMPONENT": "STALE_CANNOT_RENDER_HEALTHY",
+          "CANONICAL_SOURCE": "O5 constants",
+          "PURPOSE": "Truth guard",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        }
+      ],
+      "boundaries": [
+        {
+          "BOUNDARY_ID": "B05-S01-B001",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B002",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B003",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B004",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B005",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B006",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B007",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B008",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B009",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B010",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B011",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B012",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S01-B013",
+          "SECTOR_ID": "B05-S01",
+          "GHV_CROSSED": true
+        }
+      ]
+    },
+    {
+      "sector_id": "B05-S02",
+      "nodes": [
+        {
+          "NODE_ID": "B05-S02-N001",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "PublicMarketDataRuntimeV1",
+          "CANONICAL_SOURCE": "runtime_orchestrator_v1.py",
+          "PURPOSE": "Orchestrator owner",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N002",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "process_public_events_v1",
+          "CANONICAL_SOURCE": "event_pipeline",
+          "PURPOSE": "Sequence/gap",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N003",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "recover_pt1m_gaps_via_rest_v1",
+          "CANONICAL_SOURCE": "rest_recovery",
+          "PURPOSE": "Recovery",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N004",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "freshness_v1",
+          "CANONICAL_SOURCE": "freshness",
+          "PURPOSE": "Stale classify",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N005",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "bootstrap_rest_snapshot_v1",
+          "CANONICAL_SOURCE": "rest_recovery",
+          "PURPOSE": "Bootstrap",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N006",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "PublicWsTransportV1",
+          "CANONICAL_SOURCE": "ws_transport",
+          "PURPOSE": "WS lifecycle",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N007",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "normalize_ws_payload_to_canonical_facts_v1",
+          "CANONICAL_SOURCE": "normalizers",
+          "PURPOSE": "Identity",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N008",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "append_fact_v1",
+          "CANONICAL_SOURCE": "durable_store",
+          "PURPOSE": "Persist",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N009",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "ranking_b05_adapter",
+          "CANONICAL_SOURCE": "consumer_adapters",
+          "PURPOSE": "61 marks",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N010",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "landscape_readmodel adapter",
+          "CANONICAL_SOURCE": "consumer_adapters",
+          "PURPOSE": "Non-auth presentation",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N011",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "constants FORBIDDEN_WS",
+          "CANONICAL_SOURCE": "constants",
+          "PURPOSE": "Host gate",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N012",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "gap_not_recovered_fail_closed",
+          "CANONICAL_SOURCE": "pytest",
+          "PURPOSE": "Fail-closed",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N013",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "durable_restart_replay",
+          "CANONICAL_SOURCE": "pytest",
+          "PURPOSE": "Restart",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N014",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "policy_v1.json",
+          "CANONICAL_SOURCE": "config",
+          "PURPOSE": "Config root",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        },
+        {
+          "NODE_ID": "B05-S02-N015",
+          "SECTOR_ID": "B05-S02",
+          "COMPONENT": "C1 spine seam",
+          "CANONICAL_SOURCE": "WP-01",
+          "PURPOSE": "Handoff only",
+          "GHV_TRAVERSAL_CLASS": "DETERMINISTIC",
+          "EVIDENCE_CLASS": "DETERMINISTIC_TEST_VECTOR",
+          "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+          "CAN_POST": false,
+          "CAN_CREATE_EXTERNAL_EFFECT": false
+        }
+      ],
+      "boundaries": [
+        {
+          "BOUNDARY_ID": "B05-S02-B001",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B002",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B003",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B004",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B005",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B006",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B007",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B008",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B009",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B010",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B011",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B012",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B013",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        },
+        {
+          "BOUNDARY_ID": "B05-S02-B014",
+          "SECTOR_ID": "B05-S02",
+          "GHV_CROSSED": true
+        }
+      ]
+    }
+  ],
+  "GHV_WAS_FORENSIC_INSTRUMENT_FOR_ENTIRE_BULK": true,
+  "BULK05_COMPONENT_OCCURRENCES": 29,
+  "BULK05_BOUNDARY_OCCURRENCES": 27
+}

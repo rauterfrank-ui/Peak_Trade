@@ -1,0 +1,415 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "productive_pure_stack_stage2_surface_b_owner_sta_raw_pt1m_observation_input_and_exclusive_tip_proof_decisions_v1.schema.json",
+  "title": "Surface-B raw PT1M observation-input and exclusive-tip proof decisions v1",
+  "description": "Machine-readable STA proof contract under DEC_RAW_INPUT_PACK_MATERIALIZATION. Does not authorize download, pack materialization, campaign start, partition fill, or authority flips. Numeric proof slots remain null until STA-authorized venue-native finalized PT1M rows exist.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "decision_id",
+    "decision_status",
+    "owner_value",
+    "owner_go",
+    "owner_go_base_sha",
+    "authority_surface",
+    "scope",
+    "bar_interval",
+    "candle_event_time_semantics",
+    "mark_event_time_semantics",
+    "exclusive_tip_formula",
+    "download_or_network_fetch_policy",
+    "download_or_network_fetch",
+    "proof_contract_ready",
+    "sta_external_input_fields_ready",
+    "owner_partition_selection_ready",
+    "numeric_proofs_resolved",
+    "instrument_binding",
+    "authorized_source_classification",
+    "numeric_proof_slots",
+    "rule_proofs",
+    "digest_provenance",
+    "unresolved_fields",
+    "authority_refs",
+    "non_effects",
+    "decisions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_owner_sta_raw_pt1m_observation_input_and_exclusive_tip_proof_decisions/v1"
+    },
+    "document_type": {
+      "const": "OWNER_STA_RAW_PT1M_OBSERVATION_INPUT_AND_EXCLUSIVE_TIP_PROOF_DECISIONS_MANIFEST"
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_OWNER_STA_RAW_PT1M_OBSERVATION_INPUT_AND_EXCLUSIVE_TIP_PROOF"
+    },
+    "status": {
+      "const": "OWNER_STA_RAW_PT1M_OBSERVATION_INPUT_AND_EXCLUSIVE_TIP_PROOF_CONTRACT_READY_NUMERIC_PROOFS_STILL_UNRESOLVED"
+    },
+    "decision_id": {
+      "const": "DEC_RAW_INPUT_PACK_MATERIALIZATION"
+    },
+    "decision_status": {
+      "const": "RATIFIED"
+    },
+    "owner_value": {
+      "const": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION"
+    },
+    "owner_go": {
+      "const": "OWNER_STA_SURFACE_B_RAW_PT1M_OBSERVATION_INPUT_AND_EXCLUSIVE_TIP_PROOF_V1"
+    },
+    "owner_go_base_sha": {
+      "const": "86d5eb3893647c8a77233569cccbd106245e5e09"
+    },
+    "authority_surface": {
+      "const": "B"
+    },
+    "scope": {
+      "const": "STA_INPUT_PROOF_DOCS_MANIFEST_SCHEMA_VALIDATOR_EVIDENCE_ONLY"
+    },
+    "bar_interval": {
+      "const": "PT1M"
+    },
+    "candle_event_time_semantics": {
+      "const": "PT1M_BUCKET_OPEN_EVENT_TIME"
+    },
+    "mark_event_time_semantics": {
+      "const": "PT1M_BUCKET_OPEN_EVENT_TIME"
+    },
+    "exclusive_tip_formula": {
+      "const": "last_finalized_bar_open_event_time_epoch_s+60"
+    },
+    "download_or_network_fetch_policy": {
+      "const": "STA_EXPLICITLY_AUTHORIZED_ONLY"
+    },
+    "download_or_network_fetch": {
+      "const": false
+    },
+    "proof_contract_ready": {
+      "const": true
+    },
+    "sta_external_input_fields_ready": {
+      "const": false
+    },
+    "owner_partition_selection_ready": {
+      "const": false
+    },
+    "numeric_proofs_resolved": {
+      "const": false
+    },
+    "instrument_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "venue",
+        "canonical_instrument_id",
+        "venue_instrument_id",
+        "contract_type",
+        "market_type",
+        "quote_currency",
+        "settlement_currency"
+      ],
+      "properties": {
+        "venue": {
+          "const": "okx"
+        },
+        "canonical_instrument_id": {
+          "const": "inst-eth-usdt-perp"
+        },
+        "venue_instrument_id": {
+          "const": "ETH-USDT-SWAP"
+        },
+        "contract_type": {
+          "const": "perpetual"
+        },
+        "market_type": {
+          "const": "futures"
+        },
+        "quote_currency": {
+          "const": "USDT"
+        },
+        "settlement_currency": {
+          "const": "USDT"
+        }
+      }
+    },
+    "authorized_source_classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorized_source_classes",
+        "forbidden_source_classes",
+        "candle_authority_source_ref",
+        "mark_price_authority_source_ref"
+      ],
+      "properties": {
+        "authorized_source_classes": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [
+            {
+              "const": "VENUE_NATIVE_OKX_PUBLIC_HISTORY_CANDLES_PT1M_CONFIRM_1"
+            },
+            {
+              "const": "VENUE_NATIVE_OKX_PUBLIC_HISTORY_MARK_PRICE_CANDLES_PT1M_CONFIRM_1"
+            }
+          ],
+          "items": false
+        },
+        "forbidden_source_classes": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "prefixItems": [
+            {
+              "const": "DASHBOARD_SOURCE"
+            },
+            {
+              "const": "OKX_ARCHIVE_AS_AUTHORITY"
+            },
+            {
+              "const": "FIXTURE_DEMO_SYNTHETIC_SOURCE"
+            },
+            {
+              "const": "O4_PT1H_AS_PT1M_AUTHORITY"
+            },
+            {
+              "const": "CANDLE_CLOSE_AS_MARK"
+            },
+            {
+              "const": "NOTION_AS_AUTHORITY"
+            }
+          ],
+          "items": false
+        },
+        "candle_authority_source_ref": {
+          "const": "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1"
+        },
+        "mark_price_authority_source_ref": {
+          "const": "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1"
+        }
+      }
+    },
+    "numeric_proof_slots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candle_row_count",
+        "mark_row_count",
+        "first_finalized_bucket_open_event_time_epoch_s",
+        "last_finalized_bucket_open_event_time_epoch_s",
+        "exclusive_tip_event_time_epoch_s",
+        "observation_pack_digest",
+        "raw_source_digest"
+      ],
+      "properties": {
+        "candle_row_count": {
+          "type": "null"
+        },
+        "mark_row_count": {
+          "type": "null"
+        },
+        "first_finalized_bucket_open_event_time_epoch_s": {
+          "type": "null"
+        },
+        "last_finalized_bucket_open_event_time_epoch_s": {
+          "type": "null"
+        },
+        "exclusive_tip_event_time_epoch_s": {
+          "type": "null"
+        },
+        "observation_pack_digest": {
+          "type": "null"
+        },
+        "raw_source_digest": {
+          "type": "null"
+        }
+      }
+    },
+    "rule_proofs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "require_finalized_candles",
+        "require_finalized_marks",
+        "require_candle_mark_bucket_join",
+        "open_bucket_at_as_of_forbidden",
+        "bar_after_as_of_forbidden",
+        "derive_exclusive_tip",
+        "require_exclusive_tip_pt1m_alignment",
+        "require_observation_pack_digest",
+        "require_raw_source_digest",
+        "require_digest_bound_row_counts",
+        "require_first_and_last_event_time_proof",
+        "require_contiguity_proof",
+        "require_duplicate_free_event_time_keys",
+        "require_monotonic_event_time",
+        "require_instrument_consistency",
+        "authorized_source_only",
+        "pt1m_alignment_rules_proven",
+        "candle_mark_join_rules_proven",
+        "contiguity_rules_proven",
+        "duplicate_free_rules_proven",
+        "pt1m_alignment_concrete_epoch_proof",
+        "candle_mark_join_concrete_proof",
+        "contiguity_concrete_proof",
+        "duplicate_free_concrete_proof"
+      ],
+      "properties": {
+        "require_finalized_candles": {
+          "const": true
+        },
+        "require_finalized_marks": {
+          "const": true
+        },
+        "require_candle_mark_bucket_join": {
+          "const": true
+        },
+        "open_bucket_at_as_of_forbidden": {
+          "const": true
+        },
+        "bar_after_as_of_forbidden": {
+          "const": true
+        },
+        "derive_exclusive_tip": {
+          "const": true
+        },
+        "require_exclusive_tip_pt1m_alignment": {
+          "const": true
+        },
+        "require_observation_pack_digest": {
+          "const": true
+        },
+        "require_raw_source_digest": {
+          "const": true
+        },
+        "require_digest_bound_row_counts": {
+          "const": true
+        },
+        "require_first_and_last_event_time_proof": {
+          "const": true
+        },
+        "require_contiguity_proof": {
+          "const": true
+        },
+        "require_duplicate_free_event_time_keys": {
+          "const": true
+        },
+        "require_monotonic_event_time": {
+          "const": true
+        },
+        "require_instrument_consistency": {
+          "const": true
+        },
+        "authorized_source_only": {
+          "const": true
+        },
+        "pt1m_alignment_rules_proven": {
+          "const": true
+        },
+        "candle_mark_join_rules_proven": {
+          "const": true
+        },
+        "contiguity_rules_proven": {
+          "const": true
+        },
+        "duplicate_free_rules_proven": {
+          "const": true
+        },
+        "pt1m_alignment_concrete_epoch_proof": {
+          "const": false
+        },
+        "candle_mark_join_concrete_proof": {
+          "const": false
+        },
+        "contiguity_concrete_proof": {
+          "const": false
+        },
+        "duplicate_free_concrete_proof": {
+          "const": false
+        }
+      }
+    },
+    "digest_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "observation_pack_digest",
+        "raw_source_digest"
+      ],
+      "properties": {
+        "status": {
+          "const": "UNRESOLVED_NO_AUTHORIZED_PACK_OR_RAW_BYTES"
+        },
+        "observation_pack_digest": {
+          "type": "null"
+        },
+        "raw_source_digest": {
+          "type": "null"
+        }
+      }
+    },
+    "unresolved_fields": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "prefixItems": [
+        {
+          "const": "candle_row_count"
+        },
+        {
+          "const": "mark_row_count"
+        },
+        {
+          "const": "first_finalized_bucket_open_event_time_epoch_s"
+        },
+        {
+          "const": "last_finalized_bucket_open_event_time_epoch_s"
+        },
+        {
+          "const": "exclusive_tip_event_time_epoch_s"
+        },
+        {
+          "const": "pt1m_alignment_concrete_epoch_proof"
+        },
+        {
+          "const": "candle_mark_join_concrete_proof"
+        },
+        {
+          "const": "contiguity_concrete_proof"
+        },
+        {
+          "const": "duplicate_free_concrete_proof"
+        },
+        {
+          "const": "observation_pack_digest"
+        },
+        {
+          "const": "raw_source_digest"
+        },
+        {
+          "const": "digest_bound_row_counts"
+        },
+        {
+          "const": "authorized_observation_window"
+        }
+      ],
+      "items": false
+    },
+    "authority_refs": {
+      "type": "object"
+    },
+    "non_effects": {
+      "type": "object"
+    },
+    "decisions": {
+      "type": "object"
+    }
+  }
+}

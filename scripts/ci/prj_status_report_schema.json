@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PR-J Status Report",
+  "type": "object",
+  "required": ["output_version", "generated_utc", "workflow", "runs_count", "counts", "runs"],
+  "properties": {
+    "output_version": { "type": "integer", "minimum": 1 },
+    "generated_utc": { "type": "string" },
+    "workflow": { "type": "string" },
+    "runs_count": { "type": "integer", "minimum": 0 },
+    "counts": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "latest_any": {
+      "type": ["object", "null"],
+      "properties": {
+        "id": { "type": ["integer", "null"] },
+        "event": { "type": "string" },
+        "status": { "type": "string" },
+        "conclusion": { "type": ["string", "null"] },
+        "created_at": { "type": "string" },
+        "html_url": { "type": "string" }
+      }
+    },
+    "latest_schedule_success": {
+      "type": ["object", "null"],
+      "properties": {
+        "id": { "type": ["integer", "null"] },
+        "event": { "type": "string" },
+        "status": { "type": "string" },
+        "conclusion": { "type": ["string", "null"] },
+        "created_at": { "type": "string" },
+        "html_url": { "type": "string" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": ["action", "reason_codes"],
+      "properties": {
+        "action": { "type": "string" },
+        "reason_codes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "event", "status", "conclusion", "created_at", "html_url"],
+        "properties": {
+          "id": { "type": ["integer", "null"] },
+          "run_number": { "type": ["integer", "null"] },
+          "event": { "type": "string" },
+          "status": { "type": "string" },
+          "conclusion": { "type": ["string", "null"] },
+          "created_at": { "type": "string" },
+          "updated_at": { "type": ["string", "null"] },
+          "html_url": { "type": "string" }
+        }
+      }
+    }
+  }
+}

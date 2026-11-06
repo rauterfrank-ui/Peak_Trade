@@ -1,0 +1,28 @@
+"""External capital decrease → Treasury Phase-2 observation. Read-only GET only."""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "TREASURY_PHASE_2_READ_ONLY_EXTERNAL_CAPITAL_DECREASE_OBSERVATION_BINDING_V1"
+PACKAGE_MARKER = "TREASURY_PHASE_2_READ_ONLY_EXTERNAL_CAPITAL_DECREASE_OBSERVATION_BINDING_V1=true"
+OWNER = "ops.treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1"
+SCHEMA_VERSION = "treasury_phase_2_read_only_external_capital_decrease_observation_binding.v1"
+CONTRACT_VERSION = "v1"
+
+EDGE_SEAM_ID = "EXTERNAL_CAPITAL_DECREASE_TO_TREASURY_PHASE_2_VENUE_OBSERVATION_V1"
+TREASURY_PHASE_2_OWNER = "ops.treasury_phase_2_read_only_reconciliation_v1"
+FUNDING_BALANCE_READ_OWNER = "ops.offline_funding_balance_read_producer_v1"
+E1_DEPOSIT_BINDING_OWNER = "ops.treasury_phase_2_read_only_venue_observation_binding_v1"
+
+RUNTIME_AUTHORIZATION_EFFECT = "NONE"
+NETWORK_EXECUTION_AUTHORIZED = False
+TREASURY_MUTATION_AUTHORIZED = False
+EXTERNAL_EFFECT_AUTHORIZED = False
+AVAILABLE_FOR_SIZING_MINT_AUTHORIZED = False
+PRODUCTIVE_WITHDRAWAL_PATH = False
+NO_WITHDRAW_POST = True
+
+FUNDING_BALANCE_IS_NOT_WITHDRAWAL_HISTORY = True
+OBSERVED_BALANCE_ALONE_CONFIRMS_DEPLETION = False
+OBSERVED_BALANCE_ALONE_CONFIRMS_EXTERNAL_WITHDRAWAL = False
+TREASURY_CAPITAL_CCY = "USDC"
+VENUE_BALANCE_FIELD = "funding_availBal_usdc"

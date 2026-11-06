@@ -1,0 +1,116 @@
+# =============================================================================
+# Peak_Trade Risk Layer v1.0 - Config Template (Scaffold)
+# =============================================================================
+# This file contains the NEW sections for Risk Layer v1.0.
+# Merge these sections into your main config/config.toml.
+#
+# Status: SCAFFOLD (Agent A0)
+# Implementation: Agents A3 (VaR Backtest) + A5 (Monte Carlo)
+# =============================================================================
+
+# =============================================================================
+# Monte Carlo VaR (Agent A5)
+# =============================================================================
+[risk.monte_carlo]
+# Enable Monte Carlo VaR calculations
+enabled = false  # Set to true when Agent A5 completes implementation
+
+# Number of Monte Carlo simulations
+n_simulations = 10000
+
+# Simulation method: "bootstrap", "parametric", or "copula"
+method = "bootstrap"
+
+# Confidence level (0.95 = 95% VaR)
+confidence_level = 0.95
+
+# Risk horizon in days (typically 1 or 10)
+horizon_days = 1
+
+# Random seed for reproducibility
+seed = 42
+
+# Copula settings (only used if method = "copula")
+copula_type = "gaussian"  # "gaussian" or "t"
+copula_df = 5             # Degrees of freedom for t-copula
+
+
+# =============================================================================
+# VaR Backtesting Extensions (Agent A3)
+# =============================================================================
+[risk.var_backtest]
+# Kupiec POF Test (already exists, kept for reference)
+kupiec_confidence = 0.95
+
+# Christoffersen Independence Test
+christoffersen_enabled = true
+independence_test = true       # Test for serial independence of violations
+conditional_coverage = true    # Joint test: coverage + independence
+
+# Basel Traffic Light System
+traffic_light_enabled = true
+green_zone_threshold = 0.95    # GREEN: Model acceptable
+yellow_zone_threshold = 0.80   # YELLOW: Increased monitoring
+red_zone_threshold = 0.80      # RED: Model revision required
+
+
+# =============================================================================
+# Stress Testing Extensions (Agent A4 - optional)
+# =============================================================================
+[risk.stress]
+enabled = true
+
+# Path to scenario library (directory with .toml files)
+scenario_library_path = "config/scenarios/"
+
+# Automated stress testing
+auto_run_daily = true
+alert_on_breach = true
+
+# Example scenario (inline definition)
+[[risk.stress.scenarios]]
+name = "2020_covid_crash"
+description = "COVID-19 market crash (March 2020)"
+asset_shocks = { "BTC-EUR" = -0.50, "ETH-EUR" = -0.60 }
+
+[[risk.stress.scenarios]]
+name = "interest_rate_spike"
+description = "Sudden interest rate increase"
+asset_shocks = { "BTC-EUR" = -0.15, "ETH-EUR" = -0.20 }
+
+
+# =============================================================================
+# Usage Examples
+# =============================================================================
+#
+# 1. Monte Carlo VaR:
+# -------------------
+# from src.risk import build_monte_carlo_var_from_config
+# from src.core.peak_config import load_config
+#
+# cfg = load_config()
+# mc_calc = build_monte_carlo_var_from_config(returns_df, cfg)
+# if mc_calc:
+#     result = mc_calc.calculate(weights={"BTC-EUR": 0.6, "ETH-EUR": 0.4}, portfolio_value=100000)
+#     print(f"MC VaR: {result.var:,.2f}")
+#
+#
+# 2. VaR Backtesting (Full Suite):
+# ----------------------------------
+# from src.risk_layer.var_backtest import run_full_var_backtest
+#
+# results = run_full_var_backtest(violations, alpha=0.05)
+# print(f"Kupiec: {results['kupiec'].test_passed}")
+# print(f"Independence: {results['independence'].passed}")
+# print(f"Conditional Coverage: {results['conditional_coverage'].passed}")
+# print(f"All tests passed: {results['all_passed']}")
+#
+#
+# 3. Basel Traffic Light:
+# ------------------------
+# from src.risk_layer.var_backtest import basel_traffic_light
+#
+# result = basel_traffic_light(n_violations=6, n_observations=250, alpha=0.01)
+# print(result)  # 🟡 YELLOW (requires monitoring)
+#
+# =============================================================================

@@ -1,0 +1,60 @@
+{
+  "DISCOVERED_SURFACES_ACCOUNTED_FOR": true,
+  "GHV_CANARY_ROOT": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "GHV_SYSTEM_WIDE_FOOTPRINT": true,
+  "NO_FAIL_FAST": true,
+  "direct_consumers": [],
+  "observed_but_not_modeled_surfaces": [
+    {
+      "causal_relation": "GATES_TRACED_STATE",
+      "child_trace_ids": [
+        "gen_f4da0250b23071573e6cd5c2"
+      ],
+      "consumer_symbol": "downstream_pre_external",
+      "cycle_index": 7,
+      "discovery_reason": "flight_record stage=VENUE_PLAN_BIND producer=translate_core_live_intent_to_venue_plan_v1 consumer=downstream_pre_external",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "file": "full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1",
+      "input_generation_ids": [
+        "gen_893ad98fc2cd9bc288ee0dcb"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [
+        "gen_f4da0250b23071573e6cd5c2"
+      ],
+      "parent_trace_ids": [
+        "gen_893ad98fc2cd9bc288ee0dcb"
+      ],
+      "stage_if_known": "VENUE_PLAN_BIND",
+      "surface_id": "OBS:translate_core_live_intent_to_venue_plan_v1->downstream_pre_external@VENUE_PLAN_BIND",
+      "symbol": "translate_core_live_intent_to_venue_plan_v1"
+    },
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "PROTECTIVE_STOP_DERIVATION",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=PROTECTIVE_STOP_DERIVATION status=NOT_IMPLEMENTED_OFFLINE",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_578c76767310b40366e3c792"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_578c76767310b40366e3c792"
+      ],
+      "stage_if_known": "PROTECTIVE_STOP_DERIVATION",
+      "surface_id": "OBS:resolve_protective_stop_sizing_side_for_live_29p_join_v1->PROTECTIVE_STOP_DERIVATION@PROTECTIVE_STOP_DERIVATION",
+      "symbol": "resolve_protective_stop_sizing_side_for_live_29p_join_v1"
+    }
+  ],
+  "observed_gates": [
+    "OBS:translate_core_live_intent_to_venue_plan_v1->downstream_pre_external@VENUE_PLAN_BIND"
+  ],
+  "observed_transformations": [],
+  "owner": "full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1",
+  "schema_version": "ghv_system_wide_causal_footprint.v1",
+  "transitive_consumers": []
+}

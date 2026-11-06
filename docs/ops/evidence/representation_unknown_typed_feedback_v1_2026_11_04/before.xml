@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="1.026" timestamp="2026-11-04T04:01:08.649305+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.learning.test_representation_unknown_typed_feedback_v1" name="test_unknown_pattern_preserves_non_evaluation_through_actual_loop_c[pattern.real.versioned.ref]" time="0.027"><failure message="src.experiments.canonical_learning_representation_offline_evaluation_v1.LearningRepresentationOfflineEvaluationError: EVALUATION_FIXTURE_UNSUPPORTED">tests/learning/test_representation_unknown_typed_feedback_v1.py:25: in test_unknown_pattern_preserves_non_evaluation_through_actual_loop_c
+    first = run_loop_c_representation_feedback_closure_v1(request)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py:147: in run_loop_c_representation_feedback_closure_v1
+    evaluation = run_learning_representation_offline_evaluation_v1(
+src/experiments/canonical_learning_representation_offline_evaluation_v1.py:95: in run_learning_representation_offline_evaluation_v1
+    outcome = _outcome_for_fixture(fixture_label=fixture_label, research_purpose=purpose)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/experiments/canonical_learning_representation_offline_evaluation_v1.py:74: in _outcome_for_fixture
+    raise LearningRepresentationOfflineEvaluationError("EVALUATION_FIXTURE_UNSUPPORTED")
+E   src.experiments.canonical_learning_representation_offline_evaluation_v1.LearningRepresentationOfflineEvaluationError: EVALUATION_FIXTURE_UNSUPPORTED</failure></testcase><testcase classname="tests.learning.test_representation_unknown_typed_feedback_v1" name="test_unknown_pattern_preserves_non_evaluation_through_actual_loop_c[FIXTURE_FEATURE_USEFULNES]" time="0.022"><failure message="src.experiments.canonical_learning_representation_offline_evaluation_v1.LearningRepresentationOfflineEvaluationError: EVALUATION_FIXTURE_UNSUPPORTED">tests/learning/test_representation_unknown_typed_feedback_v1.py:25: in test_unknown_pattern_preserves_non_evaluation_through_actual_loop_c
+    first = run_loop_c_representation_feedback_closure_v1(request)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py:147: in run_loop_c_representation_feedback_closure_v1
+    evaluation = run_learning_representation_offline_evaluation_v1(
+src/experiments/canonical_learning_representation_offline_evaluation_v1.py:95: in run_learning_representation_offline_evaluation_v1
+    outcome = _outcome_for_fixture(fixture_label=fixture_label, research_purpose=purpose)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/experiments/canonical_learning_representation_offline_evaluation_v1.py:74: in _outcome_for_fixture
+    raise LearningRepresentationOfflineEvaluationError("EVALUATION_FIXTURE_UNSUPPORTED")
+E   src.experiments.canonical_learning_representation_offline_evaluation_v1.LearningRepresentationOfflineEvaluationError: EVALUATION_FIXTURE_UNSUPPORTED</failure></testcase><testcase classname="tests.learning.test_representation_unknown_typed_feedback_v1" name="test_unknown_pattern_preserves_non_evaluation_through_actual_loop_c[FIXTURE_UNDEFINED_POSITIVE_CASE]" time="0.021"><failure message="src.experiments.canonical_learning_representation_offline_evaluation_v1.LearningRepresentationOfflineEvaluationError: EVALUATION_FIXTURE_UNSUPPORTED">tests/learning/test_representation_unknown_typed_feedback_v1.py:25: in test_unknown_pattern_preserves_non_evaluation_through_actual_loop_c
+    first = run_loop_c_representation_feedback_closure_v1(request)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py:147: in run_loop_c_representation_feedback_closure_v1
+    evaluation = run_learning_representation_offline_evaluation_v1(
+src/experiments/canonical_learning_representation_offline_evaluation_v1.py:95: in run_learning_representation_offline_evaluation_v1
+    outcome = _outcome_for_fixture(fixture_label=fixture_label, research_purpose=purpose)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/experiments/canonical_learning_representation_offline_evaluation_v1.py:74: in _outcome_for_fixture
+    raise LearningRepresentationOfflineEvaluationError("EVALUATION_FIXTURE_UNSUPPORTED")
+E   src.experiments.canonical_learning_representation_offline_evaluation_v1.LearningRepresentationOfflineEvaluationError: EVALUATION_FIXTURE_UNSUPPORTED</failure></testcase></testsuite></testsuites>

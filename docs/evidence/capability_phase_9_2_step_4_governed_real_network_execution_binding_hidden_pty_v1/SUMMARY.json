@@ -1,0 +1,47 @@
+{
+  "call_graph_after": [
+    "Authorization issuance artifacts",
+    "build_canonical_session_request_from_issuance_artifacts_v1",
+    "explicit governed-public-network mode",
+    "network_allowed=true only from validated authorization scope",
+    "canonical hidden-PTY confirm-token acquisition",
+    "validate_authorization_binding_v1",
+    "validate_confirm_token_binding_v1",
+    "SessionLockV1.acquire",
+    "consume_authorization_binding_v1",
+    "consume_confirm_token_binding_v1",
+    "run_productive_wallclock_session_v1 (injected stub only in this capability)"
+  ],
+  "call_graph_before": [
+    "Authorization issuance artifacts",
+    "build_canonical_session_request_from_issuance_artifacts_v1",
+    "ADAPTER_FORBIDS_USE_REAL_NETWORK / SESSION_REQUEST_ADAPTER_CAPABILITY_FORBIDS_NETWORK_SESSION",
+    "dry probe only (network_session_allowed must remain false)"
+  ],
+  "capability_id": "PHASE_9_2_STEP_4_GOVERNED_REAL_NETWORK_EXECUTION_CAPABILITY_BINDING_SESSION_REQUEST_PLUS_NETWORK_ALLOWED_WITH_CANONICAL_HIDDEN_PTY_CONFIRM_HANDOFF_V1",
+  "claims": {
+    "AUTHORIZATION_CONSUMED": false,
+    "CONFIRM_TOKEN_CANONICAL_PATH_USED": true,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CONFIRM_TOKEN_PERSISTED": false,
+    "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": false,
+    "CONFIG_CHANGED": false,
+    "CORE_LOGIC_CHANGED": false,
+    "DASHBOARD_FILES_CHANGED": false,
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "HTTP_METHOD_ALLOWLIST": "GET_ONLY",
+    "NETWORK_ALLOWED_FROM_AUTHORIZATION": true,
+    "NETWORK_SESSION_EXECUTED": false,
+    "ORDER_SIDE_EFFECT_REACHABLE": false,
+    "PARALLEL_AUTHORIZATION_AUTHORITY_CREATED": false,
+    "PARALLEL_SESSION_REQUEST_MODEL_CREATED": false,
+    "PRESENTATION_LAYER_CHANGED": false,
+    "PRIVATE_ENDPOINT_REACHABLE": false,
+    "PUBLIC_MD_ALLOWLIST": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+    "REAL_NETWORK_REQUEST_COUNT": 0
+  },
+  "predecessor_closed": "PHASE_9_2_STEP_4_PRODUCTIVE_SESSION_REQUEST_CLI_OPERATOR_ADAPTER_V1",
+  "repository_sha": "31afa0422bfb44edd48a6c1d0f59fe3c4ba29310",
+  "schema_version": "phase_9_2_step_4_governed_real_network_execution_binding_evidence.v1",
+  "written_at_unix": 1785962700.0
+}

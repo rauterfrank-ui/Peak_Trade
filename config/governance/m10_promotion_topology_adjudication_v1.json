@@ -1,0 +1,78 @@
+{
+  "adjudication_digest": "9c544140bb5d7e629f6c6ef4f86acf43cd999c45f89970ec0db10cc9f253f181",
+  "canonical_m10_boundary_module": "src/governance/m10_promotion_boundary_v1.py",
+  "entries": [
+    {
+      "can_mutate_productive_config": false,
+      "can_self_authorize": false,
+      "classification": "CURRENT",
+      "module": "src/governance/optimization_proposal_governance_ingress_v1.py",
+      "path_id": "optimization_proposal_governance_ingress_v1",
+      "reachable": true,
+      "role": "M10_PROPOSAL_INGRESS",
+      "runtime_apply_relation": "FORBIDDEN"
+    },
+    {
+      "can_mutate_productive_config": false,
+      "can_self_authorize": false,
+      "classification": "CURRENT",
+      "module": "src/governance/explicit_productive_authorization_v1.py",
+      "path_id": "explicit_productive_authorization_v1",
+      "reachable": true,
+      "role": "M10_EXPLICIT_EXTERNAL_AUTHORIZATION",
+      "runtime_apply_relation": "NOT_IMPLIED"
+    },
+    {
+      "can_mutate_productive_config": false,
+      "can_self_authorize": false,
+      "classification": "CURRENT",
+      "module": "src/governance/m10_promotion_boundary_v1.py",
+      "path_id": "m10_promotion_boundary_v1",
+      "reachable": true,
+      "role": "M10_CANONICAL_PROMOTION_BOUNDARY",
+      "runtime_apply_relation": "STOP_AT_AUTHORIZED_PROMOTION_RECORD"
+    },
+    {
+      "can_mutate_productive_config": true,
+      "can_self_authorize": false,
+      "classification": "CURRENT",
+      "module": "src/governance/governed_productive_configuration_v1.py",
+      "path_id": "governed_productive_configuration_v1",
+      "reachable": false,
+      "role": "SUCCESSOR_MATERIALIZATION_NOT_M10_DEFAULT",
+      "runtime_apply_relation": "SEPARATE_GOVERNED_EDGE"
+    },
+    {
+      "can_mutate_productive_config": false,
+      "can_self_authorize": false,
+      "classification": "HISTORICAL_DOMAIN_SCOPED",
+      "module": "src/governance/promotion_loop/engine.py",
+      "path_id": "promotion_loop_engine",
+      "reachable": false,
+      "role": "LEGACY_PROMOTION_LOOP",
+      "runtime_apply_relation": "NOT_M10_CANONICAL"
+    },
+    {
+      "can_mutate_productive_config": false,
+      "can_self_authorize": false,
+      "classification": "CURRENT",
+      "module": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+      "path_id": "promotion_economic_gate_v1",
+      "reachable": true,
+      "role": "CANDIDATE_ELIGIBILITY_GATE_NOT_PROMOTION_AUTHORITY",
+      "runtime_apply_relation": "NON_AUTHORIZING"
+    },
+    {
+      "can_mutate_productive_config": false,
+      "can_self_authorize": false,
+      "classification": "HISTORICAL",
+      "module": "src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py",
+      "path_id": "learning_promotion_records_v0",
+      "reachable": false,
+      "role": "LEARNING_DOMAIN_PROMOTION_EVIDENCE",
+      "runtime_apply_relation": "NOT_M10_CANONICAL"
+    }
+  ],
+  "optimization_promotion_authority": "NONE",
+  "schema_version": "m10_promotion_topology_adjudication_v1"
+}

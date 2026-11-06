@@ -1,0 +1,21 @@
+{
+  "authority_classification": "DERIVED_DOMAIN_AUTHORITY_ONLY",
+  "canonical_document_path": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md",
+  "canonical_document_sha256": "cbb1c83d0f3f767ac27d684637fc7536502480d551d9a7017a5df832d57fd768",
+  "core_logic_changed": false,
+  "credentials_used": false,
+  "document_class": "CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK",
+  "document_version": "V2.4",
+  "live_trading_authorized": false,
+  "master_precedence": "ABSOLUTE",
+  "master_runbook_is_only_ssot": true,
+  "master_runbook_path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+  "paper_exchange_orders_authorized": false,
+  "ratification_manifest_path": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json",
+  "ratification_status": "LOCAL_DOCS_ONLY_RATIFICATION_PRECOMMIT",
+  "repository_base_sha": "4e0e1d48dfd3bbccc110cb98cef9f76d49759e57",
+  "repository_commit_sha": null,
+  "runtime_runbook_is_ssot": false,
+  "second_ssot_allowed": false,
+  "testnet_authorized": false
+}

@@ -1,0 +1,60 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_V1",
+  "authorized_baseline_sha": "4535069657e8d2effe3c26e2a9e18b2c66d2d3a4",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_23_meta_dual_routing_v1.py",
+  "phase_22_integration_config": "config/governance/unified_blueprint_phase_22_incremental_research_v1.json",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_23_closure_status": "PROVEN_COMPLETE",
+  "loop_c_status": "NOT_CLAIMED_PHASE_24_REQUIRED",
+  "routing_topology_reuse": {
+    "meta_learning_evidence": "REUSED_meta_learning_evidence_v1",
+    "meta_ingest": "REUSED_canonical_meta_learning_ingest_v1",
+    "optimization_consumer": "REUSED_canonical_meta_to_optimization_feedback_v1",
+    "learning_consumer": "NEW_bounded_canonical_meta_to_learning_research_adaptation_input_v1",
+    "dual_router": "NEW_canonical_meta_evidence_dual_router_v1"
+  },
+  "routing_proof": {
+    "meta_routing_typed": true,
+    "research_choice_to_optimization_only": true,
+    "learning_representation_to_learning_only": true,
+    "unknown_mixed_fail_closed": true,
+    "no_meta_broadcast": true,
+    "deterministic_routing_replay": true,
+    "provenance_preserved": true,
+    "wrong_consumer_rejected": true
+  },
+  "authority_invariants": {
+    "meta_evidence_authority": "NONE",
+    "optimization_promotion_authority": "NONE",
+    "optimization_direct_productive_write": "FORBIDDEN",
+    "learning_trading_authority": "NONE",
+    "no_automatic_promotion": true,
+    "no_self_deploy": true,
+    "no_self_modifying_learning": true,
+    "no_direct_feature_drop": true,
+    "no_direct_parameter_mutation": true,
+    "no_trading_gate_from_meta": true,
+    "no_meta_broadcast": true,
+    "mv2_dp_unchanged": true,
+    "no_authority_expansion": true,
+    "phase_22_prerequisite_required": true,
+    "phase_24_representation_feedback_forbidden": true,
+    "loop_c_proven_claim_forbidden": true
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_NORMATIVE_V1.md",
+    "config/governance/unified_blueprint_phase_23_meta_dual_routing_v1.json",
+    "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+    "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+    "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
+    "src/governance/unified_blueprint_phase_23_meta_dual_routing_v1.py",
+    "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
+    "tests/learning/test_meta_evidence_v1.py",
+    "tests/governance/test_unified_blueprint_phase_23_meta_dual_routing_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Phase 24 Representation Feedback (NOT authorized by Phase 23 OWNER_GO)",
+  "next_implementation_boundary": "Phase 24 bounded Learning representation consumption under separate Owner authorization"
+}

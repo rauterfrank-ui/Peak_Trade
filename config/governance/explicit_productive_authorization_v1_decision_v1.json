@@ -1,0 +1,19 @@
+{
+  "artifact_class": "EXPLICIT_PRODUCTIVE_AUTHORIZATION_DECISION_V1",
+  "workpackage_id": "M10_PRODUCTIVE_PARAMETER_LINEAGE_CLOSURE_V1",
+  "slice": "A_EXPLICIT_PRODUCTIVE_AUTHORIZATION_V1",
+  "bound_origin_main_sha": "590256130cd9b2fa08fc6c115010686a48c3d4b8",
+  "normative_spec": "docs/ops/specs/EXPLICIT_PRODUCTIVE_AUTHORIZATION_NORMATIVE_V1.md",
+  "owner_boundary_config": "config/governance/explicit_productive_authorization_v1_owner_boundary_v1.json",
+  "authorization_contract_id": "peak_trade.governance.explicit_productive_authorization.v1",
+  "predecessor_edge": "ADMITTED_FOR_GOVERNANCE_REVIEW",
+  "successor_edge_implemented_in_slice_b": "GOVERNED_PRODUCTIVE_CONFIGURATION_V1",
+  "successor_edge_not_in_scope": "AUTHORIZED_PRODUCTIVE_PARAMETER_SEAM_V1",
+  "governed_productive_configuration_authority": "NONE",
+  "threshold_value_ratification_authority": "NONE",
+  "policy_mutation_authority": "NONE",
+  "enforcement_authority": "NONE",
+  "optimization_promotion_authority": "NONE",
+  "optimization_apply_authority": "NONE",
+  "external_effect_authorized": false
+}

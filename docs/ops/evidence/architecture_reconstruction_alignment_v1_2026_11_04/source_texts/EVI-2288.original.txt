@@ -1,0 +1,24 @@
+# Verarbeitungsfolge als Grundlage rekonstruierter Ebenen
+
+Arbeitskorrektur nach Franks Präzisierung, 02.11.2026.
+
+Eine historische Ebenenliste ist keine Voraussetzung. Wir rekonstruieren anhand belegter Eingänge, Transformationen und Consumer eine nachvollziehbare Verarbeitungsschichtung. Diese darf als analytisches Modell verwendet werden, auch wenn historische Namen oder eine ursprüngliche Gesamtzahl unbekannt sind. Historische Benennung und unser rekonstruiertes Modell bleiben unterscheidbar.
+
+Drei Reihenfolgen werden getrennt:
+
+1. Wann etwas codiert oder geändert wurde.
+2. Wann ein Datensatz tatsächlich verfügbar wird oder eintrifft.
+3. Wann und wozu der Code ihn verarbeitet; einschließlich späterer Rückkopplungen.
+
+Je Verarbeitungsschritt erfassen wir Eingang/Producer, Wissenszeitpunkt, Identitäts-/Zeit-/Einheitenbezug, Transformation, Ausgang, später hinzukommende Daten, Zusammenführung und nächsten Consumer. Ein unbekannter Erstlieferant bleibt eine lokale Lücke; nachfolgende belegte Verarbeitung wird trotzdem rekonstruiert.
+
+## Bereits konkret belegte Unterscheidung im August-Loop
+
+Quelle: `src/experiments/canonical_automated_offline_research_loop_v1.py` am Einführungscommit `7c36858bb6b9ed036bba901170d370b61a805110`, Snapshot im benachbarten `github-code-history`-Register.
+
+- Der Request enthält schon beim Funktionsaufruf `experiment_observations`, Champion-/Challenger-Werte sowie `gap_dimensions` und `observed_surface` (Zeilen 181–207).
+- Verarbeitung: Hypothese/Identität vorbereiten (226–238), bestehende Fehler berücksichtigen (240–248), Beobachtungen an Experiment-Memory binden (250–259), Robustheit auswerten (261–267), Vergleich und Challenger-Bericht erstellen (269–301), Reality Gap erzeugen (303–320), Failure-Records zusammenführen und optional persistieren (321–335).
+- Dass Reality Gap erst später in dieser Funktion berechnet wird, bedeutet nicht, dass seine Beobachtungswerte erst dann eintreffen: Sie wurden bereits im Request geliefert.
+- Welche späteren Datensätze in einem anderen Aufruf oder einer weiteren Session neu hinzukommen, muss separat über Aufrufer, Zeitbezüge, persistierte Records und Consumer verfolgt werden.
+
+Das ist eine belegte Teilstrecke und kein behaupteter erster Eingang des gesamten selbstlernenden Universums. Produktcode wurde nicht ausgeführt oder geändert.

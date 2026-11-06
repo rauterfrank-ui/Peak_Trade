@@ -1,0 +1,81 @@
+{
+  "binding_digest": "c0c83a7cc90fab37714200797103d437f72cf404167de2ea1429b64ebaace29b",
+  "config_digest": "f8e599f5ad232144b8f1868750410291f552bddb95f1bd966e7ac8e2dd9bb99b",
+  "config_schema_version": "cross_sectional_funding_rate_dual_leg_spread_v1_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "cross_sectional_evaluation_binding_v1": {
+    "binding_digest": "c0c83a7cc90fab37714200797103d437f72cf404167de2ea1429b64ebaace29b",
+    "candidate_binding_ref": "config/research/cross_sectional_funding_rate_dual_leg_spread_v1_versioned_research_binding_v0.json",
+    "candidate_id": "cross_sectional_funding_rate_dual_leg_spread/v1",
+    "config_digest": "a6f3141b37b608883e0b1884f0359e2a2d39c823cd33a30b2ac758824f9ae7df",
+    "data_digest": "f7ca259d596407522d8c76e51f69b2126f9055559459cf4f9c0881e072c4e19e",
+    "dataset_binding": {
+      "bar_interval": "PT1H",
+      "binding_version": "v1",
+      "credential_access_forbidden": true,
+      "dataset_extension": "extended_chronological_with_funding_v1",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "dataset_version": "v1",
+      "duplicate_bars_policy": "fail_closed",
+      "funding_fields": [
+        "funding_rate"
+      ],
+      "funding_usage": "funding_rate_for_spread_computation",
+      "instrument_key": "instrument_id",
+      "missing_bars_policy": "exclude_non_selected_for_epoch",
+      "narrow_adapter": "pit_okx_pt1h_panel_funding_field_materialization.v0",
+      "network_access_forbidden": true,
+      "ohlcv_fields": [
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "out_of_order_bars_policy": "fail_closed",
+      "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+      "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+      "panel_funding_dataset_manifest_ref": "pit_okx_pt1h_panel_funding_dataset_v1:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:extended_chronological_with_funding_v1",
+      "panel_schema": "pit_okx_pt1h_panel_funding_dataset_manifest_v1",
+      "price_usage": "close_for_execution_reference_only",
+      "timestamp_key": "timestamp_utc",
+      "timezone": "UTC",
+      "warmup_bars": 5
+    },
+    "hypothesis_id": "CROSS_SECTIONAL_FUNDING_RATE_DUAL_LEG_SPREAD_NON_BITCOIN_PERPETUALS_V1",
+    "implementation_digest": "c4a8d459cc502f2099039e7d23128611d94355a80f0b6f1918757ce5f916747a",
+    "material_difference_vs_pr4925_confirmed": true,
+    "parameter_binding": {
+      "binding_version": "v1",
+      "funding_delta_lookback_k_forbidden": true,
+      "funding_observation_field": "funding_rate",
+      "operator_decision_digest": "3ff9da8de5b5ce33791320bab0e47358cf9f679ed5a65878ed4f7b87064aeaf0",
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "max_bar_staleness_bars": 1,
+        "min_eligible_members_for_rank": 5,
+        "min_spread_bps_for_entry": 0.5,
+        "rebalance_interval_bars": 1,
+        "signal_lag_bars": 1,
+        "switch_entry_delay_epochs": 1
+      },
+      "score_formula_expression": "spread_i(t) = funding_rate_max_panel(t) - funding_rate_min_panel(t); long_leg = instrument with minimum funding_rate; short_leg = instrument with maximum funding_rate; both legs held simultaneously when spread >= min_spread_bps_for_entry",
+      "score_formula_version": "cross_sectional_funding_rate_level_spread_dual_leg_v1"
+    },
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1",
+    "selection_mode": "funding_level_spread_dual_leg_simultaneous_v1"
+  },
+  "fail_closed_contract": {
+    "economic_evaluation_executed_must_be_false_for_recovery": true,
+    "forbid_parameter_search": true,
+    "forbid_runtime_or_order_effect": true,
+    "require_bound_data_digest_match": true
+  },
+  "implementation_digest": "c4a8d459cc502f2099039e7d23128611d94355a80f0b6f1918757ce5f916747a",
+  "strategy_id": "cross_sectional_funding_rate_dual_leg_spread",
+  "strategy_version": "v1",
+  "timeout_contract": {
+    "max_runtime_seconds": 1500,
+    "timeout_policy": "fail_closed"
+  }
+}

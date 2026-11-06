@@ -1,0 +1,8 @@
+{
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "holdout_split": "UNBOUND_UNTOUCHED",
+  "panel_loaded": false,
+  "split_mutation": false,
+  "schema_version": "preregister_cross_sectional_high_realized_volatility_fade_hypothesis_split_manifest.v1"
+}

@@ -1,0 +1,19 @@
+{
+  "fills": [
+    {
+      "fee": 0.1001,
+      "price": 100.1,
+      "qty": 1.0,
+      "side": "BUY",
+      "symbol": "BTC"
+    },
+    {
+      "fee": 0.0999,
+      "price": 99.9,
+      "qty": 1.0,
+      "side": "SELL",
+      "symbol": "BTC"
+    }
+  ],
+  "schema_version": "p7.fills.v0"
+}

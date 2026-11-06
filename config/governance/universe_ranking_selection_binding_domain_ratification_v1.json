@@ -1,0 +1,64 @@
+{
+  "contract_name": "universe_ranking_selection_binding_domain_ratification_v1",
+  "contract_id": "POST_6828_UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1",
+  "contract_version": "v1",
+  "schema_version": "universe_ranking_selection_binding_domain_ratification_schema_v1",
+  "ssot_doc": "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "7cb1c5c57bfc486449cf4da361cb621a809e6075",
+  "workpackage_id": "POST_6828_ARCHITECTURE_CLOSURE_WP_A",
+  "semantics": "DOMAIN_RATIFICATION_ONLY_NO_RUNTIME_NO_SELECTION_POLICY_CHANGE_NO_MV2_OWNERSHIP_CLAIM",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_POST_6828_ARCHITECTURE_CLOSURE_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO"
+  },
+  "domain": {
+    "domain_id": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+    "domain_scope": "CURRENT_PRODUCTIVE_SINGLE_FUTURE_PRE_MV2",
+    "census_port_labels": {
+      "P1": "EEA_UNIVERSE_ACQUISITION_INGRESS",
+      "P2": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+      "P3": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+      "P4": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+      "P5": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1"
+    },
+    "shared_purpose": "Construct governed universe context, rank candidates, select exactly one productive future identity, validate/bind that identity for Full-Core ingest — without trading decisions, capital mint, or external effect.",
+    "first_boundary": "EEA_UNIVERSE_ACQUISITION_INGRESS",
+    "last_authority_boundary": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+    "shared_boundary": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+    "shared_boundary_classification": "SHARED_BOUNDARY_SEAM",
+    "full_core_package_member": false,
+    "first_trading_decision_consumer": "run_current_productive_master_v2_runtime_cycle_v1",
+    "trading_decision_authority_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+    "selection_authority_owner": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+    "ranking_context_owner": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+    "universe_snapshot_owner": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+    "reselection_allowed": false,
+    "execution_rerank_allowed": false,
+    "removal_authorized": false,
+    "ownership_closed_for_productive_scope": true,
+    "mv2_dp_is_not_upstream_domain_owner": true,
+    "full_autonomy_is_not_selection_owner": true,
+    "treasury_is_not_domain_owner": true,
+    "execution_is_not_domain_owner": true
+  },
+  "authority_carried": {
+    "ranking_context": "CAP22_ONLY",
+    "selection": "CAP23_ONLY",
+    "runtime_identity_bind": "CAP24_VALIDATE_BIND_ONLY",
+    "trading_decision": false,
+    "capital_equity_mint": false,
+    "external_effect": false
+  },
+  "typed_handoff_contract": "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+  "markers": {
+    "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "EXTERNAL_EFFECT_AUTHORIZED": false,
+    "POST_ALLOWED": false,
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED": false
+  }
+}

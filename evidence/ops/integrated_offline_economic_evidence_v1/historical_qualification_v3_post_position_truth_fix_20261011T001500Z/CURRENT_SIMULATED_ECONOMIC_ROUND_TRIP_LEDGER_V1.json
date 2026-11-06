@@ -1,0 +1,39 @@
+{
+  "bindings": {
+    "position_truth_remediation_commit": "4b668c88dbf4e79af0a627216713aba759b70369",
+    "qualification_run": "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001500Z",
+    "schema_id": "CURRENT_SIMULATED_ECONOMIC_ROUND_TRIP_LEDGER_V1"
+  },
+  "completed_round_trips": [
+    {
+      "direction": "LONG",
+      "entry_decision": "NOT_EMITTED",
+      "entry_epoch_id": "NOT_EMITTED",
+      "entry_notional": "4997.84923495",
+      "entry_price": "1227.972785",
+      "entry_timestamp": "NOT_EMITTED",
+      "exit_epoch_id": "NOT_EMITTED",
+      "exit_price": "1245.815406",
+      "exit_timestamp": "NOT_EMITTED",
+      "fees": "2.013663587474",
+      "fill_count": 2,
+      "funding": "0.0000",
+      "gross_realized_pnl": "72.61946747",
+      "initial_quantity": "4.07",
+      "market_regime_at_entry": "NOT_EMITTED",
+      "max_abs_quantity": "4.07",
+      "net_pnl": "69.598971352526",
+      "reduction_count": 0,
+      "round_trip_id": 1,
+      "slippage": "1.00683253",
+      "strategy_ref": "NOT_EMITTED",
+      "terminal_decision": "NOT_EMITTED",
+      "terminal_reason": "NOT_EMITTED",
+      "volatility_context_at_entry": "NOT_EMITTED"
+    }
+  ],
+  "content_digest_sha256": "5ecc734dc97d1e6dcaf0b8b7c55a60a27d143b571d97c54f9449f4488e2d9d8f",
+  "open_position_economics": null,
+  "schema_id": "CURRENT_SIMULATED_ECONOMIC_ROUND_TRIP_LEDGER_V1",
+  "schema_version": "v1"
+}

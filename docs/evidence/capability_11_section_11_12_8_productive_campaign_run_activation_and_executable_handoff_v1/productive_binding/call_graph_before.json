@@ -1,0 +1,10 @@
+{
+  "activation_and_executable_handoff": "absent",
+  "cap_11_13": "not_started",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Section_11_12_8_TerminalProductiveConsumer",
+    "Section_11_12_8_ProductiveCampaignRunConsumer",
+    "Deprecated_PATH_EXECUTION_RUN_RUN_ACTIVATION_Wrappers"
+  ]
+}

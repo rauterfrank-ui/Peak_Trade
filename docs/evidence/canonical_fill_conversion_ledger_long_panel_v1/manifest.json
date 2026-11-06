@@ -1,0 +1,207 @@
+{
+  "base_sha": "14e1b8a94add3fa31eb21fa71fb5dae405ea413b",
+  "csv_whitespace_hygiene": {
+    "change": "CRLF_TO_LF_ONLY",
+    "file": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_fill_conversion.csv",
+    "semantic_csv_rows_equal_after_newline_normalization": true,
+    "sha256_after_lf": "cbc03afcb0f61d2133279b63711cf83a03b817a72f4d0841155b3ad018c926a7",
+    "sha256_before_crlf": "f6aa2591176ae142642d3ab4bfc539e5b01a7b55c40791194422bfdc5e207de8"
+  },
+  "evidence_dir": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1",
+  "files": [
+    {
+      "bytes": 1816,
+      "name": "README.md",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/README.md",
+      "purpose": "Human-readable slice overview and panel totals",
+      "sha256": "5079e3f520c56d7aeea5ec19421164ffad598e5c43efe05043726a482755778d"
+    },
+    {
+      "bytes": 602,
+      "name": "chain_binding_proof.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/chain_binding_proof.txt",
+      "purpose": "Static canonical chain binding proof JSON",
+      "sha256": "ddb0299744aa6ccf3507b0536fb97e32998c6ab0633fcfa1e319685fbb5b9865"
+    },
+    {
+      "bytes": 338,
+      "name": "commands.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/commands.txt",
+      "purpose": "Repro commands used for the slice",
+      "sha256": "4107e20be381d22a96e349b031ab3d1c6ddfda01399e442a888ff1bba4ed5d50"
+    },
+    {
+      "bytes": 3764,
+      "name": "conclusions.md",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/conclusions.md",
+      "purpose": "Observation vs inference vs unproven hypotheses",
+      "sha256": "59962ebcf1a484cdacce04f8e5a12e71f87aea13111362a95e35fe1e7da261d4"
+    },
+    {
+      "bytes": 119,
+      "name": "docs_reference_targets.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/docs_reference_targets.txt",
+      "purpose": "Docs reference targets gate capture",
+      "sha256": "cc9883d69e4491fd9131069e275de40b38d2c920d105afdfa54ba8c8f08a2280"
+    },
+    {
+      "bytes": 169,
+      "name": "docs_token_policy.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/docs_token_policy.txt",
+      "purpose": "Docs token policy gate capture",
+      "sha256": "b5d1a7398ddcdf4c49ec7c05c3446849829197dce7c72b502a058eb21b1069c1"
+    },
+    {
+      "bytes": 1085,
+      "name": "economic_boundary_guard.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/economic_boundary_guard.txt",
+      "purpose": "Economic boundary guard capture",
+      "sha256": "9b49cbbd317c1c40c2f8b7dc0579b37b78485aa11c7667edd1dbbe73fee619ed"
+    },
+    {
+      "bytes": 1187,
+      "name": "environment.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/environment.txt",
+      "purpose": "Python/platform/commit/base and offline safety flags",
+      "sha256": "b977188d11a3973bfaecea4eb6db4b322fcb819d2a1e0d685f8b185763957175"
+    },
+    {
+      "bytes": 17492,
+      "name": "fill_conversion_probe_v1.py",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/fill_conversion_probe_v1.py",
+      "purpose": "Non-authoritative offline audit harness",
+      "sha256": "368b9db4c89792d32c58c773d7935ce4e08ae4047b1a619d19c6b827fb370747"
+    },
+    {
+      "bytes": 3320,
+      "name": "first_loss_boundary.json",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/first_loss_boundary.json",
+      "purpose": "Primary class E + first value-loss boundary record",
+      "sha256": "149dd6490f1282a71340742536b13ca8075ccff81028718f36b8bdfb07fc61d6"
+    },
+    {
+      "bytes": 1473,
+      "name": "funnel_counts.json",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/funnel_counts.json",
+      "purpose": "Aggregated conversion funnel counts from CSV/probe",
+      "sha256": "f7bbfc2dd022213b5e873774fda26e22980cb368b04d2970e009355c6f307c7c"
+    },
+    {
+      "bytes": 1125,
+      "name": "git_state.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/git_state.txt",
+      "purpose": "Git/worktree state at original probe time",
+      "sha256": "f82910d8565740db51543c23014fb006231210a4bf188ebf3aef663e441344d3"
+    },
+    {
+      "bytes": 77287,
+      "name": "instrument_breakdown.json",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_breakdown.json",
+      "purpose": "Per-instrument observed metrics from CSV",
+      "sha256": "d720011f235f189fe5d5d8a94c6b1ba770f48515a8459cf6da54e3cd2d09c7e4"
+    },
+    {
+      "bytes": 1470,
+      "name": "instrument_classification.md",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_classification.md",
+      "purpose": "Fill-conversion class legend and panel drop boundary",
+      "sha256": "4af5483a7e42a96885e241486541ff38e1ddb4ae27a95a105e6ba64d0821074b"
+    },
+    {
+      "bytes": 36243,
+      "name": "instrument_fill_conversion.csv",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_fill_conversion.csv",
+      "purpose": "Per-instrument durable probe table (LF-normalized)",
+      "sha256": "cbc03afcb0f61d2133279b63711cf83a03b817a72f4d0841155b3ad018c926a7"
+    },
+    {
+      "bytes": 4785,
+      "name": "panel_members_present.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/panel_members_present.txt",
+      "purpose": "118 panel member IDs present in probe",
+      "sha256": "9468af0e9ac047302e5beab7889dc249dc883867a4869a7230c486798cbf4a2a"
+    },
+    {
+      "bytes": 25421,
+      "name": "probe_run_log.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/probe_run_log.txt",
+      "purpose": "Offline probe run log (per-instrument class lines)",
+      "sha256": "ba657f00aabc978ddf0d175bc830f4f737364322563fb5a3da10ffc4debaaf1f"
+    },
+    {
+      "bytes": 1883,
+      "name": "probe_summary.json",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/probe_summary.json",
+      "purpose": "Machine probe totals and binding proof embed",
+      "sha256": "12de86b1e02a4b7c0484a6f53bbf80c91f5a3f2793a7bd5fdb24242c989f4919"
+    },
+    {
+      "bytes": 1005,
+      "name": "rejection_reasons.json",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/rejection_reasons.json",
+      "purpose": "Observed fill_class/boundary non-conversion reasons",
+      "sha256": "48a44bd2795c207105411c37fd671e55befa3540302ba29a971f7b91e3d43fab"
+    },
+    {
+      "bytes": 4049,
+      "name": "representative_event_trace.json",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/representative_event_trace.json",
+      "purpose": "Representative AAVE zero-trade + 1INCH converted paths",
+      "sha256": "5a2842e43a2b147d1b00ebe67e217738cc95b9a9f1f46bf19fb2896bc861493a"
+    },
+    {
+      "bytes": 19,
+      "name": "ruff.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/ruff.txt",
+      "purpose": "Ruff result captured for harness Python",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "bytes": 820,
+      "name": "selector_result.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/selector_result.txt",
+      "purpose": "CI selector result capture",
+      "sha256": "b2331f12599c794fd95f81197c71342db4fab9b64a810446ddefede9e2884fe2"
+    },
+    {
+      "bytes": 898,
+      "name": "side_breakdown.json",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/side_breakdown.json",
+      "purpose": "Enter long/short and entry_side contract breakdown",
+      "sha256": "d148eb9ef53c328c13d9f22bfa094c18eef6abb24d37bf58f71daee3951206d1"
+    },
+    {
+      "bytes": 1082,
+      "name": "summary.env",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/summary.env",
+      "purpose": "Machine-readable closeout env keys",
+      "sha256": "fe2cc42214e526dfe7fced361846e73e671c35e3084e8336e51cd535bbf9eec4"
+    },
+    {
+      "bytes": 3333,
+      "name": "summary.md",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/summary.md",
+      "purpose": "Closeout summary with A\u2013G classification and contract flags",
+      "sha256": "c6dd9f37c0983d63a2c37208832ab997f2ce1f13a746fa93f7bb619085fa16f9"
+    },
+    {
+      "bytes": 508,
+      "name": "tests.txt",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/tests.txt",
+      "purpose": "Focused test command results captured at probe time",
+      "sha256": "dae483bb5e8a4098ad4258f8dbfbbabd4aadab1abf6b838353596029bce9bcdb"
+    },
+    {
+      "bytes": 9039,
+      "name": "manifest.json",
+      "note": "SHA-256 of manifest.json content listing all other evidence files (this self-entry excluded from that digest body).",
+      "path": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/manifest.json",
+      "purpose": "Evidence inventory with paths, purposes, SHA-256 digests",
+      "sha256": "33ba7c28634abfc01cfd5886fe88f22a3e35e4fee22e12cfa6df6920fef1f7e9"
+    }
+  ],
+  "generated_for": "PR #5343 evidence/hygiene closeout",
+  "pr_head_before_hygiene": "9320cd3848786cd0a5f7dedfd9dd6a5fed76758f",
+  "pr_number": 5343,
+  "slice": "CANONICAL_FILL_CONVERSION_LEDGER_LONG_PANEL_V1"
+}

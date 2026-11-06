@@ -1,0 +1,89 @@
+{
+  "CASE_ADJUDICATION": "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO",
+  "LIVE_FILL_OBSERVED": false,
+  "LIVE_SUBMIT_ACK_OBSERVED": false,
+  "POST_USED": false,
+  "adjudicated_value": false,
+  "canonical_definition": "LIVE_SUBMIT_ACK_OBSERVED is the fifth \u00a711.14 Live proof-claim field. It is true iff LIVE_ORDER_PLAN_OBSERVED is already true and a current productive POST /api/v5/trade/order of a fresh plan (not a historical artifact) returns a synchronous parsed response with HTTP 200, no redirect, top-level code=0, exactly one data row, sCode=0, nonempty ordId, and a returned clOrdId that equals the sent clOrdId. Transport ok is not this field. CANARY_EXECUTED is not this field. UNKNOWN_SUBMIT is not ACK. A later read-only recon match by clOrdId may resolve order existence without reclassifying the original submit response as an observed ACK. Fixture, testnet, and simulated sources are forbidden. True does not imply LIVE_FILL_OBSERVED, POST authorization for a second submit, or \u00a711.14 complete.",
+  "claim_value": false,
+  "classification": {
+    "ENTRY_SUBMIT_COUNT": 0,
+    "LIVE_SUBMIT_ACK_OBSERVED": false,
+    "RETRY_ALLOWED": false,
+    "SECOND_SUBMIT_ALLOWED": false,
+    "SEND_ATTEMPTED": false,
+    "classification": "UNKNOWN",
+    "reason": "REQUEST_NOT_SENT_OR_LOCAL_ERROR_BEFORE_WIRE",
+    "recon_may_resolve_existence_without_reclassifying_ack": true,
+    "unknown_recon_is_not_live_submit_ack_observed": true
+  },
+  "field_conjunction": {
+    "adjudication": "FALSE_FAIL_CLOSED_NO_LIVE_POST",
+    "admissible_live_source_kind": "GOVERNED_CURRENT_LIVE_POST",
+    "canonical_definition": "LIVE_SUBMIT_ACK_OBSERVED is the fifth \u00a711.14 Live proof-claim field. It is true iff LIVE_ORDER_PLAN_OBSERVED is already true and a current productive POST /api/v5/trade/order of a fresh plan (not a historical artifact) returns a synchronous parsed response with HTTP 200, no redirect, top-level code=0, exactly one data row, sCode=0, nonempty ordId, and a returned clOrdId that equals the sent clOrdId. Transport ok is not this field. CANARY_EXECUTED is not this field. UNKNOWN_SUBMIT is not ACK. A later read-only recon match by clOrdId may resolve order existence without reclassifying the original submit response as an observed ACK. Fixture, testnet, and simulated sources are forbidden. True does not imply LIVE_FILL_OBSERVED, POST authorization for a second submit, or \u00a711.14 complete.",
+    "claim_value": false,
+    "constituent_count": 5,
+    "false_required": [
+      "CURRENT_PRODUCTIVE_POST_OF_FRESH_PLAN",
+      "SYNCHRONOUS_RESPONSE_CRITERION_SATISFIED",
+      "ADMISSIBLE_LIVE_POST_SOURCE"
+    ],
+    "source_kind": "INJECTED_OFFLINE_EVIDENCE"
+  },
+  "field_constituent_values": {
+    "ADMISSIBLE_LIVE_POST_SOURCE": false,
+    "CURRENT_PRODUCTIVE_POST_OF_FRESH_PLAN": false,
+    "LIVE_ORDER_PLAN_OBSERVED": true,
+    "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+    "SYNCHRONOUS_RESPONSE_CRITERION_SATISFIED": false
+  },
+  "field_constituents": [
+    "LIVE_ORDER_PLAN_OBSERVED",
+    "CURRENT_PRODUCTIVE_POST_OF_FRESH_PLAN",
+    "SYNCHRONOUS_RESPONSE_CRITERION_SATISFIED",
+    "ADMISSIBLE_LIVE_POST_SOURCE",
+    "NOT_FIXTURE_TESTNET_OR_SIMULATED"
+  ],
+  "producer": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_adjudication_v1.py::adjudicate_live_submit_ack_observed_v1",
+  "proof_criterion_bound": true,
+  "read_only_recon_clordid_match": false,
+  "read_only_recon_clordid_match_is_not_ack": true,
+  "response_conjunction": {
+    "adjudication": "SYNCHRONOUS_ACK_CRITERION_FALSE",
+    "claim_value": false,
+    "constituent_count": 9,
+    "false_required": [
+      "JSON_PARSE_OK",
+      "HTTP_STATUS_200",
+      "TOP_LEVEL_CODE_0",
+      "EXACTLY_ONE_DATA_ROW",
+      "SCODE_0",
+      "NONEMPTY_ORDID",
+      "NONEMPTY_RETURNED_CLORDID",
+      "RETURNED_CLORDID_EQUALS_SENT"
+    ]
+  },
+  "response_constituent_count": 9,
+  "response_constituent_values": {
+    "EXACTLY_ONE_DATA_ROW": false,
+    "HTTP_STATUS_200": false,
+    "JSON_PARSE_OK": false,
+    "NONEMPTY_ORDID": false,
+    "NONEMPTY_RETURNED_CLORDID": false,
+    "NO_REDIRECT": true,
+    "RETURNED_CLORDID_EQUALS_SENT": false,
+    "SCODE_0": false,
+    "TOP_LEVEL_CODE_0": false
+  },
+  "response_constituents": [
+    "JSON_PARSE_OK",
+    "HTTP_STATUS_200",
+    "NO_REDIRECT",
+    "TOP_LEVEL_CODE_0",
+    "EXACTLY_ONE_DATA_ROW",
+    "SCODE_0",
+    "NONEMPTY_ORDID",
+    "NONEMPTY_RETURNED_CLORDID",
+    "RETURNED_CLORDID_EQUALS_SENT"
+  ]
+}

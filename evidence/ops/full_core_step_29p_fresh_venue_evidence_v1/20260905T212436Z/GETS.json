@@ -1,0 +1,288 @@
+{
+  "REQUESTS": [
+    {
+      "AUTH_HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": false,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": false,
+        "AUTH_SIGN_HEADER_PRESENT": false,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": false,
+        "SECRET_VALUES_INCLUDED": false,
+        "USER_AGENT": "PeakTrade-FullCore-Step29P-FreshGET/1"
+      },
+      "CONSUMER": "MAX_AVAILABLE_QUERY_PX_ONLY_NOT_29P_PRICE_AUTHORITY",
+      "CURRENCY_SCOPE": null,
+      "ENDPOINT": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+      "FETCH_GROUP": "ticker",
+      "FRESHNESS_CLASSIFICATION": "FRESH_GET_THIS_SLICE",
+      "GET_ERROR": null,
+      "HTTP_STATUS": 200,
+      "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+      "ITEM_ID": "TICKER_LAST_FOR_MAX_SIZE_QUERY_PX",
+      "NORMALIZED": {
+        "CONSUMER": "MAX_AVAILABLE_QUERY_PX_ONLY_NOT_29P_PRICE_AUTHORITY",
+        "TICKER_IS_NOT_29P_PRICE_AUTHORITY": true,
+        "ticker_last": "0.805"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "RAW_RESPONSE_SHA256": "4b538de5fe8db1f0645767802e248409dc352fbdca5a30e637ab545ebeb5d199",
+      "REQUEST_SCOPE": {
+        "SECRET_VALUES_INCLUDED": false,
+        "auth_required": false,
+        "currency": null,
+        "inst_type": "FUTURES",
+        "instrument_id": "SUI-USD_UM_XPERP-310404",
+        "td_mode": "cross"
+      },
+      "SECRET_VALUES_INCLUDED": false,
+      "UTC": "2026-09-05T21:24:34Z"
+    },
+    {
+      "AUTH_HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": false,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": false,
+        "AUTH_SIGN_HEADER_PRESENT": false,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": false,
+        "SECRET_VALUES_INCLUDED": false,
+        "USER_AGENT": "PeakTrade-FullCore-Step29P-FreshGET/1"
+      },
+      "CONSUMER": "INSTRUMENT_STATE",
+      "CURRENCY_SCOPE": null,
+      "ENDPOINT": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "FETCH_GROUP": "instruments",
+      "FRESHNESS_CLASSIFICATION": "FRESH_GET_THIS_SLICE",
+      "GET_ERROR": null,
+      "HTTP_STATUS": 200,
+      "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+      "ITEM_ID": "INSTRUMENT_STATE",
+      "NORMALIZED": {},
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "RAW_RESPONSE_SHA256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+      "REQUEST_SCOPE": {
+        "SECRET_VALUES_INCLUDED": false,
+        "auth_required": false,
+        "currency": null,
+        "inst_type": "FUTURES",
+        "instrument_id": "SUI-USD_UM_XPERP-310404",
+        "td_mode": "cross"
+      },
+      "SECRET_VALUES_INCLUDED": false,
+      "UTC": "2026-09-05T21:24:35Z"
+    },
+    {
+      "AUTH_HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": false,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": false,
+        "AUTH_SIGN_HEADER_PRESENT": false,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": false,
+        "SECRET_VALUES_INCLUDED": false,
+        "USER_AGENT": "PeakTrade-FullCore-Step29P-FreshGET/1"
+      },
+      "CONSUMER": "PRICE_BAND",
+      "CURRENCY_SCOPE": null,
+      "ENDPOINT": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+      "FETCH_GROUP": "price_limit",
+      "FRESHNESS_CLASSIFICATION": "FRESH_GET_THIS_SLICE",
+      "GET_ERROR": null,
+      "HTTP_STATUS": 200,
+      "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+      "ITEM_ID": "PRICE_BAND",
+      "NORMALIZED": {},
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "RAW_RESPONSE_SHA256": "9ec9e63b2aec07574fc0903f82b15fdbe7455c5b4528fffb1b5dbef90f86c778",
+      "REQUEST_SCOPE": {
+        "SECRET_VALUES_INCLUDED": false,
+        "auth_required": false,
+        "currency": null,
+        "inst_type": "FUTURES",
+        "instrument_id": "SUI-USD_UM_XPERP-310404",
+        "td_mode": "cross"
+      },
+      "SECRET_VALUES_INCLUDED": false,
+      "UTC": "2026-09-05T21:24:35Z"
+    },
+    {
+      "AUTH_HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": true,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+        "AUTH_SIGN_HEADER_PRESENT": true,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+        "SECRET_VALUES_INCLUDED": false,
+        "USER_AGENT": "PeakTrade-FullCore-Step29P-FreshGET/1"
+      },
+      "CONSUMER": "MAX_AVAILABLE",
+      "CURRENCY_SCOPE": null,
+      "ENDPOINT": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.805",
+      "FETCH_GROUP": "max_size",
+      "FRESHNESS_CLASSIFICATION": "FRESH_GET_THIS_SLICE",
+      "GET_ERROR": null,
+      "HTTP_STATUS": 200,
+      "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+      "ITEM_ID": "MAX_AVAILABLE",
+      "NORMALIZED": {},
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "RAW_RESPONSE_SHA256": "d43e222f6a8543e39e1a76ad836bfe9aea9de8c3c615cefbe48253be19c69395",
+      "REQUEST_SCOPE": {
+        "SECRET_VALUES_INCLUDED": false,
+        "auth_required": true,
+        "currency": null,
+        "inst_type": "FUTURES",
+        "instrument_id": "SUI-USD_UM_XPERP-310404",
+        "td_mode": "cross"
+      },
+      "SECRET_VALUES_INCLUDED": false,
+      "UTC": "2026-09-05T21:24:35Z"
+    },
+    {
+      "AUTH_HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": true,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+        "AUTH_SIGN_HEADER_PRESENT": true,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+        "SECRET_VALUES_INCLUDED": false,
+        "USER_AGENT": "PeakTrade-FullCore-Step29P-FreshGET/1"
+      },
+      "CONSUMER": "LEVERAGE",
+      "CURRENCY_SCOPE": null,
+      "ENDPOINT": "/api/v5/account/leverage-info?instId=SUI-USD_UM_XPERP-310404&mgnMode=cross",
+      "FETCH_GROUP": "leverage",
+      "FRESHNESS_CLASSIFICATION": "FRESH_GET_THIS_SLICE",
+      "GET_ERROR": null,
+      "HTTP_STATUS": 200,
+      "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+      "ITEM_ID": "LEVERAGE",
+      "NORMALIZED": {},
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "RAW_RESPONSE_SHA256": "fbfc9480218e15b0a15a5aac5b662b222108336d71501da82436b8df60b42ef7",
+      "REQUEST_SCOPE": {
+        "SECRET_VALUES_INCLUDED": false,
+        "auth_required": true,
+        "currency": null,
+        "inst_type": "FUTURES",
+        "instrument_id": "SUI-USD_UM_XPERP-310404",
+        "td_mode": "cross"
+      },
+      "SECRET_VALUES_INCLUDED": false,
+      "UTC": "2026-09-05T21:24:35Z"
+    },
+    {
+      "AUTH_HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": true,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+        "AUTH_SIGN_HEADER_PRESENT": true,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+        "SECRET_VALUES_INCLUDED": false,
+        "USER_AGENT": "PeakTrade-FullCore-Step29P-FreshGET/1"
+      },
+      "CONSUMER": "POS_MODE",
+      "CURRENCY_SCOPE": null,
+      "ENDPOINT": "/api/v5/account/config",
+      "FETCH_GROUP": "config",
+      "FRESHNESS_CLASSIFICATION": "FRESH_GET_THIS_SLICE",
+      "GET_ERROR": null,
+      "HTTP_STATUS": 200,
+      "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+      "ITEM_ID": "POS_MODE",
+      "NORMALIZED": {},
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "RAW_RESPONSE_SHA256": "36876f8378c2029823643ac2caf6b2fd24525b7d41afa0a32b6abef46c72d5fb",
+      "REQUEST_SCOPE": {
+        "SECRET_VALUES_INCLUDED": false,
+        "auth_required": true,
+        "currency": null,
+        "inst_type": "FUTURES",
+        "instrument_id": "SUI-USD_UM_XPERP-310404",
+        "td_mode": "cross"
+      },
+      "SECRET_VALUES_INCLUDED": false,
+      "UTC": "2026-09-05T21:24:35Z"
+    },
+    {
+      "AUTH_HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": true,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+        "AUTH_SIGN_HEADER_PRESENT": true,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+        "SECRET_VALUES_INCLUDED": false,
+        "USER_AGENT": "PeakTrade-FullCore-Step29P-FreshGET/1"
+      },
+      "CONSUMER": "MARGIN_MODE",
+      "CURRENCY_SCOPE": null,
+      "ENDPOINT": "/api/v5/account/positions",
+      "FETCH_GROUP": "positions",
+      "FRESHNESS_CLASSIFICATION": "FRESH_GET_THIS_SLICE",
+      "GET_ERROR": null,
+      "HTTP_STATUS": 200,
+      "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+      "ITEM_ID": "MARGIN_MODE",
+      "NORMALIZED": {
+        "EMPTY_DATA_IS_ZERO": false,
+        "ROW_STATUS": "OBSERVED",
+        "mgnMode": "cross",
+        "pos": "1",
+        "tdMode": ""
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "RAW_RESPONSE_SHA256": "63d0b25d05c6f80294face9372b144778641a487fd526902e164c15b6a76e365",
+      "REQUEST_SCOPE": {
+        "SECRET_VALUES_INCLUDED": false,
+        "auth_required": true,
+        "currency": null,
+        "inst_type": "FUTURES",
+        "instrument_id": "SUI-USD_UM_XPERP-310404",
+        "td_mode": "cross"
+      },
+      "SECRET_VALUES_INCLUDED": false,
+      "UTC": "2026-09-05T21:24:36Z"
+    },
+    {
+      "AUTH_HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": true,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+        "AUTH_SIGN_HEADER_PRESENT": true,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+        "SECRET_VALUES_INCLUDED": false,
+        "USER_AGENT": "PeakTrade-FullCore-Step29P-FreshGET/1"
+      },
+      "CONSUMER": "AVAILABLE_MARGIN",
+      "CURRENCY_SCOPE": "USDC",
+      "ENDPOINT": "/api/v5/account/balance",
+      "FETCH_GROUP": "balance",
+      "FRESHNESS_CLASSIFICATION": "FRESH_GET_THIS_SLICE",
+      "GET_ERROR": null,
+      "HTTP_STATUS": 200,
+      "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+      "ITEM_ID": "AVAILABLE_MARGIN",
+      "NORMALIZED": {
+        "AVAILEQ_IS_NOT_29P_EQUITY_AUTHORITY": true,
+        "CURRENCY": "USDC",
+        "EQUITY_DIMENSION": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING",
+        "EQUITY_DIMENSION_BOUND": false,
+        "MAPPED_TO_STEP_29P_ACCOUNT_EQUITY": false,
+        "ROW_STATUS": "OBSERVED",
+        "observed_availEq": "2.0958886140463697",
+        "observed_field": "details[ccy=USDC].availEq"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "RAW_RESPONSE_SHA256": "c8e8bf284ea805eb927359389fe2c8f8ba202e9d2b9b01f76b21f9db7cc58864",
+      "REQUEST_SCOPE": {
+        "SECRET_VALUES_INCLUDED": false,
+        "auth_required": true,
+        "currency": "USDC",
+        "inst_type": "FUTURES",
+        "instrument_id": "SUI-USD_UM_XPERP-310404",
+        "td_mode": "cross"
+      },
+      "SECRET_VALUES_INCLUDED": false,
+      "UTC": "2026-09-05T21:24:36Z"
+    }
+  ],
+  "SECRET_VALUES_INCLUDED": false
+}

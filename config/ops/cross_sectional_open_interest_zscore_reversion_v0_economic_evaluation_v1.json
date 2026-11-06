@@ -1,0 +1,77 @@
+{
+  "binding_digest": "11173f7db78710e7ca9684e295185ffe4f95bfccec77ec53141139776f4bea19",
+  "config_digest": "e2140a73a6a613f99876ddc0d9a7e205704384baafbff92780227f292b7f07a1",
+  "config_schema_version": "cross_sectional_open_interest_zscore_reversion_v0_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "cross_sectional_evaluation_binding_v1": {
+    "binding_digest": "11173f7db78710e7ca9684e295185ffe4f95bfccec77ec53141139776f4bea19",
+    "candidate_binding_ref": "config/research/cross_sectional_open_interest_zscore_reversion_v0_versioned_hypothesis_binding_v0.json",
+    "candidate_id": "cross_sectional_open_interest_zscore_reversion/v0",
+    "config_digest": "e2140a73a6a613f99876ddc0d9a7e205704384baafbff92780227f292b7f07a1",
+    "data_contract_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+    "data_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+    "dataset_binding": {
+      "bar_interval": "PT1H",
+      "binding_version": "v0",
+      "credential_access_forbidden": true,
+      "dataset_extension": "self_accumulated_forward_accrual_v0",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0",
+      "duplicate_bars_policy": "fail_closed",
+      "instrument_key": "instrument_id",
+      "missing_bars_policy": "exclude_non_selected_for_epoch",
+      "network_access_forbidden": true,
+      "open_interest_fields": [
+        "open_interest"
+      ],
+      "open_interest_usage": "open_interest_zscore_for_score_computation",
+      "out_of_order_bars_policy": "fail_closed",
+      "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+      "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+      "panel_dataset_schema": "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1",
+      "panel_open_interest_dataset_manifest_ref": "pit_okx_pt1h_panel_open_interest_dataset_v1:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel:self_accumulated_forward_accrual_v0",
+      "panel_schema": "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1",
+      "timestamp_key": "timestamp_utc",
+      "timezone": "UTC",
+      "warmup_bars": 2
+    },
+    "hypothesis_id": "cross_sectional_open_interest_zscore_reversion_v0",
+    "implementation_digest": "4b8e2f0ec33137ff444165b7a22a3654e610fc15e99146ae2c4e203d2a0e58ee",
+    "parameter_binding": {
+      "binding_version": "v0",
+      "delta_lookback_k_forbidden": true,
+      "minimum_panel_bars": 6,
+      "no_instrument_substitution": true,
+      "no_universe_expansion": true,
+      "open_interest_level_definition": "cross_sectional_open_interest_zscore_at_lagged_observation",
+      "open_interest_observation_field": "open_interest",
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "max_bar_staleness_bars": 1,
+        "min_eligible_members_for_rank": 5,
+        "rebalance_interval_bars": 1,
+        "signal_lag_bars": 1,
+        "switch_entry_delay_epochs": 1
+      },
+      "prior_delta_rank_binding_not_reused_unchanged": true,
+      "rank_lookback_k_forbidden": true,
+      "score_formula_expression": "z_score_i(t) = (open_interest_i(t-lag) - panel_mean) / panel_std; panel_std uses population variance (divide by N); long_leg = instrument with minimum z_score; short_leg = instrument with maximum z_score; single_slot selects leg with larger absolute z_score when dispersion gate passes",
+      "score_formula_version": "cross_sectional_open_interest_zscore_reversion_v0",
+      "signal_lag_bars": 1,
+      "unchanged_retry_of_failed_bindings_forbidden": true
+    },
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1"
+  },
+  "fail_closed_contract": {
+    "economic_evaluation_executed_must_be_false_for_recovery": true,
+    "forbid_parameter_search": true,
+    "forbid_runtime_or_order_effect": true,
+    "require_bound_data_digest_match": true
+  },
+  "implementation_digest": "4b8e2f0ec33137ff444165b7a22a3654e610fc15e99146ae2c4e203d2a0e58ee",
+  "strategy_id": "cross_sectional_open_interest_zscore_reversion",
+  "strategy_version": "v0",
+  "timeout_contract": {
+    "max_runtime_seconds": 1500,
+    "timeout_policy": "fail_closed"
+  }
+}

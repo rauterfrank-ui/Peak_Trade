@@ -1,0 +1,11 @@
+# Canonical Decision Runtime Config V1
+# CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1
+# Effective numeric values are frozen; ownership only — no trading-logic mutation.
+
+[canonical_decision_runtime_config_v1]
+config_version = "v1"
+schema_version = "canonical_decision_runtime_config.v1"
+confirmation_epochs = 2
+up_distance = 200.0
+adverse_exit_distance = 80.0
+reversal_distance = 120.0

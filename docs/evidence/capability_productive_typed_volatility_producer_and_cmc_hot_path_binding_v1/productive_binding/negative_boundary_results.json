@@ -1,0 +1,7 @@
+{
+  "execution_eligible_false": true,
+  "legacy_proxy_non_authority": true,
+  "no_silent_default": true,
+  "numeric_max_age_non_enforcing": true,
+  "orders_submitted_false": true
+}

@@ -1,0 +1,31 @@
+{
+  "work_package": "GHV_CURRENT_BOUNDED_NATURAL_EVIDENCE_OFFLINE_REPROOF_V1",
+  "mode": "STRICT_OFFLINE_READ_ONLY",
+  "current_main_sha_at_reproof": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+  "source_evidence_root": "runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T111235Z",
+  "source_run_baseline_sha": "693a48ceb7b8f503d7294c54bfc7f5faaab1ecfe",
+  "source_evidence_complete": {
+    "current_pre_external_report": true,
+    "four_s5_cycle_authorizations": true,
+    "continuous_run_ledger": true,
+    "ghv_flight_record": false,
+    "ghv_directional_signal_ledger": false,
+    "runtime_duration_transparency_fields": false,
+    "verdict": "CURRENT_CORE_COMPLETE_GHV_SUPPLEMENTAL_ABSENT"
+  },
+  "cycles_reconstructed": 4,
+  "alignment_with_pre_external_report": true,
+  "ghv_causal_chain_status": "GHV_SKIPPED_NO_FLIGHT_RECORD",
+  "current_ghv_alignment": "PASS_NO_ALTERNATIVE_DECISIONS",
+  "natural_enter_observed": false,
+  "pre_external_reached": false,
+  "duration_evidence_status": "ABSENT_IN_HISTORICAL_REPORT",
+  "safety_violations": [],
+  "source_evidence_immutable": true,
+  "contract_gaps": [
+    "MISSING_ghv_pre_external_runtime_flight_record_v1.jsonl (run did not enable GHV flight recorder)",
+    "MISSING_directional_signal_observability_v1.jsonl",
+    "MISSING_PRE_EXTERNAL duration transparency keys (TOTAL_WALLCLOCK_SECONDS, PREFLIGHT_ELAPSED_SECONDS, SEQUENCER_ELAPSED_SECONDS, FINALIZATION_ELAPSED_SECONDS, MAX_RUN_DURATION_SECONDS_SCOPE)"
+  ],
+  "reproof_status": "PASS_WITH_DOCUMENTED_GHV_CAPTURE_GAP"
+}

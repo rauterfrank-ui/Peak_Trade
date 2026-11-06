@@ -1,0 +1,108 @@
+# Dataset v1 und DDO Messwertübergabe
+
+Stand 02.11.2026. Fortsetzung der Suche nach materieller historischer Datenversorgung.
+
+Der Juli-Ursprung eines konkreten historischen Datenstrangs ist jetzt durch Originalberichte und passende Git-Konfigurationen gebunden. Die ursprünglichen Dataset-Bytes und Auswertungsdateien bleiben unaufgefunden; im DDO-Pfad ist eine konkrete Trennung zwischen Preismesswert und Score-Label belegt.
+
+Zwei getrennte Spuren: ETH-Dataset v1 vom Juli und DDO-N_BARS-Host am Kontext-Pin 53a01647. Kein Beweis einer durchgehenden gemeinsamen Versorgung oder automatischen Weitergabe an den August-Analyser.
+
+## Ein konkreter früher Inputstrang lässt sich jetzt identifizieren
+
+### 01.07.2026 · erster Ingest
+
+Rohdaten vorhanden; v1 noch nicht finalisiert, bars.parquet nicht erzeugt.
+
+Belegart und Grenze: Zeitgenössischer Bericht, späterer Merge des Ingest-Codes #4726. Quellen: 29501/29522.
+
+### 01.07.2026 · 10:50 UTC im Bundle-Namen; Merge 11:05:22 UTC
+
+Staging-Bericht: 19.808 finale Minuten-Bars für ETH-USDT-SWAP; Dataset-Digest b4cbe7f…, Manifest 31710579….
+
+Belegart und Grenze: Originalbericht plus GitHub-geprüfter Staging-Commit #4728. Bytes heute nicht wiedergefunden. Quellen: 158133/158188; S05.
+
+### 01.07.2026 · 15:09 UTC im Bundle-Namen; Merge 15:21:43 UTC
+
+Berichtete wirtschaftliche Auswertung mit genau diesen Digests; RC=0, Policy FAIL, trade_count=0.
+
+Belegart und Grenze: Berichtete historische Ausführung; passende commitgebundene Config und Runner gelesen. Ursprüngliches Run-Bundle fehlt weiterhin. Quellen: 139672; S06/S07.
+
+### 13.07.2026 · Merge 05:36:09 UTC
+
+Neues v1 unter gleichem Pfad: Digest 39286384…; Altbestand als v1_pre_volatility_estimate_rebind_b4cbe7f_snapshot gesichert.
+
+Belegart und Grenze: Original-Publikationsbericht und tatsächlich geänderte Config-Digests stimmen zusammen. Quellen: 224781; S06/S08; PR #5151.
+
+### 11.09.2026 · Archivoperation 08:46:24 UTC
+
+Berichtete externe Archivierung/Lokallöschung der alten Snapshot-Fassung unter Peak_Trade_Archive/operations/20260911T084624Z_durable_exact_106_archive_v1.
+
+Belegart und Grenze: Originalbericht nennt Copy/Verify/Delete. Das genaue Ziel ist am heute gemounteten M2DATA nicht vorhanden. Quellen: 112503/112506/112516; sources.json.
+
+## Zwei verschiedene Inhalte wurden unter v1 geführt
+
+Der Originalbericht vom 01.07. nennt Rohstaging `.tmp_20260701T100850Z`, 206 überprüfte Raw-Dateien und 19.808 finale 1m-Bars. Sein Marktzeitraum reicht vom 17.06.2026 10:07 bis 01.07.2026 10:07 UTC. Mark/Index wurden backward exact-or-previous mit maximal 60 Sekunden Staleness, Funding backward mit maximal 28.800 Sekunden verknüpft. Historische L1-Bid-/Ask-Beobachtung wurde ausdrücklich nicht beansprucht; Kosten/Spread sind modellgebunden. Das sind konkrete historische Herkunfts-/Transformationsangaben, keine in diesem Durchgang neu ausgeführte Datenqualitätsprüfung. [Originalbericht](cursor-158133.md).
+
+**Ursprüngliches ETH-v1**
+
+- Dataset-Digest: `b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78`
+- Manifest-Digest: `317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a`
+
+19.808 Minuten-Bars laut Juli-Bericht; primärer Datensatz fehlt.
+
+**Später veröffentlichtes ETH-v1**
+
+- Dataset-Digest: `39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087`
+- Manifest-Digest: `f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059`
+
+Gleicher v1-Pfad; neue Bindung nach Volatilitäts-Erweiterung. Kein Rückschluss auf identische Bytes.
+
+Die Config am Merge `cd30ec30…` erwartet die erste Bindung. Dieselbe Config am Merge `bf07c021…` erwartet die zweite Bindung, behält aber `datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet` als Pfad. Somit ist der reine Versionsname v1 für die Rekonstruktion nicht eindeutig. Die Hashes sind die dokumentierten fachlichen Dataset-/Manifest-Digests, keine hier neu berechneten SHA256 der verschwundenen Parquet-Dateien. S06/S08.
+
+Der Publikationsbericht beschreibt, dass der Altbestand vor der Neupublikation nach `v1_pre_volatility_estimate_rebind_b4cbe7f_snapshot` gesichert wurde. Im September wird dieser Snapshot als einziges lokales Preimage der alten Bindung bezeichnet. Die spätere Archivmeldung nennt dafür die Operation `/Volumes/M2DATA/Peak_Trade_Archive/operations/20260911T084624Z_durable_exact_106_archive_v1`. Weder diese Operation noch ihr Parent `Peak_Trade_Archive` ist am heute gemounteten Volume vorhanden. Damit ist ein genauerer Suchanker gewonnen, keine Wiederherstellung erfolgt. [Publikationsbericht](cursor-224781.md), [September-Befund](cursor-112503.md), [Archivmeldung](cursor-112516.md).
+
+Die historische Erlaubnis und die damalige Archivierungsbegründung werden nur als Quellen gelesen. Sie autorisieren heute keine Löschung, Verschiebung oder Recovery-Operation. Der heutige forensische Bedarf an Originaldaten wird nicht aus damaligen Aussagen über notwendige lokale Codeabhängigkeiten abgeleitet.
+
+## Berichtete Auswertung und heute überprüfbare Implementierung
+
+Der Originalbericht zur Auswertung vom 01.07. nennt beide ursprünglichen Digests, eine versionierte Auswertungsconfig, Runner-RC 0 und eine Policy-Ablehnung. Gemeldet werden trade_count=0 sowie berechnete Walk-Forward-/Monte-Carlo-/Sensitivitätsresultate und STRESS_FAILED. Sein Zielbundle heißt `implementation/step29m_okx_real_admissible_futures_economic_evaluation_v1_20260701T150920Z`. Diese Meldung ist ein Beleg der damaligen Aussage über einen Lauf, nicht die heute erneute Prüfung seiner verschwundenen Ergebnisdateien. [Originalbericht](cursor-139672.md).
+
+Unabhängig lesbar sind die historische Config und der Runner: Der Loader liest die angegebene Parquet-Datei und der Bindungscheck verwirft abweichende Dataset-/Manifest-Digests. GitHub PR #4729 bestätigt die zugehörige Codierung; die untersuchten Blobs stimmen mit den lokalen Git-Objekten überein. Das erhöht die Nachvollziehbarkeit der berichteten Strecke. Ein Wiederholungsnachweis der Zahlen oder ein Nachweis ihrer Aufnahme in den späteren August-Loop ist damit nicht erbracht. S06/S07.
+
+GitHub-Primäranker: [Staging #4728](https://github.com/rauterfrank-ui/Peak_Trade/pull/4728), [Auswertung #4729](https://github.com/rauterfrank-ui/Peak_Trade/pull/4729), [Neupublikation #5151](https://github.com/rauterfrank-ui/Peak_Trade/pull/5151).
+
+## Im DDO Strang sind Preisberechnung und wirtschaftliches Label getrennt
+
+**Berechnung:** Supplier erzeugt start_price, end_price und bei LOG_RETURN log(end/start). Quelle: S02:99–118,215–271. Grenze: Codefähigkeit; der konkrete Zahlenwert jedes der 47 historischen Records ist noch nicht unabhängig gefunden.
+
+**Messobjekt und Referenz:** Vollständiges measurement_evidence_artifact wird erzeugt; tatsächlicher Outcome-Verweis bindet diesen Inhalt. Quelle: S02:242–287. Grenze: Ein Digest-Verweis ersetzt den zugrunde liegenden Inhalt nicht.
+
+**Host-Übergabe:** Host liefert evaluation_observation und wenige Metadaten zurück, nicht das vollständige Mess-/Informationsset-Artefakt. Quelle: S01:49–80. Grenze: In diesem Übergabepfad liegt eine konkrete Begrenzung des transportierten Inhalts. Andere externe Speicherwege bleiben gesondert offen.
+
+**Wirtschaftliches Label:** economic_score ist ein separater optionaler Parameter. Bridge-State beginnt ohne Label; ein bestehendes Nicht-UNKNOWN-Label kann später weitergereicht werden. Quelle: S02:149,281; S03:41–49; S04:513,1968–1974. Grenze: Kein hier codierter Automatismus log_return → economic_score. Ein UNKNOWN-Label ist kein Beweis fehlender Preisbeobachtungen.
+
+**Archivierter Befund:** 47 States besitzen last_economic_score=UNKNOWN und next_cycle_economic_score_label=UNKNOWN. Quelle: Voriger A01-Profile-Nachweis, erneut gelesen.. Grenze: Der untersuchte Feedback-Setter überspringt UNKNOWN. Damit ist aus diesen Labels kein positiver wirtschaftlicher Forschungsimpuls nachgewiesen.
+
+Die frühere Feststellung „47 wirtschaftliche Labels stehen auf UNKNOWN“ bleibt richtig, ihre Interpretation wird präzisiert: Daraus folgt nicht, dass keine Anfangs-/Endpreise verarbeitet wurden. Der Supplier besitzt eine echte Messwertberechnung; der Host transportiert ein daraus referenziertes Beobachtungsobjekt, nicht das vollständige numerische Messartefakt. Das separat erwartete wirtschaftliche Label wird in diesem Weg nicht aus dem Log-Return abgeleitet. Ein Preisreturn wäre außerdem ohne Position, Kosten und Ergebnissemantik kein realisierter Kontogewinn.
+
+Am Laufkontext-Pin `53a01647…` enthält der Host-Return zwar `evaluation_observation`, `measurement_producer_id` und `bridge_contract_id`, aber nicht `measurement_evidence_artifact` oder `evaluation_time_information_set_artifact`. Der vollständige Supplier-Rückgabewert ist in seiner inneren Pipeline vorhanden und wird beim Host-Return reduziert. Das ist eine konkrete statische Erklärung für die begrenzte Transportfläche; es beweist nicht, dass nirgendwo ein anderer Speicherweg existierte. Der bereits gefundene Journal-Teilweg wird dadurch nicht verworfen.
+
+Die erneute begrenzte Inhaltssuche im archivierten Lauf nach `log_return`, `measurement_evidence_artifact` und `ddo_o4_n_bars_bar_evidence_snapshot` in JSON/JSONL bis 8 MiB liefert keinen Treffer. Die Dateinamensuche nach Parquet sowie den gezielten Snapshot-/Operationsnamen im vorhandenen Code-Recovery-Ordner liefert ebenfalls keinen Treffer. Andere Recovery-Flächen und nicht erfasste Binärformate wurden damit nicht vollständig durchsucht. Keine neuen Datenträgerscans.
+
+## Für die Versorgung beider Universen ist jetzt genauer zu unterscheiden
+
+Es gibt eine vor August datierte, konkret gebundene Forschungsdatenlinie und einen später materiell erhaltenen DDO-Ingest-Teilweg. Sie sind zwei unterschiedliche Stränge. Die erste liefert historische Markt-/Backtestdaten mit Dataset-Identität; der zweite liefert Decision-/Outcome-/Learning-Record-Beziehungen und opaque Labels. Weder identische Wörter wie Outcome noch gemeinsame Dateinamen machen daraus automatisch die von Meta-Learning benötigten numerischen Versuchseinheiten.
+
+Der nächste belastbare Übergang wäre ein wiedergefundenes Originalresultat, dessen Experiment-/Dataset-/Kosten-/Zeitbindung mit einem tatsächlich gespeicherten Meta-Input übereinstimmt. Dazu müssen die beiden v1-Fassungen auseinandergehalten und die DDO-Messreferenzen mit ihren Inhalten aufgelöst werden. Die fehlende produktive Eingriffsautorität bleibt ausdrücklich gewollt und ist nicht Gegenstand einer Reparatur.
+
+## Konkrete nächste Suchanker
+
+- Die alte Snapshot-Fassung gezielt über b4cbe7f… und den genauen Archivoperationspfad suchen; für die spätere Fassung separat 39286384… verwenden.
+- Das Juli-Evaluationsbundle step29m_okx_real_admissible_futures_economic_evaluation_v1_20260701T150920Z mit Rohresultaten wiederfinden.
+- Beim DDO-Lauf separate Mess-/Information-Set-Artefakte oder ausreichend gebundene gespeicherte Bars finden; die bloße Referenz reicht nicht.
+- Erst einen solchen konkreten Resultatsatz auf tatsächliche Aufnahme in Memory, Meta-Einheit und nächste Suchiteration prüfen.
+
+## Nachweise und Umfang
+
+Zwölf Originalnachrichten sind mit den jeweiligen Original-JSONL-Zeilen textgleich abgeglichen. Neun historische Dateien sind revisionsgebunden gesichert; drei GitHub-PRs und ihre Merge-Commits sind gelesen, vier betroffene Code-/Config-Blobs direkt gegen GitHub abgeglichen. [Quellenregister](sources.json).
+
+M2DATA wurde erneut als Volume UUID `BFA81BFA-80C5-3634-84EE-17B3496EE123` identifiziert, PeakDATARecovery als `53B45FBD-BBAC-4D62-B42C-A75BD6BD7C57`; beide sind nicht OS-schreibgeschützt. Alle Zugriffe auf diese Quellen waren lesend. Kein abgefragter Recovery-Prozess war bei der engen Namensprüfung sichtbar. Keine Produktimporte, Auswertungsläufe, Restore-/Recovery-Scans oder Änderungen im Repository/Obsidian-Ledger. [Abschlussprüfung](verification.json).

@@ -1,0 +1,13 @@
+{
+  "call_graph": [
+    "phase_9_1_config_bind",
+    "strategy_registry_snapshot_load",
+    "classification_matrix_build",
+    "productive_caller_enumeration",
+    "composition_eligibility_gate",
+    "bypass_negative_proof",
+    "restart_deterministic_reconstruction",
+    "parity_proof",
+    "evidence_materialize"
+  ]
+}

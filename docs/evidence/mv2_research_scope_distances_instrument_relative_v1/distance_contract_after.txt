@@ -1,0 +1,26 @@
+OWNER=src.backtest.mv2_research_wiring_v1.compute_mv2_research_scope_distances_absolute_from_mark_v1
+CALL_SITE=src.backtest.mv2_research_wiring_v1._build_replay_input
+
+RELATIVE_CONSTANTS (named with unit):
+  _MV2_RESEARCH_SCOPE_UP_DISTANCE_BPS = 100.0          # 1% of current mark
+  _MV2_RESEARCH_SCOPE_ADVERSE_TO_UP_RATIO = 60/120     # 0.5 legacy
+  _MV2_RESEARCH_SCOPE_REVERSAL_TO_UP_RATIO = 90/120    # 0.75 legacy
+  _MV2_RESEARCH_SCOPE_BPS_PER_UNIT = 10000.0
+
+CONVERSION (exactly once per bar):
+  up_abs = mark * (UP_BPS / 10000)
+  adverse_abs = up_abs * ADVERSE_TO_UP_RATIO
+  reversal_abs = up_abs * REVERSAL_TO_UP_RATIO
+
+DOWNSTREAM_UNIT:
+  Absolute price distances (mark units), as required by generator contract.
+
+SCALE_BASIS:
+  Canonical current mark (context.mark_price). Fail-closed if missing/non-finite/<=0.
+  No legacy absolute 120/60/90 fallback. No direction invention.
+
+RELATION_PRESERVED:
+  up:adverse:reversal = 1:0.5:0.75 (same as 120:60:90)
+
+EXAMPLE mark=0.3895:
+  up≈0.003895; adverse≈0.0019475; reversal≈0.00292125

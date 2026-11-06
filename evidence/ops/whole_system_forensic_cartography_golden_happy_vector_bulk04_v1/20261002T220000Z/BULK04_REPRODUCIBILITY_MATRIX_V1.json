@@ -1,0 +1,20 @@
+{
+  "fields_tracked_in_GHV": [
+    "experiment_id",
+    "schema_version",
+    "repository_sha (DDO capture)",
+    "learning_input_schema_version",
+    "registry_digest"
+  ],
+  "PROVEN_COMPLETE_FOR": [
+    "canonical_experiment_identity_v1",
+    "DDO decision_event record_id",
+    "optimization universe identity digest"
+  ],
+  "GAPS": [
+    "Unified Blueprint Phase 26 global DoD reproof \u2014 phase_15_final_dod false in summary (B04-F001)",
+    "Not all MI phase artifacts require full fee/slippage lineage in offline stack tests",
+    "STEP29M fleet strategies vary by registry contract \u2014 full fleet lineage not single GHV vector"
+  ],
+  "REPRODUCIBILITY_COMPLETE": false
+}

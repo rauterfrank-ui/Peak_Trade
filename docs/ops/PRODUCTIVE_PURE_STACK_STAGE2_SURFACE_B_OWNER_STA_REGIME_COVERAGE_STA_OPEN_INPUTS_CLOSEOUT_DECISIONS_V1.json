@@ -1,0 +1,115 @@
+{
+  "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout_decisions/v1",
+  "document_type": "OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_DECISIONS_MANIFEST",
+  "capability_scope": "SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT",
+  "status": "OWNER_STA_STA_OPEN_INPUTS_CLOSEOUT_RATIFIED",
+  "decision_id": "DEC_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT",
+  "decision_status": "RATIFIED",
+  "owner_go": "OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1",
+  "owner_go_base_sha": "75ea4dc594a7f27b1fb490477e824a8c0a66d779",
+  "authority_surface": "B",
+  "closed_inputs": [
+    "non_invented_coverage_counts",
+    "provable_eth_usdt_swap_compatibility"
+  ],
+  "sta_open_external_inputs_remaining": [],
+  "non_invented_coverage_counts": {
+    "status": "CLOSED",
+    "authority_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md",
+    "producer_authority_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/",
+    "versioned_producer_id": "productive_pure_stack_stage2_surface_b_regime_coverage_producer/v1",
+    "provenance_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/label_semantics_v1.py",
+    "digest_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/digest_contract_v1.py",
+    "pit_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/pit_rules_v1.py",
+    "partition_ref": "partition_id_must_bound_observation_window_and_digest",
+    "threshold_authority_ref": "OWNER_NUMERIC_THRESHOLD_AUTHORITY_UNSET_V1",
+    "lookback_authority_ref": "OWNER_NUMERIC_LOOKBACK_AUTHORITY_UNSET_V1",
+    "countable_labels_while_thresholds_lookbacks_unset": [
+      "missing",
+      "unknown"
+    ],
+    "forbidden_labels_while_thresholds_lookbacks_unset": [
+      "low",
+      "mid",
+      "high"
+    ],
+    "derivation_rule": "COUNTS_FROM_AUTHORIZED_PRODUCER_LABEL_OBSERVATIONS_ONLY",
+    "caller_supplied_or_invented_counts": "FAIL_CLOSED",
+    "deterministic": true,
+    "partition_bounded": true,
+    "pit_no_lookahead_conformant": true,
+    "digest_bound": true,
+    "campaign_instance_regime_coverage_counts": null,
+    "campaign_instance_regime_coverage_instance": null
+  },
+  "provable_eth_usdt_swap_compatibility": {
+    "status": "CLOSED",
+    "instrument_binding_authority_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding",
+    "triad_manifest_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISIONS_V1.json",
+    "candle_join_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#candle_source_authority",
+    "mark_join_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#mark_source_authority",
+    "raw_pt1m_pack_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md",
+    "compatibility_mode": "EXACT_OWNER_RATIFIED_INSTRUMENTBINDINGV1_FIELD_MATCH",
+    "string_name_similarity_inference": false,
+    "required_instrument_binding_v1": {
+      "venue": "okx",
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "venue_instrument_id": "ETH-USDT-SWAP",
+      "contract_type": "perpetual",
+      "market_type": "futures",
+      "quote_currency": "USDT",
+      "settlement_currency": "USDT"
+    },
+    "incomplete_contradictory_or_unprovable_bindings": "FAIL_CLOSED"
+  },
+  "authority_refs": {
+    "parent_regime_coverage_decision": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md",
+    "parent_triad": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md",
+    "parent_raw_input_pack": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md",
+    "producer_package": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/",
+    "digest_contract": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/digest_contract_v1.py",
+    "pit_rules": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/pit_rules_v1.py",
+    "label_semantics": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/label_semantics_v1.py"
+  },
+  "non_effects": {
+    "producer_reimplementation": false,
+    "consumer_wiring": false,
+    "pt1m_adapter": false,
+    "pack_materialization": false,
+    "campaign_start": false,
+    "input_authority": false,
+    "runtime_implemented": false,
+    "regime_coverage_producer_available": false,
+    "productive_numeric_values_set": 0,
+    "productive_thresholds_lookbacks": false,
+    "trading_logic_change": false,
+    "dashboard_authority_effect": "NONE",
+    "orders_authorized": false,
+    "testnet_authorized": false,
+    "live_authorized": false,
+    "runtime_authorization_effect": "NONE"
+  },
+  "decisions": {
+    "CLOSED_INPUTS": [
+      "non_invented_coverage_counts",
+      "provable_eth_usdt_swap_compatibility"
+    ],
+    "NON_EFFECTS": {
+      "producer_reimplementation": false,
+      "consumer_wiring": false,
+      "pt1m_adapter": false,
+      "pack_materialization": false,
+      "campaign_start": false,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "regime_coverage_producer_available": false,
+      "productive_numeric_values_set": 0,
+      "productive_thresholds_lookbacks": false,
+      "trading_logic_change": false,
+      "dashboard_authority_effect": "NONE",
+      "orders_authorized": false,
+      "testnet_authorized": false,
+      "live_authorized": false
+    }
+  }
+}

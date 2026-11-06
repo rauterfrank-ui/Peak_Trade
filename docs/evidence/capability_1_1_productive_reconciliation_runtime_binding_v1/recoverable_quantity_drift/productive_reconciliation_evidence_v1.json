@@ -1,0 +1,59 @@
+{
+  "alpha_enabled": true,
+  "applied_mutation": {
+    "steps": [
+      {
+        "action": "REDUCE_TO",
+        "from_signed_quantity": "2",
+        "instrument_id": "ETH-USDT-SWAP",
+        "opens_new_position": false,
+        "reduce_only": true,
+        "to_signed_quantity": "1"
+      }
+    ]
+  },
+  "capability_id": "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
+  "classification": "RECOVERABLE_DRIFT",
+  "config_digest": "75a265d33e95910ab0ee7925e7c4b701ea8ce6c08bd1713e19ad203343124cf1",
+  "event_time_unix": 1700000000.0,
+  "hard_stop": false,
+  "mutation_plan": {
+    "admissible": true,
+    "reason_codes": [
+      "REDUCE_ONLY_STATE_REPAIR"
+    ],
+    "steps": [
+      {
+        "action": "REDUCE_TO",
+        "from_signed_quantity": "2",
+        "instrument_id": "ETH-USDT-SWAP",
+        "opens_new_position": false,
+        "reduce_only": true,
+        "to_signed_quantity": "1"
+      }
+    ]
+  },
+  "notes": [
+    "RECONCILIATION_BEFORE_ALPHA",
+    "NO_NEW_POSITIONS_IN_RECOVERY",
+    "SINGLE_WRITER_ENFORCED"
+  ],
+  "observed_state_digest": "5a8ab1cd1ded805da43ea5510afd46ea136fee43778a5672b1544936ef42f6ce",
+  "owner": "ops.productive_reconciliation_runtime_binding_v1",
+  "post_state_digest": "d863e89a9509bde6b411e0b4ef61725813bb7fa313ac24e92036ce9201cee4d5",
+  "pre_state_digest": "59d9ce17409a0c9517dc40b61a89db49e150cbfb100a9eb5986a480002c2f05c",
+  "reason_codes": [
+    "REDUCE_ONLY_STATE_REPAIR",
+    "QUANTITY_DRIFT:ETH-USDT-SWAP",
+    "POSITIONS_MATCH",
+    "RECOVERY_VERIFIED"
+  ],
+  "reconciliation_decision": "RECOVERED_CONTINUE",
+  "recovery_attempted": true,
+  "recovery_verified": true,
+  "repository_sha": "5824af75e9c65592b362c935ac707064cfaea099",
+  "schema_version": "productive_reconciliation_runtime_binding.v1",
+  "single_writer_identity": "productive_portfolio_position_state_writer_v1",
+  "verification_result": {},
+  "wall_time_unix": 1700000000.0
+}

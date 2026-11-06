@@ -1,0 +1,37 @@
+{
+  "CAPABILITY_OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+  "ERROR_TAXONOMY_EXPLICIT": true,
+  "MIN_SIZE_AND_NOTIONAL_VALIDATED": true,
+  "ORDER_TYPE_SUPPORT_EXPLICIT": true,
+  "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+  "RATE_LIMIT_BUDGET_EXPLICIT": true,
+  "ROUNDING_AND_PRECISION_EXPLICIT": true,
+  "VENUE_ADAPTER_DECISION_AUTHORITY": false,
+  "VENUE_NATIVE_EVENT_NORMALIZED": true,
+  "allowed_responsibilities": [
+    "authentication_transport",
+    "venue_native_instrument_translation",
+    "request_signing",
+    "endpoint_and_rate_limit_handling",
+    "venue_event_normalization",
+    "exchange_clock_synchronization",
+    "idempotent_lookup_by_canonical_identifiers",
+    "private_readonly_account_state_normalization"
+  ],
+  "decision_authority_blocked": true,
+  "forbidden_authorities": [
+    "decision",
+    "alpha",
+    "master_v2",
+    "double_play",
+    "portfolio_strategy",
+    "risk_limit_policy",
+    "safety_policy",
+    "accounting_authority",
+    "autonomous_limit_changes",
+    "order_mutation"
+  ],
+  "ok": true,
+  "order_mutation_blocked": true,
+  "predecessor_anti_corruption_ok": true
+}

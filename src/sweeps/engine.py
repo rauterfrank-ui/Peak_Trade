@@ -1,0 +1,836 @@
+# src/sweeps/engine.py
+"""
+Peak_Trade – Sweep Engine Core (Phase 20)
+==========================================
+
+Generische Sweep-Engine für Hyperparameter-Optimierung.
+
+Diese Engine orchestriert:
+- Parametergrid-Generierung (Grid-Search)
+- Backtest-Läufe für jede Kombination
+- Registry-Integration für Reproduzierbarkeit
+- Ergebnis-Aggregation und Ranking
+
+Safety:
+- Nur Backtest- und Portfolio-Backtest-Runs
+- Keine Live- oder Testnet-Orders
+- SafetyGuard und TradingEnvironment bleiben unverändert
+"""
+
+from __future__ import annotations
+
+import itertools
+import logging
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
+import pandas as pd
+
+from src.backtest.result import BacktestResult
+from src.core.errors import CacheCorruptionError
+from src.data.cache import ParquetCache
+from src.core.experiments import log_sweep_run, RUN_TYPE_SWEEP
+from src.core.peak_config import PeakConfig, load_config
+from src.core.position_sizing import build_position_sizer_from_config
+from src.core.risk import build_risk_manager_from_config
+from src.backtest.engine import BacktestEngine
+from src.backtest.strategy_signal_binding_v1 import (
+    RUN_BACKTEST_PATH_CLASSIFICATION,
+    declare_legacy_raw_signal_research_path_v1,
+)
+from scripts.run_backtest import _build_strategy_params_from_config
+from src.strategies import STRATEGY_REGISTRY, load_strategy
+from src.strategies.registry import (
+    get_available_strategy_keys,
+    get_strategy_spec,
+)
+
+logger = logging.getLogger(__name__)
+
+SweepDataCacheOutcome = str  # "hit" | "miss" | "disabled" | "fallback"
+DEFAULT_PROGRESS_EVERY = 10
+
+
+def _validate_progress_every(progress_every: int) -> int:
+    """Fail-closed validation for batch progress interval."""
+    if isinstance(progress_every, bool) or not isinstance(progress_every, int):
+        raise ValueError(f"progress_every must be a positive int, got {progress_every!r}")
+    if progress_every <= 0:
+        raise ValueError(f"progress_every must be positive, got {progress_every}")
+    return progress_every
+
+
+def _should_emit_batch_progress(current: int, total: int, progress_every: int) -> bool:
+    """Return True when batch progress should emit for the current unit."""
+    if total <= 0:
+        return False
+    if current % progress_every == 0:
+        return True
+    if current == total and total % progress_every != 0:
+        return True
+    return False
+
+
+@dataclass(frozen=True)
+class SweepRunOutputMode:
+    """Console output mode for offline sweep/research CLI entrypoints."""
+
+    quiet: bool = False
+
+    def info(self, *args: Any, file: Any = None, **kwargs: Any) -> None:
+        """Emit progress/info lines unless quiet mode is active."""
+        if not self.quiet:
+            print(*args, file=file, **kwargs)
+
+
+def apply_sweep_run_logging(quiet: bool) -> int:
+    """Apply sweep-engine logger level for a run. Returns level to restore."""
+    previous_level = logger.level
+    if quiet:
+        logger.setLevel(logging.WARNING)
+    return previous_level
+
+
+def restore_sweep_run_logging(previous_level: int) -> None:
+    """Restore sweep-engine logger level after ``apply_sweep_run_logging``."""
+    logger.setLevel(previous_level)
+
+
+# =============================================================================
+# DATA STRUCTURES
+# =============================================================================
+
+
+@dataclass
+class SweepConfig:
+    """
+    Konfiguration für einen Hyperparameter-Sweep.
+
+    Attributes:
+        strategy_key: Name der Strategie aus der Registry (z.B. "ma_crossover")
+        param_grid: Parameter-Grid als Dict {param_name: [values]}
+        symbol: Trading-Pair (z.B. "BTC/EUR")
+        timeframe: Timeframe für OHLCV-Daten (z.B. "1h")
+        sweep_name: Optionaler Name für Gruppierung (auto-generiert wenn None)
+        tag: Optionaler Tag für Registry-Filterung
+        max_runs: Maximale Anzahl Runs (None = alle Kombinationen)
+        sort_by: Metrik für Ergebnis-Sortierung (default: "sharpe")
+        sort_ascending: Sortierrichtung (default: False = beste zuerst)
+        config_path: Pfad zur Basis-Config (default: "config.toml")
+        extra_metadata: Zusätzliche Metadaten für Registry
+
+    Example:
+        >>> config = SweepConfig(
+        ...     strategy_key="ma_crossover",
+        ...     param_grid={"fast_window": [10, 20], "slow_window": [50, 100]},
+        ...     symbol="BTC/EUR",
+        ...     timeframe="1h",
+        ...     tag="optimization",
+        ... )
+    """
+
+    strategy_key: str
+    param_grid: Dict[str, List[Any]]
+    symbol: str = "BTC/EUR"
+    timeframe: str = "1h"
+    sweep_name: Optional[str] = None
+    tag: Optional[str] = None
+    max_runs: Optional[int] = None
+    sort_by: str = "sharpe"
+    sort_ascending: bool = False
+    config_path: str = "config.toml"
+    extra_metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        """Validierung nach Initialisierung."""
+        if not self.strategy_key:
+            raise ValueError("strategy_key darf nicht leer sein")
+        if not self.param_grid:
+            raise ValueError("param_grid darf nicht leer sein")
+
+        available = get_available_strategy_keys()
+        if self.strategy_key not in available:
+            raise ValueError(
+                f"Unbekannte Strategie '{self.strategy_key}'. Verfügbar: {', '.join(available)}"
+            )
+
+    @property
+    def total_combinations(self) -> int:
+        """Gibt die Gesamtzahl der Parameterkombinationen zurück."""
+        if not self.param_grid:
+            return 0
+        total = 1
+        for values in self.param_grid.values():
+            total *= len(values)
+        return total
+
+    @property
+    def effective_runs(self) -> int:
+        """Gibt die effektive Anzahl der Runs zurück (mit max_runs Limit)."""
+        total = self.total_combinations
+        if self.max_runs is not None:
+            return min(total, self.max_runs)
+        return total
+
+
+@dataclass
+class SweepResult:
+    """
+    Ergebnis eines einzelnen Sweep-Runs.
+
+    Attributes:
+        params: Die getestete Parameterkombination
+        stats: Backtest-Statistiken (total_return, sharpe, max_drawdown, etc.)
+        run_id: Eindeutige ID aus der Registry
+        success: True wenn Backtest erfolgreich war
+        error: Fehlermeldung bei Misserfolg (None wenn erfolgreich)
+    """
+
+    params: Dict[str, Any]
+    stats: Dict[str, Any]
+    run_id: str
+    success: bool = True
+    error: Optional[str] = None
+
+    @property
+    def total_return(self) -> float:
+        """Shortcut für total_return aus stats."""
+        return float(self.stats.get("total_return", 0.0))
+
+    @property
+    def sharpe(self) -> float:
+        """Shortcut für Sharpe Ratio aus stats."""
+        return float(self.stats.get("sharpe", 0.0))
+
+    @property
+    def max_drawdown(self) -> float:
+        """Shortcut für Max Drawdown aus stats."""
+        return float(self.stats.get("max_drawdown", 0.0))
+
+    @property
+    def total_trades(self) -> int:
+        """Shortcut für Anzahl Trades aus stats."""
+        return int(self.stats.get("total_trades", 0))
+
+
+@dataclass
+class SweepSummary:
+    """
+    Zusammenfassung eines kompletten Sweeps.
+
+    Attributes:
+        sweep_id: Eindeutige ID des Sweeps
+        sweep_name: Name des Sweeps
+        strategy_key: Getestete Strategie
+        symbol: Trading-Pair
+        timeframe: Timeframe
+        total_combinations: Anzahl aller möglichen Kombinationen
+        runs_executed: Anzahl tatsächlich ausgeführter Runs
+        successful_runs: Anzahl erfolgreicher Runs
+        failed_runs: Anzahl fehlgeschlagener Runs
+        results: Liste aller SweepResult-Objekte
+        best_result: Bestes Ergebnis nach sort_by Metrik
+        duration_seconds: Gesamtdauer des Sweeps
+        started_at: Startzeitpunkt
+        completed_at: Endzeitpunkt
+    """
+
+    sweep_id: str
+    sweep_name: str
+    strategy_key: str
+    symbol: str
+    timeframe: str
+    total_combinations: int
+    runs_executed: int
+    successful_runs: int
+    failed_runs: int
+    results: List[SweepResult]
+    best_result: Optional[SweepResult]
+    duration_seconds: float
+    started_at: str
+    completed_at: str
+
+    def get_top_results(
+        self,
+        n: int = 10,
+        sort_by: str = "sharpe",
+        ascending: bool = False,
+    ) -> List[SweepResult]:
+        """
+        Gibt die Top-N Ergebnisse zurück.
+
+        Args:
+            n: Anzahl der Top-Ergebnisse
+            sort_by: Metrik für Sortierung
+            ascending: Sortierrichtung
+
+        Returns:
+            Liste der Top-N SweepResult-Objekte
+        """
+        successful = [r for r in self.results if r.success]
+        if not successful:
+            return []
+
+        # Sortieren nach Metrik
+        def get_metric(result: SweepResult) -> float:
+            return float(result.stats.get(sort_by, 0.0))
+
+        sorted_results = sorted(
+            successful,
+            key=get_metric,
+            reverse=not ascending,
+        )
+        return sorted_results[:n]
+
+    def to_dataframe(self) -> pd.DataFrame:
+        """Konvertiert Ergebnisse zu pandas DataFrame für Analyse."""
+        rows = []
+        for r in self.results:
+            row = {**r.params, **r.stats, "run_id": r.run_id, "success": r.success}
+            if r.error:
+                row["error"] = r.error
+            rows.append(row)
+        return pd.DataFrame(rows)
+
+
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+
+
+def generate_sweep_id() -> str:
+    """Generiert eine eindeutige Sweep-ID."""
+    return str(uuid.uuid4())[:8]
+
+
+def expand_parameter_grid(grid: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
+    """
+    Erzeugt das kartesische Produkt aller Parameterwerte (Grid-Search).
+
+    Args:
+        grid: Dict mit Parameternamen als Keys und Listen von Werten als Values
+
+    Returns:
+        Liste von Dicts, jedes Dict ist eine Parameterkombination
+
+    Example:
+        >>> grid = {"fast_window": [10, 20], "slow_window": [50, 100]}
+        >>> expand_parameter_grid(grid)
+        [
+            {"fast_window": 10, "slow_window": 50},
+            {"fast_window": 10, "slow_window": 100},
+            {"fast_window": 20, "slow_window": 50},
+            {"fast_window": 20, "slow_window": 100},
+        ]
+    """
+    if not grid:
+        return [{}]
+
+    keys = list(grid.keys())
+    values = list(grid.values())
+
+    combinations = []
+    for combo in itertools.product(*values):
+        param_dict = dict(zip(keys, combo))
+        combinations.append(param_dict)
+
+    return combinations
+
+
+def build_sweep_data_cache_key(
+    *,
+    symbol: str,
+    timeframe: str,
+    n_bars: int,
+    data_source: str = "synthetic",
+    data_file: Optional[str] = None,
+    start_ts: Optional[str] = None,
+    end_ts: Optional[str] = None,
+) -> str:
+    """Build a deterministic ParquetCache key for sweep OHLCV loads."""
+    parts = [
+        "sweep",
+        symbol.replace("/", "_"),
+        timeframe,
+        f"bars{n_bars}",
+        data_source,
+    ]
+    if data_file:
+        parts.append(f"file{Path(data_file).stem}")
+    if start_ts:
+        parts.append(f"start{start_ts}")
+    if end_ts:
+        parts.append(f"end{end_ts}")
+    return "_".join(parts)
+
+
+def resolve_sweep_parquet_cache_from_config(
+    cfg: PeakConfig,
+) -> Tuple[Optional[ParquetCache], bool]:
+    """Resolve ParquetCache and enablement from canonical [data] config."""
+    use_cache = bool(cfg.get("data.use_cache", True))
+    if not use_cache:
+        return None, False
+    data_dir = str(cfg.get("data.data_dir", "data"))
+    cache_dir = str(Path(data_dir) / "cache")
+    return ParquetCache(cache_dir=cache_dir), True
+
+
+def load_sweep_ohlcv_data(
+    *,
+    symbol: str,
+    timeframe: str,
+    n_bars: int,
+    loader: Callable[[], pd.DataFrame],
+    cache: Optional[ParquetCache] = None,
+    use_cache: bool = True,
+    data_source: str = "synthetic",
+    data_file: Optional[str] = None,
+    start_ts: Optional[str] = None,
+    end_ts: Optional[str] = None,
+    quiet: bool = False,
+) -> Tuple[pd.DataFrame, SweepDataCacheOutcome]:
+    """
+    Load sweep OHLCV data via ParquetCache when enabled.
+
+    Repeated logically identical requests reuse the cached dataset. Corrupt cache
+    entries are invalidated and reloaded from the injected loader (fail-closed on
+    stale/corrupt reads).
+    """
+    if not use_cache or cache is None:
+        return loader(), "disabled"
+
+    cache_key = build_sweep_data_cache_key(
+        symbol=symbol,
+        timeframe=timeframe,
+        n_bars=n_bars,
+        data_source=data_source,
+        data_file=data_file,
+        start_ts=start_ts,
+        end_ts=end_ts,
+    )
+
+    corrupted = False
+    if cache.exists(cache_key):
+        try:
+            cached_df = cache.load(cache_key)
+            if not quiet:
+                logger.info("Sweep data cache hit (key=%s)", cache_key)
+            return cached_df, "hit"
+        except CacheCorruptionError:
+            corrupted = True
+            logger.warning(
+                "Sweep data cache corrupt (key=%s); invalidating and reloading",
+                cache_key,
+            )
+            cache.clear(cache_key)
+
+    fresh_df = loader()
+    cache.save(fresh_df, cache_key)
+    outcome: SweepDataCacheOutcome = "fallback" if corrupted else "miss"
+    if not quiet:
+        logger.info("Sweep data cache %s (key=%s)", outcome, cache_key)
+    return fresh_df, outcome
+
+
+def validate_param_grid(grid: Dict[str, List[Any]]) -> None:
+    """
+    Validiert ein Parameter-Grid.
+
+    Raises:
+        ValueError: Bei ungültigem Grid
+    """
+    if not isinstance(grid, dict):
+        raise ValueError("param_grid muss ein Dict sein")
+
+    for key, values in grid.items():
+        if not isinstance(key, str):
+            raise ValueError(f"Parameter-Key muss string sein, nicht {type(key)}")
+        if not isinstance(values, (list, tuple)):
+            raise ValueError(f"Parameter-Werte für '{key}' müssen Liste sein, nicht {type(values)}")
+        if len(values) == 0:
+            raise ValueError(f"Parameter '{key}' hat keine Werte")
+
+
+# =============================================================================
+# SWEEP ENGINE
+# =============================================================================
+
+
+class SweepEngine:
+    """
+    Orchestriert Hyperparameter-Sweeps für Strategien.
+
+    Die Engine führt systematisch alle Parameterkombinationen aus,
+    loggt Ergebnisse in der Registry und bietet Ranking-Funktionen.
+
+    Safety:
+    - Nur Backtest-Runs, keine Live- oder Testnet-Orders
+    - SafetyGuard und TradingEnvironment werden nicht verändert
+
+    Example:
+        >>> engine = SweepEngine()
+        >>> config = SweepConfig(
+        ...     strategy_key="ma_crossover",
+        ...     param_grid={"fast_window": [10, 20], "slow_window": [50, 100]},
+        ... )
+        >>> summary = engine.run_sweep(config, data=df)
+        >>> print(summary.best_result)
+    """
+
+    def __init__(
+        self,
+        verbose: bool = False,
+        progress_callback: Optional[Callable[[int, int, Dict], None]] = None,
+        progress_every: int = DEFAULT_PROGRESS_EVERY,
+    ) -> None:
+        """
+        Initialisiert die Sweep-Engine.
+
+        Args:
+            verbose: Wenn True, ausführliche Ausgabe
+            progress_callback: Optionaler Callback für Fortschritt
+                Signatur: callback(current_run, total_runs, current_params)
+            progress_every: Batch-Intervall für Fortschrittsausgaben (positiv)
+        """
+        self.verbose = verbose
+        self.progress_callback = progress_callback
+        self.progress_every = _validate_progress_every(progress_every)
+
+    def _maybe_emit_progress(
+        self,
+        current: int,
+        total: int,
+        params: Dict[str, Any],
+    ) -> None:
+        """Emit batched progress via callback or verbose print."""
+        if not _should_emit_batch_progress(current, total, self.progress_every):
+            return
+        if self.progress_callback:
+            self.progress_callback(current, total, params)
+        elif self.verbose:
+            print(f"  [{current}/{total}] {params}")
+
+    def run_sweep(
+        self,
+        config: SweepConfig,
+        data: pd.DataFrame,
+        skip_registry: bool = False,
+        *,
+        diagnostics_callback: Optional[
+            Callable[
+                [
+                    int,
+                    Dict[str, Any],
+                    Dict[str, Any],
+                    bool,
+                    Optional[str],
+                    Optional[BacktestResult],
+                ],
+                None,
+            ]
+        ] = None,
+    ) -> SweepSummary:
+        """
+        Führt einen kompletten Hyperparameter-Sweep aus.
+
+        Args:
+            config: Sweep-Konfiguration
+            data: OHLCV-DataFrame für Backtests
+            skip_registry: Wenn True, kein Registry-Logging (für Tests)
+            diagnostics_callback: Optional; pro Kombination (1-basiierter Index, params, stats, success, error, result)
+
+        Returns:
+            SweepSummary mit allen Ergebnissen
+
+        Raises:
+            ValueError: Bei ungültiger Konfiguration
+        """
+        # Validierung
+        validate_param_grid(config.param_grid)
+
+        # Sweep-ID und Name generieren
+        sweep_id = generate_sweep_id()
+        sweep_name = config.sweep_name or f"{config.strategy_key}_sweep_{sweep_id}"
+
+        # Parameterkombinationen generieren
+        combinations = expand_parameter_grid(config.param_grid)
+        if config.max_runs is not None:
+            combinations = combinations[: config.max_runs]
+
+        # Basis-Config laden
+        cfg = load_config(Path(config.config_path))
+
+        # Tracking
+        start_time = datetime.utcnow()
+        started_at = start_time.isoformat(timespec="seconds") + "Z"
+        results: List[SweepResult] = []
+
+        if self.verbose:
+            print(f"\n[Sweep] Starte {len(combinations)} Runs für {config.strategy_key}")
+            print(f"        Sweep-ID: {sweep_id}")
+            print(f"        Symbol: {config.symbol}, Timeframe: {config.timeframe}")
+
+        # Runs ausführen
+        for i, params in enumerate(combinations, 1):
+            self._maybe_emit_progress(i, len(combinations), params)
+
+            try:
+                stats, bt_result = self._run_single_backtest(
+                    data=data,
+                    strategy_key=config.strategy_key,
+                    params=params,
+                    cfg=cfg,
+                )
+
+                # Registry-Logging
+                run_id = ""
+                if not skip_registry:
+                    run_id = log_sweep_run(
+                        strategy_key=config.strategy_key,
+                        symbol=config.symbol,
+                        timeframe=config.timeframe,
+                        params=params,
+                        stats=stats,
+                        sweep_name=sweep_name,
+                        tag=config.tag,
+                        config_path=config.config_path,
+                        extra_metadata={
+                            "sweep_id": sweep_id,
+                            "run_index": i,
+                            "total_runs": len(combinations),
+                            **config.extra_metadata,
+                        },
+                    )
+                else:
+                    run_id = f"test_{uuid.uuid4().hex[:8]}"
+
+                if diagnostics_callback is not None:
+                    diagnostics_callback(i, params, stats, True, None, bt_result)
+
+                results.append(
+                    SweepResult(
+                        params=params,
+                        stats=stats,
+                        run_id=run_id,
+                        success=True,
+                    )
+                )
+
+            except Exception as e:
+                if self.verbose:
+                    print(f"    FEHLER: {e}")
+
+                if diagnostics_callback is not None:
+                    diagnostics_callback(i, params, {}, False, str(e), None)
+
+                results.append(
+                    SweepResult(
+                        params=params,
+                        stats={},
+                        run_id="",
+                        success=False,
+                        error=str(e),
+                    )
+                )
+
+        # Abschluss
+        end_time = datetime.utcnow()
+        completed_at = end_time.isoformat(timespec="seconds") + "Z"
+        duration = (end_time - start_time).total_seconds()
+
+        # Bestes Ergebnis finden
+        successful_results = [r for r in results if r.success]
+        best_result = None
+        if successful_results:
+            best_result = self._find_best_result(
+                successful_results,
+                sort_by=config.sort_by,
+                ascending=config.sort_ascending,
+            )
+
+        summary = SweepSummary(
+            sweep_id=sweep_id,
+            sweep_name=sweep_name,
+            strategy_key=config.strategy_key,
+            symbol=config.symbol,
+            timeframe=config.timeframe,
+            total_combinations=config.total_combinations,
+            runs_executed=len(results),
+            successful_runs=len(successful_results),
+            failed_runs=len(results) - len(successful_results),
+            results=results,
+            best_result=best_result,
+            duration_seconds=duration,
+            started_at=started_at,
+            completed_at=completed_at,
+        )
+
+        if self.verbose:
+            print(f"\n[Sweep] Abgeschlossen in {duration:.1f}s")
+            print(f"        Erfolgreich: {summary.successful_runs}/{summary.runs_executed}")
+            if best_result:
+                print(f"        Bestes Ergebnis: {best_result.params}")
+                print(
+                    f"        Sharpe: {best_result.sharpe:.2f}, Return: {best_result.total_return:.2%}"
+                )
+
+        return summary
+
+    def _run_single_backtest(
+        self,
+        data: pd.DataFrame,
+        strategy_key: str,
+        params: Dict[str, Any],
+        cfg: PeakConfig,
+        *,
+        system_economic_evidence_requested: bool = False,
+    ) -> Tuple[Dict[str, Any], BacktestResult]:
+        """
+        Führt einen einzelnen Backtest mit spezifischen Parametern aus.
+
+        Path classification: RAW_SIGNAL_RESEARCH / LEGACY_NON_AUTHORITATIVE.
+        Not a canonical MV2 system-evidence path — system economic evidence requests
+        fail closed.
+
+        Args:
+            data: OHLCV-DataFrame
+            strategy_key: Strategie-Key
+            params: Parameter für diese Kombination
+            cfg: Peak-Config
+
+        Returns:
+            Tuple aus Stats-Dict und BacktestResult
+        """
+        declare_legacy_raw_signal_research_path_v1(
+            system_economic_evidence_requested=system_economic_evidence_requested,
+            path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+        )
+
+        # Position-Sizer und Risk-Manager aus Config
+        position_sizer = build_position_sizer_from_config(cfg)
+        risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
+
+        # Strategie erstellen (Sweep-Parameter müssen vor __init__/validate gelten)
+        if strategy_key == "regime_aware_portfolio":
+            spec_ra = get_strategy_spec(strategy_key)
+            load_strategy(strategy_key)
+            strategy = spec_ra.cls.from_config(
+                cfg,
+                section=spec_ra.config_section,
+                param_overrides=params,
+            )
+        else:
+            strategy_params_effective = _build_strategy_params_from_config(cfg, strategy_key)
+            strategy_params_effective.update(params)
+            base_signal_fn = load_strategy(strategy_key)
+
+        # Backtest-Engine
+        engine = BacktestEngine(
+            core_position_sizer=position_sizer,
+            risk_manager=risk_manager,
+        )
+
+        if strategy_key == "regime_aware_portfolio":
+
+            def strategy_signal_fn(df: pd.DataFrame, _params: Dict) -> pd.Series:
+                return strategy.generate_signals(df)
+
+        else:
+
+            def strategy_signal_fn(df: pd.DataFrame, engine_params: Dict) -> pd.Series:
+                return base_signal_fn(df, strategy_params_effective)
+
+        result = engine.run_realistic(
+            df=data,
+            strategy_signal_fn=strategy_signal_fn,
+            strategy_params=params,
+        )
+
+        return result.stats or {}, result
+
+    def _find_best_result(
+        self,
+        results: List[SweepResult],
+        sort_by: str,
+        ascending: bool,
+    ) -> Optional[SweepResult]:
+        """Findet das beste Ergebnis nach der angegebenen Metrik."""
+        if not results:
+            return None
+
+        def get_metric(r: SweepResult) -> float:
+            val = r.stats.get(sort_by, 0.0)
+            # Handle None values
+            if val is None:
+                return float("-inf") if not ascending else float("inf")
+            return float(val)
+
+        return min(results, key=get_metric) if ascending else max(results, key=get_metric)
+
+
+# =============================================================================
+# CONVENIENCE FUNCTIONS
+# =============================================================================
+
+
+def run_strategy_sweep(
+    strategy_key: str,
+    param_grid: Dict[str, List[Any]],
+    data: pd.DataFrame,
+    symbol: str = "BTC/EUR",
+    timeframe: str = "1h",
+    sweep_name: Optional[str] = None,
+    tag: Optional[str] = None,
+    max_runs: Optional[int] = None,
+    sort_by: str = "sharpe",
+    config_path: str = "config.toml",
+    verbose: bool = False,
+    skip_registry: bool = False,
+) -> SweepSummary:
+    """
+    Convenience-Funktion für einen einfachen Strategy-Sweep.
+
+    Args:
+        strategy_key: Name der Strategie
+        param_grid: Parameter-Grid
+        data: OHLCV-DataFrame
+        symbol: Trading-Pair
+        timeframe: Timeframe
+        sweep_name: Optionaler Sweep-Name
+        tag: Optionaler Tag
+        max_runs: Max. Anzahl Runs
+        sort_by: Sortier-Metrik
+        config_path: Config-Pfad
+        verbose: Ausführliche Ausgabe
+        skip_registry: Registry-Logging überspringen
+
+    Returns:
+        SweepSummary mit Ergebnissen
+
+    Example:
+        >>> summary = run_strategy_sweep(
+        ...     strategy_key="my_strategy",
+        ...     param_grid={"lookback_window": [15, 20, 25], "entry_multiplier": [1.2, 1.5, 2.0]},
+        ...     data=df,
+        ...     tag="optimization",
+        ... )
+        >>> print(f"Best Sharpe: {summary.best_result.sharpe:.2f}")
+    """
+    config = SweepConfig(
+        strategy_key=strategy_key,
+        param_grid=param_grid,
+        symbol=symbol,
+        timeframe=timeframe,
+        sweep_name=sweep_name,
+        tag=tag,
+        max_runs=max_runs,
+        sort_by=sort_by,
+        config_path=config_path,
+    )
+
+    engine = SweepEngine(verbose=verbose)
+    return engine.run_sweep(config, data=data, skip_registry=skip_registry)

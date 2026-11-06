@@ -1,0 +1,27 @@
+{
+  "workpackage_id": "CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1",
+  "owner_go": true,
+  "owner_go_decision_config": "config/governance/current_productive_k1_opaque_signing_handle_pre_post_owner_go_v1_decision.json",
+  "baseline_origin_main_sha": "4e31703f888fec81cca97f51376429088e022f3d",
+  "current_productive_k1_opaque_signing_handle_pre_post_authorized": true,
+  "governed_k1_opaque_signing_handle_authorized": true,
+  "real_keychain_access_authorized": true,
+  "request_signing_authorized": true,
+  "request_signing_performed": false,
+  "opaque_signing_handle_constructed": false,
+  "pre_post_envelope_constructed": false,
+  "pre_post_validated": false,
+  "permit_mint_performed": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "pre_post_implies_post": false,
+  "pre_post_implies_standing_keychain_pin_flip": false,
+  "earliest_unclosed_boundary": "REAL_VENUE_POST_ADMISSION",
+  "next_genuine_blocker": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+  "normative_spec": "docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md",
+  "bound_lineage": {
+    "real_keychain_access_or_credential_material_load_policy_record_config": "config/governance/real_keychain_access_or_credential_material_load_policy_v1_record.json",
+    "material_load_governed_acquisition_module": "src/governance/real_keychain_access_governed_credential_material_acquisition_v1.py",
+    "k1_opaque_signing_handle_module": "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py"
+  }
+}

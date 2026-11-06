@@ -1,0 +1,56 @@
+{
+  "changes": [
+    {
+      "after": "historical baseline + CURRENT_FORENSIC_TRUTH_SHA=beacc35d...",
+      "before": "FORENSIC_BASELINE_SHA alone as current truth",
+      "section": "header/5.1"
+    },
+    {
+      "after": "Cap7.2 offline no-order activated; Public-MD ladder open",
+      "before": "stateful runtime exists/activated=false",
+      "section": "5.2"
+    },
+    {
+      "after": "dual-host Cap7.2 vs wallclock hardening_v2 documentation residual",
+      "before": "single undifferentiated call graph",
+      "section": "5.3"
+    },
+    {
+      "after": "C1/C2/C3/persistence/restart true for proven scopes",
+      "before": "C1/C2=false; C3=partial; persistence false",
+      "section": "5.5"
+    },
+    {
+      "after": "deterministic proven; Public-MD natural=false",
+      "before": "Entry/Exit/Fee/Slippage=false",
+      "section": "5.6"
+    },
+    {
+      "after": "closed scopes cleared; residuals/doc-drift/public-MD gap documented",
+      "before": "wiring/state/config/doc/evidence defects=true",
+      "section": "5.7"
+    },
+    {
+      "after": "Cap6.3 closed with hardening_v2 residual literals",
+      "before": "confirmed keys open drift",
+      "section": "9.2/G07"
+    },
+    {
+      "after": "closed/partial statuses retained by Gap ID",
+      "before": "G01-G11/G17 open or unbound as current",
+      "section": "10"
+    },
+    {
+      "after": "Immediate Next=Phase 9.2 continuation",
+      "before": "Immediate Next=Cap6.1",
+      "section": "22"
+    },
+    {
+      "after": "FINAL_PROGRAM_DOD vs CURRENT_EVIDENCE_STATUS split",
+      "before": "single DoD block only",
+      "section": "21"
+    }
+  ],
+  "current_forensic_truth_sha": "beacc35d754fd8ab0a37190b882f71b8fb78cb38",
+  "schema": "canonical_master_runbook_truth_reconciliation_before_after_v1"
+}

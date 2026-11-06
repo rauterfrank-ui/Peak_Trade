@@ -1,0 +1,29 @@
+{
+  "binding_file_passes_per_full_run": 27,
+  "commands": [
+    "pytest ::test_materialize_evidence (x2 processes)",
+    "pytest ::test_materialize_evidence_ephemeral_double_run_and_cleanup",
+    "pytest full binding file (x2)",
+    "pytest related step5 execution + activation wiring",
+    "python3 -m ruff format --check / check"
+  ],
+  "double_run": {
+    "ephemeral_first_ok": true,
+    "ephemeral_mode_first": "ephemeral_temporary_directory",
+    "ephemeral_mode_second": "ephemeral_temporary_directory",
+    "ephemeral_second_ok": true,
+    "ephemeral_tokens_differ": true,
+    "explicit_injected_first_ok": true,
+    "explicit_injected_second_ok": true,
+    "failure_injection_ok_first": true,
+    "failure_injection_ok_second": true,
+    "intra_run_fi_ok": true,
+    "intra_run_happy_ok": true,
+    "intra_run_reuse_blocked": true,
+    "manifest_digest_stable": true,
+    "roots_differ": true,
+    "shared_var_tmp_used_first": false,
+    "shared_var_tmp_used_second": false
+  },
+  "related_passes": 28
+}

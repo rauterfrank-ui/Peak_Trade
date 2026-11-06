@@ -1,0 +1,17 @@
+{
+  "accepted_observation_count": 17,
+  "composition_pass_count": 12,
+  "confirmation_candidate_count": 16,
+  "confirmation_confirmed_count": 12,
+  "double_play_directional_count": 12,
+  "dynamic_scope_ready_count": 12,
+  "entry_actionable_count": 5,
+  "entry_intent_count": 5,
+  "features_ready_count": 17,
+  "market_state_classified_count": 17,
+  "master_v2_directional_count": 12,
+  "risk_pass_count": 10,
+  "safety_pass_count": 10,
+  "suitability_pass_count": 12,
+  "survival_pass_count": 12
+}

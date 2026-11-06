@@ -1,0 +1,12 @@
+{
+  "authority_effect": "NONE",
+  "input_series_binding_digest_sha256": "8cc6883325ce216c11368a5af6e3ce53823443068f2c0684d796c1a5f86db48f",
+  "mean_outcome": 72.61946747,
+  "monte_carlo_method": "bootstrap_return_resample_v1",
+  "num_runs": 32,
+  "productive_offline_economic_semantics_v1": true,
+  "randomness_seed": 42,
+  "result_summary_digest_sha256": "a31c105adf57a9ee40bbef35e96b92d375c41b2d14e8a418f38e8b4f17b30aa0",
+  "schema_id": "ops.integrated_offline_economic_monte_carlo_domain.v1",
+  "schema_version": "v1"
+}

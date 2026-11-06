@@ -1,0 +1,185 @@
+{
+  "artifact_kind": "cross_sectional_funding_rate_persistence_reversal_filter_ranking_semantics_versioned_binding",
+  "artifact_version": "v0",
+  "binding": {
+    "binding_status": {
+      "cost_model_binding_status": "REQUIRED_UNBOUND",
+      "dataset_binding_status": "REQUIRED_UNBOUND",
+      "digest_binding_status": "REQUIRED_UNBOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "INCOMPLETE_FAIL_CLOSED",
+      "period_binding_status": "REQUIRED_UNBOUND",
+      "policy_classes_status": "BOUND",
+      "universe_binding_status": "REQUIRED_UNBOUND"
+    },
+    "digest_bindings": {
+      "config_digest": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "data_digest": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "implementation_digest": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "material_difference_digest": {
+        "status": "REQUIRED_UNBOUND"
+      }
+    },
+    "direction_semantics": {
+      "dual_leg_simultaneous_forbidden": true,
+      "funding_level_spread_forbidden": true,
+      "long_leg_means": "LONG_CROWDED_SHORT_REVERSAL",
+      "non_finite_funding_target": "FLAT",
+      "panel_insufficient_target": "FLAT",
+      "rank_delta_forbidden": true,
+      "reversal_blocked_target": "FLAT",
+      "selection_mode": "funding_persistence_reversal_filter_extremes_single_leg_rotation_v0",
+      "short_leg_means": "SHORT_CROWDED_LONG_REVERSAL",
+      "single_slot_rotation": true,
+      "warmup_incomplete_target": "FLAT"
+    },
+    "external_bindings": {
+      "admissibility_manifest_ref": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "evaluation_period_binding": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "execution_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "fee_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "funding_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "instrument_id_canonicalization_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "panel_funding_dataset_manifest_ref": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "pit_universe_manifest_ref": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "slippage_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      },
+      "spread_model_version": {
+        "status": "REQUIRED_UNBOUND"
+      }
+    },
+    "hypothesis_id": "CROSS_SECTIONAL_FUNDING_RATE_PERSISTENCE_REVERSAL_FILTER_NON_BITCOIN_PERPETUALS_V0",
+    "missing_bar_semantics": {
+      "carry_forward": false,
+      "missing_bar_policy": "exclude_non_selected_instrument_for_epoch",
+      "non_selected_missing": "exclude_for_epoch",
+      "selected_missing": "force_flat"
+    },
+    "numeric_bindings": {
+      "adverse_reversal_threshold": {
+        "status": "BOUND",
+        "value": 5e-05
+      },
+      "decay_stability_min_ratio": {
+        "status": "BOUND",
+        "value": 0.6
+      },
+      "max_bar_staleness_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "min_eligible_members_for_rank": {
+        "status": "BOUND",
+        "value": 5
+      },
+      "min_persistence_epochs": {
+        "status": "BOUND",
+        "value": 3
+      },
+      "min_persistence_score_for_entry": {
+        "status": "BOUND",
+        "value": 0.5
+      },
+      "persistence_lookback_k": {
+        "status": "BOUND",
+        "value": 4
+      },
+      "rebalance_interval_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "reversal_risk_lookback_k": {
+        "status": "BOUND",
+        "value": 2
+      },
+      "signal_lag_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "switch_entry_delay_epochs": {
+        "status": "BOUND",
+        "value": 1
+      }
+    },
+    "orchestrator": {
+      "owner": "cross_sectional_funding_rate_persistence_reversal_filter_single_slot_research_orchestrator_v0",
+      "scope": "RESEARCH_ONLY"
+    },
+    "panel_semantics": {
+      "eligibility_mode": "per_instrument_eligibility_mask",
+      "insufficient_panel_action": "flat",
+      "minimum_eligible_member_count_required": true
+    },
+    "policy_classes": {
+      "cooldown_policy": "no_cooldown",
+      "direction_policy": "symmetric_funding_persistence_decay_reversal_gate_single_leg_rotation_v0",
+      "minimum_hold_policy": "until_next_rebalance",
+      "missing_bar_policy": "exclude_non_selected_instrument_for_epoch",
+      "panel_completeness_policy": "per_instrument_eligibility_mask",
+      "rebalance_policy_class": "fixed_N_bar_cadence",
+      "score_family_policy": "cross_sectional_funding_rate_persistence_reversal_filter_v0",
+      "signal_timing_policy": "finalized_bar_close_epoch",
+      "switch_policy": "flat_then_wait_one_epoch_then_enter",
+      "threshold_policy": "persistence_combined_score_threshold_no_continuous_tuning",
+      "tie_break_policy": "combined_score_desc_then_instrument_id_asc"
+    },
+    "schema_version": "cross_sectional_funding_rate_persistence_reversal_filter_ranking_semantics_binding.v0",
+    "switch_semantics": {
+      "atomic_side_switch": false,
+      "flat_then_wait_one_epoch_then_enter": true,
+      "opposite_side_requires_reconciled_flat": true,
+      "switch_policy": "flat_then_wait_one_epoch_then_enter"
+    },
+    "system_constraints": {
+      "bitcoin_direction_allowed": false,
+      "futures_only": true,
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false
+    },
+    "threshold_semantics": {
+      "adverse_reversal_gate_required": true,
+      "decay_stability_min_ratio_required": true,
+      "min_persistence_score_for_entry_required": true,
+      "threshold_policy": "persistence_combined_score_threshold_no_continuous_tuning"
+    },
+    "tie_break_semantics": {
+      "combined_score_tie_leg_order": "instrument_id_asc",
+      "long_leg_order": "combined_score_desc_then_instrument_id_asc",
+      "short_leg_order": "combined_score_desc_then_instrument_id_asc",
+      "tie_break_policy": "combined_score_desc_then_instrument_id_asc"
+    },
+    "timing_semantics": {
+      "decision_input": "finalized_bars_only",
+      "finalized_bar_required": true,
+      "funding_observation_field": "funding_rate",
+      "minimum_signal_lag_bars": 1,
+      "pit_universe_at_score_epoch": true,
+      "same_bar_execution": false,
+      "score_epoch": "finalized_bar_close"
+    }
+  },
+  "operator_decision_digest": "18e31de48959165baab69cd4ec4c324af6950681e33f2e1ba8efa7e9a7995314"
+}

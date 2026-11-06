@@ -1,0 +1,8 @@
+{"ts": "2025-12-20T11:00:00.000Z", "session_id": "golden_bad_001", "symbol": "BTC-USD", "mode": "PAPER", "kind": "intent", "payload": {"side": "BUY", "quantity": 0.5, "intent_id": "intent_b01"}}
+{invalid json line - missing quotes and structure
+{"ts": "2025-12-20T11:00:00.150Z", "session_id": "golden_bad_001", "symbol": "BTC-USD", "mode": "PAPER", "kind": "order", "payload": {"order_id": "order_b01", "intent_id": "intent_b01", "side": "BUY"}}
+{"ts": "2025-12-20T11:00:00.320Z", "session_id": "golden_bad_001"
+{"ts": "2025-12-20T11:00:01.000Z", "session_id": "golden_bad_001", "symbol": "ETH-USD", "mode": "PAPER", "kind": "fill", "payload": {"order_id": "order_b02", "filled_quantity": 1.0, "fill_price": 2250.0, "fill_notional": 2250.0}}
+this is completely invalid { not json at all }
+{"ts": "2025-12-20T11:00:02.000Z", "session_id": "golden_bad_001", "symbol": "SOL-USD", "mode": "PAPER", "kind": "gate", "payload": {"gate": "MinNotionalGate", "decision": "BLOCK", "reason": "Below minimum"}}
+{"ts": "2025-12-20T11:00:03.000Z", "session_id": "golden_bad_001", "symbol": "ADA-USD", "mode": "PAPER", "kind": "intent", "payload": {"side": "SELL", "quantity": 100.0, "intent_id": "intent_b03"}}

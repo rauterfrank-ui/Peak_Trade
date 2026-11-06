@@ -1,0 +1,13 @@
+{
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_SECTION_11_13_1_V1",
+  "EVALUATION_STANDARD": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.17",
+  "HISTORICAL_FIXTURE_CAP_11_12_CLAIMS": "docs/evidence/capability_11_12_fully_autonomous_live_readiness_ratification_v1/claims.json",
+  "NAVIGATION": "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+  "NOTE": "Historical Cap 11.12 fixture claims retain TESTNET_LIFECYCLE_PROVEN=false; current Master/Map SSOT supersedes with TESTNET_LIFECYCLE_PROVEN=true from Cap 11.12 Testnet program close. LIVE_* proven fields remain false in both fixture claims and current SSOT.",
+  "ORIGIN_MAIN_SHA": "20d315f97f053b8e872d2e304e7633db65784823",
+  "PREDECESSOR_EVIDENCE": "evidence/ops/section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1/20260811T133046Z/",
+  "PREDECESSOR_GATE": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.12.9.44",
+  "PROGRESSION_CONTRACT": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.13",
+  "RUN_ID": "20260811T134610Z",
+  "SSOT_OWNER": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.13.1"
+}

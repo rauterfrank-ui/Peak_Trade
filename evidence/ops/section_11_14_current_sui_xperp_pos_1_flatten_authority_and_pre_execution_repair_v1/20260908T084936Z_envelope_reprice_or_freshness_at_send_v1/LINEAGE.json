@@ -1,0 +1,10 @@
+{
+  "frozen_envelope_id": "76f0ad245070206d7fe8807fca8d130dbdedbdc3969e7ba42f23ca88901c164a",
+  "frozen_origin_main_sha": "565cee16783ba0a3f1aea606626bf6418bad21e8",
+  "historical_reuse": false,
+  "new_envelope_id": "0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe",
+  "origin_main_sha": "8b1fa60b9256ad28656946ac08d271b35d9fe602",
+  "owner_go": "ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND",
+  "predecessor_slice": "11.14.FRESH_PRE_SUBMIT_GET_AND_FRESHNESS_ADJUDICATION",
+  "this_slice": "11.14.ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND"
+}

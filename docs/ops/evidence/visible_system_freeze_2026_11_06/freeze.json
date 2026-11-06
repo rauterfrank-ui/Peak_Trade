@@ -1,0 +1,51 @@
+{
+  "schema": "peaktrade.visible_system_fixed_reference.v1",
+  "created_at": "2026-11-06T04:13:39.998551+01:00",
+  "checkpoint_tag": "freeze/visible-system-2026-11-06",
+  "preparation_tag_object": "761767dedb870cb2320a9999c2fea610376b027e",
+  "repository": "/Users/frnkhrz/Peak_Trade",
+  "code_basis_commit": "ee323ea9a16f36d3cceaac251de1237495eeb854",
+  "code_basis_tree": "941a34fc6adad54ec27b6fa3ea55195c13a2c6d3",
+  "scope": "versioned repository code/configuration/documentation and current Obsidian system content",
+  "obsidian_vault": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL",
+  "obsidian_bound_files": 4954,
+  "obsidian_inventory": "obsidian-state.json.gz",
+  "obsidian_inventory_sha256": "8aa44fe5cab713593de7d73f57bdc5cc1e4274c1400b567d99979254443b63fd",
+  "changed_view_markers": [
+    {
+      "path": "Start.md",
+      "sha256": "dcbeb992fb4e3bfa279ae0fa39c0ff6525a461dda69af7c0b2968fa4b689be2d",
+      "saved": "views/Start.md.gz"
+    },
+    {
+      "path": "00 Systemindex/System Cockpit.md",
+      "sha256": "295797c6e42f20f4950f2297c39dc881d9aa4020ba7c5e05d76a19ae9a506404",
+      "saved": "views/00 Systemindex/System Cockpit.md.gz"
+    },
+    {
+      "path": "Systemindexbindung.json",
+      "sha256": "c9387bf368be78e82347bd172317403ad70244c96c225ce6e137317921985c4f",
+      "saved": "views/Systemindexbindung.json.gz"
+    },
+    {
+      "path": "Systematlasbindung.json",
+      "sha256": "398c2e84cecf669a4bf98238162a822ba4ecca13bc82438472d59169847d1125",
+      "saved": "views/Systematlasbindung.json.gz"
+    },
+    {
+      "path": "Ansichtsbindung.json",
+      "sha256": "bae6225ae19eb44f3ef6e9e181bae02d71b80b6a215d994ca61e9b14c05278f4",
+      "saved": "views/Ansichtsbindung.json.gz"
+    }
+  ],
+  "frozen_reference_kind": "VERSIONED_CHECKPOINT",
+  "product_code_changed": false,
+  "runtime_configuration_changed": false,
+  "runtime_processes_stopped": false,
+  "runtime_authorization_effect": "NONE",
+  "archive_destination": "/Volumes/M2DATA/PeakTrade_Archiv_2026-11-06_031920/repo-complete/Peak_Trade",
+  "backup_status": "COPY_COMPLETE_FULL_VERIFICATION_STOPPED_AT_OWNER_REQUEST",
+  "git_history_rewritten": false,
+  "legacy_cleanup_executed": false,
+  "next_disaster_backup": "LATER_PER_OWNER"
+}

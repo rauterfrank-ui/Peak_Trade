@@ -1,0 +1,112 @@
+{
+  "rows": [
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "confirmation_state",
+      "owner_capability": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+      "reason": "Cap 6.1 confirmation carrier continuity"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "confirmation_session_id",
+      "owner_capability": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+      "reason": "stable confirmation identity across process restart"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "observation_identity_epoch",
+      "owner_capability": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+      "reason": "C1 epoch continuity; no rollback"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "dynamic_scope_state",
+      "owner_capability": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+      "reason": "Cap 6.2 RuntimeScopeState continuity"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "required_decision_path_carrier_state",
+      "owner_capability": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+      "reason": "only required carrier via Cap 6.2; no new MV2 domain"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "portfolio_state",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "Cap 3.1/7.2 portfolio continuity"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "accounting_state",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "futures accounting continuity"
+    },
+    {
+      "classification": "REFERENCE_ONLY",
+      "field": "reconciliation_state_reference",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "reconciliation-before-alpha gate reference"
+    },
+    {
+      "classification": "REFERENCE_ONLY",
+      "field": "selected_instrument_reference",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "Cap 2.4 selection remains sole authority"
+    },
+    {
+      "classification": "REFERENCE_ONLY",
+      "field": "typed_volatility_reference",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "typed presence reference only; no policy mutation"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "evidence_cursor",
+      "owner_capability": "CAPABILITY_6_4_FULL_DECISION_PATH_ATOMIC_RESTART_CLOSURE_V1",
+      "reason": "Cap 6.4 pending evidence cursor continuity"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "field": "atomic_decision_path_commit_position",
+      "owner_capability": "CAPABILITY_6_4_FULL_DECISION_PATH_ATOMIC_RESTART_CLOSURE_V1",
+      "reason": "Cap 6.4 commit marker continuity"
+    },
+    {
+      "classification": "REBUILD_DETERMINISTICALLY",
+      "field": "feature_vectors",
+      "owner_capability": "CAPABILITY_6_4_FULL_DECISION_PATH_ATOMIC_RESTART_CLOSURE_V1",
+      "reason": "rebuilt from persisted observation path"
+    },
+    {
+      "classification": "REBUILD_DETERMINISTICALLY",
+      "field": "unrealized_pnl",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "derived from position + mark"
+    },
+    {
+      "classification": "EPHEMERAL",
+      "field": "transport_metadata",
+      "owner_capability": "market_data_transport",
+      "reason": "process-local; not restart authority"
+    },
+    {
+      "classification": "EPHEMERAL",
+      "field": "wallclock_runtime_session_id",
+      "owner_capability": "wallclock_session_host",
+      "reason": "each process uses a new runtime_session_id"
+    },
+    {
+      "classification": "FORBIDDEN_TO_PERSIST",
+      "field": "master_v2_full_decision_blob",
+      "owner_capability": "none",
+      "reason": "MASTER_V2_NEW_PERSISTENCE_DOMAIN_MODEL_ALLOWED=false"
+    },
+    {
+      "classification": "FORBIDDEN_TO_PERSIST",
+      "field": "double_play_full_decision_blob",
+      "owner_capability": "none",
+      "reason": "DOUBLE_PLAY_NEW_PERSISTENCE_DOMAIN_MODEL_ALLOWED=false"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "from_state": "CREATED",
+    "to_state": "VALIDATING",
+    "reason": "start_validation"
+  },
+  {
+    "from_state": "VALIDATING",
+    "to_state": "READY",
+    "reason": "identity_valid"
+  },
+  {
+    "from_state": "READY",
+    "to_state": "RUNNING",
+    "reason": "start_cycles:1"
+  },
+  {
+    "from_state": "RUNNING",
+    "to_state": "RECONCILING",
+    "reason": "reconcile_cycles"
+  },
+  {
+    "from_state": "RECONCILING",
+    "to_state": "COMPLETED",
+    "reason": "cycles_reconciled"
+  }
+]

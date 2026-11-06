@@ -1,0 +1,852 @@
+{
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "SIDECAR_AUTHORITY": "NONE",
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "THIS_RECORD_IS_NOT_CANONICAL_AUTHORITY": true,
+  "THIS_RECORD_IS_PERSISTENCE_NOT_ADJUDICATION": true,
+  "NOT_CANONICAL": true,
+  "SECOND_SSOT": false,
+  "SEMANTIC_AUTHORITY": false,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "STRUCTURING_IS_CANONIZATION": false,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "GAP_CLOSURE_PRESENT": false,
+  "GAP_CLOSED": false,
+  "HISTORICAL_P6_SOURCE_SET_BOUND": false,
+  "ALL_P6_RELEVANCE_COMPLETE": false,
+  "P2_SOURCE_RESOLVED": false,
+  "COMPLETENESS_ADJUDICATION_NOT_PERFORMED_IN_THIS_PERSIST": true,
+  "OBSERVATIONAL_UNRESOLVED_ZERO_IS_NOT_ALL_P6_RELEVANCE_COMPLETE": true,
+  "ABSENCE_IMPLIES_NEGATIVE_FACT": false,
+  "ARTIFACTS_NEVER_EXISTED_NOT_CLAIMED": true,
+  "PRESERVATION_LOSS_NOT_ADJUDICATED_AS_GLOBAL_ABSENCE": true,
+  "PRESERVATION_LOSS_SCOPE": "KNOWN_EXECUTION_SURFACES_ONLY_NOT_GLOBAL_ABSENCE",
+  "SOURCE_IDENTITY_MERGED": false,
+  "SOURCE_IDENTITY_COLLAPSE_ALLOWED": false,
+  "SOURCE_IDENTITY_COLLAPSE_PRESENT": false,
+  "HISTORICAL_VARIANT_COLLAPSE_ALLOWED": false,
+  "HISTORICAL_VARIANT_COLLAPSE_PRESENT": false,
+  "CLASSIFICATION_CONFLICT_PRESENT": false,
+  "ADJUDICATION_CONFLICT_PRESENT": false,
+  "AUTHORITY_LEAK_PRESENT": false,
+  "COUNT_SEMANTICS_CONFLICT_PRESENT": true,
+  "COUNT_SEMANTICS_CHANGED": false,
+  "CURRENT_SHA_IS_NOT_HISTORICAL_5189_SHA": true,
+  "IDENTITY_COPY_CREATED": false,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_CANONICAL_SEMANTICS_CREATED": false,
+  "AUTHORITY_ESCALATION_PRESENT": false,
+  "OWNER_GO": "P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_PERSIST_V1",
+  "SOURCE_READ_ONLY_STEP": "P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_READ_ONLY_V1",
+  "PERSISTENCE_STEP": "P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_PERSIST_V1",
+  "INPUT_READ_ONLY_OWNER_GO": "P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_READ_ONLY_V1",
+  "INPUT_READ_ONLY_RESULT": "P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_READ_ONLY_V1",
+  "bound_origin_main_sha": "0cd1924daa5a4089b9625e12e9298b1310a60aab",
+  "bound_origin_main_sha_contains_pr_6079": true,
+  "observation_role": "ADDITIVE_COMPLETENESS_SYNTHESIS_OBSERVATION_INVENTORY_ONLY",
+  "THIS_FILE_IS_NOT_A_HISTORICAL_CENSUS_REWRITE": true,
+  "THIS_FILE_IS_NOT_A_DISCOVERY_SNAPSHOT": true,
+  "THIS_FILE_DOES_NOT_MUTATE_PRESERVATION_MAP": true,
+  "THIS_FILE_DOES_NOT_IMPORT_JSONL_IDENTITY_COPIES": true,
+  "THIS_FILE_DOES_NOT_IMPORT_5011_NOT_RELEVANT_SOURCE_IDS": true,
+  "THIS_FILE_DOES_NOT_IMPORT_3890_NEWLY_NOT_RELEVANT_IDS": true,
+  "THIS_FILE_DOES_NOT_IMPORT_1060_RESIDUAL_NOT_RELEVANT_IDS": true,
+  "THIS_FILE_DOES_NOT_IMPORT_1067_STILL_UNRESOLVED_LOCATORS": true,
+  "THIS_FILE_DOES_NOT_IMPORT_13_NEWLY_RELEVANT_ROWS": true,
+  "THIS_FILE_DOES_NOT_REWRITE_PRECEDING_OBSERVATION": true,
+  "THIS_OBSERVATION_DOES_NOT_RECLASSIFY_PRESERVATION_MEMBERSHIP": true,
+  "THIS_SYNTHESIS_DOES_NOT_TAKE_SOURCE_IDENTITY_OF_UNDERLYING_EVIDENCE": true,
+  "preceding_observation_locator": "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+  "preceding_observation_owner_go": "P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_PERSIST_V1",
+  "P2_SOURCE_STATUS_BEFORE_THIS_STEP": "NOT_UNIQUELY_RESOLVED",
+  "P2_SOURCE_STATUS_NOT_ADJUDICATED_IN_THIS_PERSIST": true,
+  "original_read_only_synthesis_provenance": {
+    "SOURCE_CLASS": "CURSOR_AGENT_TRANSCRIPT_READ_ONLY_SYNTHESIS_REPORT",
+    "THIS_TRANSCRIPT_IS_NOT_A_P6_5189_CENSUS_MEMBER_CLAIM": true,
+    "CURRENT_PERSIST_CHAT_IS_NOT_P6_5189_CENSUS_EVIDENCE": true,
+    "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/450dc9a2-309f-4956-8fcc-53ce7e055b6c/450dc9a2-309f-4956-8fcc-53ce7e055b6c.jsonl",
+    "jsonl_sha256_at_persist_authoring_snapshot": "4c4b6d0c0ac0e4ad6981f6b532724cc2c6d324372b9af6a160743e5602493915",
+    "jsonl_bytes_at_persist_authoring_snapshot": 75499,
+    "jsonl_line_count_at_persist_authoring_snapshot": 16,
+    "originating_read_only_owner_go_user_text_jsonl_line": 1,
+    "read_only_report_assistant_jsonl_line": 14,
+    "persist_owner_go_user_text_jsonl_line": 16,
+    "reconstructed_from_memory": false,
+    "THIS_SYNTHESIS_RECORD_SOURCE_IDENTITY_IS_DISTINCT_FROM_CITED_EVIDENCE": true
+  },
+  "referenced_existing_persistence_records_not_rewritten": [
+    "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+    "docs/forensics/persistence/inventories/P6_5189_FINAL_2_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+    "docs/forensics/persistence/inventories/P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+    "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+    "docs/forensics/persistence/inventories/P6_5189_NON_P2_ARCHIVE_LOCALIZATION_OBSERVATION_V1.json",
+    "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+    "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+    "docs/forensics/persistence/registries/CROSS_CORPUS_RELATION_REGISTER_V1.md",
+    "docs/forensics/persistence/inventories/CROSS_CORPUS_RELATION_FACTS_V1.json",
+    "docs/forensics/persistence/inventories/P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.json",
+    "docs/forensics/persistence/inventories/P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.contract.json",
+    "docs/forensics/persistence/inventories/P5_DOCUMENTS_PEAK_TRADE_FORENSICS_FILE_INVENTORY_V1.json",
+    "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json"
+  ],
+  "historical_counts": {
+    "HISTORICAL_P6_CENSUS": 5189,
+    "HISTORICAL_RELEVANT_SOURCE_COUNT": 174,
+    "HISTORICAL_NOT_RELEVANT_SOURCE_COUNT": 5011,
+    "HISTORICAL_UNRESOLVED_SOURCE_COUNT": 4,
+    "HISTORICAL_COUNTS_NOT_OVERWRITTEN": true,
+    "HISTORICAL_COUNTS_NOT_DECLARED_ERRONEOUS": true
+  },
+  "count_records_not_normalized": [
+    {
+      "value": 5189,
+      "label": "HISTORICAL_P6_CENSUS",
+      "count_semantics": "historical unique source count claim for classification snapshot P6_5189; not a stored locator-list preimage; not a live glob",
+      "historical_snapshot_vs_current": "historical snapshot",
+      "enumeration_present": false,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 174,
+      "label": "HISTORICAL_RELEVANT_SOURCE_COUNT",
+      "count_semantics": "historical unique relevant source count; 174 source_uuid bound in preservation map; copies are current-live capture not exact 5189 byte state",
+      "historical_snapshot_vs_current": "historical claim; preserved bytes are current live",
+      "enumeration_present": true,
+      "enumeration_locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 5011,
+      "label": "HISTORICAL_NOT_RELEVANT_SOURCE_COUNT",
+      "count_semantics": "historical classification count; not a locator count; not enumerated",
+      "historical_snapshot_vs_current": "historical snapshot",
+      "enumeration_present": false,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 4,
+      "label": "HISTORICAL_UNRESOLVED_SOURCE_COUNT",
+      "count_semantics": "historical unique source count remaining after residual report; not overwritten by later observational 0",
+      "historical_snapshot_vs_current": "historical snapshot",
+      "enumeration_present": true,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 3890,
+      "label": "NEWLY_NOT_RELEVANT_FROM_UNRESOLVED_COUNT",
+      "count_semantics": "classification count after 4970 content review; identities not printed by review-script design",
+      "historical_snapshot_vs_current": "historical intermediate",
+      "enumeration_present": false,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 1060,
+      "label": "RESIDUAL_NOT_RELEVANT_COUNT",
+      "count_semantics": "classification count from residual script aggregates over 1067 residual cases; identities not printed by residual-script design",
+      "historical_snapshot_vs_current": "historical intermediate",
+      "enumeration_present": false,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 3951,
+      "label": "F799_RESIDUAL_INPUT_TOTAL_NOT_RELEVANT_PROVEN_COUNT",
+      "count_semantics": "aggregate entering residual GO; attested arithmetic 3951+1060=5011 is not source-ID proof",
+      "source_locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/f799dea0-c24f-4588-b0af-41cb055bdab1.jsonl",
+      "historical_snapshot_vs_current": "historical",
+      "enumeration_present": false,
+      "not_identical_to": 3946,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 3946,
+      "label": "TERMINAL_640021_TOTAL_NOT_RELEVANT_PROVEN_COUNT",
+      "count_semantics": "after 4970 content review; PREVIOUS_NOT_RELEVANT_COUNT=56 plus NEWLY_NOT_RELEVANT_FROM_UNRESOLVED_COUNT=3890",
+      "source_locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+      "historical_snapshot_vs_current": "historical intermediate",
+      "enumeration_present": false,
+      "not_identical_to": 3951,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 1067,
+      "label": "STILL_UNRESOLVED_AFTER_CONTENT_REVIEW_LOCATOR_COUNT",
+      "count_semantics": "locator count not source-ID count; unique relative locator count parsed from terminal=1067; unique jsonl basename stem count=1062",
+      "source_locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+      "LOCATOR_COUNT_IS_NOT_SOURCE_ID_COUNT": true,
+      "historical_snapshot_vs_current": "historical intermediate",
+      "THIS_IS_NOT_THE_5011_NOT_RELEVANT_SET": true,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 5185,
+      "label": "P6_JSONL_GLOB_COUNT_OBSERVED",
+      "count_semantics": "discovery-pass glob/file count of agent-transcripts; not HISTORICAL_P6_CENSUS 5189",
+      "source_locator": "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+      "historical_snapshot_vs_current": "discovery snapshot",
+      "not_identical_to": 5189,
+      "registered_as_p6_count": false,
+      "note": "P6 surface glob observed at discovery; not a 5189 membership list"
+    },
+    {
+      "value": 5190,
+      "label": "P6_CURRENT_LIVE_CENSUS_AFTER_EXCLUDING_F799",
+      "count_semantics": "live census claim in terminal 640021 at 2026-08-27T05:23:34Z after excluding CURRENT_CHAT f799dea0-c24f-4588-b0af-41cb055bdab1; not stored preimage; not 5189",
+      "source_locator": "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+      "historical_snapshot_vs_current": "historical live instant",
+      "not_identical_to": 5189,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 163,
+      "label": "HISTORICAL_FIRST_PASS_RELEVANT",
+      "count_semantics": "first-pass classification count in aggregate_only string 163 relevant / 56 not-relevant / 4970 unresolved",
+      "historical_snapshot_vs_current": "historical intermediate",
+      "enumeration_present": false,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 56,
+      "label": "HISTORICAL_FIRST_PASS_NOT_RELEVANT",
+      "count_semantics": "first-pass not-relevant parent-set count; only 4 locators partially enumerated",
+      "historical_snapshot_vs_current": "historical intermediate",
+      "enumeration_present": "partial_4_of_56_locators",
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 4970,
+      "label": "CONTENT_REVIEWED_UNRESOLVED_AND_REVIEW_RECORD_LIST_RECORD_COUNT",
+      "count_semantics": "record/row count of hashed review blob; blob never written; not 5011",
+      "historical_snapshot_vs_current": "historical intermediate",
+      "enumeration_present": false,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 176,
+      "label": "AFTER_4970_REVIEW_RELEVANT",
+      "count_semantics": "terminal aggregate after 4970 review: 176 relevant / 3946 not-relevant / 1067 unresolved; not 174",
+      "historical_snapshot_vs_current": "historical intermediate",
+      "not_identical_to": 174,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 13,
+      "label": "NEWLY_RELEVANT_RECORDS_ROW_COUNT_IN_640021",
+      "count_semantics": "verbatim partial record output row count in === NEWLY_RELEVANT_RECORDS ===; not imported; not a rewrite of 174",
+      "source_locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+      "ids_not_copied_into_this_inventory": true,
+      "registered_as_p6_count": true
+    },
+    {
+      "value": 169,
+      "label": "IDENTITY_COPY_PACK_TRANSCRIPT_JSONL_FILE_COUNT",
+      "count_semantics": "file/transcript count in pack transcripts directory; composition 167 new + 1 historical variant + 1 post-5189 f799; NOT historical relevant source count 174",
+      "historical_snapshot_vs_current": "revalidated at persist of this synthesis on origin/main 0cd1924daa5a4089b9625e12e9298b1310a60aab",
+      "FILE_COUNT_IS_NOT_SOURCE_ID_COUNT": true,
+      "not_identical_to": 174,
+      "registered_as_p6_count": false,
+      "note": "new persistable fact 4; see new_persistable_facts"
+    },
+    {
+      "value": 6,
+      "label": "REUSED_EXISTING_IDENTITY_COPY_COUNT",
+      "count_semantics": "preservation-map accounting reused_existing_identity_copy_count; six relevant source IDs located outside this pack under forensic/post_step32_knowledge_integration_v0/; not merged with pack files",
+      "historical_snapshot_vs_current": "preservation map plus revalidated locators exist",
+      "registered_as_p6_count": false
+    },
+    {
+      "value": 129,
+      "label": "HASHED_P1_FORENSIC_TREE_FILE_COUNT",
+      "count_semantics": "P1 discovery-pass hashed file count; not a live tree census; not a P6 count",
+      "source_locator": "docs/forensics/persistence/inventories/P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.contract.json",
+      "registered_as_p6_count": false
+    },
+    {
+      "value": 5,
+      "label": "P1_INVENTORY_DOCS_FORENSICS_FILE_COUNT_AT_DISCOVERY",
+      "count_semantics": "P1 discovery snapshot of docs/forensics file count; not a P6 count",
+      "source_locator": "docs/forensics/persistence/inventories/P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.contract.json",
+      "registered_as_p6_count": false
+    },
+    {
+      "value": 44,
+      "label": "P5_FILE_COUNT",
+      "count_semantics": "P5 discovery file count; not P2; not P6",
+      "source_locator": "docs/forensics/persistence/inventories/P5_DOCUMENTS_PEAK_TRADE_FORENSICS_FILE_INVENTORY_V1.json",
+      "registered_as_p6_count": false
+    },
+    {
+      "value": 27,
+      "label": "P5_ONLY_UNIQUE_SHA_COUNT",
+      "count_semantics": "unique SHA count; not file locator count",
+      "source_locator": "docs/forensics/persistence/inventories/P5_DOCUMENTS_PEAK_TRADE_FORENSICS_FILE_INVENTORY_V1.json",
+      "P5_ONLY_UNIQUE_SHA_COUNT_IS_NOT_FILE_LOCATOR_COUNT": true,
+      "registered_as_p6_count": false
+    },
+    {
+      "value": 28,
+      "label": "P5_ONLY_FILE_LOCATOR_COUNT",
+      "count_semantics": "P5-only file locator count; not SHA count",
+      "source_locator": "docs/forensics/persistence/inventories/P5_DOCUMENTS_PEAK_TRADE_FORENSICS_FILE_INVENTORY_V1.json",
+      "registered_as_p6_count": false
+    },
+    {
+      "value": 16,
+      "label": "ARCHIVE_CANDIDATE_COUNT_EXAMINED",
+      "count_semantics": "non-P2 archive candidates examined in Phase A localization; not 5011",
+      "source_locator": "docs/forensics/persistence/inventories/P6_5189_NON_P2_ARCHIVE_LOCALIZATION_OBSERVATION_V1.json",
+      "registered_as_p6_count": false
+    },
+    {
+      "value": 0,
+      "label": "OBSERVATIONAL_ARITHMETIC_UNRESOLVED_AFTER_FINAL_1",
+      "count_semantics": "observational arithmetic after FINAL-1 recovery; sum 174+5015+0=5189; not a historical census rewrite; not completeness",
+      "source_locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+      "OBSERVATIONAL_UNRESOLVED_ZERO_IS_NOT_ALL_P6_RELEVANCE_COMPLETE": true,
+      "not_identical_to_historical_unresolved_4": true,
+      "registered_as_p6_count": false
+    }
+  ],
+  "count_171_scoped_negative_finding": {
+    "REGISTERED_AS_P6_COUNT": false,
+    "value_not_registered_as_p6_count": 171,
+    "CURRENT_STATUS": "UNRESOLVED",
+    "EPISTEMIC_CLASS": "SCOPED_SEARCH_MISS_ONLY",
+    "ABSENCE_IMPLIES_NEGATIVE_FACT": false,
+    "NOT_CLAIMED_NEVER_EXISTED": true,
+    "NOT_CLAIMED_NOWHERE_OCCURS": true,
+    "NOT_CLAIMED_DISPROVEN": true,
+    "scope": "examined P6 persistence artifacts under docs/forensics/persistence/ and preservation map plus identity-copy pack manifests/json under forensic/p6_proven_relevant_jsonl_identity_copies_v1/",
+    "finding": "token 171 was not found as a P6 count in those examined artifacts",
+    "THIS_IS_NOT_A_UNIVERSAL_ABSENCE_CLAIM": true
+  },
+  "count_drift_not_adjudicated": {
+    "COUNT_SEMANTICS_CONFLICT_PRESENT": true,
+    "COUNT_SEMANTICS_COLLAPSE_PRESENT": false,
+    "values_not_corrected": true,
+    "which_value_is_correct_not_adjudicated": true,
+    "winner_not_declared": true,
+    "observations": [
+      {
+        "label": "TERMINAL_640021_TOTAL_NOT_RELEVANT_PROVEN_COUNT",
+        "value": 3946,
+        "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt"
+      },
+      {
+        "label": "F799_RESIDUAL_INPUT_TOTAL_NOT_RELEVANT_PROVEN_COUNT",
+        "value": 3951,
+        "locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/f799dea0-c24f-4588-b0af-41cb055bdab1.jsonl"
+      }
+    ]
+  },
+  "requirement_matrix": {
+    "HISTORICAL_P6_SOURCE_SET_BOUND": [
+      {
+        "requirement_id": "R-A1",
+        "description": "Census locator-list preimage for attested SHA caa85fb2447af1d22c7752e9cacaecf60d058c2b0265ca44f50c14471b42ef0a",
+        "epistemic_class": "HASH_ONLY_REFERENCE",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "terminals_640021_review_stdout",
+        "source_locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+        "provenance_class": "COPIED_STDOUT",
+        "temporal_status": "historical_2026-08-27T05:23:34Z_revalidated_at_0cd1924da",
+        "adjudication_status": "not_adjudicated_as_bound_set",
+        "count_semantics": "locator-list SHA; not a 5011 source-ID set hash",
+        "contradiction_status": "NONE",
+        "why": "Full SHA attested; preimage absent; SHA_MATCHES_PREVIOUS=True is not a stored preimage",
+        "what_would_change_status": "durable preimage bytes plus verification"
+      },
+      {
+        "requirement_id": "R-A2",
+        "description": "Complete enumeration of the 5189 historical source identities",
+        "epistemic_class": "AGGREGATE_ONLY",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "classification_snapshot_id=P6_5189",
+        "source_locator": "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+        "provenance_class": "historical_census_claim",
+        "temporal_status": "historical_snapshot",
+        "adjudication_status": "completeness_not_performed",
+        "count_semantics": "unique source count claim 5189",
+        "contradiction_status": "NONE",
+        "why": "Census number exists without a membership list; 5185 and 5190 use different semantics and are not this census",
+        "what_would_change_status": "direct enumeration or reproducible partition input"
+      },
+      {
+        "requirement_id": "R-A3",
+        "description": "P6_5189_SNAPSHOT_BINDING_VALID",
+        "epistemic_class": "STRUCTURE_ONLY",
+        "current_status": "DISPROVEN",
+        "supporting_source_identity": "P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1",
+        "source_locator": "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+        "provenance_class": "ADDITIVE_LOCALIZATION_OBSERVATION_INVENTORY_ONLY",
+        "temporal_status": "persisted_on_main_including_0cd1924da",
+        "adjudication_status": "explicit_false_in_preceding_observations",
+        "count_semantics": "not_applicable",
+        "contradiction_status": "NONE",
+        "why": "Preceding observations persist P6_5189_SNAPSHOT_BINDING_VALID=false; this synthesis does not upgrade that field",
+        "what_would_change_status": "bound preimage plus membership"
+      }
+    ],
+    "ALL_P6_RELEVANCE_COMPLETE": [
+      {
+        "requirement_id": "R-B1",
+        "description": "Bound classification universe",
+        "epistemic_class": "AGGREGATE_ONLY",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "classification_snapshot_id=P6_5189",
+        "source_locator": "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+        "provenance_class": "depends_on_R-A",
+        "temporal_status": "historical",
+        "adjudication_status": "not_complete",
+        "count_semantics": "5189 census claim is not a bound universe",
+        "contradiction_status": "NONE",
+        "why": "Relevance completeness cannot be proven without a bound universe",
+        "what_would_change_status": "R-A1 and R-A2 PROVEN"
+      },
+      {
+        "requirement_id": "R-B2",
+        "description": "5011 not-relevant source IDs enumerated",
+        "epistemic_class": "AGGREGATE_ONLY",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1",
+        "source_locator": "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+        "provenance_class": "HASH_ONLY_REFERENCE",
+        "temporal_status": "historical_residual",
+        "adjudication_status": "not_enumerated",
+        "count_semantics": "classification count 5011 not locator count",
+        "contradiction_status": "3946_vs_3951_unadjudicated_drift",
+        "why": "DIRECT_5011_ENUMERATION_FOUND=false and REPRODUCIBLE_5011_PREIMAGE_FOUND=false remain",
+        "what_would_change_status": "enumeration or reproducible 3890/1060/first-pass identity lists"
+      },
+      {
+        "requirement_id": "R-B3",
+        "description": "174 relevant IDs enumerated as preserved relevant subset",
+        "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+        "current_status": "PROVEN",
+        "supporting_source_identity": "p6_proven_relevant_jsonl_identity_copies_v1_preservation_map",
+        "source_locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+        "provenance_class": "REPO_INTERNAL",
+        "temporal_status": "capture_2026-08-27T05:49:43Z_current_live",
+        "adjudication_status": "RAW_NOT_ADJUDICATED_BY_COPY",
+        "count_semantics": "unique source count 174; pack transcript file count 169 is a different count",
+        "contradiction_status": "NONE",
+        "why": "historical_relevant_ids_in_manifest=174 with historical_relevant_set_match=true; exact_5189_byte_state_available=false; this is not ALL_P6_RELEVANCE_COMPLETE",
+        "what_would_change_status": "would not by itself make ALL_P6_RELEVANCE_COMPLETE true"
+      },
+      {
+        "requirement_id": "R-B4",
+        "description": "Historical unresolved four relevance coverage versus preservation-map membership",
+        "epistemic_class": "STRUCTURE_ONLY",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "211f1cfd-25bc-4092-8701-7d73c83ad2df;32a829c1-ae4b-4067-bd1f-5edcaa319142;5bff9224-6741-4c45-9f99-449863b0bd3a;7b1f435d-606f-41a9-8ac7-c5b01c99db3d",
+        "source_locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+        "provenance_class": "ADDITIVE_COVERAGE_OBSERVATION_INVENTORY_ONLY",
+        "temporal_status": "later_than_5189_snapshot",
+        "adjudication_status": "observational_PROVEN_NOT_RELEVANT_preservation_map_still_FORENSIC_RELEVANCE_UNRESOLVED",
+        "count_semantics": "historical unresolved count=4; observational arithmetic after FINAL-1 unresolved=0",
+        "contradiction_status": "NONE",
+        "why": "Layered non-merged statuses are persisted; this record does not reclassify preservation membership; observational 0 is not completeness",
+        "what_would_change_status": "separate Owner GO to reclassify preservation membership; not this persist"
+      },
+      {
+        "requirement_id": "R-B5",
+        "description": "3890 and 1060 identity lists",
+        "epistemic_class": "SCRIPT_LOGIC_ONLY",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "tmp_review_script;tmp_residual_script",
+        "source_locator": "/tmp/p6_unresolved_semantic_review_v1.py",
+        "provenance_class": "SCRIPT_LOGIC_ONLY",
+        "temporal_status": "revalidated_identical_at_0cd1924da",
+        "adjudication_status": "not_enumerated",
+        "count_semantics": "3890 newly-NR from 4970; 1060 residual NR; not printed by design",
+        "contradiction_status": "NONE",
+        "why": "Scripts hash in-memory record lists and print SHA/aggregates; ID lists absent from known raw surfaces",
+        "what_would_change_status": "preimage of record-list blobs or an unexpected durable copy"
+      }
+    ],
+    "P2_SOURCE_RESOLVED": [
+      {
+        "requirement_id": "R-C1",
+        "description": "Unique Owner-named path Peak Trade Forensik",
+        "epistemic_class": "STRUCTURE_ONLY",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "P2_OWNER_NAMED_PEAK_TRADE_FORENSIK",
+        "source_locator": "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+        "provenance_class": "LOCAL_EXTERNAL_FORENSIC_SOURCE",
+        "temporal_status": "discovery_snapshot",
+        "adjudication_status": "NOT_UNIQUELY_RESOLVED",
+        "count_semantics": "name-match count 0 is not a file count and not an empty-corpus claim",
+        "contradiction_status": "NONE",
+        "why": "Literal/casefold/spotlight hits under Documents=0; P2_UNRESOLVED_IS_NOT_P2_EMPTY=true",
+        "what_would_change_status": "Owner-supplied unique path"
+      },
+      {
+        "requirement_id": "R-C2",
+        "description": "P2 content inventory",
+        "epistemic_class": "NOT_PERFORMABLE_WITHOUT_RESOLVED_CORPUS",
+        "current_status": "NOT_APPLICABLE",
+        "supporting_source_identity": "P2_OWNER_NAMED_PEAK_TRADE_FORENSIK",
+        "source_locator": "docs/forensics/persistence/inventories/CROSS_CORPUS_RELATION_FACTS_V1.json",
+        "provenance_class": "UNKNOWN",
+        "temporal_status": "current_persisted",
+        "adjudication_status": "NOT_PERFORMABLE_WITHOUT_RESOLVED_CORPUS",
+        "count_semantics": "UNKNOWN",
+        "contradiction_status": "NONE",
+        "why": "Inventory is not performable until R-C1 is resolved",
+        "what_would_change_status": "inventory after unique path"
+      },
+      {
+        "requirement_id": "R-C3",
+        "description": "P2 membership versus P6 5189",
+        "epistemic_class": "UNKNOWN_RELATION",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "none",
+        "source_locator": "docs/forensics/persistence/inventories/CROSS_CORPUS_RELATION_FACTS_V1.json",
+        "provenance_class": "UNKNOWN",
+        "temporal_status": "current_persisted",
+        "adjudication_status": "UNKNOWN",
+        "count_semantics": "not_applicable",
+        "contradiction_status": "NONE",
+        "why": "No P2 content was compared to P6; count arithmetic is not membership proof",
+        "what_would_change_status": "only after R-C1 and R-C2"
+      }
+    ],
+    "GAP_CLOSED": [
+      {
+        "requirement_id": "R-D1",
+        "description": "Single boolean gap-closed question",
+        "epistemic_class": "STRUCTURE_ONLY",
+        "current_status": "DISPROVEN",
+        "supporting_source_identity": "PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE",
+        "source_locator": "docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md",
+        "provenance_class": "REGISTRY_AND_NAVIGATION_ONLY",
+        "temporal_status": "current",
+        "adjudication_status": "PERSISTENCE_IMPLIES_GAP_CLOSURE=false",
+        "count_semantics": "not_applicable",
+        "contradiction_status": "NONE",
+        "why": "Gap closure is multiple independent evidence questions; this persist keeps GAP_CLOSED=false",
+        "what_would_change_status": "per-question proof; not one flag"
+      },
+      {
+        "requirement_id": "R-D2",
+        "description": "5011 gap closed by localization or raw-execution recovery",
+        "epistemic_class": "HASH_ONLY_REFERENCE",
+        "current_status": "UNRESOLVED",
+        "supporting_source_identity": "P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1",
+        "source_locator": "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+        "provenance_class": "known-surface miss not global absence",
+        "temporal_status": "Phase_A_and_Phase_B_persisted_on_main",
+        "adjudication_status": "RAW_EXECUTION_RECORD_RECOVERY_SUCCEEDED=false",
+        "count_semantics": "not_applicable",
+        "contradiction_status": "NONE",
+        "why": "Absence on examined surfaces is not never-existed; this persist is not a new recovery",
+        "what_would_change_status": "preimage or separately authorized new external evidence"
+      }
+    ]
+  },
+  "observational_versus_preservation_layer_of_the_four": {
+    "THIS_OBSERVATION_DOES_NOT_RECLASSIFY_PRESERVATION_MEMBERSHIP": true,
+    "PRESERVATION_MAP_MUTATED": false,
+    "preservation_map_locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+    "preservation_membership_relevance_class": "FORENSIC_RELEVANCE_UNRESOLVED",
+    "later_observational_verdicts": "PROVEN_NOT_RELEVANT",
+    "observational_arithmetic_unresolved_after_final_1": 0,
+    "OBSERVATIONAL_UNRESOLVED_ZERO_IS_NOT_ALL_P6_RELEVANCE_COMPLETE": true,
+    "historical_unresolved_source_ids_referenced_not_reimported": [
+      "211f1cfd-25bc-4092-8701-7d73c83ad2df",
+      "32a829c1-ae4b-4067-bd1f-5edcaa319142",
+      "5bff9224-6741-4c45-9f99-449863b0bd3a",
+      "7b1f435d-606f-41a9-8ac7-c5b01c99db3d"
+    ],
+    "CLASSIFICATION_CONFLICT_PRESENT": false,
+    "ADJUDICATION_CONFLICT_PRESENT": false,
+    "note": "Layered non-merged statuses; not a byte-level conflict; not collapsed"
+  },
+  "source_identity_and_variant_protection": {
+    "SOURCE_IDENTITY_COLLAPSE_PRESENT": false,
+    "HISTORICAL_VARIANT_COLLAPSE_PRESENT": false,
+    "unmerged_pairs": [
+      {
+        "label": "review_stdout_640021_versus_agent_tools_17b8d1bb",
+        "locators": [
+          "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+          "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-tools/17b8d1bb-c7b3-4dac-a882-f6e27650401d.txt"
+        ],
+        "BYTE_IDENTICAL_TO_640021_BODY_WITHOUT_TERMINAL_HEADER_AND_FOOTER": true,
+        "BYTE_IDENTICAL_TO_640021_FULL_FILE": false,
+        "SOURCE_IDENTITY_NOT_MERGED_DESPITE_BODY_BYTE_IDENTICAL": true
+      },
+      {
+        "label": "P5_working_runbook_versus_source_snapshot_md",
+        "sha256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+        "SOURCE_IDENTITY_MERGED": false,
+        "note": "BYTE_IDENTICAL payload is not source identity"
+      },
+      {
+        "label": "f799_preservation_capture_versus_later_live_byte_state",
+        "source_uuid": "f799dea0-c24f-4588-b0af-41cb055bdab1",
+        "preserved_sha256": "5ebf195c19c3c43fa0d1bbacecbd37bf9b95a08cc68eea2862ec588fd0e9ac12",
+        "preserved_bytes": 182199,
+        "live_sha256_at_phase_b_and_this_revalidation": "0ed5c41c64beec8fcb49c3cdbf13fd2670c731c080d111df1a42bd448d6c1765",
+        "live_bytes": 198051,
+        "counted_in_historical_relevant_source_count_174": false,
+        "HISTORICAL_VARIANT_NOT_COLLAPSED": true
+      },
+      {
+        "label": "working_runbook_P5_versus_repo_pack_identity_copy",
+        "p5_sha256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+        "repo_pack_sha256": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+        "HISTORICAL_VARIANT": "PROVEN_FOR_WORKING_RUNBOOK_PAIR",
+        "SOURCE_IDENTITY_MERGED": false
+      }
+    ]
+  },
+  "negative_evidence_scope": {
+    "PRESERVATION_LOSS_SCOPE": "KNOWN_EXECUTION_SURFACES_ONLY_NOT_GLOBAL_ABSENCE",
+    "artifacts_not_found_on_examined_surfaces_is_not_never_existed": true,
+    "P2_zero_name_match_is_not_P2_empty": true,
+    "archive_text_miss_is_not_sqlite_bodies_exhausted": true,
+    "recovery_failed_is_not_global_nonexistence": true,
+    "ARCHIVE_ABSENCE_IS_NOT_GLOBAL_ABSENCE": true,
+    "P2_UNRESOLVED_IS_NOT_P2_EMPTY": true
+  },
+  "minimal_remaining_slices": [
+    {
+      "slice_id": 1,
+      "problem_type": "MISSING_HISTORICAL_PREIMAGE",
+      "description": "Census/review/resolution record-list blobs hashed in process and not found on known raw execution surfaces",
+      "evidence_basis_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json"
+      ],
+      "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": false,
+      "THIS_SLICE_IS_SYNTHESIS_CLASSIFICATION_NOT_OWNER_ADJUDICATION": true
+    },
+    {
+      "slice_id": 2,
+      "problem_type": "MISSING_ENUMERATION",
+      "description": "historical 5011 / 3890 / 1060 identity lists remain absent; follows from missing preimages",
+      "evidence_basis_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json"
+      ],
+      "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": false,
+      "THIS_SLICE_IS_SYNTHESIS_CLASSIFICATION_NOT_OWNER_ADJUDICATION": true
+    },
+    {
+      "slice_id": 3,
+      "problem_type": "MISSING_SOURCE_BINDING_P2",
+      "description": "Owner-named Peak Trade Forensik path not uniquely resolved; independent of P6 count arithmetic",
+      "evidence_basis_locators": [
+        "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+        "docs/forensics/persistence/inventories/CROSS_CORPUS_RELATION_FACTS_V1.json"
+      ],
+      "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": false,
+      "THIS_SLICE_IS_SYNTHESIS_CLASSIFICATION_NOT_OWNER_ADJUDICATION": true
+    },
+    {
+      "slice_id": 4,
+      "problem_type": "UNEXAMINED_EXISTING_EVIDENCE_37G_sqlite_vscdb_bodies",
+      "description": "Named 37G runtime-evidence archive text-grepped with 0 census/review/resolution hits; sqlite/vscdb bodies not text-grepped; sqlite_nongrep_is_not_proof_blobs_never_existed=true; not searched in this persist",
+      "evidence_basis_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_NON_P2_ARCHIVE_LOCALIZATION_OBSERVATION_V1.json"
+      ],
+      "archive_locator": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+      "SQLITE_BODY_PROBE_NOT_PERFORMED_IN_THIS_PERSIST": true,
+      "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": false,
+      "THIS_SLICE_IS_SYNTHESIS_CLASSIFICATION_NOT_OWNER_ADJUDICATION": true
+    },
+    {
+      "slice_id": 5,
+      "problem_type": "MISSING_ADJUDICATION_preservation_map_layer_of_the_four",
+      "description": "Observational PROVEN_NOT_RELEVANT coverage of the four exists; preservation map membership remains FORENSIC_RELEVANCE_UNRESOLVED",
+      "evidence_basis_locators": [
+        "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+        "docs/forensics/persistence/inventories/P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json"
+      ],
+      "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": false,
+      "THIS_SLICE_IS_SYNTHESIS_CLASSIFICATION_NOT_OWNER_ADJUDICATION": true
+    },
+    {
+      "slice_id": 6,
+      "problem_type": "IRREDUCIBLE_HISTORICAL_UNKNOWN_exact_5189_byte_states_of_preserved_relevant_copies",
+      "existing_contract_language": "CURRENT_LIVE_AVAILABLE_EXACT_5189_BYTE_STATE_UNAVAILABLE",
+      "description": "Preserved relevant copies are current-live capture; exact_5189_byte_state_available=false. Label is read-only synthesis problem-type, not owner acceptance that the gap is irreducible.",
+      "evidence_basis_locators": [
+        "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json"
+      ],
+      "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": false,
+      "IRREDUCIBLE_HISTORICAL_UNKNOWN_NOT_PRESENT_AS_EXISTING_PERSISTENCE_ADJUDICATION_STATUS": true,
+      "THIS_SLICE_IS_SYNTHESIS_CLASSIFICATION_NOT_OWNER_ADJUDICATION": true
+    }
+  ],
+  "NEW_PERSISTABLE_FACT_COUNT": 4,
+  "new_persistable_facts": [
+    {
+      "fact_id": 1,
+      "label": "phase_b_cited_artifacts_hash_revalidated_identical_at_0cd1924da",
+      "CURRENT_STATUS": "PROVEN",
+      "scope": "Phase-B persistence-record cited original artifacts only; not a global statement about all historical artifacts",
+      "revalidation_origin_main_sha": "0cd1924daa5a4089b9625e12e9298b1310a60aab",
+      "phase_b_observation_locator": "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+      "artifacts": [
+        {
+          "label": "phase_b_transcript_72509295",
+          "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/72509295-f1f5-45ee-990f-0514e9618f7c/72509295-f1f5-45ee-990f-0514e9618f7c.jsonl",
+          "exists": true,
+          "bytes": 152120,
+          "sha256": "b657ab90d88a8c9efa2f5ee82a34a3be800893cb4a0b0a626bb01e2600a2164f",
+          "matches_phase_b_persist_revalidation": true
+        },
+        {
+          "label": "terminals_640021_review_stdout",
+          "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+          "exists": true,
+          "bytes": 139469,
+          "sha256": "dd605c62a2dbe51b91067036df8e72ad15b908eaa708f1b661ea047f7e6e3cb3",
+          "matches_phase_b_persist_revalidation": true
+        },
+        {
+          "label": "agent_tools_17b8d1bb_review_stdout_copy",
+          "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-tools/17b8d1bb-c7b3-4dac-a882-f6e27650401d.txt",
+          "exists": true,
+          "bytes": 139146,
+          "sha256": "aafe82eac4085634c4eac463e175eaa11fbeb0fc93cbad1b02993ea1a201f067",
+          "matches_phase_b_persist_revalidation": true
+        },
+        {
+          "label": "tmp_review_script",
+          "locator": "/tmp/p6_unresolved_semantic_review_v1.py",
+          "exists": true,
+          "bytes": 41818,
+          "sha256": "9ba8e3c340186a66a6a71e544859f901a6adeacdd01e89aec386f4ac62a9b51e",
+          "matches_phase_b_persist_revalidation": true
+        },
+        {
+          "label": "tmp_residual_script",
+          "locator": "/tmp/p6_residual_1067_resolution_v1.py",
+          "exists": true,
+          "bytes": 37400,
+          "sha256": "4e30648e2ee309acabf4b419c56692f752d221e15bd2d9401e710127f9af00e7",
+          "matches_phase_b_persist_revalidation": true
+        },
+        {
+          "label": "f799_live",
+          "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/f799dea0-c24f-4588-b0af-41cb055bdab1/f799dea0-c24f-4588-b0af-41cb055bdab1.jsonl",
+          "exists": true,
+          "bytes": 198051,
+          "sha256": "0ed5c41c64beec8fcb49c3cdbf13fd2670c731c080d111df1a42bd448d6c1765",
+          "matches_phase_b_persist_revalidation": true
+        },
+        {
+          "label": "d234_live",
+          "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/d234af34-3415-4bf5-952f-76ca6776da29/d234af34-3415-4bf5-952f-76ca6776da29.jsonl",
+          "exists": true,
+          "bytes": 154639,
+          "sha256": "b464e51539a69229b14667e1f1b741af4f837209e9d1c1998699f0c47f516309",
+          "matches_phase_b_persist_revalidation": true
+        }
+      ]
+    },
+    {
+      "fact_id": 2,
+      "label": "count_171_absent_from_examined_p6_persistence_and_preservation_artifacts",
+      "CURRENT_STATUS": "PROVEN",
+      "EPISTEMIC_CLASS": "SCOPED_SEARCH_MISS_ONLY",
+      "ABSENCE_IMPLIES_NEGATIVE_FACT": false,
+      "NOT_CLAIMED_NEVER_EXISTED": true,
+      "NOT_CLAIMED_NOWHERE_OCCURS": true,
+      "NOT_CLAIMED_DISPROVEN": true,
+      "REGISTERED_AS_P6_COUNT": false,
+      "scope": "examined P6 persistence artifacts under docs/forensics/persistence/ and preservation/identity-copy artifacts under forensic/p6_proven_relevant_jsonl_identity_copies_v1/",
+      "finding": "171 was not found as a P6 count in those examined artifacts"
+    },
+    {
+      "fact_id": 3,
+      "label": "external_forensic_md_5189_hits_are_pass_marker_source_line_numbers_not_p6_census",
+      "CURRENT_STATUS": "PROVEN",
+      "TARGET_AUTHORITY": "NONE",
+      "EXTERNAL_FORENSIC_MD_MUTATED": false,
+      "THIS_IS_NOT_A_FULL_FILE_CENSUS_OF_ALL_5189_OCCURRENCES": true,
+      "locator": "/Users/frnkhrz/Documents/Peak_Trade/forensics/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "sha256_at_revalidation": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+      "bytes_at_revalidation": 8639369,
+      "lines_at_revalidation": 121930,
+      "examined_context": {
+        "heading_or_key": "explicit_pass_marker_inventory",
+        "verbatim": "PASS=OWNER_RATIFICATION_U_CANONICAL_EXEC_OWNER_OPTION_A",
+        "file_lines_examined": "44322-44340",
+        "source_lines_array": [4912, 4927, 5189],
+        "epistemic_class_in_source": "SOURCE_DECLARED_RESULT"
+      },
+      "finding": "In the examined pass-marker-inventory context, token 5189 is a source line number in source_lines, not a bound P6 census",
+      "NOT_A_GLOBAL_CLAIM_ABOUT_EVERY_5189_TOKEN_IN_THE_121930_LINE_FILE": true
+    },
+    {
+      "fact_id": 4,
+      "label": "identity_copy_pack_transcript_jsonl_count_169_with_six_reuse_locators_outside_pack",
+      "CURRENT_STATUS": "PROVEN",
+      "pack_transcript_jsonl_count": 169,
+      "count_semantics": "FILE/TRANSCRIPT COUNT not historical relevant source count",
+      "composition": {
+        "new_lossless_identity_copy_count": 167,
+        "new_historical_variant_copy_count": 1,
+        "post_5189_f799_count": 1,
+        "sum_equals_pack_transcript_jsonl_count": true
+      },
+      "historical_relevant_source_count_remains": 174,
+      "reused_existing_identity_copy_count": 6,
+      "SOURCE_IDENTITY_COLLAPSE_PRESENT": false,
+      "reuse_locators_outside_pack": [
+        {
+          "source_uuid": "2d0440a7-49c3-4b17-8e61-db6fe670ea6b",
+          "locator": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP32_2d0440a7-49c3-4b17-8e61-db6fe670ea6b.jsonl",
+          "exists_at_revalidation": true
+        },
+        {
+          "source_uuid": "9516c97d-8ec4-4b0a-bcb7-f2a83425ee34",
+          "locator": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/PRIOR_PREWRITE_9516c97d-8ec4-4b0a-bcb7-f2a83425ee34.jsonl",
+          "exists_at_revalidation": true
+        },
+        {
+          "source_uuid": "95209de2-8442-49b1-9bcf-0613dbf6c93f",
+          "locator": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/POST32_READINESS_95209de2-8442-49b1-9bcf-0613dbf6c93f.jsonl",
+          "exists_at_revalidation": true
+        },
+        {
+          "source_uuid": "98277650-c7c1-43ac-b544-4087f96aef0c",
+          "locator": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP30_98277650-c7c1-43ac-b544-4087f96aef0c.jsonl",
+          "exists_at_revalidation": true
+        },
+        {
+          "source_uuid": "bbaf1005-725a-427a-a7b0-993d9893ebe8",
+          "locator": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP31_bbaf1005-725a-427a-a7b0-993d9893ebe8.jsonl",
+          "exists_at_revalidation": true
+        },
+        {
+          "source_uuid": "e17bf1e1-99eb-45f7-b547-54c6e1f5d386",
+          "locator": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/DISCOVERY_CASE_2_e17bf1e1-99eb-45f7-b547-54c6e1f5d386.jsonl",
+          "exists_at_revalidation": true
+        }
+      ],
+      "accounting_check": {
+        "167_plus_1_variant_plus_6_reuse": 174,
+        "f799_counted_in_174": false,
+        "169_is_not_174": true
+      }
+    }
+  ],
+  "already_persisted_facts_referenced_not_copied": {
+    "note": "Core negatives and four top-level false states already exist in preceding P6_5189 observation inventories and the preservation map. This record references those locators instead of duplicating their evidence bodies.",
+    "four_top_level_states_already_false_in_preceding_records": true,
+    "phase_a_and_phase_b_negative_recovery_already_persisted": true,
+    "174_enumeration_already_in_preservation_map": true
+  },
+  "earliest_remaining_completeness_blocker": "HISTORICAL_NOT_RELEVANT_5011_SOURCE_IDS_NOT_ENUMERATED",
+  "NEXT_HIGHEST_LEVERAGE_ACTION_AS_READ_ONLY_SYNTHESIS": "OWNER_DECISION_ON_THIS_ADDITIVE_SYNTHESIS_PERSIST_AND_OR_WHETHER_PREIMAGE_GAPS_ARE_ACCEPTED_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN; DO_NOT_REPEAT_EXHAUSTED_KNOWN_SURFACE_RECOVERY; OPTIONAL_BOUNDED_SQLITE_BODY_PROBE_ONLY_IF_SEPARATELY_AUTHORIZED",
+  "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": false
+}

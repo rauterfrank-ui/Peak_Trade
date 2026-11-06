@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0.0",
+  "required_contexts": ["tests (3.11)"],
+  "ignored_contexts": [],
+  "notes": "Test config for matrix job name expansion"
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "phase_9_2_step_4_final_generic_session_activation_binding.v1",
+  "capability_id": "PHASE_9_2_STEP_4_FINAL_GENERIC_SESSION_ACTIVATION_BINDING_V1",
+  "authority_owner": "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.final_generic_session_activation_binding_v1",
+  "runtime_capability_id": "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_V1",
+  "generic_step4_activation_binding_complete": true,
+  "default_session_execution_side_effects_authorized": false,
+  "permanent_unscoped_enable": false,
+  "authorization_required_for_each_session": true,
+  "authorization_single_use": true,
+  "future_identical_step4_sessions_require_no_code_change": true,
+  "future_identical_step4_sessions_require_no_pr": true,
+  "future_identical_step4_sessions_require_no_constant_flip": true,
+  "future_identical_step4_sessions_require_only_new_sha_bound_single_use_authorization": true,
+  "network_session_not_executed_by_this_capability": true,
+  "reuses": {
+    "cli": "scripts/ops/run_phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.py",
+    "session_request_adapter": "session_request_cli_adapter_v1",
+    "authorization_issuance": "productive_operator_go_producer_v1.issue_productive_authorization_v1",
+    "confirm_token": "confirm_token_v1 / hidden_pty_confirm_handoff_v1",
+    "wallclock_runner": "run_productive_wallclock_session_v1",
+    "bundle_verifier": "bundle_verifier_v1",
+    "session_contract": "config/ops/phase_9_2_public_md_rate_limit_reconnect_session_contract_v1.json"
+  },
+  "notes": [
+    "Closes productive Step-4 activation call graph after PR #5759.",
+    "Does not flip permanent side-effect constants.",
+    "Does not start a real Public-MD network session."
+  ]
+}

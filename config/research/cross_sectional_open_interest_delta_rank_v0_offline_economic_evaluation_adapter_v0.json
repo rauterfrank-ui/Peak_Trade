@@ -1,0 +1,16 @@
+{
+  "adapter_config": "config/research/cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_adapter_v0.json",
+  "adapter_id": "cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_adapter_v0",
+  "adapter_version": "v0",
+  "authority_effect": "NONE",
+  "canonical_evaluation_callable": "run_offline_evaluation_adapter_precheck_v0",
+  "economic_evaluation_executed": false,
+  "execution_owner": "src.research.cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_execution_v0",
+  "go_token": "GO_CROSS_SECTIONAL_OPEN_INTEREST_DELTA_RANK_V0_SOURCE_EVIDENCE_INTEGRITY_RECONCILIATION_AND_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
+  "offline_only": true,
+  "runtime_effect": "NONE",
+  "schema_version": "cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_adapter.v0",
+  "strategy_id": "cross_sectional_open_interest_delta_rank",
+  "strategy_version": "v0",
+  "versioned_binding_config": "config/research/cross_sectional_open_interest_delta_rank_v0_versioned_research_binding_v0.json"
+}

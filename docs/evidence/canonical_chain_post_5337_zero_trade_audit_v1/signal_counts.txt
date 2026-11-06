@@ -1,0 +1,18 @@
+git fetch origin --prune
+git checkout main
+git pull --ff-only origin main
+test "$(git rev-parse HEAD)" = "a55c4000f33269a98107fd1294b1c9ba82433cad"
+git checkout -b audit/canonical-chain-post-5337-zero-trade-v1
+
+.venv/bin/python docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/audit_probe_v1.py 8
+# plus focused recount / scope-event dump (inline python; see probe_run_log.txt)
+
+.venv/bin/python -m pytest \
+  tests/backtest/test_canonical_chain_zero_trade_blocker_v1.py \
+  tests/backtest/test_mv2_composition_directional_asymmetry_wiring_repair_v1.py \
+  tests/backtest/test_obl_b07_bollinger_event_only_semantic_contract_v1.py \
+  tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py \
+  tests/trading/master_v2/test_double_play_composition_matrix_v1.py -q
+
+.venv/bin/ruff format --check docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/audit_probe_v1.py
+.venv/bin/ruff check docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/audit_probe_v1.py

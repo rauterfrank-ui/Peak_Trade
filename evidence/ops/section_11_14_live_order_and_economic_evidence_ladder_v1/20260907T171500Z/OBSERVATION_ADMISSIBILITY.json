@@ -1,0 +1,48 @@
+{
+  "ADMISSIBLE": false,
+  "conjuncts": [
+    {
+      "ANSWER": false,
+      "BLOCKER": "Isolation from live execution is false. Legitimate productive contemporaneous capture requires LIVE_IDENTITY_BOUND_VENUE_FILL of a submitted order. ORDER_SUBMIT/WIRE_SEND/POSITION_MUTATION are not authorized. TEST_FIXTURE persist is not productive provenance. Historical BOUND_* identity is backfill.",
+      "ID": "A",
+      "PROVABLE": true,
+      "QUESTION": "Can a genuine contemporaneous PRE-RESTART capture observation be produced without an unauthorized BOUND-3 effect?"
+    },
+    {
+      "ANSWER": false,
+      "BLOCKER": "LIVE_ENABLED=false; LIVE_ARMED=false; CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false; no current-process contemporaneous bound fill; no productive durable handoff present; hook rejects PRODUCTIVE_BOUND_FILL_INPUT as RUNTIME_EXECUTION_UNAUTHORIZED.",
+      "ID": "B",
+      "PROVABLE": true,
+      "QUESTION": "Is the required contemporaneous bound-fill state already present without mutating LIVE_ENABLED/LIVE_ARMED or entering submit/restart?"
+    },
+    {
+      "ANSWER": false,
+      "BLOCKER": "No contemporaneous productive capture can be produced under this GO. Using historical BOUND_* would be backfill. TEST_FIXTURE would be synthesis.",
+      "ID": "C",
+      "PROVABLE": true,
+      "QUESTION": "Would the observation be contemporaneous and not backfilled or synthesized?"
+    },
+    {
+      "ANSWER": false,
+      "BLOCKER": "No productive capture artifact is produced. Provenance fields remain fail-closed. OWNER_GO presence does not bypass HOOK_INPUT_CLASS_TEST_FIXTURE_ONLY.",
+      "ID": "D",
+      "PROVABLE": true,
+      "QUESTION": "Can contemporaneous provenance be fully bound for a productive capture artifact?"
+    }
+  ],
+  "required_state": {
+    "CURRENT_PROCESS_HAS_CONTEMPORANEOUS_BOUND_FILL": false,
+    "DOCUMENT_CLASS": "SECTION_11_14_REQUIRED_CAPTURE_RUNTIME_STATE_CENSUS_V1",
+    "HISTORICAL_BOUND_IDENTITY_IS_NOT_CONTEMPORANEOUS": true,
+    "HOOK_REJECTS_PRODUCTIVE_BOUND_FILL_INPUT": true,
+    "LIVE_ARMED": false,
+    "LIVE_ENABLED": false,
+    "ORDER_SUBMIT_ALLOWED": false,
+    "POST_ALLOWED": false,
+    "PRODUCTIVE_DURABLE_HANDOFF_PATH": "durable_state/section_11_14_live_durable_pre_restart_handoff_v1/pre_restart/restart_with_open_position_pre_restart_v1.json",
+    "PRODUCTIVE_DURABLE_HANDOFF_PRESENT": false,
+    "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED": false,
+    "SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED": false,
+    "TEST_FIXTURE_IS_NOT_PRODUCTIVE_PROVENANCE": true
+  }
+}

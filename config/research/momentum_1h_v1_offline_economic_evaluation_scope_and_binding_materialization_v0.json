@@ -1,0 +1,170 @@
+{
+  "allowed_bundle_only": true,
+  "allowed_future_output_artifacts": [
+    "TRADE_LEDGER_V1.jsonl",
+    "EQUITY_CURVE_V1.jsonl"
+  ],
+  "artifact_kind": "momentum_1h_v1_offline_economic_evaluation_scope_and_binding_materialization",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "binding_materialization_status": "SCOPE_AND_BINDING_MATERIALIZED_NOT_EXECUTED",
+  "binding_selection_status": "BINDING_MATERIALIZATION_COMPLETE",
+  "binding_set": {
+    "binding_digest": "a8b7d87100d7167205258056144690273cda54769c9c29fcf8e91d4477318730",
+    "binding_semantic_digest_field": "binding_semantic_digest",
+    "candidate_id": "momentum_1h/v1",
+    "config_digest": "d92f0542eb680df599cfac4cc7b3dadc2a7d17ffa0ebe963ea75a30d2714c244",
+    "data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+    "dataset_binding": {
+      "bar_granularity": "PT1H",
+      "data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+      "dataset_binding_version": "v0",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "dataset_profile": "cross_sectional_research_staging_v1",
+      "dataset_schema_version": "pit_cross_sectional_research_dataset_envelope.v0",
+      "dataset_version": "v1",
+      "evaluation_period_binding": "pit_cross_sectional_panel_common_coverage_period.v1",
+      "instrument_metadata_source": "production_pit_universe_manifest_v1",
+      "panel_dataset_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "panel_dataset_ref": "pit_okx_pt1h_panel_ohlcv_dataset_v1:test_panel:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "dataset_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.dataset_binding",
+    "economic_policy_binding": {
+      "policy_version": "economic_validity_policy_v1"
+    },
+    "economic_policy_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.economic_policy_binding",
+    "execution_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1",
+    "execution_model_binding": {
+      "execution_model_version": "backtest_execution_v0",
+      "roundtrip_cost_bps": 40.0
+    },
+    "execution_model_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.execution_model_binding",
+    "fee_model_binding": {
+      "fee_bps": 10.0,
+      "fee_model_version": "backtest_fee_taker_symmetric_v0"
+    },
+    "fee_model_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.fee_model_binding",
+    "funding_model_binding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "funding_model_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.funding_model_binding",
+    "implementation_digest": "a31f196354e1fac7f7d5f56e1d02c5b2d466c7dde935b0d8fb26985f40cd4c38",
+    "instrument_binding": {
+      "binding_mode": "production_universe_manifest_cross_sectional",
+      "bitcoin_direction_allowed": false,
+      "eligible_instrument_count": 6,
+      "futures_only": true,
+      "instrument_binding_version": "v0",
+      "instrument_selection_owner": "production_pit_universe_manifest_v1",
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false,
+      "universe_policy_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe",
+      "universe_policy_version": "v1",
+      "venue_id": "okx"
+    },
+    "instrument_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.instrument_binding",
+    "parameter_binding": {
+      "entry_threshold": 0.02,
+      "exit_threshold": -0.01,
+      "lookback_period": 20
+    },
+    "parameter_binding_ref": "config/ops/step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json",
+    "period_binding": {
+      "coverage_period_end_utc": "2024-06-01T01:00:00Z",
+      "coverage_period_start_utc": "2024-05-25T00:00:00Z",
+      "embargo_duration": "PT2H",
+      "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1",
+      "period_binding_ref": "pit_cross_sectional_panel_common_coverage_period.v1",
+      "period_binding_version": "v0",
+      "period_digest": "7f12bc0a9590b19f6fa8a6f01705ac661e6095c6d7502c8a770ecf12e430137c",
+      "purge_duration": "PT2H",
+      "split_policy_id": "pit_cross_sectional_research_chronological_holdout_v1",
+      "split_policy_version": "v1"
+    },
+    "period_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.period_binding",
+    "slippage_model_binding": {
+      "slippage_bps": 5.0,
+      "slippage_model_version": "backtest_slippage_symmetric_v0"
+    },
+    "slippage_model_binding_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.slippage_model_binding",
+    "strategy_id": "momentum_1h",
+    "strategy_version": "v1"
+  },
+  "binding_source_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json",
+  "credentials_required": false,
+  "evaluation_execution": false,
+  "evaluation_execution_authorized": false,
+  "evidence_class_id": "TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0",
+  "evidence_status": "SCOPE_DEFINED_NOT_EXECUTED",
+  "excluded_terminal_negative_bindings": [
+    {
+      "primary_failure_class": "NEGATIVE_RAW_EDGE",
+      "strategy_binding_digest": "ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478",
+      "strategy_binding_ref": "trend_following/v1"
+    },
+    {
+      "primary_failure_class": "TRADE_COUNT_BELOW_THRESHOLD",
+      "strategy_binding_digest": "b7d5e1d7bbdd23134285aea337ae645a8cd8b0af17286e317ae60f1860f71451",
+      "strategy_binding_ref": "bollinger_bands/v1"
+    }
+  ],
+  "fleet_binding_completion_digest": "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1",
+  "fleet_binding_completion_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json",
+  "forbidden_actions": [
+    "EVALUATION_EXECUTION",
+    "BACKTEST_RERUN",
+    "LEDGER_PERSISTENCE_EXECUTION",
+    "EQUITY_CURVE_PERSISTENCE_EXECUTION",
+    "SIGNAL_RECALCULATION",
+    "SAME_BINDING_RETRY",
+    "PARAMETER_OPTIMIZATION",
+    "THRESHOLD_LOWERING",
+    "RESULT_RESCUE",
+    "POLICY_BACKFIT",
+    "PROMOTION",
+    "RUNTIME",
+    "RUNTIME_REWIRE",
+    "SHADOW",
+    "PAPER",
+    "TESTNET",
+    "SCHEDULER",
+    "ADAPTER_SUBMISSION",
+    "ORDERS",
+    "CREDENTIALS",
+    "ARMING",
+    "CANARY",
+    "LIVE"
+  ],
+  "futures_only": true,
+  "go_token": "GO_MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0",
+  "governance_ref": "docs/governance/MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0.md",
+  "ledger_persistence_execution": false,
+  "equity_curve_persistence_execution": false,
+  "missing_binding_artifacts": [],
+  "next_required_scope": "MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "no_output_jsonl_materialized_in_repo": true,
+  "offline_only": true,
+  "orders_allowed": false,
+  "origin_main_sha": "92f56df1a12b915437b868d7fff33d3dd078fb82",
+  "parent_offline_evaluation_scope_config_ref": "config/research/final_research_fleet_offline_economic_evaluation_scope_ratification_v0.json",
+  "primary_failure_class": null,
+  "promotion_eligible": false,
+  "promotion_authorized": false,
+  "registry_entry_ref": "src/strategies/registry.py#momentum_1h",
+  "repo_evidence_files_allowed": false,
+  "repo_mutation_scope": "GOVERNANCE_ONLY",
+  "required_future_operator_go": true,
+  "runtime_authorized": false,
+  "runtime_rewire_admissible": false,
+  "same_binding_retry_allowed": false,
+  "schema_version": "momentum_1h_v1_offline_economic_evaluation_scope_and_binding_materialization.v0",
+  "scope_classification": "MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0",
+  "scope_id": "momentum_1h_v1_offline_economic_evaluation_scope_and_binding_materialization_v0",
+  "scope_version": "v0",
+  "status": "SCOPE_DEFINED_NOT_EXECUTED",
+  "strategy_binding_digest": "a8b7d87100d7167205258056144690273cda54769c9c29fcf8e91d4477318730",
+  "strategy_binding_ref": "momentum_1h/v1",
+  "strategy_registry_verified": true,
+  "verdict": "MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_DEFINED_NOT_EXECUTED"
+}

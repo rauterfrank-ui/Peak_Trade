@@ -1,0 +1,14 @@
+{
+    "artifact_class": "SELF_LEARNING_M6_META_LEARNING_INGEST_DECISION_V1",
+    "workpackage_id": "SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_V1",
+    "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+    "predecessor_slice": "OPTIMIZATION_TO_SELF_LEARNING_M5_RETURN_LOOP_V1",
+    "normative_spec": "docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+    "meta_learning_evidence_contract_id": "peak_trade.learning.ddo.meta_learning_evidence.v1",
+    "meta_learning_ingest_contract_id": "peak_trade.learning.ddo.meta_learning_ingest.v1",
+    "meta_evidence_authority": "NONE",
+    "learning_state_mutation_authorized": false,
+    "search_execution_authorized": false,
+    "authorized_productive_surfaces": 0,
+    "external_effect_authorized": false
+}

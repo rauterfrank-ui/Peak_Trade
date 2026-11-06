@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "test_count": 17,
+  "test_result": "PASS",
+  "tests_run": [
+    "tests/ops/test_canonical_public_md_and_ohlcv_transport_reconciliation_v1.py",
+    "tests/ops/test_okx_selected_instrument_ohlcv_readmodel_v1.py"
+  ]
+}

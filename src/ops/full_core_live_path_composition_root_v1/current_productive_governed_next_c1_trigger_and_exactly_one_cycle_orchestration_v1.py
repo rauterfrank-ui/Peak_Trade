@@ -1,0 +1,737 @@
+"""CURRENT_PRODUCTIVE next-C1 trigger and exactly-one cycle orchestration.
+
+ORCHESTRATION AUTHORITY ONLY. Reuses the existing V5 N=1 cycle host.
+Does not invent trading decisions, reselect Cap-2.3/2.4, mint a permit,
+POST, poll, daemonize, or automatically retry after ambiguous failure.
+
+Dedup boundary is the persisted cursor last-accepted venue_event_time.
+Single-cycle exclusion reuses AuthorizationLifecycleLockV1 O_CREAT|O_EXCL.
+Cap-2.3 universe lock is not cycle exclusion.
+
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+"""
+
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Callable, Mapping
+
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.lifecycle_lock_v1 import (
+    AuthorizationLifecycleLockV1,
+    LifecycleLockError,
+)
+from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    EXTERNAL_EFFECT_AUTHORIZED,
+    POST_ALLOWED,
+    REAL_VENUE_POST_ALLOWED,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    CURSOR_FILENAME,
+    CURSOR_LINEAGE_ID,
+    CURSOR_SCHEMA_NAME,
+    load_current_productive_sidestate_confirmation_cursor_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
+    STEP_29Q_PLAN_ONLY,
+)
+from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_v1 import (
+    UrllibEeaPublicUniverseGetTransportV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
+    OCCUPANCY_NEXT_OWNER_GO,
+    V5_OWNER_GO,
+)
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+    MAX_POSITIONS_EFFECTIVE,
+)
+
+OWNER_GO = (
+    "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_V1"
+)
+RUNTIME_TRIGGER_OWNER_GO = "OWNER_GO_S4A_EG_EXACTLY_ONE_RUNTIME_TRIGGER_V1"
+RUNTIME_TRIGGER_OWNER_GO_SCOPE = "EXACTLY_ONE_EG_DISPATCH_ONLY"
+RUNTIME_TRIGGER_OWNER_GO_STATUS = "DEFINED_NOT_CONSUMED"
+PRODUCTIVE_ACQUISITION_PRODUCER = "acquire_eea_universe_inventory_v1"
+PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS = "UrllibEeaPublicUniverseGetTransportV1"
+S4B_OWNER_GO = (
+    "OWNER_GO_S4B_V5_OCCUPANCY_GATE_INPUT_BIND_UNDER_S4A_EXECUTE_NETWORK_FALSE_OFFLINE_ONLY_V1"
+)
+S4B_OWNER_GO_SCOPE = "OCCUPANCY_GATE_INPUT_BIND_OFFLINE_ONLY"
+S4B_OWNER_GO_STATUS = "CONSUMED"
+S4B_THIS_SLICE = "11.2.1.EH.S4B_V5_OCCUPANCY_GATE_INPUT_BIND"
+OCCUPANCY_OWNER_GO = OCCUPANCY_NEXT_OWNER_GO
+OCCUPANCY_OWNER_GO_SCOPE = "OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF_ONLY"
+OCCUPANCY_OWNER_GO_STATUS = "DEFINED_NOT_CONSUMED"
+OCCUPANCY_FRESH_GET_TRANSPORT_PARAM = "fresh_get_transport"
+OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL = "FullCoreFreshPretradeGetTransportV1"
+S4B_V5_EXECUTE_NETWORK = False
+S4B_TRANSPORT_CONSTRUCTED = False
+S4B_GET_COUNT = 0
+S4B_EG_DISPATCH_COUNT = 0
+S4B_V5_INVOKE_COUNT = 0
+S4B_RUNTIME_CYCLE_COUNT = 0
+VENUE_OCCUPANCY_KNOWLEDGE = "UNKNOWN"
+S4B_CANONICAL_EVIDENCE_PACK = (
+    "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
+    "20260917T151200Z"
+)
+S4D_OWNER_GO = "OWNER_GO_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_V1"
+S4D_OWNER_GO_SCOPE = "S4C_HISTORICAL_DECISION_SCOPED_EVIDENCE_PERSIST_ONLY"
+S4D_OWNER_GO_STATUS = "CONSUMED"
+S4D_THIS_SLICE = "11.2.1.EH.S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST"
+S4C_EVIDENCE_PACK = (
+    "evidence/ops/full_core_current_productive_s4c_exactly_one_current_occupancy_reproof_v1/"
+    "20260917T154542Z"
+)
+S4C_PRETRADE_DECISION_ID = "dv-occupancy-reproof-after-c1-gate-v5"
+S4C_PACK_OCCUPANCY_DISPOSITION = "OCCUPANCY_ABSENT"
+S4C_PACK_CLASSIFIER = "_classify_occupancy_v1"
+S4C_PACK_FRESHNESS_POLICY = "FRESH_GET_PER_PRETRADE_DECISION"
+S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER = "CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY"
+S4C_MANIFEST_SHA256 = "8783db12b2f2f659439d9d32a891e3d4afbd802f811bddada6d9a60d26d7de25"
+S4C_EXPECTED_REQUEST_CARDINALITY = 3
+S4D_CANONICAL_EVIDENCE_PACK = (
+    "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
+    "20260917T154800Z"
+)
+S4D_V5_EXECUTE_NETWORK = False
+S4D_GET_COUNT = 0
+S4D_EG_DISPATCH_COUNT = 0
+S4D_V5_INVOKE_COUNT = 0
+S4D_RUNTIME_CYCLE_COUNT = 0
+FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION = True
+S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY = True
+S4A_FRESH_C1_GET_OWNER_GO = "OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1"
+S4A_OWNER_GO = "OWNER_GO_S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND_V1"
+EH_SEAM_OWNER_GO = "OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
+THIS_SLICE = (
+    "11.2.1.EG.FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_"
+    "EXACTLY_ONE_CYCLE_ORCHESTRATION"
+)
+JOIN_SEAM_ID = "CURRENT_PRODUCTIVE_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_SEAM_V1"
+OWNER = (
+    "ops.full_core_live_path_composition_root_v1."
+    "current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1"
+)
+FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY = "NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY"
+AUTONOMY_CAN_CHANGE_TRADING_LOGIC = False
+AUTONOMY_CAN_RESELECT_DOWNSTREAM = False
+AUTONOMY_CAN_MINT_PERMIT = False
+AUTONOMY_CAN_POST = False
+CYCLE_EXCLUSION_LOCK_NAME = "current_productive_cycle_exclusion.lock"
+CYCLE_EXCLUSION_AUTHORIZATION_ID = "CURRENT_PRODUCTIVE_EXACTLY_ONE_CYCLE_V1"
+REQUIRED_BAR = "1m"
+STATE_IDLE = "IDLE"
+STATE_NEW_C1_ACCEPTED = "NEW_C1_ACCEPTED"
+STATE_CYCLE_IN_PROGRESS = "CYCLE_IN_PROGRESS"
+STATE_CYCLE_COMPLETED = "CYCLE_COMPLETED"
+STATE_FAILED_STOP = "FAILED_STOP"
+DISPOSITION_DISPATCHED = "DISPATCHED"
+DISPOSITION_NO_DISPATCH = "NO_DISPATCH"
+DISPOSITION_FAILED_STOP = "FAILED_STOP"
+REASON_DUPLICATE_C1 = "DUPLICATE_C1"
+REASON_STALE_C1 = "STALE_C1"
+REASON_UNFINALIZED_C1 = "UNFINALIZED_C1"
+REASON_CONCURRENT_CYCLE = "CONCURRENT_CYCLE"
+REASON_CURSOR_MISSING = "CURSOR_MISSING"
+REASON_CURSOR_INVALID = "CURSOR_INVALID"
+REASON_LINEAGE_MISMATCH = "LINEAGE_MISMATCH"
+REASON_CYCLE_EXCEPTION = "CYCLE_EXCEPTION"
+REASON_OWNER_GO_MISMATCH = "OWNER_GO_MISMATCH"
+REASON_PERSIST_GO_NOT_TRIGGER_LICENSE = "PERSIST_GO_NOT_TRIGGER_LICENSE"
+REASON_DISPATCHED = "DISPATCHED"
+REASON_OCCUPANCY_GO_STATUS_DRIFT = "OCCUPANCY_GO_STATUS_DRIFT"
+REASON_RUNTIME_GO_SEPARATION_DRIFT = "RUNTIME_GO_SEPARATION_DRIFT"
+REASON_NETWORK_PIN_DRIFT = "NETWORK_PIN_DRIFT"
+REASON_INVOKE_COUNT_DRIFT = "INVOKE_COUNT_DRIFT"
+REASON_TRANSPORT_CONSTRUCTED_DRIFT = "TRANSPORT_CONSTRUCTED_DRIFT"
+REASON_STANDING_VENUE_OCCUPANCY_DRIFT = "STANDING_VENUE_OCCUPANCY_DRIFT"
+DISPOSITION_PRESENT = "PRESENT"
+DISPOSITION_FAIL_CLOSED = "FAIL_CLOSED"
+FALSE_TOKEN = "false"
+TRUE_TOKEN = "true"
+
+CycleDispatchV1 = Callable[..., Any]
+
+
+class CurrentProductiveGovernedNextC1OrchestrationError(ValueError):
+    """Fail-closed next-C1 orchestration violation."""
+
+    def __init__(self, reason_code: str, detail: str = "") -> None:
+        self.reason_code = reason_code
+        self.detail = detail
+        super().__init__(f"{reason_code}:{detail}" if detail else reason_code)
+
+
+@dataclass(frozen=True)
+class CurrentProductiveC1ObservationV1:
+    venue_event_time: float
+    confirm: str
+    native_id: str
+    bar: str = REQUIRED_BAR
+    payload: Mapping[str, Any] | None = None
+
+
+@dataclass(frozen=True)
+class CurrentProductiveNextC1OrchestrationResultV1:
+    state: str
+    disposition: str
+    reason_code: str
+    dispatch_count: int
+    accepted_c1_venue_event_time: str
+    cursor_c1_venue_event_time: str
+    lock_path: str
+    lock_released: str
+    permit_created: str
+    post_count: str
+    transitions: tuple[str, ...]
+    cycle_result: object | None = None
+    authority_boundary: str = FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY
+    extra: dict[str, str] = field(default_factory=dict)
+
+
+def _token(value: bool) -> str:
+    return TRUE_TOKEN if value is True else FALSE_TOKEN
+
+
+def _persist_json(*, path: Path, payload: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(dict(payload), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def cursor_last_accepted_c1_venue_event_time_v1(cursor: Mapping[str, Any]) -> float:
+    try:
+        cap61 = cursor["cap61_confirmation_state"]
+        if not isinstance(cap61, Mapping):
+            raise CurrentProductiveGovernedNextC1OrchestrationError(REASON_CURSOR_INVALID)
+        observation = cap61["observation_acceptance_state"]
+        if not isinstance(observation, Mapping):
+            raise CurrentProductiveGovernedNextC1OrchestrationError(REASON_CURSOR_INVALID)
+        identity = observation["last_accepted_observation_identity"]
+        if not isinstance(identity, Mapping):
+            raise CurrentProductiveGovernedNextC1OrchestrationError(REASON_CURSOR_INVALID)
+        return float(identity["venue_event_time"])
+    except CurrentProductiveGovernedNextC1OrchestrationError:
+        raise
+    except (KeyError, TypeError, ValueError) as exc:
+        raise CurrentProductiveGovernedNextC1OrchestrationError(REASON_CURSOR_INVALID) from exc
+
+
+def _load_cursor_or_reason(cursor_store_root: Path) -> tuple[Mapping[str, Any] | None, str]:
+    try:
+        loaded = load_current_productive_sidestate_confirmation_cursor_v1(cursor_store_root)
+    except Exception:
+        return None, REASON_CURSOR_INVALID
+    if loaded is None:
+        return None, REASON_CURSOR_MISSING
+    if not isinstance(loaded, Mapping):
+        return None, REASON_CURSOR_INVALID
+    if str(loaded.get("schema_name") or "") != CURSOR_SCHEMA_NAME:
+        return None, REASON_CURSOR_INVALID
+    return loaded, ""
+
+
+def load_current_productive_c1_cursor_or_reason_v1(
+    cursor_store_root: Path,
+) -> tuple[Mapping[str, Any] | None, str]:
+    return _load_cursor_or_reason(cursor_store_root)
+
+
+def evaluate_current_productive_c1_reject_reason_v1(
+    *,
+    observation: CurrentProductiveC1ObservationV1,
+    cursor: Mapping[str, Any],
+) -> str:
+    return _c1_reject_reason(observation=observation, cursor=cursor)
+
+
+def _c1_reject_reason(
+    *,
+    observation: CurrentProductiveC1ObservationV1,
+    cursor: Mapping[str, Any],
+) -> str:
+    if str(observation.bar or "").strip() != REQUIRED_BAR:
+        return REASON_UNFINALIZED_C1
+    if str(observation.confirm or "").strip() != "1":
+        return REASON_UNFINALIZED_C1
+    if str(cursor.get("lineage_id") or "") != CURSOR_LINEAGE_ID:
+        return REASON_LINEAGE_MISMATCH
+    if str(cursor.get("venue_native_id") or "").strip() != str(observation.native_id).strip():
+        return REASON_LINEAGE_MISMATCH
+    try:
+        cursor_c1 = cursor_last_accepted_c1_venue_event_time_v1(cursor)
+        incoming = float(observation.venue_event_time)
+    except CurrentProductiveGovernedNextC1OrchestrationError as exc:
+        return exc.reason_code
+    except (TypeError, ValueError):
+        return REASON_UNFINALIZED_C1
+    if incoming == cursor_c1:
+        return REASON_DUPLICATE_C1
+    if incoming < cursor_c1:
+        return REASON_STALE_C1
+    if incoming > cursor_c1:
+        return ""
+    return REASON_UNFINALIZED_C1
+
+
+def _inject_productive_acquisition_join(kwargs: dict[str, Any]) -> dict[str, Any]:
+    kwargs["execute_network"] = False
+    if kwargs.get("acquisition_transport") is None and kwargs.get("acquisition_result") is None:
+        kwargs["acquisition_transport"] = UrllibEeaPublicUniverseGetTransportV1()
+    return kwargs
+
+
+def _inject_occupancy_gate_input_join(kwargs: dict[str, Any]) -> dict[str, Any]:
+    kwargs["execute_network"] = False
+    if OCCUPANCY_FRESH_GET_TRANSPORT_PARAM not in kwargs:
+        kwargs[OCCUPANCY_FRESH_GET_TRANSPORT_PARAM] = None
+    return kwargs
+
+
+def _default_v5_dispatch(**_kwargs: Any) -> Any:
+    return type(
+        "RetiredV5ExecuteHostStub",
+        (),
+        {
+            "permit_created": FALSE_TOKEN,
+            "post_count": "0",
+            "disposition": "FAIL_CLOSED_V5_EXECUTE_HOST_RETIRED",
+        },
+    )()
+
+
+def _no_dispatch_result(
+    *,
+    reason_code: str,
+    cursor_c1: str = "",
+    lock_path: str = "",
+    lock_released: bool = True,
+    transitions: tuple[str, ...] = (STATE_IDLE,),
+) -> CurrentProductiveNextC1OrchestrationResultV1:
+    return CurrentProductiveNextC1OrchestrationResultV1(
+        state=STATE_IDLE,
+        disposition=DISPOSITION_NO_DISPATCH,
+        reason_code=reason_code,
+        dispatch_count=0,
+        accepted_c1_venue_event_time="",
+        cursor_c1_venue_event_time=cursor_c1,
+        lock_path=lock_path,
+        lock_released=_token(lock_released),
+        permit_created=FALSE_TOKEN,
+        post_count="0",
+        transitions=transitions,
+        cycle_result=None,
+    )
+
+
+def trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+    *,
+    owner_go: str,
+    origin_main_sha: str,
+    observation: CurrentProductiveC1ObservationV1,
+    cursor_store_root: Path,
+    lock_root: Path,
+    evidence_root: Path | None = None,
+    cycle_dispatch: CycleDispatchV1 | None = None,
+    v5_kwargs: Mapping[str, Any] | None = None,
+) -> CurrentProductiveNextC1OrchestrationResultV1:
+    if int(MAX_POSITIONS_EFFECTIVE) != 1:
+        raise CurrentProductiveGovernedNextC1OrchestrationError("MAX_POSITIONS_DRIFT")
+    if STEP_29Q_PLAN_ONLY != "PLAN_ONLY":
+        raise CurrentProductiveGovernedNextC1OrchestrationError("STEP_29Q_DRIFT")
+    if (
+        EXTERNAL_EFFECT_AUTHORIZED is True
+        or POST_ALLOWED is True
+        or REAL_VENUE_POST_ALLOWED is True
+    ):
+        raise CurrentProductiveGovernedNextC1OrchestrationError("SEND_AUTHORITY_DRIFT")
+    if AUTONOMY_CAN_MINT_PERMIT is True or AUTONOMY_CAN_POST is True:
+        raise CurrentProductiveGovernedNextC1OrchestrationError("AUTONOMY_SEND_DRIFT")
+    if owner_go == OWNER_GO:
+        raise CurrentProductiveGovernedNextC1OrchestrationError(
+            REASON_PERSIST_GO_NOT_TRIGGER_LICENSE
+        )
+    if owner_go != RUNTIME_TRIGGER_OWNER_GO:
+        raise CurrentProductiveGovernedNextC1OrchestrationError(REASON_OWNER_GO_MISMATCH)
+
+    lock = AuthorizationLifecycleLockV1(
+        lock_path=Path(lock_root) / CYCLE_EXCLUSION_LOCK_NAME,
+        authorization_id=CYCLE_EXCLUSION_AUTHORIZATION_ID,
+        owner=OWNER,
+    )
+    try:
+        lock.acquire()
+    except LifecycleLockError:
+        return _no_dispatch_result(
+            reason_code=REASON_CONCURRENT_CYCLE,
+            lock_path=str(lock.lock_path),
+            lock_released=False,
+        )
+
+    transitions = [STATE_IDLE]
+    cursor_c1_text = ""
+    try:
+        cursor, cursor_reason = _load_cursor_or_reason(Path(cursor_store_root))
+        if cursor is None:
+            lock.release()
+            return _no_dispatch_result(
+                reason_code=cursor_reason,
+                lock_path=str(lock.lock_path),
+                lock_released=True,
+            )
+        try:
+            cursor_c1_text = str(cursor_last_accepted_c1_venue_event_time_v1(cursor))
+        except CurrentProductiveGovernedNextC1OrchestrationError as exc:
+            lock.release()
+            return _no_dispatch_result(
+                reason_code=exc.reason_code,
+                lock_path=str(lock.lock_path),
+                lock_released=True,
+            )
+        reject = _c1_reject_reason(observation=observation, cursor=cursor)
+        if reject:
+            lock.release()
+            return _no_dispatch_result(
+                reason_code=reject,
+                cursor_c1=cursor_c1_text,
+                lock_path=str(lock.lock_path),
+                lock_released=True,
+            )
+
+        transitions.append(STATE_NEW_C1_ACCEPTED)
+        transitions.append(STATE_CYCLE_IN_PROGRESS)
+        dispatch = cycle_dispatch if cycle_dispatch is not None else _default_v5_dispatch
+        kwargs: dict[str, Any] = {
+            "owner_go": V5_OWNER_GO,
+            "origin_main_sha": origin_main_sha,
+            "incoming_cursor": cursor,
+            "cursor_store_root": Path(cursor_store_root),
+            "execute_network": False,
+        }
+        if observation.payload is not None:
+            kwargs["c1_gate_payload"] = dict(observation.payload)
+        if evidence_root is not None:
+            kwargs["evidence_root"] = Path(evidence_root) / "cycle"
+        if v5_kwargs:
+            kwargs.update(dict(v5_kwargs))
+        kwargs = _inject_productive_acquisition_join(kwargs)
+        kwargs = _inject_occupancy_gate_input_join(kwargs)
+        cycle_result = dispatch(**kwargs)
+        transitions.append(STATE_CYCLE_COMPLETED)
+        transitions.append(STATE_IDLE)
+        permit_created = FALSE_TOKEN
+        post_count = "0"
+        if cycle_result is not None:
+            permit_created = str(
+                getattr(cycle_result, "permit_created", FALSE_TOKEN) or FALSE_TOKEN
+            )
+            post_count = str(getattr(cycle_result, "post_count", "0") or "0")
+        if permit_created.lower() == TRUE_TOKEN or post_count not in {"", "0"}:
+            raise CurrentProductiveGovernedNextC1OrchestrationError("ORCHESTRATOR_SEND_LEAK")
+        result = CurrentProductiveNextC1OrchestrationResultV1(
+            state=STATE_IDLE,
+            disposition=DISPOSITION_DISPATCHED,
+            reason_code=REASON_DISPATCHED,
+            dispatch_count=1,
+            accepted_c1_venue_event_time=str(float(observation.venue_event_time)),
+            cursor_c1_venue_event_time=cursor_c1_text,
+            lock_path=str(lock.lock_path),
+            lock_released=TRUE_TOKEN,
+            permit_created=FALSE_TOKEN,
+            post_count="0",
+            transitions=tuple(transitions),
+            cycle_result=cycle_result,
+        )
+        if evidence_root is not None:
+            _persist_json(
+                path=Path(evidence_root) / "orchestration_v1.json",
+                payload={
+                    "THIS_SLICE": THIS_SLICE,
+                    "OWNER_GO": OWNER_GO,
+                    "JOIN_SEAM_ID": JOIN_SEAM_ID,
+                    "FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY": (
+                        FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY
+                    ),
+                    "AUTONOMY_CAN_CHANGE_TRADING_LOGIC": _token(AUTONOMY_CAN_CHANGE_TRADING_LOGIC),
+                    "AUTONOMY_CAN_RESELECT_DOWNSTREAM": _token(AUTONOMY_CAN_RESELECT_DOWNSTREAM),
+                    "AUTONOMY_CAN_MINT_PERMIT": FALSE_TOKEN,
+                    "AUTONOMY_CAN_POST": FALSE_TOKEN,
+                    "STATE": result.state,
+                    "DISPOSITION": result.disposition,
+                    "REASON_CODE": result.reason_code,
+                    "DISPATCH_COUNT": str(result.dispatch_count),
+                    "PERMIT_CREATED": FALSE_TOKEN,
+                    "POST_COUNT": "0",
+                    "STEP_29Q_STATUS": STEP_29Q_PLAN_ONLY,
+                    "CURSOR_FILE": CURSOR_FILENAME,
+                    "LOCK_RELEASED": result.lock_released,
+                },
+            )
+        lock.release()
+        return result
+    except CurrentProductiveGovernedNextC1OrchestrationError:
+        raise
+    except Exception:
+        if evidence_root is not None:
+            _persist_json(
+                path=Path(evidence_root) / "orchestration_failed_stop_v1.json",
+                payload={
+                    "STATE": STATE_FAILED_STOP,
+                    "DISPOSITION": DISPOSITION_FAILED_STOP,
+                    "REASON_CODE": REASON_CYCLE_EXCEPTION,
+                    "DISPATCH_COUNT": "1",
+                    "NO_AUTOMATIC_RETRY": TRUE_TOKEN,
+                    "LOCK_RELEASED": FALSE_TOKEN,
+                    "PERMIT_CREATED": FALSE_TOKEN,
+                    "POST_COUNT": "0",
+                },
+            )
+        return CurrentProductiveNextC1OrchestrationResultV1(
+            state=STATE_FAILED_STOP,
+            disposition=DISPOSITION_FAILED_STOP,
+            reason_code=REASON_CYCLE_EXCEPTION,
+            dispatch_count=1,
+            accepted_c1_venue_event_time=str(float(observation.venue_event_time)),
+            cursor_c1_venue_event_time=cursor_c1_text,
+            lock_path=str(lock.lock_path),
+            lock_released=FALSE_TOKEN,
+            permit_created=FALSE_TOKEN,
+            post_count="0",
+            transitions=tuple(transitions + [STATE_FAILED_STOP]),
+            cycle_result=None,
+        )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveS4BOccupancyGateInputBindV1:
+    disposition: str
+    occupancy_owner_go: str
+    occupancy_owner_go_scope: str
+    occupancy_owner_go_status: str
+    occupancy_fresh_get_transport_param: str
+    occupancy_fresh_get_transport_protocol: str
+    occupancy_transport_injected: bool
+    occupancy_transport_invoked: bool
+    occupancy_transport_constructed: bool
+    acquisition_transport_class: str
+    acquisition_transport_semantically_separate: bool
+    v5_execute_network: bool
+    venue_occupancy: str
+    occupancy_status_fabricated: bool
+    persist_go_is_runtime_license: bool
+    occupancy_owner_go_consumed: bool
+    get_count: int
+    eg_dispatch_count: int
+    v5_invoke_count: int
+    runtime_cycle_count: int
+    reason_code: str
+
+
+def bind_s4b_occupancy_gate_input_v1(
+    *,
+    owner_go: str,
+    occupancy_transport: object | None = None,
+) -> CurrentProductiveS4BOccupancyGateInputBindV1:
+    def _fail(reason_code: str) -> CurrentProductiveS4BOccupancyGateInputBindV1:
+        return CurrentProductiveS4BOccupancyGateInputBindV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            occupancy_owner_go="",
+            occupancy_owner_go_scope="",
+            occupancy_owner_go_status="",
+            occupancy_fresh_get_transport_param="",
+            occupancy_fresh_get_transport_protocol="",
+            occupancy_transport_injected=False,
+            occupancy_transport_invoked=False,
+            occupancy_transport_constructed=False,
+            acquisition_transport_class="",
+            acquisition_transport_semantically_separate=False,
+            v5_execute_network=False,
+            venue_occupancy=VENUE_OCCUPANCY_KNOWLEDGE,
+            occupancy_status_fabricated=False,
+            persist_go_is_runtime_license=False,
+            occupancy_owner_go_consumed=False,
+            get_count=0,
+            eg_dispatch_count=0,
+            v5_invoke_count=0,
+            runtime_cycle_count=0,
+            reason_code=reason_code,
+        )
+
+    if owner_go != S4B_OWNER_GO:
+        return _fail(REASON_OWNER_GO_MISMATCH)
+    tokens = (
+        S4B_OWNER_GO,
+        S4D_OWNER_GO,
+        OCCUPANCY_OWNER_GO,
+        S4A_FRESH_C1_GET_OWNER_GO,
+        RUNTIME_TRIGGER_OWNER_GO,
+        V5_OWNER_GO,
+        OWNER_GO,
+        S4A_OWNER_GO,
+        EH_SEAM_OWNER_GO,
+    )
+    if len(set(tokens)) != 9:
+        return _fail(REASON_RUNTIME_GO_SEPARATION_DRIFT)
+    if OCCUPANCY_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED":
+        return _fail(REASON_OCCUPANCY_GO_STATUS_DRIFT)
+    if S4B_V5_EXECUTE_NETWORK is True:
+        return _fail(REASON_NETWORK_PIN_DRIFT)
+    if (
+        S4B_GET_COUNT != 0
+        or S4B_EG_DISPATCH_COUNT != 0
+        or S4B_V5_INVOKE_COUNT != 0
+        or S4B_RUNTIME_CYCLE_COUNT != 0
+    ):
+        return _fail(REASON_INVOKE_COUNT_DRIFT)
+    if S4B_TRANSPORT_CONSTRUCTED is True:
+        return _fail(REASON_TRANSPORT_CONSTRUCTED_DRIFT)
+    return CurrentProductiveS4BOccupancyGateInputBindV1(
+        disposition=DISPOSITION_PRESENT,
+        occupancy_owner_go=OCCUPANCY_OWNER_GO,
+        occupancy_owner_go_scope=OCCUPANCY_OWNER_GO_SCOPE,
+        occupancy_owner_go_status=OCCUPANCY_OWNER_GO_STATUS,
+        occupancy_fresh_get_transport_param=OCCUPANCY_FRESH_GET_TRANSPORT_PARAM,
+        occupancy_fresh_get_transport_protocol=OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL,
+        occupancy_transport_injected=occupancy_transport is not None,
+        occupancy_transport_invoked=False,
+        occupancy_transport_constructed=False,
+        acquisition_transport_class=PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS,
+        acquisition_transport_semantically_separate=True,
+        v5_execute_network=False,
+        venue_occupancy=VENUE_OCCUPANCY_KNOWLEDGE,
+        occupancy_status_fabricated=False,
+        persist_go_is_runtime_license=False,
+        occupancy_owner_go_consumed=False,
+        get_count=0,
+        eg_dispatch_count=0,
+        v5_invoke_count=0,
+        runtime_cycle_count=0,
+        reason_code="",
+    )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1:
+    disposition: str
+    occupancy_owner_go: str
+    occupancy_owner_go_scope: str
+    occupancy_owner_go_status: str
+    occupancy_owner_go_consumed: bool
+    s4c_pack_occupancy_disposition: str
+    s4c_pack_occupancy_owner_go_status_after: str
+    s4c_pretrade_decision_id: str
+    s4c_freshness_policy: str
+    s4c_classifier: str
+    s4c_evidence_pack: str
+    s4c_manifest_sha256: str
+    historical_evidence_is_not_standing_enablement: bool
+    venue_occupancy: str
+    s4c_pack_claim_is_not_standing_venue_occupancy: bool
+    fresh_reproof_required_for_later_pretrade_decision: bool
+    v5_execute_network: bool
+    persist_go_is_runtime_license: bool
+    get_count: int
+    eg_dispatch_count: int
+    v5_invoke_count: int
+    runtime_cycle_count: int
+    reason_code: str
+
+
+def bind_s4d_s4c_disposition_go_consumption_persist_v1(
+    *,
+    owner_go: str,
+) -> CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1:
+    def _fail(reason_code: str) -> CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1:
+        return CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            occupancy_owner_go="",
+            occupancy_owner_go_scope="",
+            occupancy_owner_go_status="",
+            occupancy_owner_go_consumed=False,
+            s4c_pack_occupancy_disposition="",
+            s4c_pack_occupancy_owner_go_status_after="",
+            s4c_pretrade_decision_id="",
+            s4c_freshness_policy="",
+            s4c_classifier="",
+            s4c_evidence_pack="",
+            s4c_manifest_sha256="",
+            historical_evidence_is_not_standing_enablement=True,
+            venue_occupancy=VENUE_OCCUPANCY_KNOWLEDGE,
+            s4c_pack_claim_is_not_standing_venue_occupancy=True,
+            fresh_reproof_required_for_later_pretrade_decision=True,
+            v5_execute_network=False,
+            persist_go_is_runtime_license=False,
+            get_count=0,
+            eg_dispatch_count=0,
+            v5_invoke_count=0,
+            runtime_cycle_count=0,
+            reason_code=reason_code,
+        )
+
+    if owner_go != S4D_OWNER_GO:
+        return _fail(REASON_OWNER_GO_MISMATCH)
+    tokens = (
+        S4D_OWNER_GO,
+        S4B_OWNER_GO,
+        OCCUPANCY_OWNER_GO,
+        S4A_FRESH_C1_GET_OWNER_GO,
+        RUNTIME_TRIGGER_OWNER_GO,
+        V5_OWNER_GO,
+        OWNER_GO,
+        S4A_OWNER_GO,
+        EH_SEAM_OWNER_GO,
+    )
+    if len(set(tokens)) != 9:
+        return _fail(REASON_RUNTIME_GO_SEPARATION_DRIFT)
+    if OCCUPANCY_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED":
+        return _fail(REASON_OCCUPANCY_GO_STATUS_DRIFT)
+    if VENUE_OCCUPANCY_KNOWLEDGE != "UNKNOWN":
+        return _fail(REASON_STANDING_VENUE_OCCUPANCY_DRIFT)
+    if S4D_V5_EXECUTE_NETWORK is True or S4B_V5_EXECUTE_NETWORK is True:
+        return _fail(REASON_NETWORK_PIN_DRIFT)
+    if (
+        S4D_GET_COUNT != 0
+        or S4D_EG_DISPATCH_COUNT != 0
+        or S4D_V5_INVOKE_COUNT != 0
+        or S4D_RUNTIME_CYCLE_COUNT != 0
+    ):
+        return _fail(REASON_INVOKE_COUNT_DRIFT)
+    return CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1(
+        disposition=DISPOSITION_PRESENT,
+        occupancy_owner_go=OCCUPANCY_OWNER_GO,
+        occupancy_owner_go_scope=OCCUPANCY_OWNER_GO_SCOPE,
+        occupancy_owner_go_status=OCCUPANCY_OWNER_GO_STATUS,
+        occupancy_owner_go_consumed=False,
+        s4c_pack_occupancy_disposition=S4C_PACK_OCCUPANCY_DISPOSITION,
+        s4c_pack_occupancy_owner_go_status_after=S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER,
+        s4c_pretrade_decision_id=S4C_PRETRADE_DECISION_ID,
+        s4c_freshness_policy=S4C_PACK_FRESHNESS_POLICY,
+        s4c_classifier=S4C_PACK_CLASSIFIER,
+        s4c_evidence_pack=S4C_EVIDENCE_PACK,
+        s4c_manifest_sha256=S4C_MANIFEST_SHA256,
+        historical_evidence_is_not_standing_enablement=True,
+        venue_occupancy=VENUE_OCCUPANCY_KNOWLEDGE,
+        s4c_pack_claim_is_not_standing_venue_occupancy=S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY,
+        fresh_reproof_required_for_later_pretrade_decision=(
+            FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION
+        ),
+        v5_execute_network=False,
+        persist_go_is_runtime_license=False,
+        get_count=0,
+        eg_dispatch_count=0,
+        v5_invoke_count=0,
+        runtime_cycle_count=0,
+        reason_code="",
+    )
+
+
+def s4c_historical_pack_may_be_consumed_as_fresh_get_v1(
+    *,
+    pretrade_decision_id: str,
+) -> bool:
+    """Persisted S4C pack is historical evidence, not a later-decision fresh GET."""
+    if pretrade_decision_id != S4C_PRETRADE_DECISION_ID:
+        return False
+    return FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION is False

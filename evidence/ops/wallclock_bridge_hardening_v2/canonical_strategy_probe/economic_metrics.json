@@ -1,0 +1,14 @@
+{
+  "drawdown": "0",
+  "equity": "100000",
+  "exposure": 0,
+  "fees": "0",
+  "fill_count": 0,
+  "funding": "0",
+  "hit_rate": "0",
+  "profit_factor": "0",
+  "realized_pnl": "0",
+  "slippage": "0",
+  "turnover": "0",
+  "unrealized_pnl": "0"
+}

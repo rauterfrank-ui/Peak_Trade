@@ -1,0 +1,25 @@
+{
+  "calculator_method": "WILDER_ADX_PLUS_DI_MINUS_DI",
+  "calculator_ssot": "src/strategies/trend_following.py",
+  "definitions": {
+    "eligibility_rule": "For a long entry-candidate (signal==1): ELIGIBLE iff both DI finite AND minus_DI > plus_DI. For a short entry-candidate (signal==-1): ELIGIBLE iff both DI finite AND plus_DI > minus_DI. Tie (plus_DI == minus_DI) or non-finite DI -> STAND_ASIDE. First warmup_bars=28 bars are always STAND_ASIDE. ADX level unused. Side-aware direction-confirmation admission only; does not change direction/side.",
+    "minus_di_14h": "Wilder \u2212DI(14) via TrendFollowingStrategy._compute_adx (same SSOT); minus_di = 100 * smoothed_minus_dm / atr (atr==0 -> NaN)",
+    "plus_di_14h": "Wilder +DI(14) via TrendFollowingStrategy._compute_adx over trailing finalized PT1H high/low/close; ewm(alpha=1/14, min_periods=14, adjust=False); plus_di = 100 * smoothed_plus_dm / atr (atr==0 -> NaN)"
+  },
+  "feature_formula_id": "adx_di_direction_confirmation_mr_eligibility_di14_features_v1",
+  "feature_formula_sha256": "05104afcc41e07d7b14ed8a0e3f2e7bcb97cfabc80cd6ef0c422004136eb36e4",
+  "filter_id": "canonical_adx_di_direction_confirmation_entry_eligibility_v1",
+  "frozen_parameters": {
+    "adx_period": 14,
+    "nan_policy": "STAND_ASIDE_WHEN_DI_NONFINITE",
+    "side_aware": true,
+    "tie_policy": "STAND_ASIDE_WHEN_PLUS_DI_EQUALS_MINUS_DI",
+    "uses_adx_level": false,
+    "uses_di_order_only": true,
+    "warmup_bars": 28
+  },
+  "lookahead_forbidden": true,
+  "post_hoc_retune_forbidden": true,
+  "source": "finalized_pt1h_ohlcv_high_low_close_only",
+  "threshold_adjustment_forbidden": true
+}

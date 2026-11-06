@@ -1,0 +1,308 @@
+"""Additive Prerequisite-08 position-source policy rebind.
+
+Resolves Z2DA ``POSITION_MUST_BE_CREATED_BY_PEAK_TRADE=UNPROVEN_LEFT_OPEN``
+without rewriting §11.13.5.Z2DA. Prerequisite 08 remains an observation-proof
+gate. A fresh canonical nonzero observation may satisfy 08 regardless of who
+created the position. This module grants no GET, POST, create, flatten, live,
+or canary authority and does not close Prerequisite 08.
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    LIVE_ARMED,
+    LIVE_AUTHORIZED,
+    LIVE_ENABLED,
+    SUBMIT_UNLOCKED,
+    TESTNET_AUTHORIZED,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.post_z2cz_position_creation_autonomy_semantic_rebind_v1 import (
+    OPEN_POSITION_SOURCES_LEFT_OPEN as Z2DA_OPEN_POSITION_SOURCES_LEFT_OPEN,
+    POSITION_MUST_BE_CREATED_BY_PEAK_TRADE as Z2DA_POSITION_MUST_BE_CREATED_BY_PEAK_TRADE,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.prerequisite_08_resolution_authority_adjudication_v1 import (
+    PREREQUISITE_08_REQUIRED_PROPOSITION,
+)
+
+OWNER_GO = "PEAK_TRADE_OWNER_GO_PREREQUISITE_08_POSITION_SOURCE_POLICY_PERSIST_IMPLEMENT_PR_V1"
+OWNER_POLICY_DECISION = "PEAK_TRADE_OWNER_POLICY_DECISION_PREREQUISITE_08_POSITION_SOURCE_V1"
+THIS_SLICE = "11.13.5.Z2DN"
+PREDECESSOR_SLICE = "11.13.5.Z2DM"
+LAST_CANONICALLY_CLOSED_11_13_5_SLICE = "SECTION_11_13_5_Z2DN"
+THIS_NAMED_CLASS_PERSIST_ID = "SECTION_11_13_5_Z2DN"
+WORKPACKAGE_ID = "PREREQUISITE_08_POSITION_SOURCE_POLICY_REBIND_V1"
+BASELINE_ORIGIN_MAIN_SHA = "7ba9e9f87dc004f399dcc26a5b444435e94132f4"
+
+ADJUDICATION = "Z2DA_POSITION_SOURCE_UNPROVEN_LEFT_OPEN_RESOLVED_SOURCE_IRRELEVANT_TO_08_IF_CANONICAL_NONZERO_PROVEN"
+SUPERSESSION_RELATION = (
+    "Z2DN_RESOLVES_Z2DA_POSITION_MUST_BE_CREATED_BY_PEAK_TRADE_UNPROVEN_LEFT_OPEN_"
+    "WITHOUT_REWRITING_Z2DA"
+)
+SUPERSEDED_Z2DA_FIELD = "POSITION_MUST_BE_CREATED_BY_PEAK_TRADE"
+Z2DA_FIELD_HISTORICAL_VALUE = "UNPROVEN_LEFT_OPEN"
+Z2DA_TEXT_REWRITTEN = False
+
+POSITION_SOURCE_POLICY = "SOURCE_IRRELEVANT_TO_PREREQUISITE_08_IF_NONZERO_PROVEN"
+POSITION_MUST_BE_CREATED_BY_PEAK_TRADE = False
+SOURCE_PROVENANCE_REQUIRED_FOR_PREREQUISITE_08 = False
+EXTERNAL_OR_PREEXISTING_POSITION_MAY_SATISFY_PREREQUISITE_08_IF_CANONICAL_NONZERO_OBSERVATION_IS_PROVEN = True
+PEAK_TRADE_CREATED_POSITION_MAY_SATISFY_PREREQUISITE_08_IF_CANONICAL_NONZERO_OBSERVATION_IS_PROVEN = True
+EXTERNAL_POSITION_ALLOWED = False
+
+PREREQUISITE_08_REMAINS_OBSERVATION_PROOF_GATE = True
+PREREQUISITE_08_ROLE = "POSITIVE_OBSERVATION_PROOF_GATE"
+PREREQUISITE_08_CREATES_POSITION = False
+PREREQUISITE_08_EXPECTS_PREEXISTING_POSITION = True
+POSITION_SOURCE_IDENTITY_IS_NOT_PART_OF_PREREQUISITE_08_PROPOSITION = True
+PREREQUISITE_08_REQUIRED_PROPOSITION_UNCHANGED = PREREQUISITE_08_REQUIRED_PROPOSITION
+
+PREREQUISITE_08_GRANTS_POSITION_CREATION_AUTHORITY = False
+PREREQUISITE_08_GRANTS_MUTATION_AUTHORITY = False
+PREREQUISITE_08_GRANTS_ENTRY_AUTHORITY = False
+PREREQUISITE_08_GRANTS_EXECUTION_AUTHORITY = False
+PREREQUISITE_08_GRANTS_SUBMIT_AUTHORITY = False
+PREREQUISITE_08_GRANTS_LIVE_AUTHORITY = False
+PREREQUISITE_08_GRANTS_CANARY_AUTHORITY = False
+
+DOWNSTREAM_RECONCILIATION_POLICY_CHANGED = False
+DOWNSTREAM_MUTATION_POLICY_CHANGED = False
+CLASSIFIER_SOURCE_PROVENANCE_INJECTED = False
+
+PREREQUISITE_08_CLOSED = False
+PREREQUISITE_08_STATUS = "UNRESOLVED"
+POSITION_CREATION_CURRENTLY_AUTHORIZED = False
+REAL_POSITION_CREATED = False
+PRODUCTIVE_NONZERO_PROOF_CREATED_BY_THIS_PERSIST = False
+
+THIS_GO_AUTHORIZES_GET = False
+THIS_GO_AUTHORIZES_POSITIONS_GET = False
+THIS_GO_AUTHORIZES_PRIVATE_GET = False
+THIS_GO_AUTHORIZES_POST = False
+THIS_GO_AUTHORIZES_ORDER = False
+THIS_GO_AUTHORIZES_FLATTEN = False
+THIS_GO_AUTHORIZES_ENTRY = False
+THIS_GO_AUTHORIZES_POSITION_CREATION = False
+THIS_GO_AUTHORIZES_EXECUTION = False
+THIS_GO_AUTHORIZES_LIVE = False
+THIS_GO_AUTHORIZES_CANARY = False
+MERGE_AUTHORIZED_BY_THIS_PERSIST = False
+RUNTIME_AUTHORIZATION_EFFECT = "NONE"
+
+IDENTICAL_GET_IS_NOT_ISOLATED_PRIMARY_08_BLOCKER = True
+NEXT_IDENTICAL_GET_INFORMATION_VALUE = "LOW_EXPECTED_INFORMATION_GAIN"
+CURRENT_UNCONSUMED_RUNTIME_GO_FOR_08_GET = "NONE"
+CANONICAL_LIVE_EARLIEST_UNRESOLVED_DEPENDENCY = (
+    "EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN"
+)
+Z2DA_EARLIEST_REAL_UNRESOLVED_DEPENDENCY_HISTORICAL = (
+    "NO_AUTHORIZED_REACHABLE_PRODUCER_OF_NONZERO_VENUE_POSITION_REQUIRED_BY_PREREQUISITE_08"
+)
+EARLIEST_UNRESOLVED_DEPENDENCY = CANONICAL_LIVE_EARLIEST_UNRESOLVED_DEPENDENCY
+
+NEXT_AUTHORITY_BOUNDARY = (
+    "SEPARATE_OWNER_GO_REQUIRED_BEFORE_ANY_VENUE_WIRE_OR_GET_OR_POST_"
+    "OR_POSITION_CREATION_OR_FLATTEN_OR_LIVE_OR_CANARY"
+)
+
+ATLAS_MUTATION = False
+ATLAS_IMPACT = "UPDATED"
+ATLAS_AUTHORITY = "NONE"
+ATLAS_ROLE = "NAVIGATION_INDEX_ONLY"
+LANDSCAPE_MUTATION = False
+LANDSCAPE_AUTHORITY = "NONE"
+NO_MAP_OF_TRUTH_MUTATION = True
+
+STANDING_LIVE_AUTHORIZED = LIVE_AUTHORIZED
+STANDING_TESTNET_AUTHORIZED = TESTNET_AUTHORIZED
+STANDING_LIVE_ENABLED = LIVE_ENABLED
+STANDING_LIVE_ARMED = LIVE_ARMED
+STANDING_SUBMIT_UNLOCKED = SUBMIT_UNLOCKED
+
+
+class LiveCanaryPrerequisite08PositionSourcePolicyError(RuntimeError):
+    """Fail-closed position-source policy rebind violation."""
+
+
+def _fail(code: str) -> None:
+    raise LiveCanaryPrerequisite08PositionSourcePolicyError(code)
+
+
+def reject_z2da_historical_field_rewrite_v1(*, claimed_z2da_rewritten: bool) -> str:
+    if claimed_z2da_rewritten or Z2DA_TEXT_REWRITTEN:
+        _fail("FORBIDDEN_Z2DA_REWRITE")
+    if Z2DA_POSITION_MUST_BE_CREATED_BY_PEAK_TRADE != Z2DA_FIELD_HISTORICAL_VALUE:
+        _fail("FORBIDDEN_Z2DA_HISTORICAL_FIELD_MUTATION")
+    return "Z2DA_HISTORICAL_UNPROVEN_LEFT_OPEN_PRESERVED"
+
+
+def reject_general_external_position_allowed_claim_v1(
+    *,
+    claimed_external_position_allowed: bool,
+) -> str:
+    if claimed_external_position_allowed or EXTERNAL_POSITION_ALLOWED:
+        _fail("FORBIDDEN_GENERAL_EXTERNAL_POSITION_ALLOWED_CLAIM")
+    return "EXTERNAL_POSITION_MAY_SATISFY_08_ONLY_IF_CANONICAL_NONZERO_OBSERVATION_PROVEN"
+
+
+def reject_08_closed_or_nonzero_proof_claim_v1(
+    *,
+    claimed_08_closed: bool,
+    claimed_productive_nonzero_proof: bool,
+) -> str:
+    if claimed_08_closed or PREREQUISITE_08_CLOSED:
+        _fail("FORBIDDEN_PREREQUISITE_08_CLOSED_CLAIM")
+    if claimed_productive_nonzero_proof or PRODUCTIVE_NONZERO_PROOF_CREATED_BY_THIS_PERSIST:
+        _fail("FORBIDDEN_PRODUCTIVE_NONZERO_PROOF_CLAIM")
+    return "PREREQUISITE_08_REMAINS_UNRESOLVED_NO_PRODUCTIVE_NONZERO_PROOF"
+
+
+def reject_authority_grants_v1(
+    *,
+    claimed_create: bool = False,
+    claimed_mutation: bool = False,
+    claimed_entry: bool = False,
+    claimed_execution: bool = False,
+    claimed_submit: bool = False,
+    claimed_live: bool = False,
+    claimed_canary: bool = False,
+    claimed_get: bool = False,
+    claimed_post: bool = False,
+) -> str:
+    if claimed_create or PREREQUISITE_08_GRANTS_POSITION_CREATION_AUTHORITY:
+        _fail("FORBIDDEN_POSITION_CREATION_AUTHORITY")
+    if claimed_mutation or PREREQUISITE_08_GRANTS_MUTATION_AUTHORITY:
+        _fail("FORBIDDEN_MUTATION_AUTHORITY")
+    if claimed_entry or PREREQUISITE_08_GRANTS_ENTRY_AUTHORITY:
+        _fail("FORBIDDEN_ENTRY_AUTHORITY")
+    if claimed_execution or PREREQUISITE_08_GRANTS_EXECUTION_AUTHORITY:
+        _fail("FORBIDDEN_EXECUTION_AUTHORITY")
+    if claimed_submit or PREREQUISITE_08_GRANTS_SUBMIT_AUTHORITY:
+        _fail("FORBIDDEN_SUBMIT_AUTHORITY")
+    if claimed_live or PREREQUISITE_08_GRANTS_LIVE_AUTHORITY or STANDING_LIVE_AUTHORIZED:
+        _fail("FORBIDDEN_LIVE_AUTHORITY")
+    if claimed_canary or PREREQUISITE_08_GRANTS_CANARY_AUTHORITY:
+        _fail("FORBIDDEN_CANARY_AUTHORITY")
+    if claimed_get or THIS_GO_AUTHORIZES_GET or THIS_GO_AUTHORIZES_POSITIONS_GET:
+        _fail("FORBIDDEN_GET")
+    if claimed_post or THIS_GO_AUTHORIZES_POST:
+        _fail("FORBIDDEN_POST")
+    return "NO_CREATE_MUTATION_ENTRY_EXECUTION_SUBMIT_LIVE_CANARY_GET_POST_AUTHORITY"
+
+
+def reject_classifier_source_injection_v1(*, claimed_classifier_requires_source: bool) -> str:
+    if claimed_classifier_requires_source or CLASSIFIER_SOURCE_PROVENANCE_INJECTED:
+        _fail("FORBIDDEN_CLASSIFIER_SOURCE_PROVENANCE_INJECTION")
+    if SOURCE_PROVENANCE_REQUIRED_FOR_PREREQUISITE_08:
+        _fail("FORBIDDEN_SOURCE_PROVENANCE_REQUIREMENT")
+    return "POSITION_SOURCE_IDENTITY_IS_NOT_PART_OF_PREREQUISITE_08_PROPOSITION"
+
+
+def reject_peak_trade_creation_required_claim_v1(*, claimed_peak_trade_required: bool) -> str:
+    if claimed_peak_trade_required or POSITION_MUST_BE_CREATED_BY_PEAK_TRADE:
+        _fail("FORBIDDEN_PEAK_TRADE_CREATION_REQUIRED_CLAIM")
+    return "PEAK_TRADE_CREATION_NOT_REQUIRED_FOR_PREREQUISITE_08"
+
+
+def adjudicate_prerequisite_08_position_source_policy_v1(
+    *,
+    claimed_z2da_rewritten: bool = False,
+    claimed_external_position_allowed: bool = False,
+    claimed_08_closed: bool = False,
+    claimed_productive_nonzero_proof: bool = False,
+    claimed_create: bool = False,
+    claimed_mutation: bool = False,
+    claimed_entry: bool = False,
+    claimed_execution: bool = False,
+    claimed_submit: bool = False,
+    claimed_live: bool = False,
+    claimed_canary: bool = False,
+    claimed_get: bool = False,
+    claimed_post: bool = False,
+    claimed_classifier_requires_source: bool = False,
+    claimed_peak_trade_required: bool = False,
+) -> dict[str, Any]:
+    """Return the bound current 08 source policy. Not GET and not create."""
+    historical = reject_z2da_historical_field_rewrite_v1(
+        claimed_z2da_rewritten=claimed_z2da_rewritten
+    )
+    external = reject_general_external_position_allowed_claim_v1(
+        claimed_external_position_allowed=claimed_external_position_allowed
+    )
+    closed = reject_08_closed_or_nonzero_proof_claim_v1(
+        claimed_08_closed=claimed_08_closed,
+        claimed_productive_nonzero_proof=claimed_productive_nonzero_proof,
+    )
+    grants = reject_authority_grants_v1(
+        claimed_create=claimed_create,
+        claimed_mutation=claimed_mutation,
+        claimed_entry=claimed_entry,
+        claimed_execution=claimed_execution,
+        claimed_submit=claimed_submit,
+        claimed_live=claimed_live,
+        claimed_canary=claimed_canary,
+        claimed_get=claimed_get,
+        claimed_post=claimed_post,
+    )
+    classifier = reject_classifier_source_injection_v1(
+        claimed_classifier_requires_source=claimed_classifier_requires_source
+    )
+    creator = reject_peak_trade_creation_required_claim_v1(
+        claimed_peak_trade_required=claimed_peak_trade_required
+    )
+    return {
+        "OWNER_GO": OWNER_GO,
+        "OWNER_POLICY_DECISION": OWNER_POLICY_DECISION,
+        "THIS_SLICE": THIS_SLICE,
+        "PREDECESSOR_SLICE": PREDECESSOR_SLICE,
+        "ADJUDICATION": ADJUDICATION,
+        "SUPERSESSION_RELATION": SUPERSESSION_RELATION,
+        "SUPERSEDED_Z2DA_FIELD": SUPERSEDED_Z2DA_FIELD,
+        "Z2DA_FIELD_HISTORICAL_VALUE": Z2DA_FIELD_HISTORICAL_VALUE,
+        "Z2DA_HISTORICAL_CONSTANT": Z2DA_POSITION_MUST_BE_CREATED_BY_PEAK_TRADE,
+        "Z2DA_OPEN_POSITION_SOURCES_LEFT_OPEN": list(Z2DA_OPEN_POSITION_SOURCES_LEFT_OPEN),
+        "Z2DA_TEXT_REWRITTEN": Z2DA_TEXT_REWRITTEN,
+        "POSITION_SOURCE_POLICY": POSITION_SOURCE_POLICY,
+        "POSITION_MUST_BE_CREATED_BY_PEAK_TRADE": POSITION_MUST_BE_CREATED_BY_PEAK_TRADE,
+        "SOURCE_PROVENANCE_REQUIRED_FOR_PREREQUISITE_08": (
+            SOURCE_PROVENANCE_REQUIRED_FOR_PREREQUISITE_08
+        ),
+        "EXTERNAL_OR_PREEXISTING_POSITION_MAY_SATISFY_PREREQUISITE_08_IF_CANONICAL_NONZERO_OBSERVATION_IS_PROVEN": (
+            EXTERNAL_OR_PREEXISTING_POSITION_MAY_SATISFY_PREREQUISITE_08_IF_CANONICAL_NONZERO_OBSERVATION_IS_PROVEN
+        ),
+        "PEAK_TRADE_CREATED_POSITION_MAY_SATISFY_PREREQUISITE_08_IF_CANONICAL_NONZERO_OBSERVATION_IS_PROVEN": (
+            PEAK_TRADE_CREATED_POSITION_MAY_SATISFY_PREREQUISITE_08_IF_CANONICAL_NONZERO_OBSERVATION_IS_PROVEN
+        ),
+        "EXTERNAL_POSITION_ALLOWED": EXTERNAL_POSITION_ALLOWED,
+        "PREREQUISITE_08_ROLE": PREREQUISITE_08_ROLE,
+        "PREREQUISITE_08_CREATES_POSITION": PREREQUISITE_08_CREATES_POSITION,
+        "POSITION_SOURCE_IDENTITY_IS_NOT_PART_OF_PREREQUISITE_08_PROPOSITION": (
+            POSITION_SOURCE_IDENTITY_IS_NOT_PART_OF_PREREQUISITE_08_PROPOSITION
+        ),
+        "PREREQUISITE_08_REQUIRED_PROPOSITION": PREREQUISITE_08_REQUIRED_PROPOSITION_UNCHANGED,
+        "PREREQUISITE_08_CLOSED": PREREQUISITE_08_CLOSED,
+        "POSITION_CREATION_CURRENTLY_AUTHORIZED": POSITION_CREATION_CURRENTLY_AUTHORIZED,
+        "CANONICAL_LIVE_EARLIEST_UNRESOLVED_DEPENDENCY": (
+            CANONICAL_LIVE_EARLIEST_UNRESOLVED_DEPENDENCY
+        ),
+        "Z2DA_EARLIEST_REAL_UNRESOLVED_DEPENDENCY_HISTORICAL": (
+            Z2DA_EARLIEST_REAL_UNRESOLVED_DEPENDENCY_HISTORICAL
+        ),
+        "NEXT_IDENTICAL_GET_INFORMATION_VALUE": NEXT_IDENTICAL_GET_INFORMATION_VALUE,
+        "CURRENT_UNCONSUMED_RUNTIME_GO_FOR_08_GET": CURRENT_UNCONSUMED_RUNTIME_GO_FOR_08_GET,
+        "THIS_GO_AUTHORIZES_GET": THIS_GO_AUTHORIZES_GET,
+        "THIS_GO_AUTHORIZES_POST": THIS_GO_AUTHORIZES_POST,
+        "THIS_GO_AUTHORIZES_POSITION_CREATION": THIS_GO_AUTHORIZES_POSITION_CREATION,
+        "LIVE_AUTHORIZED": STANDING_LIVE_AUTHORIZED,
+        "SUBMIT_UNLOCKED": STANDING_SUBMIT_UNLOCKED,
+        "RUNTIME_AUTHORIZATION_EFFECT": RUNTIME_AUTHORIZATION_EFFECT,
+        "TOKENS": {
+            "HISTORICAL": historical,
+            "EXTERNAL": external,
+            "CLOSED": closed,
+            "GRANTS": grants,
+            "CLASSIFIER": classifier,
+            "CREATOR": creator,
+        },
+    }

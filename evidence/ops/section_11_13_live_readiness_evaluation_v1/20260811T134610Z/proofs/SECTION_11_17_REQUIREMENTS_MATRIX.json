@@ -1,0 +1,45 @@
+{
+  "DOCUMENT_CLASS": "REQUIREMENTS_MATRIX_SECTION_11_13_1_V1",
+  "REQUIREMENTS": [
+    {
+      "id": "LRE-01",
+      "requirement": "Owner-GO exactly SECTION_11_13_LIVE_READINESS_EVALUATION",
+      "status": "PASS"
+    },
+    {
+      "id": "LRE-02",
+      "requirement": "origin/main SHA equals authorized 20d315f97f053b8e872d2e304e7633db65784823",
+      "status": "PASS"
+    },
+    {
+      "id": "LRE-03",
+      "requirement": "PRE_LIVE_CYBERSECURITY_GATE=PASS prerequisite held",
+      "status": "PASS"
+    },
+    {
+      "id": "LRE-04",
+      "requirement": "Evaluate Master \u00a711.17 Autonomy closure standard evidence-bound",
+      "status": "PASS"
+    },
+    {
+      "id": "LRE-05",
+      "requirement": "Do not claim FULLY_AUTONOMOUS_LIVE_TRADING_READY unless all \u00a711.17 fields pass",
+      "status": "PASS"
+    },
+    {
+      "id": "LRE-06",
+      "requirement": "LIVE_AUTHORIZED remains false",
+      "status": "PASS"
+    },
+    {
+      "id": "LRE-07",
+      "requirement": "No Live/Testnet orders, credentials, venue network, trading-logic mutation",
+      "status": "PASS"
+    },
+    {
+      "id": "LRE-08",
+      "requirement": "Hard stop after evaluation; separate Owner-GO for next Live stage",
+      "status": "PASS"
+    }
+  ]
+}

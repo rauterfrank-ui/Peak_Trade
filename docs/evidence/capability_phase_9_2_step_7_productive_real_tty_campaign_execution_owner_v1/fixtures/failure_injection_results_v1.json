@@ -1,0 +1,71 @@
+{
+  "CONFIRM_TOKEN_MINTED": false,
+  "NETWORK_SESSION_STARTED": false,
+  "PHASE_9_2_STEP_6_STATUS": "CLOSED_PASS",
+  "PHASE_9_2_STEP_7_STATUS": "OPEN",
+  "TARGET_CAMPAIGN_CAPABILITY_ID": "PHASE_9_2_STEP_7_REPEATED_MULTI_SESSION_CONTINUITY_CAMPAIGN_EXECUTION_V1",
+  "case_count": 8,
+  "cases": [
+    {
+      "case": "implementation_proof_no_network",
+      "network_session_started": false,
+      "ok": true
+    },
+    {
+      "blockers": [
+        "OWNER_GO_REQUIRED"
+      ],
+      "case": "no_owner_go_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "CONFIRM_TOKEN_INVALID",
+        "HIDDEN_CONFIRM_HANDOFF_UNREACHABLE",
+        "HIDDEN_PTY_STDIN_NOT_TTY",
+        "REAL_TTY_REQUIRED"
+      ],
+      "case": "non_tty_fail_closed_no_invoke",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "WRONG_CAPABILITY_ID"
+      ],
+      "case": "wrong_capability_id_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "CONFIRM_TOKEN_FAILURE",
+        "CONFIRM_TOKEN_INVALID",
+        "CONFIRM_TOKEN_MISSING",
+        "HIDDEN_CONFIRM_HANDOFF_UNREACHABLE"
+      ],
+      "case": "hidden_confirm_invalid_fail_closed",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "OWNER_GO_REQUIRED"
+      ],
+      "case": "invoke_before_gate_excluded",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "REAL_NETWORK_SIDE_EFFECTS_FORBIDDEN_IN_THIS_IMPLEMENTATION_CAPABILITY"
+      ],
+      "case": "path_alone_cannot_start",
+      "ok": true
+    },
+    {
+      "blockers": [
+        "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY"
+      ],
+      "case": "binding_remains_forbidden",
+      "ok": true
+    }
+  ],
+  "ok": true
+}

@@ -1,0 +1,41 @@
+{
+  "AUTHORITY": "NONE",
+  "BODY_BYTES": 31,
+  "BODY_SHA256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+  "BODY_UTF8_EXACT": "{\"code\":\"0\",\"data\":[],\"msg\":\"\"}",
+  "BODY_WAS_JSON_RESERIALIZED": false,
+  "DOCUMENT_CLASS": "P08_READ_ONLY_CLOSURE_RAW_EXCHANGE_V3",
+  "DOCUMENT_ROLE": "FORENSIC_RAW_NOT_CANONICAL_NOT_ADJUDICATION",
+  "ELAPSED_SECONDS": 0.16415095900083543,
+  "ENDPOINT": "/api/v5/trade/orders-history?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404&limit=100",
+  "ENDPOINT_PATH": "/api/v5/trade/orders-history",
+  "GET_ERROR": null,
+  "GET_INDEX": 2,
+  "GET_PURPOSE": "POSID_RECOVERY_FROM_ORDER_HISTORY_NOT_CURRENT_POSITION",
+  "GET_ROLE": "TARGET_ORDERS_HISTORY",
+  "HOST": "eea.okx.com",
+  "HTTP_STATUS": 200,
+  "METHOD": "GET",
+  "PARSE_ERROR": null,
+  "QUERY_PARAMETERS": {
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "instType": "FUTURES",
+    "limit": "100"
+  },
+  "REDIRECT_FOLLOWED": false,
+  "REDIRECT_STATUS": null,
+  "REQUEST_TIME_UTC": "2026-09-03T21:03:16Z",
+  "RESPONSE_HEADERS_SAFE": {
+    "CF-RAY": "a357b33eb9d95fc5-MUC",
+    "Content-Length": "31",
+    "Content-Type": "application/json;charset=UTF-8",
+    "Date": "Thu, 03 Sep 2026 21:03:16 GMT",
+    "Server": "cloudflare",
+    "cf-cache-status": "DYNAMIC",
+    "x-content-type-options": "nosniff"
+  },
+  "RESPONSE_TIME_UTC": "2026-09-03T21:03:16Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "SEND_ATTEMPTED": true,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true
+}

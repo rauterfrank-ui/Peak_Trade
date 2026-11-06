@@ -1,0 +1,14 @@
+{
+  "cycle_id": "owner-smoke-1989e7e4:cycle:7",
+  "detail": "",
+  "error_code": "",
+  "exportable": true,
+  "exported": true,
+  "family_id": "dynamic_scope",
+  "loader_ok": true,
+  "materialized": true,
+  "projection_path": "",
+  "skipped_reason": "",
+  "source_digest": "8700b1e4ee026018ef05816c61da6092458dfd5791aa036db1de1f47afbcdea9",
+  "target_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/dynamic_scope_state_v1.json"
+}

@@ -1,0 +1,27 @@
+{
+  "alpha_allowed": false,
+  "eligible_count": 2,
+  "excluded_count": 3,
+  "failure_codes": [],
+  "ok": true,
+  "persistence": {
+    "ok": true,
+    "payload_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+    "persistence_path": "docs/evidence/capability_2_1_governed_futures_universe_producer_v1/productive_universe/governed_futures_universe_snapshot_v1.json",
+    "reloaded_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+    "snapshot_id": "gfu_evidence_cap21_v1",
+    "verification": {
+      "manifest_path": "docs/evidence/capability_2_1_governed_futures_universe_producer_v1/productive_universe/MANIFEST.sha256",
+      "ok": true
+    }
+  },
+  "restart": {
+    "alpha_allowed_after_restart": false,
+    "expected_payload_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+    "failure_codes": [],
+    "identical_canonical_truth": true,
+    "loaded_payload_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+    "loaded_snapshot_id": "gfu_evidence_cap21_v1",
+    "ok": true
+  }
+}

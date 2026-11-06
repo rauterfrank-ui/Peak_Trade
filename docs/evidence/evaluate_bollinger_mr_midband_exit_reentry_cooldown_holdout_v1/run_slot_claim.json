@@ -1,0 +1,16 @@
+{
+  "authorization": {
+    "contract_digest": "a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+    "expected_head_sha": "4e766d0c47082a8c0342165e5b4c84c31110a405",
+    "panel_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+    "successor_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_HOLDOUT_V1"
+  },
+  "evaluation_run_id": "evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1",
+  "holdout_preregistration_digest": "a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d",
+  "holdout_run_count_before": 0,
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_HOLDOUT_V1",
+  "repo_head_sha": "4e766d0c47082a8c0342165e5b4c84c31110a405",
+  "runner_start_count_before": 0,
+  "schema_version": "bollinger_mr_holdout_v1_run_slot_claim.v1"
+}

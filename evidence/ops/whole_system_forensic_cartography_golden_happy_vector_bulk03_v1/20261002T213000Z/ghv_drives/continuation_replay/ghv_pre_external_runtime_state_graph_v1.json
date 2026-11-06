@@ -1,0 +1,376 @@
+{
+  "ALL_DISCOVERED_EDGES_ACCOUNTED_FOR": true,
+  "ALL_DISCOVERED_NODES_ACCOUNTED_FOR": true,
+  "CYCLE_GRAPH_ENUMERATION_COMPLETE": true,
+  "GHV_ROOT_CHANGE_EVENT_ID": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "GRAPH_EDGES_TOTAL": 27,
+  "GRAPH_NODES_EVALUATED": 8,
+  "GRAPH_NODES_NOT_EVALUABLE": 0,
+  "GRAPH_NODES_NOT_EVALUATED": 13,
+  "GRAPH_NODES_TOTAL": 21,
+  "GRAPH_NODES_UNKNOWN": 0,
+  "UNACCOUNTED_GRAPH_EDGES": 0,
+  "UNACCOUNTED_GRAPH_NODES": 0,
+  "dynamic_edges": [
+    {
+      "consumer_generation": "gen_7cf9f53df9071c6ef5d4efbb",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_s7_mv2_output",
+      "stage": "S7_MV2_FINAL_OUTPUT"
+    },
+    {
+      "consumer_generation": "gen_ba58c3dfeafcf64da4b0ecc0",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_root",
+      "stage": "GHV_ROOT_CHANGE_EVENT"
+    },
+    {
+      "consumer_generation": "gen_154776ac2ddde7fc7f043555",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_7cf9f53df9071c6ef5d4efbb",
+      "stage": "SYNTHETIC_OVERLAY_OUTPUT"
+    },
+    {
+      "consumer_generation": "gen_75a578a5706c6ca9ef5bdbc0",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_154776ac2ddde7fc7f043555",
+      "stage": "LIVE_29P_JOIN_OUTPUT"
+    },
+    {
+      "consumer_generation": "gen_a37e5748897491bf036ae0d4",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_75a578a5706c6ca9ef5bdbc0",
+      "stage": "CONTINUATION_SNAPSHOT_PERSISTED"
+    },
+    {
+      "consumer_generation": "gen_cbdd4ad60de41a07b11588f9",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_75a578a5706c6ca9ef5bdbc0",
+      "stage": "PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION"
+    },
+    {
+      "consumer_generation": "gen_5322d20f5c856fa9ce9516c0",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_75a578a5706c6ca9ef5bdbc0",
+      "stage": "VENUE_PLAN_INPUT"
+    },
+    {
+      "consumer_generation": "gen_6707de3f1efce3e1688cecf8",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_venue_plan_root",
+      "stage": "VENUE_PLAN_COMPOSE_EXECUTION_INTENT"
+    },
+    {
+      "consumer_generation": "gen_d24177e498855564dcc907cb",
+      "edge_kind": "LINEAGE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_generation": "gen_6707de3f1efce3e1688cecf8",
+      "stage": "VENUE_PLAN_BIND"
+    }
+  ],
+  "nodes": [
+    {
+      "disposition": "EVALUATED_PASS",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "node_id": "NODE:MV2_S7_REPLAY",
+      "producer_file": "invoke_join_v1.py",
+      "symbol": "compose_occupied_lane_mv2_dp_durable_cycle_v1"
+    },
+    {
+      "disposition": "NOT_EVALUATED_CONTROL_FLOW",
+      "execution_domain": "UNOBSERVED",
+      "node_id": "NODE:GHV_FORENSIC_OBSERVABILITY",
+      "producer_file": "productive_golden_happy_vector_forensic_observability_v1.py",
+      "symbol": "productive_golden_happy_vector_forensic_observability_v1"
+    },
+    {
+      "disposition": "EVALUATED_PASS",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "node_id": "NODE:GHV_SYNTHETIC_OVERLAY_CYCLE1",
+      "producer_file": "current_productive_synthetic_enter_forensic_v1.py",
+      "symbol": "maybe_apply_synthetic_enter_forensic_overlay_v1"
+    },
+    {
+      "disposition": "NOT_EVALUATED_CONTROL_FLOW",
+      "execution_domain": "UNOBSERVED",
+      "node_id": "NODE:T2_JOIN",
+      "producer_file": "invoke_join_v1.py",
+      "symbol": "governed_cycle_n1_consumer_join"
+    },
+    {
+      "disposition": "NOT_EVALUATED_CONTROL_FLOW",
+      "execution_domain": "UNOBSERVED",
+      "node_id": "NODE:SAFETY_KS",
+      "producer_file": "replay_execution_safety_contract_v1.py",
+      "symbol": "replay_execution_safety"
+    },
+    {
+      "disposition": "NOT_EVALUATED_CONTROL_FLOW",
+      "execution_domain": "UNOBSERVED",
+      "node_id": "NODE:SIZING_CAPITAL_SLOT",
+      "producer_file": "integrated_offline_replay",
+      "symbol": "capital_risk_sizing"
+    },
+    {
+      "disposition": "NOT_EVALUATED_CONTROL_FLOW",
+      "execution_domain": "UNOBSERVED",
+      "node_id": "NODE:OCCUPANCY",
+      "producer_file": "composition_root_v1.py",
+      "symbol": "occupancy_classify"
+    },
+    {
+      "disposition": "EVALUATED_PASS",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "node_id": "NODE:LIVE_29P_JOIN",
+      "producer_file": "current_productive_enter_live_29p_join_v1.py",
+      "symbol": "join_current_productive_enter_live_29p_before_venue_plan_v1"
+    },
+    {
+      "disposition": "EVALUATED_PASS",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "node_id": "NODE:PR7012_SAFETY_REPROJECTION",
+      "producer_file": "current_productive_synthetic_enter_forensic_v1.py",
+      "symbol": "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+    },
+    {
+      "disposition": "EVALUATED_PASS",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:PR7013_FINAL_REPROJECTION",
+      "producer_file": "current_productive_synthetic_enter_forensic_v1.py",
+      "symbol": "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+    },
+    {
+      "disposition": "EVALUATED_FAIL",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:COMPOSE_EXECUTION_INTENT",
+      "producer_file": "composition_root_v1.py",
+      "symbol": "compose_core_live_execution_intent_v1"
+    },
+    {
+      "disposition": "EVALUATED_FAIL",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:VENUE_PLAN_BIND",
+      "producer_file": "current_productive_venue_plan_v1.py",
+      "symbol": "try_bind_current_productive_venue_plan_v1"
+    },
+    {
+      "disposition": "NOT_EVALUATED_UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:PROTECTIVE_STOP",
+      "producer_file": "composition_root_v1.py",
+      "symbol": "protective_stop_derivation"
+    },
+    {
+      "disposition": "NOT_EVALUATED_UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:FRESH_PRETRADE",
+      "producer_file": "fresh_pretrade_runtime_get_v1.py",
+      "symbol": "fresh_pretrade_runtime_get_v1"
+    },
+    {
+      "disposition": "NOT_EVALUATED_UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:CREDENTIAL_PRIVATE_GET",
+      "producer_file": "current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py",
+      "symbol": "get_only_credential_transport_bind_v1"
+    },
+    {
+      "disposition": "NOT_EVALUATED_UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:AUTHENTICATED_PRIVATE_GET",
+      "producer_file": "full_core_productive_http_get_transport_v1.py",
+      "symbol": "FullCoreProductiveReadOnlyGetTransportV1"
+    },
+    {
+      "disposition": "NOT_EVALUATED_UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:LIVE_29P_29Q_CARRIER",
+      "producer_file": "current_productive_enter_live_29p_join_v1.py",
+      "symbol": "enter_live_29p_carrier"
+    },
+    {
+      "disposition": "NOT_EVALUATED_UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:EXECUTION_ELIGIBILITY",
+      "producer_file": "composition_root_v1.py",
+      "symbol": "execution_eligibility_v1"
+    },
+    {
+      "disposition": "NOT_EVALUATED_UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:ADMISSION",
+      "producer_file": "external_effect_gate_v1.py",
+      "symbol": "pre_external_admission_v1"
+    },
+    {
+      "disposition": "NOT_EVALUATED_UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "node_id": "NODE:PRE_EXTERNAL",
+      "producer_file": "composition_root_v1.py",
+      "symbol": "DISPOSITION_PRE_EXTERNAL_EFFECT"
+    },
+    {
+      "disposition": "EVALUATED_PASS",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "node_id": "NODE:CONTINUATION_SNAPSHOT",
+      "producer_file": "ghv_pre_external_runtime_flight_recorder_v1.py",
+      "symbol": "persist_continuation_snapshot_v1"
+    }
+  ],
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "schema_version": "ghv_pre_external_runtime_state_graph.v1",
+  "static_edges": [
+    {
+      "consumer_input": "decision_outcome",
+      "consumer_node": "NODE:GHV_SYNTHETIC_OVERLAY_CYCLE1",
+      "edge_kind": "DIRECT",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "decision_outcome",
+      "producer_node": "NODE:MV2_S7_REPLAY"
+    },
+    {
+      "consumer_input": "selected_side",
+      "consumer_node": "NODE:GHV_SYNTHETIC_OVERLAY_CYCLE1",
+      "edge_kind": "DIRECT",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "selected_side",
+      "producer_node": "NODE:MV2_S7_REPLAY"
+    },
+    {
+      "consumer_input": "decision_outcome",
+      "consumer_node": "NODE:LIVE_29P_JOIN",
+      "edge_kind": "OVERLAY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "decision_outcome",
+      "producer_node": "NODE:GHV_SYNTHETIC_OVERLAY_CYCLE1"
+    },
+    {
+      "consumer_input": "selected_side",
+      "consumer_node": "NODE:LIVE_29P_JOIN",
+      "edge_kind": "OVERLAY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "selected_side",
+      "producer_node": "NODE:GHV_SYNTHETIC_OVERLAY_CYCLE1"
+    },
+    {
+      "consumer_input": "replay_execution_safety",
+      "consumer_node": "NODE:SAFETY_KS",
+      "edge_kind": "SAFETY_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "replay_execution_safety",
+      "producer_node": "NODE:GHV_SYNTHETIC_OVERLAY_CYCLE1"
+    },
+    {
+      "consumer_input": "sizing_state",
+      "consumer_node": "NODE:SIZING_CAPITAL_SLOT",
+      "edge_kind": "DERIVED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "sizing_state",
+      "producer_node": "NODE:GHV_SYNTHETIC_OVERLAY_CYCLE1"
+    },
+    {
+      "consumer_input": "replay_execution_safety",
+      "consumer_node": "NODE:PR7012_SAFETY_REPROJECTION",
+      "edge_kind": "REBOUND",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "replay_execution_safety",
+      "producer_node": "NODE:LIVE_29P_JOIN"
+    },
+    {
+      "consumer_input": "decision_outcome",
+      "consumer_node": "NODE:PR7013_FINAL_REPROJECTION",
+      "edge_kind": "REBOUND",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "decision_outcome",
+      "producer_node": "NODE:PR7012_SAFETY_REPROJECTION"
+    },
+    {
+      "consumer_input": "decision_outcome",
+      "consumer_node": "NODE:COMPOSE_EXECUTION_INTENT",
+      "edge_kind": "DIRECT",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "decision_outcome",
+      "producer_node": "NODE:PR7013_FINAL_REPROJECTION"
+    },
+    {
+      "consumer_input": "decision_outcome",
+      "consumer_node": "NODE:VENUE_PLAN_BIND",
+      "edge_kind": "GATE_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "decision_outcome",
+      "producer_node": "NODE:PR7013_FINAL_REPROJECTION"
+    },
+    {
+      "consumer_input": "execution_intent",
+      "consumer_node": "NODE:VENUE_PLAN_BIND",
+      "edge_kind": "GATE_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "execution_intent",
+      "producer_node": "NODE:COMPOSE_EXECUTION_INTENT"
+    },
+    {
+      "consumer_input": "venue_plan",
+      "consumer_node": "NODE:PROTECTIVE_STOP",
+      "edge_kind": "CONTROL_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "venue_plan",
+      "producer_node": "NODE:VENUE_PLAN_BIND"
+    },
+    {
+      "consumer_input": "venue_plan",
+      "consumer_node": "NODE:FRESH_PRETRADE",
+      "edge_kind": "CONTROL_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "venue_plan",
+      "producer_node": "NODE:VENUE_PLAN_BIND"
+    },
+    {
+      "consumer_input": "fresh_pretrade_state",
+      "consumer_node": "NODE:CREDENTIAL_PRIVATE_GET",
+      "edge_kind": "SHARED_STATE",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "fresh_pretrade_state",
+      "producer_node": "NODE:FRESH_PRETRADE"
+    },
+    {
+      "consumer_input": "credential_handle_present",
+      "consumer_node": "NODE:AUTHENTICATED_PRIVATE_GET",
+      "edge_kind": "GATE_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "credential_handle_present",
+      "producer_node": "NODE:CREDENTIAL_PRIVATE_GET"
+    },
+    {
+      "consumer_input": "admission_state",
+      "consumer_node": "NODE:EXECUTION_ELIGIBILITY",
+      "edge_kind": "GATE_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "admission_state",
+      "producer_node": "NODE:VENUE_PLAN_BIND"
+    },
+    {
+      "consumer_input": "execution_eligibility",
+      "consumer_node": "NODE:ADMISSION",
+      "edge_kind": "GATE_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "execution_eligibility",
+      "producer_node": "NODE:EXECUTION_ELIGIBILITY"
+    },
+    {
+      "consumer_input": "pre_external_state",
+      "consumer_node": "NODE:PRE_EXTERNAL",
+      "edge_kind": "GATE_DEPENDENCY",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "producer_field": "pre_external_state",
+      "producer_node": "NODE:ADMISSION"
+    }
+  ]
+}

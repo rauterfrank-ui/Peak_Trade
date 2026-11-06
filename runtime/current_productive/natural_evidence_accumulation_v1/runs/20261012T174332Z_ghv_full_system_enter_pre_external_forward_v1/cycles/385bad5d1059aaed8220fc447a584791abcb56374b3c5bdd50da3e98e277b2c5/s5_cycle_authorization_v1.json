@@ -1,0 +1,16 @@
+{
+  "c1_venue_event_time": 1791827700.0,
+  "consume_instance_id": "385bad5d1059aaed8220fc447a584791abcb56374b3c5bdd50da3e98e277b2c5",
+  "continuous_owner_go": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1",
+  "cycle_index": 9,
+  "cycle_instance_id": "385bad5d1059aaed8220fc447a584791abcb56374b3c5bdd50da3e98e277b2c5",
+  "evidence_root": "runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T174332Z_ghv_full_system_enter_pre_external_forward_v1/cycles/385bad5d1059aaed8220fc447a584791abcb56374b3c5bdd50da3e98e277b2c5",
+  "logical_tokens": {
+    "EG": "OWNER_GO_S4A_EG_EXACTLY_ONE_RUNTIME_TRIGGER_V1",
+    "GET": "OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1",
+    "OCCUPANCY": "SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF",
+    "SEQUENCING": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1",
+    "T2": "OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1"
+  },
+  "post_owner_go_composed": "false"
+}

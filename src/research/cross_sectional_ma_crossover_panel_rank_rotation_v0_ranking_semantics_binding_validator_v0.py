@@ -1,0 +1,123 @@
+"""Fail-closed validator for MA-crossover panel rank-rotation ranking semantics binding v0."""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Mapping
+
+from src.research.cross_sectional_ma_crossover_panel_rank_rotation_v0_ranking_semantics_binding_v0 import (
+    DIRECTION_POLICY,
+    DIGEST_BINDING_KEYS,
+    EXTERNAL_BINDING_KEYS,
+    HYPOTHESIS_ID,
+    NUMERIC_BINDING_KEYS,
+    SCHEMA_VERSION,
+    SCORE_FAMILY_POLICY,
+    BindingFieldStatus,
+)
+
+PACKAGE_MARKER = "CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RANKING_SEMANTICS_BINDING_VALIDATOR_V0=true"
+
+POSITIVE_NUMERIC_KEYS = frozenset(
+    {
+        "fast_window",
+        "slow_window",
+        "rebalance_interval_bars",
+        "signal_lag_bars",
+        "min_eligible_members_for_rank",
+        "switch_entry_delay_epochs",
+        "max_bar_staleness_bars",
+        "max_active_instruments",
+        "entry_rank_threshold",
+        "hold_exit_rank_threshold",
+    }
+)
+
+
+class ValidationVerdict(str, Enum):
+    ACCEPTED_INCOMPLETE = "ACCEPTED_INCOMPLETE"
+    ACCEPTED_COMPLETE = "ACCEPTED_COMPLETE"
+    REJECTED = "REJECTED"
+
+
+@dataclass(frozen=True)
+class MaCrossoverPanelRankingSemanticsBindingValidationResult:
+    verdict: ValidationVerdict
+    valid: bool
+    fail_reasons: tuple[str, ...]
+    binding_status: Mapping[str, Any]
+
+
+def _is_bound(field: Mapping[str, Any]) -> bool:
+    return field.get("status") == BindingFieldStatus.BOUND.value
+
+
+def validate_ma_crossover_panel_rank_rotation_ranking_semantics_binding_v0(
+    binding: Mapping[str, Any],
+) -> MaCrossoverPanelRankingSemanticsBindingValidationResult:
+    fail_reasons: list[str] = []
+
+    if binding.get("schema_version") != SCHEMA_VERSION:
+        fail_reasons.append("INVALID_SCHEMA_VERSION")
+    if binding.get("hypothesis_id") != HYPOTHESIS_ID:
+        fail_reasons.append("HYPOTHESIS_ID_MISMATCH")
+
+    policy = binding.get("policy_classes", {})
+    if policy.get("score_family_policy") != SCORE_FAMILY_POLICY:
+        fail_reasons.append("SCORE_FAMILY_POLICY_MISMATCH")
+    if policy.get("direction_policy") != DIRECTION_POLICY:
+        fail_reasons.append("DIRECTION_POLICY_MISMATCH")
+
+    constraints = binding.get("system_constraints", {})
+    if constraints.get("signal_logic_change_allowed") is not False:
+        fail_reasons.append("SIGNAL_LOGIC_CHANGE_MUST_BE_FORBIDDEN")
+    if constraints.get("post_result_threshold_change_forbidden") is not True:
+        fail_reasons.append("POST_RESULT_THRESHOLD_CHANGE_MUST_BE_FORBIDDEN")
+
+    numeric = binding.get("numeric_bindings", {})
+    for key in NUMERIC_BINDING_KEYS:
+        field = numeric.get(key, {})
+        if not _is_bound(field):
+            fail_reasons.append(f"NUMERIC_BINDING_UNBOUND:{key}")
+            continue
+        if key in POSITIVE_NUMERIC_KEYS:
+            value = field.get("value")
+            if not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+                fail_reasons.append(f"NON_POSITIVE_NUMERIC:{key}")
+
+    fast = numeric.get("fast_window", {}).get("value")
+    slow = numeric.get("slow_window", {}).get("value")
+    if isinstance(fast, (int, float)) and isinstance(slow, (int, float)) and fast >= slow:
+        fail_reasons.append("FAST_WINDOW_MUST_BE_LT_SLOW_WINDOW")
+
+    external = binding.get("external_bindings", {})
+    for key in EXTERNAL_BINDING_KEYS:
+        if not _is_bound(external.get(key, {})):
+            fail_reasons.append(f"EXTERNAL_BINDING_UNBOUND:{key}")
+
+    digest = binding.get("digest_bindings", {})
+    for key in DIGEST_BINDING_KEYS:
+        if not _is_bound(digest.get(key, {})):
+            fail_reasons.append(f"DIGEST_BINDING_UNBOUND:{key}")
+
+    status = binding.get("binding_status", {})
+    overall = status.get("overall_binding_status")
+    all_bound = not fail_reasons
+    if all_bound and overall != "COMPLETE":
+        fail_reasons.append("INCOMPLETE_BINDING_MARKED_INCOMPLETE")
+
+    if fail_reasons:
+        return MaCrossoverPanelRankingSemanticsBindingValidationResult(
+            verdict=ValidationVerdict.REJECTED,
+            valid=False,
+            fail_reasons=tuple(fail_reasons),
+            binding_status=status,
+        )
+    return MaCrossoverPanelRankingSemanticsBindingValidationResult(
+        verdict=ValidationVerdict.ACCEPTED_COMPLETE,
+        valid=True,
+        fail_reasons=(),
+        binding_status=status,
+    )

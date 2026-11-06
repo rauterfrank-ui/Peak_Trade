@@ -1,0 +1,51 @@
+{
+  "authority_effect": "NONE",
+  "bridge_contract_id": "CURRENT_OFFLINE_MD_BRIDGE_V1",
+  "current_offline_md_semantics_v1": {
+    "bar_construction_policy": "utc_close_ohlcv_v1",
+    "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+    "contract_type": "um_xperp",
+    "funding_input_semantics": "bar_funding_rate",
+    "market_type": "linear_perpetual",
+    "missing_data_policy": "FAIL_CLOSED_ON_REQUIRED_FIELD_MISSING",
+    "normalization_policy": "NONE",
+    "price_basis": "mark_price",
+    "spread_l1_assumptions": "OBSERVED_HISTORICAL_L1",
+    "timeframe": "1m",
+    "timestamp_semantics": "utc_bar_close_exclusive_end",
+    "venue": "okx_eea",
+    "venue_native_id": "ETH-USD_UM_XPERP-310404",
+    "volume_semantics": "base_volume",
+    "warmup_policy": "NO_WARMUP_SKIP"
+  },
+  "dataset_content_digest_sha256": "b277fd623676a525c29b9eb155afc8c9010681814ceafb2d7627f47b9a232576",
+  "dataset_version": "v1",
+  "instrument_mapping_digest_sha256": "60be9861750facbfad8758254a2f76c0cfe78d54459a3bc187d49b1401fcd8e8",
+  "offline_dataset_owner": "backtest.admissible_versioned_futures_dataset_v1",
+  "offline_dataset_semantics_v1": {
+    "bar_construction_policy": "utc_close_ohlcv_v1",
+    "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+    "contract_type": "um_xperp",
+    "funding_input_semantics": "bar_funding_rate",
+    "market_type": "linear_perpetual",
+    "missing_data_policy": "FAIL_CLOSED_ON_REQUIRED_FIELD_MISSING",
+    "normalization_policy": "NONE",
+    "price_basis": "mark_price",
+    "spread_l1_assumptions": "OBSERVED_HISTORICAL_L1",
+    "timeframe": "1m",
+    "timestamp_semantics": "utc_bar_close_exclusive_end",
+    "venue": "okx_eea",
+    "venue_native_id": "ETH-USD_UM_XPERP-310404",
+    "volume_semantics": "base_volume",
+    "warmup_policy": "NO_WARMUP_SKIP"
+  },
+  "schema_id": "ops.current_offline_md_bridge.v1",
+  "schema_version": "v1",
+  "time_range_coverage_v1": {
+    "dataset_end_time": "2026-01-03T00:00:00Z",
+    "dataset_start_time": "2026-01-01T00:00:00Z",
+    "required_end_time": "2026-01-02T00:00:00Z",
+    "required_start_time": "2026-01-01T00:00:00Z"
+  },
+  "verifier_id": "ops.current_offline_md_bridge_verifier.v1"
+}

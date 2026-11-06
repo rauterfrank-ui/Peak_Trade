@@ -1,0 +1,20 @@
+{
+  "name": "Crypto Winter 2018",
+  "date": "2018-01-01",
+  "description": "Post-2017 bubble burst. Bitcoin fell from $20k to $3k over the year. Altcoins crashed 80-95%. Long grinding bear market with multiple lower highs and lower lows.",
+  "asset_shocks": {
+    "BTC-EUR": -0.85,
+    "BTC-USDT": -0.85,
+    "ETH-EUR": -0.90,
+    "ETH-USDT": -0.90,
+    "XRP-EUR": -0.92,
+    "XRP-USDT": -0.92,
+    "LTC-EUR": -0.88,
+    "LTC-USDT": -0.88,
+    "BCH-EUR": -0.93,
+    "BCH-USDT": -0.93,
+    "default": -0.85
+  },
+  "probability": "moderate",
+  "historical_frequency": "post_bubble"
+}

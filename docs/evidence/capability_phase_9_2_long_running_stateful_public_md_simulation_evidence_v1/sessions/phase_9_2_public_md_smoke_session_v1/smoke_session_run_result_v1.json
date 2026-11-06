@@ -1,0 +1,37 @@
+{
+  "blockers": [],
+  "network_opened": true,
+  "notes": [
+    "CAPABILITY_ID=INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1",
+    "CONSUMPTION_BEFORE_NETWORK",
+    "CANONICAL_AUTHORIZATION_ARTIFACT_V2_ONLY",
+    "FIXTURES_REJECTED",
+    "HOST=eea.okx.com",
+    "REAL_PUBLIC_MD_TRANSPORT_BOUND",
+    "NO_REAL_NETWORK_IN_DEFAULT_TESTS",
+    "AUTHORIZATION_IS_NOT_STANDALONE_START",
+    "EXECUTION_CLASS=ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION"
+  ],
+  "ok": true,
+  "session_result": {
+    "blockers": [],
+    "consumed": true,
+    "credentials_used": false,
+    "cycle_count": 80,
+    "economic_validity_pass": false,
+    "evidence_root": "docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1/wallclock_run",
+    "incomplete": false,
+    "network_opened": true,
+    "notes": [
+      "NO_REAL_NETWORK_IN_DEFAULT_TESTS",
+      "AUTHORIZATION_IS_NOT_STANDALONE_START",
+      "EXECUTION_CLASS=ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION"
+    ],
+    "orders_submitted": false,
+    "paper_execution": false,
+    "promotion_pass": false,
+    "session_id": "phase_9_2_public_md_smoke_session_v1",
+    "state": "TIMED_OUT",
+    "terminal_verdict": "PASS"
+  }
+}

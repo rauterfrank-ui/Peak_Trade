@@ -1,0 +1,26 @@
+[
+  {
+    "classification": "EVIDENCE_ONLY_STATE",
+    "field": "long_running_campaign_evidence",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_6_long_running_autonomous_testnet_evidence_v1"
+  },
+  {
+    "classification": "EVIDENCE_ONLY_STATE",
+    "field": "testnet_evidence_closure",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_6_long_running_autonomous_testnet_evidence_v1"
+  },
+  {
+    "classification": "EVIDENCE_ONLY_STATE",
+    "field": "observability_audit_evidence",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_6_long_running_autonomous_testnet_evidence_v1"
+  },
+  {
+    "classification": "FORBIDDEN_TO_PERSIST",
+    "field": "plaintext_credentials",
+    "mutable_by_adapter": "false",
+    "owner": "none"
+  }
+]

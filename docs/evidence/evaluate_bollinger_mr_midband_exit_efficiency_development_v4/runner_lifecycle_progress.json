@@ -1,0 +1,19 @@
+{
+  "auto_rerun_allowed": false,
+  "auto_resume_allowed": false,
+  "completed": false,
+  "exits_forced_by_gate": 0,
+  "last_confirmed_member_id": "1INCH-USDT-SWAP",
+  "last_confirmed_member_index": 1,
+  "last_confirmed_phase": "baseline",
+  "member_id": "1INCH-USDT-SWAP",
+  "member_index": 1,
+  "members_total": 46,
+  "phase": "baseline",
+  "pid": 70475,
+  "progress_confirmed": true,
+  "run_id": "evaluate_bollinger_mr_midband_exit_efficiency_development_v4",
+  "schema_version": "evaluation_runner_lifecycle_observability.v1",
+  "trades": 3,
+  "updated_at_utc": "2026-07-21T16:29:28Z"
+}

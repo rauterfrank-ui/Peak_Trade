@@ -1,0 +1,22 @@
+Timestamp: 20260208-151147Z
+HEAD: b5169562 (main)
+
+Last 5 commits:
+b5169562 docs: add new listings crawler runbook (#1237)
+769d36f2 ai: add LayerEnvelope boundary object and enforce tooling/learnable surfaces at L3 boundary (#1236)
+4b7a775f ai: enforce learnable surfaces gate at L3 runner input boundary (fail… (#1235)
+a4e3afac governance: add envelope learnable surfaces validator (deny-by-default) (#1234)
+2b5957cd ai: add L2->L3 handoff contract tests (pointer-only + learnable surfaces gate) (#1233)
+
+Working tree:
+
+Runbook file:
+-rw-r--r--@ 1 frnkhrz  staff  9945 Feb  8 16:09 docs/ops/runbooks/new_listings_crawler_runbook.md
+
+Token-policy scan (raw out/ should be empty):
+
+Token-policy scan (encoded out&#47; expected):
+50:**Default path:** `out&#47;research&#47;new_listings&#47;new_listings.sqlite`
+68:**Path:** `out&#47;research&#47;new_listings&#47;events.jsonl` (append-only)
+114:- [ ] Create `out&#47;research&#47;new_listings&#47;` and add to .gitignore (or use existing research out layout).
+175:# python -m research.new_listings.replay_events --path out&#47;research&#47;new_listings&#47;events.jsonl --from-ts ...

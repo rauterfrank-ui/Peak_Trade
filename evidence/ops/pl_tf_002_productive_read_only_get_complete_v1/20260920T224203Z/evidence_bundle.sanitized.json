@@ -1,0 +1,117 @@
+{
+  "EVIDENCE_PROVENANCE": {
+    "evidence_class": "PRODUCTIVE_VENUE_EVIDENCE",
+    "expected_credential_uid": "856964404452495999",
+    "fixture_or_injected": false,
+    "freshness_max_age_ms": 300000,
+    "historical_reuse": false,
+    "observed_at_unix_ms": 1789944123105,
+    "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+    "venue_live_contact": true
+  },
+  "F1_PRODUCTIVE_VENUE_GET": {
+    "items": {
+      "ACCOUNT_MODE": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      },
+      "AVAILABLE_MARGIN": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      },
+      "INSTRUMENT_STATE": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      },
+      "LEVERAGE": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      },
+      "MARGIN_MODE": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      },
+      "MAX_AVAILABLE": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      },
+      "MAX_SIZE": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      },
+      "POS_MODE": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      },
+      "PRICE_BAND": {
+        "get_performed": true,
+        "method": "GET",
+        "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+        "venue_live_contact": true
+      }
+    }
+  },
+  "F2_NE_TF_001": {
+    "endpoint_path": "/api/v5/account/config",
+    "get_performed": true,
+    "http_method": "GET",
+    "raw_venue_response": {
+      "code": "0",
+      "data": [
+        {
+          "acctLv": "2",
+          "acctStpMode": "cancel_maker",
+          "autoLoan": false,
+          "ctIsoMode": "automatic",
+          "enableSpotBorrow": false,
+          "feeType": "0",
+          "greeksType": "PA",
+          "ip": "",
+          "kycLv": "2",
+          "label": "Peak_Trade-OKX-EEA-Productive-K1-v3",
+          "level": "Lv1",
+          "levelTmp": "",
+          "liquidationGear": "-1",
+          "mainUid": "856964404452495999",
+          "mgnIsoMode": "auto_transfers_ccy",
+          "opAuth": "0",
+          "perm": "read_only",
+          "posMode": "net_mode",
+          "roleType": "0",
+          "settleCcy": "USDC",
+          "settleCcyList": [
+            "USDC",
+            "USD",
+            "USDG"
+          ],
+          "spotBorrowAutoRepay": false,
+          "spotOffsetType": "",
+          "spotRoleType": "0",
+          "spotTraderInsts": [],
+          "stgyType": "0",
+          "traderInsts": [],
+          "type": "0",
+          "uid": "856964404452495999"
+        }
+      ],
+      "msg": ""
+    },
+    "task_id": "NE-TF-001"
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "authorization": {
+    "authorize_token_valid": true,
+    "authorized": true,
+    "entry_point_binding_authorized": true,
+    "program_development_evaluation_authorized": true,
+    "reason_codes": [],
+    "repo_development_evaluation_authorized": true
+  },
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_run_limit": 1,
+  "evaluation_executed": true,
+  "evidence_surface": {
+    "config_digest": "087b1769caa1b4b5c527aa31abb7db143a0c7d225d606f76ea1f02d7d8c16d98",
+    "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+    "default_lookback_n": 48,
+    "default_rebalance_interval_bars": 8,
+    "evaluation_executed": true,
+    "fees": 9573.417386082243,
+    "gates": {
+      "all_pass": false,
+      "all_segments_evaluable": {
+        "gate_id": "ALL_SEGMENTS_EVALUABLE",
+        "observed": 4,
+        "passed": true,
+        "reason_code": null,
+        "threshold": 4
+      },
+      "canonical_cost": {
+        "gate_id": "CANONICAL_COST",
+        "observed": {
+          "canonical_cost_multiplier": 1.0,
+          "net_expectancy": 5.4659254362919505,
+          "net_profit_factor": 1.039277340521052,
+          "worst1_abs_net_share": 0.03538405276271822
+        },
+        "passed": false,
+        "reason_code": "NET_PROFIT_FACTOR_BELOW_THRESHOLD",
+        "threshold": {
+          "minimum_net_expectancy": 0.0,
+          "net_profit_factor_min": 1.3,
+          "single_trade_dominance_limit": 0.5
+        }
+      },
+      "cost_stress": {
+        "gate_id": "COST_STRESS",
+        "observed": 0.9855865251588035,
+        "passed": false,
+        "reason_code": "COST_STRESS_NOT_SURVIVED",
+        "threshold": 1.0
+      },
+      "gross_edge": {
+        "gate_id": "GROSS_EDGE",
+        "observed": {
+          "gross_pnl": 13417.311818281594,
+          "gross_profit_factor": 1.1449101753919395
+        },
+        "passed": true,
+        "reason_code": null,
+        "threshold": {
+          "gross_pnl_gt": 0.0,
+          "gross_profit_factor_min": 1.0
+        }
+      },
+      "max_drawdown": {
+        "gate_id": "MAX_DRAWDOWN",
+        "observed": -0.9174563849679119,
+        "passed": false,
+        "reason_code": "MAX_DRAWDOWN_BREACH",
+        "threshold": 0.25
+      },
+      "sample_sufficiency": {
+        "gate_id": "SAMPLE_SUFFICIENCY",
+        "observed": 1317,
+        "passed": true,
+        "reason_code": null,
+        "threshold": 30
+      },
+      "time_segment_robustness": {
+        "gate_id": "TIME_SEGMENT_ROBUSTNESS",
+        "observed": {
+          "pass_ratio": 0.0,
+          "passing_segments": 0
+        },
+        "passed": false,
+        "reason_code": "TIME_SEGMENT_ROBUSTNESS_FAIL",
+        "threshold": 0.5
+      },
+      "trade_sample": {
+        "gate_id": "TRADE_SAMPLE",
+        "observed": 705,
+        "passed": true,
+        "reason_code": null,
+        "threshold": 50
+      }
+    },
+    "gross_profit_factor": 1.1449101753919395,
+    "gross_return": -0.5729522953882874,
+    "holdout_accessed": false,
+    "lookback_n": 48,
+    "max_drawdown": -0.9174563849679119,
+    "net_profit_factor": 1.039277340521052,
+    "net_return": -0.5729522953882873,
+    "passing_segments": 0,
+    "rebalance_interval_bars": 8,
+    "runner_started": true,
+    "schema_version": "evaluate_cross_sectional_path_efficiency_continuation_development_summary.v1",
+    "segment_boundaries": [
+      {
+        "range": "2022-06-01T04:00:00Z..2022-09-19T11:00:00Z",
+        "result": "FAIL",
+        "segment_id": "TIME_SEGMENT_Q1",
+        "valid_rebalance_observations": 324
+      },
+      {
+        "range": "2022-09-19T11:00:00Z..2023-01-07T17:00:00Z",
+        "result": "FAIL",
+        "segment_id": "TIME_SEGMENT_Q2",
+        "valid_rebalance_observations": 331
+      },
+      {
+        "range": "2023-01-07T17:00:00Z..2023-04-27T23:00:00Z",
+        "result": "FAIL",
+        "segment_id": "TIME_SEGMENT_Q3",
+        "valid_rebalance_observations": 331
+      },
+      {
+        "range": "2023-04-27T23:00:00Z..2023-08-16T05:00:00Z",
+        "result": "FAIL",
+        "segment_id": "TIME_SEGMENT_Q4",
+        "valid_rebalance_observations": 331
+      }
+    ],
+    "segment_results": [
+      {
+        "result": "FAIL",
+        "segment_id": "TIME_SEGMENT_Q1"
+      },
+      {
+        "result": "FAIL",
+        "segment_id": "TIME_SEGMENT_Q2"
+      },
+      {
+        "result": "FAIL",
+        "segment_id": "TIME_SEGMENT_Q3"
+      },
+      {
+        "result": "FAIL",
+        "segment_id": "TIME_SEGMENT_Q4"
+      }
+    ],
+    "sharpe": 0.5173842449427937,
+    "slippage": 4786.7086930411215,
+    "strategy_params_digest": "b8f21f66870a03902dacaedc118e68d242098759d9d7752960a7c9c59493b381",
+    "time_segment_count": 4,
+    "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+    "time_segment_robustness_pass_ratio": 0.0,
+    "total_cost_drag": 14360.126079123365,
+    "trade_count": 705,
+    "turnover": 705.0,
+    "valid_rebalance_observations": 1317
+  },
+  "executable_path_reached": true,
+  "gates": {
+    "all_pass": false,
+    "all_segments_evaluable": {
+      "gate_id": "ALL_SEGMENTS_EVALUABLE",
+      "observed": 4,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 4
+    },
+    "canonical_cost": {
+      "gate_id": "CANONICAL_COST",
+      "observed": {
+        "canonical_cost_multiplier": 1.0,
+        "net_expectancy": 5.4659254362919505,
+        "net_profit_factor": 1.039277340521052,
+        "worst1_abs_net_share": 0.03538405276271822
+      },
+      "passed": false,
+      "reason_code": "NET_PROFIT_FACTOR_BELOW_THRESHOLD",
+      "threshold": {
+        "minimum_net_expectancy": 0.0,
+        "net_profit_factor_min": 1.3,
+        "single_trade_dominance_limit": 0.5
+      }
+    },
+    "cost_stress": {
+      "gate_id": "COST_STRESS",
+      "observed": 0.9855865251588035,
+      "passed": false,
+      "reason_code": "COST_STRESS_NOT_SURVIVED",
+      "threshold": 1.0
+    },
+    "gross_edge": {
+      "gate_id": "GROSS_EDGE",
+      "observed": {
+        "gross_pnl": 13417.311818281594,
+        "gross_profit_factor": 1.1449101753919395
+      },
+      "passed": true,
+      "reason_code": null,
+      "threshold": {
+        "gross_pnl_gt": 0.0,
+        "gross_profit_factor_min": 1.0
+      }
+    },
+    "max_drawdown": {
+      "gate_id": "MAX_DRAWDOWN",
+      "observed": -0.9174563849679119,
+      "passed": false,
+      "reason_code": "MAX_DRAWDOWN_BREACH",
+      "threshold": 0.25
+    },
+    "sample_sufficiency": {
+      "gate_id": "SAMPLE_SUFFICIENCY",
+      "observed": 1317,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 30
+    },
+    "time_segment_robustness": {
+      "gate_id": "TIME_SEGMENT_ROBUSTNESS",
+      "observed": {
+        "pass_ratio": 0.0,
+        "passing_segments": 0
+      },
+      "passed": false,
+      "reason_code": "TIME_SEGMENT_ROBUSTNESS_FAIL",
+      "threshold": 0.5
+    },
+    "trade_sample": {
+      "gate_id": "TRADE_SAMPLE",
+      "observed": 705,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 50
+    }
+  },
+  "holdout_accessed": false,
+  "minimum_rebalance_observations": 30,
+  "mode": "evaluate",
+  "reason": null,
+  "registry": {
+    "config_digest": "087b1769caa1b4b5c527aa31abb7db143a0c7d225d606f76ea1f02d7d8c16d98",
+    "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+    "development_evaluation_authorized": true,
+    "evaluation_executed": true,
+    "evaluation_run_count": 1,
+    "evaluation_run_id": "evaluate_cross_sectional_path_efficiency_continuation_development_v1",
+    "evidence_ref": "docs/evidence/evaluate_cross_sectional_path_efficiency_continuation_development_v1/",
+    "holdout_accessed": false,
+    "hypothesis_id": "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+    "runner_start_count": 1,
+    "runner_started": true,
+    "schema_version": "evaluate_cross_sectional_path_efficiency_continuation_registry.v1",
+    "strategy_identity": "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1",
+    "strategy_params_digest": "b8f21f66870a03902dacaedc118e68d242098759d9d7752960a7c9c59493b381",
+    "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
+  },
+  "run_counters": {
+    "contract_development_run_count": 1,
+    "contract_runner_start_count": 1,
+    "program_development_run_count": 1,
+    "program_runner_start_count": 1
+  },
+  "runner_started": true,
+  "status": "EVALUATION_COMPLETE",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL",
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+  "time_segment_robustness_pass_ratio": 0.5
+}

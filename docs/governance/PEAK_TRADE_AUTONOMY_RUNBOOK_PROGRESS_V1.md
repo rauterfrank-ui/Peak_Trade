@@ -1,0 +1,9016 @@
+### WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1
+
+```text
+DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
+```
+
+- Scope: `WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1`
+- Decision: `IMPLEMENT_WALLCLOCK_DECISION_TO_SIMULATED_ECONOMICS_BRIDGE_NOT_ORDER_UNLOCK`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_SESSION_NO_PROMOTION`
+- Closes alias: `INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1`
+- Owner: `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1`
+- Contract: `docs/ops/runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1.md`
+- Surfaces: feature/regime pipeline; sole Master-V2 integrated replay binding; intended-action mapper; session-persistent portfolio; reconstruction verifier; wallclock runtime binding (default enabled)
+- Flags: Orders/Testnet/Live/Paper/Economic Validity/Promotion unchanged false; live runtime-bridge order authority remains BOUND_NOT_ACTIVATED
+- Explicit non-actions: no automatic session grant; no private APIs/credentials; no Promotion; no second decision authority
+
+
+### INTEGRATED_PAPER_SHADOW_PRODUCTIVE_6H_TECHNICAL_RUNTIME_EVIDENCE_CLOSEOUT_V1
+
+- Scope: productive 6h Integrated Paper-Shadow Observation session evidence closeout
+- Session: `pso_wallclock_prod_69ffce43e0bba94f176d3aa22db7cf17`
+- Baseline SHA: `4d0ad446b00442698ea4a7a385e1f1d9faa19ed2`
+- Closeout verdict: `TECHNICAL_PASS_ECONOMIC_EVIDENCE_NOT_PRODUCED`
+- Primary evidence class: `PRIMARY_TECHNICAL_RUNTIME_EVIDENCE`
+- Economic evidence class: `INCOMPLETE_STUB_ONLY`
+- Durable evidence root: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops/integrated_paper_shadow_productive_6h_20260729T205830Z`
+- Closeout package: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/integrated_paper_shadow_productive_6h_technical_evidence_closeout_20260730T084108Z`
+- Repo pointer: `RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)&#47;20260730T084108Z&#47;`
+- Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`
+- Technical facts: 6h OKX public MD observation; 10243 cycles; 3415 heartbeats; 0 data gaps; terminal `PASS` via `PLANNED_DURATION_REACHED`; no Orders/private API/Paper/Testnet/Live
+- Flags: `TECHNICAL_RUNTIME_EVIDENCE=PASS`; `ECONOMIC_EVIDENCE_COMPLETE=false`; `ECONOMIC_VALIDITY_PASS=false`; `STRATEGY_VALIDITY_PASS=false`; `PROMOTION_ELIGIBLE=false`; `signals_generated=0`; `hypothetical_trades=0`; `all_decisions_hold=true`
+- Explicit non-claims: not Economic/Strategy/Promotion PASS; HOLD/quantity=0 is not a trade; performance KPIs not produced
+- Next capability: `INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1`
+
+
+### INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1
+
+- Scope: `INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1`
+- Decision: `IMPLEMENT_PRODUCTIVE_ISSUANCE_AND_REAL_PUBLIC_MD_RUN_NOT_AUTO_SESSION`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_AUTOMATIC_SESSION`
+- Owner: `ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1`
+- Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1.md`
+- Closes blockers from PR #5592: missing productive issuance; `REAL_NETWORK_CLI_PATH_NOT_ENABLED_IN_THIS_PR`; no default real HTTP fetcher
+- Surfaces: productive prereg/confirm-token/GO/authorization producers; verifiers; real HTTPS EEA public MD fetcher; productive `run` with consumption-before-network
+- Flags: merge does not authorize a session; fixtures rejected for productive run; env flag alone insufficient; Orders/Testnet/Live/Paper/Economic Validity unchanged false
+- Explicit non-actions: no real session in this PR; no real network in CI/tests; no Notion; no authority mutation
+
+
+### INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1
+
+- Scope: `INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1`
+- Decision: `IMPLEMENT_TECHNICAL_WALLCLOCK_MD_OBSERVE_CAPABILITY_NOT_PRODUCTIVE_AUTH`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_PRODUCTIVE_SESSION`
+- Owner: `ops.integrated_paper_shadow_observation_wallclock_session_execution_v1`
+- Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md`
+- Transport: REST-only `https://eea.okx.com`; instrument `ETH-USD_UM_XPERP-310404`
+- Scopes: `okx_eea_futures_public_md_observe_v1` / `paper_shadow_observation_wallclock_v1`
+- Flags: no productive GO/session in this PR; Orders/Testnet/Live/Paper/Economic Validity unchanged false
+- Explicit non-actions: no real 6h session in this PR; no real network in CI; no Notion
+- Successor: productive issuance + real MD run under `INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1`
+
+
+### PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1
+
+- Scope: `PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1`
+- Decision: `IMPLEMENT_SCOPED_OPERATOR_GO_AND_SESSION_PREREGISTRATION_NOT_EXECUTION`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_SESSION_EXECUTION`
+- Owner: `ops.paper_shadow_observation_operator_go_session_preregistration_v1`
+- Contract: `docs/ops/runbooks/PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1.md`
+- Surfaces: preregistration contract; scoped Operator-GO; confirm-token; enabled/armed state machine; authorization readiness producer; authorization artifact; verifier; consumption/revocation contracts; discovery wired into observation readiness
+- Flags: `PAPER_SHADOW_OBSERVATION_AUTHORIZED=false` (repo default); `ORDERS_AUTHORIZED=false`; `TESTNET_AUTHORIZED=false`; `LIVE_AUTHORIZED=false`; `ECONOMIC_VALIDITY_PASS=false`; `SESSION_EXECUTED=false`
+- Explicit non-actions: no wallclock session; no OKX/network; no credentials; no Orders/Testnet/Live; no Runtime-Bridge activation; no productive GO checked in
+- Epistemology: Readiness ≠ Authorization; Authorization ≠ Execution; Wallclock market-data outside this capability
+
+
+### INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1
+
+- Scope: `INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1`
+- Decision: `IMPLEMENT_CANONICAL_PAPER_SHADOW_OBSERVATION_PATH_NOT_AUTHORIZED`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_SESSION_NO_OPERATOR_GO`
+- Owner: `ops.integrated_paper_shadow_observation_session_v1`
+- Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md`
+- Surfaces: observation entrypoint; simulated portfolio economics; readiness producer; lifecycle; OKX Futures market-data policy; durable evidence; bundle verifier
+- Flags: `PAPER_SHADOW_OBSERVATION_AUTHORIZED=false`; `ORDERS_AUTHORIZED=false`; `TESTNET_AUTHORIZED=false`; `LIVE_AUTHORIZED=false`; `ECONOMIC_VALIDITY_PASS=false`; `WALLCLOCK_SESSION_EXECUTION_ALLOWED=false`
+- Explicit non-actions: no Operator-GO grant as productive default; no wallclock session; no scheduler/daemon start; no network/credentials; no Testnet/Live/Orders; no Runtime-Bridge activation
+- Stale contradiction reconciliation: Shadow-Prep OPEN_BLOCKERS; Runtime-Bridge integrated economic bundle gate; Mindestkontrakt activation-absence wording
+- Successor binding: Operator-GO / Session-Preregistration surfaces live under `PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1`
+
+
+### INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1
+
+- Scope: `INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1`
+- Decision: `RECONCILE_SYSTEM_CENTERED_ECONOMIC_VALIDITY_AND_PAPER_SHADOW_LADDER`
+- Authorization: `GO_CLASS=GOVERNANCE_CAPABILITY_RECONCILIATION_ONLY`
+- Root cause: `SEQUENCING_AND_EVIDENCE_EPISTEMOLOGY_DRIFT`
+- Old ladder: `INTEGRATED_OFFLINE_REPLAY → ECONOMIC_VALIDITY_OFFLINE_GATE → PROMOTION&#47;29R&#47;29T&#47;29U`
+- New ladder: `FULL_CANONICAL_SYSTEM_PARITY → INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_PASS → PAPER_SHADOW_OBSERVATION_READINESS → OPERATOR_GO → INTEGRATED_PAPER_SHADOW_OBSERVATION → INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED → ECONOMIC_VALIDITY_PASS → PROMOTION → TESTNET → LIVE`
+- Legacy token: `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` = `LEGACY_OFFLINE_SUB_EVIDENCE_ONLY` (does not alone block Paper-Shadow readiness; does not alone set system ECONOMIC_VALIDITY_PASS)
+- Owner: `ops.integrated_paper_shadow_economic_validity_pipeline_v1`
+- Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md`
+- Flags: `PAPER_SHADOW_OBSERVATION_AUTHORIZED=false`; `ECONOMIC_VALIDITY_PASS=false`; `TESTNET_AUTHORIZED=false`; `LIVE_AUTHORIZED=false`; `ORDERS_AUTHORIZED=false`
+- Explicit non-actions: no runtime; no session; no Paper-Shadow authorization; no Testnet/Live/Orders; no merge; no historical negative-evidence rebadge
+
+
+### MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1
+
+- Scope: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1`
+- Decision: `CLOSE_LANE_NO_FURTHER_RESEARCH`
+- Authorization: `GO_MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1`
+- Program: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1` (`PROGRAM_CLOSED_NO_FURTHER_RESEARCH`)
+- Lane backlog: `LANE_CLOSED_NO_FURTHER_RESEARCH` (preregistered=0, open_unpreregistered=0, terminal=1)
+- Terminal hypothesis: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1` (`TERMINAL_FAIL` / `FAIL_CLOSED_NO_RETRY`)
+- Preserved Development truth (PR #5560): `DEVELOPMENT_FAIL`; economic `FAIL`; run slot consumed; remaining slots `0`; no rerun
+- Holdout/Sealed accessed: false; promotion/activation/automatic-selection: false
+- Historical evidence preserved: `docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/`
+- Closeout evidence: `docs/evidence/momentum_v2_vol_scaled_v1_terminal_retirement_closeout_v1/`
+- Next admissible GO: separately authorized new program identity only (not authorized here)
+- Explicit non-actions: no Development reevaluation; no Holdout/Sealed; no promotion/activation; no runtime/LIVE/orders; no successor invention
+
+
+### CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1
+
+- Scope: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1`
+- Decision: `CLOSE_LANE_NO_FURTHER_RESEARCH`
+- Authorization: `GO_CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1`
+- Program: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1` (`PROGRAM_CLOSED_NO_FURTHER_RESEARCH`)
+- Lane backlog: `LANE_CLOSED_NO_FURTHER_RESEARCH` (preregistered=0, open_unpreregistered=0, terminal=1)
+- Terminal hypothesis: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_NON_BITCOIN_PERPETUALS_V1` (`TERMINAL_FAIL` / `FAIL_CLOSED_NO_RETRY`)
+- Preserved Development truth: `DEVELOPMENT_FAIL`; economic `FAIL`; run slot consumed; no rerun
+- Holdout/Sealed accessed: false; promotion/activation/automatic-selection: false
+- Historical evidence preserved: `docs/evidence/evaluate_cross_sectional_short_horizon_return_reversal_development_v1/`
+- Closeout evidence: `docs/evidence/csrhr_v1_terminal_retirement_closeout_v1/`
+- Next admissible GO: separately authorized new program identity only (not authorized here)
+- Explicit non-actions: no Development reevaluation; no Holdout/Sealed; no promotion/activation; no runtime/LIVE/orders; no successor invention
+
+
+### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_PROGRESS_REGISTRY_TRUTH_RECONCILIATION_V1
+
+- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_PROGRESS_REGISTRY_TRUTH_RECONCILIATION_V1`
+- Decision: `RECONCILE_TERMINAL_DEVELOPMENT_STATE_TO_REPO_EVIDENCE`
+- Authorization: `GO_CLASS=DOCUMENTARY_AND_REGISTRY_TRUTH_RECONCILIATION_ONLY`
+- Program: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1` (`PROGRAM_CLOSED_NO_FURTHER_RESEARCH`)
+- Lane backlog: `LANE_CLOSED_NO_FURTHER_RESEARCH` (preregistered=0, open_unpreregistered=0, terminal=1)
+- Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1` (`TERMINAL_FAIL` / `FAIL_CLOSED_NO_RETRY`)
+- Verified repo facts: PR #5495 MERGED strategy implementation present; PR #5496 MERGED bounded DEVELOPMENT evaluation `DEVELOPMENT_FAIL`; `DEVELOPMENT_RUN_COUNT=1`; `DEVELOPMENT_SLOT_CONSUMED=true`; retry forbidden
+- Holdout/Sealed accessed: false; promotion eligible: false; runtime bound: false; Economic Validity offline gate: false; STEP 29R eligible: false; Autonomy is next: false
+- Evidence preserved: `docs&#47;evidence&#47;evaluate_cross_sectional_open_gap_pressure_fade_development_v1&#47;`
+- Next canonical step: `NEW_DISTINCT_RESEARCH_PROGRAM_OR_FULL_CANONICAL_SYSTEM_BINDING_OR_OTHER_EVIDENCE_CLASS_REQUIRES_OPERATOR_RATIFICATION`
+- Explicit non-actions: no strategy reimplementation; no DEVELOPMENT rerun; no Holdout/Sealed; no promotion/runtime/orders; no new hypothesis selected
+
+
+### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1
+
+- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Decision: `BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
+- Capability PR: `#5496` MERGED
+- Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1`
+- Result: `DEVELOPMENT_FAIL` (slot consumed; `development_run_count=1`; retry forbidden)
+- Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
+- Holdout untouched; Sealed untouched; economic gate closed; no promotion/runtime/LIVE/orders
+- Evidence: `docs&#47;evidence&#47;evaluate_cross_sectional_open_gap_pressure_fade_development_v1&#47;`
+- Next admissible GO: none for this hypothesis — requires new distinct program/evidence-class ratification
+
+
+### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1
+
+- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Decision: `STRATEGY_IMPLEMENTATION_ONLY`
+- Capability PR: `#5495` MERGED
+- Workstream: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1`
+- Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1`
+- Strategy: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1` (`STRATEGY_IMPLEMENTATION_PRESENT=true`)
+- Binding: `config&#47;research&#47;cross_sectional_open_gap_pressure_fade_v1_strategy_implementation_binding_v1.json`
+- Score/selection: negated mean open-gap fixed lookback (`lookback_N=30`, `rebalance=5`, `lag=1`) + `single_top1_by_score_desc` / `symmetric_top1_sign`
+- Post-#5496 truth: `DEVELOPMENT_RUN_COUNT=1`; `EVALUATION_AUTHORIZED=false`; no further Open Gap implementation candidate
+
+
+### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEFINITION_ONLY_PREREGISTRATION_V1
+
+- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEFINITION_ONLY_PREREGISTRATION_V1`
+- Status: `HISTORICAL_SUPERSEDED_BY_PR5495_PR5496_AND_TRUTH_RECONCILIATION`
+- Decision (historical): `PERSIST_NEW_INDEPENDENT_RESEARCH_PROGRAM_SSOT_AND_PREREGISTRATION`
+- Workstream: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_WORKSTREAM_V1`
+- Program (current): `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1` (`PROGRAM_CLOSED_NO_FURTHER_RESEARCH`)
+- Family: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE`
+- Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1` (terminal after DEVELOPMENT_FAIL)
+- Stale fields repaired: prior registry falsely retained `DEFINITION_ONLY` / `IMPLEMENTATION_AUTHORIZED=false` / `DEVELOPMENT_RUN_COUNT=0` / Open Gap as next implementation candidate
+- Current reconciled markers: `STRATEGY_IMPLEMENTATION_PRESENT=true`; `DEVELOPMENT_RUN_EXECUTED=true`; `DEVELOPMENT_RUN_COUNT=1`; `DEVELOPMENT_VERDICT=DEVELOPMENT_FAIL`; `DEVELOPMENT_SLOT_CONSUMED=true`; `EVALUATION_AUTHORIZED=false`; `RETRY_AUTHORIZED=false`
+
+
+### CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1
+
+- Scope: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Decision: `BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
+- Hypothesis: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Result: `DEVELOPMENT_FAIL` (slot consumed; `development_run_count=1`; retry forbidden)
+- Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
+- Primary failures: net PF 1.005 < 1.3; cost-stress PF 0.995 < 1.0; |MaxDD| 0.994 > 0.25; time-segment pass ratio 0.0 < 0.5
+- Holdout untouched; CSRHR remains `OPEN_BACKLOG`; economic gate closed; no promotion/runtime/LIVE/orders
+- Evidence: `docs&#47;evidence&#47;evaluate_cross_sectional_intrabar_close_location_pressure_continuation_development_v1&#47;`
+- Next admissible GO: PR-merge then terminal closeout (separate operator GO)
+
+
+### CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1
+
+- Scope: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Decision: `STRATEGY_IMPLEMENTATION_ONLY`
+- Workstream: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1`
+- Hypothesis: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Strategy: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1` (`STRATEGY_IMPLEMENTATION_PRESENT`)
+- Binding: `config&#47;research&#47;cross_sectional_intrabar_close_location_pressure_continuation_v1_strategy_implementation_binding_v1.json`
+- Frozen measurement digest: `2bc7e062d41bca4dee5c1b4a36c4e108903d5825cf5819f9214e8799cd98f859` (unmutated)
+- Score/selection: mean intrabar CLV fixed lookback (`lookback_N=36`, `rebalance=6`, `lag=1`) + `single_top1_by_score_desc` / `symmetric_top1_sign`
+- `EVALUATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0` unchanged; holdout untouched; CSRHR remains `OPEN_BACKLOG` unchanged
+- Explicit non-actions: no evaluation/runner/holdout/runtime/LIVE/orders; no CSRHR continue/reuse/mutation; no path-efficiency retry; no parameter optimization
+- Next admissible GO: separate PR-merge GO, then separately bounded DEVELOPMENT evaluation GO
+
+
+### CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION_V1
+
+- Scope: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION_V1`
+- Decision: `PERSIST_NEW_INDEPENDENT_RESEARCH_PROGRAM_SSOT_AND_PREREGISTRATION`
+- Workstream: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1` (`DEFINITION_ONLY`)
+- Family: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE`
+- Lane backlog: `OPEN_BACKLOG` (preregistered=1, open_unpreregistered=0, terminal=0)
+- First hypothesis: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1` (`PREREGISTERED_DEFINITION_ONLY`)
+- Causal mechanism: mean intrabar close-location value (CLV) cross-sectional single-slot continuation (`lookback_N=36`, `rebalance=6`, `lag=1`)
+- Candidates ranked: CLV pressure continuation > Amihud illiquidity-pressure fade > decisive body-to-range continuation
+- Separate open sibling CSRHR remains `OPEN_BACKLOG` unchanged (no continue/reuse/mutation)
+- Terminal path-efficiency DEVELOPMENT_FAIL linked as collision exclusion only (no retry/rename)
+- Closed predecessors linked as exclusions only: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`, `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
+- `EVALUATION_AUTHORIZED=false`; `IMPLEMENTATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0`; `DEVELOPMENT_RUN_LIMIT=1`; `FAIL_CLOSED_NO_RETRY=true`; holdout unbound/untouched/access forbidden; economic gate closed
+- Next admissible GO: separate implementation or bounded DEVELOPMENT evaluation GO (not authorized here)
+- Explicit non-actions: no CSRHR continue/reuse/mutation; no path-efficiency retry; no vol-regime/CS-momentum reopen; no evaluation/runtime/LIVE/orders
+
+
+### CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1
+
+- Scope: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Decision: `BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
+- Hypothesis: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Result: `DEVELOPMENT_FAIL` (slot consumed; `development_run_count=1`; retry forbidden)
+- Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
+- Primary failures: net PF 1.039 < 1.3; cost-stress PF 0.986 < 1.0; |MaxDD| 0.917 > 0.25; time-segment pass ratio 0.0 < 0.5
+- Holdout untouched; CSRHR remains `OPEN_BACKLOG`; economic gate closed; no promotion/runtime/LIVE/orders
+- Evidence: `docs/evidence/evaluate_cross_sectional_path_efficiency_continuation_development_v1/`
+- Next admissible GO: PR-merge then terminal closeout (separate operator GO)
+
+
+### CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1
+
+- Scope: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Decision: `STRATEGY_IMPLEMENTATION_ONLY`
+- Workstream: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1`
+- Hypothesis: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Strategy: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1` (`STRATEGY_IMPLEMENTATION_PRESENT`)
+- Binding: `config&#47;research&#47;cross_sectional_path_efficiency_continuation_v1_strategy_implementation_binding_v1.json`
+- Frozen measurement digest: `ffd67182ca8942c0975e3a864382ad55d657e625968c40d8fd63fac83a409ef9` (unmutated)
+- Score/selection: Kaufman ER*sign fixed lookback (`lookback_N=48`, `rebalance=8`, `lag=1`) + `single_top1_by_score_desc` / `symmetric_top1_sign`
+- `EVALUATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0` unchanged; holdout untouched; CSRHR remains `OPEN_BACKLOG` unchanged
+- Explicit non-actions: no evaluation/runner/holdout/runtime/LIVE/orders; no CSRHR continue/reuse/mutation; no parameter optimization
+- Next admissible GO: separate PR-merge GO, then separately bounded DEVELOPMENT evaluation GO
+
+
+### CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_PROGRAM_SSOT_AND_PREREGISTRATION_PERSISTENCE_ONLY_V1
+
+- Scope: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_PROGRAM_SSOT_AND_PREREGISTRATION_PERSISTENCE_ONLY_V1`
+- Decision: `PERSIST_NEW_INDEPENDENT_RESEARCH_PROGRAM_SSOT_AND_PREREGISTRATION`
+- Workstream: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1` (`DEFINITION_ONLY`)
+- Family: `CROSS_SECTIONAL_PATH_EFFICIENCY`
+- Lane backlog: `OPEN_BACKLOG` (preregistered=1, open_unpreregistered=0, terminal=0)
+- First hypothesis: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1` (`PREREGISTERED_DEFINITION_ONLY`)
+- Causal mechanism: path-efficiency ratio times sign(net log return) cross-sectional single-slot continuation (lookback_N=48, rebalance=8)
+- Separate open sibling CSRHR remains `OPEN_BACKLOG` unchanged (no continue/reuse/mutation)
+- Closed predecessors linked as exclusions only: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`, `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
+- `EVALUATION_AUTHORIZED=false`; `IMPLEMENTATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0`; `DEVELOPMENT_RUN_LIMIT=1`; `FAIL_CLOSED_NO_RETRY=true`; holdout unbound/untouched/access forbidden; economic gate closed
+- Next admissible GO: separate implementation or bounded DEVELOPMENT evaluation GO (not authorized here)
+- Explicit non-actions: no CSRHR continue/reuse/mutation; no vol-regime/CS-momentum reopen; no evaluation/runtime/LIVE/orders
+
+
+### NEW_RESEARCH_PROGRAM_IDENTITY_DEFINITION_DISCOVERY_V1 → CS short-horizon return reversal
+
+- Scope: `NEW_RESEARCH_PROGRAM_IDENTITY_DEFINITION_DISCOVERY_V1`
+- Decision: `DEFINE_NEW_INDEPENDENT_RESEARCH_PROGRAM_IDENTITY`
+- Program: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1` (`DEFINITION_ONLY`)
+- Family: `CROSS_SECTIONAL_RETURN_REVERSAL`
+- Lane backlog: `OPEN_BACKLOG` (preregistered=1, open_unpreregistered=0, terminal=0)
+- First hypothesis: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_NON_BITCOIN_PERPETUALS_V1` (`PREREGISTERED_DEFINITION_ONLY`)
+- Causal mechanism: negated trailing log-return cross-sectional single-slot reversal (lookback_N=24, rebalance=4)
+- Closed predecessors linked as exclusions only: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`, `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
+- `EVALUATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0`; holdout untouched; economic gate closed
+- Next admissible GO: separate implementation or bounded DEVELOPMENT evaluation GO (not authorized here)
+- Explicit non-actions: no vol-regime/CS-momentum reopen; no evaluation/runtime/LIVE/orders
+
+
+### Post-CSLRVC CLOSE_LANE_NO_FURTHER_RESEARCH (no successor)
+
+- Scope: `VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
+- Decision: `CLOSE_LANE_NO_FURTHER_RESEARCH`
+- Lane backlog: `LANE_CLOSED_NO_FURTHER_RESEARCH`
+- Program: `PROGRAM_CLOSED_NO_FURTHER_RESEARCH`
+- Packet status: `OPERATOR_DECISION_APPLIED_CLOSE_LANE_NO_FURTHER_RESEARCH_AFTER_CSLRVC_DEVELOPMENT_FAIL`
+- CSLRVC: terminal `DEVELOPMENT_FAIL` / slot consumed (`development_run_count=1`) / retry forbidden / holdout untouched
+- Inventories: preregistered=0, open_unpreregistered=0, terminal=11
+- New successor: `NONE` (historical CREATE→CSLRVC after CSHRVF remains recorded)
+- Next admissible GO: `LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO`
+- Explicit non-actions: no CSLRVC/CSHRVF/VTDC/VTSR/VEFCF/VEPC retry; no CREATE_SUCCESSOR; no holdout; no LIVE/orders
+
+
+### Post-CSHRVF CREATE_SUCCESSOR → CSLRVC v1 strategy implementation present
+
+- Scope: `CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Strategy: `CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1`
+- Status: strategy implementation present; evaluation unauthorized
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSLRVC_STRATEGY_IMPLEMENTATION_PRESENT`
+- CSHRVF: terminal `DEVELOPMENT_FAIL` / slot consumed (`development_run_count=1`) / retry forbidden / holdout untouched
+- CSLRVC: `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED`; entry-point `DEFINITION_BOUND_EVALUATION_UNAUTHORIZED`; `development_run_count=0`; `runner_start_count=0`; no evaluation
+- Next admissible GO: `GO_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Explicit non-actions: no CSHRVF&#47;VTDC&#47;VTSR&#47;VEFCF&#47;VEPC retry; no further term-structure variant; no CS-momentum reopen; no CSLRVC evaluation; no holdout; no CLOSE_LANE auto-apply; no LIVE&#47;orders
+
+
+### Post-CSHRVF CREATE_SUCCESSOR → CSLRVC v1 definition-only preregistered
+
+- Scope: `VOLATILITY_REGIME_POST_CSHRVF_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
+- Decision: `CREATE_SUCCESSOR_HYPOTHESIS` → `CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSLRVC_DEFINITION_ONLY`
+- CSHRVF: terminal `DEVELOPMENT_FAIL` / slot consumed (`development_run_count=1`) / retry forbidden / holdout untouched
+- CSLRVC: `DEFINITION_ONLY_PREREGISTERED`; entry-point `DEFINITION_BOUND_EVALUATION_UNAUTHORIZED`; `development_run_count=0`; `runner_start_count=0`; no evaluation; no strategy implementation in this slice
+- Next admissible GO: `GO_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Explicit non-actions: no CSHRVF&#47;VTDC&#47;VTSR&#47;VEFCF&#47;VEPC retry; no further term-structure variant; no CS-momentum reopen; no CSLRVC evaluation; no holdout; no CLOSE_LANE auto-apply; no LIVE&#47;orders
+
+
+### Post-VTDC CREATE_SUCCESSOR → CSHRVF v1 strategy implementation present
+
+- Scope: `CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Strategy: `CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1`
+- Status: strategy implementation present; evaluation unauthorized
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSHRVF_STRATEGY_IMPLEMENTATION_PRESENT`
+- VTDC: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden
+- Next admissible GO: `GO_CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Explicit non-actions: no VTDC&#47;VTSR&#47;VEFCF&#47;VEPC retry; no CSHRVF evaluation; no holdout; no LIVE/orders
+
+
+### Post-VTDC CREATE_SUCCESSOR → CSHRVF v1 definition-only preregistered
+
+- Scope: `VOLATILITY_REGIME_POST_VTDC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
+- Decision: `CREATE_SUCCESSOR_HYPOTHESIS` → `CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSHRVF_DEFINITION_ONLY`
+- VTDC: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden / holdout untouched
+- CSHRVF: `DEFINITION_ONLY_PREREGISTERED`; no evaluation; no strategy implementation in this slice
+- Next admissible GO: `GO_CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Explicit non-actions: no VTDC&#47;VTSR&#47;VEFCF&#47;VEPC retry; no further term-structure variant; no CS-momentum reopen; no CSHRVF evaluation; no holdout; no CLOSE_LANE auto-apply; no LIVE&#47;orders
+
+
+### Post-VTDC DEVELOPMENT_FAIL → slot consumed
+
+- Scope: `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Strategy: `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1`
+- Status: `RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL` / `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;FAIL`
+- Base: `170aa4c6ad72676c72a7192c432a236affac7aaf`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTDC_DEVELOPMENT_FAIL_SLOT_CONSUMED`
+- Evidence: `docs/evidence/evaluate_volatility_term_structure_depressed_continuation_development_v1/`
+- Next admissible GO tokens:
+  `GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1` |
+  `GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1` |
+  `GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1`
+- Explicit non-actions: no VTDC/VTSR/VEFCF/VEPC retry; no holdout; no LIVE/orders
+
+
+### Post-VTSR CREATE_SUCCESSOR → VTDC v1 strategy implementation present
+
+- Scope: `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Strategy: `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1`
+- Status: strategy implementation present; evaluation unauthorized
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTDC_STRATEGY_IMPLEMENTATION_PRESENT`
+- VTSR: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden
+- Next admissible GO: `GO_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Explicit non-actions: no VTSR&#47;VEFCF&#47;VEPC retry; no VTDC evaluation; no holdout; no LIVE/orders
+
+
+
+### Post-VTSR CREATE_SUCCESSOR → VTDC v1 definition-only preregistered
+
+- Scope: `VOLATILITY_REGIME_POST_VTSR_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
+- Decision: `CREATE_SUCCESSOR_HYPOTHESIS` → `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTDC_DEFINITION_ONLY`
+- VTSR: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden / holdout untouched
+- VTDC: `DEFINITION_ONLY_PREREGISTERED`; no evaluation; no strategy implementation in this slice
+- Next admissible GO: `GO_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Explicit non-actions: no VTSR&#47;VEFCF&#47;VEPC retry; no VTDC evaluation; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
+
+### Post-VTSR DEVELOPMENT_FAIL (slot consumed) (historical)
+
+- Scope: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Strategy: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1`
+- Status: `RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL` / `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;FAIL`
+- Lane backlog: `OPEN_BACKLOG` (then awaiting post-VTSR lifecycle GO)
+- Packet status (then): `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_DEVELOPMENT_FAIL_SLOT_CONSUMED`
+- `DEVELOPMENT_EVALUATION_EXECUTED=true`, `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`
+- Evidence: `docs/evidence/evaluate_volatility_term_structure_reversion_development_v1/`
+- Canonical entry point (slot consumed; retry forbidden): `scripts&#47;research&#47;run_evaluate_volatility_term_structure_reversion_development_v1.py`
+- Explicit non-actions: no VTSR retry; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
+
+### Post-VEFCF CREATE_SUCCESSOR → VTSR v1 strategy implementation present (historical)
+
+- Scope: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Strategy: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1`
+- Status: superseded by DEVELOPMENT_FAIL slot consumption
+- Historical: strategy producer + exit SM present; Development evaluation then executed under separate GO
+- Packet status (then): `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_STRATEGY_IMPLEMENTATION_PRESENT`
+- VEFCF: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden / holdout untouched
+- Explicit non-actions: no VEFCF retry; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
+
+### Post-VEFCF CREATE_SUCCESSOR → VTSR v1 definition-only preregistered (historical)
+
+- Scope: `VOLATILITY_REGIME_POST_VEFCF_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
+- Decision: `CREATE_SUCCESSOR_HYPOTHESIS` → `VOLATILITY_TERM_STRUCTURE_REVERSION_V1`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_DEFINITION_ONLY`
+- VEFCF: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden / holdout untouched
+- VTSR: `DEFINITION_ONLY_PREREGISTERED`; no evaluation; no strategy implementation in that slice
+- Next admissible GO (then): `GO_VOLATILITY_TERM_STRUCTURE_REVERSION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Explicit non-actions: no VEFCF retry; no VTSR evaluation; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
+
+### VEFCF v1 bounded DEVELOPMENT evaluation executed (DEVELOPMENT_FAIL)
+
+- Scope: `VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Strategy: `VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1`
+- Status: `RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL` / `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;FAIL`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VEFCF_DEVELOPMENT_FAIL_SLOT_CONSUMED`
+- `DEVELOPMENT_EVALUATION_EXECUTED=true`, `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`
+- Evidence: `docs/evidence/evaluate_volatility_expansion_failed_continuation_fade_development_v1/`
+- Canonical entry point (slot consumed; retry forbidden): `scripts&#47;research&#47;run_evaluate_volatility_expansion_failed_continuation_fade_development_v1.py`
+- Next admissible GO family: post-VEFCF lane lifecycle (`DECLARE_AWAITING` / `CLOSE_LANE` / `CREATE_SUCCESSOR`)
+- Explicit non-actions: no VEFCF retry; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
+
+### VEFCF v1 strategy implementation + unauthorized development entry path (historical)
+
+- Scope: `VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Strategy: `VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1`
+- Status: superseded by DEVELOPMENT_FAIL slot consumption
+- Historical: strategy implementation present; evaluate path bound; evaluation then executed under separate GO
+
+### Post-VEPC DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS applied (historical)
+
+
+- Scope: `VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1`
+- Applied decision: `DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`
+- Packet status: `OPERATOR_DECISION_APPLIED_AWAITING_DECLARED`
+- Lane backlog: `AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`
+- `explicit_waiting_decision=true`; `explicit_closeout_decision=false`; `awaiting_declared=true`
+- VEPC inventory: remains in `terminal_hypotheses` (`FAIL_CLOSED_NO_RETRY` / `CONSUMED_NO_RETRY`)
+- Inventories empty: preregistered=0, open_unpreregistered=0
+- Successor created: `false`; closeout applied: `false`
+- Decision packet: `docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md`
+- Remaining follow-on GO tokens only:
+  `GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1` |
+  `GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1`
+- CREATE requires explicit `hypothesis_id` + mechanism; GO alone is not executable
+- Explicit non-actions: no evaluation; no VEPC retry; no holdout; no auto-create/close; no implicit CLOSE/CREATE; no LIVE/orders
+
+### VEPC v1 historical development slot CONSUMED_NO_RETRY (superseded inventory posture)
+
+- Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
+- Status: `TERMINAL_FAIL` / `FAIL_CLOSED_NO_RETRY` (historical slot `CONSUMED_NO_RETRY`)
+- `DEVELOPMENT_EVALUATION_EXECUTED=false`, `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`
+- Historical slot: `CONSUMED_NO_RETRY` (fail-closed `UNPAIRABLE_ENTRY_NO_EXIT`; no durable successful evaluation evidence; no retry)
+- Baseline end-of-series pairing: canonical EOI then EOP (already bound in domain owners; no productive semantics change in this sync)
+- Decision record: `docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_HISTORICAL_SLOT_CONSUMED_NO_RETRY_AND_BASELINE_END_OF_SERIES_PAIRING_V1.md`
+- Next step: remaining enumerated follow-on from awaiting state via separate operator GO; no evaluation; no retry; no holdout
+- Canonical entry point (slot consumed; evaluate unauthorized): `scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py`
+
+## Registry-Metadaten
+
+> **Feldklarstellung:** `LAST_VERIFIED_ORIGIN_MAIN` = zuletzt separat post-merge gegen diese Registry verifizierter `origin&#47;main`-Stand. PR-Basis-SHA und Squash-Merge-Commit werden in `_MERGE_COMMIT`- bzw. `_CLOSEOUT_EVIDENCE_REF`-Feldern getrennt geführt; kein erneuter rein selbstreferenzieller SHA-Refresh ist kanonischer Folgeschritt.
+
+| Feld | Wert |
+|---|---|
+| `LAST_VERIFIED_ORIGIN_MAIN` | `580b871e17835c31d614159596374d5665d04ecd` |
+| `LAST_VERIFIED_AT` | `2026-07-16T02:10:00Z` |
+| `LAST_VERIFIED_SOURCE` | `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION_V0` |
+| `LAST_VERIFIED_PR` | `5241` |
+| `STEP29M_BINDING_ADMISSIBILITY_INVENTORY_CONFIG_REF` | `NONE_DOCS_INVENTORY_ONLY` |
+| `STEP29M_BINDING_ADMISSIBILITY_INVENTORY_REF` | `docs/governance/STEP29M_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_V0.md` |
+| `READ_ONLY_ASSESSMENT_MANIFEST_VERIFY_STATUS` | `NOT_OBTAINED` |
+| `READ_ONLY_ASSESSMENT_EXTERNAL_EVIDENCE_BLOCKED_BY_CURSOR_POLICY` | `true` |
+| `READ_ONLY_ASSESSMENT_EXTERNAL_EVIDENCE_PERSISTED` | `false` |
+| `READ_ONLY_ASSESSMENT_COMPLETED` | `true` |
+| `PARAMETER_OPTIMIZATION_EXECUTED` | `false` |
+| `STRATEGY_SELECTED` | `false` |
+| `STEP29M_BLOCKER` | `FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_TERMINAL_FAIL_UNCHANGED_RETRY_FORBIDDEN` |
+| `STEP29M_PASS_ADMISSIBLE_BINDING_PRESENT` | `false` |
+| `PARALLEL_SSOT_CREATED` | `false` |
+| `STALE_V4_4_11_CANONICAL_POINTER_COUNT` | `0` |
+| `MAP_POINTS_TO_V4_4_12` | `true` |
+| `MAP_OF_TRUTH_PATH` | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` |
+| `CANONICAL_RUNBOOK_PATH` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md` |
+| `CANONICAL_RUNBOOK_VERSION` | `v4.4.12` |
+| `PR5239_CLOSEOUT_REGISTERED` | `true` |
+| `PR5080_CLOSEOUT_REGISTERED` | `true` |
+| `PR5075_CLOSEOUT_REGISTERED` | `true` |
+| `PR5076_CLOSEOUT_REGISTERED` | `true` |
+| `PR5077_CLOSEOUT_REGISTERED` | `true` |
+| `PR5078_CLOSEOUT_REGISTERED` | `true` |
+| `PR5185_CLOSEOUT_REGISTERED` | `true` |
+| `PR5186_CLOSEOUT_REGISTERED` | `true` |
+| `PR5187_CLOSEOUT_REGISTERED` | `true` |
+| `PR5240_CLOSEOUT_COMPLETE` | `true` |
+| `STEP29M_BINDING_ADMISSIBILITY_INVENTORY_COMPLETE` | `true` |
+| `NEW_ECONOMIC_EVIDENCE_GENERATION_STATUS` | `OFFLINE_BASELINE_EXECUTED_TERMINAL_FAIL` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1` | `true` |
+| `NEW_EVIDENCE_CLASS_RATIFIED` | `true` |
+| `NEW_VERSIONED_ECONOMIC_BINDING_RATIFIED` | `true` |
+| `SELECTED_EVIDENCE_CLASS` | `BOLLINGER_BANDS_V2_FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_V1` |
+| `SELECTED_BINDING_ID` | `bollinger_bands_v2_full_canonical_system_economic_binding_v1` |
+| `SELECTED_BINDING_DIGEST` | `b0b51de225a7e282263c1b00091ccb457612f74df0e817d8dd03efc7af837320` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_GOVERNANCE_REF` | `docs/governance/FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFICATION_V0.md` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_CONFIG_REF` | `config/research/full_canonical_system_economic_evidence_generation_v1_binding_ratification_v0.json` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_REF` | `config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_EVIDENCE_CLASS_REF` | `config/research/full_canonical_system_economic_evidence_generation_v1_evidence_class_contract_v0.json` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_GO_TOKEN` | `GO_FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFICATION_V1` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION_GO_TOKEN` | `GO_FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION_GO_TOKEN_CONSUMED` | `true` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION_STATUS` | `COMPLETE_FAIL` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_ECONOMIC_STATUS` | `FAIL` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_PRIMARY_FAILURE_REASON` | `ZERO_TRADE_DEGENERATION` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_TRADE_COUNT` | `0` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_ROBUSTNESS_EXECUTED` | `false` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_ROBUSTNESS_NOT_EXECUTED_REASON` | `NOT_EXECUTED_BASELINE_NEGATIVE` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_UNCHANGED_RETRY_ALLOWED` | `false` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z (MANIFEST_VERIFY_RC=0)` |
+| `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION_CONFIG_REF` | `config/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_result_v0.json` |
+| `CURRENT_STATE` | `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_BASELINE_COMPLETE_FAIL` |
+| `CURRENT_RESEARCH_SCOPE` | `bollinger_bands&#47;v2` |
+| `RESEARCH_SCOPE_RATIFIED` | `true` |
+| `DATASET_MATERIALIZED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `NEXT_STEP` | `NO_UNCHANGED_RETRY_REQUIRES_NEW_DISTINCT_FULL_CANONICAL_SYSTEM_BINDING_OR_EVIDENCE_CLASS` |
+| `CURRENT_MAJOR_GAP_PACKAGE` | `NONE` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29M` |
+| `NEXT_RUNBOOK_STEP_STRUCTURAL_STATUS` | `COMPLETE_FAIL_CLOSED` |
+| `NEXT_RUNBOOK_STEP_ADMISSIBLE` | `false` |
+| `NEXT_RUNBOOK_STEP_BLOCK_REASON` | `FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_TERMINAL_FAIL_UNCHANGED_RETRY_FORBIDDEN` |
+| `NEXT_CANONICAL_STEP` | `NO_UNCHANGED_RETRY_REQUIRES_NEW_DISTINCT_FULL_CANONICAL_SYSTEM_BINDING_OR_EVIDENCE_CLASS` |
+| `NEXT_CANONICAL_ACTION` | `NO_UNCHANGED_RETRY_REQUIRES_NEW_DISTINCT_FULL_CANONICAL_SYSTEM_BINDING_OR_EVIDENCE_CLASS` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `VOLATILITY_TERM_STRUCTURE_REVERSION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_VOLATILITY_TERM_STRUCTURE_REVERSION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1` |
+| `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION_STATUS` | `EVIDENCE_ONLY_COMPLETE` |
+| `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION_REF` | `docs/evidence/attribute_bollinger_mr_midband_exit_efficiency_v6_failure/` |
+| `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION_AUTHORIZES_V7` | `false` |
+| `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_SOURCE_RESULT_CLASS` | `FAIL` |
+| `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_SOURCE_RUN_COUNT` | `1` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_PREREGISTRATION_STATUS` | `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;INCONCLUSIVE_INFRASTRUCTURE_FAILURE` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_EVALUATION_RUN_COUNT` | `1` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_DIGEST` | `4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_COOLDOWN_BARS` | `24` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_EVALUATION_AUTHORIZED` | `false` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_RESULT_CLASS` | `INCONCLUSIVE_INFRASTRUCTURE_FAILURE` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_RUN_SLOT_CONSUMED` | `true` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_PREREGISTRATION_STATUS` | `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;PASS` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_EVALUATION_WIRING_STATUS` | `EVALUATION_AUTHORIZED` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_EVALUATION_AUTHORIZED` | `false` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_EVALUATION_RUN_COUNT` | `1` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_DIGEST` | `610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_RESULT_CLASS` | `PASS` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_DECISION_REASON` | `ALL_PASS_REQUIRES_MET` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_RUNNER_STARTED` | `true` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_RUN_SLOT_CONSUMED` | `true` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V8_RERUN_ALLOWED` | `false` |
+| `CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_LANE_STATUS` | `LANE_CLOSED_NO_FURTHER_RESEARCH` |
+| `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_LANE_STATUS` | `LANE_CLOSED_NO_FURTHER_RESEARCH` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_V1_PREREGISTRATION_STATUS` | `HOLDOUT_EVALUATION_EXECUTED_TERMINAL&#47;FAIL` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_V1_DIGEST` | `a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_V1_RUN_COUNT` | `1` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_V1_RUNNER_START_COUNT` | `1` |
+| `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_V1_EXECUTION_AUTHORIZED` | `false` |
+| `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1_STATUS` | `PROGRAM_CLOSED_NO_FURTHER_RESEARCH` |
+| `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_BACKLOG_STATUS` | `LANE_CLOSED_NO_FURTHER_RESEARCH` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_PREREGISTRATION_STATUS` | `DEFINITION_ONLY_PREREGISTERED` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_TERMINAL_STATE` | `FAIL_CLOSED_NO_RETRY` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DIRECTIONAL_FORM` | `D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_CONTRACT_DIGEST` | `1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_RUN_COUNT` | `1` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_RUNNER_START_COUNT` | `1` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_RUN_BUDGET_CONSUMED` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_EVALUATION_AUTHORIZED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_HOLDOUT_AUTHORIZED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_PENDING_THRESHOLDS` | `none` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_TIME_SEGMENT_DEFINITION_ID` | `CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_MINIMUM_REBALANCE_OBSERVATIONS` | `30` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_TIME_SEGMENT_ROBUSTNESS_PASS_RATIO` | `0.5` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_IMPLEMENTATION_PRESENT` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_IMPLEMENTATION_BINDING_STATUS` | `STRATEGY_IMPLEMENTATION_PRESENT` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEV_EVAL_ENTRY_POINT_STATUS` | `ENTRY_POINT_MATERIALIZED_EVALUATION_UNAUTHORIZED` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEV_EVAL_ENTRY_POINT_OWNER` | `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEV_EVAL_ENTRY_POINT_CLI` | `scripts/research/run_evaluate_cross_sectional_relative_strength_momentum_development_v1.py` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_NEXT_CANONICAL_STEP` | `LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_SUCCESSOR_FOUND` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_RETRY_ALLOWED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_REOPEN_ALLOWED` | `false` |
+| `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_STATUS` | `PROGRAM_CLOSED_NO_FURTHER_RESEARCH` |
+| `VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1_STATUS` | `LANE_CLOSED_NO_FURTHER_RESEARCH` |
+| `VOLATILITY_TERM_STRUCTURE_REVERSION_V1_PREREGISTRATION_STATUS` | `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_PREREGISTRATION_STATUS` | `TERMINAL_FAIL` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_TERMINAL_RESULT` | `FAIL_CLOSED_NO_RETRY` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_SIGNAL_FAMILY` | `VOLATILITY_REGIME` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_TARGET_PHENOMENON` | `VOLATILITY_COMPRESSION_TO_EXPANSION_TRANSITION` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_BASELINE_ID` | `UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_CONTRACT_DIGEST` | `7a4ba7b765a7e7cc16155cb77b1448536b79a5416e2d758039a5574a82a74519` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_DEFINITION_SEMANTICS_COMPLETE` | `true` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_DATASET_ID` | `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_DATASET_BOUND` | `true` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_HOLDOUT_BOUND` | `false` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_RUN_COUNT` | `1` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_RUNNER_START_COUNT` | `1` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_RUN_LIMIT` | `1` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_EVALUATION_AUTHORIZED` | `false` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_IMPLEMENTATION_PRESENT` | `true` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_IMPLEMENTATION_BINDING_STATUS` | `STRATEGY_IMPLEMENTATION_PRESENT` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_DEV_EVAL_ENTRY_POINT_STATUS` | `RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_DEV_EVAL_ENTRY_POINT_OWNER` | `VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_DEV_EVAL_ENTRY_POINT_CLI` | `scripts/research/run_evaluate_volatility_compression_breakout_development_v1.py` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_OPEN_PARAMETERS_REMAINING` | `false` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_MATERIAL_DIFFERENCE_VS_COILED_SPRING` | `true` |
+| `VOLATILITY_COMPRESSION_BREAKOUT_V1_NEXT_CANONICAL_STEP` | `TERMINAL_FAIL_CLOSED_NO_RETRY_SUCCESSOR_VEP_V1_DEFINITION_ONLY_PREREGISTERED` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_PREREGISTRATION_STATUS` | `TERMINAL_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_SIGNAL_FAMILY` | `VOLATILITY_REGIME` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_TARGET_PHENOMENON` | `VOLATILITY_EXPANSION_PERSISTENCE_AFTER_CONFIRMED_EXPANSION` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_BASELINE_ID` | `UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_CONTRACT_DIGEST` | `3718bb162de2af9f613638336a5bd093f977e610dc8dfcdb22621ec186623b86` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_DEFINITION_SEMANTICS_COMPLETE` | `true` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_DATASET_ID` | `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_DATASET_BOUND` | `true` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_HOLDOUT_BOUND` | `false` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_RUN_COUNT` | `1` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_RUNNER_START_COUNT` | `1` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_RUN_LIMIT` | `1` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_EVALUATION_AUTHORIZED` | `false` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_IMPLEMENTATION_PRESENT` | `true` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_IMPLEMENTATION_BINDING_STATUS` | `STRATEGY_IMPLEMENTATION_PRESENT` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_IMPLEMENTATION_OWNER` | `VOLATILITY_EXPANSION_PERSISTENCE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_OPEN_PARAMETERS_REMAINING` | `false` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_MATERIAL_DIFFERENCE_VS_VCB_V1` | `true` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_MATERIAL_DIFFERENCE_VS_COILED_SPRING` | `true` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_PRODUCTIVE_PNL_EVALUATOR_REFERENCED` | `true` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_SECOND_PNL_TRUTH_CREATED` | `false` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_DEV_EVAL_ENTRY_POINT_STATUS` | `RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_DEV_EVAL_ENTRY_POINT_OWNER` | `VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_DEV_EVAL_ENTRY_POINT_CLI` | `scripts/research/run_evaluate_volatility_expansion_persistence_development_v1.py` |
+| `VOLATILITY_EXPANSION_PERSISTENCE_V1_NEXT_CANONICAL_STEP` | `TERMINAL_FAIL_CLOSED_NO_RETRY_SUCCESSOR_VDB_V1_DEFINITION_ONLY_PREREGISTERED` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_PREREGISTRATION_STATUS` | `DEFINITION_ONLY_PREREGISTERED` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_SIGNAL_FAMILY` | `VOLATILITY_REGIME` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_TARGET_PHENOMENON` | `VOLATILITY_DECAY_AFTER_HIGH_VOL_THEN_CHANNEL_BREAKOUT` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_BASELINE_ID` | `UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_CONTRACT_DIGEST` | `2d0922f0bf4a2082a032320f1a03316012682ea4021a1677e30c481fa620590c` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_DEFINITION_SEMANTICS_COMPLETE` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_DATASET_ID` | `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_DATASET_BOUND` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_HOLDOUT_BOUND` | `false` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_RUN_COUNT` | `1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_RUNNER_START_COUNT` | `1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_RUN_LIMIT` | `1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_EVALUATION_AUTHORIZED` | `false` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_IMPLEMENTATION_PRESENT` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_IMPLEMENTATION_BINDING_STATUS` | `STRATEGY_IMPLEMENTATION_PRESENT` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_IMPLEMENTATION_OWNER` | `VOLATILITY_DECAY_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_OPEN_PARAMETERS_REMAINING` | `false` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_MATERIAL_DIFFERENCE_VS_VEP_V1` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_MATERIAL_DIFFERENCE_VS_VCB_V1` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_MATERIAL_DIFFERENCE_VS_COILED_SPRING` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_PRODUCTIVE_PNL_EVALUATOR_REFERENCED` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_SECOND_PNL_TRUTH_CREATED` | `false` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_FORENSIC_CLASS_PRIOR_VEP` | `HYPOTHESIS_TERMINAL` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_DEV_EVAL_ENTRY_POINT_STATUS` | `CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_DEV_EVAL_ENTRY_POINT_OWNER` | `VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_DEV_EVAL_ENTRY_POINT_CLI` | `scripts/research/run_evaluate_volatility_decay_breakout_development_v1.py` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT` | `1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_CORRECTIVE_MEASUREMENT_REEVALUATION_LIMIT` | `1` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_TERMINAL_CORRECTIVE_VERDICT` | `CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_TERMINAL&#47;FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT` |
+| `VOLATILITY_DECAY_BREAKOUT_V1_NEXT_CANONICAL_STEP` | `NO_RETRY_CORRECTIVE_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO` |
+| `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_PREREGISTRATION_STATUS` | `DEFINITION_ONLY_PREREGISTERED` |
+| `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_PREDECESSOR` | `VOLATILITY_DECAY_BREAKOUT_V1` |
+| `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_CONTRACT_DIGEST` | `a49b13ecf9047fb1557537fcdd44bd1dc76359985c579048bf39c99436522434` |
+| `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_EXIT_STATE_MACHINE` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_DEVELOPMENT_EVALUATION_AUTHORIZED` | `true` |
+| `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_DEVELOPMENT_RUN_COUNT` | `1` |
+| `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_TERMINAL_VERDICT` | `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT` |
+| `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_NEXT_CANONICAL_STEP` | `NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_PREREGISTRATION_STATUS` | `DEFINITION_ONLY_PREREGISTERED` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_SCOPE_TYPE` | `PREREGISTRATION_ONLY` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_PREDECESSOR` | `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_CONTRACT_DIGEST` | `222a4127834a837d2afc23e97849b075360755bd720288340fea097c1f03ff8e` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEFINITION_SEMANTICS_COMPLETE` | `true` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_RUN_COUNT` | `1` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_RUNNER_START_COUNT` | `1` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_RUN_SLOT_CONSUMED` | `true` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_EXECUTED` | `true` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_IMPLEMENTATION_PRESENT` | `true` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_OPEN_PARAMETERS_REMAINING` | `false` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEV_EVAL_ENTRY_POINT_STATUS` | `RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT` |
+| `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_NEXT_CANONICAL_STEP` | `NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE` |
+| `CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_STATUS` | `COMPLETE_FAIL_INSUFFICIENT_SAMPLE` |
+| `CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_TERMINAL_STATUS` | `TERMINAL_INSUFFICIENT_SAMPLE` |
+| `CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_TERMINAL_FAILURE_CLASS` | `INSUFFICIENT_TRADE_SAMPLE` |
+| `CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_TRADE_COUNT` | `1` |
+| `CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_UNCHANGED_RETRY_BLOCKED` | `true` |
+| `CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_SELECTED_DISTINCT_SCOPE` | `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` |
+| `CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `EHLERS_CYCLE_FILTER_V1_RESEARCH_SCOPE_RATIFIED` | `true` |
+| `EHLERS_CYCLE_FILTER_V1_BINDING_RATIFIED` | `true` |
+| `EHLERS_CYCLE_FILTER_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `EHLERS_CYCLE_FILTER_V1_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `EHLERS_CYCLE_FILTER_V1_ECONOMIC_EVALUATION_STATUS` | `COMPLETE_INCONCLUSIVE` |
+| `EHLERS_CYCLE_FILTER_V1_STATUS` | `COMPLETE_INCONCLUSIVE` |
+| `EHLERS_CYCLE_FILTER_V1_BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_ECONOMIC_DECISION` | `INCONCLUSIVE` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_STATUS` | `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_FAILURE_CLASS` | `INCONCLUSIVE_BASELINE_INSUFFICIENT_TRADE_SAMPLE` |
+| `EHLERS_CYCLE_FILTER_V1_PRIMARY_CAUSE_CLASS` | `SIGNAL_STARVATION_BY_CANONICAL_LOGIC_WITH_INSUFFICIENT_TRADE_SAMPLE` |
+| `EHLERS_CYCLE_FILTER_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `EHLERS_CYCLE_FILTER_V1_PROMOTION_ELIGIBLE` | `false` |
+| `EHLERS_CYCLE_FILTER_V1_RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `false` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `EHLERS_CYCLE_FILTER_V1_UNCHANGED_RETRY_BLOCKED` | `true` |
+| `EHLERS_CYCLE_FILTER_V1_CANONICAL_EVALUATION_TIMESTAMP` | `20260710T115835Z` |
+| `EHLERS_CYCLE_FILTER_V1_PRE_REPAIR_CLASSIFICATION_TIMESTAMP` | `20260710T110612Z` |
+| `EHLERS_CYCLE_FILTER_V1_POST_REPAIR_CLASSIFICATION_TIMESTAMP` | `20260710T123447Z` |
+| `EHLERS_CYCLE_FILTER_V1_ACCOUNTING_RECONCILIATION_PASS` | `true` |
+| `EHLERS_CYCLE_FILTER_V1_NET_RETURN` | `-0.020940` |
+| `EHLERS_CYCLE_FILTER_V1_TRADE_COUNT` | `6` |
+| `EHLERS_CYCLE_FILTER_V1_SAMPLE_SUFFICIENCY_STATUS` | `INSUFFICIENT_TRADE_SAMPLE` |
+| `EHLERS_CYCLE_FILTER_V1_BINDING_DIGEST` | `dc8704495c3bf08b14afd9f50890369973c7c785e0d1655ba0b5b351f06b6599` |
+| `EHLERS_CYCLE_FILTER_V1_IMPLEMENTATION_DIGEST` | `4ec22ab14c7fa0923de83bfe89a6606514246d02b0045af28ff2d6cbe874fb34` |
+| `EHLERS_CYCLE_FILTER_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z (MANIFEST_VERIFY_RC=0)` |
+| `EHLERS_CYCLE_FILTER_V1_REAL_EVALUATION_MANIFEST_DIGEST` | `acd5a8a16e096904a1610ef3e45067488164a4c5b41a80f93de6416bb398e2b4` |
+| `EHLERS_CYCLE_FILTER_V1_CLASSIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z (MANIFEST_VERIFY_RC=0)` |
+| `EHLERS_CYCLE_FILTER_V1_PRE_REPAIR_CLASSIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_baseline_inconclusive_cause_read_only_v0_20260710T110612Z (MANIFEST_VERIFY_RC=0)` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_REGISTRATION_V0_STATUS` | `TERMINAL_INCONCLUSIVE_REGISTRATION_AND_DISTINCT_SCOPE_DEFINITION_COMPLETE` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_REGISTRATION_V0_GO_TOKEN` | `GO_REGISTER_TERMINAL_INCONCLUSIVE_EHLERS_CYCLE_FILTER_V1_SAME_BINDING_AND_AUTHORIZE_DISTINCT_FUTURES_RESEARCH_SCOPE_DEFINITION_READ_ONLY_V0` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_REGISTRATION_V0_CONFIG_REF` | `config/research/ehlers_cycle_filter_v1_terminal_inconclusive_insufficient_sample_and_distinct_futures_research_scope_definition_v0.json` |
+| `EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_REGISTRATION_V0_GOVERNANCE_REF` | `docs/governance/EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE_AND_DISTINCT_FUTURES_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `EHLERS_CYCLE_FILTER_V1_VERSIONED_BINDING_CONFIG_REF` | `config/research/ehlers_cycle_filter_v1_versioned_research_binding_v0.json` |
+| `EHLERS_CYCLE_FILTER_V1_SELECTED_DISTINCT_SCOPE` | `el_karoui_vol_model&#47;v1` |
+| `EHLERS_CYCLE_FILTER_V1_SELECTED_DISTINCT_SCOPE_RATIFIED` | `true` |
+| `EL_KAROUI_VOL_MODEL_V1_RESEARCH_SCOPE_RATIFIED` | `true` |
+| `EL_KAROUI_VOL_MODEL_V1_BINDING_RATIFIED` | `true` |
+| `EL_KAROUI_VOL_MODEL_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `EL_KAROUI_VOL_MODEL_V1_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `EL_KAROUI_VOL_MODEL_V1_STATUS` | `COMPLETE_INCONCLUSIVE` |
+| `EL_KAROUI_VOL_MODEL_V1_BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `EL_KAROUI_VOL_MODEL_V1_TERMINAL_STATUS` | `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE` |
+| `EL_KAROUI_VOL_MODEL_V1_BINDING_DIGEST` | `2ba82dd901c940a5d41d2aabd3ddeb693dbbf7cdd1f0308275d11b6df4d988b3` |
+| `EL_KAROUI_VOL_MODEL_V1_OLD_BINDING_DIGEST` | `223845f2047779218390fc245c3f2ebb04631bb068139e3d40731781906d099b` |
+| `EL_KAROUI_VOL_MODEL_V1_IMPLEMENTATION_DIGEST` | `11a8e1e3bef9bbe3a74edc329c4539d9438649c52dbdfe1034c4bd904f2a0c35` |
+| `EL_KAROUI_VOL_MODEL_V1_MATERIAL_DIFFERENCE_DIGEST` | `db8090f93f84d842b053b3cc21fbaa8a6281d25e06ed2528477715980e43bcc2` |
+| `EL_KAROUI_VOL_MODEL_V1_CANONICAL_EVALUATION_TIMESTAMP` | `20260710T135114Z` |
+| `EL_KAROUI_VOL_MODEL_V1_CANONICAL_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/el_karoui_vol_model_v1_bound_offline_economic_baseline_evaluation_v0_20260710T135114Z` |
+| `EL_KAROUI_VOL_MODEL_V1_CANONICAL_MANIFEST_DIGEST` | `11de71c7b7c19e90700c358ae88d3b049b75679fecfc2736ab52df1d759ac941` |
+| `EL_KAROUI_VOL_MODEL_V1_RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `EL_KAROUI_VOL_MODEL_V1_TERMINAL_INCONCLUSIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `EL_KAROUI_VOL_MODEL_V1_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `false` |
+| `EL_KAROUI_VOL_MODEL_V1_NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` | `true` |
+| `EL_KAROUI_VOL_MODEL_V1_INCONCLUSIVE_REGISTRATION_V0_STATUS` | `REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_REGISTRATION_COMPLETE` |
+| `EL_KAROUI_VOL_MODEL_V1_INCONCLUSIVE_REGISTRATION_V0_GO_TOKEN` | `GO_PERSIST_EL_KAROUI_VOL_MODEL_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_BLOCK_UNCHANGED_RETRY_V0` |
+| `EL_KAROUI_VOL_MODEL_V1_INCONCLUSIVE_REGISTRATION_V0_CONFIG_REF` | `config/research/el_karoui_vol_model_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `EL_KAROUI_VOL_MODEL_V1_INCONCLUSIVE_REGISTRATION_V0_GOVERNANCE_REF` | `docs/governance/EL_KAROUI_VOL_MODEL_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `EL_KAROUI_VOL_MODEL_V1_GOVERNANCE_REF` | `docs/governance/EL_KAROUI_VOL_MODEL_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `EL_KAROUI_VOL_MODEL_V1_VERSIONED_BINDING_CONFIG_REF` | `config/research/el_karoui_vol_model_v1_versioned_research_binding_v0.json` |
+| `EL_KAROUI_VOL_MODEL_V1_SCOPE_RATIFICATION_CONFIG_REF` | `config/research/el_karoui_vol_model_v1_offline_economic_evaluation_scope_ratification_v0.json` |
+| `ARMSTRONG_CYCLE_V1_RESEARCH_SCOPE_RATIFIED` | `true` |
+| `ARMSTRONG_CYCLE_V1_BINDING_RATIFIED` | `true` |
+| `ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `ARMSTRONG_CYCLE_V1_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ARMSTRONG_CYCLE_V1_STATUS` | `COMPLETE_INCONCLUSIVE` |
+| `ARMSTRONG_CYCLE_V1_BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `ARMSTRONG_CYCLE_V1_TERMINAL_STATUS` | `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE` |
+| `ARMSTRONG_CYCLE_V1_BINDING_DIGEST` | `bf0a125325692836b71ab00a775d412ecf275483769f5906e1251f68361a9896` |
+| `ARMSTRONG_CYCLE_V1_OLD_BINDING_DIGEST` | `d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c` |
+| `ARMSTRONG_CYCLE_V1_IMPLEMENTATION_DIGEST` | `e8e572b88b5fd3eb0cec598fd9fee6de73945325b897c692da002863f1c21c66` |
+| `ARMSTRONG_CYCLE_V1_MATERIAL_DIFFERENCE_DIGEST` | `dc17557606eb6578ca97c2d90905ec0ffeeed2ef95b9ec77858615f2d1f71e85` |
+| `ARMSTRONG_CYCLE_V1_CANONICAL_EVALUATION_TIMESTAMP` | `20260710T162406Z` |
+| `ARMSTRONG_CYCLE_V1_CANONICAL_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/armstrong_cycle_v1_repaired_same_semantic_binding_offline_baseline_reevaluation_v0_20260710T162406Z` |
+| `ARMSTRONG_CYCLE_V1_CANONICAL_MANIFEST_DIGEST` | `dc052e84020d682878f9740bc2a0cc375d6c40c638f964b1195f3390abd18123` |
+| `ARMSTRONG_CYCLE_V1_RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `ARMSTRONG_CYCLE_V1_TERMINAL_INCONCLUSIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `ARMSTRONG_CYCLE_V1_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `false` |
+| `ARMSTRONG_CYCLE_V1_NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` | `true` |
+| `ARMSTRONG_CYCLE_V1_INCONCLUSIVE_REGISTRATION_V0_STATUS` | `REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_REGISTRATION_COMPLETE` |
+| `ARMSTRONG_CYCLE_V1_INCONCLUSIVE_REGISTRATION_V0_GO_TOKEN` | `GO_PERSIST_ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_BLOCK_UNCHANGED_RETRY_V0` |
+| `ARMSTRONG_CYCLE_V1_INCONCLUSIVE_REGISTRATION_V0_CONFIG_REF` | `config/research/armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `ARMSTRONG_CYCLE_V1_INCONCLUSIVE_REGISTRATION_V0_GOVERNANCE_REF` | `docs/governance/ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `ARMSTRONG_CYCLE_V1_GOVERNANCE_REF` | `docs/governance/ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `ARMSTRONG_CYCLE_V1_VERSIONED_BINDING_CONFIG_REF` | `config&#47;research&#47;armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `ARMSTRONG_CYCLE_V1_SCOPE_RATIFICATION_CONFIG_REF` | `config&#47;research&#47;armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_RESEARCH_SCOPE_RATIFIED` | `true` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BINDING_RATIFIED` | `true` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STATUS` | `COMPLETE_INCONCLUSIVE` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_TERMINAL_STATUS` | `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BINDING_DIGEST` | `99d6153cfc25e550a429cde04a2d684c56e0e84369cc3e1196cae9f91ac26422` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_OLD_BINDING_DIGEST` | `39a783904714eb988e9a5fee34e6474e0bb65821ddf525af8df53268906f6e7c` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_IMPLEMENTATION_DIGEST` | `e76f7d06e9e8e92e2ea3db436e404894e66f218ee78e4f1e0962a37d4a8b2e35` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_MATERIAL_DIFFERENCE_DIGEST` | `34599aa261c9ce32ced00e8000e09e152031ba59d5402d89558488c177a378a2` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_CANONICAL_EVALUATION_TIMESTAMP` | `20260710T180542Z` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_CANONICAL_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_repaired_same_semantic_binding_offline_baseline_reevaluation_v0_20260710T180542Z` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_CANONICAL_MANIFEST_DIGEST` | `276e8210ae34b72ad3b721f9bafcc7ae40124539cca57faa9335bd09056e69af` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_TERMINAL_INCONCLUSIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `false` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` | `true` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_INCONCLUSIVE_REGISTRATION_V0_STATUS` | `REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_REGISTRATION_COMPLETE` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_INCONCLUSIVE_REGISTRATION_V0_GO_TOKEN` | `GO_REGISTER_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_INCONCLUSIVE_BASELINE_ADJUDICATION_V0` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_INCONCLUSIVE_REGISTRATION_V0_CONFIG_REF` | `config/research/bouchaud_microstructure_ohlcv_proxy_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_INCONCLUSIVE_REGISTRATION_V0_GOVERNANCE_REF` | `docs/governance/BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_GOVERNANCE_REF` | `docs/governance/BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_VERSIONED_BINDING_CONFIG_REF` | `config/research/bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding_v0.json` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_SCOPE_RATIFICATION_CONFIG_REF` | `config/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0.json` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_TRADE_COUNT` | `1` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_SAMPLE_SUFFICIENCY_STATUS` | `INSUFFICIENT` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_NET_RETURN` | `-0.005` |
+| `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_REEVALUATION_EXECUTION_COUNT` | `1` |
+| `EHLERS_CYCLE_FILTER_V1_MATERIAL_DIFFERENCE_PROVEN` | `true` |
+| `EHLERS_CYCLE_FILTER_V1_DISTINCT_SCOPE_REQUIRED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_DEFINITION_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_ALL_REQUIRED_BINDINGS_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_GO_TOKEN` | `GO_VERSIONED_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_GO_TOKEN_CONSUMED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_ECONOMIC_EVALUATION_GO_TOKEN` | `GO_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_ECONOMIC_EVALUATION_GO_TOKEN_CONSUMED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_ECONOMIC_EVALUATION_STATUS` | `COMPLETE_FAIL` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_STATUS` | `COMPLETE_FAIL` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BASELINE_VERDICT` | `FAIL` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_ECONOMIC_DECISION` | `FAIL` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_FAILURE_CLASS` | `NEGATIVE_ECONOMIC_BASELINE_AND_INSUFFICIENT_TRADE_SAMPLE` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PROMOTION_ELIGIBLE` | `false` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_CANONICAL_EVALUATION_TIMESTAMP` | `20260710T101815Z` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_SUPERSEDED_EVALUATION_TIMESTAMP` | `20260710T101306Z` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_SUPERSESSION_REASON` | `ORIGINAL_EVALUATION_ACCOUNTING_INCOMPLETE_OPEN_END_OF_WINDOW_POSITION_AND_WRONG_RECONCILIATION_IDENTITY` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_ACCOUNTING_RECONCILIATION_PASS` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_NET_RETURN` | `-0.152906` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TRADE_COUNT` | `4` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_SAMPLE_SUFFICIENCY_STATUS` | `INSUFFICIENT_TRADE_SAMPLE` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101815Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_REAL_EVALUATION_MANIFEST_DIGEST` | `3a132a93e01a209c3d0c58f5573d0e04ab588ba563048d58419c03450b1b609c` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_INVALIDATED_EVALUATION_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101306Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_INVALIDATED_EVALUATION_STATUS` | `TECHNICALLY_REPRODUCIBLE_ACCOUNTING_INCOMPLETE_SUPERSEDED` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PR5080_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5080_merge_closeout_cs_ma_crossover_panel_rank_rotation_v0_accounting_reconciliation_20260710T102332Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_SUPERSESSION_REGISTRATION_V0_STATUS` | `TERMINAL_NEGATIVE_EVIDENCE_AND_SUPERSESSION_REGISTRATION_COMPLETE` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_SUPERSESSION_REGISTRATION_V0_GO_TOKEN` | `GO_RATIFY_CORRECTED_TERMINAL_NEGATIVE_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_SUPERSESSION_REGISTRATION_V0_CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_terminal_negative_economic_evidence_and_supersession_registration_v0.json` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_SUPERSESSION_REGISTRATION_V0_GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0.md` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_VERSIONED_BINDING_CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_versioned_research_binding_v0.json` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION_CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_binding_ratification_v0.json` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION_GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_VERSIONED_BINDING_RATIFICATION_V1.md` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_binding_ratification_20260710T095353Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PR5078_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5078_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_v0_20260710T094803Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_DIGEST` | `89f80951dd71e43168b9b37b0d6f04d57ba7ca025fcd4923c9901d0f244f43e6` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_CONFIG_DIGEST` | `eaca6226b6e040580227c8380c86a3aaa4f3e3bdad9292b37d9cbef736405141` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_DATA_DIGEST` | `b0eb7802c269bcab987d2025fe1e960b83079d5ac5f305799e0867661d42f2e0` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_DATASET_MATERIALIZED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_GO_TOKEN_CONSUMED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PANEL_STAGING_ROOT` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PANEL_DATA_DIGEST` | `e14b0f2bb7723cacef259e1e1cb29b017cdaca060ff9dbb8c46a5204cb681dad` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_V1.md` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_v1.json` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_OKX_MATERIALIZATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_okx_production_lifecycle_source_registration_and_pt1h_panel_ohlcv_ingest_v0_20260710T092512Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_20260710T093500Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_SINGLE_INSTRUMENT_EVIDENCE` | `TERMINAL_NEGATIVE` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_UNCHANGED_SINGLE_INSTRUMENT_RETRY_BLOCKED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PANEL_ARCHETYPE_EVIDENCE` | `TERMINAL_NEGATIVE` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_MATERIAL_DIFFERENCE_CONFIRMED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_UNDERLYING_SIGNAL_BINDING` | `ma_crossover&#47;v1@inst-eth-usdt-perp` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_GO_TOKEN` | `GO_RATIFY_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V1` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_research_scope_ratification_v1.json` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_V1.md` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_GO_TOKEN_TO_REGISTER_ONLY` | `GO_BOUNDED_OKX_PRODUCTION_LIFECYCLE_SOURCE_REGISTRATION_AND_PT1H_PANEL_OHLCV_INGEST_V0` |
+| `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_SOURCE_ADJUDICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cross_sectional_ma_crossover_panel_scope_discovery_contradiction_adjudication_and_corrected_ratification_prep_v0_20260710T090302Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_STATUS` | `SCOPE_SELECTION_COMPLETE_NOT_EXECUTED` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_CONFIG_REF` | `config/research/post_pr4883_next_versioned_research_scope_selection_v0.json` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0.md` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_EVIDENCE_CLASS_ID` | `POST_PR4883_SPARSE_SIGNAL_INCONCLUSIVE_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_SELECTED_CLASS` | `E` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_BASELINE_PR` | `4883` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_BASELINE_HEAD` | `b0d584db9057369f5d6a930c97f8ea8ed3734aac` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_CLASSIFICATION_MAPPED_RATIO` | `1.0` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_CLASSIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_CLASSIFICATION_MANIFEST_VERIFY_RC` | `0` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_RATIFIED_SCOPE_ID` | `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_RATIFIED_SCOPE_CONFIG_REF` | `config/research/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_class_v0.json` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_RATIFIED_SCOPE_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0.md` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_RESEARCH_HYPOTHESIS` | `INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_REQUIRES_READ_ONLY_DIAGNOSTICS_NOT_UNCHANGED_V2_BINDING_RETRY` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4883_next_versioned_research_scope_selection_v0_20260705T224921Z (MANIFEST_VERIFY_RC=0; GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0 consumed)` |
+| `POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_STATUS` | `DIAGNOSTICS_EXECUTION_COMPLETE_V0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_CONFIG_REF` | `config/research/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_class_v0.json` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0.md` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_SELECTED_CLASS` | `E` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_PARENT_CLASSIFICATION_EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_DIAGNOSTICS_EXECUTED` | `true` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_REQUIRED_NEXT_GO_FOR_EXECUTION_CONSUMPTION` | `CONSUMED` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_STATUS` | `DIAGNOSTICS_EXECUTION_COMPLETE_V0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GO_TOKEN` | `GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z (MANIFEST_VERIFY_RC=0; GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0 consumed)` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_DIAGNOSTIC_MAPPED_RATIO` | `1.0` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_MATERIALIZATION_PATH_STATUS` | `PATH_PRESENT_RUNNER_FAILED_METRICS_NOT_MATERIALIZED` |
+| `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_NEXT_RECOMMENDED_STEP` | `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_REQUIRES_OPERATOR_RATIFICATION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_CONFIG_REF` | `config/research/post_no_pass_metric_materialization_diagnostics_derived_next_research_scope_definition_v0.json` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_SELECTED_CLASS` | `D` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_BASELINE_PR` | `4885` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_BASELINE_HEAD` | `f4709c51044a05c6dcc1c640d28c7567e33d71a7` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_DIAGNOSTIC_MAPPED_RATIO` | `1.0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_DIAGNOSTICS_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_DIAGNOSTICS_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_RESEARCH_HYPOTHESIS` | `PATH_PRESENT_BUT_NOT_EXECUTED_REQUIRES_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_NOT_UNCHANGED_V2_RETRY` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_diagnostics_derived_next_research_scope_definition_v0_20260705T232358Z (MANIFEST_VERIFY_RC=0; GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0 consumed)` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_STATUS` | `PATH_ACTIVATION_BINDING_RATIFICATION_COMPLETE_NOT_EXECUTED` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_CONFIG_REF` | `config/research/post_no_pass_metric_materialization_path_activation_binding_ratification_v0.json` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0.md` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_GO_TOKEN` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_BINDING_CLASS` | `METRIC_MATERIALIZATION_PATH_ACTIVATION_RESEARCH_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_STRATEGY_VERSION` | `v3` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_BASELINE_PR` | `4886` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_BASELINE_HEAD` | `61c6b7dbbd2e4bf97c57c1ae08679c2f1aa2e4f4` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_PARENT_SCOPE_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_PATH_ACTIVATION_BINDING_RATIFIED` | `true` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_activation_binding_ratification_v0_20260705T233631Z (MANIFEST_VERIFY_RC=0; GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0 consumed)` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STATUS` | `EXECUTION_COMPLETE_INCONCLUSIVE` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_CONFIG_REF` | `config/research/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_scope_v0.json` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z (MANIFEST_VERIFY_RC=0; GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0 consumed)` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_STATUS` | `INCONCLUSIVE` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_PASS_COUNT` | `0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FAIL_COUNT` | `0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_INCONCLUSIVE_COUNT` | `3` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_BASELINE_HEAD` | `93a435445407022c94808240cfc1381b54bc3e23` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STATUS` | `EXECUTION_COMPLETE_FAIL` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_CONFIG_REF` | `config/research/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_scope_v0.json` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN` | `GO_OPERATOR_AUTHORIZE_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_WITH_STEP31F_OWNER_FIX` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_WITH_STEP31F_OWNER_FIX` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z (MANIFEST_VERIFY_RC=0; GO_OPERATOR_AUTHORIZE_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_WITH_STEP31F_OWNER_FIX consumed)` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_STATUS` | `FAIL` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_PASS_COUNT` | `0` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FAIL_COUNT` | `3` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_INCONCLUSIVE_COUNT` | `0` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_BASELINE_HEAD` | `b86a9813795e35cea1e2ca0a985d19c8f7c8ec11` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STEP31F_OWNER_FIX_APPLIED` | `true` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_METRIC_MATERIALIZATION_CLASS` | `EXECUTION_COMPLETE_METRICS_MATERIALIZED` |
+| `POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_CONFIG_REF` | `config/research/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0.json` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0.md` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_AFTER_PR4892_FAIL_V0` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_EVIDENCE_CLASS_ID` | `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_SELECTED_CLASS` | `E` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_BASELINE_HEAD` | `72d5dfb7641776feb6969feae5f2eb2cfa08b9d8` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_PARENT_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_STATUS` | `ROOT_CAUSE_DECOMPOSITION_EXECUTION_COMPLETE_V0` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_CONFIG_REF` | `config/research/post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0.json` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0.md` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_GO_TOKEN` | `GO_POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_EVIDENCE_CLASS_ID` | `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_SELECTED_CLASS` | `E` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_BASELINE_HEAD` | `223fdb519a4bba0875314c22ed9bc62180f01cad` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_PARENT_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_PARENT_SCOPE_DEFINITION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0_20260706T014350Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_FAILED_BINDINGS_RETRY_ALLOWED` | `false` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_REQUIRED_NEXT_GO_FOR_RATIFICATION` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_CONFIG_REF` | `config/research/post_pr4894_next_versioned_research_scope_definition_v0.json` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_EVIDENCE_CLASS_ID` | `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_SELECTED_CLASS` | `D` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_BASELINE_HEAD` | `04d176f291f3824857dd2636f5059bc8c1d67136` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_PARENT_DECOMPOSITION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0_20260706T015337Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_FAILED_BINDINGS_RETRY_ALLOWED` | `false` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION` | `GO_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_STATUS` | `FLEET_BINDINGS_RATIFIED_NOT_EVALUATED` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_CONFIG_REF` | `config/research/post_pr4895_versioned_fleet_binding_ratification_v0.json` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0.md` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_GO_TOKEN` | `GO_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_EVIDENCE_CLASS_ID` | `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_STRATEGY_VERSION` | `v4` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_BASELINE_HEAD` | `64509cce36ec5316cbfe4f42427cf81ecf67bdae` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_ALL_REQUIRED_BINDINGS_COMPLETE` | `true` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_BLOCKED_MISSING_BINDINGS` | `none` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STATUS` | `EXECUTION_COMPLETE_FAIL` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_CONFIG_REF` | `config/research/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_scope_v0.json` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN` | `GO_POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_CLASS_ID` | `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STRATEGY_VERSION` | `v4` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_CONFIG_REF` | `config/research/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_class_scope_definition_v0.json` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0.md` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_GO_TOKEN` | `GO_NEXT_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_AFTER_PR4897_V0` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_EVIDENCE_CLASS_ID` | `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_SELECTED_CLASS` | `E` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_SELECTED_NEXT_SCOPE_CLASS` | `NEW_EVIDENCE_CLASS_REQUIRED` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_BASELINE_HEAD` | `175bb91bb46163f787e73c5f0024c3723536f9e2` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_PARENT_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_STRATEGY_VERSION` | `v4` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_STATUS` | `FAILURE_DECOMPOSITION_EXECUTION_COMPLETE_V0` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_CONFIG_REF` | `config/research/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_execution_v0.json` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0.md` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_GO_TOKEN` | `GO_POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_EVIDENCE_CLASS_ID` | `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_STRATEGY_VERSION` | `v4` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_PARENT_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_REQUIRED_NEXT_GO_FOR_SCOPE_DEFINITION` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_GOVERNANCE_REF` | `docs/ops/research/POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_EVIDENCE_CLASS_ID` | `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_SELECTED_CLASS` | `D` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_BASELINE_HEAD` | `f6f9d3bdce993177d4915261820b6247faca21c6` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_PARENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_execution_v0_20260706T030033Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_STRATEGY_VERSION` | `v4` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_FAILED_BINDINGS_RETRY_ALLOWED` | `false` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_BINDING_OR_EVALUATION` | `GO_POST_PR4899_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0` |
+| `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_STATUS` | `BINDING_PRECONDITION_INCOMPLETE_NOT_EVALUATED_V0` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_CONFIG_REF` | `config/research/post_pr4900_versioned_binding_or_evaluation_execution_scope_v0.json` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0.md` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_GO_TOKEN` | `GO_POST_PR4899_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_EVIDENCE_CLASS_ID` | `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_BINDING_PRECONDITION_STATUS` | `BINDING_PRECONDITION_INCOMPLETE` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_PARENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_execution_v0_20260706T030033Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4900_versioned_binding_or_evaluation_execution_scope_v0_20260706T031928Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION` | `GO_OPERATOR_RATIFY_POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0_AUTHORITY_EFFECT` | `NONE` |
+| `PR4901_SQUASH_MERGE_CLOSEOUT_STATUS` | `MERGED` |
+| `PR4901_SQUASH_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4901_squash_merge_closeout_20260706T032655Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4901_SQUASH_MERGE_CLOSEOUT_MERGE_COMMIT` | `27826eca324e88560f93d1b5993bab4b0acd0b62` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_STATUS` | `SCOPE_DEFINED_NOT_EVALUATED` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_CONFIG_REF` | `config/research/post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_v0.json` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_GOVERNANCE_REF` | `docs/governance/POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0.md` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_GO_TOKEN_CONSUMED` | `false` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_EVIDENCE_CLASS_ID` | `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_BASELINE_HEAD` | `27826eca324e88560f93d1b5993bab4b0acd0b62` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_PARENT_CLOSEOUT_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4901_squash_merge_closeout_20260706T032655Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_REQUIRED_NEXT_GO_FOR_MATERIALIZATION` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0` |
+| `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `PR4902_SQUASH_MERGE_CLOSEOUT_STATUS` | `MERGED` |
+| `PR4902_SQUASH_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_scope_merge_closeout_20260706T034102Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4902_SQUASH_MERGE_CLOSEOUT_MERGE_COMMIT` | `c534b0eafc53b38c046bc99e823eb8318a43da7f` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_STATUS` | `BINDINGS_MATERIALIZED_NOT_EVALUATED` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_CONFIG_REF` | `config/research/post_v4_versioned_fleet_binding_materialization_only_v0.json` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_GOVERNANCE_REF` | `docs/governance/POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0.md` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_GO_TOKEN_CONSUMED` | `false` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_EVIDENCE_CLASS_ID` | `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_BASELINE_HEAD` | `c534b0eafc53b38c046bc99e823eb8318a43da7f` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_PARENT_CLOSEOUT_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_scope_merge_closeout_20260706T034102Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_REQUIRED_NEXT_GO_FOR_EVALUATION` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_STATUS` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_CONFIG_REF` | `config/research/post_v4_versioned_fleet_offline_economic_evaluation_execution_scope_v0.json` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0.md` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_EVIDENCE_CLASS_ID` | `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_STRATEGY_VERSION` | `post_v4_hypothesis_v0` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_BASELINE_HEAD` | `acf7dec82b070bf42d953f0b542e882fa5920603` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_MATERIALIZATION_DIGEST` | `7c9628a9fa92fcbd0f6fabbf1ff6af00ceeca64dfbc6abe75ae232e474874325` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_PARENT_CLOSEOUT_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_binding_materialization_only_merge_closeout_20260706T035552Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_EXECUTION_PERFORMED` | `true` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_BLOCKED_BINDING_CLASS` | `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` |
+| `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_STATUS` | `FAILURE_DECOMPOSITION_EXECUTION_COMPLETE_V0` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_CONFIG_REF` | `config/research/post_pr4904_v4_fleet_robustness_failure_decomposition_v0.json` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_GOVERNANCE_REF` | `docs/governance/POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0.md` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_GO_TOKEN` | `GO_POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_EVIDENCE_CLASS_ID` | `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_STRATEGY_VERSION` | `post_v4_hypothesis_v0` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_BASELINE_HEAD` | `442c05688cfd1dcc28ebfcfdb13fd853dc16f8aa` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_PARENT_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_PARENT_CLOSEOUT_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4904_squash_merge_closeout_20260706T041915Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_REQUIRED_NEXT_GO` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_CONFIG_REF` | `config/research/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_scope_v0.json` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0.md` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_SELECTED_CLASS` | `E` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_BASELINE_PR` | `4888` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_BASELINE_HEAD` | `9f7ee5951bab59dc36327f3795f423f062da7f91` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_PARENT_EXECUTION_EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_PARENT_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_STEP31F_PROMOTION_METRICS_NOT_MATERIALIZED` | `true` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_RESEARCH_HYPOTHESIS` | `STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_REQUIRES_READ_ONLY_DIAGNOSTICS_NOT_UNCHANGED_V3_BINDING_RETRY` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_DIAGNOSTICS_EXECUTED` | `false` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_scope_v0_20260706T002041Z (MANIFEST_VERIFY_RC=0; GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0 consumed)` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_STATUS` | `DIAGNOSTICS_EXECUTION_COMPLETE_V0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GO_TOKEN` | `GO_POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_CONFIG_REF` | `config/research/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_evidence_execution_v0.json` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_evidence_execution_v0_20260706T003753Z (MANIFEST_VERIFY_RC=0; GO_POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0 consumed)` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_DIAGNOSTIC_MAPPED_RATIO` | `1.0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_EXECUTION_GAP_PRIMARY` | `EVALUATOR_INVOCATION_GAP_FAIL_CLOSED` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_MATERIALIZATION_PATH_STATUS` | `PATH_PRESENT_RUNNER_FAILED_METRICS_NOT_MATERIALIZED` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_NEXT_RECOMMENDED_STEP` | `REQUEST_OPERATOR_RATIFY_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_OWNER_NARROW_IMPLEMENTATION_FIX_SCOPE_V0` |
+| `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_OPERATOR_INPUT_REQUIRED` | `true` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_STATUS` | `BINDING_RATIFICATION_COMPLETE_NOT_EXECUTED` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_CONFIG_REF` | `config/research/post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_v0.json` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0.md` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_BINDING_CLASS` | `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_STRATEGY_VERSION` | `v2` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_BASELINE_PR` | `4879` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_BASELINE_HEAD` | `a113c6bb667fc38da160637e47f018a5411365a3` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_PARENT_SCOPE_ID` | `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_versioned_binding_ratification_v0_20260705T210521Z (MANIFEST_VERIFY_RC=0; GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0 consumed)` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STATUS` | `EXECUTION_COMPLETE_INCONCLUSIVE` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_CONFIG_REF` | `config/research/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_scope_v0.json` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z (MANIFEST_VERIFY_RC=0; GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0 consumed)` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_STATUS` | `INCONCLUSIVE` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_PASS_COUNT` | `0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FAIL_COUNT` | `0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_INCONCLUSIVE_COUNT` | `3` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_BASELINE_HEAD` | `4698b49739976cdc3270922a38fad4b044ae5d26` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_STATUS` | `CLASSIFICATION_EXECUTION_COMPLETE_INCONCLUSIVE` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_CONFIG_REF` | `config/research/post_no_pass_sparse_signal_inconclusive_failure_classification_v0.json` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0.md` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_SELECTED_CLASS` | `E` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_SCOPE_DEFINITION_GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_SCOPE_DEFINITION_ONLY_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_SCOPE_DEFINITION_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_BASELINE_PR` | `4881` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_BASELINE_HEAD` | `6b48857ab9fc9e3d2637286038d2ae6ce6f3c9a3` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_PARENT_EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_PARENT_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_PARENT_FLEET_STATUS` | `INCONCLUSIVE` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_PARENT_FLEET_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_CLASSIFICATION_EXECUTION_AUTHORIZED` | `false` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_CLASSIFICATION_EXECUTED` | `true` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_PRIMARY_CLASSIFICATION` | `INCONCLUSIVE_SPARSE_SIGNAL_ZERO_TRADE` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_CLASSIFICATION_MAPPED_RATIO` | `1.0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z (MANIFEST_VERIFY_RC=0; GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0 consumed)` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION_CONSUMPTION` | `CONSUMED` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION_STATUS` | `EXECUTION_COMPLETE` |
+| `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_CONFIG_REF` | `config/research/post_no_pass_robustness_failure_next_research_scope_definition_v0.json` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_EVIDENCE_CLASS_ID` | `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_SELECTED_CLASS` | `D` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_BASELINE_PR` | `4878` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_BASELINE_HEAD` | `77de907bbf7808ed4cbf8604c7994f7078932b85` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_DIAGNOSTIC_MAPPED_RATIO` | `0.75` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_DIAGNOSTICS_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_robustness_failure_diagnostics_evidence_execution_v0_20260705T203622Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_DIAGNOSTICS_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_RESEARCH_HYPOTHESIS` | `SPARSE_SIGNAL_ZERO_TRADE_REQUIRES_NEW_VERSIONED_BINDINGS_NOT_UNCHANGED_CLASS_D_RETRY` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_robustness_failure_next_research_scope_definition_v0_20260705T205325Z (MANIFEST_VERIFY_RC=0; GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0 consumed)` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_STATUS` | `SCOPE_EXECUTED_COMPLETE_ROBUSTNESS_FAILED` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_CONFIG_REF` | `config/research/bounded_post_no_pass_futures_research_scope_definition_v0.json` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_GOVERNANCE_REF` | `docs/governance/BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_GO_TOKEN` | `GO_NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_EVIDENCE_CLASS_ID` | `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_BASELINE_PR` | `4873` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_BASELINE_HEAD` | `ae799675366a2266b4b2b6dacc1bd4292b9c405c` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_CONFIG_REF` | `config/research/bounded_post_no_pass_futures_offline_economic_evaluation_execution_scope_v0.json` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN` | `GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_CLASS_ID` | `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z (MANIFEST_VERIFY_RC=0; GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0 consumed)` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_PASS_COUNT` | `0` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FAIL_COUNT` | `3` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_INCONCLUSIVE_COUNT` | `0` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_BASELINE_HEAD` | `17d70364e27ec12d9f648a043ae08eed4eb87cb5` |
+| `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_STATUS` | `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_GO_TOKEN` | `GO_POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0.md` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_CONFIG_REF` | `config/research/post_no_pass_economic_evidence_closeout_and_registry_update_v0.json` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_PASS_COUNT` | `0` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_FAIL_COUNT` | `3` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_INCONCLUSIVE_COUNT` | `0` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_TREND_FOLLOWING` | `ROBUSTNESS_FAILED` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_BOLLINGER_BANDS` | `ROBUSTNESS_FAILED` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_MOMENTUM_1H` | `ROBUSTNESS_FAILED` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0_STATUS` | `TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_COMPLETE` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0_GO_TOKEN` | `GO_STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0_GO_TOKEN_CONSUMED` | `true` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0_GOVERNANCE_REF` | `docs/governance/STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0.md` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0_CONFIG_REF` | `config/research/step29m_full_canonical_offline_baseline_terminal_negative_evidence_closeout_v0.json` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_FLEET_VERDICT` | `FAIL_TERMINAL_NEGATIVE_BASELINE_EVIDENCE` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_PASS_COUNT` | `0` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_FAIL_COUNT` | `3` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_INCONCLUSIVE_COUNT` | `0` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TREND_FOLLOWING` | `FAIL` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_BOLLINGER_BANDS` | `FAIL` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_MOMENTUM_1H` | `FAIL` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_BOLLINGER_BANDS_ZERO_TRADE_CLASSIFICATION` | `SPARSE_SIGNAL_ENTRY_THRESHOLD_NOT_MET` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_CURRENT_RESEARCH_GENERATION_CLOSED` | `true` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_FAILED_BINDINGS_REGISTERED` | `true` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_UNCHANGED_RETRY_BLOCKED` | `true` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_FLEET_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bounded_offline_economic_evaluation_final_research_fleet_v0_20260710T055955Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_ADJUDICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/step29m_full_canonical_system_offline_baseline_economic_evaluation_v0_20260710T060508Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_STATUS` | `DIAGNOSTICS_EXECUTION_COMPLETE_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_CONFIG_REF` | `config/research/post_no_pass_robustness_failure_diagnostics_evidence_class_v0.json` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0.md` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_OPERATOR_RATIFICATION_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_OPERATOR_RATIFICATION_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_SELECTED_CLASS` | `E` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_ID` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_SOURCE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_SOURCE_PRS` | `4873,4875,4876` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_DIAGNOSTICS_EXECUTED` | `true` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_STATUS` | `DIAGNOSTICS_EXECUTION_COMPLETE_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GO_TOKEN` | `GO_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_robustness_failure_diagnostics_evidence_execution_v0_20260705T203622Z (MANIFEST_VERIFY_RC=0; GO_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0 consumed)` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_MANIFEST_VERIFY_RC` | `0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_DIAGNOSTIC_MAPPED_RATIO` | `0.75` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0_NEXT_RECOMMENDED_STEP` | `NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_PARAMETER_RESCUE_ALLOWED` | `false` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_AUTHORITY_EFFECT` | `NONE` |
+| `PR4875_MERGE_COMMIT` | `a394c7debe41c3ca07773aa97425422d008e714f` |
+| `CURRENT_ADMISSIBLE_IMPLEMENTATION_SCOPE` | `NONE` |
+| `CURRENT_BLOCKING_POLICY` | `ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL` |
+| `GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1` | `DEFINED_DEFAULT_BLOCKED` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_AUTHORITY_EFFECT` | `NONE` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_ACTIVATION_EFFECT` | `NONE` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_ECONOMIC_GATE_EFFECT` | `NONE` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_ORDERS_ALLOWED` | `false` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_MAX_DURATION_SECONDS` | `21600` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_RUNTIME_EXECUTION` | `BLOCKED` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SIX_HOUR_SESSION_READY` | `false` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_AUTHORIZATION_AND_EXECUTION_IMPLEMENTATION_READINESS` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EXECUTION_AUTHORIZED` | `false` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EVIDENCE` | `NOT_AUTHORIZED` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EVIDENCE_VALID` | `false` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_OPERATOR_GO_GRANTED` | `false` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_OPERATOR_GO_REQUIRED_LATER` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SIX_HOUR_SESSION_EXECUTED` | `false` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_CONTRACT_REF` | `docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_AUTHORIZATION_EXECUTION_REF` | `docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION_V1.md` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_SET_ECONOMIC_PASS` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_AUTHORIZE_29R_29T_29U` | `true` |
+| `RUNBOOK_V4_4_CANONICAL_SOURCE` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4_current_state_multi_candidate_research_fleet.md` |
+| `RUNBOOK_V4_4_STALE_GOVERNANCE_SUPERSESSION_STATUS` | `DOCS_HYGIENE_APPLIED_V0` |
+| `RUNBOOK_V4_4_1_MULTI_FUTURE_TARGET_MODEL_CLARIFICATION_SOURCE` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md` |
+| `RUNBOOK_V4_4_1_GOVERNANCE_CLARIFICATION_STATUS` | `INTEGRATED_V0` |
+| `PR4840_MERGE_COMMIT` | `220cce942aada36e621c3dd572c1ac818463e051` |
+| `PR4840_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_stale_runbook_supersession_docs_hygiene_pr_closeout_v0_20260704T225316Z (MANIFEST_VERIFY_RC=0; PR #4840; squash 220cce94; VERDICT=CLASS_D_V1_STALE_RUNBOOK_SUPERSESSION_DOCS_HYGIENE_SQUASH_MERGE_CLOSEOUT_COMPLETE)` |
+| `PR4840_LAST_VERIFIED_SYNC_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_progress_registry_last_verified_origin_main_sync_pr_closeout_v0_20260704T230130Z` |
+| `CLASS_D_V1_FLEET` | `TERMINAL_PARKED` |
+| `CLASS_D_V1_FLEET_TERMINAL_PARK_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z (MANIFEST_VERIFY_RC=0)` |
+| `CLASS_D_V1_FLEET_OPERATOR_DECISION_DOSSIER_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z (MANIFEST_VERIFY_RC=0)` |
+| `CLASS_D_V1_FLEET_ARCHITECTURE_REVIEW_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_architecture_review_read_only_v0_20260704T224444Z (MANIFEST_VERIFY_RC=0)` |
+| `EXIT_COMPANION_CANDIDATE_ID` | `class_d_v2_eth_v2_1h_sdfa_exit_companion_redesign` |
+| `EXIT_COMPANION_COUNTS_ONLY_REVALIDATION_STATUS` | `FAILED_INSUFFICIENT_TRADES` |
+| `EXIT_COMPANION_DRAFT_CANDIDATE_STATE` | `PARKED_COUNTS_ONLY_FAILED` |
+| `EXIT_COMPANION_CANDIDATE_RATIFIED` | `false` |
+| `EXIT_COMPANION_EVALUATION_AUTHORIZED` | `false` |
+| `EXIT_COMPANION_RUNTIME_AUTHORITY` | `false` |
+| `EXIT_COMPANION_TOTAL_CLOSED_TRADES` | `40` |
+| `EXIT_COMPANION_TRADE_COUNT_THRESHOLD` | `50` |
+| `EXIT_COMPANION_PREP_BUNDLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/class_d_v2_eth_v2_1h_exit_companion_candidate_ratification_prep_read_only_v0_20260704T234256Z (MANIFEST_VERIFY_RC=0)` |
+| `EXIT_COMPANION_COUNTS_ONLY_OUTPUT_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_exit_companion_counts_only_revalidation_read_only_or_offline_only_v0_20260705T001007Z` |
+| `EXIT_COMPANION_COUNTS_ONLY_MANIFEST_VERIFY_RC` | `0` |
+| `EXIT_COMPANION_COUNTS_ONLY_FAIL_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/exit_companion_counts_only_fail_closeout_and_progress_registry_sync_v0_20260705T001150Z (MANIFEST_VERIFY_RC=0)` |
+| `EXIT_COMPANION_NEXT_ACTION` | `PARK_EXIT_COMPANION_DRAFT_OR_RESEARCH_REDESIGN_REQUIRED` |
+| `FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0_STATUS` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0_CONFIG_REF` | `config/research/final_research_fleet_new_evidence_class_scope_v0.json` |
+| `FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_new_evidence_class_scope_pr4845_squash_merge_closeout_v0_20260705T003158Z (MANIFEST_VERIFY_RC=0; PR #4845)` |
+| `FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0_GO_TOKEN` | `GO_BOUNDED_FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_PR_V0` |
+| `NEW_EVIDENCE_CLASS_OFFLINE_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_execution_v0_20260705T003528Z (MANIFEST_VERIFY_RC=0; PR #4846 offline evaluation)` |
+| `NEW_EVIDENCE_CLASS_OFFLINE_EVALUATION_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `NEW_EVIDENCE_CLASS_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `PR4846_MERGE_COMMIT` | `9b377727cfcb33b03fa545aaf6b48c20c31451e7` |
+| `PR4846_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T004825Z (MANIFEST_VERIFY_RC=0; PR #4846; squash 9b377727; VERDICT=PR4846_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `PR4847_MERGE_COMMIT` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `PR4847_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_offline_failure_progress_registry_closeout_pr_squash_merge_closeout_v0_20260705T005943Z (MANIFEST_VERIFY_RC=0; PR #4847; squash 7385dc09; VERDICT=PR4847_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_FAILURE_PROGRESS_REGISTRY_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_offline_failure_progress_registry_closeout_v0_20260705T005147Z (MANIFEST_VERIFY_RC=0; PR #4847 pre-merge closeout)` |
+| `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_SYNC_STATUS` | `COMPLETE` |
+| `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_SYNC_GO_TOKEN` | `GO_FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
+| `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_SYNC_GO_TOKEN_CONSUMED` | `true` |
+| `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_SYNC_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_post_failure_runbook_current_state_sync_v0_20260705T010439Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4849_MERGE_COMMIT` | `f21aadc36c0ee3f5b697ef426da25db5104b9b90` |
+| `PR4849_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_pr_squash_merge_closeout_v0_20260705T012357Z (MANIFEST_VERIFY_RC=0; PR #4849; squash f21aadc3; VERDICT=PR4849_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `PR4850_MERGE_COMMIT` | `19126d80bce35927197e590789af62041c0f0773` |
+| `PR4850_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_pr_squash_merge_closeout_v0_20260705T013249Z (MANIFEST_VERIFY_RC=0; PR #4850; squash 19126d80; VERDICT=PR4850_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0_STATUS` | `EVALUATION_EXECUTION_SCOPE_RATIFICATION_COMPLETE` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evaluation_execution_scope_v0.json` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0.md` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0_GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_DIGEST_AND_EVALUATION_EXECUTION_SCOPE_RATIFICATION_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDING_CONFIG_DIGEST` | `54be6ad697dfcf25d0e913152f23565a17f1a3c42cdd79fe32b94ee28b07bd3d` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_DATA_DIGEST` | `0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_IMPLEMENTATION_DIGEST` | `630399ddb14667010be01502f3a5a64199a62c8c9813d5442ffb398f086eef8d` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_SCOPE_RATIFICATION_DIGEST` | `c899a936bec41e0225d1f34862879377309f34964039695f1c1f20d97c7c9ce2` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_V0_STATUS` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_V0_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_V0_GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_DEFINITION_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_SCOPE_DEFINED` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEW_EVIDENCE_CLASS_RATIFIED_FOR_SCOPE_DEFINITION` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0_STATUS` | `VERSIONED_BINDINGS_MATERIALIZATION_COMPLETE` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0_GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0.md` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0_GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_VERSIONED_BINDINGS_MATERIALIZATION_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDING_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0_BINDINGS_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDING_READY` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDING_SPEC_STATUS` | `VERSIONED_BINDINGS_MATERIALIZED` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_FURTHER_ECONOMIC_EVALUATION_REQUIRES_SEPARATE_OPERATOR_GO` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_CANDIDATE_RATIFIED` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_REQUIRES_SEPARATE_OPERATOR_GO_FOR_EVALUATION` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_REQUIRES_FULL_PANEL_BINDING` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NARROW_ADAPTER_ETH_ONLY_BINDING_DISALLOWED` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_FORENSICS_SOURCE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_post_failure_forensics_and_new_evidence_class_candidate_discovery_read_only_v0_20260705T011307Z (MANIFEST_VERIFY_RC=0)` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_V0_STATUS` | `OFFLINE_ECONOMIC_EVALUATION_COMPLETE` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_V0_GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_VERDICT` | `ROBUSTNESS_FAILED` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_MANIFEST_VERIFY_RC` | `0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_V0_GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0.md` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_bounded_offline_economic_evaluation_v0_20260705T014731Z (MANIFEST_VERIFY_RC=0)` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_RUNNER_REF` | `scripts/ops/run_okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_execution_v0.py` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_OWNER_REF` | `src/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_execution_v0.py` |
+| `PR4852_MERGE_COMMIT` | `1a04805112a26986f3a659262b30f80005952850` |
+| `PR4852_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_bounded_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T015740Z (MANIFEST_VERIFY_RC=0; PR #4852; squash 1a048051; VERDICT=PR4852_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_STATUS` | `NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_COMPLETE` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GO_TOKEN_CONSUMED` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_negative_economic_evidence_closeout_v0.json` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0_STATUS` | `NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_COMPLETE` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0_GO_TOKEN` | `GO_TERMINALIZE_NEGATIVE_ECONOMIC_EVIDENCE_FOR_CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0_GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0.md` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0_CONFIG_REF` | `config/research/cross_sectional_realized_volatility_rank_rotation_v0_negative_economic_evidence_terminalization_v0.json` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_TERMINAL_ECONOMIC_DECISION` | `FAIL` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_UNCHANGED_RETRY_ALLOWED` | `false` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_SOURCE_EVIDENCE_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_realized_volatility_rank_rotation_v0_offline_economic_evaluation_20260706T190441Z (MANIFEST_VERIFY_RC=0)` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_signal_diagnostics_decomposition_evidence_class_scope_v0.json` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0_GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_PARENT_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_PARENT_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_SOURCE_AUTOPSY_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_strategy_archetype_failure_attribution_economic_autopsy_read_only_v0_20260705T020905Z (MANIFEST_VERIFY_RC=0)` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_SOURCE_NEGATIVE_EVIDENCE_PR` | `4852` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_SOURCE_GOVERNANCE_CLOSEOUT_PR` | `4853` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_DIAGNOSTICS_EXECUTED` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_trade_level_artifact_materialization_evidence_class_scope_v0.json` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0_GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_PARENT_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_PARENT_DIAGNOSTICS_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_V0` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_PARENT_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_SOURCE_DIAGNOSTICS_EXECUTION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_signal_diagnostics_decomposition_evidence_execution_read_only_v0_20260705T022050Z (MANIFEST_VERIFY_RC=0)` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_SOURCE_NEGATIVE_EVIDENCE_PR` | `4852` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_SOURCE_GOVERNANCE_CLOSEOUT_PR` | `4853` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_SOURCE_DIAGNOSTICS_SCOPE_PR` | `4854` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_MATERIALIZATION_EXECUTION_AUTHORIZED` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_MATERIALIZATION_EXECUTED` | `false` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0_CONFIG_REF` | `config/research/trade_ledger_equity_curve_evidence_class_scope_v0.json` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0_GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_DEFINITION_PR_V0` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_PRIMARY_FAILURE_UNCHANGED` | `NEGATIVE_RAW_EDGE` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SOURCE_MATERIALIZATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_trade_level_artifact_materialization_evidence_execution_read_only_v0_20260705T072422Z (MANIFEST_VERIFY_RC=0)` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_PERSISTENCE_EXECUTION_AUTHORIZED` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_PERSISTENCE_EXECUTED` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_NEXT_REQUIRES_RATIFIED_OFFLINE_EVALUATION_SCOPE` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_AUTHORITY_EFFECT` | `NONE` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_VERDICT` | `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_RATIFIED_NOT_EXECUTED` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_CONFIG_REF` | `config/research/trade_ledger_equity_curve_persistence_offline_evaluation_scope_v0.json` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0.md` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_RATIFICATION_PR_V0` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_PARENT_EVIDENCE_CLASS_PR` | `4856` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_PARENT_MERGE_COMMIT` | `fcb5ba9267430d6b6d810b14451ed52870791468` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_EVALUATION_EXECUTION` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_LEDGER_PERSISTENCE_EXECUTION` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_EQUITY_CURVE_PERSISTENCE_EXECUTION` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0_AUTHORITY_EFFECT` | `NONE` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_STATUS` | `BINDING_MATERIALIZATION_REQUIRED` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_VERDICT` | `EXECUTION_BINDING_SELECTION_SCOPE_FAIL_CLOSED_BINDING_MATERIALIZATION_REQUIRED` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_CONFIG_REF` | `config/research/trade_ledger_equity_curve_execution_binding_materialization_required_scope_v0.json` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0.md` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_SELECTION_SCOPE_PR_V0` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_PARTIAL_CANDIDATE` | `trend_following&#47;v1` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_PARTIAL_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_MISSING_ARTIFACTS` | `execution_owner_ref,execution_runner_ref,trade_ledger_v1_jsonl_export_owner_ref,equity_curve_v1_jsonl_export_owner_ref` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_NEXT_REQUIRED_SCOPE` | `TRADE_LEDGER_EQUITY_CURVE_OFFLINE_EVALUATION_EXECUTION_OWNER_AND_RUNNER_MATERIALIZATION_V0` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_AUTHORITY_EFFECT` | `NONE` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_STATUS` | `EXECUTION_BINDING_MATERIALIZED_NOT_EXECUTED` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_VERDICT` | `EXECUTION_BINDING_MATERIALIZATION_DEFINED_NOT_EXECUTED` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_CONFIG_REF` | `config/research/trade_ledger_equity_curve_execution_binding_materialization_v0.json` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0.md` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_PR_V0` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_STRATEGY_BINDING_REF` | `trend_following&#47;v1` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_STRATEGY_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_PARENT_GAP_SCOPE_PR` | `4858` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_EVALUATION_EXECUTION` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_EVALUATION_AUTHORIZED` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_EXECUTION_AUTHORIZED` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_STATUS` | `OFFLINE_EVALUATION_EXECUTION_COMPLETE` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_VERDICT` | `PASS` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_CONFIG_REF` | `config/research/trade_ledger_equity_curve_execution_binding_materialization_v0.json` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0.md` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_STRATEGY_BINDING_REF` | `trend_following&#47;v1` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_STRATEGY_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_DURABLE_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z (MANIFEST_VERIFY_RC=0)` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_LEDGER_PERSISTENCE_EXECUTION` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_EQUITY_CURVE_PERSISTENCE_EXECUTION` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_AUTHORITY_EFFECT` | `NONE` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_EVIDENCE_STATUS` | `ROBUSTNESS_FAILED` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0_PROCESS_EXECUTION_PASS` | `true` |
+| `PR4860_MERGE_COMMIT` | `2e354a30803324fee158325fb00fcb0b343ae1dd` |
+| `PR4860_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_pr_squash_merge_closeout_v0_20260705T083950Z (MANIFEST_VERIFY_RC=0; PR #4860; squash 2e354a30; VERDICT=PR4860_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_STATUS` | `NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_COMPLETE` |
+| `TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GO_TOKEN` | `GO_TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0` |
+| `TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GO_TOKEN_CONSUMED` | `true` |
+| `TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GOVERNANCE_REF` | `docs/governance/TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md` |
+| `TREND_FOLLOWING_V1_STRATEGY_BINDING_REF` | `trend_following&#47;v1` |
+| `TREND_FOLLOWING_V1_STRATEGY_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `TREND_FOLLOWING_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `TREND_FOLLOWING_V1_EVIDENCE_STATUS` | `ROBUSTNESS_FAILED` |
+| `TREND_FOLLOWING_V1_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `TREND_FOLLOWING_V1_PROCESS_EXECUTION_PASS` | `true` |
+| `TREND_FOLLOWING_V1_PROMOTION_ELIGIBLE` | `false` |
+| `TREND_FOLLOWING_V1_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `TREND_FOLLOWING_V1_NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `TREND_FOLLOWING_V1_IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `TREND_FOLLOWING_V1_NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `TREND_FOLLOWING_V1_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z (MANIFEST_VERIFY_RC=0)` |
+| `TREND_FOLLOWING_V1_CLOSEOUT_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_pr_squash_merge_closeout_v0_20260705T083950Z (MANIFEST_VERIFY_RC=0)` |
+| `TREND_FOLLOWING_V1_NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `TREND_FOLLOWING_V1_AUTHORITY_EFFECT` | `NONE` |
+| `VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_STATUS` | `TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE` |
+| `VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GO_TOKEN` | `GO_VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0` |
+| `VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GO_TOKEN_CONSUMED` | `true` |
+| `VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_GOVERNANCE_REF` | `docs/governance/VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md` |
+| `VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0_CONFIG_REF` | `config/research/vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0.json` |
+| `VOL_BREAKOUT_V1_STRATEGY_BINDING_REF` | `vol_breakout&#47;v1` |
+| `VOL_BREAKOUT_V1_INSTRUMENT_ID` | `inst-eth-usdt-perp` |
+| `VOL_BREAKOUT_V1_BASELINE_VERDICT` | `FAIL` |
+| `VOL_BREAKOUT_V1_FAILURE_CLASS` | `NEGATIVE_ECONOMIC_BASELINE_AND_ROBUSTNESS_FAIL` |
+| `VOL_BREAKOUT_V1_CURRENT_RESEARCH_GENERATION_CLOSED` | `true` |
+| `VOL_BREAKOUT_V1_FAILED_BINDING_REGISTERED` | `true` |
+| `VOL_BREAKOUT_V1_UNCHANGED_RETRY_BLOCKED` | `true` |
+| `VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `VOL_BREAKOUT_V1_IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `VOL_BREAKOUT_V1_NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `VOL_BREAKOUT_V1_ECONOMIC_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_PR5074_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5074_merge_closeout_vol_breakout_v1_sizing_config_digest_binding_fix_v0_20260710T075844Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_AUTHORITY_EFFECT` | `NONE` |
+| `TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0_STATUS` | `POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_COMPLETE` |
+| `TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0_GO_TOKEN` | `GO_TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0` |
+| `TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0_GO_TOKEN_CONSUMED` | `true` |
+| `TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0_GOVERNANCE_REF` | `docs/governance/TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0.md` |
+| `TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0_CONFIG_REF` | `config/research/trend_following_v2_post_repair_economic_fail_governance_closeout_v0.json` |
+| `TREND_FOLLOWING_V2_STRATEGY_BINDING_REF` | `trend_following&#47;v2` |
+| `TREND_FOLLOWING_V2_STRATEGY_BINDING_DIGEST` | `9c624a22506c905261e58c117923ea4c0f570968d54ddf5e91f2c56f88b0d966` |
+| `TREND_FOLLOWING_V2_MANDATORY_BOUNDARY_REPAIR_COMPLETE` | `true` |
+| `TREND_FOLLOWING_V2_REPAIR_PR` | `5220` |
+| `TREND_FOLLOWING_V2_REPAIR_PR_MERGE_COMMIT` | `967ba86a25170d730f0489329ef6eff708d3dd1a` |
+| `TREND_FOLLOWING_V2_POST_MERGE_FULL_CHAIN_REVALIDATION_RESULT` | `PASS` |
+| `TREND_FOLLOWING_V2_POST_REPAIR_BASELINE_ECONOMIC_REEVALUATION_COMPLETE` | `true` |
+| `TREND_FOLLOWING_V2_ECONOMIC_EVALUATION_STATUS` | `COMPLETE` |
+| `TREND_FOLLOWING_V2_HISTORICAL_ECONOMIC_RESULT` | `FAIL` |
+| `TREND_FOLLOWING_V2_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `TREND_FOLLOWING_V2_PRIMARY_ECONOMIC_FAILURE_REASON` | `ZERO_TRADE_DEGENERATION` |
+| `TREND_FOLLOWING_V2_ZERO_TRADE_CLASSIFICATION` | `NO_CANONICAL_MARKET_OPPORTUNITY` |
+| `TREND_FOLLOWING_V2_TRADE_COUNT` | `0` |
+| `TREND_FOLLOWING_V2_FULL_CANONICAL_CHAIN_VERIFIED` | `true` |
+| `TREND_FOLLOWING_V2_MANDATORY_BOUNDARY_CHAIN_VERIFIED` | `true` |
+| `TREND_FOLLOWING_V2_ECONOMIC_EVIDENCE_VALID` | `true` |
+| `TREND_FOLLOWING_V2_PROMOTION_ELIGIBLE` | `false` |
+| `TREND_FOLLOWING_V2_ROBUSTNESS_ADMISSIBLE` | `false` |
+| `TREND_FOLLOWING_V2_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `TREND_FOLLOWING_V2_UNCHANGED_BINDING_RETRY_ADMISSIBLE` | `false` |
+| `TREND_FOLLOWING_V2_PARAMETER_TUNING_AUTHORIZED` | `false` |
+| `TREND_FOLLOWING_V2_THRESHOLD_RELAXATION_AUTHORIZED` | `false` |
+| `TREND_FOLLOWING_V2_POST_RESULT_SELECTION_AUTHORIZED` | `false` |
+| `TREND_FOLLOWING_V2_IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `TREND_FOLLOWING_V2_NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `TREND_FOLLOWING_V2_NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TREND_FOLLOWING_V2_TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `TREND_FOLLOWING_V2_CURRENT_PHASE` | `TERMINAL_ECONOMIC_FAIL_CLOSEOUT` |
+| `TREND_FOLLOWING_V2_NEXT_ADMISSIBLE_SCOPE` | `NONE_WITHOUT_NEW_OPERATOR_RATIFICATION` |
+| `TREND_FOLLOWING_V2_POST_REPAIR_BASELINE_ECONOMIC_REEVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/trend_following_v2_post_repair_baseline_economic_reevaluation_v0_20260715T145755Z (MANIFEST_VERIFY_RC=0)` |
+| `TREND_FOLLOWING_V2_PR5219_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5219_merge_closeout_trend_following_v2_baseline_e2e_test_runtime_bound_repair_v0_20260715T134243Z (MANIFEST_VERIFY_RC=0)` |
+| `TREND_FOLLOWING_V2_PR5220_IMPLEMENTATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/trend_following_v2_mandatory_boundary_rewire_canonical_plan_freeze_v0_20260715T142233Z (MANIFEST_VERIFY_RC=0)` |
+| `TREND_FOLLOWING_V2_PR5220_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5220_merge_closeout_trend_following_v2_canonical_mandatory_boundary_rewire_v0_20260715T143605Z (MANIFEST_VERIFY_RC=0)` |
+| `TREND_FOLLOWING_V2_POST_MERGE_FULL_CHAIN_REAUDIT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/trend_following_v2_post_merge_full_canonical_system_chain_e2e_parity_reaudit_v0_20260715T144719Z (MANIFEST_VERIFY_RC=0)` |
+| `TREND_FOLLOWING_V2_MANIFEST_VERIFY_RC` | `0` |
+| `TREND_FOLLOWING_V2_AUTHORITY_EFFECT` | `NONE` |
+| `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0_STATUS` | `AUTHORIZATION_RATIFICATION_COMPLETE` |
+| `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0_GO_TOKEN` | `GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0` |
+| `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0_GOVERNANCE_REF` | `docs/governance/MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_V0.md` |
+| `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0_CONFIG_REF` | `config/research/momentum_1h_v2_offline_economic_evaluation_authorization_ratification_v0.json` |
+| `MOMENTUM_1H_V2_STRATEGY_BINDING_REF` | `momentum_1h&#47;v2` |
+| `MOMENTUM_1H_V2_STRATEGY_BINDING_DIGEST` | `366f7aeb21d781a2531d477ef32943c04d5edb262b7be9e540bbfcfc2528985f` |
+| `MOMENTUM_1H_V2_BINDING_GENERATION` | `post_pr4921` |
+| `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_STATUS` | `RATIFIED` |
+| `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `MOMENTUM_1H_V2_ECONOMIC_RESULT` | `NOT_EVALUATED` |
+| `MOMENTUM_1H_V2_ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `MOMENTUM_1H_V2_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `MOMENTUM_1H_V2_PROMOTION_ELIGIBLE` | `false` |
+| `MOMENTUM_1H_V2_ROBUSTNESS_ADMISSIBLE` | `false` |
+| `MOMENTUM_1H_V2_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `MOMENTUM_1H_V2_GLOBAL_HOLD_RELAXED` | `false` |
+| `MOMENTUM_1H_V2_CANDIDATE_SPECIFIC_AUTHORIZATION` | `true` |
+| `MOMENTUM_1H_V2_NEXT_ADMISSIBLE_SCOPE` | `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `MOMENTUM_1H_V2_NEXT_OPERATOR_GO` | `GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `MOMENTUM_1H_V2_AUTHORITY_EFFECT` | `OFFLINE_EVALUATION_AUTHORIZATION_ONLY` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STATUS` | `OFFLINE_EVALUATION_EXECUTION_COMPLETE` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_VERDICT` | `FAIL_CLOSED` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_CONFIG_REF` | `config/research/bollinger_bands_v1_offline_economic_evaluation_execution_binding_materialization_v0.json` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN` | `GO_BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `BOLLINGER_BANDS_V1_STRATEGY_BINDING_REF` | `bollinger_bands&#47;v1` |
+| `BOLLINGER_BANDS_V1_STRATEGY_BINDING_DIGEST` | `b7d5e1d7bbdd23134285aea337ae645a8cd8b0af17286e317ae60f1860f71451` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_DURABLE_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/bollinger_bands_v1_offline_economic_evaluation_execution_v0_20260705T143018Z (MANIFEST_VERIFY_RC=0)` |
+| `BOLLINGER_BANDS_V1_PROCESS_EXECUTION_PASS` | `false` |
+| `BOLLINGER_BANDS_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `BOLLINGER_BANDS_V1_EVIDENCE_STATUS` | `RESEARCH_ONLY` |
+| `BOLLINGER_BANDS_V1_PRIMARY_FAILURE_CLASS` | `TRADE_COUNT_BELOW_THRESHOLD` |
+| `BOLLINGER_BANDS_V1_TRADE_COUNT` | `0` |
+| `BOLLINGER_BANDS_V1_EQUITY_POINT_COUNT` | `19809` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `BOLLINGER_BANDS_V1_LEDGER_PERSISTENCE_EXECUTION` | `true` |
+| `BOLLINGER_BANDS_V1_EQUITY_CURVE_PERSISTENCE_EXECUTION` | `true` |
+| `BOLLINGER_BANDS_V1_NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `BOLLINGER_BANDS_V1_PROMOTION_ELIGIBLE` | `false` |
+| `BOLLINGER_BANDS_V1_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `BOLLINGER_BANDS_V1_AUTHORITY_EFFECT` | `NONE` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0_STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0_VERDICT` | `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_DEFINED_NOT_EXECUTED` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0_CONFIG_REF` | `config/research/momentum_1h_v1_offline_economic_evaluation_scope_and_binding_materialization_v0.json` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0_GOVERNANCE_REF` | `docs/governance/MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0.md` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0_GO_TOKEN` | `GO_MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0` |
+| `MOMENTUM_1H_V1_STRATEGY_BINDING_REF` | `momentum_1h&#47;v1` |
+| `MOMENTUM_1H_V1_STRATEGY_BINDING_DIGEST` | `a8b7d87100d7167205258056144690273cda54769c9c29fcf8e91d4477318730` |
+| `MOMENTUM_1H_V1_BINDING_SELECTION_STATUS` | `BINDING_MATERIALIZATION_COMPLETE` |
+| `MOMENTUM_1H_V1_FUTURES_ONLY` | `true` |
+| `MOMENTUM_1H_V1_STRATEGY_REGISTRY_VERIFIED` | `true` |
+| `MOMENTUM_1H_V1_EVALUATION_EXECUTION` | `true` |
+| `MOMENTUM_1H_V1_EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `MOMENTUM_1H_V1_EVIDENCE_STATUS` | `ROBUSTNESS_FAILED` |
+| `MOMENTUM_1H_V1_PROMOTION_ELIGIBLE` | `false` |
+| `MOMENTUM_1H_V1_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `MOMENTUM_1H_V1_AUTHORITY_EFFECT` | `NONE` |
+| `MOMENTUM_1H_V1_NEXT_REQUIRED_SCOPE` | `NONE` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STATUS` | `OFFLINE_EVALUATION_EXECUTION_COMPLETE` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_VERDICT` | `FAIL_CLOSED` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_CONFIG_REF` | `config/research/momentum_1h_v1_offline_economic_evaluation_execution_binding_materialization_v0.json` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GOVERNANCE_REF` | `docs/governance/MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN` | `GO_MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN_CONSUMED` | `true` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_DURABLE_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/momentum_1h_v1_offline_economic_evaluation_execution_v0_20260705T145530Z (MANIFEST_VERIFY_RC=0)` |
+| `MOMENTUM_1H_V1_PROCESS_EXECUTION_PASS` | `true` |
+| `MOMENTUM_1H_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `MOMENTUM_1H_V1_PRIMARY_FAILURE_CLASS` | `TRADE_COUNT_BELOW_THRESHOLD` |
+| `MOMENTUM_1H_V1_TRADE_COUNT` | `2` |
+| `MOMENTUM_1H_V1_EQUITY_POINT_COUNT` | `19809` |
+| `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `MOMENTUM_1H_V1_LEDGER_PERSISTENCE_EXECUTION` | `true` |
+| `MOMENTUM_1H_V1_EQUITY_CURVE_PERSISTENCE_EXECUTION` | `true` |
+| `MOMENTUM_1H_V1_NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0_STATUS` | `FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_COMPLETE_NO_PASS` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0_CONFIG_REF` | `config/research/final_research_fleet_offline_economic_evidence_convergence_summary_v0.json` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0_GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0.md` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0_GO_TOKEN` | `GO_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0` |
+| `FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_CONVERGENCE_COMPLETE` | `true` |
+| `FINAL_RESEARCH_FLEET_FLEET_STATUS` | `FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_COMPLETE_NO_PASS` |
+| `FINAL_RESEARCH_FLEET_PROMOTION_ELIGIBLE` | `false` |
+| `FINAL_RESEARCH_FLEET_ALL_CANDIDATES_OFFLINE_EVIDENCE_COMPLETE` | `true` |
+| `FINAL_RESEARCH_FLEET_NO_CANDIDATE_ECONOMIC_PASS` | `true` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SPOT_ALLOWED` | `false` |
+| `SUPERSEDED_NEXT_CANONICAL_STEP` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` |
+| `SUPERSEDED_NEXT_CANONICAL_STEP_STATUS` | `COMPLETE_SUPERSEDED_BY_PR4846_PR4847_OFFLINE_EVALUATION` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `FURTHER_ECONOMIC_EVALUATION_REQUIRES_NEW_EVIDENCE_CLASS_SCOPE_AND_EXPLICIT_OPERATOR_GO` | `true` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_CLOSEOUT_GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_CLOSEOUT_V0.md` |
+| `EVIDENCE_CLASS` | `NEW_VERSIONED_RESEARCH_SCOPE_NOT_UNCHANGED_RETRY` |
+| `EVIDENCE_CLASS_ID` | `FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0` |
+| `HISTORICAL_STEP31F_BLOCKED_COMPLETION_DIGEST` | `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1` |
+| `HISTORICAL_STEP31F_BLOCKED_COMPLETION_STATUS` | `TERMINAL_FAILED_OR_ROBUSTNESS_FAILED` |
+| `NEW_EVIDENCE_CLASS_BINDING_COMPLETION_DIGEST` | `c5e3b5fe6b688b49dbd2b210fd63bdea79201d64820591f87091b4e20689a9dd` |
+| `NEW_EVIDENCE_CLASS_BINDING_COMPLETION_REF` | `config/research/final_research_fleet_okx_full_panel_versioned_binding_completion_v0.json` |
+| `NEW_EVIDENCE_CLASS_OFFLINE_SCOPE_REF` | `config/research/final_research_fleet_okx_full_panel_offline_economic_evaluation_scope_ratification_v0.json` |
+| `NEW_EVIDENCE_CLASS_SCOPE_BINDING_READY` | `true` |
+| `NEW_EVIDENCE_CLASS_SCOPE_BINDING_SPEC_STATUS` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `NEW_EVIDENCE_CLASS_EXECUTION_OWNER_REF` | `src/research/bounded_new_evidence_class_offline_economic_evaluation_execution_v0.py` |
+| `NEW_EVIDENCE_CLASS_EXECUTION_RUNNER_REF` | `scripts/ops/run_bounded_new_evidence_class_offline_economic_evaluation_execution_v0.py` |
+| `CLASS_D_OWNER_MIXING_ALLOWED` | `false` |
+| `POLICY_EXCEPTION_ALLOWED` | `false` |
+| `RUNBOOK_V4_4_RESEARCH_GOVERNANCE_RECONCILIATION_STATUS` | `COMPLETE` |
+| `OPERATOR_POLICY_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NO_NEW_CANDIDATE_HOLD_REGISTRY_DRIFT_CORRECTED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD_PRIOR_REGISTRY_DRIFT_VALUE` | `REVOKED` |
+| `NO_NEW_CANDIDATE_HOLD_REINSTATE_RECOMMENDED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD_REINSTATE_RATIFIED` | `true` |
+| `PR4819_OPERATOR_RATIFICATION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED` | `false` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_AUTHORIZATION_CONSUMED` | `true` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_NEW_AUTHORIZATION_REQUIRED` | `true` |
+| `EXACTLY_ONE_CANDIDATE_LIMIT` | `false` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_BINDING_READY` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_EVALUATION_COMPLETE` | `true` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_VERDICT` | `ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `RE_EVALUATION_SAME_BINDING_ALLOWED` | `false` |
+| `RESEARCH_GOVERNANCE_RECONCILIATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_runbook_v4_4_research_governance_progress_registry_reconciliation_v0_20260703T143000Z (MANIFEST_VERIFY_RC=0)` |
+| `RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/research_governance_decision_after_final_fleet_fail_v0_20260704T180033Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE_RATIFIED` |
+| `RANK_1_NEXT_SCOPE` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `PR4818_MERGE_COMMIT` | `bd03912a9659b2efbb7cbaf7638922c651abc32b` |
+| `PR4818_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/versioned_final_fleet_bindings_offline_economic_evaluation_pr_merge_closeout_v0_20260704T175726Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP29R_PRECONDITION_ADMISSIBILITY_ASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/runbook_step29r_runtime_rewire_precondition_admissibility_assessment_read_only_v0_20260702T205033Z (MANIFEST_VERIFY_RC=0; VERDICT=STEP29R_RUNTIME_REWIRE_PRECONDITION_ASSESSMENT_COMPLETE_NOT_ADMISSIBLE)` |
+| `STEP29R_ECONOMIC_VALIDITY_TERMINAL_BLOCKER_REGISTRY_BINDING_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step29r_economic_validity_terminal_blocker_registry_binding_v0_20260702T210306Z (MANIFEST_VERIFY_RC=0)` |
+| `TRADING_LOGIC_COMPLETION_GATE_STATUS` | `PASS` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_STATUS` | `FAIL` |
+| `INTENT_COMPATIBILITY_FIREWALL_GATE_STATUS` | `PASS` |
+| `STEP29M_FLEET_STATUS` | `TERMINAL_FAIL_RESEARCH_GENERATION_CLOSED` |
+| `STEP_29M_STATUS` | `BINDING_RATIFIED_NOT_EXECUTED_AWAITING_ECONOMIC_BASELINE_GO` |
+| `STEP_29L_1_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `STEP_29L_2_STATUS` | `COMPLETE_MANIFEST_VERIFIED` |
+| `FULL_CANONICAL_CHAIN_WIRED` | `true` |
+| `BACKTEST_RUNTIME_DECISION_PARITY_PASS` | `true` |
+| `LINEAR_DIAGNOSTIC_CLASS_COUNT` | `5` |
+| `LINEAR_DIAGNOSTICS_SUPPORT_BUNDLE_BOUND` | `true` |
+| `LINEAR_DIAGNOSTICS_ECONOMIC_EVIDENCE_CONSUMER_BOUND` | `true` |
+| `LINEAR_DIAGNOSTICS_PROMOTION_GATE_CONSUMER_BOUND` | `true` |
+| `LINEAR_DIAGNOSTICS_CONSUMER_CHAIN_TERMINAL` | `true` |
+| `STEP_29N_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND_FAIL_CLOSED_BLOCKED` |
+| `PROMOTION_ECONOMIC_GATE_BOUND` | `true` |
+| `PROMOTION_ECONOMIC_GATE_STATUS` | `BLOCKED` |
+| `PROMOTION_BLOCKING_REASON` | `BLOCKED_SOURCE_DIAGNOSTICS_PRESENT` |
+| `STEP_29O_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `STEP_29P_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `STEP_29Q_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `STEP_29R_STATUS` | `BLOCKED_BY_PRIOR_GATE` |
+| `RUNTIME_REWIRE_BLOCKING_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
+| `PR5185_MERGE_COMMIT` | `175aca7872a89898dd3986e12749b0713efaea03` |
+| `PR5186_MERGE_COMMIT` | `299132bbd2af94f56f98c554798c8fdc48819651` |
+| `PR5187_MERGE_COMMIT` | `1d1f3ba85d02f35711ba632096e7aa2240f50d6e` |
+| `PR5185_MERGE_CLOSEOUT_BOUND` | `true` |
+| `PR5186_MERGE_CLOSEOUT_BOUND` | `true` |
+| `PR5187_MERGE_CLOSEOUT_BOUND` | `true` |
+| `PR5185_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5185_merge_closeout_offline_productive_linear_diagnostics_support_bundle_v0_20260714T230433Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5186_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5186_merge_closeout_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0_20260714T231652Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5187_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5187_merge_closeout_offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0_20260714T233336Z (MANIFEST_VERIFY_RC=0)` |
+| `NO_IMPLEMENTATION_GAP` | `true` |
+| `REMAINING_BLOCK_CLASS` | `POLICY_BLOCK_ONLY` |
+| `UNCHANGED_RETRY_BLOCKED` | `true` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `CANONICAL_OFFLINE_LINEAR_DIAGNOSTICS_PROMOTION_BINDING_COMPLETION_RECONCILIATION_V0_STATUS` | `COMPLETE` |
+| `STEP31F_STATUS` | `COMPLETE_ALL_FAIL` |
+| `STEP31F_MERGE_COMMIT` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `INCONCLUSIVE_COUNT` | `0` |
+| `FLEET_PROMOTION_ELIGIBLE` | `false` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `RUNBOOK_STEP_29R_STATUS` | `BLOCKED` |
+| `RUNBOOK_STEP_29R_BLOCK_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
+| `STEP31F_FINAL_FLEET_OFFLINE_EVALUATION_PR4766_MERGE_COMMIT` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `STEP31F_FINAL_FLEET_OFFLINE_EVALUATION_PR4766_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step31f_final_research_fleet_offline_evaluation_pr_squash_merge_and_post_merge_closeout_v0_20260702T221830Z (MANIFEST_VERIFY_RC=0; PR #4766; squash 51923cc7)` |
+| `STEP31F_FINAL_FLEET_OFFLINE_ECONOMIC_VALIDITY_EVALUATION_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step31f_final_research_fleet_v0_offline_economic_validity_evaluation_closeout_v0_20260703T002500Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP31F_FINAL_FLEET_VERSIONED_BINDINGS_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step31f_final_fleet_versioned_bindings_ratification_v0_20260703T000100Z (MANIFEST_VERIFY_RC=0)` |
+| `ECONOMICALLY_VIABLE_CANDIDATE_COUNT` | `0` |
+| `RUNTIME_REWIRE_DEFERRED` | `true` |
+| `RUNTIME_REWIRE_READMISSIBILITY_CONDITION` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=true on manifest-verified EconomicViabilityEvidenceV1 under then-valid operator policy` |
+| `CANONICAL_ORDER_INTENT_RUNTIME_CONSUMER` | `NONE` |
+| `LEGACY_BYPASS_PATHS_FOUND` | `true` |
+| `LEGACY_BYPASS_PATHS_ACTIVATED` | `false` |
+| `SAFETY_RECONCILIATION_OWNERS_OFFLINE_NOT_LEGACY_BOUND` | `true` |
+| `FUTURES_ONLY_RUNTIME_BOUNDARY_PASS` | `partial` |
+| `BITCOIN_SPOT_RUNTIME_PATHS_FOUND` | `true` |
+| `BITCOIN_SPOT_RUNTIME_PATHS_REMEDIATION_DEFERRED` | `true` |
+| `COMPLETE_NO_PASS_NOT_REINTERPRETED_AS_PASS` | `true` |
+| `SAFE_GOVERNANCE_REASSESSMENT_REQUIRED_ONLY_ON_STATE_CHANGE` | `true` |
+| `STEP30A_POLICY_FAIL_REGISTRY_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_policy_fail_registry_pr_squash_merge_and_post_merge_closeout_v0_20260702T170255Z (MANIFEST_VERIFY_RC=0; PR #4753; squash 2952dc1e)` |
+| `STEP30A_POLICY_FAIL_REGISTRY_RECONCILIATION_PR4754_MERGE_COMMIT` | `ca1dabbf2a6fb53b5b0d6bee3e3cf54d36977375` |
+| `STEP30A_POLICY_FAIL_REGISTRY_RECONCILIATION_PR4754_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_policy_fail_registry_post_merge_progress_registry_reconciliation_pr_squash_merge_and_post_merge_closeout_v0_20260702T171437Z (MANIFEST_VERIFY_RC=0; PR #4754; squash ca1dabbf; VERDICT=STEP30A_POLICY_FAIL_REGISTRY_RECONCILIATION_PR4754_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `POST_STEP30A_CANONICAL_CURRENT_STATE_REASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_post_step30a_policy_fail_registry_merge_canonical_current_state_read_only_reassessment_v0_20260702T170526Z (MANIFEST_VERIFY_RC=0; VERDICT=POST_STEP30A_POLICY_FAIL_REGISTRY_MERGE_CANONICAL_CURRENT_STATE_READ_ONLY_REASSESSMENT_COMPLETE)` |
+| `COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_ARCHITECTURE_REJECTION_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/analysis/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_architecture_rejection_ratification_and_research_line_closeout_v0_20260702T192029Z (MANIFEST_VERIFY_RC=0)` |
+| `COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_FAILURE_DECOMPOSITION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/analysis/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_economic_validity_failure_decomposition_and_research_disposition_read_only_v0_20260702T211530Z (MANIFEST_VERIFY_RC=0)` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_STATUS` | `MERGED_POST_MERGE_VERIFIED` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_PR` | `4778` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_MERGE_COMMIT` | `83cbef619f442be60d12ecf1efd991dfed3928af` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_MANIFEST_DIGEST` | `b72c996d55de89dcb877fd0dad97546bab1b21d96e1b2477667cddbc55ffb842` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_IMPLEMENTATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_final_research_fleet_versioned_binding_manifest_contract_implementation_v0_20260703T015500Z (MANIFEST_VERIFY_RC=0; PR #4778)` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_final_research_fleet_versioned_binding_manifest_contract_pr4778_squash_merge_and_post_merge_closeout_v0_20260703T020700Z (MANIFEST_VERIFY_RC=0; PR #4778; squash 83cbef61; VERDICT=PR4778_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `MANIFEST_CONTRACT_MERGE_NOT_EQUAL_ECONOMIC_EVALUATION_AUTHORIZATION` | `true` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_PR4801_MERGE_COMMIT` | `de50ed0e745df4f1984e8c1037560d9e3535d466` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_PR4801_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4801_final_research_fleet_offline_economic_evaluation_squash_merge_and_post_merge_closeout_20260703T131814Z (MANIFEST_VERIFY_RC=0; PR #4801; squash de50ed0e; VERDICT=PR4801_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `GLOBAL_RUNBOOK_NEXT_STEP` | `NO_UNCHANGED_RETRY_REQUIRES_NEW_DISTINCT_FULL_CANONICAL_SYSTEM_BINDING_OR_EVIDENCE_CLASS` |
+| `FINAL_FLEET_OFFLINE_EVAL_EXECUTION_PREFLIGHT_STATUS` | `FAIL_CLOSED` |
+| `FINAL_FLEET_OFFLINE_EVAL_EXECUTION_PREFLIGHT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/bounded_offline_economic_evaluation_execution_v0_20260704T200900Z (MANIFEST_VERIFY_RC=0)` |
+| `FINAL_FLEET_OFFLINE_EVAL_EXECUTION_OWNER_REBIND_GOVERNANCE_V0_REF` | `docs/governance/FINAL_FLEET_OFFLINE_EVAL_EXECUTION_OWNER_REBIND_AND_RETRY_GOVERNANCE_V0.md` |
+| `PR4827_MERGE_COMMIT` | `4fc405ca9281495ce10cf9b56e35e0ec0e4f6369` |
+| `POST_PR4827_OPERATOR_DECISION_READINESS_STATUS` | `COMPLETE` |
+| `POST_PR4827_OPERATOR_DECISION_READINESS_REF` | `docs/governance/POST_PR4827_OPERATOR_DECISION_READINESS_UNMODIFIED_BINDING_REEXECUTION_BLOCKED_V0.md` |
+| `POST_PR4827_OPERATOR_DECISION_READINESS_EVIDENCE_REF` | `PENDING_POST_MERGE` |
+| `POST_PR4827_UNMODIFIED_BINDING_REEXECUTION_BLOCKED` | `true` |
+| `POST_PR4827_EXECUTION_START_BLOCKED` | `true` |
+| `POST_PR4827_CREATES_NEW_EXECUTION_EVIDENCE_CLASS` | `false` |
+| `PR4828_MERGE_COMMIT` | `0588d0be4e859152bf9fccd6134c1f57e2838054` |
+| `FINAL_FLEET_OPERATOR_DECISION_PACKET_STATUS` | `READY` |
+| `FINAL_FLEET_OPERATOR_DECISION_PACKET_REF` | `docs/governance/FINAL_FLEET_OPERATOR_DECISION_PACKET_FOR_BLOCKED_REEXECUTION_V0.md` |
+| `FINAL_FLEET_OPERATOR_DECISION_PACKET_EVIDENCE_REF` | `PENDING_POST_MERGE` |
+| `UNMODIFIED_BINDING_REEXECUTION_BLOCKED` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_EXECUTION_ALLOWED` | `false` |
+| `PR4829_MERGE_COMMIT` | `5d79b85800e39d345f185f224d68dab2d38d2066` |
+| `FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_STATUS` | `READY` |
+| `FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_REF` | `docs/governance/FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_V0.md` |
+| `FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_EVIDENCE_REF` | `PENDING_POST_MERGE` |
+| `PR4830_MERGE_COMMIT` | `d2633dc2242e3083a471ed601a9511fb3a7ee86b` |
+| `FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_STATUS` | `RATIFIED_CLASS_D` |
+| `FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_REF` | `docs/governance/FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_V0.md` |
+| `FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z (MANIFEST_VERIFY_RC=0)` |
+| `FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_GO_TOKEN` | `GO_FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_V0` |
+| `FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_GO_TOKEN_CONSUMED` | `true` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_RATIFICATION_STATUS` | `RATIFIED_BY_OPERATOR` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_RATIFICATION_CLASS` | `D` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_RATIFIED_SCOPE_ID` | `FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_BINDING_COMPLETION_CONFIG_REF` | `config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_OFFLINE_EVALUATION_SCOPE_CONFIG_REF` | `config/research/final_research_fleet_class_d_offline_economic_evaluation_scope_ratification_v0.json` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_OPERATOR_RATIFICATION_CONFIG_REF` | `config/research/final_research_fleet_class_d_operator_ratification_v0.json` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_COMPLETION_DIGEST` | `0610afa34b347abde08768fb2fbfb30fd4bb19ae010f3b2042c67155fb6c0fc4` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_HISTORICAL_BLOCKED_COMPLETION_DIGEST` | `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1` |
+| `FINAL_RESEARCH_FLEET_CLASS_D_GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_CLASS_D_OPERATOR_RATIFICATION_RECORD_V0.md` |
+| `BITCOIN_DRIFT_GUARD` | `PASS_ONLY_IF_BTC_XBT_BITCOIN_ARE_NEGATIVE_GUARD_REFERENCES` |
+| `POSITIVE_BITCOIN_BINDINGS_ALLOWED` | `false` |
+| `EVALUATION_INSTRUMENT` | `ETH-USDT-SWAP` |
+| `PANEL` | `OKX_LINEAR_PERPETUALS_NON_BITCOIN` |
+| `PANEL_MEMBER_COUNT` | `118` |
+| `HYPOTHESIS_SUBSTRAND_NEXT_STEP` | `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` |
+| `HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY` | `true` |
+| `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` | `true` |
+| `POST_PR4821_GOVERNANCE_CURRENT_STATE_RECONCILIATION_STATUS` | `COMPLETE` |
+| `POST_PR4821_GOVERNANCE_CURRENT_STATE_RECONCILIATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/post_pr4821_governance_current_state_reconciliation_v0_20260704T191530Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_STATUS` | `COMPLETE` |
+| `POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_PREREQUISITE_PR` | `4872` |
+| `POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_PREREQUISITE_MERGE_COMMIT` | `fe2c334d943da30e097645e178abb970b253fae5` |
+| `PR4865_MERGE_COMMIT` | `31053b8364e444474687fa1df66cf1fc0de45662` |
+| `PR4866_MERGE_COMMIT` | `7224fa126dde8baabe8d74848fcc150e4b15aef9` |
+| `PR4867_MERGE_COMMIT` | `2f1672bee8761f8d50def3f6ef31cc803824b2e9` |
+| `PR4868_MERGE_COMMIT` | `f6c3f8301a98e8a9bb2ac13c63c76165a998ecaa` |
+| `PR4869_MERGE_COMMIT` | `e8cbb06beeb6bdd240a523ef31990672b812cdb8` |
+| `PR4870_MERGE_COMMIT` | `8c452cb4237325eb81ec7b5bd5c1f0fbe21bd80c` |
+| `PR4871_MERGE_COMMIT` | `a8f899a0814b6b51a6c266f45031876969d5cd16` |
+| `PR4872_MERGE_COMMIT` | `fe2c334d943da30e097645e178abb970b253fae5` |
+| `VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0_STATUS` | `COMPLETE` |
+| `VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/versioned_final_research_fleet_bindings_ratification_v0_20260704T191403Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4823_OPERATOR_DECISION_PACKET_REF` | `docs/governance/POST_PR4823_OPERATOR_DECISION_PACKET_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `POST_PR4823_OPERATOR_DECISION_PACKET_ANALYSIS_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/post_pr4823_operator_decision_packet_for_new_research_scope_definition_v0_20260704T192233Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4824_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_STATUS` | `COMPLETE` |
+| `POST_PR4824_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_REF` | `docs/governance/POST_PR4824_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `POST_PR4824_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/post_pr4824_versioned_research_scope_definition_v0_20260704T193800Z (MANIFEST_VERIFY_RC=0)` |
+| `VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0_STATUS` | `COMPLETE` |
+| `VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0_REF` | `docs/governance/VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0.md` |
+| `VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/versioned_final_fleet_bindings_offline_evaluation_scope_v0_20260704T194800Z (MANIFEST_VERIFY_RC=0)` |
+| `VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_RESEARCH_SCOPE_DEFINITION_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_BINDING_RATIFICATION_COMPLETE` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ALL_REQUIRED_BINDINGS_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_STATUS` | `COMPLETE_FAIL` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_STATUS` | `COMPLETE_FAIL` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_HISTORICAL_ECONOMIC_RESULT` | `FAIL` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_TRADE_COUNT` | `1` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_NET_RETURN` | `-0.00589` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ECONOMIC_EVALUATION_REASON_CODES` | `METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;OUT_OF_SAMPLE_FAILED;PROFIT_FACTOR_BELOW_THRESHOLD;REGIME_DOMINANCE_EXCEEDED;TRADE_COUNT_BELOW_THRESHOLD` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cs_relative_strength_offline_economic_evaluation_v0_20260704T184808Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_DURABLE_EVIDENCE_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cs_relative_strength_offline_economic_evaluation_v0_20260704T184808Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_MANIFEST_VERIFY_RC` | `0` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_RE_EVALUATION_ALLOWED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_BINDING_CHANGED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_NO_EVALUATION_UNTIL_SCOPE_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_NO_NEW_CANDIDATE_HOLD_EXCEPTION` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_NO_NEW_CANDIDATE_HOLD_EXCEPTION_GO_TOKEN` | `GO_NEW_RESEARCH_SCOPE_CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_FUTURES_ONLY` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_HYPOTHESIS_ID` | `CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_SCOPE_RATIFICATION_CONFIG_REF` | `config/research/cross_sectional_relative_strength_v0_offline_economic_evaluation_scope_ratification_v0.json` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_SCOPE_BINDING_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cs_relative_strength_scope_binding_ratification_v0_20260704T183110Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_STATUS` | `MERGED_POST_MERGE_VERIFIED` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_PR` | `4769` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_MERGE_COMMIT` | `71bb9ccdcfe8771ac7fc027ecda9fd710d06ab01` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_cross_sectional_ranking_semantics_binding_schema_pr4769_squash_merge_and_post_merge_closeout_v0_20260702T231600Z (MANIFEST_VERIFY_RC=0; PR #4769; squash 71bb9ccd; VERDICT=BOUNDED_CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_PR4769_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_MATERIALIZATION_PR` | `4771` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_MATERIALIZATION_MERGE_COMMIT` | `ef6214b56dd2294f45ca6c2fe55f05c3e09518c0` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_MATERIALIZATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_cross_sectional_ranking_semantics_versioned_binding_materialization_pr4771_squash_merge_and_post_merge_closeout_v1_20260703T000410Z (MANIFEST_VERIFY_RC=0; PR #4771; squash ef6214b5)` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_POLICY_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_cross_sectional_ranking_semantics_numeric_binding_policy_decision_read_only_v0_20260703T022401Z (MANIFEST_VERIFY_RC=0; POLICY_DECISION_CLASS=A)` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_BINDING_REGISTRY_RECONCILIATION_CLOSEOUT_EVIDENCE_REF` | `PENDING_POST_MERGE` |
+| `POLICY_CLASS_RATIFICATION` | `RATIFIED` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_POLICY_CLASSES_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_VALUES_BOUND` | `true` |
+| `NUMERIC_VALUES_BOUND` | `true` |
+| `NUMERIC_POLICY_DECISION_CLASS` | `EXISTING_CONTRACTS_COMPLETE_NO_NEW_POLICY_REQUIRED` |
+| `NUMERIC_POLICY_OWNER_REQUIRED` | `false` |
+| `NUMERIC_MATERIALIZATION_STATUS` | `BOUND_AND_VALIDATED` |
+| `NUMERIC_MATERIALIZATION_SOURCE_PR` | `4771` |
+| `NUMERIC_MATERIALIZATION_EVIDENCE_STATUS` | `VERIFIED` |
+| `CROSS_SECTIONAL_RANKING_NUMERIC_SEMANTICS_STATUS` | `COMPLETE` |
+| `PIT_UNIVERSE_MANIFEST_REF_STATUS` | `BOUND` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_OVERALL_BINDING_STATUS` | `COMPLETE` |
+| `SCHEMA_MATERIALIZATION_NOT_EQUAL_FULL_BINDING_RATIFICATION` | `true` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_CANDIDATE_ID` | `cross_sectional_funding_rate_carry_v0` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_STATUS` | `COMPLETE_FAIL` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_RESEARCH_EXECUTION_INFRASTRUCTURE_STATUS` | `COMPLETE` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_BOUND_FUNDING_PANEL_STATUS` | `COMPLETE` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_FULL_OFFLINE_EVALUATION_RUNNER_STATUS` | `MAINLINE_AVAILABLE` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_ECONOMIC_EVALUATION_STATUS` | `COMPLETE_FAIL` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_PROMOTION_ELIGIBLE` | `false` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_BINDING_CHANGED` | `false` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_TRADE_COUNT` | `0` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_HISTORICAL_ECONOMIC_RESULT` | `FAIL` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_ECONOMIC_EVALUATION_REASON_CODES` | `TRADE_COUNT_BELOW_THRESHOLD;PROFIT_FACTOR_BELOW_THRESHOLD;MONTE_CARLO_FAILED` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_BINDING_IMPLEMENTATION_PR4794_MERGE_COMMIT` | `2d6adf604edd067194701428b2cd6d4fc7fb04fd` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_EXECUTION_INFRASTRUCTURE_PR4795_MERGE_COMMIT` | `ef43a86696b4e479112448136a3aa90951144a98` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_FULL_RUNNER_PR4796_MERGE_COMMIT` | `9945a3e3d5f382bf46bf0c5fcfac2b1bcbf782e1` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_EVIDENCE_REGISTRY_RECONCILIATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_cross_sectional_funding_rate_carry_v0_evidence_and_registry_reconciliation_squash_merge_closeout_v0_20260703T141600Z (MANIFEST_VERIFY_RC=0; PR #4797; PR_HEAD=5e25c8115d3da8fea1b9b0479a93198c05ef03cc; squash d1eea783; ORIGIN_MAIN_AFTER=d1eea783e21ad3c968a5cde75abbf2ff865413f8; VERDICT=SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_re_run_v0_20260703T115048Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_EXECUTION_INFRASTRUCTURE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_cross_sectional_funding_rate_carry_v0_execution_infrastructure_and_bound_funding_panel_recovery_squash_merge_closeout_v0_20260703T113900Z (MANIFEST_VERIFY_RC=0; PR #4795; squash ef43a866)` |
+| `CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_FULL_RUNNER_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_cross_sectional_funding_rate_carry_v0_full_offline_economic_evaluation_runner_mainline_integration_squash_merge_closeout_v0_20260703T140100Z (MANIFEST_VERIFY_RC=0; PR #4796; squash 9945a3e3)` |
+| `PARAMETER_OPTIMIZATION_ALLOWED` | `false` |
+| `RETRY_ALLOWED` | `false` |
+| `REEVALUATION_ALLOWED` | `false` |
+| `RUNTIME_ELIGIBLE` | `false` |
+| `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
+| `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
+| `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
+| `SESSION_STARTED` | `false` |
+| `WRITER_LOCK_ACQUIRED` | `false` |
+| `RUNBOOK_STEP_14_IMPLEMENTED` | `true` |
+| `CANONICAL_ORDER_LIFECYCLE_V1_IMPLEMENTED` | `true` |
+| `ORDER_CREATED` | `false` |
+| `ORDER_SUBMITTED` | `false` |
+| `ORDER_AMENDED` | `false` |
+| `ORDER_CANCELLED` | `false` |
+| `ORDER_FILLED` | `false` |
+| `ORDER_STATE_MUTATED` | `false` |
+| `ADAPTER_INVOKED` | `false` |
+| `EXCHANGE_REQUEST_SENT` | `false` |
+| `RUNBOOK_STEP_15_IMPLEMENTED` | `true` |
+| `ORDER_INTENT_IDEMPOTENCY_V1_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_16_IMPLEMENTED` | `true` |
+| `TRADING_CORE_DECISION_ATTESTATION_V1_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_17_IMPLEMENTED` | `true` |
+| `SEMANTIC_DIFF_EVIDENCE_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_18_IMPLEMENTED` | `true` |
+| `RUNTIME_RECONCILIATION_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_19_IMPLEMENTED` | `true` |
+| `UNKNOWN_EXECUTION_OUTCOME_RECOVERY_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_20_IMPLEMENTED` | `true` |
+| `ADAPTER_SUBMISSION_CONTRACT_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_21_IMPLEMENTED` | `true` |
+| `VENUE_CAPABILITY_SNAPSHOT_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_22_IMPLEMENTED` | `true` |
+| `INDEPENDENT_PRE_TRADE_SAFETY_KERNEL_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_23_IMPLEMENTED` | `true` |
+| `KILLSWITCH_WRITER_FENCING_AND_INDEPENDENT_READ_PATHS_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_24_IMPLEMENTED` | `true` |
+| `RUNTIME_ELIGIBILITY_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_25_IMPLEMENTED` | `true` |
+| `DEPLOY_INACTIVE_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_26_IMPLEMENTED` | `true` |
+| `RUNTIME_OBSERVATION_AND_FEEDBACK_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_27_IMPLEMENTED` | `true` |
+| `AUTONOMOUS_NON_LIVE_ORCHESTRATION_PLAN_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_28_IMPLEMENTED` | `true` |
+| `CANARY_MICRO_LIVE_READINESS_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29B_IMPLEMENTED` | `true` |
+| `CANONICAL_MARKET_CONTEXT_BINDING_V1_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29C_IMPLEMENTATION_STARTED` | `true` |
+| `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29C_IMPLEMENTED` | `true` |
+| `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29D_IMPLEMENTATION_STARTED` | `true` |
+| `DETERMINISTIC_SCOPE_EVENT_GENERATOR_V1_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29D_IMPLEMENTED` | `true` |
+| `DETERMINISTIC_SCOPE_EVENT_GENERATOR_V1_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29E_IMPLEMENTATION_STARTED` | `true` |
+| `DIRECTIONAL_ASSESSMENT_V1_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29E_IMPLEMENTED` | `true` |
+| `DIRECTIONAL_ASSESSMENT_V1_IMPLEMENTED` | `true` |
+| `BULL_BEAR_DIRECTIONAL_ASSESSMENT_COMPLETED` | `true` |
+| `RUNBOOK_STEP_29F_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29F_IMPLEMENTED_SCOPE` | `survival_assessment_v1_offline_slice,suitability_binding_offline_slice` |
+| `RUNBOOK_STEP_29F_COMPLETE` | `true` |
+| `STEP_29G_STARTED` | `true` |
+| `RUNBOOK_STEP_29G_IMPLEMENTED_SCOPE` | `double_play_composition_matrix_v1_offline_slice` |
+| `RUNBOOK_STEP_29G_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29G_COMPLETE` | `true` |
+| `STEP_29H_STARTED` | `true` |
+| `RUNBOOK_STEP_29H_IMPLEMENTED_SCOPE` | `entry_position_exit_policy_offline_slice` |
+| `RUNBOOK_STEP_29H_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29H_COMPLETE` | `true` |
+| `STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29I_COMPLETE` | `true` |
+| `STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29J_COMPLETE` | `true` |
+| `STEP_29K_STARTED` | `true` |
+| `RUNBOOK_STEP_29K_STARTED` | `true` |
+| `RUNBOOK_STEP_29K_IMPLEMENTED_SCOPE` | `strategy_registry_consolidation_v1_slice` |
+| `RUNBOOK_STEP_29K_COMPLETE` | `true` |
+| `STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `true` |
+| `STEP_29M_STARTED` | `true` |
+| `RUNBOOK_STEP_29M_STARTED` | `true` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_registered_strategy_evaluation_fleet_closeout_v0_slice,ma_crossover_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice,vol_breakout_v1_narrow_neutral_rewire_and_binding_implementation_v0_slice,vol_breakout_v1_sizing_config_digest_binding_fix_v0_slice,current_state_reconciliation_and_runbook_refresh_read_only_v0_slice,vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29M_COMPLETE` | `true` |
+| `ECONOMIC_GATE_EVALUATOR_BOUND` | `true` |
+| `OPERATOR_INPUT_CONTRACT_V1_BOUND` | `true` |
+| `OPERATOR_INPUT_CONTRACT_COMPLETE` | `true` |
+| `REAL_EVALUATION_ATTEMPTED` | `true` |
+| `REAL_EVALUATION_PERFORMED` | `true` |
+| `REAL_ADMISSIBLE_FUTURES_DATASET_FOUND` | `true` |
+| `REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT` | `true` |
+| `REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND` | `true` |
+| `REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED` | `true` |
+| `ECONOMIC_VALIDITY_RESULT` | `FAILED` |
+| `CURRENT_PROMOTION_EVALUATION` | `INELIGIBLE` |
+| `OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION` | `false` |
+| `REAL_EVALUATION_INPUT_STATUS` | `REGISTERED_POLICY_RATIFIED_STRATEGY_FLEET_EVALUATION_COMPLETE` |
+| `LAST_EVALUATED_STRATEGY_ID` | `vol_breakout` |
+| `LAST_EVALUATED_STRATEGY_VERSION` | `v1` |
+| `LAST_EVALUATED_CONFIG_VERSION` | `v1` |
+| `NEXT_EVALUATION_STRATEGY_ID` | `NONE` |
+| `NEXT_EVALUATION_STRATEGY_VERSION` | `v1` |
+| `NEXT_EVALUATION_INSTRUMENT_ID` | `inst-eth-usdt-perp` |
+| `NEXT_EVALUATION_VENUE` | `okx` |
+| `NEXT_EVALUATION_CONFIG_VERSION` | `v1` |
+| `NEXT_EVALUATION_CONFIG_STATUS` | `TERMINAL_NEGATIVE_EVIDENCE_REGISTERED` |
+| `NEXT_EVALUATION_CONFIG_PATH` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_vol_breakout_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `AUTHORIZED_PENDING_EVALUATION_COUNT` | `0` |
+| `STEP29M_REGISTERED_STRATEGY_FLEET_STATUS` | `EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS` |
+| `REGISTERED_POLICY_RATIFIED_STRATEGY_COUNT` | `3` |
+| `COMPLETED_TECHNICALLY_VALID_EVALUATION_COUNT` | `4` |
+| `ECONOMIC_POLICY_PASS_COUNT` | `0` |
+| `ECONOMIC_POLICY_FAIL_COUNT` | `4` |
+| `PROMOTION_ELIGIBLE_COUNT` | `0` |
+| `BREAKOUT_DONCHIAN_V1_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `MACD_V1_CONFIG_V3_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `PRE_RATIFICATION_FLEET_EXHAUSTED` | `true` |
+| `POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS` | `false` |
+| `HISTORICAL_FLEET_RESULTS_UNCHANGED` | `true` |
+| `MA_CROSSOVER_V1_POLICY_RATIFIED` | `true` |
+| `MA_CROSSOVER_V1_FIXED_CONFIG_BOUND` | `true` |
+| `MA_CROSSOVER_V1_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `MA_CROSSOVER_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `MA_CROSSOVER_V1_PROMOTION_ELIGIBLE` | `false` |
+| `MA_CROSSOVER_V1_RUNTIME_AUTHORIZED` | `false` |
+| `MA_CROSSOVER_V1_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `MA_CROSSOVER_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `MA_CROSSOVER_V1_CONFIG_SCHEMA_VERSION` | `step29m_ma_crossover_v1_economic_evaluation_admissibility_v1` |
+| `MA_CROSSOVER_FAST_WINDOW` | `20` |
+| `MA_CROSSOVER_SLOW_WINDOW` | `50` |
+| `MA_CROSSOVER_PRICE_COL` | `close` |
+| `MA_CROSSOVER_RISK_PER_TRADE` | `0.005` |
+| `MA_CROSSOVER_STOP_PCT` | `0.025` |
+| `MA_CROSSOVER_MAX_POSITION_PCT` | `0.25` |
+| `MA_CROSSOVER_OFFLINE_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `MA_CROSSOVER_SIZING_PRECEDENT_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `MA_CROSSOVER_V1_RANK1_CANDIDATE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step29m_additional_existing_strategy_policy_ratification_candidate_decision_read_only_v0_20260702T010015Z` |
+| `MA_CROSSOVER_FAST_WINDOW_DERIVATION_REF` | `operator_policy_decision:STEP29M_MA_CROSSOVER_V1` |
+| `MA_CROSSOVER_SLOW_WINDOW_DERIVATION_REF` | `operator_policy_decision:STEP29M_MA_CROSSOVER_V1` |
+| `MA_CROSSOVER_PRICE_COL_DERIVATION_REF` | `operator_policy_decision:STEP29M_MA_CROSSOVER_V1` |
+| `MA_CROSSOVER_RISK_PER_TRADE_DERIVATION_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `MA_CROSSOVER_STOP_PCT_DERIVATION_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `MA_CROSSOVER_POLICY_INVARIANT_RESULT` | `0.005 <= 0.25 * 0.025 = 0.00625` |
+| `MA_CROSSOVER_MAX_POSITION_PCT_DERIVATION_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `VOL_BREAKOUT_V1_POLICY_RATIFIED` | `true` |
+| `VOL_BREAKOUT_V1_FIXED_CONFIG_BOUND` | `true` |
+| `VOL_BREAKOUT_V1_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `VOL_BREAKOUT_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `VOL_BREAKOUT_V1_PROMOTION_ELIGIBLE` | `false` |
+| `VOL_BREAKOUT_V1_RUNTIME_AUTHORIZED` | `false` |
+| `VOL_BREAKOUT_V1_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `VOL_BREAKOUT_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `VOL_BREAKOUT_V1_CONFIG_SCHEMA_VERSION` | `step29m_vol_breakout_v1_economic_evaluation_admissibility_v1` |
+| `VOL_BREAKOUT_V1_BASELINE_FAILURE_CLASS` | `NEGATIVE_ECONOMIC_BASELINE_AND_ROBUSTNESS_FAIL` |
+| `VOL_BREAKOUT_V1_BASELINE_BLOCKER` | `NONE` |
+| `VOL_BREAKOUT_V1_BASELINE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BOUND` | `8fcd7484cdc768869fad5b914a35764f09cf42b41b78330417402272c550844a` |
+| `VOL_BREAKOUT_V1_EVAL_CONFIG_DIGEST` | `db7bf773de987afbb2643ff9b761760af6b286e5e864c39d3c8d908a59082b88` |
+| `VOL_BREAKOUT_V1_OLD_WRONG_SIZING_CONFIG_DIGEST` | `fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc` |
+| `VOL_BREAKOUT_LOOKBACK_BREAKOUT` | `20` |
+| `VOL_BREAKOUT_VOL_WINDOW` | `14` |
+| `VOL_BREAKOUT_VOL_PERCENTILE` | `50.0` |
+| `VOL_BREAKOUT_SIDE` | `both` |
+| `VOL_BREAKOUT_REQUIRED_WARMUP_ROWS` | `40` |
+| `VOL_BREAKOUT_RISK_PER_TRADE` | `0.005` |
+| `VOL_BREAKOUT_STOP_PCT` | `0.025` |
+| `VOL_BREAKOUT_MAX_POSITION_PCT` | `0.25` |
+| `VOL_BREAKOUT_OFFLINE_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `VOL_BREAKOUT_SIZING_PRECEDENT_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `VOL_BREAKOUT_V1_RANK1_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/rank1_vol_breakout_binding_and_evaluation_ratification_read_only_v0_20260710T063915Z` |
+| `VOL_BREAKOUT_POLICY_INVARIANT_RESULT` | `0.005 <= 0.25 * 0.025 = 0.00625` |
+| `VOL_BREAKOUT_VERSIONED_BINDING_REF` | `config/research/vol_breakout_v1_versioned_research_binding_v0.json` |
+| `VOL_BREAKOUT_SCOPE_RATIFICATION_REF` | `config/research/vol_breakout_v1_offline_economic_evaluation_scope_ratification_v0.json` |
+| `HYPOTHESIS_IMPLEMENTED_AS_CLAIMED` | `true` |
+| `TRADING_LOGIC_MUTATED` | `false` |
+| `VOL_BREAKOUT_EXTERNAL_PARAMETER_SCHEMA_BOUND` | `true` |
+| `VOL_BREAKOUT_WARMUP_BOUND` | `true` |
+| `STEP29M_ADMISSIBILITY_CONTRACT_BOUND` | `true` |
+| `VERSIONED_BINDINGS_MATERIALIZED` | `true` |
+| `ATR_MULTIPLE_BOUND` | `false` |
+| `PARAMETER_SEARCH_ALLOWED` | `false` |
+| `PRIMARY_FLEET_FINDING` | `NO_ADMISSIBLE_REGISTERED_STRATEGY_ECONOMICALLY_VIABLE_OFFLINE` |
+| `EVALUATION_EXECUTION_COMPLETE` | `true` |
+| `ECONOMIC_VALIDITY_OBJECTIVE_ACHIEVED` | `false` |
+| `STEP29N_AUTHORIZED` | `false` |
+| `STEP29R_AUTHORIZED` | `false` |
+| `RUNTIME_REWIRE_ALLOWED` | `false` |
+| `POLICY_INVARIANT` | `risk_per_trade <= max_position_pct * stop_pct` |
+| `POLICY_INVARIANT_RESULT` | `0.005 <= 0.25 * 0.02 = 0.005` |
+| `OPERATOR_POLICY_DECISION_OWNER` | `Frank Rauter` |
+| `OPERATOR_POLICY_DECISION_DATE` | `2026-07-02` |
+| `OPERATOR_POLICY_DECISION_SCOPE` | `STEP29M_MA_CROSSOVER_V1_OKX_INST_ETH_USDT_PERP` |
+| `BREAKOUT_DONCHIAN_LOOKBACK` | `20` |
+| `BREAKOUT_DONCHIAN_PRICE_COL` | `close` |
+| `BREAKOUT_DONCHIAN_RISK_PER_TRADE` | `0.005` |
+| `BREAKOUT_DONCHIAN_STOP_PCT` | `0.02` |
+| `BREAKOUT_DONCHIAN_MAX_POSITION_PCT` | `0.25` |
+| `BREAKOUT_DONCHIAN_OVERSIZE_POLICY` | `REJECT` |
+| `BREAKOUT_DONCHIAN_OFFLINE_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `LOOKBACK_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `PRICE_COL_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `RISK_PER_TRADE_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `STOP_PCT_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `MAX_POSITION_PCT_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `OVERSIZE_POLICY_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `MACD_POLICY_REUSED` | `false` |
+| `CONFIG_TOML_AUTO_ADOPTION` | `false` |
+| `LEGACY_DEFAULT_AUTHORITY` | `false` |
+| `PARAMETER_TUNING_PERFORMED` | `false` |
+| `ECONOMIC_RESULT_USED_FOR_POLICY_SELECTION` | `false` |
+| `ECONOMIC_EVALUATION_ALLOWED` | `false` |
+| `PROMOTION_ALLOWED` | `false` |
+| `BREAKOUT_DONCHIAN_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `BREAKOUT_DONCHIAN_V1_CONFIG_SCHEMA_VERSION` | `step29m_breakout_donchian_v1_economic_evaluation_admissibility_v1` |
+| `V3_RISK_PER_TRADE` | `0.005` |
+| `V3_STOP_PCT` | `0.025` |
+| `V3_MAX_POSITION_PCT` | `0.25` |
+| `V3_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `V3_REQUESTED_NOTIONAL_PCT` | `0.20` |
+| `V3_FEASIBILITY_HEADROOM_PCT_OF_EQUITY` | `0.05` |
+| `V2_CONFIG_DISPOSITION` | `RETAIN_AS_NEGATIVE_INFEASIBILITY_FIXTURE` |
+| `ECONOMIC_REEVALUATION_ALLOWED` | `false` |
+| `MACD_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `MACD_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z` |
+| `MACD_V1_CONFIG_V3_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z` |
+| `BREAKOUT_DONCHIAN_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/step29m_breakout_donchian_v1_real_admissible_futures_economic_evaluation_v1_20260701T233425Z` |
+| `FLEET_ROOT_CAUSE_AND_RANKING_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_breakout_donchian_step29m_economic_result_root_cause_and_strategy_ranking_read_only_v0_20260701T234245Z` |
+| `INVALIDATED_EVALUATION_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z` |
+| `INVALIDATED_V2_EVALUATION_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z` |
+| `INVALIDATED_EVALUATION_STATUS` | `TECHNICALLY_REPRODUCIBLE_ECONOMICALLY_INVALIDATED` |
+| `INVALIDATED_V2_EVALUATION_STATUS` | `TECHNICALLY_REPRODUCIBLE_ECONOMICALLY_INVALIDATED` |
+| `INVALIDATION_REASON` | `CONFIG_DETERMINISTICALLY_REJECTS_ALL_ENTRY_CANDIDATES` |
+| `ROOT_CAUSE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/step29m_offline_sizing_admissibility_contradiction_root_cause_read_only_v1_20260701T223512Z` |
+| `KRAKEN_FIXTURE_LEAK_INTO_CANONICAL_ECONOMIC_PATH` | `false` |
+| `VENUE_SPECIFIC_CANONICAL_ECONOMIC_PATH_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `NETWORK_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `STEP29M_RATIFIED_CANDIDATES_TOTAL` | `3` |
+| `STEP29M_RATIFIED_CANDIDATES_PASSED` | `0` |
+| `STEP29M_RATIFIED_CANDIDATES_FAILED` | `3` |
+| `STEP29M_PENDING_CANDIDATES` | `0` |
+| `STEP29M_PROMOTION_ELIGIBLE_CANDIDATES` | `0` |
+| `STEP29M_OPERATOR_POLICY_DECISION` | `NO_NEW_CANDIDATE_HOLD` |
+| `STEP29M_OPERATOR_POLICY_RATIFIED` | `true` |
+| `STEP29M_OPERATOR` | `Frank Rauter` |
+| `STEP29M_OPERATOR_POLICY_RATIFICATION_DATE` | `2026-07-02` |
+| `STEP29M_NEW_CANDIDATE_AUTHORIZED` | `true` |
+| `STEP29M_SAME_BINDING_RETRY_AUTHORIZED` | `false` |
+| `STEP29M_PARAMETER_TUNING_AUTHORIZED` | `false` |
+| `STEP29M_POLICY_THRESHOLD_RELAXATION_AUTHORIZED` | `false` |
+| `STEP29M_FURTHER_ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `STEP29M_PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `STEP29M_PROMOTION_AUTHORIZED` | `false` |
+| `STEP29M_RUNTIME_AUTHORITY` | `false` |
+| `STEP29M_NEW_RESEARCH_SCOPE_REQUIRES_EXPLICIT_OPERATOR_RATIFICATION` | `true` |
+| `RUNBOOK_STEP_30A_STARTED` | `true` |
+| `RUNBOOK_STEP_30A_IMPLEMENTED_SCOPE` | `rsi_reversion_v1_extended_holdout_separated_futures_economic_research_v0,dataset_v2_backward_extension_adapter_v0,policy_ratification_and_candidate_design_contract_v0` |
+| `RUNBOOK_STEP_30A_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_30A_COMPLETE` | `true` |
+| `STEP30A_SCOPE` | `RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0` |
+| `STEP30A_GO_TOKEN` | `GO_BOUNDED_STEP30A_RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0` |
+| `STEP30A_STATUS` | `COMPLETE_POLICY_FAIL` |
+| `STEP30A_TECHNICAL_EVALUATION_STATUS` | `PASS` |
+| `STEP30A_ECONOMIC_VALIDITY_STATUS` | `FAIL` |
+| `STEP30A_EVALUATION_ID` | `econ_evidence_eval_v1_37eb167cdade6c63` |
+| `STEP30A_BINDING_FULL_DIGEST` | `37eb167cdade6c63f20af71abfeda7e987782685eb793a7baac772b7e30b1999` |
+| `STEP30A_BINDING_DISPOSITION` | `TERMINAL_NEGATIVE_EVIDENCE` |
+| `RSI_REVERSION_V1_EVALUATED_BINDING_STATUS` | `TERMINAL_NEGATIVE_EVIDENCE` |
+| `RSI_REVERSION_V1_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `STEP30A_OPERATOR_POLICY_RATIFIED` | `true` |
+| `STEP30A_OPERATOR_POLICY_DECISION` | `STEP30A_RSI_REVERSION_V1_POLICY_FAIL_ACCEPT_AND_NO_NEW_CANDIDATE_HOLD` |
+| `OPERATOR_POLICY_TOKEN` | `GO_STEP30A_RSI_REVERSION_V1_POLICY_FAIL_ACCEPT_AND_NO_NEW_CANDIDATE_HOLD_V0` |
+| `STEP30A_OPERATOR_POLICY_DECISION_REF` | `operator_policy_decision:STEP30A_RSI_REVERSION_V1` |
+| `STEP30A_OPERATOR_POLICY_RATIFICATION_DATE` | `2026-07-02` |
+| `STEP30A_OPERATOR` | `Frank Rauter` |
+| `STEP30A_RSI_WINDOW` | `14` |
+| `STEP30A_LOWER` | `30.0` |
+| `STEP30A_UPPER` | `70.0` |
+| `STEP30A_PRICE_COL` | `close` |
+| `STEP30A_HOLDOUT_FROZEN_REF` | `2026-06-17 10:07:00+00:00..2026-07-01 10:07:00+00:00` |
+| `STEP30A_DATASET_VERSION` | `v2` |
+| `STEP30A_EVALUATION_AUTHORIZED` | `false` |
+| `STEP30A_PROMOTION_AUTHORIZED` | `false` |
+| `STEP30A_RUNTIME_AUTHORIZED` | `false` |
+| `STEP30A_RETRY_ALLOWED` | `false` |
+| `STEP30A_REEVALUATION_ALLOWED` | `false` |
+| `STEP30A_PROMOTION_ELIGIBLE` | `false` |
+| `STEP30A_RUNTIME_ELIGIBLE` | `false` |
+| `STEP29N_PROMOTION_GATE_STATUS` | `FAIL_CLOSED_BLOCKED` |
+| `STEP29N_GOVERNANCE_FAIL_CLOSED_BINDING` | `true` |
+| `STEP29N_OPERATOR_POLICY_DECISION` | `MAINTAIN_NO_NEW_CANDIDATE_HOLD` |
+| `STEP29N_OPERATOR_POLICY_RATIFICATION_DATE` | `2026-07-02` |
+| `STEP29N_OPERATOR` | `Frank Rauter` |
+| `STEP29N_FAIL_CLOSED_BINDING_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step29n_promotion_economic_gate_binding_fail_closed_v0_20260702T223500Z` |
+| `SHADOW_CANDIDATE_ELIGIBLE` | `false` |
+| `PAPER_CANDIDATE_ELIGIBLE` | `false` |
+| `TESTNET_CANDIDATE_ELIGIBLE` | `false` |
+| `STEP29R_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `DOWNSTREAM_AUTHORITY_EFFECT` | `NONE` |
+| `STEP30A_ECONOMIC_POLICY_FAIL_REASON_CODES` | `METRIC_MISSING:parameter_neighbor_degradation;METRIC_MISSING:single_regime_profit_contribution;METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;PROFIT_FACTOR_BELOW_THRESHOLD;STRESS_FAILED` |
+| `STEP30A_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/step30a_rsi_reversion_v1/econ_evidence_eval_v1_37eb167cdade6c63 (MANIFEST_VERIFY_RC=0)` |
+| `STEP30A_POLICY_FAIL_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_economic_policy_fail_closeout_and_operator_policy_decision_read_only_v0_20260702T164520Z (MANIFEST_VERIFY_RC=0)` |
+| `COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_RESEARCH_LINE_STATUS` | `CLOSED_REJECTED` |
+| `COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_ARCHITECTURE_DISPOSITION` | `ARCHITECTURE_HYPOTHESIS_FALSIFIED` |
+| `COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_FINAL_RESEARCH_DISPOSITION` | `REJECTED_CLOSED` |
+| `COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_ECONOMIC_VALIDITY_STATUS` | `FAILED` |
+| `COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_PROMOTION_ELIGIBLE` | `false` |
+| `COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_RETRY_ALLOWED` | `false` |
+| `TECHNICAL_CAPABILITY_PRESENT_NOT_EQUAL_ECONOMIC_VALIDITY_PROVEN` | `true` |
+| `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
+| `STEP29N_ALREADY_COMPLETE` | `true` |
+| `NEGATIVE_CANDIDATE_DECISIONS_REMAIN_CANONICAL` | `true` |
+| `NEGATIVE_CANDIDATE_DECISIONS_REMAIN_EVIDENCE_ADMISSIBLE` | `true` |
+| `MA_CROSSOVER_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z` |
+| `MA_CROSSOVER_V1_CANDIDATE_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/bounded_step29m_ma_crossover_v1_economic_policy_fail_closeout_and_candidate_decision_read_only_v0_20260702T012719Z` |
+| `FLEET_NO_PASS_OPERATOR_POLICY_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step29m_no_pass_operator_policy_decision_preparation_read_only_v0_20260702T013118Z` |
+| `STEP_29N_STARTED` | `true` |
+| `RUNBOOK_STEP_29N_STARTED` | `true` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice,promotion_economic_gate_binding_fail_closed_governance_v0_slice` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29N_COMPLETE` | `true` |
+| `RUNBOOK_STEP_29O_STARTED` | `true` |
+| `RUNBOOK_STEP_29O_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29O_IMPLEMENTED_SCOPE` | `intent_compatibility_firewall_v1` |
+| `RUNBOOK_STEP_29O_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29O_COMPLETE` | `true` |
+| `STEP_29O_STARTED` | `true` |
+| `INTENT_COMPATIBILITY_FIREWALL_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29P_STARTED` | `true` |
+| `RUNBOOK_STEP_29P_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29P_IMPLEMENTED_SCOPE` | `capital_risk_sizing_v1_offline_slice` |
+| `RUNBOOK_STEP_29P_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29P_COMPLETE` | `true` |
+| `STEP_29P_STARTED` | `true` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_IMPLEMENTED` | `true` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_CHANGED` | `false` |
+| `RUNBOOK_STEP_29Q_STARTED` | `true` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE` | `canonical_order_intent_v1_offline_slice` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29Q_COMPLETE` | `true` |
+| `STEP_29Q_STARTED` | `true` |
+| `CANONICAL_ORDER_INTENT_IMPLEMENTED` | `true` |
+| `CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN` | `false` |
+| `CANONICAL_ORDER_INTENT_STRUCTURAL_ADAPTER_COMPATIBILITY_PROVEN` | `true` |
+| `CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND` | `true` |
+| `RUNBOOK_STEP_29R_STARTED` | `true` |
+| `RUNBOOK_STEP_29R_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29R_IMPLEMENTED_SCOPE` | `canonical_order_intent_v1_to_adapter_order_intent_v1_transformation_contract_offline_slice` |
+| `RUNBOOK_STEP_29R_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29R_COMPLETE` | `false` |
+| `STEP_29R_STARTED` | `true` |
+| `STEP_29R_COMPLETE` | `false` |
+| `RUNTIME_REWIRE_IMPLEMENTED` | `false` |
+| `RUNTIME_REWIRE_ELIGIBILITY_PROVEN` | `false` |
+| `RUNTIME_REWIRE_ACTIVATION_BOUND` | `false` |
+| `RUNTIME_REWIRE_IMPLEMENTATION_ALLOWED` | `false` |
+| `STEP_29S_STARTED` | `false` |
+| `PROMOTION_ECONOMIC_GATE_BINDING_STATUS` | `PASS` |
+| `PROMOTION_CANDIDATE_STATUS` | `INELIGIBLE` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `DEPLOYMENT_ELIGIBLE` | `false` |
+| `ACTIVATION_ALLOWED` | `false` |
+| `EXECUTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `TRADING_LOGIC_COMPLETION_GATE_PASS` | `true` |
+| `INTENT_COMPATIBILITY_FIREWALL_PASS` | `true` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
+| `FOLLOW_UP_DEVEX_STATUS` | `COMPLETE` |
+| `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD_COMPLETION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/merge_closeout/canonical_pre_pr_ruff_diff_guard_pr4749_squash_merge_closeout_v0_20260702T042900Z (MANIFEST_VERIFY_RC=0); implementation_pr=4749; implementation_merge_commit=49fb2642a10df8a0fdd9e67c0e745d54365d9f9f; implementation_pr_state=MERGED; MERGE_METHOD=SQUASH; MERGED_AT=2026-07-02T04:28:46Z` |
+| `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
+| `SYSTEMWIDE_RANKING_PERFORMED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+| `REGISTRY_RESOLVER_OWNER` | `src/governance/runbook_progress_registry_v1.py` |
+| `REGISTRY_UNQUALIFIED_FIRST_MATCH_ALLOWED` | `false` |
+| `LEGACY_REGISTRY_AUTHORITY` | `false` |
+| `REGISTRY_DUPLICATE_CURRENT_OWNER_COUNT` | `0` |
+| `CANONICAL_ORDER_INTENT_TRANSFORMATION_OWNER` | `src/governance/canonical_order_intent_v1.py` |
+| `CANONICAL_ORDER_INTENT_TRANSFORMATION_AUTHORITY` | `CANONICAL_CURRENT_OWNER_ONLY` |
+| `SLICE_A_STATUS` | `COMPLETE` |
+| `SLICE_B_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `SLICE_C_STATUS` | `REGISTRY_CONSOLIDATED` |
+| `SLICE_D_STATUS` | `LEGACY_RUNTIME_ENTRYPOINTS_DEAUTHORIZED` |
+| `SLICE_E_STATUS` | `EVALUATE_DOUBLE_PLAY_AUTHORITY_CONSOLIDATED` |
+| `LEGACY_RUNTIME_ENTRYPOINTS_REACHABLE_FOR_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_DECISION_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_RISK_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_INTENT_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_EXECUTION_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_ORDER_EFFECT_POSSIBLE` | `false` |
+| `CANONICAL_RUNTIME_ENTRYPOINT_OWNER` | `UNIQUE` |
+| `CANONICAL_RUNTIME_ENTRYPOINT_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_RUNTIME_ENTRYPOINT_AUTHORITY` | `NONE` |
+| `DUAL_RUNTIME_AUTHORITY_POSSIBLE` | `false` |
+| `CANONICAL_DOUBLE_PLAY_OFFLINE_AUTHORITY_OWNER` | `trading.master_v2.double_play_composition_matrix_v1` |
+| `CANONICAL_DOUBLE_PLAY_OFFLINE_REPLAY_CHAIN_OWNER` | `trading.master_v2.integrated_offline_trading_logic_replay_v1` |
+| `OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY` | `LEGACY_NON_AUTHORITATIVE` |
+| `EVALUATE_DOUBLE_PLAY_SLICE_E_RESIDUAL` | `false` |
+| `EVALUATE_DOUBLE_PLAY_AUTHORITY_BOUNDARY_OWNER` | `trading.master_v2.evaluate_double_play_authority_boundary_v0` |
+| `NEXT_REMEDIATION_SLICE` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION (blocked; ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false; separate GO required)` |
+| `CANONICAL_RUNTIME_CORE_CONSUMPTION_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_ORDER_INTENT_TO_EXECUTION_PIPELINE_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `INTENT_COMPATIBILITY_FIREWALL_STATUS` | `BOUND_OFFLINE` |
+| `CAPITAL_RISK_SIZING_BINDING_STATUS` | `BOUND_OFFLINE` |
+| `EXECUTION_PIPELINE_PLAN_ONLY_BOUNDARY_STATUS` | `PASS` |
+| `RUNTIME_REWIRE_STATUS` | `BLOCKED_BY_ECONOMIC_VALIDITY_OFFLINE_GATE` |
+| `ZERO_ORDER_RUNTIME_READY` | `false` |
+| `ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_DEFINED` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EVIDENCE` | `NOT_AUTHORIZED` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EVIDENCE_VALID` | `false` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_OPERATOR_GO_GRANTED` | `false` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_EQUAL_STEP_29T` | `true` |
+| `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_EQUAL_STEP_29U` | `true` |
+| `CANONICAL_CORE_SINGLE_SSOT_CONFIRMED` | `true` |
+
+## Statuswerte
+
+`NOT_STARTED` · `IN_PROGRESS` · `PARTIALLY_COMPLETE` · `COMPLETE` · `BLOCKED` · `DEFERRED_HARDENING` · `NOT_APPLICABLE`
+
+`COMPLETE` nur bei kanonischem Owner, implementiertem Contract, bestandenen Tests, erforderlicher Evidence, Merge auf `origin&#47;main` und erfüllten Exit-Kriterien des Minimum Safe Slice.
+
+## Aktives Major Gap Package
+
+**Package:** `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0`
+
+Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollständige Candidate-/Config-/Identity-Lineage → neutraler Promotion Candidate Input → Policy-Input Binding → Policy-Input Evidence → Promotion Policy Decision.
+
+| Package-Schritt | Contract/Capability | Status |
+|---|---|---|
+| STEP_1 | `comparison_promotion_candidate_model_parameter_identity_binding_v1` | `COMPLETE` |
+| STEP_2 | `comparison_config_patch_manifest_cross_domain_lineage_binding_v1` | `COMPLETE` |
+| STEP_3 | `comparison_promotion_candidate_input_v1` | `COMPLETE` |
+| STEP_4 | `comparison_eligibility_promotion_policy_input_binding_v1` | `COMPLETE` |
+| STEP_5 | `comparison_promotion_policy_input_evidence_v1` | `COMPLETE` |
+| STEP_6 | `comparison_promotion_policy_decision_v1` | `COMPLETE` |
+| STEP_7 | `ai_promotion_assessment_v1` | `COMPLETE` |
+
+**Package-Status:** `COMPLETE` (Bridge V0 Steps 1–7 merged); Phase 5 STEP_07 = versioned strategy/model/parameter artifact slice (offline, non-authorizing).
+
+**Planning-Bundle:** `planning&#47;systemwide_major_gap_ranking_after_pr4628_v0_20260629T004500Z` (MANIFEST_VERIFY_RC=0)
+
+---
+
+## Runbook-Schritte (verbindliche Umsetzungsreihenfolge)
+
+### Phase 0–2: Foundation und Offline Evidence
+
+#### RUNBOOK_STEP_01 — Autonomy Policy und Canonical Trading Core Preservation
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 0 |
+| `RUNBOOK_STEP_ID` | `autonomy_policy_and_canonical_trading_core_preservation` |
+| `CONTRACT_OR_CAPABILITY` | Autonomy Policy + Canonical Trading Core Preservation Contract |
+| `STATUS` | `NOT_STARTED` |
+| `CANONICAL_OWNER` | TBD (Runbook Phase 0) |
+| `MERGED_PRS` | — |
+| `MERGE_COMMITS` | — |
+| `DURABLE_EVIDENCE_REFS` | — |
+| `DEPENDENCIES` | Runbook v2.6 ratifiziert (PR #4622, docs-only) |
+| `REMAINING_GAPS` | Contract-Implementierung ausstehend |
+| `NEXT_REQUIRED_CONTRACT` | Autonomy Policy Contract |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_02 — Trading-Core Single-SSOT Registry und Owner-/Digest-Baseline
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 0–1 |
+| `RUNBOOK_STEP_ID` | `trading_core_single_ssot_registry_owner_digest_baseline` |
+| `CONTRACT_OR_CAPABILITY` | Trading-Core Single-SSOT Registry + Module-Owner/Digest Baseline |
+| `STATUS` | `NOT_STARTED` |
+| `CANONICAL_OWNER` | TBD (Runbook Phase 0–1) |
+| `MERGED_PRS` | — |
+| `MERGE_COMMITS` | — |
+| `DURABLE_EVIDENCE_REFS` | — |
+| `DEPENDENCIES` | RUNBOOK_STEP_01 |
+| `REMAINING_GAPS` | Registry-Implementierung ausstehend |
+| `NEXT_REQUIRED_CONTRACT` | Trading-Core SSOT Registry |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_03 — Comparison Completion Evidence
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 1 |
+| `RUNBOOK_STEP_ID` | `comparison_completion_evidence_v1` |
+| `CONTRACT_OR_CAPABILITY` | `comparison_completion_evidence_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/comparison_completion_evidence_v1.py` |
+| `MERGED_PRS` | #4623 |
+| `MERGE_COMMITS` | `fcba50fe` |
+| `DURABLE_EVIDENCE_REFS` | implementation + closeout bundles PR4623 |
+| `DEPENDENCIES` | RUNBOOK_STEP_02 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | — |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING_EVIDENCE_ONLY` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_04 — Research Validity
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 2 |
+| `RUNBOOK_STEP_ID` | `research_validity_evidence_v1` |
+| `CONTRACT_OR_CAPABILITY` | `research_validity_evidence_v1` + `comparison_completion_research_validity_binding_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/research_validity_evidence_v1.py`, `src/meta/learning_loop/comparison_completion_research_validity_binding_v1.py` |
+| `MERGED_PRS` | #4624, #4625 |
+| `MERGE_COMMITS` | `7ddeee71`, `f3bc1179` |
+| `DURABLE_EVIDENCE_REFS` | implementation + closeout bundles PR4624, PR4625 |
+| `DEPENDENCIES` | RUNBOOK_STEP_03 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | — |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING_EVIDENCE_ONLY` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_05 — Completion → Promotion Input
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 3 |
+| `RUNBOOK_STEP_ID` | `comparison_completion_promotion_input_binding_v1` |
+| `CONTRACT_OR_CAPABILITY` | `comparison_completion_promotion_input_binding_v1` + `comparison_promotion_candidate_identity_binding_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/` (promotion input + candidate identity binding owners) |
+| `MERGED_PRS` | #4626, #4627 |
+| `MERGE_COMMITS` | `2005289a`, `072bac8d` |
+| `DURABLE_EVIDENCE_REFS` | implementation + closeout bundles PR4626, PR4627 |
+| `DEPENDENCIES` | RUNBOOK_STEP_04 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | — |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING_EVIDENCE_ONLY` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_06 — Promotion Eligibility und Promotion Policy
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 4 |
+| `RUNBOOK_STEP_ID` | `promotion_eligibility_and_promotion_policy` |
+| `CONTRACT_OR_CAPABILITY` | `comparison_promotion_policy_decision_v1` (offline decision from verified policy input evidence) |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/comparison_promotion_policy_decision_v1.py` |
+| `MERGED_PRS` | #4628 (eligibility), #4629 (model/parameter identity, STEP_1), #4634 (policy input bridge Steps 2–5), #4635 (policy decision, STEP_6) |
+| `MERGE_COMMITS` | `023fdcb5`, `2f554b27`, `ff4fb596`, `2739d481` |
+| `DURABLE_EVIDENCE_REFS` | PR4628/4629/4634/4635 closeout; PR4629 implementation bundle MANIFEST_VERIFY_RC=1 (historischer Drift, siehe Execution Governance) |
+| `DEPENDENCIES` | RUNBOOK_STEP_05, `comparison_promotion_policy_input_evidence_v1` |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `ai_promotion_assessment_v1` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING_EVIDENCE_ONLY` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_06B — AI Promotion Assessment
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 4 |
+| `RUNBOOK_STEP_ID` | `ai_promotion_assessment_v1` |
+| `CONTRACT_OR_CAPABILITY` | `ai_promotion_assessment_v1` (offline assessment from verified policy decision) |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/ai_promotion_assessment_v1.py` |
+| `MERGED_PRS` | `#4636` |
+| `MERGE_COMMITS` | `6712dd75e1771e6e4e0a3f086f1b3f223453b77c` |
+| `DURABLE_EVIDENCE_REFS` | `closeout&#47;pr4636_ai_promotion_assessment_v1_offline_slice_squash_merge_closeout_v0_20260629T011127Z` |
+| `DEPENDENCIES` | RUNBOOK_STEP_06, `comparison_promotion_policy_decision_v1` |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `versioned_strategy_model_parameter_artifact` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING_EVIDENCE_ONLY` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+### Phase 5–9: Artefakt, Runtime Safety, Eligibility, Observation, Autonomie
+
+#### RUNBOOK_STEP_07 — Versioniertes Strategy-/Model-/Parameter-Artefakt
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 5 |
+| `RUNBOOK_STEP_ID` | `versioned_strategy_model_parameter_artifact` |
+| `STATUS` | `COMPLETED` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/versioned_strategy_model_parameter_artifact_v1.py` |
+| `MERGED_PRS` | `#4637` |
+| `MERGE_COMMITS` | `e30f5a3797e50f9fabe2f81b587539bb57a5d5a3` |
+| `DEPENDENCIES` | RUNBOOK_STEP_06, `ai_promotion_assessment_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `handoff_trust_policy` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_08 — Handoff Trust Policy
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 5 |
+| `RUNBOOK_STEP_ID` | `handoff_trust_policy` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/handoff_trust_policy_v1.py` |
+| `MERGED_PRS` | `#4638` |
+| `MERGE_COMMITS` | `d5fb570dc14d032033f33b7c38ea6e03484be413` |
+| `DEPENDENCIES` | RUNBOOK_STEP_07, `versioned_strategy_model_parameter_artifact_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `authority_lease_and_revocation` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_09 — Authority Lease und Revocation
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `authority_lease_and_revocation` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/authority_lease_and_revocation_v1.py` |
+| `MERGED_PRS` | `#4639` |
+| `MERGE_COMMITS` | `74e384e9b83ad2d9f59aa18361b200ed5b50ad63` |
+| `DEPENDENCIES` | RUNBOOK_STEP_08, `handoff_trust_policy_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `secure_handoff_envelope` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_10 — Secure Handoff Envelope
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `secure_handoff_envelope` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/secure_handoff_envelope_v1.py` |
+| `MERGED_PRS` | `#4640` |
+| `MERGE_COMMITS` | `841be8b4e8460fcd68814c21feeba1f8e28e8052` |
+| `DEPENDENCIES` | RUNBOOK_STEP_09, `authority_lease_and_revocation_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `handoff_atomic_claim_consume` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_11 — Atomic Claim/Consume
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `atomic_claim_consume` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/handoff_atomic_claim_consume_v1.py` |
+| `MERGED_PRS` | `#4641` |
+| `MERGE_COMMITS` | `7d586c5776d16d9e806e20eeee47f77aedd4b8e5` |
+| `DEPENDENCIES` | RUNBOOK_STEP_10, `secure_handoff_envelope_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `clock_trust_and_expiry` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_12 — Clock Trust und TOCTOU-Revalidierung
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `clock_trust_and_toctou_revalidation` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/clock_trust_and_expiry_v1.py` |
+| `MERGED_PRS` | `#4642` |
+| `MERGE_COMMITS` | `3dd7b8138478aa0a1c68bd042bf6ee67f6bdeff3` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/clock_trust_and_expiry_v1_offline_slice_implementation_v0_20260629T033245Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4642_clock_trust_and_expiry_v1_offline_slice_squash_merge_closeout_v0_20260629T034100Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T03:40:55Z; MERGE_METHOD=SQUASH_ADMIN; SQUASH_PARENT=7d586c5776d16d9e806e20eeee47f77aedd4b8e5 |
+| `DEPENDENCIES` | RUNBOOK_STEP_11, `handoff_atomic_claim_consume_v1` |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `trading_session_single_writer` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_13 — Trading Session Single Writer und Fencing
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `trading_session_single_writer_and_fencing` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/trading_session_single_writer_v1.py` |
+| `MERGED_PRS` | `#4644` |
+| `MERGE_COMMITS` | `02eabe2d6c690a16c6aa4598d30d5c4d59de56a4` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/trading_session_single_writer_v1_offline_slice_implementation_v0_20260629T040625Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4644_trading_session_single_writer_v1_offline_slice_squash_merge_closeout_v0_20260629T041340Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=1dc9255bfeb7b7789a6708e8c1beec2df3715c249c596a1feb306c2d8c237152; MERGED_AT=2026-06-29T04:11:59Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=38ec47bd20767a3a752d4d048cd4fa0da717c796; TRADING_SESSION_SINGLE_WRITER_OFFLINE_ONLY=true; TRADING_SESSION_STARTED=false; WRITER_REGISTERED=false; WRITER_ACTIVATED=false; WRITER_LOCK_ACQUIRED=false; RESERVATION_CREATED=false; FENCING_TOKEN_ISSUED=false; STATE_MUTATED=false; CONSUMER_INVOKED=false; AUTHORITY_ACTIVATED=false; RUNTIME_AUTHORIZED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false |
+| `DEPENDENCIES` | RUNBOOK_STEP_12 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `canonical_order_lifecycle_v1` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_14 — Canonical Order Lifecycle
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `canonical_order_lifecycle` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/canonical_order_lifecycle_v1.py` |
+| `MERGED_PRS` | `#4646` |
+| `MERGE_COMMITS` | `dd13f9e929ff725e8f3f9305587cd15180aee42d` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/canonical_order_lifecycle_v1_offline_slice_implementation_v0_20260629T043753Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4646_canonical_order_lifecycle_v1_offline_slice_squash_merge_closeout_v0_20260629T044447Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=255721edbeffb890c0959541bd117e690593382fdaa93ecd12a2bfb79168e66a; MERGED_AT=2026-06-29T04:43:57Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=33a2c776c43b4a2ea66be8ac40519a34d0dd88aa; CANONICAL_ORDER_LIFECYCLE_CONTRACT_COMPLETE=true; CANONICAL_ORDER_LIFECYCLE_OFFLINE_ONLY=true; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_ORDER_LIFECYCLE_LOGIC=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; ORDER_STATE_MUTATED=false; ADAPTER_INVOKED=false; EXCHANGE_REQUEST_SENT=false; NETWORK_SIDE_EFFECT_CREATED=false; RUNTIME_AUTHORIZED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false |
+| `DEPENDENCIES` | RUNBOOK_STEP_13 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `order_intent_idempotency_v1` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_15 — Order Intent Idempotency
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `order_intent_idempotency` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/order_intent_idempotency_v1.py` |
+| `MERGED_PRS` | `#4648` |
+| `MERGE_COMMITS` | `cc62dce676b86f88148ae00d8b1120c7258b3df7` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/order_intent_idempotency_v1_offline_slice_implementation_v0_20260629T051731Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4648_order_intent_idempotency_v1_offline_slice_squash_merge_closeout_v0_20260629T052918Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=af66b84a867e19b848787165d170f4a88e74a280d2ab308f5a8b4cdf38a7124f; MERGED_AT=2026-06-29T05:27:27Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=ec2e36f39f42022fab27c3a4a74e370d97058318; ORDER_INTENT_IDEMPOTENCY_CONTRACT_COMPLETE=true; ORDER_INTENT_IDEMPOTENCY_OFFLINE_ONLY=true; IDEMPOTENCY_KEY_BOUND=true; REPLAY_PROTECTION_BOUND=true; DUPLICATE_PROTECTION_BOUND=true; DENY_BY_DEFAULT=true; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_ORDER_INTENT_IDEMPOTENCY_LOGIC=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; ORDER_CREATED=false; ORDER_VALIDATED=false; ORDER_AUTHORIZED=false; ORDER_SUBMISSION_REQUESTED=false; ORDER_SUBMITTED=false; ORDER_ACKNOWLEDGED=false; ORDER_AMENDED=false; ORDER_CANCEL_REQUESTED=false; ORDER_CANCELLED=false; ORDER_PARTIALLY_FILLED=false; ORDER_FILLED=false; ORDER_STATE_MUTATED=false; ADAPTER_INVOKED=false; EXCHANGE_REQUEST_SENT=false; NETWORK_SIDE_EFFECT_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; RUNTIME_AUTHORIZED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false |
+| `DEPENDENCIES` | RUNBOOK_STEP_14 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `trading_core_decision_attestation_v1` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_16 — Trading-Core Decision Attestation
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `trading_core_decision_attestation` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/trading_core_decision_attestation_v1.py` |
+| `MERGED_PRS` | `#4650` |
+| `MERGE_COMMITS` | `aee7b180bb72b6b2919cb9b074ab0e45a0a763d8` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/trading_core_decision_attestation_v1_offline_slice_implementation_v0_20260629T060142Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4650_trading_core_decision_attestation_v1_offline_slice_squash_merge_closeout_v0_20260629T061300Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=d9a00c039a2bfdcaf7739b8416e49e71ab0edb56e0627eb6dd566a961a371d68; MERGED_AT=2026-06-29T06:11:04Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=4c30555cac6cd0f400d6b5a2d46e6b55e3ecf766; IMPLEMENTATION_BRANCH=feat/trading-core-decision-attestation-offline-slice; TRADING_CORE_DECISION_ATTESTATION_CONTRACT_COMPLETE=true; TRADING_CORE_DECISION_ATTESTATION_OFFLINE_ONLY=true; TRADING_DECISION_CORE_BOUND=true; MASTER_V2_BOUND=true; DOUBLE_PLAY_BOUND=true; BULL_BOUND=true; BEAR_BOUND=true; DYNAMIC_SCOPE_BOUND=true; RISK_BOUND=true; SIZING_BOUND=true; SCOPE_CAPITAL_BOUND=true; CANONICAL_ORDER_INTENT_BOUND=true; DETERMINISTIC_SERIALIZATION_BOUND=true; STABLE_DIGEST_BOUND=true; PROVENANCE_BOUND=true; CROSS_DOMAIN_LINEAGE_BOUND=true; DENY_BY_DEFAULT=true; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_TRADING_CORE_DECISION_ATTESTATION_LOGIC=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; ORDER_CREATED=false; ORDER_SUBMISSION_REQUESTED=false; ORDER_SUBMITTED=false; ORDER_STATE_MUTATED=false; ADAPTER_INVOKED=false; EXCHANGE_REQUEST_SENT=false; NETWORK_SIDE_EFFECT_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; RUNTIME_AUTHORIZED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false |
+| `DEPENDENCIES` | RUNBOOK_STEP_15 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `semantic_diff_evidence` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_17 — Semantic-Diff Evidence
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `semantic_diff_evidence` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/trading_logic_semantic_diff_evidence_v1.py` |
+| `MERGED_PRS` | `#4652` |
+| `MERGE_COMMITS` | `8624425ee5fdb0f484556803e19d8f3720702636` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/semantic_diff_evidence_offline_slice_implementation_v0_20260629T064745Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4652_semantic_diff_evidence_v1_offline_slice_squash_merge_closeout_v0_20260629T090234Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=cf6d055d792bca7684835ff0f2a1016f7e4d5251f74933fdb7aeb12b278ef83d; MERGED_AT=2026-06-29T09:01:30Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=9200593842705b287b45b24bf1338b6c3dd6d51f; IMPLEMENTATION_BRANCH=feat/semantic-diff-evidence-offline-slice; TRADING_LOGIC_SEMANTIC_DIFF_EVIDENCE_CONTRACT_COMPLETE=true; TRADING_LOGIC_SEMANTIC_DIFF_EVIDENCE_OFFLINE_ONLY=true; SEMANTIC_DIFF_EVIDENCE_CONTRACT_COMPLETE=true; SEMANTIC_DIFF_EVIDENCE_OFFLINE_ONLY=true; DETERMINISTIC_SERIALIZATION_BOUND=true; STABLE_DIGEST_BOUND=true; PROVENANCE_BOUND=true; CROSS_DOMAIN_LINEAGE_BOUND=true; DENY_BY_DEFAULT=true; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_SEMANTIC_DIFF_LOGIC=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; ORDER_CREATED=false; ORDER_SUBMISSION_REQUESTED=false; ORDER_SUBMITTED=false; ORDER_STATE_MUTATED=false; ADAPTER_INVOKED=false; EXCHANGE_REQUEST_SENT=false; NETWORK_SIDE_EFFECT_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; RUNTIME_AUTHORIZED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false |
+| `DEPENDENCIES` | RUNBOOK_STEP_16 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `runtime_reconciliation` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_18 — Runtime Reconciliation
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `runtime_reconciliation` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/runtime_state_reconciliation_v1.py` |
+| `MERGED_PRS` | `#4654` |
+| `MERGE_COMMITS` | `5d402362727848eba605fb3da5c593a559b5494b` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runtime-state-reconciliation_offline_slice_implementation_v0_20260629T093330Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4654_runtime_state_reconciliation_v1_offline_slice_squash_merge_closeout_v0_20260629T094435Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=165ff09c5c997e4e69e56b435f3926fcad81a75d83f7fddbd70ac12fee2efba6; MERGED_AT=2026-06-29T09:42:34Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=31aea919e0e29928a1e20c70535cfe409e045417; IMPLEMENTATION_BRANCH=feat/runtime-state-reconciliation-offline-slice; canonical_scope=runtime_state_reconciliation_v1_offline_slice; RUNTIME_STATE_RECONCILIATION_CONTRACT_COMPLETE=true; RUNTIME_STATE_RECONCILIATION_OFFLINE_ONLY=true; RUNTIME_STATE_OBSERVED_ONLY=true; RUNTIME_STATE_MUTATED=false; RUNTIME_STARTED=false; RUNTIME_STOPPED=false; RUNTIME_RESTARTED=false; RUNTIME_AUTHORIZED=false; RUNTIME_PERMISSION_CREATED=false; RUNTIME_CONFIGURATION_CREATED=false; SCHEDULER_STARTED=false; SCHEDULER_RUNTIME_ALLOWED=false; offline_only=true; runtime_state_mutated=false; runtime_action_performed=false; order_action_performed=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_RUNTIME_STATE_RECONCILIATION_LOGIC=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; ORDER_CREATED=false; ORDER_SUBMISSION_REQUESTED=false; ORDER_SUBMITTED=false; ORDER_STATE_MUTATED=false; ADAPTER_INVOKED=false; EXCHANGE_REQUEST_SENT=false; NETWORK_SIDE_EFFECT_CREATED=false; FILES_TRANSFERRED_TO_RUNTIME=false; QUEUE_MESSAGE_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; AUTHORITY_ACTIVATED=false; LEASE_ACTIVATED=false; REVOCATION_EXECUTED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false |
+| `DEPENDENCIES` | RUNBOOK_STEP_17 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `unknown_outcome_recovery` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_19 — Unknown-Outcome Recovery
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `unknown_outcome_recovery` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/unknown_execution_outcome_recovery_v1.py` |
+| `MERGED_PRS` | `#4656` |
+| `MERGE_COMMITS` | `56578b8d4d79616e9260bccc0b5ee0d10a7ca47c` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/unknown_execution_outcome_recovery_v1_offline_slice_implementation_v0_20260629T103013Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4656_unknown_execution_outcome_recovery_v1_offline_slice_squash_merge_closeout_recovery_v0_20260629T105559Z (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=751c5ad8c99d208c6eb26338abf61c4eba0c831d67081dd735cb1dcc4c927ef7; MERGED_AT=2026-06-29T10:41:31Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=cf784a7106def79c15fd2798c2b74c1fd599f306; IMPLEMENTATION_BRANCH=feat/unknown-execution-outcome-recovery-offline-slice; canonical_scope=unknown_execution_outcome_recovery_v1_offline_slice; UNKNOWN_EXECUTION_OUTCOME_RECOVERY_CONTRACT_COMPLETE=true; UNKNOWN_EXECUTION_OUTCOME_RECOVERY_OFFLINE_ONLY=true; UNKNOWN_EXECUTION_OUTCOME_RECOVERY_OBSERVED_ONLY=true; UNKNOWN_OUTCOME_IMPLIES_RESUBMIT_ALLOWED_FALSE=true; UNKNOWN_OUTCOME_IMPLIES_NEW_CLIENT_ORDER_ID_ALLOWED_FALSE=true; TRANSPORT_TIMEOUT_DOES_NOT_PROVE_NOT_SUBMITTED=true; TERMINAL_CLASSIFICATION_REQUIRES_SUFFICIENT_SNAPSHOT_EVIDENCE=true; STILL_UNKNOWN_IMPLIES_RECONCILIATION_REQUIRED=true; offline_only=true; recovery_action_executed=false; order_resubmitted=false; new_client_order_id_created=false; runtime_state_mutated=false; adapter_invoked=false; exchange_request_sent=false; network_side_effect_created=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_UNKNOWN_OUTCOME_RECOVERY_LOGIC=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; forbidden_owner_diff_count=0; ORDER_CREATED=false; ORDER_SUBMISSION_REQUESTED=false; ORDER_SUBMITTED=false; ORDER_CANCEL_REQUESTED=false; ORDER_AMEND_REQUESTED=false; ORDER_STATE_MUTATED=false; POSITION_STATE_MUTATED=false; FILES_TRANSFERRED_TO_RUNTIME=false; QUEUE_MESSAGE_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; AUTHORITY_ACTIVATED=false; LEASE_ACTIVATED=false; REVOCATION_EXECUTED=false; SCHEDULER_STARTED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_18 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `adapter_submission_contract` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_20 — Adapter Submission Contract
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `adapter_submission_contract` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/adapter_submission_contract_v1.py` |
+| `MERGED_PRS` | `#4658` |
+| `MERGE_COMMITS` | `1cd39a91e48596becb777a10c6e45133d356e7d2` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/adapter_submission_contract_v1_offline_slice_implementation_v0_20260629T120222Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4658_adapter_submission_contract_v1_offline_slice_squash_merge_closeout_v0_20260629T121140Z (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=a85bdc27a6e55bf4e55c60842f7a2c27363a1abd3a6410a97cfe57db4c42a786; MERGED_AT=2026-06-29T12:10:40Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=7b5ebb320dfa0a443615848507a9a26e53b40138; IMPLEMENTATION_BRANCH=feat/adapter-submission-contract-v1-offline-slice; canonical_scope=adapter_submission_contract_v1_offline_slice; ADAPTER_SUBMISSION_CONTRACT_COMPLETE=true; ADAPTER_SUBMISSION_CONTRACT_OFFLINE_ONLY=true; ADAPTER_SUBMISSION_CONTRACT_FAIL_CLOSED=true; ADAPTER_SEMANTIC_MUTATION_ALLOWED=false; ADAPTER_QUANTITY_INCREASE_ALLOWED=false; ADAPTER_ORDER_TYPE_CHANGE_ALLOWED=false; ADAPTER_CLIENT_ORDER_ID_REPLACEMENT_ALLOWED=false; ADAPTER_REDUCE_ONLY_REMOVAL_ALLOWED=false; ADAPTER_POSITION_MODE_CHANGE_ALLOWED=false; ADAPTER_MARGIN_MODE_CHANGE_ALLOWED=false; ADAPTER_UNKNOWN_OUTCOME_RETRY_ALLOWED=false; OUTPUT_FIELD_COLLISION_FIXED=true; PERMISSION_ALREADY_CONSUMED_FAILS_CLOSED=true; offline_only=true; adapter_invoked=false; exchange_request_sent=false; network_side_effect_created=false; order_submitted=false; runtime_state_mutated=false; execution_permission_consumed=false; submission_claim_executed=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_ADAPTER_SUBMISSION_LOGIC=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; forbidden_owner_diff_count=0; ORDER_CREATED=false; ORDER_SUBMISSION_REQUESTED=false; ORDER_CANCEL_REQUESTED=false; ORDER_AMEND_REQUESTED=false; ORDER_STATE_MUTATED=false; POSITION_STATE_MUTATED=false; FILES_TRANSFERRED_TO_RUNTIME=false; QUEUE_MESSAGE_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; AUTHORITY_ACTIVATED=false; LEASE_ACTIVATED=false; REVOCATION_EXECUTED=false; SCHEDULER_STARTED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_19 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `venue_capability_snapshot` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_21 — Venue Capability Snapshot und Drift Guards
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `venue_capability_snapshot_and_drift_guards` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/venue_capability_snapshot_v1.py` |
+| `MERGED_PRS` | `#4660` |
+| `MERGE_COMMITS` | `9ee4cd4461c52f2165807e8ed9bf8242af5d25d4` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/venue_capability_snapshot_v1_offline_slice_implementation_v0_20260629T124141Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4660_venue_capability_snapshot_v1_offline_slice_squash_merge_closeout_v0_20260629T125501Z (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=bab53683e2c3cd2423804ef42a506d355139298eece8dacd7331bdc6815015a6; MERGED_AT=2026-06-29T12:53:54Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=9b9cd5822eeafae57914b6f1a94bfa01e4444665; IMPLEMENTATION_BRANCH=feat/venue-capability-snapshot-v1-offline-slice; canonical_scope=venue_capability_snapshot_v1_offline_slice; VENUE_CAPABILITY_SNAPSHOT_CONTRACT_COMPLETE=true; VENUE_CAPABILITY_SNAPSHOT_OFFLINE_ONLY=true; VENUE_CAPABILITY_SNAPSHOT_FAIL_CLOSED=true; VENUE_CAPABILITY_SNAPSHOT_IS_EVIDENCE_NOT_AUTHORITY=true; CAPABILITY_DIGEST_CHANGED_IMPLIES_SUSPEND_REQUIRED=true; CAPABILITY_DIGEST_CHANGED_IMPLIES_UNUSED_PERMISSION_INVALIDATION_REQUIRED=true; CAPABILITY_DIGEST_CHANGED_IMPLIES_RECONCILIATION_REQUIRED=true; CAPABILITY_DIGEST_CHANGED_IMPLIES_RUNTIME_ELIGIBILITY_REVALIDATION_REQUIRED=true; DRIFT_EVIDENCE_DOES_NOT_EXECUTE_ACTIONS=true; DIGEST_MISMATCH_FAILS_CLOSED=true; offline_only=true; evidence_not_authority=true; venue_capability_discovery_executed=false; venue_capability_refresh_executed=false; runtime_eligibility_granted=false; new_orders_suspended=false; execution_permissions_invalidated=false; reconciliation_executed=false; runtime_eligibility_revalidated=false; adapter_invoked=false; exchange_request_sent=false; network_side_effect_created=false; runtime_state_mutated=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_VENUE_CAPABILITY_LOGIC=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; forbidden_owner_diff_count=0; ORDER_CREATED=false; ORDER_SUBMISSION_REQUESTED=false; ORDER_SUBMITTED=false; ORDER_CANCEL_REQUESTED=false; ORDER_AMEND_REQUESTED=false; ORDER_STATE_MUTATED=false; POSITION_STATE_MUTATED=false; FILES_TRANSFERRED_TO_RUNTIME=false; QUEUE_MESSAGE_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; AUTHORITY_ACTIVATED=false; LEASE_ACTIVATED=false; REVOCATION_EXECUTED=false; SCHEDULER_STARTED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_20 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `independent_pre_trade_safety_kernel` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_22 — Independent Pre-Trade Safety Kernel
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_STEP_ID` | `independent_pre_trade_safety_kernel` |
+| `CONTRACT_OR_CAPABILITY` | `independent_pre_trade_safety_kernel_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/independent_pre_trade_safety_kernel_v1.py` |
+| `MERGED_PRS` | `#4662` |
+| `MERGE_COMMITS` | `03fe56943cae44f03d35ab47d347962da7b2d61a` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/independent_pre_trade_safety_kernel_v1_offline_slice_implementation_v0_20260629T143204Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4662_independent_pre_trade_safety_kernel_v1_offline_slice_squash_merge_closeout_v0_20260629T144334Z (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=11ac1dcc955694b610cd245fcad4fdda061aa395b8f2be2000e49d19d41ec801; MERGED_AT=2026-06-29T14:41:58Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=b3b159f1f4ed4477588e21fc698d0e4a5ad992b3; IMPLEMENTATION_BRANCH=feat/independent-pre-trade-safety-kernel-v1-offline-slice; canonical_scope=independent_pre_trade_safety_kernel_v1_offline_slice; INDEPENDENT_PRE_TRADE_SAFETY_KERNEL_CONTRACT_COMPLETE=true; INDEPENDENT_PRE_TRADE_SAFETY_KERNEL_OFFLINE_ONLY=true; PRE_TRADE_SAFETY_KERNEL_INDEPENDENT=true; PRE_TRADE_SAFETY_KERNEL_FAIL_CLOSED=true; PRE_TRADE_SAFETY_APPROVAL_IS_NOT_AUTHORITY=true; SAFETY_DECISION_APPROVE_DOES_NOT_CREATE_EXECUTION_PERMISSION=true; SAFETY_DECISION_APPROVE_DOES_NOT_AUTHORIZE_SUBMISSION=true; SAFETY_DECISION_APPROVE_DOES_NOT_MUTATE_RUNTIME=true; INPUT_CONTRACT=independent_pre_trade_safety_kernel_v1; MISSING_INPUT_FAILS_CLOSED=true; STALE_INPUT_FAILS_CLOSED=true; DIGEST_MISMATCH_FAILS_CLOSED=true; EPOCH_MISMATCH_FAILS_CLOSED=true; RISK_LIMIT_EXPANSION_ALLOWED=false; CAPITAL_LIMIT_EXPANSION_ALLOWED=false; KILL_SWITCH_BYPASS_ALLOWED=false; RECONCILIATION_BYPASS_ALLOWED=false; AUTHORITY_BYPASS_ALLOWED=false; VENUE_CAPABILITY_BYPASS_ALLOWED=false; offline_only=true; evidence_not_authority=true; execution_permission_created=false; execution_permission_consumed=false; submission_authorized=false; adapter_invoked=false; exchange_request_sent=false; network_side_effect_created=false; reconciliation_executed=false; runtime_state_mutated=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; forbidden_owner_diff_count=0; ORDER_CREATED=false; ORDER_SUBMISSION_REQUESTED=false; ORDER_SUBMITTED=false; ORDER_CANCEL_REQUESTED=false; ORDER_AMEND_REQUESTED=false; ORDER_STATE_MUTATED=false; POSITION_STATE_MUTATED=false; FILES_TRANSFERRED_TO_RUNTIME=false; QUEUE_MESSAGE_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; AUTHORITY_ACTIVATED=false; LEASE_ACTIVATED=false; REVOCATION_EXECUTED=false; SCHEDULER_STARTED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_21 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `killswitch_writer_fencing_and_independent_read_paths` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_23 — KillSwitch Writer-Fencing und unabhängige Read Paths
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 6 / 9 |
+| `RUNBOOK_STEP_ID` | `killswitch_writer_fencing_and_independent_read_paths` |
+| `CONTRACT_OR_CAPABILITY` | `killswitch_writer_fencing_and_independent_read_paths_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/killswitch_writer_fencing_and_independent_read_paths_v1.py` |
+| `MERGED_PRS` | `#4664` |
+| `MERGE_COMMITS` | `806cda69d978c331cc5ce2f61b5836872b336932` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/killswitch_writer_fencing_and_independent_read_paths_v1_offline_slice_implementation_v0_20260629T150932Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4664_killswitch_writer_fencing_and_independent_read_paths_v1_offline_slice_squash_merge_closeout_v0_20260629T151932Z (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=a3e5df187bc16aede416ccbc4d1f16f44b9b3f2c400b92be836caae270f8c7b2; MERGED_AT=2026-06-29T15:18:54Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=d2ce948dc2b5ee40245e019e5aa1bcb8ee283a96; IMPLEMENTATION_BRANCH=feat/killswitch-writer-fencing-independent-read-paths-v1-offline-slice; canonical_scope=killswitch_writer_fencing_and_independent_read_paths_v1_offline_slice; KILLSWITCH_WRITER_FENCING_CONTRACT_COMPLETE=true; KILLSWITCH_WRITER_FENCING_OFFLINE_ONLY=true; KILLSWITCH_SINGLE_WRITER_REQUIRED=true; KILLSWITCH_WRITER_EPOCH_REQUIRED=true; KILLSWITCH_WRITER_EPOCH_MONOTONIC=true; LOWER_WRITER_EPOCH_REJECTED=true; UNKNOWN_WRITER_EPOCH_REJECTED=true; KILLSWITCH_EVENT_SEQUENCE_REQUIRED=true; KILLSWITCH_EVENT_SEQUENCE_MONOTONIC=true; KILLSWITCH_SEQUENCE_GAP_FAILS_CLOSED=true; KILLSWITCH_CONCURRENT_SUCCESSOR_FAILS_CLOSED=true; KILLSWITCH_EVENT_DIGEST_CHAIN_REQUIRED=true; KILLSWITCH_PREVIOUS_EVENT_DIGEST_REQUIRED=true; KILLSWITCH_CURRENT_EVENT_DIGEST_DETERMINISTIC=true; KILLSWITCH_BROKEN_DIGEST_CHAIN_FAILS_CLOSED=true; KILLSWITCH_STATE_ROLLBACK_FORBIDDEN=true; KILLSWITCH_RECOVERY_CONTINUES_EVENT_CHAIN=true; KILLSWITCH_INDEPENDENT_READ_PATHS_REQUIRED=true; SAFETY_KERNEL_KILLSWITCH_READ_PATH_INDEPENDENT=true; ADAPTER_KILLSWITCH_READ_PATH_INDEPENDENT=true; SAFETY_KERNEL_AND_ADAPTER_SHARED_VOLATILE_CACHE_ONLY=false; KILLSWITCH_CANONICAL_PERSISTED_STATE_REQUIRED=true; ADAPTER_MONOTONIC_REVOCATION_PROJECTION_REQUIRED=true; KILLSWITCH_STATE_UNAVAILABLE_FAILS_CLOSED=true; KILLSWITCH_STATE_UNREADABLE_FAILS_CLOSED=true; KILLSWITCH_READ_PATH_DISAGREEMENT_FAILS_CLOSED=true; LAST_KNOWN_ARMED_FALLBACK_ALLOWED=false; ADAPTER_SUBMISSION_ALLOWED_ON_UNCLEAR_STATE=false; PASS_DOES_NOT_MEAN_KILLSWITCH_ARMED=true; PASS_DOES_NOT_CREATE_EXECUTION_PERMISSION=true; PASS_DOES_NOT_AUTHORIZE_SUBMISSION=true; PASS_DOES_NOT_ALLOW_ORDERS=true; PASS_DOES_NOT_MUTATE_RUNTIME=true; offline_only=true; evidence_not_authority=true; KILLSWITCH_STATE_MUTATED=false; KILLSWITCH_TRIP_EXECUTED=false; KILLSWITCH_DISARM_EXECUTED=false; KILLSWITCH_RESET_EXECUTED=false; KILLSWITCH_REARM_EXECUTED=false; REVOCATION_EPOCH_INCREMENTED=false; AUTHORITY_REVOKED=false; AUTHORITY_CREATED=false; EXECUTION_PERMISSION_CREATED=false; EXECUTION_PERMISSION_CONSUMED=false; SUBMISSION_AUTHORIZED=false; SUBMISSION_CLAIM_EXECUTED=false; ADAPTER_INVOKED=false; ORDER_CREATED=false; ORDER_SUBMITTED=false; RUNTIME_STATE_MUTATED=false; NETWORK_SIDE_EFFECT_CREATED=false; EXCHANGE_REQUEST_SENT=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_KILLSWITCH_LOGIC=false; GENERIC_FUTURES_SAFETY_LOGIC=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; forbidden_owner_diff_count=0; ORDER_SUBMISSION_REQUESTED=false; ORDER_CANCEL_REQUESTED=false; ORDER_AMEND_REQUESTED=false; ORDER_STATE_MUTATED=false; POSITION_STATE_MUTATED=false; FILES_TRANSFERRED_TO_RUNTIME=false; QUEUE_MESSAGE_CREATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; AUTHORITY_ACTIVATED=false; LEASE_ACTIVATED=false; REVOCATION_EXECUTED=false; SCHEDULER_STARTED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_22 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `runtime_eligibility` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_24 — Runtime Eligibility
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 7 |
+| `RUNBOOK_STEP_ID` | `runtime_eligibility` |
+| `CONTRACT_OR_CAPABILITY` | `runtime_eligibility_evidence_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/runtime_eligibility_v1.py` |
+| `MERGED_PRS` | `#4666` |
+| `MERGE_COMMITS` | `a63ea1deb40a10b46b0546c6e18f5e03c31a3b3c` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runtime_eligibility_v1_offline_slice_implementation_v0_20260629T154130Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4666_runtime_eligibility_v1_offline_slice_squash_merge_closeout_v0_20260629T154858Z (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=88537b5db488de3bc23cade13d8b6e7e20d6a05f4d8789232e0b48d54ab9152a; MERGED_AT=2026-06-29T15:48:24Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=490d3496f80e13f8ea079cb19ba51ed2b2d054fd; IMPLEMENTATION_BRANCH=feat/runtime-eligibility-v1-offline-slice; canonical_scope=runtime_eligibility_v1_offline_slice; RUNTIME_ELIGIBILITY_CONTRACT_COMPLETE=true; RUNTIME_ELIGIBILITY_OFFLINE_ONLY=true; RUNTIME_ELIGIBILITY_IS_EVIDENCE=true; RUNTIME_ELIGIBILITY_IS_NOT_DEPLOYMENT=true; RUNTIME_ELIGIBILITY_IS_NOT_ACTIVATION=true; RUNTIME_ELIGIBILITY_IS_NOT_AUTHORITY=true; RUNTIME_ELIGIBILITY_IS_NOT_EXECUTION_PERMISSION=true; RUNTIME_ELIGIBILITY_DOES_NOT_AUTHORIZE_ORDERS=true; RUNTIME_ELIGIBILITY_DOES_NOT_MUTATE_RUNTIME=true; ELIGIBLE_DOES_NOT_MEAN_DEPLOYABLE=true; ELIGIBLE_DOES_NOT_MEAN_DEPLOYED=true; ELIGIBLE_DOES_NOT_MEAN_ACTIVATED=true; ELIGIBLE_DOES_NOT_MEAN_TRADING=true; ELIGIBLE_DOES_NOT_CREATE_AUTHORITY=true; ELIGIBLE_DOES_NOT_ACTIVATE_AUTHORITY=true; ELIGIBLE_DOES_NOT_CREATE_EXECUTION_PERMISSION=true; ELIGIBLE_DOES_NOT_AUTHORIZE_SUBMISSION=true; ELIGIBLE_DOES_NOT_ALLOW_ORDERS=true; ELIGIBLE_DOES_NOT_MUTATE_RUNTIME=true; offline_only=true; evidence_not_authority=true; DEPLOYMENT_CREATED=false; DEPLOYMENT_MUTATED=false; DEPLOYMENT_ACTIVATED=false; RUNTIME_ACTIVATED=false; RUNTIME_STATE_MUTATED=false; TRADING_SESSION_CREATED=false; TRADING_EPOCH_CREATED=false; EXECUTOR_EPOCH_CREATED=false; AUTHORITY_CREATED=false; AUTHORITY_ACTIVATED=false; AUTHORITY_REVOKED=false; LEASE_CREATED=false; LEASE_ACTIVATED=false; EXECUTION_PERMISSION_CREATED=false; EXECUTION_PERMISSION_CONSUMED=false; SUBMISSION_AUTHORIZED=false; SUBMISSION_CLAIM_EXECUTED=false; ADAPTER_INVOKED=false; VENUE_CAPABILITY_DISCOVERY_EXECUTED=false; VENUE_CAPABILITY_REFRESH_EXECUTED=false; RECONCILIATION_EXECUTED=false; KILLSWITCH_STATE_MUTATED=false; KILLSWITCH_TRIP_EXECUTED=false; KILLSWITCH_RESET_EXECUTED=false; ORDER_CREATED=false; ORDER_SUBMITTED=false; ORDER_CANCEL_REQUESTED=false; ORDER_AMEND_REQUESTED=false; POSITION_STATE_MUTATED=false; DATABASE_MUTATED=false; LOCK_ACQUIRED=false; RESERVATION_CREATED=false; NETWORK_SIDE_EFFECT_CREATED=false; EXCHANGE_REQUEST_SENT=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; ASSET_SPECIFIC_RUNTIME_ELIGIBILITY_LOGIC=false; GENERIC_FUTURES_RUNTIME_ELIGIBILITY_LOGIC=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; FUTURES_ONLY_DRIFT_GUARD_PASS=true; forbidden_owner_diff_count=0; ORDER_SUBMISSION_REQUESTED=false; ORDER_STATE_MUTATED=false; FILES_TRANSFERRED_TO_RUNTIME=false; QUEUE_MESSAGE_CREATED=false; REVOCATION_EXECUTED=false; SCHEDULER_STARTED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_23 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `deploy_inactive` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_25 — Deploy Inactive
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 7 |
+| `RUNBOOK_STEP_ID` | `deploy_inactive` |
+| `CONTRACT_OR_CAPABILITY` | `deployment_candidate_v1` + `deployed_inactive_verification_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/deploy_inactive_v1.py` |
+| `MERGED_PRS` | `#4668` |
+| `MERGE_COMMITS` | `8abbf803a66ce71cba26dbe680f168183f258c3e` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/deploy_inactive_v1_offline_slice_implementation_v0_20260629T170309Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/deploy_inactive_v1_offline_slice_pr4668_squash_merge_closeout_v0_20260629T171213Z (MANIFEST_VERIFY_RC=0); implementation_pr=4668; implementation_merge_commit=8abbf803a66ce71cba26dbe680f168183f258c3e; implementation_parent=d249cb033e92cd2c06354ba0e88a43c8fdc300da; implementation_patch_sha256=e57b4430c719684c5b3f56654075f9269ab73baa9ffa3e5e2c54f55c8218cf78; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/deploy_inactive_v1_offline_slice_implementation_v0_20260629T170309Z; closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/deploy_inactive_v1_offline_slice_pr4668_squash_merge_closeout_v0_20260629T171213Z; implementation_manifest_verify_rc=0; closeout_manifest_verify_rc=0; required_checks_success=true; patch_equivalence_verified=true; PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T17:09:59Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=d249cb033e92cd2c06354ba0e88a43c8fdc300da; IMPLEMENTATION_BRANCH=feat/deploy-inactive-v1-offline-slice; canonical_scope=deploy_inactive_v1_offline_slice; DEPLOY_INACTIVE_CONTRACT_COMPLETE=true; DEPLOY_INACTIVE_OFFLINE_ONLY=true; DEPLOY_INACTIVE_IS_EVIDENCE=true; DEPLOY_INACTIVE_IS_NOT_DEPLOYMENT=true; DEPLOY_INACTIVE_IS_NOT_ACTIVATION=true; DEPLOY_INACTIVE_IS_NOT_AUTHORITY=true; DEPLOY_INACTIVE_DOES_NOT_AUTHORIZE_ORDERS=true; DEPLOY_INACTIVE_DOES_NOT_MUTATE_RUNTIME=true; offline_only=true; non_authorizing=true; evidence_not_authority=true; runtime_mutation_performed=false; activation_performed=false; progress_registry_closeout_status=COMPLETE; REAL_DEPLOYMENT_PERFORMED=false; FILE_TRANSFER_TO_RUNTIME_PERFORMED=false; DEPLOYMENT_CREATED=false; DEPLOYMENT_ACTIVATED=false; RUNTIME_ACTIVATED=false; RUNTIME_STATE_MUTATED=false; AUTHORITY_CREATED=false; EXECUTION_PERMISSION_CREATED=false; SUBMISSION_AUTHORIZED=false; ADAPTER_INVOKED=false; ORDER_CREATED=false; ORDER_SUBMITTED=false; NETWORK_SIDE_EFFECT_CREATED=false; EXCHANGE_REQUEST_SENT=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; FUTURES_ONLY_DRIFT_GUARD_PASS=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; forbidden_owner_diff_count=0; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_24 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `runtime_observation_and_feedback` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_26 — Runtime Observation und Feedback
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 8 |
+| `RUNBOOK_STEP_ID` | `runtime_observation_and_feedback` |
+| `CONTRACT_OR_CAPABILITY` | `runtime_observation_bundle_v1` + `runtime_to_learning_input_v1` + `runtime_performance_comparison_input_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/runtime_observation_feedback_v1.py` |
+| `MERGED_PRS` | `#4670` |
+| `MERGE_COMMITS` | `54278f41c52540afefd20b726f3e669cf97c5b2f` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runtime_observation_feedback_v1_offline_slice_implementation_v0_20260629T173005Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runtime_observation_feedback_v1_offline_slice_pr4670_squash_merge_closeout_v0_20260629T173800Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/pr4670_cleanup_closeout_independent_forensic_verification_v0_20260629T174333Z (MANIFEST_VERIFY_RC=0); implementation_pr=4670; implementation_pr_state=MERGED; implementation_base_sha=ef7088c22114a45cbddf3e5f20aa5e7565ef0f31; implementation_head_sha=47c64fdeaf1ab7f034c9200667c86b4fd2cb189e; implementation_merge_commit=54278f41c52540afefd20b726f3e669cf97c5b2f; implementation_parent=ef7088c22114a45cbddf3e5f20aa5e7565ef0f31; implementation_patch_sha256=87e352ec526c0417457e44fd6872d362d35fb00ab1d50768a80a7c6e1c84d7a0; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runtime_observation_feedback_v1_offline_slice_implementation_v0_20260629T173005Z; closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runtime_observation_feedback_v1_offline_slice_pr4670_squash_merge_closeout_v0_20260629T173800Z; forensic_audit_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/pr4670_cleanup_closeout_independent_forensic_verification_v0_20260629T174333Z; implementation_manifest_verify_rc=0; closeout_manifest_verify_rc=0; forensic_audit_manifest_verify_rc=0; forensic_discrepancy_count=0; required_checks_success=true; patch_equivalence_verified=true; PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T17:37:54Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=ef7088c22114a45cbddf3e5f20aa5e7565ef0f31; IMPLEMENTATION_BRANCH=feat/runtime-observation-feedback-v1-offline-slice; canonical_scope=runtime_observation_and_feedback_offline_slice; RUNTIME_OBSERVATION_BUNDLE_V1_COMPLETE=true; RUNTIME_TO_LEARNING_INPUT_V1_COMPLETE=true; RUNTIME_PERFORMANCE_COMPARISON_INPUT_V1_COMPLETE=true; offline_only=true; non_authorizing=true; real_runtime_observation=false; venue_access_performed=false; runtime_process_started=false; runtime_mutation_performed=false; scheduler_action_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; RUNTIME_OBSERVATION_OFFLINE_ONLY=true; RUNTIME_OBSERVATION_IS_EVIDENCE=true; RUNTIME_OBSERVATION_IS_NOT_AUTHORITY=true; RUNTIME_OBSERVATION_DOES_NOT_AUTHORIZE_ORDERS=true; RUNTIME_OBSERVATION_DOES_NOT_MUTATE_RUNTIME=true; evidence_not_authority=true; NETWORK_SIDE_EFFECT_CREATED=false; EXCHANGE_REQUEST_SENT=false; ADAPTER_INVOKED=false; ORDER_CREATED=false; ORDER_SUBMITTED=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false; FORENSIC_VERDICT=PR4670_CLEANUP_AND_CLOSEOUT_INDEPENDENTLY_VERIFIED; CLOSEOUT_BUNDLE_TRUSTED=true` |
+| `DEPENDENCIES` | RUNBOOK_STEP_25 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `autonomous_shadow_paper_testnet_orchestration` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_27 — Autonome Shadow-/Paper-/Testnet-Orchestration
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `autonomous_shadow_paper_testnet_orchestration` |
+| `CONTRACT_OR_CAPABILITY` | `runtime_observation_to_orchestration_input_v1` + `autonomous_non_live_orchestration_plan_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/autonomous_non_live_orchestration_plan_v1.py` |
+| `MERGED_PRS` | `#4672` |
+| `MERGE_COMMITS` | `3f124b3d01155659390694476ca4aa8aa811869a` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/runbook_step27_scope_go_token_and_minimum_safe_slice_audit_v0_20260629T180452Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/autonomous_non_live_orchestration_plan_v1_offline_slice_implementation_v0_20260629T181655Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/step27_pr4672_premerge_bitcoin_input_path_and_side_effect_forensic_audit_v0_20260629T182259Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step27_pr4672_squash_merge_closeout_v0_20260629T182853Z (MANIFEST_VERIFY_RC=0); implementation_pr=4672; implementation_pr_state=MERGED; implementation_base_sha=bdc45bc8db7bfa184b03815da8ca9a9d074c95d4; implementation_head_sha=f13761625b61628b784db377e0736e64d1a58819; implementation_merge_commit=3f124b3d01155659390694476ca4aa8aa811869a; implementation_patch_sha256=4ad2aaf321898f0498274ffdbfbe6bbadab02e6ee26eac97020abe4217e6b27b; scope_audit_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/runbook_step27_scope_go_token_and_minimum_safe_slice_audit_v0_20260629T180452Z; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/autonomous_non_live_orchestration_plan_v1_offline_slice_implementation_v0_20260629T181655Z; premerge_forensic_audit_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/step27_pr4672_premerge_bitcoin_input_path_and_side_effect_forensic_audit_v0_20260629T182259Z; closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step27_pr4672_squash_merge_closeout_v0_20260629T182853Z; all_manifest_verify_rc=0; required_checks_success=true; patch_equivalence_verified=true; PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T18:27:49Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=bdc45bc8db7bfa184b03815da8ca9a9d074c95d4; IMPLEMENTATION_BRANCH=feat/autonomous-non-live-orchestration-plan-v1-offline-slice; canonical_scope=autonomous_non_live_orchestration_plan_v1_offline_slice; RUNTIME_OBSERVATION_TO_ORCHESTRATION_INPUT_V1_COMPLETE=true; AUTONOMOUS_NON_LIVE_ORCHESTRATION_PLAN_V1_COMPLETE=true; STAGE_SEQUENCE=REPLAY_ONLY,SHADOW_ONLY,PAPER_ONLY,TESTNET_ONLY; STAGE_EXECUTION_ALLOWED=false; STAGE_ACTIVATION_ALLOWED=false; STAGE_SCHEDULER_ALLOWED=false; STAGE_ORDERS_ALLOWED=false; SHADOW_SEPARATE_OPERATOR_GO_REQUIRED=true; PAPER_SEPARATE_OPERATOR_GO_REQUIRED=true; TESTNET_SEPARATE_OPERATOR_GO_REQUIRED=true; REPLAY_ONLY_DECLARATIVE_OFFLINE_PLAN_FORMATION_ONLY=true; offline_only=true; non_authorizing=true; replay_session_started=false; shadow_session_started=false; paper_session_started=false; testnet_session_started=false; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FORENSIC_VERDICT=STEP27_PR4672_PREMERGE_FORENSIC_AUDIT_PASS; POSITIVE_BITCOIN_BTC_XBT_REFERENCES=0; AMBIGUOUS_BITCOIN_REFERENCES=0; PARALLEL_SSOT_RISK=false; RUNTIME_SIDE_EFFECT_RISK=false; INDEXING_REPO_MUTATION_DETECTED=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_26 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `canary_micro_live_readiness` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_28 — Canary-/Micro-Live-Readiness
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `canary_micro_live_readiness` |
+| `CONTRACT_OR_CAPABILITY` | `autonomous_non_live_orchestration_to_canary_readiness_input_v1` + `canary_micro_live_readiness_evidence_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/canary_micro_live_readiness_v1.py` |
+| `MERGED_PRS` | `#4674` |
+| `MERGE_COMMITS` | `3f392ee05a78c275c049ee603eb0b02f65d8f386` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/runbook_step28_canary_micro_live_readiness_scope_go_and_gap_audit_v0_20260629T185006Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/runbook_step28_strict_bitcoin_btc_xbt_direction_forensic_audit_v0_20260629T190117Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step28_canary_micro_live_readiness_offline_implementation_v0_20260629T190949Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step28_pr4674_squash_merge_closeout_v0_20260629T191834Z (MANIFEST_VERIFY_RC=0); implementation_pr=4674; implementation_pr_state=MERGED; implementation_base_sha=7c27e2ce2cb897ead8d73e760090976dffd460dd; implementation_head_sha=2f90e384f1a5d58cc69672fd485954f054fed09d; implementation_merge_commit=3f392ee05a78c275c049ee603eb0b02f65d8f386; scope_audit_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/runbook_step28_canary_micro_live_readiness_scope_go_and_gap_audit_v0_20260629T185006Z; forensic_audit_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/runbook_step28_strict_bitcoin_btc_xbt_direction_forensic_audit_v0_20260629T190117Z; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step28_canary_micro_live_readiness_offline_implementation_v0_20260629T190949Z; closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step28_pr4674_squash_merge_closeout_v0_20260629T191834Z; implementation_manifest_verify_rc=0; closeout_manifest_verify_rc=0; required_checks_success=true; patch_equivalence_verified=true; PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T19:17:42Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=7c27e2ce2cb897ead8d73e760090976dffd460dd; IMPLEMENTATION_BRANCH=feat/runbook-step28-canary-micro-live-readiness-v0; canonical_scope=canary_micro_live_readiness_v1_offline_slice; AUTONOMOUS_NON_LIVE_ORCHESTRATION_TO_CANARY_READINESS_INPUT_V1_COMPLETE=true; CANARY_MICRO_LIVE_READINESS_EVIDENCE_V1_COMPLETE=true; READINESS_DEFAULT=READINESS_NOT_READY; READINESS_IS_EVIDENCE_NOT_AUTHORITY=true; STEP_28_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_28_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_28_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_28_COMPLETION_DOES_NOT_SELECT_INSTRUMENT=true; STEP_28_COMPLETION_REQUIRES_SEPARATE_GO_FOR_DEFERRED_SLICES=true; DEFERRED_ORCHESTRATION_READINESS_EVIDENCE_V1=true; DEFERRED_MEASURED_SHADOW_PAPER_TESTNET_SLO_EVIDENCE=true; DEFERRED_BOUNDED_LIVE_CANARY_CANDIDATE_V1=true; DEFERRED_LIVE_CANARY_ACTIVATION_PRECONDITIONS_V1=true; ORCHESTRATION_READINESS_EVIDENCE_REQUIRE_SEPARATE_OPERATOR_GO=true; SLO_EVIDENCE_REQUIRE_SEPARATE_OPERATOR_GO=true; BOUNDED_LIVE_CANARY_CANDIDATE_REQUIRE_SEPARATE_OPERATOR_GO=true; LIVE_CANARY_ACTIVATION_PRECONDITIONS_REQUIRE_SEPARATE_OPERATOR_GO=true; offline_only=true; non_authorizing=true; canary_activation_performed=false; live_session_started=false; micro_live_arming_performed=false; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FORENSIC_VERDICT=STEP28_STRICT_BITCOIN_BTC_XBT_DIRECTION_FORENSIC_AUDIT_PASS; POSITIVE_BITCOIN_BTC_XBT_REFERENCES=0; AMBIGUOUS_BITCOIN_REFERENCES=0; PARALLEL_SSOT_RISK=false; RUNTIME_SIDE_EFFECT_RISK=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_27 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `full_autonomous_production_operation` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29 — Vollautonomer Produktionsbetrieb (Phase-Container)
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `full_autonomous_production_operation` |
+| `STATUS` | `IN_PROGRESS` |
+| `DEPENDENCIES` | RUNBOOK_STEP_28 |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+| `SUBSTEP_SEQUENCE` | `29A → 29B → 29C → …` |
+
+#### RUNBOOK_STEP_29A — Finalized Trading Epoch Binding
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `finalized_trading_epoch_binding` |
+| `CONTRACT_OR_CAPABILITY` | `trading_epoch` field semantics within canonical market context |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/canonical_market_context_v1.py` (epoch binding subsumed in 29B contract) |
+| `DEPENDENCIES` | RUNBOOK_STEP_28 |
+| `NEXT_REQUIRED_CONTRACT` | `canonical_market_context_binding_v1` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29B — Canonical Market Context Binding v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `canonical_market_context_binding_v1` |
+| `CONTRACT_OR_CAPABILITY` | `CanonicalMarketContextV1` bound to `double_play_futures_input` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/canonical_market_context_v1.py` |
+| `MERGED_PRS` | `#4676` |
+| `MERGE_COMMITS` | `e32ae6551d37728d647781d6e0a64f96b42f428a` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29b_canonical_market_context_binding_v1_offline_slice_implementation_v0_20260630T120000Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29b_pr4676_squash_merge_closeout_v0_20260630T223200Z (MANIFEST_VERIFY_RC=0); implementation_pr=4676; implementation_pr_state=MERGED; implementation_base_sha=569e73dd7ed1a386c1a64bc7907554e84b4a5eca; implementation_head_sha=cfa8c42dce8d2fff51015772be788cee704e8359; implementation_merge_commit=e32ae6551d37728d647781d6e0a64f96b42f428a; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29b_canonical_market_context_binding_v1_offline_slice_implementation_v0_20260630T120000Z; squash_merge_closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29b_pr4676_squash_merge_closeout_v0_20260630T223200Z; implementation_manifest_verify_rc=0; squash_merge_closeout_manifest_verify_rc=0; patch_equivalence_verified=true; PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T22:31:34Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=569e73dd7ed1a386c1a64bc7907554e84b4a5eca; IMPLEMENTATION_BRANCH=feat/canonical-market-context-binding-v1; canonical_scope=canonical_market_context_binding_v1_offline_slice; CANONICAL_MARKET_CONTEXT_BINDING_V1_COMPLETE=true; STEP_29B_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29B_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29B_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29B_COMPLETION_DOES_NOT_START_SCOPE_INITIALIZATION=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SCOPE_INITIALIZATION_IMPLEMENTED=false; SCOPE_EVENT_GENERATOR_IMPLEMENTED=false; STEP29C_IMPLEMENTATION_STARTED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29A |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `canonical_scope_initialization` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29C_IMPLEMENTED` | `true` |
+| `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTED` | `true` |
+| `SCOPE_INITIALIZATION_IMPLEMENTED` | `true` |
+| `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29C — Canonical Scope Initialization
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `canonical_scope_initialization` |
+| `CONTRACT_OR_CAPABILITY` | `canonical_scope_initialization_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/canonical_scope_initialization_v1.py` |
+| `MERGED_PRS` | `#4678` |
+| `MERGE_COMMITS` | `561f245935132e2f63ad38a48c0425bd34869b0d` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29c_canonical_scope_initialization_v1_offline_slice_implementation_v0_20260630T225257Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29c_pr4678_squash_merge_closeout_v0_20260630T230059Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29c_progress_registry_closeout_v0_20260629T230519Z (MANIFEST_VERIFY_RC=0); implementation_pr=4678; implementation_pr_state=MERGED; implementation_base_sha=0061c9919ff59a737a21dc2fe82d7ce6ff40286d; implementation_head_sha=aac3599d0fe7d7bbf27e4a4fcc0a16e1580b4720; implementation_merge_commit=561f245935132e2f63ad38a48c0425bd34869b0d; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29c_canonical_scope_initialization_v1_offline_slice_implementation_v0_20260630T225257Z; squash_merge_closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29c_pr4678_squash_merge_closeout_v0_20260630T230059Z; progress_registry_closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29c_progress_registry_closeout_v0_20260629T230519Z; implementation_manifest_verify_rc=0; squash_merge_closeout_manifest_verify_rc=0; progress_registry_closeout_manifest_verify_rc=0; patch_equivalence_verified=true; PATCH_EQUIVALENCE_RC=0; MERGED_AT=2026-06-29T23:00:16Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=0061c9919ff59a737a21dc2fe82d7ce6ff40286d; IMPLEMENTATION_BRANCH=feat/canonical-scope-initialization-v1; canonical_scope=canonical_scope_initialization_v1_offline_slice; CANONICAL_SCOPE_INITIALIZATION_BOUND=true; STEP29C_CLOSEOUT_COMPLETE=true; STEP29D_IMPLEMENTATION_STARTED=false; STEP_29C_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29C_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29C_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29C_COMPLETION_DOES_NOT_START_SCOPE_EVENT_GENERATOR=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SCOPE_EVENT_GENERATOR_IMPLEMENTED=false; AUTO_PR_HELPER_FAILURE_OBSERVED=true; AUTO_PR_HELPER_FAILURE_REQUIRED=false; AUTO_PR_HELPER_FAILURE_BLOCKING=false; AUTO_PR_HELPER_REPAIR_DEFERRED=true` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29B |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `deterministic_scope_event_generator` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SCOPE_INITIALIZATION_IMPLEMENTED` | `true` |
+| `CANONICAL_SCOPE_INITIALIZATION_BOUND` | `true` |
+| `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29D — Deterministic Scope Event Generator
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `deterministic_scope_event_generator` |
+| `CONTRACT_OR_CAPABILITY` | `deterministic_scope_event_generator_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/deterministic_scope_event_generator_v1.py` |
+| `MERGED_PRS` | `#4680` |
+| `MERGE_COMMITS` | `3e0474fbad0ec77f39440d63af26317ea7bcafa2` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29d_deterministic_scope_event_generator_v1_offline_slice_implementation_v0_20260630T120000Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29d_pr4680_squash_merge_closeout_v0_20260630T002505Z (MANIFEST_VERIFY_RC=0); implementation_pr=4680; implementation_pr_state=MERGED; implementation_base_sha=b286fe160b5f9c98264fae8308df485115412f92; implementation_head_sha=d717b4381d82133763a5e794953ddcc2254c600b; implementation_merge_commit=3e0474fbad0ec77f39440d63af26317ea7bcafa2; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29d_deterministic_scope_event_generator_v1_offline_slice_implementation_v0_20260630T120000Z; squash_merge_closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29d_pr4680_squash_merge_closeout_v0_20260630T002505Z; implementation_manifest_verify_rc=0; squash_merge_closeout_manifest_verify_rc=0; patch_equivalence_verified=true; PATCH_EQUIVALENCE_RC=0; MERGED_AT=2026-06-29T23:25:05Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=b286fe160b5f9c98264fae8308df485115412f92; IMPLEMENTATION_BRANCH=feat/deterministic-scope-event-generator-v1; canonical_scope=deterministic_scope_event_generator_v1_offline_slice; DETERMINISTIC_SCOPE_EVENT_GENERATOR_V1_BOUND=true; STEP29D_IMPLEMENTATION_COMPLETE=true; STEP29E_IMPLEMENTATION_STARTED=false; STEP_29D_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29D_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29D_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29D_COMPLETION_DOES_NOT_START_BULL_BEAR_DIRECTIONAL_ASSESSMENT=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=PENDING_THIS_PR; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; AUTO_PR_HELPER_FAILURE_OBSERVED=true; AUTO_PR_HELPER_FAILURE_REQUIRED=false; AUTO_PR_HELPER_FAILURE_BLOCKING=false; AUTO_PR_HELPER_REPAIR_DEFERRED=true` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29C |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `bull_bear_directional_assessment_completion` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29D_IMPLEMENTED` | `true` |
+| `DETERMINISTIC_SCOPE_EVENT_GENERATOR_V1_IMPLEMENTED` | `true` |
+| `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29E — Bull/Bear Directional Assessment Completion
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `bull_bear_directional_assessment_completion` |
+| `CONTRACT_OR_CAPABILITY` | `bull_bear_directional_assessment_completion` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/directional_assessment_v1.py` |
+| `MERGED_PRS` | `#4682` |
+| `MERGE_COMMITS` | `26d56e8a721688d0ee67a430b12bb5dbcd4f40c3` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29e_directional_assessment_v1_offline_slice_implementation_v0_20260630T140000Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29e_directional_assessment_pr4682_squash_merge_closeout_v0_20260630T125100Z (MANIFEST_VERIFY_RC=0); implementation_pr=4682; implementation_pr_state=MERGED; implementation_base_sha=6e6d59c13cea6a59c8960858f45a243ffd478a31; implementation_head_sha=af0862986a75c828bb002edfe1ad7c1c7787638f; implementation_merge_commit=26d56e8a721688d0ee67a430b12bb5dbcd4f40c3; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29e_directional_assessment_v1_offline_slice_implementation_v0_20260630T140000Z; squash_merge_closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29e_directional_assessment_pr4682_squash_merge_closeout_v0_20260630T125100Z; implementation_manifest_verify_rc=0; squash_merge_closeout_manifest_verify_rc=0; patch_equivalence_verified=true; PATCH_EQUIVALENCE_RC=0; MERGED_AT=2026-06-30T12:51:00Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=6e6d59c13cea6a59c8960858f45a243ffd478a31; IMPLEMENTATION_BRANCH=feat/directional-assessment-v1; canonical_scope=directional_assessment_v1_offline_slice; DIRECTIONAL_ASSESSMENT_V1_BOUND=true; STEP29E_IMPLEMENTATION_COMPLETE=true; STEP29F_IMPLEMENTATION_STARTED=false; STEP_29E_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29E_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29E_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29E_COMPLETION_DOES_NOT_START_SURVIVAL_SUITABILITY_BINDING=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=PENDING_THIS_PR; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; AUTO_PR_HELPER_FAILURE_OBSERVED=true; AUTO_PR_HELPER_FAILURE_REQUIRED=false; AUTO_PR_HELPER_FAILURE_BLOCKING=false; AUTO_PR_HELPER_REPAIR_DEFERRED=true` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29D |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `survival_and_suitability_binding` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29E_IMPLEMENTED` | `true` |
+| `DIRECTIONAL_ASSESSMENT_V1_IMPLEMENTED` | `true` |
+| `BULL_BEAR_DIRECTIONAL_ASSESSMENT_COMPLETED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29F — Survival and Suitability Binding
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `survival_and_suitability_binding` |
+| `CONTRACT_OR_CAPABILITY` | `survival_and_suitability_binding` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/survival_assessment_v1.py`, `src/trading/master_v2/suitability_binding_v1.py` |
+| `MERGED_PRS` | `#4684`, `#4685` |
+| `MERGE_COMMITS` | `42d858a4c64579d691f19a78d9dcb20efeb22c93`, `45bc596f52cab3bb5df39e47766740994e7a8ced` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29f_survival_assessment_v1_offline_slice_implementation_v0_20260630T160000Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29f_survival_assessment_v1_offline_slice_pr4684_squash_merge_closeout_v0_20260630T132816Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29f_suitability_binding_offline_slice_implementation_v0_20260630T133700Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29f_suitability_binding_offline_slice_pr4685_squash_merge_closeout_v0_20260630T134400Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29f_completion_coverage_audit_and_bounded_closeout_v0_20260630T165951Z (MANIFEST_VERIFY_RC=0); survival_pr=4684; suitability_pr=4685; survival_merge_commit=42d858a4c64579d691f19a78d9dcb20efeb22c93; suitability_merge_commit=45bc596f52cab3bb5df39e47766740994e7a8ced; survival_squash_parent=c9cf5be0fd8b44cef7f0618707cd344b37f28bd4; suitability_squash_parent=42d858a4c64579d691f19a78d9dcb20efeb22c93; canonical_scope=survival_assessment_v1_offline_slice,suitability_binding_offline_slice; SURVIVAL_ASSESSMENT_V1_BOUND=true; SUITABILITY_BINDING_V1_BOUND=true; STEP29F_IMPLEMENTATION_COMPLETE=true; STEP29G_IMPLEMENTATION_STARTED=false; STEP_29F_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29F_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29F_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29F_COMPLETION_DOES_NOT_START_DOUBLE_PLAY_COMPOSITION=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; AUTO_PR_HELPER_FAILURE_OBSERVED=true; AUTO_PR_HELPER_FAILURE_REQUIRED=false; AUTO_PR_HELPER_FAILURE_BLOCKING=false; AUTO_PR_HELPER_REPAIR_DEFERRED=true` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29E |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `double_play_composition_matrix` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29F_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29F_IMPLEMENTED_SCOPE` | `survival_assessment_v1_offline_slice,suitability_binding_offline_slice` |
+| `RUNBOOK_STEP_29F_COMPLETE` | `true` |
+| `SURVIVAL_ASSESSMENT_V1_IMPLEMENTED` | `true` |
+| `SUITABILITY_BINDING_V1_IMPLEMENTED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29G — Double Play Composition Matrix
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `double_play_composition_matrix` |
+| `CONTRACT_OR_CAPABILITY` | `double_play_composition_matrix` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/double_play_composition_matrix_v1.py` |
+| `MERGED_PRS` | `#4687` |
+| `MERGE_COMMITS` | `05b3932329c6b642d770916ed28608f863086129` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29g_double_play_composition_matrix_v1_offline_slice_implementation_v0_20260630T171541Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29g_double_play_composition_matrix_v1_pr4687_squash_merge_closeout_v0_20260630T172731Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/uniqueness_strategy_path_economic_value_forensic_audit_v0_20260630T172120Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29g_completion_coverage_audit_and_bounded_closeout_v0_20260630T173500Z (MANIFEST_VERIFY_RC=0); composition_pr=4687; composition_merge_commit=05b3932329c6b642d770916ed28608f863086129; composition_squash_parent=aad03a78e7e68239afe93f509479663a9800c5c6; canonical_scope=double_play_composition_matrix_v1_offline_slice; DOUBLE_PLAY_COMPOSITION_MATRIX_V1_BOUND=true; STEP29G_IMPLEMENTATION_COMPLETE=true; STEP29H_IMPLEMENTATION_STARTED=false; STEP_29G_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29G_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29G_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29G_COMPLETION_DOES_NOT_START_POSITION_MANAGEMENT=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29F |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `position_management_reversal_boundary` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29G_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29G_IMPLEMENTED_SCOPE` | `double_play_composition_matrix_v1_offline_slice` |
+| `RUNBOOK_STEP_29G_COMPLETE` | `true` |
+| `DOUBLE_PLAY_COMPOSITION_MATRIX_V1_IMPLEMENTED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29H — Position Management / Reversal Boundary
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `position_management_reversal_boundary` |
+| `CONTRACT_OR_CAPABILITY` | `position_management_reversal_boundary` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/double_play_entry_exit_policy_v0.py` |
+| `MERGED_PRS` | `#4689` |
+| `MERGE_COMMITS` | `36b3110090d2f9961216675550a602e411f07894` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29h_entry_position_exit_policy_v0_implementation_v0_20260630T180000Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29h_entry_position_exit_policy_pr4689_squash_merge_closeout_v0_20260630T175332Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29h_completion_coverage_audit_and_bounded_closeout_v0_20260630T200000Z (MANIFEST_VERIFY_RC=0); entry_exit_pr=4689; entry_exit_merge_commit=36b3110090d2f9961216675550a602e411f07894; entry_exit_squash_parent=984bbae220754795bfb6e9ee44f540028d50fe8b; canonical_scope=entry_position_exit_policy_offline_slice; DOUBLE_PLAY_ENTRY_EXIT_POLICY_V0_BOUND=true; STEP29H_IMPLEMENTATION_COMPLETE=true; STEP29I_IMPLEMENTATION_STARTED=false; STEP_29H_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29H_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29H_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29H_COMPLETION_DOES_NOT_START_REPLAY_BINDING=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29G |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `entry_exit_policy_replay_binding` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29H_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29H_IMPLEMENTED_SCOPE` | `entry_position_exit_policy_offline_slice` |
+| `RUNBOOK_STEP_29H_COMPLETE` | `true` |
+| `DOUBLE_PLAY_ENTRY_EXIT_POLICY_V0_IMPLEMENTED` | `true` |
+| `STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
+| `RUNBOOK_STEP_29I_COMPLETE` | `true` |
+| `STEP_29J_STARTED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29I — Integrated Offline Trading Logic Replay
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `integrated_offline_trading_logic_replay_v1` |
+| `CONTRACT_OR_CAPABILITY` | `integrated_offline_trading_logic_replay_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` |
+| `MERGED_PRS` | `#4691` |
+| `MERGE_COMMITS` | `540b8cfdb28a82e3810fca598a7018f94f89783e` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29i_integrated_offline_replay_v1_implementation_v0_20260630T181500Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29i_integrated_offline_replay_pr4691_squash_merge_closeout_v0_20260630T183300Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29i_completion_coverage_audit_and_bounded_closeout_v0_20260630T183947Z (MANIFEST_VERIFY_RC=0); integrated_replay_pr=4691; integrated_replay_merge_commit=540b8cfdb28a82e3810fca598a7018f94f89783e; integrated_replay_squash_parent=f9efd26745cf68a3813f6b92320db515aecfd522; canonical_scope=integrated_offline_trading_logic_replay_v1_slice; INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_V1_BOUND=true; STEP29I_IMPLEMENTATION_COMPLETE=true; STEP_29J_STARTED=false; STEP_29I_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29I_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29I_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29I_COMPLETION_DOES_NOT_START_BACKTEST_REWIRE=true; STEP_29I_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29H |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `backtest_engine_rewire_binding` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29I_COMPLETE` | `true` |
+| `CANONICAL_TRADING_DECISION_EVIDENCE_V1_IMPLEMENTED` | `true` |
+| `INTEGRATED_OFFLINE_REPLAY_EVIDENCE_WRITER_V1_IMPLEMENTED` | `true` |
+| `STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29J_COMPLETE` | `true` |
+| `STEP_29K_STARTED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29J — Default Backtest Economic Realism Binding
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `default_backtest_economic_realism_binding` |
+| `CONTRACT_OR_CAPABILITY` | `default_backtest_economic_realism_binding_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/backtest/cost_config_v0.py` |
+| `MERGED_PRS` | `#4693` |
+| `MERGE_COMMITS` | `274909dd684f032adb397c7e6179a18ad8b510e0` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29j_default_backtest_economic_realism_binding_pr4693_squash_merge_closeout_v0_20260630T190300Z (MANIFEST_VERIFY_RC=0); default_backtest_cost_binding_pr=4693; default_backtest_cost_binding_merge_commit=274909dd684f032adb397c7e6179a18ad8b510e0; default_backtest_cost_binding_squash_parent=d4d539b229636db974ba5d5c5b4c17c3765067d7; canonical_scope=default_backtest_economic_realism_binding_v1_slice; DEFAULT_BACKTEST_COST_BINDING_V1_BOUND=true; STEP29J_IMPLEMENTATION_COMPLETE=true; STEP_29K_STARTED=false; STEP_29J_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29J_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29J_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29J_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; STEP_29J_COMPLETION_DOES_NOT_START_FUNDING_BINDING=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29I |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `backtest_engine_rewire_binding` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NO_IMPLICIT_ZERO_COST_BACKTEST` | `true` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29J_COMPLETE` | `true` |
+| `DEFAULT_BACKTEST_COST_BINDING_V1_IMPLEMENTED` | `true` |
+| `STEP_29K_STARTED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+
+#### RUNBOOK_STEP_29K — Strategy Registry Consolidation
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `strategy_registry_consolidation_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/strategies/registry.py` |
+| `MERGED_PRS` | `#4695` |
+| `MERGE_COMMITS` | `b1a16ee9fe6c03b7fa70c677dcac01a282a62eab` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29k_strategy_registry_consolidation_pr4695_squash_merge_closeout_v0_20260630T193434Z (MANIFEST_VERIFY_RC=0); strategy_registry_consolidation_pr=4695; strategy_registry_consolidation_merge_commit=b1a16ee9fe6c03b7fa70c677dcac01a282a62eab; strategy_registry_consolidation_squash_parent=49c5b3322dfa318cc6f1dc24512796f036a8a447; canonical_scope=strategy_registry_consolidation_v1_slice; STRATEGY_REGISTRY_CONSOLIDATION_V1_BOUND=true; STEP29K_IMPLEMENTATION_COMPLETE=true; STEP_29L_STARTED=false; STEP_29K_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29K_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29K_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29K_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; STEP_29K_COMPLETION_DOES_NOT_START_BACKTEST_ENGINE_REWIRE=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29J |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `backtest_engine_rewire_binding` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29K_STARTED` | `true` |
+| `RUNBOOK_STEP_29K_IMPLEMENTED_SCOPE` | `strategy_registry_consolidation_v1_slice` |
+| `RUNBOOK_STEP_29K_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29K_COMPLETE` | `true` |
+| `STRATEGY_REGISTRY_CONSOLIDATION_V1_IMPLEMENTED` | `true` |
+| `STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `true` |
+| `STEP_29M_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29L — MV2 Research Wiring v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `mv2_research_wiring_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/backtest/mv2_research_wiring_v1.py` |
+| `MERGED_PRS` | `#4697`, `#4698` |
+| `MERGE_COMMITS` | `90aeeb53c4c716263f9dcdc27fdeb6fccd8e1c42`, `7c5558c4517d89721a4c5d98b1ed34ebbf704caf` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29l_mv2_research_wiring_v1_implementation_v0_20260630T195947Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29l_mv2_research_wiring_pr4697_squash_merge_closeout_v0_20260630T203726Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29l_residual_offline_slice_pr4698_squash_merge_closeout_v0_20260630T204850Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29l_completion_coverage_audit_and_registry_closeout_v0_20260630T205600Z (MANIFEST_VERIFY_RC=0); mv2_research_wiring_pr=4697; mv2_research_wiring_merge_commit=90aeeb53c4c716263f9dcdc27fdeb6fccd8e1c42; mv2_research_wiring_squash_parent=76e30fd99cc96d85c72a29c23e2f20dd40d7a0d0; mv2_research_wiring_residual_pr=4698; mv2_research_wiring_residual_merge_commit=7c5558c4517d89721a4c5d98b1ed34ebbf704caf; mv2_research_wiring_residual_squash_parent=90aeeb53c4c716263f9dcdc27fdeb6fccd8e1c42; canonical_scope=mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice; MV2_RESEARCH_WIRING_V1_BOUND=true; STEP29L_IMPLEMENTATION_COMPLETE=true; STEP_29M_STARTED=false; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29L_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; STEP_29L_COMPLETION_DOES_NOT_START_PROMOTION_GATE=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29K |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29N` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `true` |
+| `MV2_RESEARCH_WIRING_V1_IMPLEMENTED` | `true` |
+| `STEP_29M_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29M — Economic Viability Evidence v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `economic_viability_evidence_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/backtest/economic_viability_evidence_v1.py` |
+| `CANONICAL_RUNNER_OWNER` | `scripts/ops/run_economic_viability_evidence_evaluation_v1.py` |
+| `MERGED_PRS` | `#4700`, `#4701`, `#4702`, `#4703`, `#4704`, `#4705`, `#4706`, `#4723` |
+| `MERGE_COMMITS` | `5352d83f069b7d361e89c877ebe2d3d5ae161156`, `5d402a6a1fc2fb1a76af3a91223ac46ee9d80b72`, `72a33b0a85c76bc00fff482d7e88fda0db33c873`, `4ff161b3d005ff12e434982a108b22ef46165272`, `cd9474c820d500bbdbc09217b4c46f5e604f96b2`, `cf0ced2edff0a4baaf8d8fcd93d3e7476c13257e`, `49a7595cb5e6885fa2d003db74f07d6acf0d61cb`, `aa1a8fd9d3444e5d5f3dbe2386d4114b2e48b0c9` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_economic_viability_evidence_pr4700_squash_merge_closeout_v0_20260630T211900Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_residual_slice_pr4701squash_merge_closeout_v0_20260630T213300Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_economic_validity_policy_v1_pr4702squash_merge_closeout_v0_20260630T214700Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_funding_binding_v1_pr4703_squash_merge_closeout_v0_20260630T220500Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_parameter_sensitivity_pr4704_squash_merge_closeout_v0_20260701T221500Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_admissible_versioned_futures_dataset_pr4705_squash_merge_closeout_v0_20260630T223551Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_economic_validity_policy_thresholds_pr4706_squash_merge_closeout_v0_20260630T225125Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_real_admissible_futures_economic_evaluation_runner_pr4723_squash_merge_closeout_v0_20260701T072817Z (MANIFEST_VERIFY_RC=0); economic_viability_evidence_pr=4700; economic_viability_evidence_merge_commit=5352d83f069b7d361e89c877ebe2d3d5ae161156; persistence_load_reproducibility_pr=4701; persistence_load_reproducibility_merge_commit=5d402a6a1fc2fb1a76af3a91223ac46ee9d80b72; economic_validity_policy_v1_pr=4702; economic_validity_policy_v1_merge_commit=72a33b0a85c76bc00fff482d7e88fda0db33c873; funding_model_binding_pr=4703; funding_model_binding_merge_commit=4ff161b3d005ff12e434982a108b22ef46165272; parameter_sensitivity_evidence_pr=4704; parameter_sensitivity_evidence_merge_commit=cd9474c820d500bbdbc09217b4c46f5e604f96b2; admissible_versioned_futures_dataset_pr=4705; admissible_versioned_futures_dataset_merge_commit=cf0ced2edff0a4baaf8d8fcd93d3e7476c13257e; economic_validity_policy_threshold_values_pr=4706; economic_validity_policy_threshold_values_merge_commit=49a7595cb5e6885fa2d003db74f07d6acf0d61cb; economic_evaluation_runner_pr=4723; economic_evaluation_runner_merge_commit=aa1a8fd9d3444e5d5f3dbe2386d4114b2e48b0c9; economic_evaluation_runner_squash_parent=d2c505f86ec879d4fb71c4c531349552ed3e1634; canonical_scope=economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice; ECONOMIC_VIABILITY_EVIDENCE_V1_BOUND=true; ECONOMIC_GATE_EVALUATOR_BOUND=true; ECONOMIC_EVALUATION_RUNNER_V1_BOUND=true; REAL_EVALUATION_PERFORMED=false; OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION=true; STEP29M_IMPLEMENTATION_COMPLETE=true; TECHNICAL_ECONOMIC_VIABILITY_EVIDENCE_STACK_COMPLETE=true; ECONOMIC_VALIDITY_RESULT=NOT_PROVEN; REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED=true; THRESHOLD_TUNING_ALLOWED=false; STEP_29N_STARTED=false; STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29M_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; STEP_29M_COMPLETION_DOES_NOT_START_PROMOTION_GATE=true; PROMOTION_ELIGIBILITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29L |
+| `REMAINING_GAPS` | `STEP29M fleet no-pass operator hold ratified; new research scope requires explicit operator ratification; no admissible registered strategy offline viability proven` |
+| `DATA_ADMISSIBILITY_STATUS` | `PASS` |
+| `POLICY_THRESHOLD_STATUS` | `PASS` |
+| `ECONOMIC_VALIDITY_EVALUATION_STATUS` | `RESEARCH_ONLY` |
+| `TECHNICAL_ECONOMIC_VIABILITY_EVIDENCE_STACK_COMPLETE` | `true` |
+| `ECONOMIC_VALIDITY_RESULT` | `FAILED` |
+| `REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED` | `true` |
+| `ECONOMIC_GATE_EVALUATOR_BOUND` | `true` |
+| `REAL_EVALUATION_ATTEMPTED` | `true` |
+| `REAL_EVALUATION_PERFORMED` | `true` |
+| `REAL_ADMISSIBLE_FUTURES_DATASET_FOUND` | `true` |
+| `REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT` | `true` |
+| `REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `CURRENT_PROMOTION_EVALUATION` | `INELIGIBLE` |
+| `OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION` | `false` |
+| `OPERATOR_INPUT_CONTRACT_V1_BOUND` | `true` |
+| `OPERATOR_INPUT_CONTRACT_COMPLETE` | `true` |
+| `REAL_EVALUATION_INPUT_STATUS` | `REGISTERED_POLICY_RATIFIED_STRATEGY_FLEET_EVALUATION_COMPLETE` |
+| `LAST_EVALUATED_STRATEGY_ID` | `vol_breakout` |
+| `LAST_EVALUATED_STRATEGY_VERSION` | `v1` |
+| `LAST_EVALUATED_CONFIG_VERSION` | `v1` |
+| `NEXT_EVALUATION_STRATEGY_ID` | `NONE` |
+| `NEXT_EVALUATION_STRATEGY_VERSION` | `v1` |
+| `NEXT_EVALUATION_INSTRUMENT_ID` | `inst-eth-usdt-perp` |
+| `NEXT_EVALUATION_VENUE` | `okx` |
+| `NEXT_EVALUATION_CONFIG_VERSION` | `v1` |
+| `NEXT_EVALUATION_CONFIG_STATUS` | `TERMINAL_NEGATIVE_EVIDENCE_REGISTERED` |
+| `NEXT_EVALUATION_CONFIG_PATH` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_vol_breakout_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `AUTHORIZED_PENDING_EVALUATION_COUNT` | `0` |
+| `STEP29M_REGISTERED_STRATEGY_FLEET_STATUS` | `EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS` |
+| `REGISTERED_POLICY_RATIFIED_STRATEGY_COUNT` | `3` |
+| `COMPLETED_TECHNICALLY_VALID_EVALUATION_COUNT` | `4` |
+| `ECONOMIC_POLICY_PASS_COUNT` | `0` |
+| `ECONOMIC_POLICY_FAIL_COUNT` | `4` |
+| `PROMOTION_ELIGIBLE_COUNT` | `0` |
+| `BREAKOUT_DONCHIAN_V1_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `MACD_V1_CONFIG_V3_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `PRE_RATIFICATION_FLEET_EXHAUSTED` | `true` |
+| `POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS` | `false` |
+| `HISTORICAL_FLEET_RESULTS_UNCHANGED` | `true` |
+| `MA_CROSSOVER_V1_POLICY_RATIFIED` | `true` |
+| `MA_CROSSOVER_V1_FIXED_CONFIG_BOUND` | `true` |
+| `MA_CROSSOVER_V1_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `MA_CROSSOVER_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `MA_CROSSOVER_V1_PROMOTION_ELIGIBLE` | `false` |
+| `MA_CROSSOVER_V1_RUNTIME_AUTHORIZED` | `false` |
+| `MA_CROSSOVER_V1_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `MA_CROSSOVER_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `MA_CROSSOVER_V1_CONFIG_SCHEMA_VERSION` | `step29m_ma_crossover_v1_economic_evaluation_admissibility_v1` |
+| `MA_CROSSOVER_FAST_WINDOW` | `20` |
+| `MA_CROSSOVER_SLOW_WINDOW` | `50` |
+| `MA_CROSSOVER_PRICE_COL` | `close` |
+| `MA_CROSSOVER_RISK_PER_TRADE` | `0.005` |
+| `MA_CROSSOVER_STOP_PCT` | `0.025` |
+| `MA_CROSSOVER_MAX_POSITION_PCT` | `0.25` |
+| `MA_CROSSOVER_OFFLINE_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `MA_CROSSOVER_SIZING_PRECEDENT_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `MA_CROSSOVER_V1_RANK1_CANDIDATE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step29m_additional_existing_strategy_policy_ratification_candidate_decision_read_only_v0_20260702T010015Z` |
+| `MA_CROSSOVER_FAST_WINDOW_DERIVATION_REF` | `operator_policy_decision:STEP29M_MA_CROSSOVER_V1` |
+| `MA_CROSSOVER_SLOW_WINDOW_DERIVATION_REF` | `operator_policy_decision:STEP29M_MA_CROSSOVER_V1` |
+| `MA_CROSSOVER_PRICE_COL_DERIVATION_REF` | `operator_policy_decision:STEP29M_MA_CROSSOVER_V1` |
+| `MA_CROSSOVER_RISK_PER_TRADE_DERIVATION_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `MA_CROSSOVER_STOP_PCT_DERIVATION_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `MA_CROSSOVER_POLICY_INVARIANT_RESULT` | `0.005 <= 0.25 * 0.025 = 0.00625` |
+| `MA_CROSSOVER_MAX_POSITION_PCT_DERIVATION_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `VOL_BREAKOUT_V1_POLICY_RATIFIED` | `true` |
+| `VOL_BREAKOUT_V1_FIXED_CONFIG_BOUND` | `true` |
+| `VOL_BREAKOUT_V1_ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `VOL_BREAKOUT_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `VOL_BREAKOUT_V1_PROMOTION_ELIGIBLE` | `false` |
+| `VOL_BREAKOUT_V1_RUNTIME_AUTHORIZED` | `false` |
+| `VOL_BREAKOUT_V1_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `VOL_BREAKOUT_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `VOL_BREAKOUT_V1_CONFIG_SCHEMA_VERSION` | `step29m_vol_breakout_v1_economic_evaluation_admissibility_v1` |
+| `VOL_BREAKOUT_V1_BASELINE_VERDICT` | `FAIL` |
+| `VOL_BREAKOUT_V1_BASELINE_FAILURE_CLASS` | `NEGATIVE_ECONOMIC_BASELINE_AND_ROBUSTNESS_FAIL` |
+| `VOL_BREAKOUT_V1_BASELINE_BLOCKER` | `NONE` |
+| `VOL_BREAKOUT_V1_BASELINE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BOUND` | `8fcd7484cdc768869fad5b914a35764f09cf42b41b78330417402272c550844a` |
+| `VOL_BREAKOUT_V1_EVAL_CONFIG_DIGEST` | `db7bf773de987afbb2643ff9b761760af6b286e5e864c39d3c8d908a59082b88` |
+| `VOL_BREAKOUT_V1_OLD_WRONG_SIZING_CONFIG_DIGEST` | `fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc` |
+| `VOL_BREAKOUT_LOOKBACK_BREAKOUT` | `20` |
+| `VOL_BREAKOUT_VOL_WINDOW` | `14` |
+| `VOL_BREAKOUT_VOL_PERCENTILE` | `50.0` |
+| `VOL_BREAKOUT_SIDE` | `both` |
+| `VOL_BREAKOUT_REQUIRED_WARMUP_ROWS` | `40` |
+| `VOL_BREAKOUT_RISK_PER_TRADE` | `0.005` |
+| `VOL_BREAKOUT_STOP_PCT` | `0.025` |
+| `VOL_BREAKOUT_MAX_POSITION_PCT` | `0.25` |
+| `VOL_BREAKOUT_OFFLINE_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `VOL_BREAKOUT_SIZING_PRECEDENT_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `VOL_BREAKOUT_V1_RANK1_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/rank1_vol_breakout_binding_and_evaluation_ratification_read_only_v0_20260710T063915Z` |
+| `VOL_BREAKOUT_POLICY_INVARIANT_RESULT` | `0.005 <= 0.25 * 0.025 = 0.00625` |
+| `VOL_BREAKOUT_VERSIONED_BINDING_REF` | `config/research/vol_breakout_v1_versioned_research_binding_v0.json` |
+| `VOL_BREAKOUT_SCOPE_RATIFICATION_REF` | `config/research/vol_breakout_v1_offline_economic_evaluation_scope_ratification_v0.json` |
+| `HYPOTHESIS_IMPLEMENTED_AS_CLAIMED` | `true` |
+| `TRADING_LOGIC_MUTATED` | `false` |
+| `VOL_BREAKOUT_EXTERNAL_PARAMETER_SCHEMA_BOUND` | `true` |
+| `VOL_BREAKOUT_WARMUP_BOUND` | `true` |
+| `STEP29M_ADMISSIBILITY_CONTRACT_BOUND` | `true` |
+| `VERSIONED_BINDINGS_MATERIALIZED` | `true` |
+| `ATR_MULTIPLE_BOUND` | `false` |
+| `PARAMETER_SEARCH_ALLOWED` | `false` |
+| `PRIMARY_FLEET_FINDING` | `NO_ADMISSIBLE_REGISTERED_STRATEGY_ECONOMICALLY_VIABLE_OFFLINE` |
+| `EVALUATION_EXECUTION_COMPLETE` | `true` |
+| `ECONOMIC_VALIDITY_OBJECTIVE_ACHIEVED` | `false` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `STEP29N_AUTHORIZED` | `false` |
+| `STEP29R_AUTHORIZED` | `false` |
+| `RUNTIME_REWIRE_ALLOWED` | `false` |
+| `POLICY_INVARIANT` | `risk_per_trade <= max_position_pct * stop_pct` |
+| `POLICY_INVARIANT_RESULT` | `0.005 <= 0.25 * 0.02 = 0.005` |
+| `OPERATOR_POLICY_DECISION` | `AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0` |
+| `OPERATOR_POLICY_DECISION_OWNER` | `Frank Rauter` |
+| `OPERATOR_POLICY_DECISION_DATE` | `2026-07-02` |
+| `OPERATOR_POLICY_DECISION_SCOPE` | `STEP29M_MA_CROSSOVER_V1_OKX_INST_ETH_USDT_PERP` |
+| `BREAKOUT_DONCHIAN_LOOKBACK` | `20` |
+| `BREAKOUT_DONCHIAN_PRICE_COL` | `close` |
+| `BREAKOUT_DONCHIAN_RISK_PER_TRADE` | `0.005` |
+| `BREAKOUT_DONCHIAN_STOP_PCT` | `0.02` |
+| `BREAKOUT_DONCHIAN_MAX_POSITION_PCT` | `0.25` |
+| `BREAKOUT_DONCHIAN_OVERSIZE_POLICY` | `REJECT` |
+| `BREAKOUT_DONCHIAN_OFFLINE_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `LOOKBACK_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `PRICE_COL_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `RISK_PER_TRADE_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `STOP_PCT_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `MAX_POSITION_PCT_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `OVERSIZE_POLICY_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `MACD_POLICY_REUSED` | `false` |
+| `CONFIG_TOML_AUTO_ADOPTION` | `false` |
+| `LEGACY_DEFAULT_AUTHORITY` | `false` |
+| `PARAMETER_TUNING_PERFORMED` | `false` |
+| `ECONOMIC_RESULT_USED_FOR_POLICY_SELECTION` | `false` |
+| `ECONOMIC_EVALUATION_ALLOWED` | `false` |
+| `PROMOTION_ALLOWED` | `false` |
+| `STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_ma_crossover_v1_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_vol_breakout_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `BREAKOUT_DONCHIAN_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `BREAKOUT_DONCHIAN_V1_CONFIG_SCHEMA_VERSION` | `step29m_breakout_donchian_v1_economic_evaluation_admissibility_v1` |
+| `V3_RISK_PER_TRADE` | `0.005` |
+| `V3_STOP_PCT` | `0.025` |
+| `V3_MAX_POSITION_PCT` | `0.25` |
+| `V3_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `V3_REQUESTED_NOTIONAL_PCT` | `0.20` |
+| `V3_FEASIBILITY_HEADROOM_PCT_OF_EQUITY` | `0.05` |
+| `V2_CONFIG_DISPOSITION` | `RETAIN_AS_NEGATIVE_INFEASIBILITY_FIXTURE` |
+| `ECONOMIC_REEVALUATION_ALLOWED` | `false` |
+| `MACD_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `MACD_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z` |
+| `MACD_V1_CONFIG_V3_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z` |
+| `BREAKOUT_DONCHIAN_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/step29m_breakout_donchian_v1_real_admissible_futures_economic_evaluation_v1_20260701T233425Z` |
+| `FLEET_ROOT_CAUSE_AND_RANKING_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_breakout_donchian_step29m_economic_result_root_cause_and_strategy_ranking_read_only_v0_20260701T234245Z` |
+| `INVALIDATED_EVALUATION_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z` |
+| `INVALIDATED_V2_EVALUATION_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z` |
+| `INVALIDATED_EVALUATION_STATUS` | `TECHNICALLY_REPRODUCIBLE_ECONOMICALLY_INVALIDATED` |
+| `INVALIDATED_V2_EVALUATION_STATUS` | `TECHNICALLY_REPRODUCIBLE_ECONOMICALLY_INVALIDATED` |
+| `INVALIDATION_REASON` | `CONFIG_DETERMINISTICALLY_REJECTS_ALL_ENTRY_CANDIDATES` |
+| `ROOT_CAUSE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/step29m_offline_sizing_admissibility_contradiction_root_cause_read_only_v1_20260701T223512Z` |
+| `KRAKEN_FIXTURE_LEAK_INTO_CANONICAL_ECONOMIC_PATH` | `false` |
+| `VENUE_SPECIFIC_CANONICAL_ECONOMIC_PATH_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `NETWORK_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `THRESHOLD_TUNING_ALLOWED` | `false` |
+| `PROMOTION_ELIGIBILITY_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_GRANTED` | `false` |
+| `CANONICAL_OPERATOR_INPUT_CONTRACT_OWNER` | `src/backtest/real_admissible_futures_economic_evaluation_operator_input_contract_v1.py` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29N` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29M_STARTED` | `true` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_registered_strategy_evaluation_fleet_closeout_v0_slice,ma_crossover_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice,vol_breakout_v1_narrow_neutral_rewire_and_binding_implementation_v0_slice,vol_breakout_v1_sizing_config_digest_binding_fix_v0_slice,current_state_reconciliation_and_runbook_refresh_read_only_v0_slice,vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29M_COMPLETE` | `true` |
+| `ECONOMIC_VIABILITY_EVIDENCE_V1_IMPLEMENTED` | `true` |
+| `ECONOMIC_EVALUATION_RUNNER_V1_BOUND` | `true` |
+| `STEP_29N_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_LIVE` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_START_PROMOTION_GATE` | `true` |
+| `ECONOMIC_RESEARCH_DATASET_PROFILE_V1_BOUND` | `true` |
+| `HISTORICAL_L1_REQUIRED_FOR_RUNTIME` | `true` |
+| `HISTORICAL_L1_REQUIRED_FOR_ECONOMIC_RESEARCH` | `false` |
+| `ECONOMIC_RESEARCH_EXECUTION_COST_MODEL_REQUIRED` | `true` |
+| `RUNTIME_MARKET_CONTEXT_CONTRACT_UNCHANGED` | `true` |
+| `REAL_ADMISSIBLE_FUTURES_DATASET_FOUND` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `STEP29M_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `STEP29M_RATIFIED_CANDIDATES_TOTAL` | `3` |
+| `STEP29M_RATIFIED_CANDIDATES_PASSED` | `0` |
+| `STEP29M_RATIFIED_CANDIDATES_FAILED` | `3` |
+| `STEP29M_PENDING_CANDIDATES` | `0` |
+| `STEP29M_PROMOTION_ELIGIBLE_CANDIDATES` | `0` |
+| `STEP29M_OPERATOR_POLICY_DECISION` | `NO_NEW_CANDIDATE_HOLD` |
+| `STEP29M_OPERATOR_POLICY_RATIFIED` | `true` |
+| `STEP29M_OPERATOR` | `Frank Rauter` |
+| `STEP29M_OPERATOR_POLICY_RATIFICATION_DATE` | `2026-07-02` |
+| `STEP29M_NEW_CANDIDATE_AUTHORIZED` | `true` |
+| `STEP29M_SAME_BINDING_RETRY_AUTHORIZED` | `false` |
+| `STEP29M_PARAMETER_TUNING_AUTHORIZED` | `false` |
+| `STEP29M_POLICY_THRESHOLD_RELAXATION_AUTHORIZED` | `false` |
+| `STEP29M_FURTHER_ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `STEP29M_PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `STEP29M_PROMOTION_AUTHORIZED` | `false` |
+| `STEP29M_RUNTIME_AUTHORITY` | `false` |
+| `STEP29M_NEW_RESEARCH_SCOPE_REQUIRES_EXPLICIT_OPERATOR_RATIFICATION` | `true` |
+| `STEP29N_ALREADY_COMPLETE` | `true` |
+| `NEGATIVE_CANDIDATE_DECISIONS_REMAIN_CANONICAL` | `true` |
+| `NEGATIVE_CANDIDATE_DECISIONS_REMAIN_EVIDENCE_ADMISSIBLE` | `true` |
+| `MA_CROSSOVER_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z` |
+| `MA_CROSSOVER_V1_CANDIDATE_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/bounded_step29m_ma_crossover_v1_economic_policy_fail_closeout_and_candidate_decision_read_only_v0_20260702T012719Z` |
+| `FLEET_NO_PASS_OPERATOR_POLICY_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step29m_no_pass_operator_policy_decision_preparation_read_only_v0_20260702T013118Z` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_30A — RSI Reversion v1 Extended Holdout-Separated Futures Economic Research v0
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `rsi_reversion_v1_extended_holdout_separated_futures_economic_research_v0` |
+| `STATUS` | `COMPLETE_POLICY_FAIL` |
+| `CANONICAL_OWNER` | `src/backtest/step30a_rsi_reversion_v1_economic_evaluation_admissibility_contract_v1.py` |
+| `CANONICAL_INGEST_ADAPTER_OWNER` | `scripts/ops/ingest_step30a_okx_inst_eth_usdt_perp_dataset_v2_backward_extension_v0.py` |
+| `CANONICAL_CONFIG_PATH` | `config&#47;ops&#47;step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `DEPENDENCIES` | RUNBOOK_STEP_29M |
+| `NEXT_REQUIRED_CONTRACT` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `NO_FURTHER_STEP30A_ACTION_WITHOUT_NEW_EXPLICIT_OPERATOR_RESEARCH_SCOPE` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `RUNBOOK_STEP_30A_STARTED` | `true` |
+| `RUNBOOK_STEP_30A_IMPLEMENTED_SCOPE` | `rsi_reversion_v1_extended_holdout_separated_futures_economic_research_v0,dataset_v2_backward_extension_adapter_v0,policy_ratification_and_candidate_design_contract_v0` |
+| `RUNBOOK_STEP_30A_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_30A_COMPLETE` | `true` |
+| `STEP30A_SCOPE` | `RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0` |
+| `STEP30A_GO_TOKEN` | `GO_BOUNDED_STEP30A_RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0` |
+| `STEP30A_STATUS` | `COMPLETE_POLICY_FAIL` |
+| `STEP30A_TECHNICAL_EVALUATION_STATUS` | `PASS` |
+| `STEP30A_ECONOMIC_VALIDITY_STATUS` | `FAIL` |
+| `STEP30A_EVALUATION_ID` | `econ_evidence_eval_v1_37eb167cdade6c63` |
+| `STEP30A_BINDING_FULL_DIGEST` | `37eb167cdade6c63f20af71abfeda7e987782685eb793a7baac772b7e30b1999` |
+| `STEP30A_BINDING_DISPOSITION` | `TERMINAL_NEGATIVE_EVIDENCE` |
+| `RSI_REVERSION_V1_EVALUATED_BINDING_STATUS` | `TERMINAL_NEGATIVE_EVIDENCE` |
+| `RSI_REVERSION_V1_STATUS` | `TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL` |
+| `STEP30A_OPERATOR_POLICY_RATIFIED` | `true` |
+| `STEP30A_OPERATOR_POLICY_DECISION` | `STEP30A_RSI_REVERSION_V1_POLICY_FAIL_ACCEPT_AND_NO_NEW_CANDIDATE_HOLD` |
+| `OPERATOR_POLICY_TOKEN` | `GO_STEP30A_RSI_REVERSION_V1_POLICY_FAIL_ACCEPT_AND_NO_NEW_CANDIDATE_HOLD_V0` |
+| `STEP30A_OPERATOR_POLICY_DECISION_REF` | `operator_policy_decision:STEP30A_RSI_REVERSION_V1` |
+| `STEP30A_OPERATOR_POLICY_RATIFICATION_DATE` | `2026-07-02` |
+| `STEP30A_OPERATOR` | `Frank Rauter` |
+| `STEP30A_FLEET_SIZING_PRECEDENT_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `STEP30A_RSI_WINDOW` | `14` |
+| `STEP30A_LOWER` | `30.0` |
+| `STEP30A_UPPER` | `70.0` |
+| `STEP30A_PRICE_COL` | `close` |
+| `STEP30A_SIGNAL_SEMANTICS` | `LONG_SHORT_REVERSION_-1_0_1` |
+| `STEP30A_USE_TREND_FILTER_FORBIDDEN_IN_CONFIG` | `true` |
+| `STEP30A_TRAINING_PERIOD` | `2026-04-02 10:07:00+00:00..2026-05-18 23:59:00+00:00` |
+| `STEP30A_VALIDATION_PERIOD` | `2026-05-19 00:00:00+00:00..2026-06-16 23:59:00+00:00` |
+| `STEP30A_HOLDOUT_FROZEN_REF` | `2026-06-17 10:07:00+00:00..2026-07-01 10:07:00+00:00` |
+| `STEP30A_DATASET_VERSION` | `v2` |
+| `STEP30A_DATASET_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v2/bars.parquet` |
+| `STEP30A_EVALUATION_AUTHORIZED` | `false` |
+| `STEP30A_PROMOTION_AUTHORIZED` | `false` |
+| `STEP30A_RUNTIME_AUTHORIZED` | `false` |
+| `STEP30A_PARAMETER_TUNING_ALLOWED` | `false` |
+| `STEP30A_THRESHOLD_TUNING_ALLOWED` | `false` |
+| `STEP30A_DATASET_REPLACEMENT_ALLOWED` | `false` |
+| `STEP30A_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `STEP30A_RETRY_ALLOWED` | `false` |
+| `STEP30A_REEVALUATION_ALLOWED` | `false` |
+| `STEP30A_PROMOTION_ELIGIBLE` | `false` |
+| `STEP30A_RUNTIME_ELIGIBLE` | `false` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NEW_STRATEGY_CANDIDATE_ALLOWED` | `false` |
+| `NEW_PARAMETER_CANDIDATE_ALLOWED` | `false` |
+| `NEW_DATASET_CANDIDATE_ALLOWED` | `false` |
+| `NEW_PERIOD_CANDIDATE_ALLOWED` | `false` |
+| `PARAMETER_OPTIMIZATION_ALLOWED` | `false` |
+| `THRESHOLD_REDUCTION_ALLOWED` | `false` |
+| `FURTHER_ECONOMIC_EVALUATION_ALLOWED` | `false` |
+| `STEP29N_PROMOTION_GATE_STATUS` | `FAIL_CLOSED_BLOCKED` |
+| `STEP29R_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `DOWNSTREAM_AUTHORITY_EFFECT` | `NONE` |
+| `STEP30A_ECONOMIC_POLICY_FAIL_REASON_CODES` | `METRIC_MISSING:parameter_neighbor_degradation;METRIC_MISSING:single_regime_profit_contribution;METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;PROFIT_FACTOR_BELOW_THRESHOLD;STRESS_FAILED` |
+| `STEP30A_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/step30a_rsi_reversion_v1/econ_evidence_eval_v1_37eb167cdade6c63 (MANIFEST_VERIFY_RC=0)` |
+| `STEP30A_POLICY_FAIL_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_economic_policy_fail_closeout_and_operator_policy_decision_read_only_v0_20260702T164520Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP30A_POLICY_FAIL_REGISTRY_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_policy_fail_registry_pr_squash_merge_and_post_merge_closeout_v0_20260702T170255Z (MANIFEST_VERIFY_RC=0; PR #4753; squash 2952dc1e)` |
+| `POST_STEP30A_CANONICAL_CURRENT_STATE_REASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_post_step30a_policy_fail_registry_merge_canonical_current_state_read_only_reassessment_v0_20260702T170526Z (MANIFEST_VERIFY_RC=0; VERDICT=POST_STEP30A_POLICY_FAIL_REGISTRY_MERGE_CANONICAL_CURRENT_STATE_READ_ONLY_REASSESSMENT_COMPLETE)` |
+| `CONSUMED_EVALUATION_GO_TOKEN` | `GO_BOUNDED_STEP30A_SINGLE_ECONOMIC_EVALUATION_POST_RUNNER_MERGE_V1` |
+| `CONSUMED_GO_REUSABLE` | `false` |
+| `TECHNICAL_CAPABILITY_PRESENT_NOT_EQUAL_ECONOMIC_VALIDITY_PROVEN` | `true` |
+| `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
+| `SEPARATE_GO_REQUIRED` | `false` |
+
+#### RUNBOOK_STEP_31F — Final Research Fleet v0 Offline Economic Validity Evaluation
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `final_research_fleet_v0_offline_economic_validity_evaluation_v0` |
+| `STATUS` | `COMPLETE_ALL_FAIL` |
+| `CANONICAL_OWNER` | `config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_trend_following_v1_economic_evaluation_v1.json,config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_bollinger_bands_v1_economic_evaluation_v1.json,config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `DEPENDENCIES` | RUNBOOK_STEP_30A |
+| `NEXT_REQUIRED_CONTRACT` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `NO_FURTHER_STEP31F_ACTION_WITHOUT_NEW_EXPLICIT_OPERATOR_RESEARCH_SCOPE` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `MERGED_PRS` | `#4766` |
+| `MERGE_COMMITS` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `RUNBOOK_STEP_31F_STARTED` | `true` |
+| `RUNBOOK_STEP_31F_IMPLEMENTED_SCOPE` | `final_research_fleet_v0_versioned_bindings_ratification_v0,final_research_fleet_v0_offline_economic_validity_evaluation_v0` |
+| `RUNBOOK_STEP_31F_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_31F_COMPLETE` | `true` |
+| `STEP31F_SCOPE` | `FINAL_RESEARCH_FLEET_V0_OFFLINE_ECONOMIC_VALIDITY_EVALUATION_V0` |
+| `STEP31F_GO_TOKEN` | `GO_RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `STEP31F_STATUS` | `COMPLETE_ALL_FAIL` |
+| `STEP31F_MERGE_COMMIT` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `FLEET_ID` | `final_research_fleet_v0` |
+| `FLEET_SIZE` | `3` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `INCONCLUSIVE_COUNT` | `0` |
+| `FLEET_PROMOTION_ELIGIBLE` | `false` |
+| `ECONOMICALLY_VIABLE_CANDIDATE_COUNT` | `0` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `STEP31F_OPERATOR_POLICY_RATIFIED` | `true` |
+| `STEP31F_OPERATOR_POLICY_DECISION` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `STEP31F_OPERATOR_POLICY_RATIFICATION_DATE` | `2026-07-03` |
+| `STEP31F_OPERATOR` | `Frank Rauter` |
+| `STEP31F_EVALUATION_AUTHORIZED` | `false` |
+| `STEP31F_PROMOTION_AUTHORIZED` | `false` |
+| `STEP31F_RUNTIME_AUTHORIZED` | `false` |
+| `STEP31F_RETRY_ALLOWED` | `false` |
+| `STEP31F_REEVALUATION_ALLOWED` | `false` |
+| `STEP31F_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_trend_following_v1_economic_evaluation_v1.json,config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_bollinger_bands_v1_economic_evaluation_v1.json,config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `STEP31F_FINAL_FLEET_OFFLINE_EVALUATION_PR4766_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step31f_final_research_fleet_offline_evaluation_pr_squash_merge_and_post_merge_closeout_v0_20260702T221830Z (MANIFEST_VERIFY_RC=0; PR #4766; squash 51923cc7)` |
+| `STEP31F_FINAL_FLEET_OFFLINE_ECONOMIC_VALIDITY_EVALUATION_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step31f_final_research_fleet_v0_offline_economic_validity_evaluation_closeout_v0_20260703T002500Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP31F_FINAL_FLEET_VERSIONED_BINDINGS_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step31f_final_fleet_versioned_bindings_ratification_v0_20260703T000100Z (MANIFEST_VERIFY_RC=0)` |
+| `PRIOR_NEGATIVE_EVIDENCE_PRESERVED` | `true` |
+| `STEP29M_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `RUNBOOK_STEP_29R_STATUS` | `BLOCKED` |
+| `RUNBOOK_STEP_29R_BLOCK_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE_UNDER_CURRENT_POLICY` |
+| `NEXT_CANONICAL_ACTION` | `OPERATOR_POLICY_DECISION_REQUIRED_FOR_NEW_RESEARCH_SCOPE` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `TECHNICAL_CAPABILITY_PRESENT_NOT_EQUAL_ECONOMIC_VALIDITY_PROVEN` | `true` |
+| `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
+| `SEPARATE_GO_REQUIRED` | `false` |
+
+#### RUNBOOK_RESEARCH_LINE — Final Research Fleet v0 Versioned Binding Manifest Contract
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `final_research_fleet_v0_versioned_binding_manifest_contract_v0` |
+| `STATUS` | `MERGED_POST_MERGE_VERIFIED` |
+| `CANONICAL_OWNER` | `src&#47;research&#47;final_research_fleet_v0_versioned_binding_manifest_contract_v0.py` <!-- pt:ref-target-ignore --> |
+| `DEPENDENCIES` | RUNBOOK_STEP_31F |
+| `NEXT_REQUIRED_CONTRACT` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `NO_FURTHER_FLEET_BINDING_MANIFEST_ACTION_WITHOUT_NEW_EXPLICIT_OPERATOR_RESEARCH_SCOPE` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_STATUS` | `MERGED_POST_MERGE_VERIFIED` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_PR` | `4778` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_MERGE_COMMIT` | `83cbef619f442be60d12ecf1efd991dfed3928af` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_MANIFEST_DIGEST` | `b72c996d55de89dcb877fd0dad97546bab1b21d96e1b2477667cddbc55ffb842` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_IMPLEMENTATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_final_research_fleet_versioned_binding_manifest_contract_implementation_v0_20260703T015500Z (MANIFEST_VERIFY_RC=0; PR #4778)` |
+| `FINAL_RESEARCH_FLEET_BINDING_MANIFEST_CONTRACT_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_final_research_fleet_versioned_binding_manifest_contract_pr4778_squash_merge_and_post_merge_closeout_v0_20260703T020700Z (MANIFEST_VERIFY_RC=0; PR #4778; squash 83cbef61; VERDICT=PR4778_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `MANIFEST_CONTRACT_MERGE_NOT_EQUAL_ECONOMIC_EVALUATION_AUTHORIZATION` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PARAMETER_OPTIMIZATION_ALLOWED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `PRIOR_NEGATIVE_EVIDENCE_PRESERVED` | `true` |
+| `GLOBAL_RUNBOOK_NEXT_STEP` | `BOUNDED_CROSS_SECTIONAL_UNIVERSE_MANIFEST_BINDING_READ_ONLY_REASSESSMENT_V0` |
+| `HYPOTHESIS_SUBSTRAND_NEXT_STEP` | `BOUNDED_CROSS_SECTIONAL_UNIVERSE_MANIFEST_BINDING_READ_ONLY_REASSESSMENT_V0` |
+| `HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY` | `true` |
+| `TECHNICAL_CAPABILITY_PRESENT_NOT_EQUAL_ECONOMIC_VALIDITY_PROVEN` | `true` |
+| `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
+| `SEPARATE_GO_REQUIRED` | `false` |
+
+#### RUNBOOK_RESEARCH_LINE — Cross-Sectional Relative Strength Non-Bitcoin Perpetuals v0
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `cross_sectional_relative_strength_non_bitcoin_perpetuals_v0` |
+| `STATUS` | `COMPLETE_FAIL` |
+| `CANONICAL_OWNER` | `src&#47;research&#47;cross_sectional_relative_strength_v0_versioned_research_binding_v0.py,src&#47;research&#47;cross_sectional_relative_strength_v0_offline_economic_evaluation_scope_ratification_v0.py,src&#47;research&#47;cross_sectional_relative_strength_v0_offline_economic_evaluation_execution_v2.py,config&#47;research&#47;cross_sectional_relative_strength_v0_offline_economic_evaluation_scope_ratification_v0.json` <!-- pt:ref-target-ignore --> |
+| `DEPENDENCIES` | RUNBOOK_STEP_31F |
+| `NEXT_REQUIRED_CONTRACT` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SPOT_ALLOWED` | `false` |
+| `SYNTHETIC_SPOT_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `HYPOTHESIS_ID` | `CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0` |
+| `HYPOTHESIS_CLASS_RATIFIED` | `true` |
+| `CONCRETE_CANDIDATE_RATIFIED` | `true` |
+| `RESEARCH_SCOPE_DEFINITION_RATIFIED` | `true` |
+| `BINDING_RATIFICATION_COMPLETE` | `true` |
+| `ALL_REQUIRED_BINDINGS_RATIFIED` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `NO_EVALUATION_UNTIL_SCOPE_RATIFIED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD_EXCEPTION` | `true` |
+| `SCOPE_RATIFICATION_CONFIG_REF` | `config/research/cross_sectional_relative_strength_v0_offline_economic_evaluation_scope_ratification_v0.json` |
+| `POLICY_CLASS_RATIFICATION` | `RATIFIED` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_STATUS` | `MERGED_POST_MERGE_VERIFIED` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_PR` | `4769` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_MERGE_COMMIT` | `71bb9ccdcfe8771ac7fc027ecda9fd710d06ab01` |
+| `BINDING_SCHEMA_VERSION` | `cross_sectional_ranking_semantics_binding.v0` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_POLICY_CLASSES_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_RATIFIED` | `true` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_VALUES_BOUND` | `true` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_OVERALL_BINDING_STATUS` | `COMPLETE` |
+| `SCHEMA_MATERIALIZATION_NOT_EQUAL_FULL_BINDING_RATIFICATION` | `false` |
+| `NUMERIC_BINDING_ALLOWED` | `false` |
+| `NUMERIC_VALUES_BOUND` | `true` |
+| `NUMERIC_POLICY_DECISION_CLASS` | `EXISTING_CONTRACTS_COMPLETE_NO_NEW_POLICY_REQUIRED` |
+| `NUMERIC_POLICY_OWNER_REQUIRED` | `false` |
+| `NUMERIC_MATERIALIZATION_STATUS` | `BOUND_AND_VALIDATED` |
+| `NUMERIC_MATERIALIZATION_SOURCE_PR` | `4771` |
+| `NUMERIC_MATERIALIZATION_MERGE_COMMIT` | `ef6214b56dd2294f45ca6c2fe55f05c3e09518c0` |
+| `NUMERIC_MATERIALIZATION_EVIDENCE_STATUS` | `VERIFIED` |
+| `CROSS_SECTIONAL_RANKING_NUMERIC_SEMANTICS_STATUS` | `COMPLETE` |
+| `PIT_UNIVERSE_MANIFEST_REF_STATUS` | `BOUND` |
+| `UNIVERSE_BINDING_STATUS` | `BOUND` |
+| `DATASET_BINDING_STATUS` | `BOUND` |
+| `PERIOD_BINDING_STATUS` | `BOUND` |
+| `COST_MODEL_BINDING_STATUS` | `BOUND` |
+| `DIGEST_BINDING_STATUS` | `BOUND` |
+| `ORCHESTRATOR_IMPLEMENTED` | `false` |
+| `SCORE_CALCULATION_IMPLEMENTATION_ALLOWED` | `false` |
+| `RANKING_EXECUTION_ALLOWED` | `false` |
+| `SIGNAL_EXECUTION_ALLOWED` | `false` |
+| `BACKTEST_EXECUTION_ALLOWED` | `false` |
+| `WALK_FORWARD_EXECUTION_ALLOWED` | `false` |
+| `MONTE_CARLO_EXECUTION_ALLOWED` | `false` |
+| `STRESS_EXECUTION_ALLOWED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_EVALUATION_STATUS` | `COMPLETE_FAIL` |
+| `ECONOMIC_VALIDITY_STATUS` | `FAIL` |
+| `HISTORICAL_ECONOMIC_RESULT` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `TRADE_COUNT` | `1` |
+| `NET_RETURN` | `-0.00589` |
+| `NET_EXPECTANCY` | `-18.96` |
+| `PROFIT_FACTOR` | `0.0` |
+| `SHARPE` | `-31.23` |
+| `MAX_DRAWDOWN` | `-0.00589` |
+| `ECONOMIC_EVALUATION_REASON_CODES` | `METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;OUT_OF_SAMPLE_FAILED;PROFIT_FACTOR_BELOW_THRESHOLD;REGIME_DOMINANCE_EXCEEDED;TRADE_COUNT_BELOW_THRESHOLD` |
+| `OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cs_relative_strength_offline_economic_evaluation_v0_20260704T184808Z (MANIFEST_VERIFY_RC=0)` |
+| `SCOPE_BINDING_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cs_relative_strength_scope_binding_ratification_v0_20260704T183110Z (MANIFEST_VERIFY_RC=0)` |
+| `RE_EVALUATION_ALLOWED` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `BINDING_CHANGED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `PARAMETER_OPTIMIZATION_ALLOWED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `FINAL_RESEARCH_FLEET_UNCHANGED` | `true` |
+| `HYPOTHESIS_SUBSTRAND_NEXT_STEP` | `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` |
+| `HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY` | `true` |
+| `GLOBAL_RUNBOOK_NEXT_STEP` | `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_POLICY_CLASS_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_cross_sectional_ranking_semantics_policy_class_ratification_closeout_v0_20260702T230400Z (MANIFEST_VERIFY_RC=0)` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_MATERIALIZATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_cross_sectional_ranking_semantics_binding_schema_materialization_v0_20260702T230500Z (MANIFEST_VERIFY_RC=0; PR #4769)` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_PR4769_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_cross_sectional_ranking_semantics_binding_schema_pr4769_squash_merge_and_post_merge_closeout_v0_20260702T231600Z (MANIFEST_VERIFY_RC=0; PR #4769; squash 71bb9ccd; VERDICT=BOUNDED_CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_SCHEMA_PR4769_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_MATERIALIZATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_cross_sectional_ranking_semantics_versioned_binding_materialization_pr4771_squash_merge_and_post_merge_closeout_v1_20260703T000410Z (MANIFEST_VERIFY_RC=0; PR #4771; squash ef6214b5)` |
+| `CROSS_SECTIONAL_RANKING_SEMANTICS_NUMERIC_POLICY_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_cross_sectional_ranking_semantics_numeric_binding_policy_decision_read_only_v0_20260703T022401Z (MANIFEST_VERIFY_RC=0; POLICY_DECISION_CLASS=A)` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `FINAL_RESEARCH_FLEET_BINDING_MUTATION` | `false` |
+| `TECHNICAL_CAPABILITY_PRESENT_NOT_EQUAL_ECONOMIC_VALIDITY_PROVEN` | `true` |
+| `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
+| `SEPARATE_GO_REQUIRED` | `false` |
+
+#### RUNBOOK_RESEARCH_LINE — Cross-Sectional Funding Rate Carry Non-Bitcoin Perpetuals v0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `cross_sectional_funding_rate_carry_non_bitcoin_perpetuals_v0` |
+| `STATUS` | `COMPLETE_FAIL` |
+| `CANONICAL_OWNER` | `config&#47;research&#47;cross_sectional_funding_rate_carry_v0_versioned_research_binding_v0.json,src&#47;research&#47;cross_sectional_funding_rate_carry_v0_versioned_research_binding_v0.py,src&#47;research&#47;cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_execution_v0.py` <!-- pt:ref-target-ignore --> |
+| `CANONICAL_BINDING_PATH` | `config&#47;research&#47;cross_sectional_funding_rate_carry_v0_versioned_research_binding_v0.json` <!-- pt:ref-target-ignore --> |
+| `CANONICAL_EVALUATION_CONFIG_PATH` | `config&#47;ops&#47;cross_sectional_funding_rate_carry_v0_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `DEPENDENCIES` | RUNBOOK_STEP_31F |
+| `NEXT_REQUIRED_CONTRACT` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `NO_FURTHER_CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_ACTION_TERMINAL_FAIL` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SPOT_ALLOWED` | `false` |
+| `SYNTHETIC_SPOT_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `CANDIDATE_ID` | `cross_sectional_funding_rate_carry_v0` |
+| `HYPOTHESIS_ID` | `CROSS_SECTIONAL_FUNDING_RATE_CARRY_NON_BITCOIN_PERPETUALS_V0` |
+| `BINDING_IMPLEMENTATION_PR` | `4794` |
+| `BINDING_IMPLEMENTATION_MERGE_COMMIT` | `2d6adf604edd067194701428b2cd6d4fc7fb04fd` |
+| `EXECUTION_INFRASTRUCTURE_PR` | `4795` |
+| `EXECUTION_INFRASTRUCTURE_MERGE_COMMIT` | `ef43a86696b4e479112448136a3aa90951144a98` |
+| `FULL_OFFLINE_EVALUATION_RUNNER_PR` | `4796` |
+| `FULL_OFFLINE_EVALUATION_RUNNER_MERGE_COMMIT` | `9945a3e3d5f382bf46bf0c5fcfac2b1bcbf782e1` |
+| `RESEARCH_EXECUTION_INFRASTRUCTURE_STATUS` | `COMPLETE` |
+| `BOUND_FUNDING_PANEL_STATUS` | `COMPLETE` |
+| `FULL_OFFLINE_EVALUATION_RUNNER_STATUS` | `MAINLINE_AVAILABLE` |
+| `TECHNICAL_EVALUATION_STATUS` | `PASS` |
+| `ECONOMIC_EVALUATION_STATUS` | `COMPLETE_FAIL` |
+| `ECONOMIC_VALIDITY_STATUS` | `FAIL` |
+| `HISTORICAL_ECONOMIC_RESULT` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `TRADE_COUNT` | `0` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_EVALUATION_REASON_CODES` | `TRADE_COUNT_BELOW_THRESHOLD;PROFIT_FACTOR_BELOW_THRESHOLD;MONTE_CARLO_FAILED` |
+| `ECONOMIC_VIABILITY_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_re_run_v0_20260703T115048Z (MANIFEST_VERIFY_RC=0)` |
+| `ECONOMIC_VIABILITY_EVIDENCE_MANIFEST_DIGEST` | `fc531a2ecabc3a6d487e1168cc3239e3d628ef0ba2d94e8dd4831bd6ef9dec59` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `BINDING_CHANGED` | `false` |
+| `RE_EVALUATION_ALLOWED` | `false` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_AUTHORIZED` | `false` |
+| `NO_NEW_CANDIDATE_HOLD` | `REVOKED` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_re_run_v0_20260703T115048Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_cross_sectional_funding_rate_carry_v0_execution_infrastructure_and_bound_funding_panel_recovery_squash_merge_closeout_v0_20260703T113900Z (MANIFEST_VERIFY_RC=0; PR #4795; squash ef43a866); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_cross_sectional_funding_rate_carry_v0_full_offline_economic_evaluation_runner_mainline_integration_squash_merge_closeout_v0_20260703T140100Z (MANIFEST_VERIFY_RC=0; PR #4796; squash 9945a3e3); binding_implementation_pr=4794; binding_implementation_merge_commit=2d6adf604edd067194701428b2cd6d4fc7fb04fd; CANDIDATE_ID=cross_sectional_funding_rate_carry_v0; ECONOMIC_EVALUATION_STATUS=COMPLETE_FAIL; PROMOTION_ELIGIBLE=false; RETRY_UNCHANGED_BINDING_ALLOWED=false; RUNTIME_EFFECT=NONE; AUTHORITY_EFFECT=NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `COMPLETE_FAIL_NOT_REINTERPRETED_AS_PASS` | `true` |
+| `SEPARATE_GO_REQUIRED` | `false` |
+
+#### RUNBOOK_RESEARCH_LINE — Composite Breakout Confirmation Vol-Gated Donchian v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `composite_breakout_confirmation_vol_gated_donchian_v1_architecture_research_v0` |
+| `STATUS` | `CLOSED_REJECTED` |
+| `CANONICAL_OWNER` | `src/backtest/step29m_composite_breakout_confirmation_vol_gated_donchian_v1_economic_evaluation_admissibility_contract_v1.py` |
+| `CANONICAL_ARCHITECTURE_BINDING_PATH` | `config&#47;ops&#47;composite_breakout_confirmation_vol_gated_donchian_v1_architecture_binding_v1.json` <!-- pt:ref-target-ignore --> |
+| `CANONICAL_EVALUATION_CONFIG_PATH` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_composite_breakout_confirmation_vol_gated_donchian_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `DEPENDENCIES` | RUNBOOK_STEP_30A |
+| `NEXT_REQUIRED_CONTRACT` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `NO_FURTHER_COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_RESEARCH_ACTION_UNDER_NO_NEW_CANDIDATE_HOLD` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `CANDIDATE_ID` | `composite_breakout_confirmation_vol_gated_donchian_v1` |
+| `ARCHITECTURE_BINDING_MERGE_COMMIT` | `5eb28206fb49062049c89f43d77da2899f22c93d` |
+| `ECONOMIC_EVALUATION_MERGE_COMMIT` | `ec0842428b8420fb4d8193d69c307809bcabee75` |
+| `ARCHITECTURE_GO_TOKEN` | `GO_BOUNDED_COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_ARCHITECTURE_RATIFICATION_AND_BINDING_V0` |
+| `CLOSEOUT_GO_TOKEN` | `GO_BOUNDED_COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_ARCHITECTURE_REJECTION_RATIFICATION_AND_RESEARCH_LINE_CLOSEOUT_V0` |
+| `RESEARCH_LINE_STATUS` | `CLOSED_REJECTED` |
+| `ARCHITECTURE_HYPOTHESIS_FALSIFIED` | `true` |
+| `ARCHITECTURE_REJECTED` | `true` |
+| `ARCHITECTURE_DISPOSITION` | `ARCHITECTURE_HYPOTHESIS_FALSIFIED` |
+| `FINAL_RESEARCH_DISPOSITION` | `REJECTED_CLOSED` |
+| `REJECTION_REASON` | `STRUCTURALLY_NEGATIVE_NET_EDGE_ACROSS_WALK_FORWARD_MONTE_CARLO_AND_STRESS` |
+| `TECHNICAL_EVALUATION_STATUS` | `PASS` |
+| `ECONOMIC_VALIDITY_STATUS` | `FAILED` |
+| `ECONOMIC_EVALUATION_VERDICT` | `ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL` |
+| `FAILURE_DECOMPOSITION_VERDICT` | `ECONOMIC_VALIDITY_FAILURE_DECOMPOSITION_COMPLETE` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `EVALUATION_ID` | `econ_evidence_eval_v1_d618bf84626619d6` |
+| `TRADE_COUNT` | `217` |
+| `NET_EXPECTANCY` | `-1.0763` |
+| `PROFIT_FACTOR` | `0.7394` |
+| `SHARPE` | `-0.9290` |
+| `WALK_FORWARD_PASS_RATIO` | `0.20` |
+| `OOS_PASS_RATIO` | `0.20` |
+| `MONTE_CARLO_PASS_RATIO` | `0.0` |
+| `MONTE_CARLO_MEDIAN_RETURN` | `-0.0205` |
+| `STRESS_SCENARIOS_NEGATIVE` | `4&#47;4` |
+| `COST_GRID_NEGATIVE` | `9&#47;9` |
+| `GROSS_RETURN_EQUALS_NET_RETURN` | `true` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `SHADOW_ELIGIBLE` | `false` |
+| `PAPER_ELIGIBLE` | `false` |
+| `TESTNET_ELIGIBLE` | `false` |
+| `RUNTIME_ELIGIBLE` | `false` |
+| `RETRY_ALLOWED` | `false` |
+| `HOLDOUT_ALLOWED` | `false` |
+| `PARAMETER_TUNING_ALLOWED` | `false` |
+| `THRESHOLD_RELAXATION_ALLOWED` | `false` |
+| `DATASET_SUBSTITUTION_ALLOWED` | `false` |
+| `PERIOD_SUBSTITUTION_ALLOWED` | `false` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_AUTHORIZED` | `false` |
+| `NO_NEW_CANDIDATE_HOLD` | `REVOKED` |
+| `STEP29N_PROMOTION_GATE_STATUS` | `FAIL_CLOSED_BLOCKED` |
+| `STEP29R_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `DOWNSTREAM_AUTHORITY_EFFECT` | `NONE` |
+| `ARCHITECTURE_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_architecture_ratification_and_binding_v0_20260702T183549Z` |
+| `OFFLINE_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_offline_economic_validity_evaluation_v0_20260702T185926Z (MANIFEST_VERIFY_RC=0)` |
+| `ECONOMIC_EVALUATION_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_economic_evaluation_pr_squash_merge_and_post_merge_closeout_v0_20260702T191014Z` |
+| `FAILURE_DECOMPOSITION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/analysis/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_economic_validity_failure_decomposition_and_research_disposition_read_only_v0_20260702T211530Z (MANIFEST_VERIFY_RC=0)` |
+| `ARCHITECTURE_REJECTION_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/analysis/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_architecture_rejection_ratification_and_research_line_closeout_v0_20260702T192029Z (MANIFEST_VERIFY_RC=0)` |
+| `OPERATOR_POLICY_DECISION_REF` | `operator_policy_decision:COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1` |
+| `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
+| `SEPARATE_GO_REQUIRED` | `false` |
+
+#### RUNBOOK_STEP_29N — Promotion Economic Gate Binding v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `promotion_economic_gate_binding_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/governance/promotion_loop/promotion_economic_gate_v1.py` |
+| `MERGED_PRS` | `#4708` |
+| `MERGE_COMMITS` | `57c70513e8f0a31a7623c11ed2ad80e93aa42997` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29n_promotion_economic_gate_binding_pr4708squash_merge_closeout_v0_20260630T231725Z (MANIFEST_VERIFY_RC=0); promotion_economic_gate_binding_pr=4708; promotion_economic_gate_binding_merge_commit=57c70513e8f0a31a7623c11ed2ad80e93aa42997; promotion_economic_gate_binding_squash_parent=c8a6a275918b757422aa0b910b4ec00ea011f899; canonical_scope=promotion_economic_gate_binding_v1_slice; PROMOTION_ECONOMIC_GATE_BINDING_V1_BOUND=true; STEP29N_IMPLEMENTATION_COMPLETE=true; TECHNICAL_PROMOTION_GATE_STACK_COMPLETE=true; CURRENT_PROMOTION_EVALUATION=INELIGIBLE; REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED=true; THRESHOLD_TUNING_ALLOWED=false; STEP_29O_STARTED=false; STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29N_COMPLETION_DOES_NOT_START_STEP_29O=true; PROMOTION_ELIGIBILITY_GRANTED=false; PROMOTION_AUTHORITY_GRANTED=false; DEPLOYMENT_AUTHORITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; EXECUTION_AUTHORITY_GRANTED=false; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29M |
+| `REMAINING_GAPS` | real admissible futures economic evidence; economic validity proof |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29O` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `PROMOTION_ECONOMIC_GATE_BINDING_STATUS` | `PASS` |
+| `STEP29N_PROMOTION_GATE_STATUS` | `FAIL_CLOSED_BLOCKED` |
+| `STEP29N_GOVERNANCE_FAIL_CLOSED_BINDING` | `true` |
+| `STEP29N_OPERATOR_POLICY_DECISION` | `MAINTAIN_NO_NEW_CANDIDATE_HOLD` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `SHADOW_CANDIDATE_ELIGIBLE` | `false` |
+| `PAPER_CANDIDATE_ELIGIBLE` | `false` |
+| `TESTNET_CANDIDATE_ELIGIBLE` | `false` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TECHNICAL_PROMOTION_GATE_STACK_COMPLETE` | `true` |
+| `CURRENT_PROMOTION_EVALUATION` | `INELIGIBLE` |
+| `REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED` | `true` |
+| `THRESHOLD_TUNING_ALLOWED` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `PROMOTION_CANDIDATE_STATUS` | `INELIGIBLE` |
+| `DEPLOYMENT_ELIGIBLE` | `false` |
+| `RUNTIME_ELIGIBLE` | `false` |
+| `ACTIVATION_ALLOWED` | `false` |
+| `EXECUTION_ALLOWED` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBILITY_GRANTED` | `false` |
+| `PROMOTION_AUTHORITY_GRANTED` | `false` |
+| `DEPLOYMENT_AUTHORITY_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_GRANTED` | `false` |
+| `EXECUTION_AUTHORITY_GRANTED` | `false` |
+| `RUNBOOK_STEP_29N_STARTED` | `true` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice,promotion_economic_gate_binding_fail_closed_governance_v0_slice` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29N_COMPLETE` | `true` |
+| `PROMOTION_ECONOMIC_GATE_BINDING_V1_IMPLEMENTED` | `true` |
+| `STEP_29O_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_DEPLOYMENT` | `true` |
+| `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_RUNTIME` | `true` |
+| `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_ACTIVATION` | `true` |
+| `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_EXECUTION` | `true` |
+| `STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_LIVE` | `true` |
+| `STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME` | `true` |
+| `STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS` | `true` |
+| `STEP_29N_COMPLETION_DOES_NOT_START_STEP_29O` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29J (legacy heading) — Backtest Engine Rewire Binding
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `backtest_engine_rewire_binding` |
+| `CONTRACT_OR_CAPABILITY` | `backtest_engine_rewire_binding` |
+| `STATUS` | `COMPLETE` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29I |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29O — Intent Compatibility Firewall v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `intent_compatibility_firewall_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src&#47;governance&#47;intent_compatibility_firewall_v1.py` <!-- pt:ref-target-ignore --> |
+| `CANONICAL_OWNER_STATUS` | `IMPLEMENTED` |
+| `CANONICAL_OWNER_RATIFIED` | `true` |
+| `MERGED_PRS` | `#4711` |
+| `MERGE_COMMITS` | `8ef254621a7203a63a1bc106ec2f12192fdb553f` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29o_intent_compatibility_firewall_v1_pr_squash_merge_closeout_v0_20260701T000806Z (MANIFEST_VERIFY_RC=0); intent_compatibility_firewall_pr=4711; intent_compatibility_firewall_merge_commit=8ef254621a7203a63a1bc106ec2f12192fdb553f; intent_compatibility_firewall_squash_parent=eccc4e5e1622f64f57e637839a6b3422a9712d8c; canonical_scope=intent_compatibility_firewall_v1; INTENT_COMPATIBILITY_FIREWALL_V1_BOUND=true; STEP29O_IMPLEMENTATION_COMPLETE=true; TECHNICAL_INTENT_COMPATIBILITY_FIREWALL_STACK_COMPLETE=true; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29P=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29Q=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29R=true; PROMOTION_ELIGIBILITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29N |
+| `REMAINING_GAPS` | `capital_risk_sizing_v1_offline_slice_pending` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29P` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNBOOK_STEP_29O_STARTED` | `true` |
+| `RUNBOOK_STEP_29O_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29O_IMPLEMENTED_SCOPE` | `intent_compatibility_firewall_v1` |
+| `RUNBOOK_STEP_29O_COMPLETE` | `true` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `RUNBOOK_STEP_29O_SCOPE` | `intent_compatibility_firewall_v1` |
+| `RUNBOOK_STEP_29O_PROCESS_CLASSIFICATION` | `ACTIVE_PROGRESS` |
+| `RUNBOOK_STEP_29O_SCOPE_CLASSIFICATION` | `INTENT_COMPATIBILITY_FIREWALL_V1_OFFLINE_SLICE` |
+| `RUNBOOK_STEP_29O_CANONICAL_DEFINITION` | `INTENT_COMPATIBILITY_FIREWALL` |
+| `RUNBOOK_STEP_29O_MINIMUM_SAFE_SLICE` | `intent_compatibility_firewall_v1_offline_slice` |
+| `INTENT_COMPATIBILITY_FIREWALL_IMPLEMENTED` | `true` |
+| `INTENT_COMPATIBILITY_FIREWALL_V1_IMPLEMENTED` | `true` |
+| `TECHNICAL_INTENT_COMPATIBILITY_FIREWALL_STACK_COMPLETE` | `true` |
+| `IMPLICIT_INTENT_CONVERSION_ALLOWED` | `false` |
+| `CANONICAL_ORDER_INTENT_DEFINED` | `false` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_CHANGED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29P` |
+| `SEPARATE_GO_REQUIRED_FOR_RUNTIME_OR_EXECUTION_EFFECT` | `true` |
+| `SEPARATE_GO_REQUIRED_FOR_OFFLINE_CANONICAL_IMPLEMENTATION` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RISK_SIZING_EFFECT` | `false` |
+| `DEPLOYMENT_EFFECT` | `false` |
+| `AUTHORITY_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `THRESHOLD_TUNING_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `TECHNICAL_PROMOTION_GATE_STACK_COMPLETE` | `true` |
+| `STEP_29O_INVENTORIED_INTENT_TYPES` | `true` |
+| `STEP_29O_DEFINED_COMPATIBILITY_CONTRACTS` | `true` |
+| `STEP_29O_BLOCKS_IMPLICIT_CROSS_TYPE_CONVERSIONS` | `true` |
+| `STEP_29O_COMPLETION_DOES_NOT_START_STEP_29P` | `true` |
+| `STEP_29O_REFERENCES_CANONICAL_ORDER_INTENT_IDENTITY` | `true` |
+| `STEP_29O_REFERENCES_ORDER_INTENT_IDEMPOTENCY_V1` | `true` |
+| `STEP_29O_REFERENCES_CANONICAL_ORDER_LIFECYCLE_V1` | `true` |
+| `STEP_29O_REFERENCES_TRADING_CORE_DECISION_ATTESTATION_V1` | `true` |
+| `STEP_29O_DOES_NOT_TRANSFORM_INTENTS` | `true` |
+| `STEP_29O_DOES_NOT_CREATE_ORDERS` | `true` |
+| `STEP_29O_DOES_NOT_CREATE_ADAPTER_COMPATIBILITY` | `true` |
+| `STEP_29O_DOES_NOT_GRANT_AUTHORITY` | `true` |
+| `STEP_29O_EXCLUDES_ECONOMIC_EVIDENCE_29M` | `true` |
+| `STEP_29O_EXCLUDES_PROMOTION_GATE_29N` | `true` |
+| `STEP_29O_EXCLUDES_CAPITAL_RISK_SIZING_29P` | `true` |
+| `STEP_29O_EXCLUDES_CANONICAL_ORDER_INTENT_29Q` | `true` |
+| `STEP_29O_EXCLUDES_RUNTIME_REWIRE_29R` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29P — Capital Risk Sizing Mathematics v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `capital_risk_sizing_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src&#47;governance&#47;capital_risk_sizing_v1.py` <!-- pt:ref-target-ignore --> |
+| `CANONICAL_OWNER_STATUS` | `IMPLEMENTED` |
+| `CANONICAL_OWNER_RATIFIED` | `true` |
+| `MERGED_PRS` | `#4714` |
+| `MERGE_COMMITS` | `661a883bc420602a46cd234a01de3b4948aeb2ab` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29p_capital_risk_sizing_mathematics_v1_implementation_pr_squash_merge_closeout_v0_20260701T032217Z (MANIFEST_VERIFY_RC=0); capital_risk_sizing_pr=4714; capital_risk_sizing_merge_commit=661a883bc420602a46cd234a01de3b4948aeb2ab; capital_risk_sizing_squash_parent=8cd4d1cece62b361725e278cd7abd36f6a7b8b16; canonical_scope=capital_risk_sizing_v1_offline_slice; CAPITAL_RISK_SIZING_V1_BOUND=true; STEP29P_IMPLEMENTATION_COMPLETE=true; OFFLINE_RISK_SIZING_CONTRACT_IMPLEMENTED=true; ACTIVE_RUNTIME_RISK_SIZING_EFFECT=false; STEP_29P_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29P_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29P_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29P_COMPLETION_DOES_NOT_START_STEP_29Q=true; STEP_29P_COMPLETION_DOES_NOT_START_STEP_29R=true; PROMOTION_ELIGIBILITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29O |
+| `REMAINING_GAPS` | `canonical_order_intent_v1_pending` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29Q` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNBOOK_STEP_29P_STARTED` | `true` |
+| `RUNBOOK_STEP_29P_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29P_IMPLEMENTED_SCOPE` | `capital_risk_sizing_v1_offline_slice` |
+| `RUNBOOK_STEP_29P_COMPLETE` | `true` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `RUNBOOK_STEP_29P_SCOPE` | `capital_risk_sizing_v1` |
+| `RUNBOOK_STEP_29P_PROCESS_CLASSIFICATION` | `ACTIVE_PROGRESS` |
+| `RUNBOOK_STEP_29P_SCOPE_CLASSIFICATION` | `CAPITAL_RISK_SIZING_V1_OFFLINE_SLICE` |
+| `RUNBOOK_STEP_29P_CANONICAL_DEFINITION` | `CAPITAL_RISK_SIZING_MATHEMATICS` |
+| `RUNBOOK_STEP_29P_MINIMUM_SAFE_SLICE` | `capital_risk_sizing_v1_offline_slice` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_IMPLEMENTED` | `true` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_CHANGED` | `false` |
+| `CANONICAL_ORDER_INTENT_DEFINED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29Q` |
+| `SEPARATE_GO_REQUIRED_FOR_RUNTIME_OR_EXECUTION_EFFECT` | `true` |
+| `SEPARATE_GO_REQUIRED_FOR_OFFLINE_CANONICAL_IMPLEMENTATION` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RISK_SIZING_EFFECT` | `false` |
+| `DEPLOYMENT_EFFECT` | `false` |
+| `AUTHORITY_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `THRESHOLD_TUNING_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `TECHNICAL_PROMOTION_GATE_STACK_COMPLETE` | `true` |
+| `INTENT_COMPATIBILITY_FIREWALL_IMPLEMENTED` | `true` |
+| `STEP_29P_QUANTITY_CHAIN` | `canonical_trading_decision,scope_capital_envelope,pre_sizing_risk,canonical_position_sizing,post_sizing_risk,quantity_provenance` |
+| `STEP_29P_RISK_ONLY_LIMITS_OR_REJECTS` | `true` |
+| `STEP_29P_SIZING_DOES_NOT_SELECT_DIRECTION` | `true` |
+| `STEP_29P_ROUNDING_NEVER_INCREASES_RISK` | `true` |
+| `STEP_29P_REQUIRES_FULL_QUANTITY_PROVENANCE` | `true` |
+| `STEP_29P_EXCLUDES_ADAPTER_COMPATIBILITY` | `true` |
+| `STEP_29P_EXCLUDES_ORDER_SUBMISSION` | `true` |
+| `STEP_29P_NO_IMPLICIT_DEFAULT_CAPITAL` | `true` |
+| `STEP_29P_RESPECTS_CANONICAL_LIMITS` | `true` |
+| `STEP_29P_SINGLE_SELECTED_FUTURE` | `true` |
+| `STEP_29P_MAX_POSITIONS` | `1` |
+| `STEP_29P_MAX_ACTIVE_DIRECTIONAL_SIDE` | `1` |
+| `STEP_29P_NO_SIMULTANEOUS_LONG_SHORT` | `true` |
+| `STEP_29P_EXCLUDES_CANONICAL_ORDER_INTENT_29Q` | `true` |
+| `STEP_29P_EXCLUDES_RUNTIME_REWIRE_29R` | `true` |
+| `STEP_29P_COMPLETION_DOES_NOT_START_STEP_29Q` | `true` |
+| `STEP_29P_DOES_NOT_CREATE_ORDERS` | `true` |
+| `STEP_29P_DOES_NOT_GRANT_AUTHORITY` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29Q — Canonical Order Intent v1
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `canonical_order_intent_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src&#47;governance&#47;canonical_order_intent_v1.py` <!-- pt:ref-target-ignore --> |
+| `CANONICAL_OWNER_STATUS` | `IMPLEMENTED` |
+| `CANONICAL_OWNER_RATIFIED` | `true` |
+| `MERGED_PRS` | `#4718` |
+| `MERGE_COMMITS` | `876dfd20e3e8b61709d81d017dac5000a508185f` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29q_canonical_order_intent_v1_implementation_pr_squash_merge_closeout_v0_20260701T061814Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29q_canonical_order_intent_progress_registry_closeout_v0_20260701T180000Z (MANIFEST_VERIFY_RC=0); canonical_order_intent_pr=4718; canonical_order_intent_merge_commit=876dfd20e3e8b61709d81d017dac5000a508185f; canonical_order_intent_squash_parent=d409697c449adc4b0bcbf4d8df4c2676427f200a; canonical_scope=canonical_order_intent_v1_offline_slice; CANONICAL_ORDER_INTENT_V1_BOUND=true; STEP29Q_IMPLEMENTATION_COMPLETE=true; OFFLINE_ORDER_INTENT_CONTRACT_IMPLEMENTED=true; ACTIVE_RUNTIME_ORDER_EFFECT=false; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29Q_COMPLETION_DOES_NOT_START_STEP_29R=true; PROMOTION_ELIGIBILITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29P |
+| `REMAINING_GAPS` | `runtime_rewire_29r_pending` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29R` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNBOOK_STEP_29Q_STARTED` | `true` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE` | `canonical_order_intent_v1_offline_slice` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29Q_COMPLETE` | `true` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `RUNBOOK_STEP_29Q_SCOPE` | `canonical_order_intent_v1` |
+| `RUNBOOK_STEP_29Q_PROCESS_CLASSIFICATION` | `ACTIVE_PROGRESS` |
+| `RUNBOOK_STEP_29Q_SCOPE_CLASSIFICATION` | `CANONICAL_ORDER_INTENT_V1_OFFLINE_SLICE` |
+| `RUNBOOK_STEP_29Q_CANONICAL_DEFINITION` | `CANONICAL_ORDER_INTENT` |
+| `RUNBOOK_STEP_29Q_MINIMUM_SAFE_SLICE` | `canonical_order_intent_v1_offline_slice` |
+| `CANONICAL_ORDER_INTENT_IMPLEMENTED` | `true` |
+| `CANONICAL_ORDER_INTENT_DEFINED` | `true` |
+| `CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN` | `false` |
+| `CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND` | `false` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_IMPLEMENTED` | `true` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_CHANGED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R` |
+| `SEPARATE_GO_REQUIRED_FOR_RUNTIME_OR_EXECUTION_EFFECT` | `true` |
+| `SEPARATE_GO_REQUIRED_FOR_OFFLINE_CANONICAL_IMPLEMENTATION` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RISK_SIZING_EFFECT` | `false` |
+| `DEPLOYMENT_EFFECT` | `false` |
+| `AUTHORITY_EFFECT` | `false` |
+| `ADAPTER_SUBMISSION_EFFECT` | `false` |
+| `NETWORK_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `THRESHOLD_TUNING_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `TECHNICAL_PROMOTION_GATE_STACK_COMPLETE` | `true` |
+| `INTENT_COMPATIBILITY_FIREWALL_IMPLEMENTED` | `true` |
+| `IMPLICIT_ADAPTER_COMPATIBILITY_ALLOWED` | `false` |
+| `ADAPTER_TRANSFORMATION_IMPLEMENTED` | `false` |
+| `STEP_29Q_REFERENCES_INTENT_COMPATIBILITY_FIREWALL_V1` | `true` |
+| `STEP_29Q_REFERENCES_CAPITAL_RISK_SIZING_V1` | `true` |
+| `STEP_29Q_REFERENCES_ORDER_INTENT_IDEMPOTENCY_V1` | `true` |
+| `STEP_29Q_REFERENCES_CANONICAL_ORDER_LIFECYCLE_V1` | `true` |
+| `STEP_29Q_REFERENCES_TRADING_CORE_DECISION_ATTESTATION_V1` | `true` |
+| `STEP_29Q_DOES_NOT_IMPLEMENT_ORDER_INTENT` | `false` |
+| `STEP_29Q_DOES_NOT_IMPLEMENT_ADAPTER_TRANSFORMATION` | `true` |
+| `STEP_29Q_DOES_NOT_CLAIM_ADAPTER_COMPATIBILITY` | `true` |
+| `STEP_29Q_DOES_NOT_CHANGE_QUANTITY_RISK_SIZING_SEMANTICS` | `true` |
+| `STEP_29Q_DOES_NOT_CREATE_ORDERS` | `true` |
+| `STEP_29Q_DOES_NOT_GRANT_AUTHORITY` | `true` |
+| `STEP_29Q_EXCLUDES_RUNTIME_REWIRE_29R` | `true` |
+| `STEP_29Q_COMPLETION_DOES_NOT_START_STEP_29R` | `true` |
+| `STEP_29Q_QUANTITY_PROVENANCE_BOUND_TO_STEP_29P` | `true` |
+| `STEP_29Q_IMMUTABLE` | `true` |
+| `STEP_29Q_DETERMINISTIC` | `true` |
+| `STEP_29Q_NOT_DIRECTLY_SUBMITTABLE` | `true` |
+| `STEP_29Q_EXECUTION_ELIGIBLE` | `false` |
+| `STEP_29Q_ADAPTER_COMPATIBLE` | `false` |
+| `STEP_29Q_SUBMISSION_AUTHORIZED` | `false` |
+| `STEP_29Q_TRANSFORMATION_REQUIRED` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29R — Runtime Rewire
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `runtime_rewire_v1` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `none` |
+| `CANONICAL_OWNER_STATUS` | `PROPOSED_PENDING_OWNER_SELECTION` |
+| `CANONICAL_OWNER_RATIFIED` | `false` |
+| `MERGED_PRS` | `#4721` |
+| `MERGE_COMMITS` | `bbb500caa1997baee6ee6bca9656067ceca986f3` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29r_offline_transformation_pr4721_squash_merge_closeout_v0_20260701T070500Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29q_progress_registry_closeout_squash_merge_closeout_v0_20260701T042930Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29q_canonical_order_intent_progress_registry_closeout_v0_20260701T180000Z (MANIFEST_VERIFY_RC=0); offline_transformation_pr=4721; offline_transformation_merge_commit=bbb500caa1997baee6ee6bca9656067ceca986f3; offline_transformation_squash_parent=bc05e442c23414c3dc047a4c32c97fc081e853ca; canonical_scope=canonical_order_intent_v1_to_adapter_order_intent_v1_transformation_contract_offline_slice; CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND=true; CANONICAL_ORDER_INTENT_STRUCTURAL_ADAPTER_COMPATIBILITY_PROVEN=true; CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN=false; STEP_29R_OFFLINE_TRANSFORMATION_SLICE_IMPLEMENTED=true; STEP_29R_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29R_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29R_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29R_COMPLETION_DOES_NOT_START_STEP_29S=true; STEP_29R_COMPLETION_DOES_NOT_GRANT_RUNTIME_ELIGIBILITY=true; PROMOTION_ELIGIBILITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=SLICE_COMPLETE_STEP_IN_PROGRESS; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29Q |
+| `REMAINING_GAPS` | `runtime_rewire_v1_implementation_pending;canonical_order_intent_adapter_compatibility_unproven;economic_validity_offline_gate_not_pass;runtime_rewire_eligibility_unproven;runtime_rewire_activation_unbound;step_29r_full_closeout_pending` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNBOOK_STEP_29R_STARTED` | `true` |
+| `STEP_29R_STARTED` | `true` |
+| `RUNBOOK_STEP_29R_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29R_IMPLEMENTED_SCOPE` | `canonical_order_intent_v1_to_adapter_order_intent_v1_transformation_contract_offline_slice` |
+| `RUNBOOK_STEP_29R_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29R_COMPLETE` | `false` |
+| `STEP_29R_COMPLETE` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `RUNBOOK_STEP_29R_SCOPE` | `runtime_rewire_v1` |
+| `RUNBOOK_STEP_29R_PROCESS_CLASSIFICATION` | `ACTIVE_PROGRESS` |
+| `RUNBOOK_STEP_29R_SCOPE_CLASSIFICATION` | `CANONICAL_ORDER_INTENT_ADAPTER_TRANSFORMATION_OFFLINE_SLICE` |
+| `RUNBOOK_STEP_29R_CANONICAL_DEFINITION` | `RUNTIME_REWIRE` |
+| `RUNBOOK_STEP_29R_MINIMUM_SAFE_SLICE` | `runtime_rewire_v1_offline_slice` |
+| `RUNTIME_REWIRE_IMPLEMENTED` | `false` |
+| `RUNTIME_REWIRE_ELIGIBILITY_PROVEN` | `false` |
+| `RUNTIME_REWIRE_ACTIVATION_BOUND` | `false` |
+| `RUNTIME_REWIRE_IMPLEMENTATION_ALLOWED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `CANONICAL_ORDER_INTENT_IMPLEMENTED` | `true` |
+| `CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN` | `false` |
+| `CANONICAL_ORDER_INTENT_STRUCTURAL_ADAPTER_COMPATIBILITY_PROVEN` | `true` |
+| `CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND` | `true` |
+| `TRADING_LOGIC_COMPLETION_GATE_PASS` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `INTENT_COMPATIBILITY_FIREWALL_PASS` | `true` |
+| `STEP29R_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNBOOK_STEP_29R_STATUS` | `BLOCKED` |
+| `RUNBOOK_STEP_29R_BLOCK_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
+| `RUNTIME_REWIRE_STATUS` | `BLOCKED_BY_ECONOMIC_VALIDITY_OFFLINE_GATE` |
+| `RUNTIME_REWIRE_DEFERRED` | `true` |
+| `STEP29R_PRECONDITION_ADMISSIBILITY_ASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/runbook_step29r_runtime_rewire_precondition_admissibility_assessment_read_only_v0_20260702T205033Z (MANIFEST_VERIFY_RC=0; VERDICT=STEP29R_RUNTIME_REWIRE_PRECONDITION_ASSESSMENT_COMPLETE_NOT_ADMISSIBLE)` |
+| `RUNTIME_REWIRE_IMPLEMENTATION_BLOCKERS` | `canonical_order_intent_adapter_compatibility_unproven;economic_validity_offline_gate_not_pass;runtime_rewire_eligibility_unproven;runtime_rewire_activation_unbound;runtime_rewire_v1_implementation_pending` |
+| `REGISTRY_START_DOES_NOT_GRANT_IMPLEMENTATION_ELIGIBILITY` | `true` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_IMPLEMENTED` | `true` |
+| `CAPITAL_RISK_SIZING_MATHEMATICS_CHANGED` | `false` |
+| `INTENT_COMPATIBILITY_FIREWALL_IMPLEMENTED` | `true` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R` |
+| `SEPARATE_GO_REQUIRED_FOR_RUNTIME_OR_EXECUTION_EFFECT` | `true` |
+| `SEPARATE_GO_REQUIRED_FOR_OFFLINE_CANONICAL_IMPLEMENTATION` | `true` |
+| `RUNTIME_EFFECT` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RISK_SIZING_EFFECT` | `false` |
+| `DEPLOYMENT_EFFECT` | `false` |
+| `AUTHORITY_EFFECT` | `false` |
+| `ADAPTER_SUBMISSION_EFFECT` | `false` |
+| `NETWORK_EFFECT` | `false` |
+| `CREDENTIAL_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `SHADOW_AUTHORIZED` | `false` |
+| `PAPER_AUTHORIZED` | `false` |
+| `TESTNET_AUTHORIZED` | `false` |
+| `CANARY_AUTHORIZED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `THRESHOLD_TUNING_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `TECHNICAL_PROMOTION_GATE_STACK_COMPLETE` | `true` |
+| `IMPLICIT_ADAPTER_COMPATIBILITY_ALLOWED` | `false` |
+| `ADAPTER_TRANSFORMATION_IMPLEMENTED` | `true` |
+| `STEP_29R_OFFLINE_TRANSFORMATION_SLICE_IMPLEMENTED` | `true` |
+| `STEP_29R_REGISTRY_START_ONLY` | `false` |
+| `STEP_29R_DOES_NOT_IMPLEMENT_RUNTIME_REWIRE` | `true` |
+| `STEP_29R_DOES_NOT_GRANT_RUNTIME_ELIGIBILITY` | `true` |
+| `STEP_29R_DOES_NOT_SUBMIT_ADAPTERS` | `true` |
+| `STEP_29R_DOES_NOT_ACTIVATE_PIPELINE` | `true` |
+| `STEP_29R_DOES_NOT_ACTIVATE_SCHEDULER` | `true` |
+| `STEP_29R_DOES_NOT_PERFORM_NETWORK_IO` | `true` |
+| `STEP_29R_DOES_NOT_COMMUNICATE_VENUE` | `true` |
+| `STEP_29R_DOES_NOT_ACCESS_CREDENTIALS` | `true` |
+| `STEP_29R_DOES_NOT_SUBMIT_ORDERS` | `true` |
+| `STEP_29R_DOES_NOT_GRANT_AUTHORITY` | `true` |
+| `STEP_29R_EXCLUDES_SHADOW_PAPER_TESTNET_CANARY_LIVE` | `true` |
+| `STEP_29R_EXCLUDES_STEP_29S` | `true` |
+| `STEP_29S_STARTED` | `false` |
+| `RUNBOOK_STEP_29S_STARTED` | `false` |
+| `STEP_29R_COMPLETION_DOES_NOT_START_STEP_29S` | `true` |
+| `STEP_29R_REFERENCES_CANONICAL_ORDER_INTENT_V1` | `true` |
+| `STEP_29R_REFERENCES_INTENT_COMPATIBILITY_FIREWALL_V1` | `true` |
+| `STEP_29R_REFERENCES_CAPITAL_RISK_SIZING_V1` | `true` |
+| `STEP_29R_DOES_NOT_CHANGE_CANONICAL_ORDER_INTENT_SEMANTICS` | `true` |
+| `STEP_29R_DOES_NOT_CHANGE_QUANTITY_RISK_SIZING_SEMANTICS` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_A_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_REMEDIATION_SNAPSHOT` |
+| `STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_A_BOUND` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_A_IMPLEMENTED` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_A_COMPLETE` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_BRIDGE_OWNER` | `trading.master_v2.canonical_core_runtime_integration_bridge_v0` |
+| `ZERO_ORDER_HARNESS_CANONICAL_CORE_CONSUMPTION_BOUND` | `true` |
+| `RUNTIME_REWIRE_STATUS` | `FAIL` |
+| `RUNTIME_REWIRE_IMPLEMENTED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `ZERO_ORDER_RUNTIME_READY` | `false` |
+| `ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED` | `true` |
+| `LEGACY_DECISION_AUTHORITY_ACTIVE` | `false` |
+| `DUAL_DECISION_AUTHORITY_POSSIBLE` | `false` |
+| `NEXT_REMEDIATION_SLICE` | `Slice B: Runtime rewire v1 — canonical_order_intent → execution pipeline adapter boundary` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_B_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_REMEDIATION_SNAPSHOT` |
+| `STATUS` | `BOUND_NOT_ACTIVATED` |
+| `SLICE_A_STATUS` | `COMPLETE` |
+| `SLICE_B_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_B_BOUND` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_B_IMPLEMENTED` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_B_COMPLETE` | `false` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_INTENT_PIPELINE_BRIDGE_OWNER` | `trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0` |
+| `EXECUTION_PIPELINE_PLAN_ONLY_BOUNDARY_OWNER` | `src.execution_pipeline.plan_only_boundary_v0` |
+| `CANONICAL_ORDER_INTENT_TO_EXECUTION_PIPELINE_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `INTENT_COMPATIBILITY_FIREWALL_STATUS` | `BOUND_OFFLINE` |
+| `CAPITAL_RISK_SIZING_BINDING_STATUS` | `BOUND_OFFLINE` |
+| `EXECUTION_PIPELINE_PLAN_ONLY_BOUNDARY_STATUS` | `PASS` |
+| `CANONICAL_RUNTIME_CORE_CONSUMPTION_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `RUNTIME_REWIRE_STATUS` | `PARTIAL` |
+| `RUNTIME_REWIRE_IMPLEMENTED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `ZERO_ORDER_RUNTIME_READY` | `false` |
+| `ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED` | `true` |
+| `LEGACY_INTENT_AUTHORITY_ACTIVE` | `false` |
+| `DUAL_INTENT_AUTHORITY_POSSIBLE` | `false` |
+| `EXECUTION_ELIGIBLE` | `false` |
+| `ADAPTER_COMPATIBLE` | `false` |
+| `SUBMISSION_BLOCKED` | `true` |
+| `NEXT_REMEDIATION_SLICE` | `Slice C: Registry consolidation — progress registry owner resolution and duplicate-key ambiguity removal` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_C_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_REMEDIATION_SNAPSHOT` |
+| `STATUS` | `REGISTRY_CONSOLIDATED` |
+| `SLICE_A_STATUS` | `COMPLETE` |
+| `SLICE_B_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `SLICE_C_STATUS` | `REGISTRY_CONSOLIDATED` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_C_BOUND` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_C_IMPLEMENTED` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_C_COMPLETE` | `true` |
+| `RUNBOOK_PROGRESS_REGISTRY_RESOLVER_OWNER` | `src/governance/runbook_progress_registry_v1.py` |
+| `REGISTRY_UNQUALIFIED_FIRST_MATCH_ALLOWED` | `false` |
+| `LEGACY_REGISTRY_AUTHORITY` | `false` |
+| `REGISTRY_DUPLICATE_CURRENT_OWNER_COUNT` | `0` |
+| `CANONICAL_ORDER_INTENT_TRANSFORMATION_OWNER` | `src/governance/canonical_order_intent_v1.py` |
+| `CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND` | `true` |
+| `CANONICAL_ORDER_INTENT_TRANSFORMATION_AUTHORITY` | `CANONICAL_CURRENT_OWNER_ONLY` |
+| `CANONICAL_RUNTIME_CORE_CONSUMPTION_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_ORDER_INTENT_TO_EXECUTION_PIPELINE_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `INTENT_COMPATIBILITY_FIREWALL_STATUS` | `BOUND_OFFLINE` |
+| `CAPITAL_RISK_SIZING_BINDING_STATUS` | `BOUND_OFFLINE` |
+| `EXECUTION_PIPELINE_PLAN_ONLY_BOUNDARY_STATUS` | `PASS` |
+| `RUNTIME_REWIRE_STATUS` | `PARTIAL` |
+| `RUNTIME_REWIRE_IMPLEMENTED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `ZERO_ORDER_RUNTIME_READY` | `false` |
+| `ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED` | `true` |
+| `CANONICAL_CORE_SINGLE_SSOT_CONFIRMED` | `false` |
+| `NEXT_REMEDIATION_SLICE` | `Slice D: Legacy runtime entrypoint removal and reachability reduction` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_D_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_REMEDIATION_SNAPSHOT` |
+| `STATUS` | `LEGACY_RUNTIME_ENTRYPOINTS_DEAUTHORIZED` |
+| `SLICE_A_STATUS` | `COMPLETE` |
+| `SLICE_B_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `SLICE_C_STATUS` | `REGISTRY_CONSOLIDATED` |
+| `SLICE_D_STATUS` | `LEGACY_RUNTIME_ENTRYPOINTS_DEAUTHORIZED` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_D_BOUND` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_D_IMPLEMENTED` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_D_COMPLETE` | `true` |
+| `LEGACY_RUNTIME_ENTRYPOINT_GUARD_OWNER` | `trading.master_v2.legacy_runtime_entrypoint_guard_v0` |
+| `LEGACY_RUNTIME_ENTRYPOINTS_REACHABLE_FOR_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_DECISION_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_RISK_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_INTENT_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_EXECUTION_AUTHORITY` | `false` |
+| `LEGACY_RUNTIME_ORDER_EFFECT_POSSIBLE` | `false` |
+| `CANONICAL_RUNTIME_ENTRYPOINT_OWNER` | `UNIQUE` |
+| `CANONICAL_RUNTIME_ENTRYPOINT_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_RUNTIME_ENTRYPOINT_AUTHORITY` | `NONE` |
+| `DUAL_RUNTIME_AUTHORITY_POSSIBLE` | `false` |
+| `CANONICAL_RUNTIME_CORE_CONSUMPTION_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_ORDER_INTENT_TO_EXECUTION_PIPELINE_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `INTENT_COMPATIBILITY_FIREWALL_STATUS` | `BOUND_OFFLINE` |
+| `CAPITAL_RISK_SIZING_BINDING_STATUS` | `BOUND_OFFLINE` |
+| `EXECUTION_PIPELINE_PLAN_ONLY_BOUNDARY_STATUS` | `PASS` |
+| `RUNTIME_REWIRE_STATUS` | `PARTIAL` |
+| `RUNTIME_REWIRE_IMPLEMENTED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `ZERO_ORDER_RUNTIME_READY` | `false` |
+| `ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED` | `true` |
+| `CANONICAL_CORE_SINGLE_SSOT_CONFIRMED` | `false` |
+| `EVALUATE_DOUBLE_PLAY_SLICE_E_RESIDUAL` | `true` |
+| `NEXT_REMEDIATION_SLICE` | `Slice E: evaluate_double_play authority removal or canonicalization` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_E_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `CANONICAL_CURRENT_OWNER_ONLY` |
+| `STATUS` | `EVALUATE_DOUBLE_PLAY_AUTHORITY_CONSOLIDATED` |
+| `SLICE_A_STATUS` | `COMPLETE` |
+| `SLICE_B_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `SLICE_C_STATUS` | `REGISTRY_CONSOLIDATED` |
+| `SLICE_D_STATUS` | `LEGACY_RUNTIME_ENTRYPOINTS_DEAUTHORIZED` |
+| `SLICE_E_STATUS` | `EVALUATE_DOUBLE_PLAY_AUTHORITY_CONSOLIDATED` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_E_BOUND` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_E_IMPLEMENTED` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_E_COMPLETE` | `true` |
+| `EVALUATE_DOUBLE_PLAY_AUTHORITY_BOUNDARY_OWNER` | `trading.master_v2.evaluate_double_play_authority_boundary_v0` |
+| `CANONICAL_DOUBLE_PLAY_OFFLINE_AUTHORITY_OWNER` | `trading.master_v2.double_play_composition_matrix_v1` |
+| `CANONICAL_DOUBLE_PLAY_OFFLINE_REPLAY_CHAIN_OWNER` | `trading.master_v2.integrated_offline_trading_logic_replay_v1` |
+| `OPS_EVALUATE_DOUBLE_PLAY_CALLABLE` | `src.ops.double_play.specialists.evaluate_double_play` |
+| `OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY` | `LEGACY_NON_AUTHORITATIVE` |
+| `LIVE_GATES_DOUBLE_PLAY_ANNOTATION_ROLE` | `LEGACY_NON_AUTHORITATIVE_ANNOTATION_ONLY` |
+| `LIVE_GATES_DOUBLE_PLAY_ELIGIBILITY_COUPLING` | `false` |
+| `MASTER_V2_DOUBLE_PLAY_AUTHORITY_USED` | `false` |
+| `LEGACY_RUNTIME_ENTRYPOINTS_REACHABLE_FOR_AUTHORITY` | `false` |
+| `CANONICAL_RUNTIME_ENTRYPOINT_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `RUNTIME_REWIRE_STATUS` | `BLOCKED_BY_ECONOMIC_VALIDITY_OFFLINE_GATE` |
+| `RUNTIME_REWIRE_DEFERRED` | `true` |
+| `STEP29R_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `ZERO_ORDER_RUNTIME_READY` | `false` |
+| `ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED` | `true` |
+| `CANONICAL_CORE_SINGLE_SSOT_CONFIRMED` | `true` |
+| `EVALUATE_DOUBLE_PLAY_SLICE_E_RESIDUAL` | `false` |
+| `NEXT_REMEDIATION_SLICE` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION (blocked; ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false; separate GO required)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0` |
+| `GO_TOKEN` | `GO_BOUNDED_FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0` |
+| `OPERATOR_POLICY_DECISION` | `AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_BINDING_READY` | `true` |
+| `NEW_CANDIDATES_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `PARAMETER_OPTIMIZATION_PERFORMED` | `false` |
+| `DATASET_OR_PERIOD_CHANGED_FOR_RESULT` | `false` |
+| `FUTURES_ONLY_PASS` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `COMMON_ECONOMIC_POLICY_PASS` | `true` |
+| `COMPARABLE_COST_MODELS_PASS` | `true` |
+| `COMPARABLE_EXECUTION_MODELS_PASS` | `true` |
+| `CANDIDATE_BINDING_STATUS_TREND_FOLLOWING` | `BINDINGS_RATIFIED` |
+| `CANDIDATE_BINDING_STATUS_BOLLINGER_BANDS` | `BINDINGS_RATIFIED` |
+| `CANDIDATE_BINDING_STATUS_MOMENTUM_1H` | `BINDINGS_RATIFIED` |
+| `BINDING_COMPLETION_CONFIG_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json` |
+| `OFFLINE_EVALUATION_SCOPE_CONFIG_REF` | `config/research/final_research_fleet_offline_economic_evaluation_scope_ratification_v0.json` |
+| `FLEET_RATIFICATION_CONFIG_REF` | `config/research/final_research_fleet_v0_fleet_ratification_v0.json` |
+| `NEXT_CANONICAL_STEP` | `EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0` |
+| `DURABLE_EVIDENCE_REF` | `PENDING_POST_MERGE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0` |
+| `GO_TOKEN` | `GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0` |
+| `PR` | `4801` |
+| `MERGE_COMMIT` | `de50ed0e745df4f1984e8c1037560d9e3535d466` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_EVALUATION_COMPLETE` | `true` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_VERDICT` | `FAIL` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_REWIRE_DEFERRED` | `true` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_offline_economic_evaluation_v0_20260703T130318Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### RUNBOOK_V4_4_RESEARCH_GOVERNANCE_PROGRESS_REGISTRY_RECONCILIATION_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_RUNBOOK_V4_4_RESEARCH_GOVERNANCE_PROGRESS_REGISTRY_RECONCILIATION_V0` |
+| `GO_TOKEN` | `GO_BOUNDED_RUNBOOK_V4_4_RESEARCH_GOVERNANCE_PROGRESS_REGISTRY_RECONCILIATION_V0` |
+| `RUNBOOK_V4_4_CANONICAL_SOURCE` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4_current_state_multi_candidate_research_fleet.md` |
+| `OPERATOR_POLICY_DECISION` | `AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0` |
+| `NO_NEW_CANDIDATE_HOLD` | `REVOKED` |
+| `NO_NEW_CANDIDATE_HOLD_REGISTRY_DRIFT_NOTE` | `prior registry ACTIVE was drift not new operator policy` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED` | `true` |
+| `EXACTLY_ONE_CANDIDATE_LIMIT` | `false` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_BINDING_READY` | `false` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `NEXT_CANONICAL_STEP` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` |
+| `RESEARCH_GOVERNANCE_RECONCILIATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_runbook_v4_4_research_governance_progress_registry_reconciliation_v0_20260703T143000Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### STEP29R_ECONOMIC_VALIDITY_TERMINAL_BLOCKER_REGISTRY_BINDING_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_ECONOMIC_VALIDITY_OFFLINE_GATE_TERMINAL_BLOCKER_EVIDENCE_CROSSLINK_AND_STEP29R_ADMISSIBILITY_REGISTRY_BINDING_V0` |
+| `GO_TOKEN` | `GO_BOUNDED_ECONOMIC_VALIDITY_OFFLINE_GATE_TERMINAL_BLOCKER_EVIDENCE_CROSSLINK_AND_STEP29R_ADMISSIBILITY_REGISTRY_BINDING_V0` |
+| `SOURCE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/runbook_step29r_runtime_rewire_precondition_admissibility_assessment_read_only_v0_20260702T205033Z (MANIFEST_VERIFY_RC=0)` |
+| `TRADING_LOGIC_COMPLETION_GATE_STATUS` | `PASS` |
+| `TRADING_LOGIC_COMPLETION_GATE_PASS` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_STATUS` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `INTENT_COMPATIBILITY_FIREWALL_STATUS` | `PASS` |
+| `INTENT_COMPATIBILITY_FIREWALL_PASS` | `true` |
+| `STEP29R_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `STEP29M_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `ECONOMICALLY_VIABLE_CANDIDATE_COUNT` | `0` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `RUNTIME_REWIRE_STATUS` | `BLOCKED_BY_ECONOMIC_VALIDITY_OFFLINE_GATE` |
+| `RUNTIME_REWIRE_DEFERRED` | `true` |
+| `CANONICAL_ORDER_INTENT_RUNTIME_CONSUMER` | `NONE` |
+| `LEGACY_BYPASS_PATHS_FOUND` | `true` |
+| `LEGACY_BYPASS_PATHS_ACTIVATED` | `false` |
+| `SAFETY_RECONCILIATION_OWNERS_OFFLINE_NOT_LEGACY_BOUND` | `true` |
+| `FUTURES_ONLY_RUNTIME_BOUNDARY_PASS` | `partial` |
+| `BITCOIN_SPOT_RUNTIME_PATHS_FOUND` | `true` |
+| `COMPLETE_NO_PASS_NOT_REINTERPRETED_AS_PASS` | `true` |
+| `NEXT_CANONICAL_ACTION` | `OPERATOR_POLICY_DECISION_REQUIRED_FOR_NEW_RESEARCH_SCOPE` |
+| `STEP29R_IMPLEMENTATION_AUTHORIZED` | `false` |
+| `RUNTIME_MUTATION` | `false` |
+| `ECONOMIC_EVALUATION_PERFORMED` | `false` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+
+#### RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_V0` |
+| `GO_TOKEN` | `GO_BOUNDED_RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `ORIGIN_MAIN` | `bd03912a9659b2efbb7cbaf7638922c651abc32b` |
+| `PR4815_PANEL_MATERIALIZATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/offline_panel_materialization_from_partial_tmp_no_fetch_v0_20260703T221342Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4816_OKX_PUBLIC_FUNDING_HORIZON_FAIL_CLOSEOUT_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bounded_offline_funding_fetch_for_materialized_panel_pr_merge_closeout_v0_20260704T170602Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4817_OKX_HISTORICAL_FUNDING_ARCHIVE_INGEST_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/okx_historical_funding_archive_ingest_v0_20260704T171836Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4818_VERSIONED_FINAL_FLEET_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/versioned_final_fleet_bindings_offline_economic_evaluation_v0_20260704T174159Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4818_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/versioned_final_fleet_bindings_offline_economic_evaluation_pr_merge_closeout_v0_20260704T175726Z (MANIFEST_VERIFY_RC=0)` |
+| `FINAL_RESEARCH_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_CANDIDATE_CREATED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RESEARCH_GOVERNANCE_DECISION_RUN` | `true` |
+| `NEW_EVALUATION_RUN` | `false` |
+| `GOVERNANCE_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE_RATIFIED` |
+| `RANK_1_NEXT_SCOPE` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NO_NEW_CANDIDATE_HOLD_REINSTATE_RECOMMENDED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD_REINSTATE_RATIFIED` | `true` |
+| `PR4819_OPERATOR_RATIFICATION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED` | `false` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_AUTHORIZATION_CONSUMED` | `true` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_NEW_AUTHORIZATION_REQUIRED` | `true` |
+| `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `PARAMETER_OPTIMIZATION_PERFORMED` | `false` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/research_governance_decision_after_final_fleet_fail_v0_20260704T180033Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_RESEARCH_SCOPE_DEFINITION_AND_BINDING_RATIFICATION_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_RESEARCH_SCOPE_DEFINITION_AND_BINDING_RATIFICATION_V0` |
+| `GO_TOKEN` | `GO_NEW_RESEARCH_SCOPE_CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `ORIGIN_MAIN` | `0ec71c6bb61bd54ccff52d2fae2adfe033252707` |
+| `STRATEGY_ID` | `cross_sectional_relative_strength` |
+| `STRATEGY_VERSION` | `v0` |
+| `HYPOTHESIS_ID` | `CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0` |
+| `RESEARCH_SCOPE_DEFINITION_RATIFIED` | `true` |
+| `BINDING_RATIFICATION_COMPLETE` | `true` |
+| `ALL_REQUIRED_BINDINGS_RATIFIED` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `NO_EVALUATION_UNTIL_SCOPE_RATIFIED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NO_NEW_CANDIDATE_HOLD_EXCEPTION` | `true` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SPOT_ALLOWED` | `false` |
+| `SYNTHETIC_SPOT_ALLOWED` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `TERMINAL_FAILED_BINDING_RETRY` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `PARAMETER_OPTIMIZATION_PERFORMED` | `false` |
+| `NEW_EVALUATION_RUN` | `false` |
+| `SCOPE_RATIFICATION_CONFIG_REF` | `config/research/cross_sectional_relative_strength_v0_offline_economic_evaluation_scope_ratification_v0.json` |
+| `VERSIONED_BINDING_CONFIG_REF` | `config/research/cross_sectional_relative_strength_v0_versioned_research_binding_v0.json` |
+| `NEXT_CANONICAL_STEP` | `AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cs_relative_strength_scope_binding_ratification_v0_20260704T183110Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_FAIL_GOVERNANCE_CLOSEOUT_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_OFFLINE_ECONOMIC_EVALUATION_FAIL_GOVERNANCE_CLOSEOUT_V0` |
+| `GO_TOKEN` | `GO_OFFLINE_ECONOMIC_EVALUATION_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `ORIGIN_MAIN` | `7ae3e5ef4d4d153c71a3cf4ce74a729f5c1dafb6` |
+| `STRATEGY_ID` | `cross_sectional_relative_strength` |
+| `STRATEGY_VERSION` | `v0` |
+| `HYPOTHESIS_ID` | `CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0` |
+| `OFFLINE_ECONOMIC_EVALUATION_STATUS` | `COMPLETE_FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `HISTORICAL_ECONOMIC_RESULT` | `FAIL` |
+| `TRADE_COUNT` | `1` |
+| `NET_RETURN` | `-0.00589` |
+| `ECONOMIC_EVALUATION_REASON_CODES` | `METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;OUT_OF_SAMPLE_FAILED;PROFIT_FACTOR_BELOW_THRESHOLD;REGIME_DOMINANCE_EXCEEDED;TRADE_COUNT_BELOW_THRESHOLD` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `RE_EVALUATION_ALLOWED` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `BINDING_CHANGED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `NEW_EVALUATION_RUN` | `false` |
+| `NEXT_CANONICAL_STEP` | `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` |
+| `OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cs_relative_strength_offline_economic_evaluation_v0_20260704T184808Z (MANIFEST_VERIFY_RC=0)` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cs_relative_strength_offline_economic_evaluation_v0_20260704T184808Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### POST_PR4821_GOVERNANCE_CURRENT_STATE_RECONCILIATION_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_POST_PR4821_GOVERNANCE_CURRENT_STATE_RECONCILIATION_V0` |
+| `GO_TOKEN` | `NONE` |
+| `ORIGIN_MAIN` | `498263a376dac33dead91cfdb2278d23066c8dc5` |
+| `PR4821_MERGE_COMMIT` | `498263a376dac33dead91cfdb2278d23066c8dc5` |
+| `DRIFT_CLASS` | `PR4821_GLOBAL_NEXT_STEP_OVERWRITE_BY_CS_V0_TERMINAL_FAIL` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NO_NEW_CANDIDATE_HOLD_SCOPE` | `GLOBAL_PR4819_REINSTATE_NOT_CS_V0_LOCAL_ONLY` |
+| `NO_NEW_CANDIDATE_HOLD_RUNBOOK_V4_4_VALUE` | `REVOKED` |
+| `NO_NEW_CANDIDATE_HOLD_RUNBOOK_V4_4_SUPERSEDED_BY` | `PR4819_OPERATOR_RATIFICATION_NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `OPERATOR_POLICY_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_BINDING_READY` | `true` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_EVALUATION_COMPLETE` | `true` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_VERDICT` | `FAIL` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_STATUS` | `COMPLETE_FAIL` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_NEXT_CANONICAL_STEP` | `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` |
+| `PRIOR_GLOBAL_NEXT_CANONICAL_STEP_DRIFT_VALUE` | `NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL` |
+| `CORRECTED_GLOBAL_NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `NEW_EVALUATION_RUN` | `false` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/post_pr4821_governance_current_state_reconciliation_v0_20260704T191530Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0` |
+| `GO_TOKEN` | `GO_BOUNDED_FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0` |
+| `ORIGIN_MAIN` | `3f43d9c79d001b355aa08317fe63dc386c4f860e` |
+| `POST_PR4822_RECONCILIATION_BASE` | `3f43d9c79d001b355aa08317fe63dc386c4f860e` |
+| `OPERATOR_POLICY_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NO_NEW_CANDIDATE_HOLD_PRESERVED_FROM_PR4822` | `true` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_BINDING_READY` | `true` |
+| `NEW_CANDIDATES_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_EVALUATION_COMPLETE` | `true` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_VERDICT` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `PARAMETER_OPTIMIZATION_PERFORMED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `CANDIDATE_BINDING_STATUS_TREND_FOLLOWING` | `BINDINGS_RATIFIED` |
+| `CANDIDATE_BINDING_STATUS_BOLLINGER_BANDS` | `BINDINGS_RATIFIED` |
+| `CANDIDATE_BINDING_STATUS_MOMENTUM_1H` | `BINDINGS_RATIFIED` |
+| `BINDING_COMPLETION_CONFIG_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json` |
+| `OFFLINE_EVALUATION_SCOPE_CONFIG_REF` | `config/research/final_research_fleet_offline_economic_evaluation_scope_ratification_v0.json` |
+| `FLEET_RATIFICATION_CONFIG_REF` | `config/research/final_research_fleet_v0_fleet_ratification_v0.json` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_STATUS` | `COMPLETE_FAIL` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_TERMINAL_FAIL_PRESERVED` | `true` |
+| `CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_RE_EVALUATION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0` |
+| `GLOBAL_NEXT_CANONICAL_STEP_PRESERVED_FROM_PR4822` | `true` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/versioned_final_research_fleet_bindings_ratification_v0_20260704T191403Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### POST_PR4824_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `VERDICT` | `POST_PR4824_VERSIONED_RESEARCH_SCOPE_DEFINITION_RATIFIED` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_ONLY_RESEARCH_SCOPE_DEFINITION` |
+| `PROCESS_CLASSIFICATION` | `BOUNDED_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0` |
+| `GO_TOKEN` | `NONE` |
+| `ORIGIN_MAIN` | `2ee068f058d265d6cf7e973bb10b103f450d5a2c` |
+| `PR4824_MERGE_COMMIT` | `2ee068f058d265d6cf7e973bb10b103f450d5a2c` |
+| `VERSIONED_RESEARCH_SCOPE_DEFINITION_V0_RATIFIED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_STATUS` | `BINDINGS_REQUIRED_BEFORE_EVALUATION` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_EVALUATION_COMPLETE` | `true` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_VERDICT` | `FAIL` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED_THIS_SCOPE` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `FAILED_BINDINGS_ARE_NEGATIVE_EVIDENCE` | `true` |
+| `FAILED_BINDINGS_MAY_NOT_BE_RETRIED_UNCHANGED` | `true` |
+| `UNMODIFIED_RE_EXECUTION_ADMISSIBLE` | `false` |
+| `POLICY_CHANGE_DOES_NOT_CHANGE_HISTORICAL_EVIDENCE` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SPOT_ALLOWED` | `false` |
+| `SYNTHETIC_SPOT_ALLOWED` | `false` |
+| `PRIOR_GLOBAL_NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_VERSIONED_FINAL_FLEET_BINDINGS_AND_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0` |
+| `SCOPE_DEFINITION_REF` | `docs/governance/POST_PR4824_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/post_pr4824_versioned_research_scope_definition_v0_20260704T193800Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `promotion_effect` | `NONE` |
+| `rewire_effect` | `NONE` |
+| `evaluation_executed` | `false` |
+
+#### VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `VERDICT` | `VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFIED` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_AND_BINDING_ONLY_OFFLINE_EVALUATION_PREP` |
+| `PROCESS_CLASSIFICATION` | `BOUNDED_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0` |
+| `GO_TOKEN` | `NONE` |
+| `ORIGIN_MAIN` | `8b2175bfe1715a17e737be47db772ed230a87b03` |
+| `PR4825_MERGE_COMMIT` | `8b2175bfe1715a17e737be47db772ed230a87b03` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_BINDING_READY` | `true` |
+| `NEW_CANDIDATES_RATIFIED` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `OFFLINE_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `OFFLINE_EVALUATION_EXECUTION_ALLOWED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED_THIS_SCOPE` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `FAILED_BINDINGS_ARE_NEGATIVE_EVIDENCE` | `true` |
+| `FAILED_BINDINGS_MAY_NOT_BE_RETRIED_UNCHANGED` | `true` |
+| `UNMODIFIED_RE_EXECUTION_ADMISSIBLE` | `false` |
+| `POLICY_CHANGE_DOES_NOT_CHANGE_HISTORICAL_EVIDENCE` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SPOT_ALLOWED` | `false` |
+| `SYNTHETIC_SPOT_ALLOWED` | `false` |
+| `PRIOR_GLOBAL_NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_VERSIONED_FINAL_FLEET_BINDINGS_AND_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `SCOPE_DEFINITION_REF` | `docs/governance/VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0.md` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/governance/versioned_final_fleet_bindings_offline_evaluation_scope_v0_20260704T194800Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `promotion_effect` | `NONE` |
+| `rewire_effect` | `NONE` |
+| `evaluation_executed` | `false` |
+| `live_authorized` | `false` |
+
+#### FINAL_FLEET_OFFLINE_EVAL_EXECUTION_OWNER_REBIND_GOVERNANCE_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `VERDICT` | `FINAL_FLEET_OFFLINE_EVAL_EXECUTION_OWNER_REBIND_AND_RETRY_GOVERNANCE_RATIFIED` |
+| `PR4826_MERGE_COMMIT` | `208ab96562f7750fb4dff43936b345a040d1cea4` |
+| `EXECUTION_OWNER_EXPECTED_ORIGIN_MAIN_SHA` | `208ab96562f7750fb4dff43936b345a040d1cea4` |
+| `GO_TOKEN_ALIAS_REGISTERED` | `true` |
+| `EVALUATION_EXECUTED` | `false` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `RETRY_ADMISSIBILITY` | `UNMODIFIED_BINDING_REEXECUTION_BLOCKED` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_DECISION_REQUIRED_UNMODIFIED_BINDING_REEXECUTION_BLOCKED_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+
+#### POST_PR4827_OPERATOR_DECISION_READINESS_UNMODIFIED_BINDING_REEXECUTION_BLOCKED_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `VERDICT` | `POST_PR4827_OPERATOR_DECISION_READINESS_UNMODIFIED_BINDING_REEXECUTION_BLOCKED_RATIFIED` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_ONLY_OPERATOR_DECISION_READINESS` |
+| `PR4827_MERGE_COMMIT` | `4fc405ca9281495ce10cf9b56e35e0ec0e4f6369` |
+| `CURRENT_ORIGIN_MAIN` | `4fc405ca9281495ce10cf9b56e35e0ec0e4f6369` |
+| `PR4826_MERGE_COMMIT` | `208ab96562f7750fb4dff43936b345a040d1cea4` |
+| `EXPECTED_ORIGIN_MAIN_SHA_BINDING` | `208ab96562f7750fb4dff43936b345a040d1cea4` |
+| `GO_TOKEN_BINDING_DECISION` | `OPERATOR_ALIAS_IS_PURE_ALIAS_ON_CANONICAL_GO_TOKEN` |
+| `RETRY_ADMISSIBILITY_DECISION` | `UNMODIFIED_BINDING_REEXECUTION_BLOCKED` |
+| `PR4827_CREATES_NEW_EXECUTION_EVIDENCE_CLASS` | `false` |
+| `PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS` | `false` |
+| `EXECUTION_START_BLOCKED` | `true` |
+| `EVALUATION_EXECUTED` | `false` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_DECISION_REQUIRED_UNMODIFIED_BINDING_REEXECUTION_BLOCKED_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4827_OPERATOR_DECISION_READINESS_UNMODIFIED_BINDING_REEXECUTION_BLOCKED_V0.md` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### FINAL_FLEET_OPERATOR_DECISION_PACKET_FOR_BLOCKED_REEXECUTION_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `READY` |
+| `VERDICT` | `OPERATOR_DECISION_PACKET_READY_UNMODIFIED_BINDING_REEXECUTION_BLOCKED_V0` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_ONLY_OPERATOR_DECISION_PACKET_NO_EXECUTION` |
+| `PR4828_MERGE_COMMIT` | `0588d0be4e859152bf9fccd6134c1f57e2838054` |
+| `CURRENT_HEAD_BINDING` | `0588d0be4e859152bf9fccd6134c1f57e2838054` |
+| `UNMODIFIED_BINDING_REEXECUTION_BLOCKED` | `true` |
+| `OFFLINE_EVALUATION_ALLOWED` | `false` |
+| `A_UNMODIFIED_STEP31F_REEXECUTION` | `BLOCKED` |
+| `B_SHA_REBIND_ONLY` | `BLOCKED` |
+| `C_GO_TOKEN_ALIAS_ONLY` | `BLOCKED` |
+| `D_NEW_VERSIONED_RESEARCH_SCOPE` | `OPERATOR_RATIFICATION_REQUIRED` |
+| `E_NEW_VERSIONED_EVIDENCE_CLASS` | `OPERATOR_RATIFICATION_REQUIRED` |
+| `F_RUNTIME_REWIRE` | `BLOCKED` |
+| `NEGATIVE_EVIDENCE_CAN_NOT_BE_RECLASSIFIED_BY_GOVERNANCE` | `true` |
+| `EVALUATION_EXECUTED` | `false` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_RATIFICATION_REQUIRED_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_VERSIONED_EVIDENCE_CLASS_V0` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_FLEET_OPERATOR_DECISION_PACKET_FOR_BLOCKED_REEXECUTION_V0.md` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `READY` |
+| `VERDICT` | `NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_READY_V0` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_ONLY_RATIFICATION_TEMPLATE_NO_EXECUTION` |
+| `PR4829_MERGE_COMMIT` | `5d79b85800e39d345f185f224d68dab2d38d2066` |
+| `CURRENT_HEAD_BINDING` | `5d79b85800e39d345f185f224d68dab2d38d2066` |
+| `RATIFICATION_STATUS` | `NOT_RATIFIED` |
+| `OFFLINE_EVALUATION_ALLOWED` | `false` |
+| `UNMODIFIED_STEP31F_REEXECUTION_ALLOWED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `A_UNMODIFIED_STEP31F_REEXECUTION` | `BLOCKED` |
+| `B_SAME_BINDINGS_NEW_SHA_ONLY` | `BLOCKED` |
+| `C_GOVERNANCE_REWORDING_ONLY` | `BLOCKED` |
+| `D_NEW_VERSIONED_RESEARCH_SCOPE_WITH_FULL_BINDINGS` | `OPERATOR_RATIFICATION_REQUIRED` |
+| `E_NEW_VERSIONED_EVIDENCE_CLASS_WITH_FULL_CONTRACT` | `OPERATOR_RATIFICATION_REQUIRED` |
+| `F_EVALUATION_WITHOUT_RATIFICATION` | `BLOCKED` |
+| `G_RUNTIME_REWIRE` | `BLOCKED` |
+| `EVALUATION_EXECUTED` | `false` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_RATIFICATION_REQUIRED_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_VERSIONED_EVIDENCE_CLASS_V0` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_V0.md` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `RATIFIED_CLASS_D` |
+| `VERDICT` | `OPERATOR_RATIFICATION_RECORDED_CLASS_D` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_ONLY_OPERATOR_RATIFICATION_PACKET_NO_EXECUTION` |
+| `PR4830_MERGE_COMMIT` | `d2633dc2242e3083a471ed601a9511fb3a7ee86b` |
+| `CURRENT_HEAD_BINDING` | `7a6933fd3078ef4453d74c6088fc592b4ab40115` |
+| `RATIFICATION_STATUS` | `RATIFIED_BY_OPERATOR` |
+| `RATIFICATION_CLASS` | `D` |
+| `RATIFIED_SCOPE_ID` | `FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `OFFLINE_EVALUATION_ALLOWED` | `false` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `A_UNMODIFIED_STEP31F_REEXECUTION` | `BLOCKED` |
+| `B_SAME_BINDINGS_NEW_SHA_ONLY` | `BLOCKED` |
+| `C_GOVERNANCE_REWORDING_ONLY` | `BLOCKED` |
+| `D_NEW_VERSIONED_RESEARCH_SCOPE_WITH_FULL_BINDINGS` | `RATIFIED` |
+| `E_NEW_VERSIONED_EVIDENCE_CLASS_WITH_FULL_CONTRACT` | `OPERATOR_RATIFICATION_REQUIRED` |
+| `F_EVALUATION_WITHOUT_RATIFICATION` | `BLOCKED` |
+| `G_RUNTIME_REWIRE` | `BLOCKED` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `EVALUATION_EXECUTED` | `false` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_V0.md` |
+| `CLASS_D_GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_CLASS_D_OPERATOR_RATIFICATION_RECORD_V0.md` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### FINAL_RESEARCH_FLEET_CLASS_D_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `VERDICT` | `FINAL_RESEARCH_FLEET_CLASS_D_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_PASS` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FINAL_RESEARCH_FLEET_CLASS_D_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `RATIFICATION_CLASS` | `D` |
+| `RATIFICATION_CLASS_NAME` | `NEW_VERSIONED_RESEARCH_SCOPE` |
+| `RATIFIED_SCOPE_ID` | `FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `RATIFICATION_STATUS` | `RATIFIED_BY_OPERATOR` |
+| `GO_TOKEN` | `GO_BOUNDED_FINAL_RESEARCH_FLEET_CLASS_D_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_BINDING_READY` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `HISTORICAL_BLOCKED_COMPLETION_DIGEST` | `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1` |
+| `NEW_COMPLETION_DIGEST` | `0610afa34b347abde08768fb2fbfb30fd4bb19ae010f3b2042c67155fb6c0fc4` |
+| `BINDING_COMPLETION_CONFIG_REF` | `config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json` |
+| `OFFLINE_EVALUATION_SCOPE_CONFIG_REF` | `config/research/final_research_fleet_class_d_offline_economic_evaluation_scope_ratification_v0.json` |
+| `OPERATOR_RATIFICATION_CONFIG_REF` | `config/research/final_research_fleet_class_d_operator_ratification_v0.json` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_CLASS_D_OPERATOR_RATIFICATION_RECORD_V0.md` |
+| `BITCOIN_DRIFT_GUARD` | `PASS_ONLY_IF_BTC_XBT_BITCOIN_ARE_NEGATIVE_GUARD_REFERENCES` |
+| `POSITIVE_BITCOIN_BINDINGS_ALLOWED` | `false` |
+| `EVALUATION_INSTRUMENT` | `ETH-USDT-SWAP` |
+| `PANEL` | `OKX_LINEAR_PERPETUALS_NON_BITCOIN` |
+| `PANEL_MEMBER_COUNT` | `118` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z (MANIFEST_VERIFY_RC=0)` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+## Exit-Companion Counts-Only Fail Closeout (Class-D v2 ETH 1h)
+
+Docs-only closeout binding nach Counts-only-Revalidation-Fail für Draft-Kandidat `class_d_v2_eth_v2_1h_sdfa_exit_companion_redesign`. Keine Ratifikation, keine Economic Evaluation, keine Runtime-Authority.
+
+| Feld | Wert |
+|---|---|
+| `SCOPE_CLASSIFICATION` | `EXIT_COMPANION_COUNTS_ONLY_FAIL_CLOSEOUT_AND_PROGRESS_REGISTRY_SYNC_V0` |
+| `GO_TOKEN` | `GO_EXIT_COMPANION_COUNTS_ONLY_FAIL_CLOSEOUT_AND_PROGRESS_REGISTRY_SYNC_V0` |
+| `VERDICT` | `EXIT_COMPANION_COUNTS_ONLY_REVALIDATION_FAIL_INSUFFICIENT_TRADES` |
+| `EXIT_COMPANION_COUNTS_ONLY_REVALIDATION_STATUS` | `FAILED_INSUFFICIENT_TRADES` |
+| `EXIT_COMPANION_DRAFT_CANDIDATE_STATE` | `PARKED_COUNTS_ONLY_FAILED` |
+| `EXIT_COMPANION_CANDIDATE_RATIFIED` | `false` |
+| `EXIT_COMPANION_EVALUATION_AUTHORIZED` | `false` |
+| `EXIT_COMPANION_RUNTIME_AUTHORITY` | `false` |
+| `EXIT_COMPANION_TOTAL_ENTRY_EVENTS` | `54` |
+| `EXIT_COMPANION_TOTAL_CLOSED_TRADES` | `40` |
+| `EXIT_COMPANION_TRADE_COUNT_THRESHOLD` | `50` |
+| `EXIT_COMPANION_TRADE_COUNT_THRESHOLD_PASS` | `false` |
+| `EXIT_COMPANION_PREP_BUNDLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/class_d_v2_eth_v2_1h_exit_companion_candidate_ratification_prep_read_only_v0_20260704T234256Z (MANIFEST_VERIFY_RC=0)` |
+| `EXIT_COMPANION_COUNTS_ONLY_OUTPUT_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_exit_companion_counts_only_revalidation_read_only_or_offline_only_v0_20260705T001007Z (MANIFEST_VERIFY_RC=0)` |
+| `NEXT_ACTION` | `PARK_EXIT_COMPANION_DRAFT_OR_RESEARCH_REDESIGN_REQUIRED` |
+| `AUTHORITY_EFFECT` | `DOCS_EVIDENCE_POINTER_ONLY` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+
+---
+
+#### FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0
+
+Docs-only scope definition for admissible new versioned Research/Evidence-Class lane after STEP31F unchanged-retry fail-close. Reuses OKX full-panel binding completion (`c5e3b5fe…`) — not Class-D, not policy exception, not STEP31F retry. No evaluation execution, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_V0` |
+| `GO_TOKEN` | `GO_BOUNDED_FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_PR_V0` |
+| `VERDICT` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `BINDING_READY` | `true` |
+| `BINDING_SPEC_STATUS` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `EVIDENCE_CLASS` | `NEW_VERSIONED_RESEARCH_SCOPE_NOT_UNCHANGED_RETRY` |
+| `EVIDENCE_CLASS_ID` | `FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `PREVIOUS_COMPLETION_DIGEST` | `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1` |
+| `PREVIOUS_COMPLETION_STATUS` | `TERMINAL_FAILED_OR_ROBUSTNESS_FAILED` |
+| `PREVIOUS_COMPLETION_CONFIG_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json` |
+| `NEW_BINDING_COMPLETION_DIGEST` | `c5e3b5fe6b688b49dbd2b210fd63bdea79201d64820591f87091b4e20689a9dd` |
+| `NEW_BINDING_COMPLETION_REF` | `config/research/final_research_fleet_okx_full_panel_versioned_binding_completion_v0.json` |
+| `NEW_OFFLINE_EVALUATION_SCOPE_REF` | `config/research/final_research_fleet_okx_full_panel_offline_economic_evaluation_scope_ratification_v0.json` |
+| `SCOPE_CONFIG_REF` | `config/research/final_research_fleet_new_evidence_class_scope_v0.json` |
+| `SCOPE_DIGEST` | `64da0eae56a70ad0661398db14d712f6d58d6ea9f6ad0dbb73f3de2b01d11d67` |
+| `SEMANTIC_DIGEST` | `00dd4140c3302f6703203c5c02e46ff9351345d8c8a83ba1d9ca03e173656e96` |
+| `NEW_BINDING_DELTA_DIMENSIONS` | `dataset_binding,period_binding,instrument_binding,evidence_class_binding,implementation_digest` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `POLICY_EXCEPTION_ALLOWED` | `false` |
+| `CLASS_D_OWNER_MIXING` | `false` |
+| `EXIT_COMPANION_DRAFT_CANDIDATE_STATE` | `PARKED_COUNTS_ONLY_FAILED` |
+| `CANDIDATE_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `EXECUTION_OWNER_REF` | `src/research/final_research_fleet_okx_full_panel_versioned_binding_and_offline_economic_evaluation_v0.py` |
+| `EXECUTION_RUNNER_REF` | `scripts/ops/run_final_research_fleet_okx_full_panel_versioned_binding_and_offline_economic_evaluation_v0.py` |
+| `FUTURE_EXECUTION_GO_TOKEN_DOCUMENTED_ONLY` | `GO_BOUNDED_VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_BOUNDED_NEW_EVIDENCE_CLASS_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+#### FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_PROGRESS_REGISTRY_CLOSEOUT_V0
+
+Docs-only progress registry closeout binding the completed PR #4846 offline economic evaluation under new evidence class `FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0`. Fleet verdict ROBUSTNESS_FAILED; no economically viable candidate; no promotion or runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_PROGRESS_REGISTRY_CLOSEOUT_V0` |
+| `GO_TOKEN` | `GO_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_PROGRESS_REGISTRY_CLOSEOUT_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `PR4846_MERGE_COMMIT` | `9b377727cfcb33b03fa545aaf6b48c20c31451e7` |
+| `ORIGIN_MAIN` | `9b377727cfcb33b03fa545aaf6b48c20c31451e7` |
+| `EVIDENCE_CLASS_ID` | `FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_EVALUATION_COMPLETE` | `true` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `CANDIDATE_RATIFIED` | `false` |
+| `EVALUATION_AUTHORIZED` | `consumed_for_completed_offline_scope_only` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `SHADOW_AUTHORIZED` | `false` |
+| `PAPER_AUTHORIZED` | `false` |
+| `TESTNET_AUTHORIZED` | `false` |
+| `ORDERS_ALLOWED` | `false` |
+| `SCHEDULER_RUNTIME_ALLOWED` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `trend_following_v1_verdict` | `ROBUSTNESS_FAILED` |
+| `trend_following_v1_net_return` | `-0.0024` |
+| `trend_following_v1_trade_count` | `219` |
+| `bollinger_bands_v1_verdict` | `ROBUSTNESS_FAILED` |
+| `bollinger_bands_v1_net_return` | `0.0000` |
+| `bollinger_bands_v1_trade_count` | `0` |
+| `momentum_1h_v1_verdict` | `ROBUSTNESS_FAILED` |
+| `momentum_1h_v1_net_return` | `-0.0019` |
+| `momentum_1h_v1_trade_count` | `2` |
+| `ECONOMICALLY_VIABLE_CANDIDATE_COUNT` | `0` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `RE_EVALUATION_SAME_BINDING_ALLOWED` | `false` |
+| `HISTORICAL_STEP31F_BLOCKED_COMPLETION_DIGEST` | `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1` |
+| `NEW_BINDING_COMPLETION_DIGEST` | `c5e3b5fe6b688b49dbd2b210fd63bdea79201d64820591f87091b4e20689a9dd` |
+| `OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_execution_v0_20260705T003528Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4846_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T004825Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_CLOSEOUT_V0.md` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+#### FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0
+
+Docs-only post-PR-#4847 runbook current-state sync. Binds `COMPLETE_ROBUSTNESS_FAILED` / `ROBUSTNESS_FAILED` as operative current state; supersedes stale `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` next-step guidance in Runbook v4.4.1. No runtime, promotion, shadow, paper, testnet, orders, scheduler, credentials, or live authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
+| `GO_TOKEN` | `GO_FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `PR4847_MERGE_COMMIT` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `ORIGIN_MAIN` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `SHADOW_AUTHORIZED` | `false` |
+| `PAPER_AUTHORIZED` | `false` |
+| `TESTNET_AUTHORIZED` | `false` |
+| `ORDERS_ALLOWED` | `false` |
+| `SCHEDULER_RUNTIME_ALLOWED` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `FURTHER_ECONOMIC_EVALUATION_REQUIRES_NEW_EVIDENCE_CLASS_SCOPE_AND_EXPLICIT_OPERATOR_GO` | `true` |
+| `SUPERSEDED_NEXT_CANONICAL_STEP` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `RUNBOOK_V4_4_1_GOVERNANCE_CLARIFICATION_NOTE` | `MAX_POSITIONS=1 initial safety phase; MULTI_FUTURE_RUNTIME_AUTHORIZED=false` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_CLOSEOUT_V0.md` |
+| `RUNBOOK_V4_4_1_REF` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md` |
+| `OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_execution_v0_20260705T003528Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4846_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T004825Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4847_PROGRESS_REGISTRY_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_offline_failure_progress_registry_closeout_v0_20260705T005147Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4847_POST_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_offline_failure_progress_registry_closeout_pr_squash_merge_closeout_v0_20260705T005943Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+#### OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_V0
+
+Docs-only scope definition for admissible new Evidence Class `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` after terminal failed Final Research Fleet (PR #4846/#4847/#4848). Cross-sectional ranking archetype over true OKX full-panel binding — not failed fleet retry, not narrow-adapter ETH-only evaluation. No evaluation execution, no runtime authority, no promotion.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `SCOPE_CLASSIFICATION` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_DEFINITION_V0` |
+| `GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_DEFINITION_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `VERDICT` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `SCOPE_DEFINED` | `true` |
+| `NEW_EVIDENCE_CLASS_RATIFIED_FOR_SCOPE_DEFINITION` | `true` |
+| `EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `STRATEGY_ARCHETYPE_ID` | `cross_sectional_ranking_selection` |
+| `BINDING_READY` | `false` |
+| `BINDING_SPEC_STATUS` | `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` |
+| `CANDIDATE_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `SHADOW_AUTHORIZED` | `false` |
+| `PAPER_AUTHORIZED` | `false` |
+| `TESTNET_AUTHORIZED` | `false` |
+| `ORDERS_ALLOWED` | `false` |
+| `SCHEDULER_RUNTIME_ALLOWED` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `REQUIRES_SEPARATE_OPERATOR_GO_FOR_EVALUATION` | `true` |
+| `REQUIRES_FULL_PANEL_BINDING` | `true` |
+| `NARROW_ADAPTER_ETH_ONLY_BINDING_DISALLOWED_FOR_THIS_SCOPE` | `true` |
+| `EXCLUDED_FAILED_CANDIDATES` | `trend_following&#47;v1,bollinger_bands&#47;v1,momentum_1h&#47;v1` |
+| `EXCLUDED_FAILED_DIGESTS` | `161d834e…,c5e3b5fe…,64da0eae…` |
+| `SCOPE_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json` |
+| `SCOPE_DIGEST` | `77487ec87c1a1ea8fc6ad5fa168faf4c405dfa6c51f57b4d36cc2785f76deed7` |
+| `SEMANTIC_DIGEST` | `e92d8fba0a10348586916bcf980d66c46a83f67a7200298f474c4a6b828455f7` |
+| `GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `FORENSICS_SOURCE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_post_failure_forensics_and_new_evidence_class_candidate_discovery_read_only_v0_20260705T011307Z (MANIFEST_VERIFY_RC=0)` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+#### OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0
+
+Docs-only versioned binding materialization for Evidence Class `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` after PR #4849 scope definition. Full OKX futures panel binding (118 instruments), full Mai–Sep 2024 period binding, cross-sectional ranking semantics reuse. No evaluation execution, no runtime authority, no promotion.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `VERSIONED_BINDINGS_MATERIALIZATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_VERSIONED_BINDINGS_MATERIALIZATION_V0` |
+| `GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_VERSIONED_BINDINGS_MATERIALIZATION_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `VERDICT` | `VERSIONED_BINDINGS_MATERIALIZATION_COMPLETE` |
+| `PR4849_MERGED` | `true` |
+| `PR4849_MERGE_COMMIT` | `f21aadc36c0ee3f5b697ef426da25db5104b9b90` |
+| `SCOPE_DEFINED` | `true` |
+| `BINDING_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0_BINDINGS_V0` |
+| `BINDING_READY` | `true` |
+| `BINDING_SPEC_STATUS` | `VERSIONED_BINDINGS_MATERIALIZED` |
+| `EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `STRATEGY_ARCHETYPE_ID` | `cross_sectional_ranking_selection` |
+| `STRATEGY_ARCHETYPE_VERSION` | `v0` |
+| `CANDIDATE_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `FURTHER_ECONOMIC_EVALUATION_REQUIRES_SEPARATE_OPERATOR_GO` | `true` |
+| `EVALUATION_EXECUTED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `REQUIRES_FULL_PANEL_BINDING` | `true` |
+| `NARROW_ADAPTER_ETH_ONLY_BINDING_DISALLOWED` | `true` |
+| `EXCLUDED_FAILED_CANDIDATES` | `trend_following&#47;v1,bollinger_bands&#47;v1,momentum_1h&#47;v1` |
+| `EXCLUDED_FAILED_DIGESTS` | `161d834e…,c5e3b5fe…,64da0eae…,950ac7f41…` |
+| `SCOPE_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json` |
+| `BINDINGS_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json` |
+| `GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0.md` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+#### OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0
+
+Docs-only digest materialization and evaluation execution scope ratification for Evidence Class `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` after PR #4849 scope definition and PR #4850 versioned bindings. Materializes binding/config/data/implementation digests and fail-closed execution scope contract. No evaluation execution, no runtime authority, no promotion.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `EVALUATION_EXECUTION_SCOPE_RATIFICATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_DIGEST_AND_EVALUATION_EXECUTION_SCOPE_RATIFICATION_V0` |
+| `GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_DIGEST_AND_EVALUATION_EXECUTION_SCOPE_RATIFICATION_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `VERDICT` | `EVALUATION_EXECUTION_SCOPE_RATIFICATION_COMPLETE` |
+| `PR4849_SCOPE_DEFINITION_COMPLETE` | `true` |
+| `PR4850_VERSIONED_BINDINGS_COMPLETE` | `true` |
+| `PR4850_MERGE_COMMIT` | `19126d80bce35927197e590789af62041c0f0773` |
+| `SCOPE_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0` |
+| `EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `VERSIONED_BINDINGS_MATERIALIZED` | `true` |
+| `NEW_EVIDENCE_CLASS_SCOPE_DEFINED` | `true` |
+| `EVALUATION_EXECUTION_SCOPE_RATIFIED` | `true` |
+| `EVALUATION_EXECUTED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `FURTHER_ECONOMIC_EVALUATION_REQUIRES_SEPARATE_OPERATOR_GO` | `true` |
+| `CANDIDATE_RATIFIED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `BINDING_CONFIG_DIGEST` | `54be6ad697dfcf25d0e913152f23565a17f1a3c42cdd79fe32b94ee28b07bd3d` |
+| `DATA_DIGEST` | `0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7` |
+| `IMPLEMENTATION_DIGEST` | `630399ddb14667010be01502f3a5a64199a62c8c9813d5442ffb398f086eef8d` |
+| `SCOPE_RATIFICATION_DIGEST` | `c899a936bec41e0225d1f34862879377309f34964039695f1c1f20d97c7c9ce2` |
+| `SCOPE_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evaluation_execution_scope_v0.json` |
+| `BINDINGS_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json` |
+| `GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0.md` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+#### OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0
+
+Bounded offline economic evaluation for Evidence Class `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` under ratified bindings from PR #4849/#4850/#4851. True multi-instrument cross-sectional panel (118 instruments), full Mai–Sep 2024 period, bound fee/slippage/funding costs. Verdict ROBUSTNESS_FAILED; no runtime authority, no promotion, no candidate ratification.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `OFFLINE_ECONOMIC_EVALUATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0` |
+| `GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `ROBUSTNESS_FAILED` |
+| `HEAD_ORIGIN_MAIN` | `4dd3e0155e7bbd6d5265b2b0dc334f7f7d71efda` |
+| `EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `STRATEGY_ARCHETYPE_ID` | `cross_sectional_ranking_selection` |
+| `STRATEGY_ARCHETYPE_VERSION` | `v0` |
+| `EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `CANDIDATE_RATIFIED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `PROMOTED_DATASET_CONTENT_DIGEST` | `0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7` |
+| `PANEL_DATA_DIGEST` | `e0bc5f2e21f29af3aa958e1af7fd34cb058d07dfbec4dafaa77f7138140c46ee` |
+| `NET_RETURN` | `-0.9753` |
+| `TRADE_COUNT` | `812` |
+| `WALK_FORWARD_STATUS` | `COMPLETE` |
+| `MONTE_CARLO_STATUS` | `COMPLETE` |
+| `STRESS_STATUS` | `COMPLETE` |
+| `PARAMETER_SENSITIVITY_STATUS` | `BOUND_PRIMARY_ONLY_NO_SEARCH` |
+| `PERIOD_BINDING_VERDICT` | `RATIFIED_BOUND_CONSISTENT` |
+| `DATA_COVERAGE_PERIOD` | `2024-05-01T00:00:00Z..2024-09-01T00:00:00Z` |
+| `TRAINING_PERIOD` | `2024-05-21T00:00:00Z..2024-07-01T00:00:00Z` |
+| `VALIDATION_PERIOD` | `2024-07-01T00:00:00Z..2024-08-01T00:00:00Z` |
+| `OUT_OF_SAMPLE_PERIOD` | `2024-08-01T00:00:00Z..2024-09-01T00:00:00Z` |
+| `PERIOD_BINDING_SOURCE` | `PR4850 okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json` |
+| `PERIOD_BINDING_VERIFICATION_ARTIFACT` | `PERIOD_BINDING_VERIFICATION.json` |
+| `EVIDENCE_BUNDLE_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_bounded_offline_economic_evaluation_v0_20260705T014731Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0.md` |
+| `RUNNER_REF` | `scripts/ops/run_okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_execution_v0.py` |
+| `EXECUTION_OWNER_REF` | `src/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_execution_v0.py` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+#### OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0
+
+Docs-only governance closeout for terminal negative economic evidence from PR #4852 bounded offline evaluation. Binds `ROBUSTNESS_FAILED` as manifest-verified terminal negative evidence for unchanged OKX full-panel cross-sectional ranking strategy archetype binding. No promotion, no runtime, no same-binding retry without new evidence class or separate Operator-GO.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0` |
+| `GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `ROBUSTNESS_FAILED` |
+| `PR4849_MERGED` | `true` |
+| `PR4850_MERGED` | `true` |
+| `PR4851_RATIFIED` | `true` |
+| `PR4852_MERGED` | `true` |
+| `PR4852_MERGE_COMMIT` | `1a04805112a26986f3a659262b30f80005952850` |
+| `EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `STRATEGY_ARCHETYPE_ID` | `cross_sectional_ranking_selection` |
+| `STRATEGY_ARCHETYPE_VERSION` | `v0` |
+| `BINDING_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0_BINDINGS_V0` |
+| `EVALUATION_EXECUTED` | `true` |
+| `EVALUATION_COMPLETED_NOT_FAIL_CLOSED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `CANDIDATE_RATIFIED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `NET_RETURN` | `-0.9753` |
+| `NET_EXPECTANCY` | `-5.6433` |
+| `PROFIT_FACTOR` | `0.8048` |
+| `SHARPE` | `-7.0115` |
+| `MAX_DRAWDOWN` | `-0.9785` |
+| `TRADE_COUNT` | `812` |
+| `WALK_FORWARD_STATUS` | `COMPLETE` |
+| `MONTE_CARLO_STATUS` | `COMPLETE` |
+| `STRESS_STATUS` | `COMPLETE` |
+| `PARAMETER_SENSITIVITY_STATUS` | `BOUND_PRIMARY_ONLY_NO_SEARCH` |
+| `PERIOD_BINDING_VERDICT` | `RATIFIED_BOUND_CONSISTENT` |
+| `DATA_COVERAGE_PERIOD` | `2024-05-01T00:00:00Z..2024-09-01T00:00:00Z` |
+| `PERIOD_BINDING_SOURCE` | `PR4850 okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json` |
+| `EVIDENCE_BUNDLE_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_bounded_offline_economic_evaluation_v0_20260705T014731Z` |
+| `PR4852_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_bounded_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T015740Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md` |
+| `CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_negative_economic_evidence_closeout_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0
+
+Docs-only governance scope definition for a new read-only/offline signal diagnostics decomposition evidence class. Closes INCONCLUSIVE fields from the Failure Attribution Autopsy (regime, instrument concentration, long/short asymmetry, turnover, funding). No evaluation, no promotion, no runtime, no same-binding retry. Primary Failure Class NEGATIVE_RAW_EDGE remains terminal negative evidence.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `SCOPE_CLASSIFICATION` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0` |
+| `GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_V0` |
+| `PARENT_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `PARENT_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `PARENT_TERMINAL_NEGATIVE_EVIDENCE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `SOURCE_NEGATIVE_EVIDENCE_PR` | `4852` |
+| `SOURCE_GOVERNANCE_CLOSEOUT_PR` | `4853` |
+| `SOURCE_AUTOPSY_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_strategy_archetype_failure_attribution_economic_autopsy_read_only_v0_20260705T020905Z` |
+| `SOURCE_AUTOPSY_MANIFEST_VERIFY_RC` | `0` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `DIAGNOSTICS_EXECUTED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `RETRY_ALLOWED` | `false` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `REPO_MUTATION_SCOPE` | `GOVERNANCE_ONLY` |
+| `GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_signal_diagnostics_decomposition_evidence_class_scope_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `FUTURE_DIAGNOSTICS` | `REQUIRES_SEPARATE_OPERATOR_GO_AND_BOUNDED_READ_ONLY_OFFLINE_EXECUTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0
+
+Docs-only governance scope definition for a new read-only/offline trade-level artifact materialization evidence class. Materializes trade ledger, equity curve, per-instrument/per-side/per-regime breakdowns, turnover, cost/funding bridge, and drawdown path artifacts to close INCONCLUSIVE fields from Diagnostics Execution (20260705T022050Z). No evaluation, no materialization, no promotion, no runtime, no same-binding retry. Primary Failure Class NEGATIVE_RAW_EDGE remains terminal negative evidence.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `SCOPE_CLASSIFICATION` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0` |
+| `GO_TOKEN` | `GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_V0` |
+| `PARENT_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` |
+| `PARENT_DIAGNOSTICS_EVIDENCE_CLASS_ID` | `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_V0` |
+| `PARENT_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `PARENT_TERMINAL_NEGATIVE_EVIDENCE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `SOURCE_NEGATIVE_EVIDENCE_PR` | `4852` |
+| `SOURCE_GOVERNANCE_CLOSEOUT_PR` | `4853` |
+| `SOURCE_DIAGNOSTICS_SCOPE_PR` | `4854` |
+| `SOURCE_DIAGNOSTICS_EXECUTION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_signal_diagnostics_decomposition_evidence_execution_read_only_v0_20260705T022050Z` |
+| `SOURCE_DIAGNOSTICS_EXECUTION_MANIFEST_VERIFY_RC` | `0` |
+| `SOURCE_DIAGNOSTICS_EXECUTION_VERDICT` | `DIAGNOSTICS_DECOMPOSITION_COMPLETE — INCONCLUSIVE_FIELDS_PERSIST — PRIMARY_FAILURE_UNCHANGED` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `MATERIALIZATION_EXECUTION_AUTHORIZED` | `false` |
+| `MATERIALIZATION_EXECUTED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `RETRY_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_OPTIMIZATION_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `RESULT_RESCUE_ALLOWED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `REPO_MUTATION_SCOPE` | `GOVERNANCE_ONLY` |
+| `FUTURE_EXECUTION_SCOPE` | `READ_ONLY_OFFLINE_MATERIALIZATION_ONLY` |
+| `GOVERNANCE_REF` | `docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_trade_level_artifact_materialization_evidence_class_scope_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `FUTURE_MATERIALIZATION` | `REQUIRES_SEPARATE_OPERATOR_GO_AND_BOUNDED_READ_ONLY_OFFLINE_TRADE_LEVEL_ARTIFACT_MATERIALIZATION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0
+
+Docs-only governance scope definition for persisted trade ledger and equity curve artifacts at future evaluation time. Closes the persistence gap identified by Trade-Level Artifact Materialization (20260705T072422Z). Defines TRADE_LEDGER_V1 and EQUITY_CURVE_V1 required fields, fail-closed rules, and bundle artifacts. No evaluation, no persistence execution, no promotion, no runtime, no same-binding retry. Primary Failure Class NEGATIVE_RAW_EDGE remains terminal negative evidence.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `SCOPE_CLASSIFICATION` | `TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0` |
+| `GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_DEFINITION_PR_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `PARENT_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `SOURCE_MATERIALIZATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_trade_level_artifact_materialization_evidence_execution_read_only_v0_20260705T072422Z` |
+| `SOURCE_MATERIALIZATION_MANIFEST_VERIFY_RC` | `0` |
+| `SOURCE_MATERIALIZATION_VERDICT` | `TRADE_LEVEL_MATERIALIZATION_COMPLETE — INCONCLUSIVE_FIELDS_PERSIST — PRIMARY_FAILURE_UNCHANGED` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `PERSISTENCE_EXECUTION_AUTHORIZED` | `false` |
+| `PERSISTENCE_EXECUTED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0.md` |
+| `CONFIG_REF` | `config/research/trade_ledger_equity_curve_evidence_class_scope_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `NEXT_REQUIRES_RATIFIED_OFFLINE_EVALUATION_SCOPE` | `true` |
+| `FUTURE_PERSISTENCE` | `REQUIRES_SEPARATE_OPERATOR_GO_AND_RATIFIED_EVALUATION_SCOPE_WITH_LEDGER_EQUITY_CURVE_PERSISTENCE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0
+
+Docs-only governance ratification of bounded offline evaluation scope for future persistence of TRADE_LEDGER_V1.jsonl and EQUITY_CURVE_V1.jsonl under separate evaluation execution GO. Builds on evidence class TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0 (PR #4856). No evaluation, no ledger persistence, no equity curve persistence, no promotion, no runtime, no same-binding retry. Primary Failure Class NEGATIVE_RAW_EDGE remains terminal negative evidence.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_RATIFIED_NOT_EXECUTED` |
+| `SCOPE_CLASSIFICATION` | `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_RATIFICATION_PR_V0` |
+| `GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_RATIFICATION_PR_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `PARENT_EVIDENCE_CLASS_PR` | `4856` |
+| `PARENT_EVIDENCE_CLASS_MERGE_COMMIT` | `fcb5ba9267430d6b6d810b14451ed52870791468` |
+| `PARENT_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `OFFLINE_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `EVALUATION_EXECUTION` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `LEDGER_PERSISTENCE_EXECUTION` | `false` |
+| `EQUITY_CURVE_PERSISTENCE_EXECUTION` | `false` |
+| `PERSISTENCE_EXECUTION_AUTHORIZED` | `false` |
+| `ALLOWED_FUTURE_PERSISTENCE_ARTIFACTS` | `TRADE_LEDGER_V1.jsonl,EQUITY_CURVE_V1.jsonl` |
+| `PERSISTENCE_ARTIFACTS_PERSISTABLE_IN_THIS_SCOPE` | `false` |
+| `PERSISTENCE_ARTIFACTS_PERSISTABLE_IN_FUTURE_EVALUATION_EXECUTION_SCOPE_ONLY` | `true` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0.md` |
+| `CONFIG_REF` | `config/research/trade_ledger_equity_curve_persistence_offline_evaluation_scope_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `FUTURE_EVALUATION_EXECUTION` | `REQUIRES_SEPARATE_OPERATOR_GO_AND_RATIFIED_OFFLINE_EVALUATION_EXECUTION_SCOPE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0
+
+Fail-closed governance gap definition after trade ledger equity curve offline evaluation execution preflight (20260705T075246Z). Documents deterministically prioritized partial binding trend_following&#47;v1 from final_research_fleet_versioned_binding_completion_v0 and missing execution owner/runner/ledger-export artifacts. No evaluation, no persistence, no promotion, no runtime. Primary Failure Class NEGATIVE_RAW_EDGE unchanged.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `BINDING_MATERIALIZATION_REQUIRED` |
+| `VERDICT` | `EXECUTION_BINDING_SELECTION_SCOPE_FAIL_CLOSED_BINDING_MATERIALIZATION_REQUIRED` |
+| `SCOPE_CLASSIFICATION` | `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_SELECTION_SCOPE_PR_V0` |
+| `GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_SELECTION_SCOPE_PR_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `PARENT_OFFLINE_EVALUATION_SCOPE_PR` | `4857` |
+| `PREFLIGHT_FAIL_CLOSED_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T075246Z` |
+| `PARTIAL_CANDIDATE_ID` | `trend_following&#47;v1` |
+| `PARTIAL_BINDING_SOURCE` | `config/research/final_research_fleet_versioned_binding_completion_v0.json` |
+| `PARTIAL_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `MISSING_ARTIFACTS` | `execution_owner_ref,execution_runner_ref,trade_ledger_v1_jsonl_export_owner_ref,equity_curve_v1_jsonl_export_owner_ref` |
+| `EVALUATION_EXECUTION` | `false` |
+| `LEDGER_PERSISTENCE_EXECUTION` | `false` |
+| `EQUITY_CURVE_PERSISTENCE_EXECUTION` | `false` |
+| `ALLOWED_FUTURE_PERSISTENCE_ARTIFACTS` | `TRADE_LEDGER_V1.jsonl,EQUITY_CURVE_V1.jsonl` |
+| `ALLOWED_BUNDLE_ONLY` | `true` |
+| `REPO_EVIDENCE_FILES_ALLOWED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0.md` |
+| `CONFIG_REF` | `config/research/trade_ledger_equity_curve_execution_binding_materialization_required_scope_v0.json` |
+| `NEXT_REQUIRED_SCOPE` | `TRADE_LEDGER_EQUITY_CURVE_OFFLINE_EVALUATION_EXECUTION_OWNER_AND_RUNNER_MATERIALIZATION_V0` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0
+
+Docs-only governance binding materialization after PR #4858 gap closeout. Materializes complete pin-able binding set for trend_following&#47;v1 including execution owner/runner and JSONL export owner refs (reuse-first). No evaluation, no ledger persistence, no equity curve persistence, no promotion, no runtime. Primary Failure Class NEGATIVE_RAW_EDGE unchanged. Offline evaluation requires separate operator GO only after this binding PR is merged and checks are green.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `EXECUTION_BINDING_MATERIALIZED_NOT_EXECUTED` |
+| `VERDICT` | `EXECUTION_BINDING_MATERIALIZATION_DEFINED_NOT_EXECUTED` |
+| `SCOPE_CLASSIFICATION` | `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_PR_V0` |
+| `GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_PR_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `PARENT_GAP_SCOPE_PR` | `4858` |
+| `STRATEGY_BINDING_REF` | `trend_following&#47;v1` |
+| `STRATEGY_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `EXECUTION_OWNER_REF` | `src/research/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0.py` |
+| `EXECUTION_RUNNER_REF` | `scripts/ops/run_trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0.py` |
+| `TRADE_LEDGER_V1_JSONL_EXPORT_OWNER_REF` | `config/research/trade_ledger_equity_curve_evidence_class_scope_v0.json` |
+| `EQUITY_CURVE_V1_JSONL_EXPORT_OWNER_REF` | `config/research/trade_ledger_equity_curve_evidence_class_scope_v0.json` |
+| `MANIFEST_POLICY_REF` | `scripts/ops/primary_evidence_retention_v0.py` |
+| `EVALUATION_EXECUTION` | `false` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `EXECUTION_AUTHORIZED` | `false` |
+| `LEDGER_PERSISTENCE_EXECUTION` | `false` |
+| `EQUITY_CURVE_PERSISTENCE_EXECUTION` | `false` |
+| `NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `ALLOWED_FUTURE_PERSISTENCE_ARTIFACTS` | `TRADE_LEDGER_V1.jsonl,EQUITY_CURVE_V1.jsonl` |
+| `ALLOWED_BUNDLE_ONLY` | `true` |
+| `REPO_EVIDENCE_FILES_ALLOWED` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0.md` |
+| `CONFIG_REF` | `config/research/trade_ledger_equity_curve_execution_binding_materialization_v0.json` |
+| `NEXT_REQUIRED_GO` | `GO_TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0
+
+Bounded offline evaluation execution with pinned binding from PR #4859. Persists TRADE_LEDGER_V1.jsonl and EQUITY_CURVE_V1.jsonl in durable archive only. Economic evidence remains ROBUSTNESS_FAILED; Primary Failure Class NEGATIVE_RAW_EDGE unchanged. No runtime, no promotion, no orders, no credentials.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `OFFLINE_EVALUATION_EXECUTION_COMPLETE` |
+| `VERDICT` | `PASS` |
+| `SCOPE_CLASSIFICATION` | `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `STRATEGY_BINDING_REF` | `trend_following&#47;v1` |
+| `STRATEGY_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `BINDING_CONFIG` | `config/research/trade_ledger_equity_curve_execution_binding_materialization_v0.json` |
+| `DURABLE_BUNDLE_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `TRADE_COUNT` | `219` |
+| `EQUITY_POINT_COUNT` | `19809` |
+| `CANDIDATE_EVIDENCE_STATUS` | `ROBUSTNESS_FAILED` |
+| `PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `PRIMARY_FAILURE_CLASS_UNCHANGED` | `true` |
+| `LEDGER_PERSISTENCE_EXECUTION` | `true` |
+| `EQUITY_CURVE_PERSISTENCE_EXECUTION` | `true` |
+| `NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0.md` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0
+
+Bounded offline economic evaluation execution for final-research-fleet rank-2 candidate `bollinger_bands&#47;v1`. Reuses trade-ledger/equity-curve persistence execution infrastructure from PR #4860. `trend_following&#47;v1` remains terminal negative and is excluded from re-evaluation. No runtime, no promotion, no same-binding retry without new evidence class or separate Operator-GO.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `OFFLINE_EVALUATION_EXECUTION_COMPLETE` |
+| `VERDICT` | `FAIL_CLOSED` |
+| `PROCESS_EXECUTION_PASS` | `false` |
+| `SCOPE_CLASSIFICATION` | `BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN` | `GO_BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `STRATEGY_BINDING_REF` | `bollinger_bands&#47;v1` |
+| `STRATEGY_BINDING_DIGEST` | `b7d5e1d7bbdd23134285aea337ae645a8cd8b0af17286e317ae60f1860f71451` |
+| `BINDING_CONFIG` | `config/research/bollinger_bands_v1_offline_economic_evaluation_execution_binding_materialization_v0.json` |
+| `PARAMETER_BINDING_REF` | `config/ops/step31f_okx_inst_eth_usdt_perp_bollinger_bands_v1_economic_evaluation_v1.json` |
+| `EXECUTION_OWNER_REF` | `src/research/bollinger_bands_v1_offline_economic_evaluation_execution_v0.py` |
+| `EXECUTION_RUNNER_REF` | `scripts/ops/run_bollinger_bands_v1_offline_economic_evaluation_execution_v0.py` |
+| `PARENT_INFRASTRUCTURE_REF` | `src/research/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0.py` |
+| `EXCLUDED_TERMINAL_NEGATIVE_BINDING` | `trend_following&#47;v1` |
+| `EXCLUDED_TERMINAL_NEGATIVE_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `DURABLE_BUNDLE_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/bollinger_bands_v1_offline_economic_evaluation_execution_v0_20260705T143018Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `TRADE_COUNT` | `0` |
+| `EQUITY_POINT_COUNT` | `19809` |
+| `CANDIDATE_EVIDENCE_STATUS` | `RESEARCH_ONLY` |
+| `PRIMARY_FAILURE_CLASS` | `TRADE_COUNT_BELOW_THRESHOLD` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `FAIL_REASONS` | `NO_TRADES_PRODUCED,records_empty` |
+| `OFFLINE_ECONOMIC_EVALUATION_EXECUTION` | `true` |
+| `LEDGER_PERSISTENCE_EXECUTION` | `true` |
+| `EQUITY_CURVE_PERSISTENCE_EXECUTION` | `true` |
+| `NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0
+
+Docs-only governance closeout for terminal negative economic evidence from PR #4860 trade-ledger/equity-curve persistence offline evaluation execution. Binds `ROBUSTNESS_FAILED` / `NEGATIVE_RAW_EDGE` as manifest-verified terminal negative evidence for unchanged `trend_following&#47;v1` binding. Process execution passed; economic validity failed. No promotion, no runtime rewire, no same-binding retry without new evidence class or separate Operator-GO. No JSONL evidence in repo.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0` |
+| `GO_TOKEN` | `GO_TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `ROBUSTNESS_FAILED` |
+| `PROCESS_EXECUTION_PASS` | `true` |
+| `ECONOMIC_VERDICT` | `PROCESS_PASS_BUT_ECONOMIC_ROBUSTNESS_FAILED_NEGATIVE_RAW_EDGE` |
+| `PR4860_MERGED` | `true` |
+| `PR4860_MERGE_COMMIT` | `2e354a30803324fee158325fb00fcb0b343ae1dd` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `STRATEGY_BINDING_REF` | `trend_following&#47;v1` |
+| `STRATEGY_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `EVALUATION_EXECUTED` | `true` |
+| `EVALUATION_COMPLETED_NOT_FAIL_CLOSED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `EVIDENCE_STATUS` | `ROBUSTNESS_FAILED` |
+| `PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `PRIMARY_FAILURE_CLASS_UNCHANGED` | `true` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `GROSS_RETURN` | `-0.002398` |
+| `NET_RETURN` | `-0.002398` |
+| `NET_EXPECTANCY` | `-0.109486` |
+| `PROFIT_FACTOR` | `0.950837` |
+| `SHARPE` | `-0.132181` |
+| `MAX_DRAWDOWN` | `-0.009945` |
+| `TRADE_COUNT` | `219` |
+| `EQUITY_POINT_COUNT` | `19809` |
+| `EVIDENCE_BUNDLE_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z` |
+| `PR4860_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_pr_squash_merge_closeout_v0_20260705T083950Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `GOVERNANCE_REF` | `docs/governance/TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `NEXT_ACTION` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0
+
+Bounded offline economic evaluation scope and binding materialization for final-research-fleet rank-3 candidate `momentum_1h&#47;v1`. Reuses versioned fleet bindings from `final_research_fleet_versioned_binding_completion_v0.json`. `trend_following&#47;v1` remains terminal negative; `bollinger_bands&#47;v1` offline evaluation complete and excluded from re-evaluation. No evaluation execution, no ledger/equity persistence, no runtime, no promotion.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_DEFINED_NOT_EXECUTED` |
+| `SCOPE_CLASSIFICATION` | `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0` |
+| `GO_TOKEN` | `GO_MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `STRATEGY_BINDING_REF` | `momentum_1h&#47;v1` |
+| `STRATEGY_BINDING_DIGEST` | `a8b7d87100d7167205258056144690273cda54769c9c29fcf8e91d4477318730` |
+| `BINDING_CONFIG` | `config/research/momentum_1h_v1_offline_economic_evaluation_scope_and_binding_materialization_v0.json` |
+| `PARAMETER_BINDING_REF` | `config/ops/step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json` |
+| `FLEET_BINDING_COMPLETION_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json` |
+| `FLEET_BINDING_COMPLETION_DIGEST` | `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1` |
+| `BINDING_SELECTION_STATUS` | `BINDING_MATERIALIZATION_COMPLETE` |
+| `FUTURES_ONLY` | `true` |
+| `STRATEGY_REGISTRY_VERIFIED` | `true` |
+| `EXCLUDED_TERMINAL_NEGATIVE_BINDING` | `trend_following&#47;v1` |
+| `EXCLUDED_TERMINAL_NEGATIVE_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
+| `EXCLUDED_COMPLETED_EVALUATION_BINDING` | `bollinger_bands&#47;v1` |
+| `EXCLUDED_COMPLETED_EVALUATION_BINDING_DIGEST` | `b7d5e1d7bbdd23134285aea337ae645a8cd8b0af17286e317ae60f1860f71451` |
+| `EVALUATION_EXECUTION` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `LEDGER_PERSISTENCE_EXECUTION` | `false` |
+| `EQUITY_CURVE_PERSISTENCE_EXECUTION` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0.md` |
+| `NEXT_REQUIRED_SCOPE` | `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0
+
+Bounded offline economic evaluation execution for final-research-fleet rank-3 candidate `momentum_1h&#47;v1`. Reuses trade-ledger/equity-curve persistence execution infrastructure. Parent scope from PR #4863. Process execution passed; economic validity failed (2 trades, robustness failed). No runtime, no promotion, no same-binding retry.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `OFFLINE_EVALUATION_EXECUTION_COMPLETE` |
+| `VERDICT` | `FAIL_CLOSED` |
+| `PROCESS_EXECUTION_PASS` | `true` |
+| `SCOPE_CLASSIFICATION` | `MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN` | `GO_MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
+| `STRATEGY_BINDING_REF` | `momentum_1h&#47;v1` |
+| `STRATEGY_BINDING_DIGEST` | `a8b7d87100d7167205258056144690273cda54769c9c29fcf8e91d4477318730` |
+| `SCOPE_BINDING_CONFIG` | `config/research/momentum_1h_v1_offline_economic_evaluation_scope_and_binding_materialization_v0.json` |
+| `EXECUTION_BINDING_CONFIG` | `config/research/momentum_1h_v1_offline_economic_evaluation_execution_binding_materialization_v0.json` |
+| `PARAMETER_BINDING_REF` | `config/ops/step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json` |
+| `EXECUTION_OWNER_REF` | `src/research/momentum_1h_v1_offline_economic_evaluation_execution_v0.py` |
+| `EXECUTION_RUNNER_REF` | `scripts/ops/run_momentum_1h_v1_offline_economic_evaluation_execution_v0.py` |
+| `DURABLE_BUNDLE_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/momentum_1h_v1_offline_economic_evaluation_execution_v0_20260705T145530Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `TRADE_COUNT` | `2` |
+| `EQUITY_POINT_COUNT` | `19809` |
+| `CANDIDATE_EVIDENCE_STATUS` | `ROBUSTNESS_FAILED` |
+| `PRIMARY_FAILURE_CLASS` | `TRADE_COUNT_BELOW_THRESHOLD` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `OFFLINE_ECONOMIC_EVALUATION_EXECUTION` | `true` |
+| `LEDGER_PERSISTENCE_EXECUTION` | `true` |
+| `EQUITY_CURVE_PERSISTENCE_EXECUTION` | `true` |
+| `NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0
+
+Docs-only fleet convergence summary after all three final-research-fleet candidates completed bounded offline economic evaluation (PR #4860 trend_following&#47;v1, PR #4862 bollinger_bands&#47;v1, PR #4864 momentum_1h&#47;v1). Fleet status = terminal Research-Only evidence with no economic pass. No promotion, no runtime rewire, no unchanged retry, no parameter optimization or threshold lowering.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_COMPLETE_NO_PASS` |
+| `SCOPE_CLASSIFICATION` | `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0` |
+| `GO_TOKEN` | `GO_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `FLEET_STATUS` | `FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_COMPLETE_NO_PASS` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `FINAL_RESEARCH_FLEET_PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SPOT_ALLOWED` | `false` |
+| `SUMMARY_CONFIG` | `config/research/final_research_fleet_offline_economic_evidence_convergence_summary_v0.json` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0.md` |
+| `ORIGIN_MAIN_SHA_AT_SUMMARY` | `75145a424b794fcf1d13e8b57a8cf4d2c318c475` |
+| `TREND_FOLLOWING_V1_PR` | `4860` |
+| `TREND_FOLLOWING_V1_EVIDENCE_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z` |
+| `TREND_FOLLOWING_V1_MANIFEST_VERIFY_RC` | `0` |
+| `TREND_FOLLOWING_V1_TRADE_COUNT` | `219` |
+| `TREND_FOLLOWING_V1_PRIMARY_FAILURE_CLASS` | `NEGATIVE_RAW_EDGE` |
+| `BOLLINGER_BANDS_V1_PR` | `4862` |
+| `BOLLINGER_BANDS_V1_EVIDENCE_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/bollinger_bands_v1_offline_economic_evaluation_execution_v0_20260705T143018Z` |
+| `BOLLINGER_BANDS_V1_MANIFEST_VERIFY_RC` | `0` |
+| `BOLLINGER_BANDS_V1_TRADE_COUNT` | `0` |
+| `BOLLINGER_BANDS_V1_PRIMARY_FAILURE_CLASS` | `TRADE_COUNT_BELOW_THRESHOLD` |
+| `MOMENTUM_1H_V1_PR` | `4864` |
+| `MOMENTUM_1H_V1_EVIDENCE_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/momentum_1h_v1_offline_economic_evaluation_execution_v0_20260705T145530Z` |
+| `MOMENTUM_1H_V1_MANIFEST_VERIFY_RC` | `0` |
+| `MOMENTUM_1H_V1_TRADE_COUNT` | `2` |
+| `MOMENTUM_1H_V1_PRIMARY_FAILURE_CLASS` | `TRADE_COUNT_BELOW_THRESHOLD` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO` | `true` |
+| `NO_RUNTIME` | `true` |
+| `NO_SHADOW` | `true` |
+| `NO_PAPER` | `true` |
+| `NO_TESTNET` | `true` |
+| `NO_SCHEDULER` | `true` |
+| `NO_ORDERS` | `true` |
+| `NO_CREDENTIALS` | `true` |
+| `NO_ARMING` | `true` |
+| `NO_CANARY` | `true` |
+| `NO_LIVE` | `true` |
+| `NO_ADAPTER_SUBMISSION` | `true` |
+| `PARAMETER_OPTIMIZATION_FORBIDDEN` | `true` |
+| `THRESHOLD_LOWERING_FORBIDDEN` | `true` |
+| `RESULT_RESCUE_FORBIDDEN` | `true` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_V0
+
+Docs-only bounded progress registry closeout anchoring merged PRs #4865–#4871 in canonical governance documentation. PR #4872 (`fix(governance): reconcile runbook progress registry resolver drift`) is the technical prerequisite restoring resolver/registry hygiene before this closeout. No promotion, no runtime rewire, no new evaluation, no new candidate ratification, no same-binding retry, no new authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `VERDICT` | `POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_COMPLETE_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_PR_4865_4871_PROGRESS_REGISTRY_CLOSEOUT_V0` |
+| `GO_TOKEN` | `NONE` |
+| `ORIGIN_MAIN` | `fe2c334d943da30e097645e178abb970b253fae5` |
+| `PR4865_MERGE_COMMIT` | `31053b8364e444474687fa1df66cf1fc0de45662` |
+| `PR4865_TITLE` | `Governance: summarize final fleet offline economic evidence convergence v0` |
+| `PR4865_CLOSEOUT_ROLE` | `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY` |
+| `PR4866_MERGE_COMMIT` | `7224fa126dde8baabe8d74848fcc150e4b15aef9` |
+| `PR4866_TITLE` | `Governance: clean up legacy docs token policy debt v0` |
+| `PR4866_CLOSEOUT_ROLE` | `GOVERNANCE_DOCS_TOKEN_POLICY_DEBT_CLEANUP` |
+| `PR4867_MERGE_COMMIT` | `2f1672bee8761f8d50def3f6ef31cc803824b2e9` |
+| `PR4867_TITLE` | `Add reference drift visibility report v1 (non-blocking)` |
+| `PR4867_CLOSEOUT_ROLE` | `REFERENCE_DRIFT_VISIBILITY_REPORT` |
+| `PR4868_MERGE_COMMIT` | `f6c3f8301a98e8a9bb2ac13c63c76165a998ecaa` |
+| `PR4868_TITLE` | `ci: fix docs path drift + import consistency + token policy alignment` |
+| `PR4868_CLOSEOUT_ROLE` | `CI_DOCS_PATH_DRIFT_TOKEN_POLICY_ALIGNMENT` |
+| `PR4869_MERGE_COMMIT` | `e8cbb06beeb6bdd240a523ef31990672b812cdb8` |
+| `PR4869_TITLE` | `recovery&#47;governance stash` |
+| `PR4869_CLOSEOUT_ROLE` | `GOVERNANCE_RECOVERY_STASH_CLOSEOUT_DOCS_CONTEXT_NO_NEW_AUTHORITY` |
+| `PR4870_MERGE_COMMIT` | `8c452cb4237325eb81ec7b5bd5c1f0fbe21bd80c` |
+| `PR4870_TITLE` | `ops: add PR closure canonical checklist hook v1` |
+| `PR4870_CLOSEOUT_ROLE` | `PR_CLOSURE_CANONICAL_CHECKLIST_HOOK` |
+| `PR4871_MERGE_COMMIT` | `a8f899a0814b6b51a6c266f45031876969d5cd16` |
+| `PR4871_TITLE` | `fix(governance): restore SelectedSide contract export` |
+| `PR4871_CLOSEOUT_ROLE` | `SELECTED_SIDE_CONTRACT_EXPORT_RESTORE` |
+| `PR4872_MERGE_COMMIT` | `fe2c334d943da30e097645e178abb970b253fae5` |
+| `PR4872_TITLE` | `fix(governance): reconcile runbook progress registry resolver drift` |
+| `PR4872_CLOSEOUT_ROLE` | `RESOLVER_REGISTRY_HYGIENE_PREREQUISITE` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_FLEET_STATUS` | `FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_COMPLETE_NO_PASS` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_VERDICT` | `ROBUSTNESS_FAILED` |
+| `STEP29M_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `FINAL_RESEARCH_FLEET_NO_CANDIDATE_ECONOMIC_PASS` | `true` |
+| `FINAL_RESEARCH_FLEET_PROMOTION_ELIGIBLE` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `NEW_EVALUATION_RUN` | `false` |
+| `NEW_RESEARCH_SCOPE_RATIFICATION` | `false` |
+| `NEW_CANDIDATE_RATIFICATION` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `STRATEGIC_BLOCKER` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `LIVE_AUTHORIZED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `NO_RUNTIME` | `true` |
+| `NO_ORDERS` | `true` |
+| `NO_ADAPTER_SUBMISSION` | `true` |
+| `NO_SCHEDULER` | `true` |
+| `NO_SHADOW` | `true` |
+| `NO_PAPER` | `true` |
+| `NO_TESTNET` | `true` |
+| `NO_CREDENTIALS` | `true` |
+| `NO_ARMING` | `true` |
+| `NO_CANARY` | `true` |
+| `NO_LIVE` | `true` |
+| `NO_ECONOMIC_EVALUATION` | `true` |
+| `NO_NEW_RESEARCH_SCOPE_RATIFICATION` | `true` |
+| `NO_NEW_CANDIDATE_RATIFICATION` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0
+
+Docs-only bounded offline futures research scope definition after POST_PR_4873_CURRENT_STATE_RECONSTRUCTION_COMPLETE and active `NO_NEW_CANDIDATE_HOLD`. Defines Evidence Class `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0` for future bounded offline research only. No economic evaluation, no backtest execution, no runtime, no promotion, no same-binding retry, no candidate ratification, no authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `DOCS_CONFIG_CONTRACT_ONLY_OFFLINE_RESEARCH_SCOPE_DEFINITION_V0` |
+| `GO_TOKEN` | `GO_NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `OPERATOR_GO` | `GO_NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `CURRENT_BASELINE_PR` | `4873` |
+| `CURRENT_BASELINE_HEAD` | `ae799675366a2266b4b2b6dacc1bd4292b9c405c` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_BEFORE` | `NONE` |
+| `EVIDENCE_CLASS_ID` | `BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0` |
+| `POST_PR4873_RECONSTRUCTION_VERDICT` | `POST_PR_4873_CURRENT_STATE_RECONSTRUCTION_COMPLETE` |
+| `FINAL_RESEARCH_FLEET_FLEET_STATUS` | `FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_COMPLETE_NO_PASS` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `CANDIDATE_RATIFIED` | `false` |
+| `CANDIDATE_PROMOTION_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SPOT_ALLOWED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_OPTIMIZATION_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `GOVERNANCE_REF` | `docs/governance/BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/bounded_post_no_pass_futures_research_scope_definition_v0.json` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0
+
+Bounded offline-only economic evaluation execution for Class-D final research fleet bindings under consumed Operator GO `GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0`. Reuses versionierte Class-D bindings and canonical STEP31F economic viability owners. No runtime, no promotion, no same-binding retry rescue, no authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `VERDICT` | `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN` | `GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_HEAD` | `17d70364e27ec12d9f648a043ae08eed4eb87cb5` |
+| `EVIDENCE_CLASS_ID` | `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `EXECUTION_SCOPE_CONFIG_REF` | `config/research/bounded_post_no_pass_futures_offline_economic_evaluation_execution_scope_v0.json` |
+| `SCOPE_DEFINITION_CONFIG_REF` | `config/research/bounded_post_no_pass_futures_research_scope_definition_v0.json` |
+| `BINDING_COMPLETION_REF` | `config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json` |
+| `SCOPE_RATIFICATION_REF` | `config/research/final_research_fleet_class_d_offline_economic_evaluation_scope_ratification_v0.json` |
+| `RUNNER_REF` | `scripts/ops/run_bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0.py` |
+| `OWNER_REF` | `src/research/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0.py` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `FLEET_STATUS` | `FAIL` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `INCONCLUSIVE_COUNT` | `0` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `NEXT_CANONICAL_STEP` | `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0
+
+Docs-only governance scope definition for Class E evidence class `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0` after PR #4876 post-no-pass closeout. Defines read-only/offline robustness-failure diagnostics taxonomy for terminal 0/3 `ROBUSTNESS_FAILED` Class-D fleet evidence. No economic evaluation, no promotion, no runtime, no same-binding retry, no parameter rescue, no threshold lowering, no authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_SCOPE_DEFINITION_V0` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_ONLY_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_SCOPE_DEFINITION_NO_EXECUTION` |
+| `SELECTED_CLASS` | `E` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `OPERATOR_RATIFICATION_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `OPERATOR_RATIFICATION_GO_TOKEN_CONSUMED` | `true` |
+| `PARENT_EVIDENCE_CLASS_ID` | `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `PARENT_TERMINAL_NEGATIVE_EVIDENCE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `SOURCE_PRS` | `4873,4875,4876` |
+| `SOURCE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z` |
+| `SOURCE_EVIDENCE_MANIFEST_VERIFY_RC` | `0` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `INCONCLUSIVE_COUNT` | `0` |
+| `DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `DIAGNOSTICS_EXECUTED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `REPO_MUTATION_SCOPE` | `GOVERNANCE_ONLY` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0.md` |
+| `CONFIG_REF` | `config/research/post_no_pass_robustness_failure_diagnostics_evidence_class_v0.json` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_REQUIRES_SEPARATE_OPERATOR_GO_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0
+
+Versioned binding ratification for sparse-signal / zero-trade research class after PR #4879 scope definition. Materializes strategy_version=v2 bindings for trend_following, bollinger_bands, momentum_1h with panel-sequential signal-density instrument binding and extended chronological period binding. Terminal Class-D v1 ROBUSTNESS_FAILED verdicts unchanged. No economic evaluation, no backtest/WF/MC/stress execution, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `BINDING_RATIFICATION_COMPLETE_NOT_EXECUTED` |
+| `VERDICT` | `BINDING_RATIFICATION_COMPLETE_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `VERSIONED_BINDING_RATIFICATION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `BINDING_CLASS` | `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `OPERATOR_GO` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `BASELINE_PR` | `4879` |
+| `BASELINE_HEAD` | `a113c6bb667fc38da160637e47f018a5411365a3` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `PARENT_SCOPE_ID` | `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `PARENT_SCOPE_CONFIG_REF` | `config/research/post_no_pass_robustness_failure_next_research_scope_definition_v0.json` |
+| `STRATEGY_VERSION` | `v2` |
+| `FAILED_CLASS_D_STRATEGY_VERSION` | `v1` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NEW_CANDIDATES_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0.md` |
+| `CONFIG_REF` | `config/research/post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_v0.json` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_versioned_binding_ratification_v0_20260705T210521Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0
+
+Bounded offline-only economic evaluation execution for sparse-signal/zero-trade v2 bindings under consumed Operator GO `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0`. Panel-sequential signal-density scan completed for all 3 candidates; full STEP31F economic evaluation fail-closed for all candidates (`CANDIDATE_RUN_FAILED`). Panel-level zero-trade hypothesis refuted. No runtime, no promotion, no same-binding retry rescue, no authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `EXECUTION_COMPLETE_INCONCLUSIVE` |
+| `VERDICT` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_HEAD` | `4698b49739976cdc3270922a38fad4b044ae5d26` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `BINDING_CLASS` | `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` |
+| `STRATEGY_VERSION` | `v2` |
+| `EXECUTION_SCOPE_CONFIG_REF` | `config/research/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_scope_v0.json` |
+| `SCOPE_RATIFICATION_CONFIG_REF` | `config/research/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_scope_ratification_v0.json` |
+| `BINDING_COMPLETION_REF` | `config/research/post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_v0.json` |
+| `RUNNER_REF` | `scripts/ops/run_post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0.py` |
+| `OWNER_REF` | `src/research/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0.py` |
+| `ADAPTER_REF` | `src/research/panel_sequential_signal_density_research_adapter_v0.py` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FLEET_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `FLEET_STATUS` | `INCONCLUSIVE` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `0` |
+| `INCONCLUSIVE_COUNT` | `3` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `SPARSE_SIGNAL_CLASS` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `TREND_FOLLOWING_SPARSE_SIGNAL_DENSITY` | `118&#47;118 nonzero trades, max 53` |
+| `BOLLINGER_BANDS_SPARSE_SIGNAL_DENSITY` | `93&#47;118 nonzero trades, max 4` |
+| `MOMENTUM_1H_SPARSE_SIGNAL_DENSITY` | `117&#47;118 nonzero trades, max 94` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0
+
+Bounded read-only/offline Class-E STEP31F promotion metric materialization path execution gap diagnostics over terminal PR4888 source evidence. No economic evaluation, no backtest/WF/MC/stress execution, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `DIAGNOSTICS_EXECUTION_COMPLETE_V0` |
+| `VERDICT` | `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_READ_ONLY_DIAGNOSTICS_EVIDENCE_EXECUTION_NO_ECONOMIC_EVALUATION_NO_RUNTIME_AUTHORITY` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `SELECTED_CLASS` | `E` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `SOURCE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z;/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_scope_v0_20260706T002041Z` |
+| `SOURCE_EVIDENCE_MANIFEST_VERIFY_RC` | `0` |
+| `DIAGNOSTIC_MAPPED_RATIO` | `1.0` |
+| `PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `EXECUTION_GAP_PRIMARY` | `EVALUATOR_INVOCATION_GAP_FAIL_CLOSED` |
+| `MATERIALIZATION_PATH_STATUS` | `PATH_PRESENT_RUNNER_FAILED_METRICS_NOT_MATERIALIZED` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `STEP31F_PROMOTION_METRICS_NOT_MATERIALIZED` | `true` |
+| `FLEET_STATUS` | `INCONCLUSIVE` |
+| `FLEET_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `economic_evaluation_executed` | `false` |
+| `diagnostics_execution_executed` | `true` |
+| `ECONOMIC_VIABILITY_EVIDENCE_PASS_CREATED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NEXT_STEP_CATEGORY` | `NARROW_IMPLEMENTATION_FIX` |
+| `OPERATOR_INPUT_REQUIRED` | `true` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md` |
+| `CONFIG_REF` | `config/research/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_evidence_execution_v0.json` |
+| `COLLECTOR_REF` | `scripts/research/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_evidence_execution_v0.py` |
+| `NEW_EVIDENCE_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_evidence_execution_v0_20260706T003753Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_RATIFY_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_OWNER_NARROW_IMPLEMENTATION_FIX_SCOPE_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_OWNER_NARROW_IMPLEMENTATION_FIX_SCOPE_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0
+
+Docs-only Class-E evidence-class scope definition after PR4888 inconclusive v3 path-activation execution (`PRIMARY_CAUSE=PATH_PRESENT_BUT_NOT_EXECUTED`, `PANEL_ZERO_TRADE_REFUTED=true`, STEP31F promotion metrics not materialized). Defines admissible bounded read-only execution-gap diagnostics scope only. No diagnostics execution, no economic evaluation, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_ONLY_POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_DEFINITION_NO_EXECUTION` |
+| `SELECTED_CLASS` | `E` |
+| `ADMISSIBLE_SCOPE_CLASS` | `E_NEW_VERSIONED_EVIDENCE_CLASS_WITH_FULL_CONTRACT` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `OPERATOR_GO` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `BASELINE_PR` | `4888` |
+| `BASELINE_HEAD` | `9f7ee5951bab59dc36327f3795f423f062da7f91` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0` |
+| `PARENT_EXECUTION_EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `PARENT_EXECUTION_ID` | `post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z` |
+| `PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `STEP31F_PROMOTION_METRICS_NOT_MATERIALIZED` | `true` |
+| `FLEET_STATUS` | `INCONCLUSIVE` |
+| `FLEET_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RESEARCH_HYPOTHESIS` | `STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_REQUIRES_READ_ONLY_DIAGNOSTICS_NOT_UNCHANGED_V3_BINDING_RETRY` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `DIAGNOSTICS_EXECUTED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0.md` |
+| `CONFIG_REF` | `config/research/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_scope_v0.json` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_scope_v0_20260706T002041Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `PARENT_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z (MANIFEST_VERIFY_RC=0)` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0
+
+Bounded offline-only metric materialization / economic evaluation execution for v3 path-activation bindings under consumed Operator GO `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0`. Panel-sequential signal-density scan completed for all 3 candidates; full STEP31F economic evaluation via ratified metric materialization path fail-closed for all candidates (`CANDIDATE_RUN_FAILED`). Panel-level zero-trade hypothesis refuted. No runtime, no promotion, no same-binding retry rescue, no authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `EXECUTION_COMPLETE_INCONCLUSIVE` |
+| `VERDICT` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_HEAD` | `93a435445407022c94808240cfc1381b54bc3e23` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `BINDING_CLASS` | `METRIC_MATERIALIZATION_PATH_ACTIVATION_RESEARCH_V0` |
+| `STRATEGY_VERSION` | `v3` |
+| `PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `EXECUTION_SCOPE_CONFIG_REF` | `config/research/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_scope_v0.json` |
+| `BINDING_COMPLETION_REF` | `config/research/post_no_pass_metric_materialization_path_activation_binding_ratification_v0.json` |
+| `RUNNER_REF` | `scripts/ops/run_post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0.py` |
+| `OWNER_REF` | `src/research/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0.py` |
+| `METRIC_MATERIALIZATION_PATH_REF` | `scripts/ops/run_economic_viability_evidence_evaluation_v1.py` |
+| `ADAPTER_REF` | `src/research/panel_sequential_signal_density_research_adapter_v0.py` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FLEET_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `FLEET_STATUS` | `INCONCLUSIVE` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `0` |
+| `INCONCLUSIVE_COUNT` | `3` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `METRIC_MATERIALIZATION_CLASS` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `TREND_FOLLOWING_SPARSE_SIGNAL_DENSITY` | `118&#47;118 nonzero trades, max 53` |
+| `BOLLINGER_BANDS_SPARSE_SIGNAL_DENSITY` | `93&#47;118 nonzero trades, max 4` |
+| `MOMENTUM_1H_SPARSE_SIGNAL_DENSITY` | `117&#47;118 nonzero trades, max 94` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0
+
+Docs-only path activation/binding ratification after PR #4886 scope definition (`PRIMARY_CAUSE=PATH_PRESENT_BUT_NOT_EXECUTED`). Ratifies v3 fleet bindings with explicit metric materialization path refs for later separate offline evaluation only. No economic evaluation, no backtest/WF/MC/stress execution, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `PATH_ACTIVATION_BINDING_RATIFICATION_COMPLETE_NOT_EXECUTED` |
+| `VERDICT` | `PATH_ACTIVATION_BINDING_RATIFICATION_COMPLETE_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `BINDING_CLASS` | `METRIC_MATERIALIZATION_PATH_ACTIVATION_RESEARCH_V0` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `OPERATOR_GO` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `BASELINE_PR` | `4886` |
+| `BASELINE_HEAD` | `61c6b7dbbd2e4bf97c57c1ae08679c2f1aa2e4f4` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `PARENT_SCOPE_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `PATH_ACTIVATION_BINDING_RATIFIED` | `true` |
+| `STRATEGY_VERSION` | `v3` |
+| `FAILED_SPARSE_V2_STRATEGY_VERSION` | `v2` |
+| `FAILED_CANDIDATE_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `RESEARCH_HYPOTHESIS` | `PATH_PRESENT_BUT_NOT_EXECUTED_REQUIRES_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_NOT_UNCHANGED_V2_RETRY` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `BACKTEST_EXECUTED` | `false` |
+| `WALK_FORWARD_EXECUTED` | `false` |
+| `MONTE_CARLO_EXECUTED` | `false` |
+| `STRESS_EXECUTED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0.md` |
+| `CONFIG_REF` | `config/research/post_no_pass_metric_materialization_path_activation_binding_ratification_v0.json` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_activation_binding_ratification_v0_20260705T233631Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0
+
+Docs-only Class-D scope definition after manifest-verified Class-E metric materialization path diagnostics (`diagnostic_mapped_ratio=1.0`, `PRIMARY_CAUSE=PATH_PRESENT_BUT_NOT_EXECUTED`). Defines admissible metric materialization path activation/binding research scope only. No economic evaluation, no binding ratification in this scope, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `DOCS_CONFIG_CONTRACT_ONLY_OFFLINE_RESEARCH_SCOPE_DEFINITION_V0` |
+| `SELECTED_CLASS` | `D` |
+| `ADMISSIBLE_SCOPE_CLASS` | `D_NEW_VERSIONED_RESEARCH_SCOPE_WITH_FULL_BINDINGS` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `OPERATOR_GO` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `BASELINE_PR` | `4885` |
+| `BASELINE_HEAD` | `f4709c51044a05c6dcc1c640d28c7567e33d71a7` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `PARENT_DIAGNOSTICS_EVIDENCE_CLASS_ID` | `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `PARENT_DIAGNOSTICS_EXECUTION_ID` | `post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z` |
+| `DIAGNOSTIC_MAPPED_RATIO` | `1.0` |
+| `PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `MATERIALIZATION_PATH_STATUS` | `PATH_PRESENT_RUNNER_FAILED_METRICS_NOT_MATERIALIZED` |
+| `DIAGNOSTICS_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z` |
+| `DIAGNOSTICS_MANIFEST_VERIFY_RC` | `0` |
+| `RESEARCH_HYPOTHESIS` | `PATH_PRESENT_BUT_NOT_EXECUTED_REQUIRES_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_NOT_UNCHANGED_V2_RETRY` |
+| `CONFIRMED_FAILURE_CLASSES` | `PATH_PRESENT_BUT_NOT_EXECUTED,INCONCLUSIVE_SPARSE_SIGNAL_ZERO_TRADE,EXECUTION_FAILED_FAIL_CLOSED` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `CORE_SYSTEM_MUTATION_ALLOWED` | `false` |
+| `CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED` | `false` |
+| `MASTER_V2_MUTATION_ALLOWED` | `false` |
+| `DOUBLE_PLAY_MUTATION_ALLOWED` | `false` |
+| `RISK_SIZING_MUTATION_ALLOWED` | `false` |
+| `SAFETY_RUNTIME_MUTATION_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/post_no_pass_metric_materialization_diagnostics_derived_next_research_scope_definition_v0.json` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_diagnostics_derived_next_research_scope_definition_v0_20260705T232358Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0
+
+Bounded read-only/offline Class-E metric materialization path diagnostics execution over terminal PR4881/4883/4884 source evidence for the 0/3 `EXECUTION_FAILED_FAIL_CLOSED` inconclusive sparse-signal fleet. No economic evaluation, no backtest/WF/MC/stress execution, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `DIAGNOSTICS_EXECUTION_COMPLETE_V0` |
+| `VERDICT` | `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_READ_ONLY_OFFLINE_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_NO_AUTHORITY` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `SELECTED_CLASS` | `E` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `SOURCE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z;/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z;/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4883_next_versioned_research_scope_selection_v0_20260705T224921Z` |
+| `SOURCE_EVIDENCE_MANIFEST_VERIFY_RC` | `0` |
+| `NEW_EVIDENCE_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `DIAGNOSTIC_MAPPED_RATIO` | `1.0` |
+| `PRIMARY_CAUSE` | `PATH_PRESENT_BUT_NOT_EXECUTED` |
+| `SECONDARY_CAUSES` | `INCONCLUSIVE_CLASSIFICATION_NO_PROMOTION_METRICS,SPARSE_SIGNAL_INSUFFICIENT_SAMPLE,PATH_BLOCKED_BY_POLICY` |
+| `MATERIALIZATION_PATH_STATUS` | `PATH_PRESENT_RUNNER_FAILED_METRICS_NOT_MATERIALIZED` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `DIAGNOSTICS_EXECUTED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `economic_evaluation_executed` | `false` |
+| `backtest_run_executed` | `false` |
+| `walk_forward_run_executed` | `false` |
+| `monte_carlo_run_executed` | `false` |
+| `stress_run_executed` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `WHETHER_A_FUTURE_SCOPE_DEFINITION_IS_REQUIRED` | `true` |
+| `WHETHER_A_FUTURE_EXECUTION_GO_IS_REQUIRED` | `true` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md` |
+| `COLLECTOR_REF` | `scripts/research/post_no_pass_inconclusive_metric_materialization_path_diagnostics_v0.py` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_REQUIRES_OPERATOR_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0
+
+Docs-only Class-E scope selection and ratified evidence-class definition after manifest-verified inconclusive sparse-signal/zero-trade classification (`classification_mapped_ratio=1.0`, `panel_zero_trade_refuted=true`). Selects read-only metric materialization path diagnostics as next admissible scope. No economic evaluation, no diagnostics execution, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_SELECTION_COMPLETE_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_SELECTION_COMPLETE_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_SCOPE_DEFINITION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_PR4883_SPARSE_SIGNAL_INCONCLUSIVE_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0` |
+| `SELECTED_CLASS` | `E` |
+| `ADMISSIBLE_SCOPE_CLASS` | `E_NEW_VERSIONED_EVIDENCE_CLASS_WITH_FULL_CONTRACT` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `OPERATOR_GO` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `BASELINE_PR` | `4883` |
+| `BASELINE_HEAD` | `b0d584db9057369f5d6a930c97f8ea8ed3734aac` |
+| `EVIDENCE_CLASS_ID` | `POST_PR4883_SPARSE_SIGNAL_INCONCLUSIVE_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0` |
+| `RATIFIED_SCOPE_ID` | `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `PARENT_CLASSIFICATION_EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` |
+| `PARENT_CLASSIFICATION_EXECUTION_ID` | `post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z` |
+| `CLASSIFICATION_MAPPED_RATIO` | `1.0` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `PRIMARY_CLASSIFICATION` | `INCONCLUSIVE_SPARSE_SIGNAL_ZERO_TRADE` |
+| `RESEARCH_HYPOTHESIS` | `INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_REQUIRES_READ_ONLY_DIAGNOSTICS_NOT_UNCHANGED_V2_BINDING_RETRY` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `FLEET_STATUS` | `INCONCLUSIVE` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `DIAGNOSTICS_EXECUTED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4883_next_versioned_research_scope_selection_v0.json` |
+| `RATIFIED_SCOPE_CONFIG_REF` | `config/research/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_class_v0.json` |
+| `RATIFIED_SCOPE_GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0.md` |
+| `CLASSIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z` |
+| `CLASSIFICATION_MANIFEST_VERIFY_RC` | `0` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4883_next_versioned_research_scope_selection_v0_20260705T224921Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0
+
+Bounded read-only/offline Class-E inconclusive-failure classification execution over terminal PR4881 sparse-signal/zero-trade v2 offline economic evaluation evidence (`0 PASS &#47; 0 FAIL &#47; 3 INCONCLUSIVE`). Classifies sparse-signal vs zero-trade separation, metric materialization failure, and runner fail-closed causes without economic evaluation rerun, promotion, runtime, same-binding retry, parameter rescue, threshold lowering, or authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `CLASSIFICATION_EXECUTION_COMPLETE_INCONCLUSIVE` |
+| `VERDICT` | `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_READ_ONLY_OFFLINE_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_NO_AUTHORITY` |
+| `SELECTED_CLASS` | `E` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` |
+| `SCOPE_DEFINITION_GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_SCOPE_DEFINITION_ONLY_V0` |
+| `SCOPE_DEFINITION_GO_TOKEN_CONSUMED` | `true` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `PRIMARY_CLASSIFICATION` | `INCONCLUSIVE_SPARSE_SIGNAL_ZERO_TRADE` |
+| `CLASSIFICATION_MAPPED_RATIO` | `1.0` |
+| `PARENT_EVIDENCE_CLASS_ID` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `PARENT_EXECUTION_ID` | `post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z` |
+| `PARENT_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z` |
+| `PARENT_EXECUTION_MANIFEST_VERIFY_RC` | `0` |
+| `NEW_EVIDENCE_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `BASELINE_PR` | `4881` |
+| `BASELINE_HEAD` | `6b48857ab9fc9e3d2637286038d2ae6ce6f3c9a3` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `FLEET_VERDICT` | `EXECUTION_FAILED_FAIL_CLOSED` |
+| `FLEET_STATUS` | `INCONCLUSIVE` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `0` |
+| `INCONCLUSIVE_COUNT` | `3` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `CLASSIFICATION_EXECUTION_AUTHORIZED` | `false` |
+| `CLASSIFICATION_EXECUTED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `economic_evaluation_executed` | `false` |
+| `backtests_executed` | `false` |
+| `walk_forward_executed` | `false` |
+| `monte_carlo_executed` | `false` |
+| `stress_executed` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SHADOW_AUTHORIZED` | `false` |
+| `PAPER_AUTHORIZED` | `false` |
+| `TESTNET_AUTHORIZED` | `false` |
+| `ORDERS_ALLOWED` | `false` |
+| `SCHEDULER_RUNTIME_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0.md` |
+| `CONFIG_REF` | `config/research/post_no_pass_sparse_signal_inconclusive_failure_classification_v0.json` |
+| `COLLECTOR_REF` | `scripts/research/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0.py` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0
+
+Docs-only Class-D versioned research scope definition after manifest-verified Class-E robustness failure diagnostics (`diagnostic_mapped_ratio=0.75`). Defines admissible next research lane for sparse-signal/zero-trade failure class with full versioned binding requirements. No economic evaluation, no binding ratification, no backtest/WF/MC/stress execution, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `DOCS_CONFIG_CONTRACT_ONLY_OFFLINE_RESEARCH_SCOPE_DEFINITION_V0` |
+| `SELECTED_CLASS` | `D` |
+| `ADMISSIBLE_SCOPE_CLASS` | `D_NEW_VERSIONED_RESEARCH_SCOPE_WITH_FULL_BINDINGS` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `OPERATOR_GO` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `BASELINE_PR` | `4878` |
+| `BASELINE_HEAD` | `77de907bbf7808ed4cbf8604c7994f7078932b85` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `PARENT_DIAGNOSTICS_EVIDENCE_CLASS_ID` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `PARENT_DIAGNOSTICS_EXECUTION_ID` | `post_no_pass_robustness_failure_diagnostics_evidence_execution_v0_20260705T203622Z` |
+| `DIAGNOSTIC_MAPPED_RATIO` | `0.75` |
+| `DIAGNOSTICS_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_robustness_failure_diagnostics_evidence_execution_v0_20260705T203622Z` |
+| `DIAGNOSTICS_MANIFEST_VERIFY_RC` | `0` |
+| `RESEARCH_HYPOTHESIS` | `SPARSE_SIGNAL_ZERO_TRADE_REQUIRES_NEW_VERSIONED_BINDINGS_NOT_UNCHANGED_CLASS_D_RETRY` |
+| `CONFIRMED_FAILURE_CLASSES` | `SPARSE_SIGNAL_ZERO_TRADE,WALK_FORWARD_ZERO_OOS_TRADES,STRESS_COST_SENSITIVITY_FAIL,MONTE_CARLO_SEQUENCE_FRAGILITY,PROFIT_FACTOR_BELOW_THRESHOLD` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/post_no_pass_robustness_failure_next_research_scope_definition_v0.json` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_robustness_failure_next_research_scope_definition_v0_20260705T205325Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0
+
+Bounded read-only/offline Class-E diagnostics execution over terminal PR4875/4876 source evidence for the 0/3 `ROBUSTNESS_FAILED` Class-D fleet. No economic evaluation, no backtest/WF/MC/stress execution, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `DIAGNOSTICS_EXECUTION_COMPLETE_V0` |
+| `VERDICT` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_READ_ONLY_OFFLINE_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_NO_AUTHORITY` |
+| `EVIDENCE_CLASS_ID` | `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0` |
+| `SELECTED_CLASS` | `E` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `SOURCE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z` |
+| `SOURCE_EVIDENCE_MANIFEST_VERIFY_RC` | `0` |
+| `NEW_EVIDENCE_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_robustness_failure_diagnostics_evidence_execution_v0_20260705T203622Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `DIAGNOSTIC_MAPPED_RATIO` | `0.75` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `DIAGNOSTICS_EXECUTED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `economic_evaluation_executed` | `false` |
+| `backtest_run_executed` | `false` |
+| `walk_forward_run_executed` | `false` |
+| `monte_carlo_run_executed` | `false` |
+| `stress_run_executed` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md` |
+| `COLLECTOR_REF` | `scripts/research/post_no_pass_robustness_failure_diagnostics_v0.py` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0
+
+Docs-only terminal governance closeout binding the fully executed STEP29M full canonical offline baseline economic evaluation (post PR #5071 binding repair) for `trend_following&#47;v1`, `bollinger_bands&#47;v1`, and `momentum_1h&#47;v1` under unchanged versioned bindings. Closes the current research generation as terminal negative evidence. No policy rescue, no same-binding retry, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_COMPLETE` |
+| `VERDICT` | `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `PERSIST_TERMINAL_NEGATIVE_EVIDENCE_NO_POLICY_RESCUE_AND_CLOSE_RESEARCH_GENERATION_V0` |
+| `SCOPE_CLASSIFICATION` | `STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0` |
+| `GO_TOKEN` | `GO_STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_HEAD` | `71532a60a399e6394fee317abc1b3a8ab361215a` |
+| `BASELINE_PR` | `5071` |
+| `EVIDENCE_CLASS_ID` | `STEP29M_FULL_CANONICAL_SYSTEM_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FLEET_VERDICT` | `FAIL_TERMINAL_NEGATIVE_BASELINE_EVIDENCE` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `INCONCLUSIVE_COUNT` | `0` |
+| `TREND_FOLLOWING` | `FAIL` |
+| `BOLLINGER_BANDS` | `FAIL` |
+| `MOMENTUM_1H` | `FAIL` |
+| `BOLLINGER_BANDS_ZERO_TRADE_CLASSIFICATION` | `SPARSE_SIGNAL_ENTRY_THRESHOLD_NOT_MET` |
+| `FAILED_BINDINGS_ARE_NEGATIVE_EVIDENCE` | `true` |
+| `FAILED_BINDINGS_MAY_NOT_BE_RETRIED_UNCHANGED` | `true` |
+| `CURRENT_RESEARCH_GENERATION_CLOSED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `COST_MODEL_BOUND` | `true` |
+| `COSTS_INCLUDED_IN_BACKTEST_PATH` | `true` |
+| `SEPARATE_NUMERIC_FEE_SLIPPAGE_FUNDING_DECOMPOSITION_AVAILABLE` | `false` |
+| `COST_DECOMPOSITION_LIMITATION_DOES_NOT_CHANGE_NEGATIVE_VERDICT` | `true` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `FLEET_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bounded_offline_economic_evaluation_final_research_fleet_v0_20260710T055955Z (MANIFEST_VERIFY_RC=0)` |
+| `ADJUDICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/step29m_full_canonical_system_offline_baseline_economic_evaluation_v0_20260710T060508Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `GOVERNANCE_REF` | `docs/governance/STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0.md` |
+| `CONFIG_REF` | `config/research/step29m_full_canonical_offline_baseline_terminal_negative_evidence_closeout_v0.json` |
+| `BINDING_COMPLETION_DIGEST` | `4971431613646b70ff1ad2a875956ff9a62372e6dd27f7477611a1121a9d5072` |
+| `NEXT_CANONICAL_STEP` | `NEW_DISTINCT_RESEARCH_GENERATION_HYPOTHESIS_AND_CANDIDATE_RANKING_READ_ONLY_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0
+
+Docs-only terminal governance closeout binding the negative offline economic evidence from merged PR #4875 for the Class-D final research fleet under unchanged bindings. No new evaluation, no promotion, no runtime rewire, no same-binding retry, no negative-evidence mutation, no authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE` |
+| `VERDICT` | `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0` |
+| `GO_TOKEN` | `GO_POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `PR4875_MERGE_COMMIT` | `a394c7debe41c3ca07773aa97425422d008e714f` |
+| `PR4875_TITLE` | `research: bounded post-no-pass futures offline economic evaluation execution v0` |
+| `PR4875_MERGED_AT` | `2026-07-05T19:48:44Z` |
+| `EVIDENCE_CLASS_ID` | `BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `EXECUTION_GOVERNANCE_REF` | `docs/governance/BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md` |
+| `EXECUTION_SCOPE_CONFIG_REF` | `config/research/bounded_post_no_pass_futures_offline_economic_evaluation_execution_scope_v0.json` |
+| `CLOSEOUT_CONFIG_REF` | `config/research/post_no_pass_economic_evidence_closeout_and_registry_update_v0.json` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `FLEET_STATUS` | `FAIL` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `INCONCLUSIVE_COUNT` | `0` |
+| `TREND_FOLLOWING` | `ROBUSTNESS_FAILED` |
+| `BOLLINGER_BANDS` | `ROBUSTNESS_FAILED` |
+| `MOMENTUM_1H` | `ROBUSTNESS_FAILED` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SHADOW_CANDIDATE_ELIGIBLE` | `false` |
+| `PAPER_CANDIDATE_ELIGIBLE` | `false` |
+| `TESTNET_CANDIDATE_ELIGIBLE` | `false` |
+| `CANARY_CANDIDATE_ELIGIBLE` | `false` |
+| `LIVE_CANDIDATE_ELIGIBLE` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `NEW_EVALUATION_RUN` | `false` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `STRATEGIC_BLOCKER` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+---
+
+## Post-PR-4847 Verification Binding
+
+Docs-only verification binding nach Squash-Merge von PR #4847 (`Final research fleet offline failure progress registry closeout v0`). Keine Authority-Wirkung; `NO_RUNTIME_OR_PROMOTION_ACTION` und Fleet-Fail-Terminalstate bleiben aktiv.
+
+| Feld | Wert |
+|---|---|
+| `PR4847_MERGED` | `true` |
+| `PR4847_MERGE_COMMIT` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `LAST_VERIFIED_SOURCE` | `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
+| `LAST_VERIFIED_AT` | `2026-07-05T01:10:00Z` |
+| `WORKTREE_CLEAN_AT_VERIFICATION` | `true` |
+| `ORIGIN_MAIN_VERIFIED` | `true` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `SUPERSEDED_NEXT_CANONICAL_STEP` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+
+---
+
+## Post-PR-4840 Verification Binding
+
+Docs-only closeout binding nach Squash-Merge von PR #4840 (`docs(governance): supersede stale Class-D v1 fleet runbook snapshot`). Keine Authority-Wirkung; Hold, Terminal Park und `CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE` bleiben unverändert aktiv.
+
+| Feld | Wert |
+|---|---|
+| `PR4840_MERGED` | `true` |
+| `PR4840_MERGE_COMMIT` | `220cce942aada36e621c3dd572c1ac818463e051` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `220cce942aada36e621c3dd572c1ac818463e051` |
+| `LAST_VERIFIED_SOURCE` | `PR_4840_CLASS_D_V1_STALE_RUNBOOK_SUPERSESSION_DOCS_HYGIENE_CLOSEOUT` |
+| `LAST_VERIFIED_AT` | `2026-07-04T22:53:16Z` |
+| `WORKTREE_CLEAN_AT_VERIFICATION` | `true` |
+| `ORIGIN_MAIN_VERIFIED` | `true` |
+| `CLASS_D_V1_FLEET` | `TERMINAL_PARKED` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED` | `false` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `RESEARCH_AUTHORIZATION` | `NONE` |
+| `EVALUATION_AUTHORIZATION` | `NONE` |
+| `SHADOW_PAPER_TESTNET_LIVE_AUTHORIZATION` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+
+#### POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0
+
+Docs-only Class-E robustness root-cause decomposition scope definition after terminal PR4892 fleet fail evidence (`ROBUSTNESS_FAILED`, metrics materialized, `panel_zero_trade_refuted=true`). Defines read-only decomposition evidence class and candidate-family admissibility matrix requirements. No economic evaluation, no diagnostics execution, no backtest/WF/MC/stress execution, no same-binding retry, no parameter rescue, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `CURRENT_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_AFTER_POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_FAIL_V0` |
+| `SCOPE_CLASSIFICATION` | `DOCS_CONFIG_CONTRACT_ONLY_OFFLINE_RESEARCH_SCOPE_DEFINITION_V0` |
+| `SELECTED_CLASS` | `E` |
+| `ADMISSIBLE_SCOPE_CLASS` | `E_NEW_VERSIONED_EVIDENCE_CLASS_WITH_FULL_CONTRACT` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_AFTER_PR4892_FAIL_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `OPERATOR_GO` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_AFTER_PR4892_FAIL_V0` |
+| `BASELINE_PR` | `4892` |
+| `BASELINE_HEAD` | `72d5dfb7641776feb6969feae5f2eb2cfa08b9d8` |
+| `EVIDENCE_CLASS_ID` | `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0` |
+| `PARENT_EXECUTION_EVIDENCE_CLASS_ID` | `POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_WITH_STEP31F_OWNER_FIX` |
+| `PARENT_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z` |
+| `PARENT_EXECUTION_MANIFEST_VERIFY_RC` | `0` |
+| `RESEARCH_HYPOTHESIS` | `POST_OWNER_FIX_ROBUSTNESS_FAILED_REQUIRES_READ_ONLY_ROOT_CAUSE_DECOMPOSITION_NOT_UNCHANGED_V3_BINDING_RETRY` |
+| `CONFIRMED_FAILURE_CLASSES` | `ROBUSTNESS_FAILED,NEGATIVE_NET_EDGE,PROFIT_FACTOR_BELOW_THRESHOLD,WALK_FORWARD_OOS_INSTABILITY,MONTE_CARLO_NEGATIVE_MEDIAN_RETURN,SPARSE_SIGNAL_UNDERPOWERING` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `METRIC_MATERIALIZATION_CLASS` | `EXECUTION_COMPLETE_METRICS_MATERIALIZED` |
+| `TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED` | `true` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTION_AUTHORIZED` | `false` |
+| `DIAGNOSTICS_EXECUTION_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `REQUIRED_FUTURE_OPERATOR_GO` | `true` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0.json` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_CLASS_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0
+
+Read-only Class-E root-cause decomposition after terminal PR4892 fleet fail evidence and PR4893 scope definition. Decomposes persisted metrics across nine axes without economic evaluation, backtest/WF/MC/stress execution, same-binding retry, parameter rescue, or runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `CURRENT_STEP_SNAPSHOT` |
+| `STATUS` | `ROOT_CAUSE_DECOMPOSITION_EXECUTION_COMPLETE_V0` |
+| `VERDICT` | `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_CLASS_V0` |
+| `SELECTED_CLASS` | `E` |
+| `GO_TOKEN` | `GO_POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_PR` | `4893` |
+| `BASELINE_HEAD` | `223fdb519a4bba0875314c22ed9bc62180f01cad` |
+| `EVIDENCE_CLASS_ID` | `POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0` |
+| `PARENT_EXECUTION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z` |
+| `PARENT_SCOPE_DEFINITION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0_20260706T014350Z` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `FAILED_BINDINGS_RETRY_ALLOWED` | `false` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `BACKTEST_EXECUTED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RESCUE_ALLOWED` | `false` |
+| `THRESHOLD_LOWERING_ALLOWED` | `false` |
+| `REQUIRED_NEXT_GO_FOR_RATIFICATION` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_REQUIRES_OPERATOR_RATIFICATION_AFTER_POST_PR4892_ROOT_CAUSE_DECOMPOSITION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0
+
+Docs-only Class-D versioned research scope definition after manifest-verified post-PR4892/PR4894 root-cause decomposition. Defines final research fleet (`trend_following`, `bollinger_bands`, `momentum_1h`) with required per-candidate bindings before any evaluation. No economic evaluation, no binding ratification in this scope, no backtest/WF/MC/stress execution, no same-binding retry, no parameter rescue, no near-duplicate archetype retry, no runtime rewire, no trading authority.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_DEFINITION_ONLY_AFTER_ROOT_CAUSE_DECOMPOSITION_V0` |
+| `SELECTED_CLASS` | `D` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_PR` | `4894` |
+| `BASELINE_HEAD` | `04d176f291f3824857dd2636f5059bc8c1d67136` |
+| `EVIDENCE_CLASS_ID` | `POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0` |
+| `PARENT_DECOMPOSITION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0_20260706T015337Z` |
+| `PARENT_DECOMPOSITION_MANIFEST_VERIFY_RC` | `0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_STATUS` | `BINDINGS_REQUIRED_BEFORE_EVALUATION` |
+| `FAILED_CANDIDATES` | `trend_following,bollinger_bands,momentum_1h` |
+| `FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `FAILED_BINDINGS_RETRY_ALLOWED` | `false` |
+| `NEAR_DUPLICATE_BREAKOUT_MEAN_REVERSION_RETRY_ALLOWED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `BACKTEST_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY` | `NONE` |
+| `REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION` | `GO_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4894_next_versioned_research_scope_definition_v0.json` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0
+
+Docs-only Class-D v4 fleet binding ratification after PR #4895 scope definition and PR4894 root-cause decomposition. Ratifies all 14 required bindings per candidate (`trend_following`, `bollinger_bands`, `momentum_1h`) with decomposition-derived binding layer. No economic evaluation, no backtest/WF/MC/stress, no v3 unmodified retry, no parameter rescue, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `FLEET_BINDINGS_RATIFIED_NOT_EVALUATED` |
+| `VERDICT` | `FLEET_BINDINGS_RATIFIED_NOT_EVALUATED` |
+| `PROCESS_CLASSIFICATION` | `POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_VERSIONED_FINAL_RESEARCH_FLEET_BINDING_RATIFICATION_ONLY_AFTER_PR4895_V0` |
+| `GO_TOKEN` | `GO_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_PR` | `4895` |
+| `BASELINE_HEAD` | `64509cce36ec5316cbfe4f42427cf81ecf67bdae` |
+| `EVIDENCE_CLASS_ID` | `POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `STRATEGY_VERSION` | `v4` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `ALL_REQUIRED_BINDINGS_COMPLETE` | `true` |
+| `BLOCKED_MISSING_BINDINGS` | `none` |
+| `FAILED_CANDIDATE_VERDICT` | `ROBUSTNESS_FAILED` (v3 terminal) |
+| `FAILED_BINDINGS_RETRY_ALLOWED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `BACKTEST_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY` | `NONE` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4895_versioned_fleet_binding_ratification_v0.json` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+---
+
+#### POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0
+
+Docs-only Class-E evidence-class scope definition after PR #4897 merge and manifest-verified v4 fleet economic evaluation fail (`FLEET_ECONOMIC_VALIDITY_FAIL`, all candidates `ROBUSTNESS_FAILED`). Defines read-only failure-decomposition scope for v4 panel-sequential bindings. No economic evaluation, no decomposition execution, no backtest/WF/MC/stress, no v4 unmodified retry, no parameter rescue, no near-duplicate archetype retry, no runtime authority.
+
+| Field | Value |
+|---|---|
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `POST_PR4897_NEXT_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `GOVERNANCE_ONLY_SCOPE_DEFINITION_AFTER_FLEET_ECONOMIC_VALIDITY_FAIL_V0` |
+| `GO_TOKEN` | `GO_NEXT_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_AFTER_PR4897_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_PR` | `4897` |
+| `BASELINE_HEAD` | `175bb91bb46163f787e73c5f0024c3723536f9e2` |
+| `EVIDENCE_CLASS_ID` | `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0` |
+| `SELECTED_CLASS` | `E` |
+| `SELECTED_NEXT_SCOPE_CLASS` | `NEW_EVIDENCE_CLASS_REQUIRED` |
+| `STRATEGY_VERSION` | `v4` |
+| `FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `PARENT_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z (MANIFEST_VERIFY_RC=0)` |
+| `RESEARCH_HYPOTHESIS` | `POST_V4_FLEET_ROBUSTNESS_FAILED_REQUIRES_READ_ONLY_FAILURE_DECOMPOSITION_NOT_UNCHANGED_V4_BINDING_RETRY_OR_NEAR_DUPLICATE_ARCHETYPE` |
+| `REQUIRED_NEXT_GO_FOR_EXECUTION` | `GO_POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_class_scope_definition_v0.json` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+---
+
+#### POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0
+
+Read-only Class-E failure decomposition execution after PR4898 scope definition and manifest-verified v4 fleet economic evaluation fail. Decomposes v4 panel-sequential binding evidence without economic evaluation, backtest/WF/MC/stress re-execution, v4 unmodified retry, parameter rescue, or runtime authority.
+
+| Field | Value |
+|---|---|
+| `STATUS` | `FAILURE_DECOMPOSITION_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `READ_ONLY_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_AFTER_FLEET_ECONOMIC_VALIDITY_FAIL_V0` |
+| `GO_TOKEN` | `GO_POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_HEAD` | `d592746dc6ae63b96731c60c0fd36c99f6f2e273` |
+| `EVIDENCE_CLASS_ID` | `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `SCOPE_ID` | `POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0` |
+| `SELECTED_CLASS` | `E` |
+| `STRATEGY_VERSION` | `v4` |
+| `FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PANEL_ZERO_TRADE_REFUTED` | `true` |
+| `PARENT_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z (MANIFEST_VERIFY_RC=0)` |
+| `REQUIRED_NEXT_GO_FOR_SCOPE_DEFINITION` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_execution_v0.json` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_NEXT_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0
+
+Docs-only Class-D versioned research scope definition after manifest-verified post-PR4899 v4 terminal fleet failure decomposition. Defines hypothesis intake contract and required per-candidate bindings before any future evaluation. No economic evaluation, no binding ratification in this scope, no backtest/WF/MC/stress execution, no v4 unmodified retry, no parameter rescue, no near-duplicate archetype retry, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_DEFINITION_ONLY_AFTER_TERMINAL_V4_FLEET_FAILURE_DECOMPOSITION_V0` |
+| `SELECTED_CLASS` | `D` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_PR` | `4899` |
+| `BASELINE_HEAD` | `f6f9d3bdce993177d4915261820b6247faca21c6` |
+| `EVIDENCE_CLASS_ID` | `POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0` |
+| `PARENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_execution_v0_20260706T030033Z` |
+| `PARENT_MANIFEST_VERIFY_RC` | `0` |
+| `FLEET_SIGNAL_EDGE` | `TERMINAL_NEGATIVE` |
+| `FLEET_WALK_FORWARD_OOS` | `TERMINAL_NEGATIVE` |
+| `FLEET_MONTE_CARLO_FRAGILITY` | `TERMINAL_NEGATIVE` |
+| `PARAMETER_FRAGILITY` | `REFUTED` |
+| `BINDING_DELTA_RESCUE` | `REFUTED` |
+| `PORTFOLIO_CONTRIBUTION` | `TERMINAL_NEGATIVE` |
+| `FAILED_BINDINGS_RETRY_ALLOWED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `BACKTEST_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY` | `NONE` |
+| `REQUIRED_NEXT_GO_FOR_BINDING_OR_EVALUATION` | `GO_POST_PR4899_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0` |
+| `GOVERNANCE_REF` | `docs/ops/research/POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `NEXT_ADMISSIBLE_STEP` | `SEPARATE_OPERATOR_GO_FOR_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_ONLY` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_PR4899_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_POST_PR4899_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0
+
+Bounded binding inventory and fail-closed precondition verification after PR4900 scope definition. No economic evaluation, no backtest/WF/MC/stress, no v4 unmodified retry, no parameter rescue, no runtime authority. Binding preconditions incomplete: missing ratified research_hypothesis_binding and no admissible binding_class/strategy_version beyond terminal v4.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `BINDING_PRECONDITION_INCOMPLETE_NOT_EVALUATED_V0` |
+| `VERDICT` | `BINDING_PRECONDITION_INCOMPLETE_NOT_EVALUATED_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_VERSIONED_BINDING_FIRST_AND_FAIL_CLOSED_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AFTER_TERMINAL_V4_FLEET_FAILURE_V0` |
+| `GO_TOKEN` | `GO_POST_PR4899_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_HEAD` | `8a04f3885a31ec5d0752d5e1fb4bd2eb10b0bc0d` |
+| `BINDING_PRECONDITION_STATUS` | `BINDING_PRECONDITION_INCOMPLETE` |
+| `RESULT_CLASSIFICATION` | `BINDING_PRECONDITION_INCOMPLETE` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `BACKTEST_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY` | `NONE` |
+| `REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION` | `GO_OPERATOR_RATIFY_POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4900_versioned_binding_or_evaluation_execution_scope_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0
+
+New post-v4 research hypothesis and versioned fleet binding-definition ratification after PR4901 fail-closed binding-precondition-incomplete closeout. No binding materialization, no economic evaluation, no backtest/WF/MC/stress, no v4 unmodified retry, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `SCOPE_DEFINED_NOT_EVALUATED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EVALUATED` |
+| `PROCESS_CLASSIFICATION` | `POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `SCOPE_CLASSIFICATION` | `NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_ONLY_AFTER_PR4901_FAIL_CLOSED_BINDING_PRECONDITION_INCOMPLETE_V0` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `BASELINE_HEAD` | `27826eca324e88560f93d1b5993bab4b0acd0b62` |
+| `RESEARCH_HYPOTHESIS_RATIFICATION_STATUS` | `RATIFIED_FOR_BINDING_DEFINITION_ONLY` |
+| `STRATEGY_VERSION_RATIFIED` | `post_v4_hypothesis_v0` |
+| `BINDING_STATUS` | `RATIFIED_BINDING_DEFINITION_ONLY` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `BACKTEST_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY` | `NONE` |
+| `REQUIRED_NEXT_GO_FOR_MATERIALIZATION` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0.md` |
+| `CONFIG_REF` | `config/research/post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0
+
+Post-v4 versioned fleet binding materialization only after PR4902 hypothesis and binding-definition ratification merge closeout. Materializes fleet bindings without economic evaluation, backtest/WF/MC/stress, v4 unmodified retry, or runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `BINDINGS_MATERIALIZED_NOT_EVALUATED` |
+| `VERDICT` | `BINDINGS_MATERIALIZED_NOT_EVALUATED` |
+| `PROCESS_CLASSIFICATION` | `POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0` |
+| `SCOPE_CLASSIFICATION` | `VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_NO_EVALUATION_NO_RUNTIME_AUTHORITY` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `false` |
+| `BASELINE_HEAD` | `c534b0eafc53b38c046bc99e823eb8318a43da7f` |
+| `HYPOTHESIS_STATUS` | `RATIFIED_FOR_BINDING_DEFINITION_ONLY` |
+| `MATERIALIZATION_STATUS` | `BINDING_MATERIALIZATION_ONLY` |
+| `STRATEGY_VERSION_MATERIALIZED` | `post_v4_hypothesis_v0` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `BACKTEST_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY` | `NONE` |
+| `REQUIRED_NEXT_GO_FOR_OFFLINE_EVALUATION` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_GO_FOR_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0.md` |
+| `CONFIG_REF` | `config/research/post_v4_versioned_fleet_binding_materialization_only_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0
+
+Post-v4 versioned fleet offline economic evaluation execution scope after PR4903 binding materialization merge closeout. Defines bounded offline evaluation for materialized post_v4_hypothesis_v0 fleet bindings using canonical narrow ETH STEP31F configs. No sparse-signal adapter. No runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `PROCESS_CLASSIFICATION` | `POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_HEAD` | `acf7dec82b070bf42d953f0b542e882fa5920603` |
+| `STRATEGY_VERSION` | `post_v4_hypothesis_v0` |
+| `MATERIALIZATION_DIGEST` | `7c9628a9fa92fcbd0f6fabbf1ff6af00ceeca64dfbc6abe75ae232e474874325` |
+| `EXECUTION_PERFORMED` | `true` |
+| `FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `FLEET_STATUS` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `BLOCKED_BINDING_CLASS` | `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` |
+| `STEP31F_CONFIG_OWNER` | `final_research_fleet_v0_versioned_binding_manifest_contract_v0` |
+| `RUNTIME_AUTHORITY` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0_COMPLETE` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `NONE` |
+| `GOVERNANCE_REF` | `docs/governance/POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0.md` |
+| `CONFIG_REF` | `config/research/post_v4_versioned_fleet_offline_economic_evaluation_execution_scope_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0
+
+Post-PR4904 read-only offline failure decomposition over terminal post-v4 fleet economic evaluation evidence. No economic evaluation rerun, no binding retry, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `FAILURE_DECOMPOSITION_EXECUTION_COMPLETE_V0` |
+| `VERDICT` | `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `SCOPE_CLASSIFICATION` | `READ_ONLY_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_AFTER_POST_V4_FLEET_ECONOMIC_VALIDITY_FAIL_V0` |
+| `GO_TOKEN` | `GO_POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASELINE_HEAD` | `442c05688cfd1dcc28ebfcfdb13fd853dc16f8aa` |
+| `STRATEGY_VERSION` | `post_v4_hypothesis_v0` |
+| `FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `AGGREGATE_STATUS` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PARENT_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z` |
+| `PARENT_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4904_squash_merge_closeout_20260706T041915Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `FAILED_BINDINGS_RETRY_ALLOWED` | `false` |
+| `NEW_CANDIDATES_RATIFIED` | `false` |
+| `RUNTIME_AUTHORITY` | `NONE` |
+| `RUNTIME_AUTHORITY_CREATED` | `false` |
+| `NEXT_CANONICAL_STEP` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `NONE` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4904_v4_fleet_robustness_failure_decomposition_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0
+
+Post-PR4936 offline-only scope definition after terminal negative evidence for `cross_sectional_funding_rate_dispersion_zscore_reversion&#47;v0`. No evaluation, no binding ratification, no runtime authority. Fleet terminalization: cross-sectional funding research fleet `COMPLETE_NO_PASS`; return path `FINAL_RESEARCH_FLEET_BINDINGS`.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_VERSIONED_MATERIAL_RESEARCH_SCOPE_DEFINITION_AFTER_TERMINAL_NEGATIVE_EVIDENCE_NO_EVAL_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_PR4936_NEXT_MATERIAL_RESEARCH_SCOPE_DEFINITION_OR_FLEET_TERMINALIZATION_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `SCOPE_DECISION` | `FLEET_TERMINALIZATION_COMPLETE_NO_PASS` |
+| `GO_TOKEN` | `GO_DEFINE_NEW_VERSIONED_MATERIAL_RESEARCH_SCOPE_AFTER_PR4936_TERMINAL_NEGATIVE_EVIDENCE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMPTION` | `CONSUMED_ONCE_FOR_SCOPE_DEFINITION_ONLY` |
+| `BASELINE_HEAD` | `0407bfd4df8c94b797c36f5e3a796a03989e9b56` |
+| `PARENT_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4936_dispersion_zscore_reversion_v0_negative_evidence_terminalization_merge_closeout_20260706T172134Z` |
+| `PARENT_CLOSEOUT_MANIFEST_VERIFY_RC` | `0` |
+| `CROSS_SECTIONAL_FUNDING_RESEARCH_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `SELECTED_NEXT_SCOPE` | `none` |
+| `MATERIAL_DIFFERENCE_CONFIRMED_FOR_NEW_FUNDING_SCOPE` | `false` |
+| `CANONICAL_RUNBOOK_RETURN_PATH` | `FINAL_RESEARCH_FLEET_BINDINGS` |
+| `EVALUATION_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4936_cross_sectional_funding_rate_research_fleet_complete_no_pass_scope_definition_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4937_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0
+
+Post-PR4937 offline-only ratification of versioned final research fleet bindings and bounded offline economic evaluation scope for `trend_following`, `bollinger_bands`, `momentum_1h`. No evaluation execution, no runtime authority, no promotion. Prerequisite: PR4937 fleet terminalization `COMPLETE_NO_PASS`.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `BINDINGS_AND_SCOPE_RATIFIED_NOT_EVALUATED` |
+| `VERDICT` | `BINDINGS_AND_SCOPE_RATIFIED_NOT_EVALUATED` |
+| `PROCESS_CLASSIFICATION` | `VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_NO_EVAL_V0` |
+| `SCOPE_CLASSIFICATION` | `FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVAL_SCOPE_RATIFICATION_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN` | `GO_RATIFY_VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMPTION` | `CONSUMED_ONCE_FOR_BINDING_AND_SCOPE_RATIFICATION_ONLY` |
+| `BASE_HEAD` | `720fc100e590fd7ac40edb0fcba0bb63026ae838` |
+| `PR4937_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z` |
+| `PR4937_MERGE_CLOSEOUT_MANIFEST_VERIFY_RC` | `0` |
+| `PR4937_FLEET_TERMINALIZATION` | `COMPLETE_NO_PASS` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `BINDINGS_RATIFIED` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `THRESHOLD_LOWERING_AUTHORIZED` | `false` |
+| `RESULT_RESCUE_AUTHORIZED` | `false` |
+| `BINDING_COMPLETION_OWNER_REF` | `config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json` |
+| `OFFLINE_EVALUATION_SCOPE_OWNER_REF` | `config/research/final_research_fleet_class_d_offline_economic_evaluation_scope_ratification_v0.json` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_POST_PR4937_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4937_final_research_fleet_bindings_and_offline_eval_scope_ratification_v0.json` |
+| `NEXT_STEP` | `merge_closeout_after_checks_green_or_separate_offline_evaluation_execution_GO` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4938_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0
+
+Post-PR4938 bounded offline economic evaluation execution for `trend_following`, `bollinger_bands`, `momentum_1h` Class-D v1 bindings. Evaluation executed; no runtime authority, no promotion.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `PROCESS_CLASSIFICATION` | `BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_ONLY` |
+| `SCOPE_CLASSIFICATION` | `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_AFTER_PR4938_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN` | `GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_ONLY_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMPTION` | `CONSUMED_ONCE` |
+| `BASE_HEAD` | `543d792d5cf78b382ed7cf29d9bf356274116447` |
+| `PR4939_MERGE_COMMIT` | `543d792d5cf78b382ed7cf29d9bf356274116447` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `CANDIDATE_RESULTS` | `{"trend_following":"FAIL","bollinger_bands":"FAIL","momentum_1h":"FAIL"}` |
+| `AGGREGATE_FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `FLEET_STATUS` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `EVALUATION_EXECUTED` | `true` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/final_research_fleet_offline_economic_evaluation_after_pr4938_20260706T180923Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `GOVERNANCE_REF` | `src/research/post_pr4938_final_research_fleet_offline_economic_evaluation_execution_v0.py` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4940_FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_V0
+
+Post-PR4939 offline-only current-state binding after manifest-verified final research fleet negative economic evidence. Terminalizes unchanged Class-D v1 bindings; defines next admissible boundary as material-different offline-only research scope discovery/ratification. No evaluation, no retry, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `NEGATIVE_EVIDENCE_TERMINALIZED_CURRENT_STATE_BOUND` |
+| `VERDICT` | `NEGATIVE_EVIDENCE_TERMINALIZED_CURRENT_STATE_BOUND` |
+| `PROCESS_CLASSIFICATION` | `POST_PR4940_FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_NO_EVAL_V0` |
+| `SCOPE_CLASSIFICATION` | `FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN` | `GO_PR4940_FINAL_FLEET_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMPTION` | `CONSUMED_ONCE_FOR_CURRENT_STATE_BINDING_AND_BOUNDARY_DEFINITION_ONLY` |
+| `POST_MERGE_HEAD` | `543d792d5cf78b382ed7cf29d9bf356274116447` |
+| `PARENT_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/final_research_fleet_offline_economic_evaluation_after_pr4938_20260706T180923Z` |
+| `PARENT_EVALUATION_MANIFEST_VERIFY_RC` | `0` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `CANDIDATE_RESULTS` | `{"trend_following":"FAIL","bollinger_bands":"FAIL","momentum_1h":"FAIL"}` |
+| `AGGREGATE_FLEET_VERDICT` | `FLEET_ECONOMIC_VALIDITY_FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `NEGATIVE_EVIDENCE_TERMINAL_FOR_UNCHANGED_BINDINGS` | `true` |
+| `NEXT_ADMISSIBLE_BOUNDARY` | `MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_OR_RATIFICATION_ONLY_NO_EVAL` |
+| `SELECTED_NEXT_SCOPE` | `MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_OR_RATIFICATION_ONLY_NO_EVAL` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_MATERIAL_DIFFERENT_RESEARCH_SCOPE_DISCOVERY_OR_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_OR_RATIFICATION_ONLY_NO_EVAL` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_DEFINE_NEW_VERSIONED_MATERIAL_RESEARCH_SCOPE_AFTER_PR4940_TERMINAL_NEGATIVE_EVIDENCE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4939_FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0
+
+Post-PR4941 offline-only discovery and ratification prep after PR4939/PR4940 terminal negative evidence. Selects exactly one material-different next scope boundary: `cross_sectional_realized_volatility_rank_rotation&#47;v0`. No evaluation, no binding ratification, no runtime authority. Market-Airport excluded.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `SCOPE_DISCOVERY_AND_RATIFICATION_PREP_COMPLETE` |
+| `VERDICT` | `SCOPE_DISCOVERY_AND_RATIFICATION_PREP_COMPLETE` |
+| `PROCESS_CLASSIFICATION` | `MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP` |
+| `SCOPE_CLASSIFICATION` | `PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN` | `GO_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMPTION` | `CONSUMED_ONCE_FOR_DISCOVERY_AND_RATIFICATION_PREP_ONLY` |
+| `BASE_HEAD` | `f75e32a19f6708c8be1ab313636a1f0047e6cab1` |
+| `PARENT_PR4939_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4939_final_research_fleet_negative_evidence_terminalization_merge_closeout_20260706T181802Z` |
+| `PARENT_PR4940_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4940_final_fleet_terminalization_and_next_material_research_boundary_merge_closeout_20260706T182841Z` |
+| `PARENT_CLOSEOUT_MANIFEST_VERIFY_RC` | `0` |
+| `SELECTED_NEXT_SCOPE_BOUNDARY` | `cross_sectional_realized_volatility_rank_rotation&#47;v0` |
+| `MATERIAL_DIFFERENCE_AXES` | `signal_family,target_phenomenon,data_feature_class,portfolio_aggregation,entry_exit_hypothesis,universe_ranking` |
+| `REUSE_FIRST_DECISION` | `REUSE_PIT_CROSS_SECTIONAL_PANEL_DATASET_AND_RELATIVE_STRENGTH_RANKING_SEMANTICS_PATTERN_WITH_NARROW_REALIZED_VOL_FEATURE_ADAPTER_ONLY` |
+| `EXCLUDED_FAILED_BINDINGS` | `trend_following&#47;v1,bollinger_bands&#47;v1,momentum_1h&#47;v1` |
+| `NEGATIVE_EVIDENCE_TERMINAL_FOR_UNCHANGED_BINDINGS` | `true` |
+| `MARKET_AIRPORT_EXCLUDED` | `true` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_SCOPE_RATIFICATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `cross_sectional_realized_volatility_rank_rotation&#47;v0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_RATIFY_CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_RESEARCH_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4941_material_different_offline_only_research_scope_discovery_and_ratification_prep_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0
+
+Docs-only governance terminalization for manifest-verified negative economic evidence from bounded offline evaluation (`VERDICT=FAIL`) for `cross_sectional_realized_volatility_rank_rotation&#47;v0`. Binds terminal negative evidence for unchanged v0 binding. No promotion, no runtime, no unchanged retry without new evidence class or separate Operator-GO.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0` |
+| `GO_TOKEN` | `GO_TERMINALIZE_NEGATIVE_ECONOMIC_EVIDENCE_FOR_CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `FAIL` |
+| `TERMINAL_ECONOMIC_DECISION` | `FAIL` |
+| `PR4941_MERGED` | `true` |
+| `PR4942_MERGED` | `true` |
+| `PR4943_MERGED` | `true` |
+| `PRE_MERGE_BASE` | `472ef3c0bf150de4f00e3520cb6321ee6aeaae77` |
+| `STRATEGY_ID` | `cross_sectional_realized_volatility_rank_rotation` |
+| `STRATEGY_VERSION` | `v0` |
+| `EVALUATION_EXECUTED` | `true` |
+| `EVALUATION_COMPLETED_NOT_FAIL_CLOSED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `NET_RETURN` | `-0.922791` |
+| `NET_EXPECTANCY` | `-7.298122` |
+| `PROFIT_FACTOR` | `0.617736` |
+| `SHARPE` | `-7.714277` |
+| `SORTINO` | `-6.968245` |
+| `MAX_DRAWDOWN` | `-0.933418` |
+| `CALMAR` | `-1.070795` |
+| `TRADE_COUNT` | `726` |
+| `TURNOVER` | `726.0` |
+| `FEE_DRAG` | `3925.54` |
+| `FUNDING_DRAG` | `null` |
+| `SLIPPAGE_IMPACT` | `1962.77` |
+| `LONG_CONTRIBUTION` | `-0.003629` |
+| `SHORT_CONTRIBUTION` | `1.003629` |
+| `WALK_FORWARD_STATUS` | `PASS` |
+| `MONTE_CARLO_STATUS` | `FAIL` |
+| `STRESS_STATUS` | `FAIL` |
+| `PARAMETER_SENSITIVITY_STATUS` | `PASS` |
+| `EVIDENCE_MANIFEST_RC` | `0` |
+| `PANEL_DATA_DIGEST` | `e0bc5f2e21f29af3aa958e1af7fd34cb058d07dfbec4dafaa77f7138140c46ee` |
+| `SOURCE_EVIDENCE_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_realized_volatility_rank_rotation_v0_offline_economic_evaluation_20260706T190441Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `EXCLUDED_FAILED_BINDINGS` | `trend_following&#47;v1,bollinger_bands&#47;v1,momentum_1h&#47;v1` |
+| `GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0.md` |
+| `CONFIG_REF` | `config/research/cross_sectional_realized_volatility_rank_rotation_v0_negative_economic_evidence_terminalization_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+## Post-PR-4979 Surface P Current-State Verification Binding
+
+Docs-only verification binding nach Squash-Merge von PR #4979 (`feat: extend surface p boundary path 4-way parity`) und read-only next-step selector. Surface P offline bar-sequence und boundary-path 4-way parity COMPLETE; Surface P bleibt PARTIAL ausschließlich wegen `RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED`. Keine Authority-Wirkung; Runtime-Bridge-Aktivierung, Promotion und Economic Evaluation bleiben blockiert.
+
+| Feld | Wert |
+|---|---|
+| `PR4979_MERGED` | `true` |
+| `PR4979_MERGE_COMMIT` | `9e249a5592be435ae9ff0d3d044def0b622a9947` |
+| `PR4978_SELECTOR_SLICE` | `SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_V0` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `9e249a5592be435ae9ff0d3d044def0b622a9947` |
+| `LAST_VERIFIED_SOURCE` | `PR4979_DOCS_ONLY_CURRENT_STATE_SYNC_V0` |
+| `LAST_VERIFIED_AT` | `2026-07-07T21:44:00Z` |
+| `LAST_VERIFIED_PR` | `4979` |
+| `SURFACE_P_OFFLINE_PARITY_COMPLETE` | `true` |
+| `BAR_SEQUENCE_FIXTURES_TOTAL` | `13` |
+| `CORE_BAR_SEQUENCE_FIXTURES` | `8` |
+| `BOUNDARY_FIXTURES_TOTAL` | `5` |
+| `BOUNDARY_4_WAY_PARITY_COMPLETE` | `true` |
+| `SURFACE_P_STATUS` | `PARTIAL` |
+| `SURFACE_P_PARTIAL_REASON` | `RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED` |
+| `FULL_CANONICAL_CHAIN_WIRED` | `false` |
+| `BACKTEST_RUNTIME_DECISION_PARITY_PASS` | `false` |
+| `SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE` | `false` |
+| `RUNTIME_BRIDGE_ACTIVATION_ADMISSIBLE` | `false` |
+| `PRE_ACTIVATION_GATE_STATUS` | `FAIL` |
+| `PRE_ACTIVATION_BLOCKER_COUNT` | `9` |
+| `PRE_ACTIVATION_BLOCKERS_REF` | `operator_go_token_status,full_canonical_chain_wired_status,backtest_runtime_decision_parity_status,system_economic_evidence_admissible_status,economic_validity_offline_gate_status,surface_p_status,canonical_order_intent_adapter_compatibility_status,runtime_rewire_eligibility_status,zero_order_pre_activation_evidence_status` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `ECONOMIC_EVALUATION_ADMISSIBLE` | `false` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `SELECTOR_VERDICT` | `NEXT_STEP_AFTER_PR4979_READ_ONLY_SELECTOR_V0_PASS` |
+| `SELECTED_NEXT_STEP` | `OPERATOR_DECISION_REQUIRED_NO_ADMISSIBLE_NON_RUNTIME_WORK_REMAINING` |
+| `PR4979_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr_surface_p_boundary_path_bar_sequence_4_way_parity_extension_v0_merge_closeout_20260707T213123Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4979_REASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_backtest_boundary_chain_reassessment_after_surface_p_boundary_extension_v0_20260707T213352Z (MANIFEST_VERIFY_RC=0)` |
+| `SURFACE_P_DECISION_BUNDLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/surface_p_offline_parity_complete_runtime_bridge_blocked_decision_v0_rerun_after_manifest_repair_20260707T213734Z (MANIFEST_VERIFY_RC=0)` |
+| `SELECTOR_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/next_step_after_pr4979_read_only_selector_v0_20260707T214235Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4978_SELECTOR_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bounded_next_canonical_non_runtime_slice_selector_after_pr4978_v0_20260707T211730Z (MANIFEST_VERIFY_RC=0)` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+
+#### PR4979_SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_V0
+
+Offline-only Surface P boundary-path bar-sequence 4-way parity extension merged in PR #4979. Completes bar-sequence fixture coverage (13 total: 8 core + 5 boundary). Surface P offline parity COMPLETE; runtime bridge remains BOUND_NOT_ACTIVATED by policy.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `OFFLINE_PARITY_EXTENSION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_V0` |
+| `PR4979_MERGE_COMMIT` | `9e249a5592be435ae9ff0d3d044def0b622a9947` |
+| `BAR_SEQUENCE_FIXTURES_TOTAL` | `13` |
+| `BOUNDARY_4_WAY_PARITY_COMPLETE` | `true` |
+| `SURFACE_P_OFFLINE_PARITY_COMPLETE` | `true` |
+| `SURFACE_P_STATUS` | `PARTIAL` |
+| `SURFACE_P_PARTIAL_REASON` | `RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED` |
+| `RUNTIME_BRIDGE_ACTIVATION_ADMISSIBLE` | `false` |
+| `CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr_surface_p_boundary_path_bar_sequence_4_way_parity_extension_v0_merge_closeout_20260707T213123Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### NEXT_STEP_AFTER_PR4979_READ_ONLY_SELECTOR_V0
+
+Read-only next-step selector after PR4979. Confirms no admissible bounded non-runtime work remains without new operator governance decision.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SELECTOR_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `NEXT_STEP_AFTER_SURFACE_P_OFFLINE_PARITY_COMPLETE_READ_ONLY_SELECTOR_V0` |
+| `VERDICT` | `NEXT_STEP_AFTER_PR4979_READ_ONLY_SELECTOR_V0_PASS` |
+| `SELECTED_NEXT_STEP` | `OPERATOR_DECISION_REQUIRED_NO_ADMISSIBLE_NON_RUNTIME_WORK_REMAINING` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `SURFACE_P_OFFLINE_PARITY_COMPLETE` | `true` |
+| `RUNTIME_BRIDGE_ACTIVATION_ADMISSIBLE` | `false` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `ECONOMIC_EVALUATION_ADMISSIBLE` | `false` |
+| `EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/next_step_after_pr4979_read_only_selector_v0_20260707T214235Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### PR4979_DOCS_ONLY_CURRENT_STATE_SYNC_V0
+
+Docs-only current-state sync authorized by operator (`AUTHORIZE_DOCS_ONLY_CURRENT_STATE_SYNC_AFTER_PR4979=true`). Binds post-PR4979 Surface P offline parity completion and runtime-bridge-blocked decision state into progress registry without authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `DOCS_CURRENT_STATE_SYNC_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `PR4979_DOCS_ONLY_CURRENT_STATE_SYNC_V0` |
+| `GO_TOKEN` | `AUTHORIZE_DOCS_ONLY_CURRENT_STATE_SYNC_AFTER_PR4979` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASE_HEAD` | `9e249a5592be435ae9ff0d3d044def0b622a9947` |
+| `SURFACE_P_OFFLINE_PARITY_COMPLETE` | `true` |
+| `SURFACE_P_STATUS` | `PARTIAL` |
+| `SURFACE_P_PARTIAL_REASON` | `RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED` |
+| `RUNTIME_BRIDGE_ACTIVATION_ADMISSIBLE` | `false` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `ECONOMIC_EVALUATION_ADMISSIBLE` | `false` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `SELECTOR_VERDICT` | `NEXT_STEP_AFTER_PR4979_READ_ONLY_SELECTOR_V0_PASS` |
+| `SELECTED_NEXT_STEP` | `OPERATOR_DECISION_REQUIRED_NO_ADMISSIBLE_NON_RUNTIME_WORK_REMAINING` |
+| `DOCS_ONLY` | `true` |
+| `CODE_CHANGED` | `false` |
+| `TESTS_CHANGED` | `false` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### CURRENT_STATE_RECONCILIATION_AND_RUNBOOK_REFRESH_READ_ONLY_V0
+
+Read-only reconciliation after PR #5073 merge and vol_breakout v1 baseline INCONCLUSIVE implementation-binding-defect evidence. Updates current-state, evidence, progress, and next-step fields only.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `CURRENT_STATE_RECONCILIATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `CURRENT_STATE_RECONCILIATION_AND_RUNBOOK_REFRESH_READ_ONLY_V0` |
+| `RECONCILED_ORIGIN_MAIN` | `0948484700a16e71a09d7805d39619f6e79a474e` |
+| `PR5073_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5073_merge_closeout_vol_breakout_v1_narrow_neutral_rewire_binding_v0_20260710T071020Z (MANIFEST_VERIFY_RC=0)` |
+| `SOURCE_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/rank1_vol_breakout_binding_and_evaluation_ratification_read_only_v0_20260710T063915Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_BASELINE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T071712Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `VOL_BREAKOUT_V1_BASELINE_FAILURE_CLASS` | `implementation_binding_defect` |
+| `VOL_BREAKOUT_V1_BASELINE_BLOCKER` | `offline_evaluation_sizing_contract_invalid:sizing_config_digest_mismatch` |
+| `BASELINE_EXECUTED` | `false` |
+| `PR_REQUIRED` | `true` |
+| `NEXT_CANONICAL_STEP` | `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BINDING_FIX_V0` |
+| `DOCS_ONLY` | `false` |
+| `CODE_CHANGED` | `false` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BINDING_FIX_V0
+
+Narrow neutral binding fix for vol_breakout/v1 offline evaluation sizing-contract digest mismatch discovered during full-canonical baseline attempt. No trading-logic, parameter-value, cost-model, dataset, period, instrument, risk/sizing-semantics, or policy mutation.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SIZING_CONFIG_DIGEST_BINDING_FIX_COMPLETE_PENDING_MERGE` |
+| `SCOPE_CLASSIFICATION` | `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BINDING_FIX_V0` |
+| `BASE_HEAD` | `0948484700a16e71a09d7805d39619f6e79a474e` |
+| `OLD_WRONG_SIZING_CONFIG_DIGEST` | `fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc` |
+| `EXPECTED_SIZING_CONTRACT_DIGEST` | `8fcd7484cdc768869fad5b914a35764f09cf42b41b78330417402272c550844a` |
+| `VOL_BREAKOUT_V1_EVAL_CONFIG_DIGEST` | `db7bf773de987afbb2643ff9b761760af6b286e5e864c39d3c8d908a59082b88` |
+| `CONFIG_BINDING_FIXED` | `true` |
+| `RESEARCH_BINDING_FIXED` | `true` |
+| `DIGEST_CONTRACT_TEST_ADDED` | `true` |
+| `TRADING_LOGIC_CHANGED` | `false` |
+| `RISK_SIZING_SEMANTICS_CHANGED` | `false` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `NEXT_CANONICAL_STEP` | `MERGE_CLOSEOUT_THEN_RERUN_VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_ONCE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_GOVERNANCE_CLOSEOUT_V0
+
+Docs-only terminal governance closeout binding the manifest-verified negative full-canonical offline baseline economic evidence for `vol_breakout&#47;v1` on `inst-eth-usdt-perp` under unchanged versioned bindings (post PR #5074 sizing-config-digest binding repair). No new evaluation, no promotion, no runtime rewire, no same-binding retry, no policy rescue, no negative-evidence mutation, no authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0` |
+| `GO_TOKEN` | `GO_VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `PERSIST_TERMINAL_NEGATIVE_EVIDENCE_NO_POLICY_RESCUE_AND_CLOSE_RESEARCH_GENERATION_V0` |
+| `BINDING` | `vol_breakout&#47;v1` |
+| `INSTRUMENT` | `inst-eth-usdt-perp` |
+| `BASELINE_HEAD` | `5a423b44645f5923985dd0eb660c55c1a065057b` |
+| `BASELINE_PR` | `5074` |
+| `BASELINE_EXECUTED` | `true` |
+| `BASELINE_VERDICT` | `FAIL` |
+| `FAILURE_CLASS` | `NEGATIVE_ECONOMIC_BASELINE_AND_ROBUSTNESS_FAIL` |
+| `SUFFICIENT_TRADE_SAMPLE` | `true` |
+| `FAILED_BINDING_REGISTERED` | `true` |
+| `CURRENT_RESEARCH_GENERATION_CLOSED` | `true` |
+| `UNCHANGED_RETRY_BLOCKED` | `true` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_EVALUATION_RUN_COUNT` | `1` |
+| `TRADE_COUNT` | `151` |
+| `GROSS_RETURN` | `-0.032304431618757914` |
+| `NET_RETURN` | `-0.032304431618757914` |
+| `NET_EXPECTANCY` | `-2.139366332368052` |
+| `PROFIT_FACTOR` | `0.5860307052309081` |
+| `SHARPE` | `-1.4172276457716613` |
+| `MAX_DRAWDOWN` | `-0.03413022503905831` |
+| `SAMPLE_SUFFICIENCY_STATUS` | `SUFFICIENT_TRADE_SAMPLE` |
+| `WALK_FORWARD_STATUS` | `EXECUTED_FAIL` |
+| `MONTE_CARLO_STATUS` | `EXECUTED_FAIL` |
+| `STRESS_STATUS` | `EXECUTED_FAIL` |
+| `REASON_CODES` | `METRIC_MISSING:parameter_neighbor_degradation;METRIC_MISSING:single_regime_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;OUT_OF_SAMPLE_FAILED;PROFIT_FACTOR_BELOW_THRESHOLD;STRESS_FAILED;WALK_FORWARD_FAILED` |
+| `METRIC_MISSING_CLASSIFICATION` | `ADDITIONAL_EVIDENCE_ROBUSTNESS_DEFICIT` |
+| `METRIC_MISSING_DOES_NOT_RECLASSIFY_BASELINE` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `TRADING_LOGIC_CHANGED` | `false` |
+| `RISK_SIZING_SEMANTICS_CHANGED` | `false` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `ECONOMIC_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5074_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5074_merge_closeout_vol_breakout_v1_sizing_config_digest_binding_fix_v0_20260710T075844Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `GOVERNANCE_REF` | `docs/governance/VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md` |
+| `CONFIG_REF` | `config/research/vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_V1
+
+Docs-only offline research scope ratification for `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0` reusing unchanged `ma_crossover&#47;v1` signal logic under a new cross-sectional panel rank-rotation composition archetype. Terminal-negative single-instrument evidence acknowledged; unchanged single-instrument retry blocked; panel archetype not previously executed. No dataset materialization, no network ingest, no economic evaluation, no binding ratification, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `NEW_CROSS_SECTIONAL_MULTI_INSTRUMENT_COMPOSITION_EVIDENCE_CLASS_BOUNDED_FUTURES_ONLY_RESEARCH_SCOPE_DEFINITION_RATIFICATION_V1_NO_EVAL` |
+| `GO_TOKEN` | `GO_RATIFY_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V1` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_PASS` |
+| `BASELINE_HEAD` | `4725e6e7ad9c1bc40a3e0450a47bf9ddafa68380` |
+| `PR5075_CLOSEOUT_REGISTERED` | `true` |
+| `PR5076_CLOSEOUT_REGISTERED` | `true` |
+| `STRATEGY_ID` | `cross_sectional_ma_crossover_panel_rank_rotation` |
+| `STRATEGY_VERSION` | `v0` |
+| `UNDERLYING_SIGNAL_BINDING` | `ma_crossover&#47;v1@inst-eth-usdt-perp` |
+| `RESEARCH_SCOPE_RATIFIED` | `true` |
+| `BINDING_RATIFIED` | `false` |
+| `SINGLE_INSTRUMENT_EVIDENCE` | `TERMINAL_NEGATIVE` |
+| `PANEL_ARCHETYPE_EVIDENCE` | `NOT_PREVIOUSLY_EXECUTED` |
+| `MATERIAL_DIFFERENCE_CONFIRMED` | `true` |
+| `SIGNAL_FAMILY_MATERIAL_DIFFERENCE` | `false` |
+| `UNCHANGED_SINGLE_INSTRUMENT_RETRY_BLOCKED` | `true` |
+| `DATASET_MATERIALIZED` | `false` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `PHASE3_GO_TOKEN_TO_REGISTER_ONLY` | `GO_BOUNDED_OKX_PRODUCTION_LIFECYCLE_SOURCE_REGISTRATION_AND_PT1H_PANEL_OHLCV_INGEST_V0` |
+| `SOURCE_ADJUDICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cross_sectional_ma_crossover_panel_scope_discovery_contradiction_adjudication_and_corrected_ratification_prep_v0_20260710T090302Z (MANIFEST_VERIFY_RC=0)` |
+| `UNDERLYING_SINGLE_INSTRUMENT_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_V1.md` |
+| `CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_research_scope_ratification_v1.json` |
+| `NEXT_CANONICAL_STEP` | `PHASE3_DATASET_MATERIALIZATION_REQUIRES_SEPARATE_GO` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_V1
+
+Bounded Phase-3 dataset materialization for `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`: OKX production lifecycle source registration and PIT-capable PT1H panel OHLCV ingest via public GET only. No economic evaluation, no binding ratification, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_OKX_PRODUCTION_LIFECYCLE_AND_PT1H_PANEL_DATASET_MATERIALIZATION_NO_EVAL_NO_RUNTIME_AUTHORITY_V1` |
+| `GO_TOKEN` | `GO_BOUNDED_OKX_PRODUCTION_LIFECYCLE_SOURCE_REGISTRATION_AND_PT1H_PANEL_OHLCV_INGEST_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_PASS` |
+| `BASELINE_HEAD` | `b86d154d44ca6da189ffc1ed4ffb192e19eefeec` |
+| `STRATEGY_ID` | `cross_sectional_ma_crossover_panel_rank_rotation` |
+| `STRATEGY_VERSION` | `v0` |
+| `RESEARCH_SCOPE_RATIFIED` | `true` |
+| `BINDING_RATIFIED` | `false` |
+| `DATASET_MATERIALIZED` | `true` |
+| `DATASET_ID` | `pit_okx_linear_usdt_non_bitcoin_pt1h_panel` |
+| `DATASET_STAGING_VERSION` | `v2` |
+| `INSTRUMENT_COUNT` | `399` |
+| `BITCOIN_PRESENT` | `false` |
+| `WINDOW_START_UTC` | `2026-07-06T10:00:00Z` |
+| `WINDOW_END_UTC` | `2026-07-10T08:00:00Z` |
+| `ROW_COUNT_TOTAL` | `37905` |
+| `PANEL_DATA_DIGEST` | `e14b0f2bb7723cacef259e1e1cb29b017cdaca060ff9dbb8c46a5204cb681dad` |
+| `LIFECYCLE_DATA_DIGEST` | `e394d91f64ea5a05e181d6fbb172f1090ec10fde5eb7b35be4ea857d4a955599` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `OKX_MATERIALIZATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_okx_production_lifecycle_source_registration_and_pt1h_panel_ohlcv_ingest_v0_20260710T092512Z (MANIFEST_VERIFY_RC=0)` |
+| `PHASE3_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_20260710T093500Z (MANIFEST_VERIFY_RC=0)` |
+| `PANEL_STAGING_ROOT` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2` |
+| `GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_V1.md` |
+| `CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_v1.json` |
+| `NEXT_CANONICAL_STEP` | `VERSIONED_BINDING_RATIFICATION_REQUIRES_SEPARATE_OPERATOR_GO` |
+| `offline_only` | `false` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_VERSIONED_BINDING_RATIFICATION_V1
+
+Bounded versioned binding ratification for `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`: immutable offline research binding over materialized Phase-3 PT1H panel, reusing unchanged `ma_crossover&#47;v1` per-instrument score geometry with top-1 cross-sectional rank rotation. No economic evaluation, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_VERSIONED_BINDING_RATIFICATION_V0_NO_EVAL_NO_RUNTIME_AUTHORITY` |
+| `GO_TOKEN` | `GO_VERSIONED_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION_PASS` |
+| `BASELINE_HEAD` | `5a5ab570022cae47ec5442638ab0180f66caa1e4` |
+| `PR5078_MERGE_COMMIT` | `5a5ab570022cae47ec5442638ab0180f66caa1e4` |
+| `STRATEGY_ID` | `cross_sectional_ma_crossover_panel_rank_rotation` |
+| `STRATEGY_VERSION` | `v0` |
+| `UNDERLYING_SIGNAL_BINDING` | `ma_crossover&#47;v1@inst-eth-usdt-perp` |
+| `RESEARCH_SCOPE_RATIFIED` | `true` |
+| `BINDING_RATIFIED` | `true` |
+| `ALL_REQUIRED_BINDINGS_RATIFIED` | `true` |
+| `DATASET_MATERIALIZED` | `true` |
+| `DATASET_ID` | `pit_okx_linear_usdt_non_bitcoin_pt1h_panel` |
+| `DATASET_DIGEST` | `c753c5795ab40d26237a066702cb72a06065bfce0143440ec0ccadfe249cc0e0` |
+| `INSTRUMENT_COUNT` | `399` |
+| `BITCOIN_PRESENT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `WINDOW_START_UTC` | `2026-07-06T10:00:00Z` |
+| `WINDOW_END_UTC` | `2026-07-10T08:00:00Z` |
+| `ROW_COUNT_TOTAL` | `37905` |
+| `PANEL_DATA_DIGEST` | `e14b0f2bb7723cacef259e1e1cb29b017cdaca060ff9dbb8c46a5204cb681dad` |
+| `UNIVERSE_INSTRUMENTS_DIGEST` | `ccc36aa52d9df3aa2067fbc0a75aea6ae33a458583ec8a15b08d69f54b8b9a8b` |
+| `BINDING_DIGEST` | `89f80951dd71e43168b9b37b0d6f04d57ba7ca025fcd4923c9901d0f244f43e6` |
+| `CONFIG_DIGEST` | `eaca6226b6e040580227c8380c86a3aaa4f3e3bdad9292b37d9cbef736405141` |
+| `DATA_DIGEST` | `b0eb7802c269bcab987d2025fe1e960b83079d5ac5f305799e0867661d42f2e0` |
+| `IMPLEMENTATION_DIGEST` | `e2ad162ad12405ca9a2378ea9b8733463c672445e8887da6665427d4de8431d8` |
+| `MATERIAL_DIFFERENCE_DIGEST` | `288ea899d6bf53773d3a703de6a7097f4466f10c33d8df8796f34cf707e599e7` |
+| `SINGLE_INSTRUMENT_EVIDENCE` | `TERMINAL_NEGATIVE` |
+| `UNCHANGED_SINGLE_INSTRUMENT_RETRY_BLOCKED` | `true` |
+| `MATERIAL_DIFFERENCE_CONFIRMED` | `true` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `NEXT_ECONOMIC_EVALUATION_GO_TOKEN` | `GO_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `PR5078_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5078_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_v0_20260710T094803Z (MANIFEST_VERIFY_RC=0)` |
+| `BINDING_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_binding_ratification_20260710T095353Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_VERSIONED_BINDING_RATIFICATION_V1.md` |
+| `CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_versioned_research_binding_v0.json` |
+| `NEXT_CANONICAL_STEP` | `AWAIT_OPERATOR_OFFLINE_ECONOMIC_EVALUATION_GO_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0
+
+Offline-only terminal-negative evidence and supersession registration for `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`: canonical corrected evaluation `20260710T101815Z` registered; original evaluation `20260710T101306Z` superseded due to accounting incompleteness; PR5080 provenance recorded; unchanged-binding retry blocked. No economic reevaluation, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `TERMINAL_NEGATIVE_EVIDENCE_AND_SUPERSESSION_REGISTRATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_TERMINAL_NEGATIVE_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0` |
+| `GO_TOKEN` | `GO_RATIFY_CORRECTED_TERMINAL_NEGATIVE_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `PASS` |
+| `BASELINE_VERDICT` | `FAIL` |
+| `TERMINAL_ECONOMIC_DECISION` | `FAIL` |
+| `BASELINE_HEAD` | `48dd6e367f9e61361861b6d8a0d250def424f222` |
+| `PR5080_MERGE_COMMIT` | `48dd6e367f9e61361861b6d8a0d250def424f222` |
+| `STRATEGY_ID` | `cross_sectional_ma_crossover_panel_rank_rotation` |
+| `STRATEGY_VERSION` | `v0` |
+| `RESEARCH_SCOPE` | `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0` |
+| `BINDING_DIGEST` | `89f80951dd71e43168b9b37b0d6f04d57ba7ca025fcd4923c9901d0f244f43e6` |
+| `CONFIG_DIGEST` | `eaca6226b6e040580227c8380c86a3aaa4f3e3bdad9292b37d9cbef736405141` |
+| `DATA_DIGEST` | `b0eb7802c269bcab987d2025fe1e960b83079d5ac5f305799e0867661d42f2e0` |
+| `UNIVERSE_DIGEST` | `ccc36aa52d9df3aa2067fbc0a75aea6ae33a458583ec8a15b08d69f54b8b9a8b` |
+| `CANONICAL_EVALUATION_TIMESTAMP` | `20260710T101815Z` |
+| `SUPERSEDED_EVALUATION_TIMESTAMP` | `20260710T101306Z` |
+| `CANONICAL_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101815Z` |
+| `CANONICAL_MANIFEST_DIGEST` | `3a132a93e01a209c3d0c58f5573d0e04ab588ba563048d58419c03450b1b609c` |
+| `SUPERSEDED_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101306Z` |
+| `SUPERSEDED_MANIFEST_DIGEST` | `1366b57fb19f0b8ea90f37b1ae2111a1b7599eeefa2728fd04650c60162b36f6` |
+| `SUPERSESSION_REASON` | `ORIGINAL_EVALUATION_ACCOUNTING_INCOMPLETE_OPEN_END_OF_WINDOW_POSITION_AND_WRONG_RECONCILIATION_IDENTITY` |
+| `ACCOUNTING_RECONCILIATION_PASS` | `true` |
+| `ACCOUNTING_FAILURE_CLASS` | `FORCED_END_OF_WINDOW_LIQUIDATION` |
+| `END_OF_WINDOW_POLICY` | `force_close_at_window_end_inclusive_v0` |
+| `TRADING_LOGIC_CHANGED` | `false` |
+| `BINDING_CHANGED` | `false` |
+| `DATASET_CHANGED` | `false` |
+| `COST_POLICY_CHANGED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `NET_RETURN` | `-0.152906` |
+| `TRADE_COUNT` | `4` |
+| `SAMPLE_SUFFICIENCY_STATUS` | `INSUFFICIENT_TRADE_SAMPLE` |
+| `WALK_FORWARD_STATUS` | `NOT_EXECUTED_BASELINE_NEGATIVE` |
+| `MONTE_CARLO_STATUS` | `NOT_EXECUTED_BASELINE_NEGATIVE` |
+| `STRESS_STATUS` | `NOT_EXECUTED_BASELINE_NEGATIVE` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `PR5080_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5080_merge_closeout_cs_ma_crossover_panel_rank_rotation_v0_accounting_reconciliation_20260710T102332Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0.md` |
+| `CONFIG_REF` | `config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_terminal_negative_economic_evidence_and_supersession_registration_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE_AND_DISTINCT_FUTURES_RESEARCH_SCOPE_DEFINITION_V0
+
+Offline-only terminal inconclusive registration for `ehlers_cycle_filter&#47;v1`: post-repair canonical evaluation `20260710T115835Z` registered as `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE`; pre-repair accounting-defect classification superseded; unchanged-binding retry blocked; distinct successor scope `el_karoui_vol_model&#47;v1` defined without ratification or economic evaluation in this slice.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `TERMINAL_INCONCLUSIVE_REGISTRATION_AND_DISTINCT_SCOPE_DEFINITION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_TERMINAL_INCONCLUSIVE_REGISTRATION_AND_DISTINCT_RESEARCH_SCOPE_DEFINITION_V0` |
+| `GO_TOKEN` | `GO_REGISTER_TERMINAL_INCONCLUSIVE_EHLERS_CYCLE_FILTER_V1_SAME_BINDING_AND_AUTHORIZE_DISTINCT_FUTURES_RESEARCH_SCOPE_DEFINITION_READ_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `PASS` |
+| `BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `TERMINAL_ECONOMIC_DECISION` | `INCONCLUSIVE` |
+| `TERMINAL_STATUS` | `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE` |
+| `BASELINE_HEAD` | `f1117437a0bdfac8196d0ceffadc746d0b2b367e` |
+| `STRATEGY_ID` | `ehlers_cycle_filter` |
+| `STRATEGY_VERSION` | `v1` |
+| `RESEARCH_SCOPE` | `ehlers_cycle_filter&#47;v1` |
+| `BINDING_DIGEST` | `dc8704495c3bf08b14afd9f50890369973c7c785e0d1655ba0b5b351f06b6599` |
+| `IMPLEMENTATION_DIGEST` | `4ec22ab14c7fa0923de83bfe89a6606514246d02b0045af28ff2d6cbe874fb34` |
+| `CANONICAL_EVALUATION_TIMESTAMP` | `20260710T115835Z` |
+| `PRE_REPAIR_CLASSIFICATION_TIMESTAMP` | `20260710T110612Z` |
+| `POST_REPAIR_CLASSIFICATION_TIMESTAMP` | `20260710T123447Z` |
+| `CANONICAL_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z` |
+| `CANONICAL_MANIFEST_DIGEST` | `acd5a8a16e096904a1610ef3e45067488164a4c5b41a80f93de6416bb398e2b4` |
+| `SOURCE_CLASSIFICATION_EVIDENCE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z` |
+| `PRIMARY_CAUSE_CLASS` | `SIGNAL_STARVATION_BY_CANONICAL_LOGIC_WITH_INSUFFICIENT_TRADE_SAMPLE` |
+| `ACCOUNTING_RECONCILIATION_PASS` | `true` |
+| `TRADING_LOGIC_CHANGED` | `false` |
+| `BINDING_CHANGED` | `false` |
+| `DATASET_CHANGED` | `false` |
+| `COST_POLICY_CHANGED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `false` |
+| `TERMINAL_INCONCLUSIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `NET_RETURN` | `-0.020940` |
+| `TRADE_COUNT` | `6` |
+| `SAMPLE_SUFFICIENCY_STATUS` | `INSUFFICIENT_TRADE_SAMPLE` |
+| `SELECTED_DISTINCT_SCOPE` | `el_karoui_vol_model&#47;v1` |
+| `MATERIAL_DIFFERENCE_PROVEN` | `true` |
+| `DISTINCT_SCOPE_RATIFIED` | `true` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `PR5086_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5086_merge_closeout_ehlers_cycle_filter_v1_bound_offline_evaluation_runner_invocation_contract_repair_v0_20260710T123119Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_REF` | `docs/governance/EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE_AND_DISTINCT_FUTURES_RESEARCH_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/ehlers_cycle_filter_v1_terminal_inconclusive_insufficient_sample_and_distinct_futures_research_scope_definition_v0.json` |
+| `NEXT_CANONICAL_STEP` | `GO_EL_KAROUI_VOL_MODEL_V1_BOUNDED_OFFLINE_ECONOMIC_BASELINE_EVALUATION_NO_RUNTIME_AUTHORITY_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### EL_KAROUI_VOL_MODEL_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0
+
+Offline-only scope and binding ratification for `el_karoui_vol_model&#47;v1`: versionierte Research-Bindings, Material-Difference-Contract, STEP29M-Admissibility-Infrastruktur und Scope-Ratifikation materialisiert; keine Economic Evaluation, keine Runtime-Authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SCOPE_AND_BINDING_RATIFICATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_RESEARCH_SCOPE_DEFINITION_AND_BINDING_RATIFICATION_V0` |
+| `GO_TOKEN` | `GO_RATIFY_EL_KAROUI_VOL_MODEL_V1_VERSIONED_RESEARCH_BINDING_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `PASS` |
+| `RESEARCH_SCOPE` | `el_karoui_vol_model&#47;v1` |
+| `STRATEGY_ID` | `el_karoui_vol_model` |
+| `STRATEGY_VERSION` | `v1` |
+| `HYPOTHESIS_ID` | `EL_KAROUI_STOCHASTIC_VOL_REGIME_NON_BITCOIN_FUTURES_V1` |
+| `SIGNAL_FAMILY` | `STOCHASTIC_VOL_REGIME` |
+| `BINDING_DIGEST` | `223845f2047779218390fc245c3f2ebb04631bb068139e3d40731781906d099b` |
+| `IMPLEMENTATION_DIGEST` | `11a8e1e3bef9bbe3a74edc329c4539d9438649c52dbdfe1034c4bd904f2a0c35` |
+| `MATERIAL_DIFFERENCE_DIGEST` | `db8090f93f84d842b053b3cc21fbaa8a6281d25e06ed2528477715980e43bcc2` |
+| `DATASET_ID` | `inst-eth-usdt-perp_v1` |
+| `DATASET_DIGEST` | `b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_PRESENT` | `false` |
+| `MATERIAL_DIFFERENCE_PROVEN` | `true` |
+| `BINDING_RATIFIED` | `true` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `SOURCE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5087_merge_closeout_ehlers_cycle_filter_v1_terminal_inconclusive_registration_and_distinct_scope_decision_v0_20260710T124722Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_REF` | `docs/governance/EL_KAROUI_VOL_MODEL_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md` |
+| `CONFIG_REF` | `config/research/el_karoui_vol_model_v1_offline_economic_evaluation_scope_ratification_v0.json` |
+| `NEXT_CANONICAL_STEP` | `GO_EL_KAROUI_VOL_MODEL_V1_BOUNDED_OFFLINE_ECONOMIC_BASELINE_EVALUATION_NO_RUNTIME_AUTHORITY_V0` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### EL_KAROUI_VOL_MODEL_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0
+
+Offline-only inconclusive baseline evidence registration for `el_karoui_vol_model&#47;v1`: post-repair reevaluation `20260710T135114Z` registered as `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE`; prior blocked evaluation and PR #5089 repair lineage preserved; unchanged-binding retry blocked; new distinct scope or evidence class required.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_REGISTRATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0` |
+| `GO_TOKEN` | `GO_PERSIST_EL_KAROUI_VOL_MODEL_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_BLOCK_UNCHANGED_RETRY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `PASS` |
+| `BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `TERMINAL_ECONOMIC_DECISION` | `INCONCLUSIVE` |
+| `TERMINAL_STATUS` | `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE` |
+| `BASELINE_HEAD` | `5177b8af165cdce94a6589b9e5fa099fc5f9f3cc` |
+| `STRATEGY_ID` | `el_karoui_vol_model` |
+| `STRATEGY_VERSION` | `v1` |
+| `RESEARCH_SCOPE` | `el_karoui_vol_model&#47;v1` |
+| `BINDING_CLASSIFICATION` | `SAME_SEMANTIC_BINDING_NEW_CRYPTOGRAPHIC_IDENTITY` |
+| `BINDING_DIGEST` | `2ba82dd901c940a5d41d2aabd3ddeb693dbbf7cdd1f0308275d11b6df4d988b3` |
+| `OLD_BINDING_DIGEST` | `223845f2047779218390fc245c3f2ebb04631bb068139e3d40731781906d099b` |
+| `IMPLEMENTATION_DIGEST` | `11a8e1e3bef9bbe3a74edc329c4539d9438649c52dbdfe1034c4bd904f2a0c35` |
+| `CANONICAL_EVALUATION_TIMESTAMP` | `20260710T135114Z` |
+| `PRIOR_BLOCKED_EVALUATION_TIMESTAMP` | `20260710T130747Z` |
+| `CANONICAL_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/el_karoui_vol_model_v1_bound_offline_economic_baseline_evaluation_v0_20260710T135114Z` |
+| `CANONICAL_MANIFEST_DIGEST` | `11de71c7b7c19e90700c358ae88d3b049b75679fecfc2736ab52df1d759ac941` |
+| `PRIOR_BLOCKED_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/el_karoui_vol_model_v1_bound_offline_economic_baseline_evaluation_v0_20260710T130747Z` |
+| `REPAIR_CLOSEOUT_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5089_merge_closeout_el_karoui_vol_model_v1_sizing_config_digest_same_semantic_binding_new_cryptographic_identity_repair_v0_20260710T134808Z` |
+| `PRIMARY_CAUSE_CLASS` | `INSUFFICIENT_TRADE_SAMPLE_AFTER_REPAIRED_BINDING_REEVALUATION` |
+| `ACCOUNTING_RECONCILIATION_PASS` | `true` |
+| `GROSS_RETURN` | `-0.0186` |
+| `NET_RETURN` | `-0.0186` |
+| `PROFIT_FACTOR` | `0.249` |
+| `SHARPE` | `-0.198` |
+| `MAX_DRAWDOWN` | `-0.0248` |
+| `TRADE_COUNT` | `6` |
+| `POLICY_MINIMUM_TRADE_COUNT` | `50` |
+| `SAMPLE_SUFFICIENCY_STATUS` | `INSUFFICIENT_TRADE_SAMPLE` |
+| `TRADING_LOGIC_CHANGED` | `false` |
+| `BINDING_CHANGED` | `false` |
+| `DATASET_CHANGED` | `false` |
+| `COST_POLICY_CHANGED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RELAXATION_AUTHORIZED` | `false` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `false` |
+| `TERMINAL_INCONCLUSIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` | `true` |
+| `WALK_FORWARD_STATUS` | `DEFERRED_NEGATIVE_OR_INCONCLUSIVE_BASELINE` |
+| `MONTE_CARLO_STATUS` | `DEFERRED_NEGATIVE_OR_INCONCLUSIVE_BASELINE` |
+| `STRESS_STATUS` | `DEFERRED_NEGATIVE_OR_INCONCLUSIVE_BASELINE` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `GOVERNANCE_REF` | `docs/governance/EL_KAROUI_VOL_MODEL_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `CONFIG_REF` | `config/research/el_karoui_vol_model_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0
+
+Offline-only inconclusive baseline evidence registration for `armstrong_cycle&#47;v1`: post-repair reevaluation `20260710T162406Z` registered as `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE`; prior blocked evaluation and PR #5094/#5095 repair lineage preserved; unchanged-binding retry blocked; new distinct scope or evidence class required.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_REGISTRATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0` |
+| `GO_TOKEN` | `GO_PERSIST_ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_BLOCK_UNCHANGED_RETRY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `PASS` |
+| `BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `TERMINAL_ECONOMIC_DECISION` | `INCONCLUSIVE` |
+| `TERMINAL_STATUS` | `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE` |
+| `BASELINE_HEAD` | `8d9aea27c0ed2f91a66fa62d73f28f0b313a8992` |
+| `STRATEGY_ID` | `armstrong_cycle` |
+| `STRATEGY_VERSION` | `v1` |
+| `RESEARCH_SCOPE` | `armstrong_cycle&#47;v1` |
+| `BINDING_CLASSIFICATION` | `SAME_SEMANTIC_BINDING_NEW_CRYPTOGRAPHIC_IDENTITY` |
+| `BINDING_DIGEST` | `bf0a125325692836b71ab00a775d412ecf275483769f5906e1251f68361a9896` |
+| `OLD_BINDING_DIGEST` | `d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c` |
+| `IMPLEMENTATION_DIGEST` | `e8e572b88b5fd3eb0cec598fd9fee6de73945325b897c692da002863f1c21c66` |
+| `CANONICAL_EVALUATION_TIMESTAMP` | `20260710T162406Z` |
+| `PRIOR_BLOCKED_EVALUATION_TIMESTAMP` | `20260710T153705Z` |
+| `CANONICAL_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/armstrong_cycle_v1_repaired_same_semantic_binding_offline_baseline_reevaluation_v0_20260710T162406Z` |
+| `CANONICAL_MANIFEST_DIGEST` | `dc052e84020d682878f9740bc2a0cc375d6c40c638f964b1195f3390abd18123` |
+| `PRIOR_BLOCKED_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0_20260710T153705Z` |
+| `REPAIR_CLOSEOUT_PR5094_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5094_merge_closeout_armstrong_cycle_v1_baseline_expectancy_materialization_repair_v0_20260710T160607Z` |
+| `REPAIR_CLOSEOUT_PR5095_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5095_merge_closeout_armstrong_cycle_v1_legacy_gross_pnl_trade_record_emission_repair_v0_20260710T161954Z` |
+| `PRIMARY_CAUSE_CLASS` | `INSUFFICIENT_TRADE_SAMPLE_AFTER_REPAIRED_BINDING_RERATIFICATION` |
+| `ACCOUNTING_RECONCILIATION_PASS` | `true` |
+| `GROSS_RETURN` | `-0.0208` |
+| `NET_RETURN` | `-0.0208` |
+| `PROFIT_FACTOR` | `0.161` |
+| `SHARPE` | `-0.238` |
+| `MAX_DRAWDOWN` | `-0.0248` |
+| `TRADE_COUNT` | `6` |
+| `POLICY_MINIMUM_TRADE_COUNT` | `50` |
+| `SAMPLE_SUFFICIENCY_STATUS` | `INSUFFICIENT_TRADE_SAMPLE` |
+| `TRADING_LOGIC_CHANGED` | `false` |
+| `BINDING_CHANGED` | `false` |
+| `DATASET_CHANGED` | `false` |
+| `COST_POLICY_CHANGED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `PARAMETER_RELAXATION_AUTHORIZED` | `false` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `false` |
+| `TERMINAL_INCONCLUSIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` | `true` |
+| `WALK_FORWARD_STATUS` | `DEFERRED_NEGATIVE_OR_INCONCLUSIVE_BASELINE` |
+| `MONTE_CARLO_STATUS` | `DEFERRED_NEGATIVE_OR_INCONCLUSIVE_BASELINE` |
+| `STRESS_STATUS` | `DEFERRED_NEGATIVE_OR_INCONCLUSIVE_BASELINE` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `GOVERNANCE_REF` | `docs/governance/ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `CONFIG_REF` | `config/research/armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+---
+
+#### BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0
+
+Offline-only inconclusive baseline evidence registration for `bouchaud_microstructure_ohlcv_proxy&#47;v1`: post-repair reevaluation `20260710T180542Z` registered as `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE`; prior failed execution-contract evaluation and PR #5099 repair lineage preserved; unchanged-binding retry blocked; robustness deferred.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_REGISTRATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_FUTURES_ONLY_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0` |
+| `GO_TOKEN` | `GO_REGISTER_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_INCONCLUSIVE_BASELINE_ADJUDICATION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `PASS` |
+| `BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `TERMINAL_ECONOMIC_DECISION` | `INCONCLUSIVE` |
+| `TERMINAL_STATUS` | `TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE` |
+| `BASELINE_HEAD` | `36431e46686fc9025368f0c465345952e9b82726` |
+| `STRATEGY_ID` | `bouchaud_microstructure` |
+| `STRATEGY_VERSION` | `v1` |
+| `RESEARCH_SCOPE` | `bouchaud_microstructure_ohlcv_proxy&#47;v1` |
+| `BINDING_CLASSIFICATION` | `SAME_SEMANTIC_BINDING_NEW_CRYPTOGRAPHIC_IDENTITY` |
+| `BINDING_DIGEST` | `99d6153cfc25e550a429cde04a2d684c56e0e84369cc3e1196cae9f91ac26422` |
+| `OLD_BINDING_DIGEST` | `39a783904714eb988e9a5fee34e6474e0bb65821ddf525af8df53268906f6e7c` |
+| `IMPLEMENTATION_DIGEST` | `e76f7d06e9e8e92e2ea3db436e404894e66f218ee78e4f1e0962a37d4a8b2e35` |
+| `CANONICAL_EVALUATION_TIMESTAMP` | `20260710T180542Z` |
+| `PRIOR_FAILED_EVALUATION_TIMESTAMP` | `20260710T174747Z` |
+| `CANONICAL_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_repaired_same_semantic_binding_offline_baseline_reevaluation_v0_20260710T180542Z` |
+| `CANONICAL_MANIFEST_DIGEST` | `276e8210ae34b72ad3b721f9bafcc7ae40124539cca57faa9335bd09056e69af` |
+| `PRIOR_FAILED_EVALUATION_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_20260710T174747Z` |
+| `REPAIR_CLOSEOUT_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5099_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_sizing_digest_and_admissibility_guard_repair_v0_20260710T180222Z` |
+| `PRIMARY_CAUSE_CLASS` | `INSUFFICIENT_TRADE_SAMPLE_AFTER_REPAIRED_BINDING_REEVALUATION` |
+| `ACCOUNTING_RECONCILIATION_PASS` | `true` |
+| `NET_RETURN` | `-0.005` |
+| `NET_EXPECTANCY` | `-50.0` |
+| `PROFIT_FACTOR` | `0.0` |
+| `SHARPE` | `-0.136` |
+| `MAX_DRAWDOWN` | `-0.005` |
+| `TRADE_COUNT` | `1` |
+| `POLICY_MINIMUM_TRADE_COUNT` | `50` |
+| `SAMPLE_SUFFICIENCY_STATUS` | `INSUFFICIENT` |
+| `REEVALUATION_EXECUTION_COUNT` | `1` |
+| `ROBUSTNESS_EVIDENCE_MISSING` | `true` |
+| `PRIMARY_REASON_CODES` | `TRADE_COUNT_BELOW_THRESHOLD,NET_EXPECTANCY_BELOW_THRESHOLD,PROFIT_FACTOR_BELOW_THRESHOLD` |
+| `TRADING_LOGIC_CHANGED` | `false` |
+| `BINDING_CHANGED` | `false` |
+| `DATASET_CHANGED` | `false` |
+| `COST_POLICY_CHANGED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `false` |
+| `TERMINAL_INCONCLUSIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED` | `true` |
+| `GOVERNANCE_REF` | `docs/governance/BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
+| `CONFIG_REF` | `config/research/bouchaud_microstructure_ohlcv_proxy_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `NEXT_CANONICAL_STEP` | `AWAIT_SEPARATE_OPERATOR_GO_FOR_DISTINCT_ROBUSTNESS_OR_NEW_RESEARCH_SCOPE_DECISION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+---
+
+#### CANONICAL_OFFLINE_LINEAR_DIAGNOSTICS_AND_PROMOTION_BINDING_COMPLETION_RECONCILIATION_V0
+
+Docs-only governance completion reconciliation binding PR #5185–#5187 linear diagnostics consumer chain closeouts into the canonical progress registry. STEP 29L.2, 29N, 29O–29Q productively bound; STEP 29M and 29R remain fail-closed; promotion stays BLOCKED on BLOCKED_SOURCE_DIAGNOSTICS_PRESENT. No economic reevaluation, no policy rescue, no runtime authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `CANONICAL_OFFLINE_LINEAR_DIAGNOSTICS_AND_PROMOTION_BINDING_COMPLETION_RECONCILIATION_V0` |
+| `GO_TOKEN` | `GO_CANONICAL_OFFLINE_LINEAR_DIAGNOSTICS_AND_PROMOTION_BINDING_COMPLETION_RECONCILIATION_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `ORIGIN_MAIN` | `1d1f3ba85d02f35711ba632096e7aa2240f50d6e` |
+| `REUSE_DECISION` | `REUSE_WITH_NARROW_ADAPTER` |
+| `CANONICAL_PROGRESS_OWNER` | `docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md` |
+| `RECONCILIATION_ADAPTER_OWNER` | `src/governance/canonical_offline_linear_diagnostics_promotion_binding_completion_reconciliation_v0.py` |
+| `STEP_29L_1_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `STEP_29L_2_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `FULL_CANONICAL_CHAIN_WIRED` | `true` |
+| `BACKTEST_RUNTIME_DECISION_PARITY_PASS` | `true` |
+| `LINEAR_DIAGNOSTIC_CLASS_COUNT` | `5` |
+| `LINEAR_DIAGNOSTICS_SUPPORT_BUNDLE_BOUND` | `true` |
+| `LINEAR_DIAGNOSTICS_ECONOMIC_EVIDENCE_CONSUMER_BOUND` | `true` |
+| `LINEAR_DIAGNOSTICS_PROMOTION_GATE_CONSUMER_BOUND` | `true` |
+| `STEP_29M_STATUS` | `COMPLETE_FAIL_CLOSED` |
+| `STEP29M_FLEET_STATUS` | `TERMINAL_FAIL_RESEARCH_GENERATION_CLOSED` |
+| `STEP_29N_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `PROMOTION_ECONOMIC_GATE_BOUND` | `true` |
+| `PROMOTION_ECONOMIC_GATE_STATUS` | `BLOCKED` |
+| `PROMOTION_BLOCKING_REASON` | `BLOCKED_SOURCE_DIAGNOSTICS_PRESENT` |
+| `STEP_29O_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `STEP_29P_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `STEP_29Q_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND` |
+| `STEP_29R_STATUS` | `COMPLETE_FAIL_CLOSED` |
+| `RUNBOOK_STEP_29R_STATUS` | `BLOCKED` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_REWIRE_BLOCKING_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
+| `PR5185_MERGE_COMMIT` | `175aca7872a89898dd3986e12749b0713efaea03` |
+| `PR5186_MERGE_COMMIT` | `299132bbd2af94f56f98c554798c8fdc48819651` |
+| `PR5187_MERGE_COMMIT` | `1d1f3ba85d02f35711ba632096e7aa2240f50d6e` |
+| `PR5185_MERGE_CLOSEOUT_BOUND` | `true` |
+| `PR5186_MERGE_CLOSEOUT_BOUND` | `true` |
+| `PR5187_MERGE_CLOSEOUT_BOUND` | `true` |
+| `PR5185_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5185_merge_closeout_offline_productive_linear_diagnostics_support_bundle_v0_20260714T230433Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5186_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5186_merge_closeout_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0_20260714T231652Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5187_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5187_merge_closeout_offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0_20260714T233336Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5185_CONSUMER_OWNER` | `src/research/linear_evidence/offline_productive_linear_diagnostics_support_bundle_v0.py` |
+| `PR5186_CONSUMER_OWNER` | `src/research/linear_evidence/offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py` |
+| `PR5187_CONSUMER_OWNER` | `src/research/linear_evidence/offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0.py` |
+| `LINEAR_DIAGNOSTICS_CONSUMER_CHAIN_TERMINAL` | `true` |
+| `NO_IMPLEMENTATION_GAP` | `true` |
+| `REMAINING_BLOCK_CLASS` | `POLICY_BLOCK_ONLY` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `UNCHANGED_RETRY_BLOCKED` | `true` |
+| `SOURCE_DERIVATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/derive_next_canonical_offline_scope_post_pr5187_read_only_v0_20260714T233810Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+---
+
+#### CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_TERMINAL_INSUFFICIENT_SAMPLE_OPERATOR_RATIFICATION_AND_LEAD_LAG_SCOPE_RATIFICATION_V0
+
+Operator-ratifizierter Slice nach kanonischer OI-ZScore-Offline-Evaluation (`INSUFFICIENT_TRADE_SAMPLE`, trade_count=1). Registriert das unveränderte OI-ZScore-Binding als terminal insufficient sample, blockiert Retry, und ratifiziert `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` als materiell distincten Nachfolge-Research-Scope. Keine Economic Evaluation in diesem Slice.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `TERMINAL_INSUFFICIENT_SAMPLE_REGISTRATION_AND_DISTINCT_SCOPE_RATIFICATION_COMPLETE` |
+| `VERDICT` | `PASS` |
+| `OPERATOR_DECISION` | `NEW_VERSIONED_RESEARCH_SCOPE` |
+| `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `ORIGIN_MAIN` | `bb2e7ed2d389ca5f2648a032385eb914cf28e8f8` |
+| `TERMINAL_SCOPE` | `cross_sectional_open_interest_zscore_reversion&#47;v0` |
+| `TERMINAL_VERDICT` | `FAIL_ECONOMIC_VALIDITY_OFFLINE_INSUFFICIENT_TRADE_SAMPLE` |
+| `TERMINAL_FAILURE_CLASS` | `INSUFFICIENT_TRADE_SAMPLE` |
+| `TRADE_COUNT` | `1` |
+| `UNCHANGED_RETRY_BLOCKED` | `true` |
+| `SELECTED_DISTINCT_SCOPE` | `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` |
+| `MATERIAL_DIFFERENCE_PROVEN` | `true` |
+| `CANONICAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_zscore_reversion_v0_offline_economic_evaluation_execution_v0_20260715T020351Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_REF` | `docs/governance/CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_TERMINAL_INSUFFICIENT_SAMPLE_AND_DISTINCT_FUTURES_RESEARCH_SCOPE_RATIFICATION_V0.md` |
+| `NEXT_CANONICAL_STEP` | `AWAIT_SEPARATE_GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_INFRASTRUCTURE_IMPLEMENTATION_V0` |
+| `ECONOMIC_EVALUATION_EXECUTED_IN_SLICE` | `false` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+| `TRADING_EFFECT` | `NONE` |
+
+---
+
+#### TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0
+
+Docs-only terminal governance closeout binding manifest-verified post-repair baseline economic reevaluation for `trend_following&#47;v2` under unchanged versioned binding digest `9c624a22…`. Mandatory-boundary repair (PR #5220) complete; post-merge full-chain parity `PASS`; baseline economic reevaluation complete with terminal `FAIL` (`ZERO_TRADE_DEGENERATION`, `NO_CANONICAL_MARKET_OPPORTUNITY`, `trade_count=0`). No promotion, no runtime rewire, no robustness, no unchanged-binding retry, no policy rescue, no negative-evidence mutation, no authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0` |
+| `GO_TOKEN` | `GO_TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_COMPLETE_V0` |
+| `PROCESS_CLASSIFICATION` | `PERSIST_TERMINAL_NEGATIVE_EVIDENCE_NO_POLICY_RESCUE_AND_CLOSE_RESEARCH_GENERATION_V0` |
+| `BINDING` | `trend_following&#47;v2` |
+| `STRATEGY_BINDING_DIGEST` | `9c624a22506c905261e58c117923ea4c0f570968d54ddf5e91f2c56f88b0d966` |
+| `BASELINE_HEAD` | `967ba86a25170d730f0489329ef6eff708d3dd1a` |
+| `REPAIR_PR` | `5220` |
+| `REPAIR_PR_MERGE_COMMIT` | `967ba86a25170d730f0489329ef6eff708d3dd1a` |
+| `MANDATORY_BOUNDARY_REPAIR_COMPLETE` | `true` |
+| `POST_MERGE_FULL_CHAIN_REVALIDATION_RESULT` | `PASS` |
+| `POST_REPAIR_BASELINE_ECONOMIC_REEVALUATION_COMPLETE` | `true` |
+| `ECONOMIC_EVALUATION_STATUS` | `COMPLETE` |
+| `HISTORICAL_ECONOMIC_RESULT` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PRIMARY_ECONOMIC_FAILURE_REASON` | `ZERO_TRADE_DEGENERATION` |
+| `ZERO_TRADE_CLASSIFICATION` | `NO_CANONICAL_MARKET_OPPORTUNITY` |
+| `ZERO_TRADE_TERMINAL_NEGATIVE` | `true` |
+| `INCONCLUSIVE_RECLASSIFICATION_BLOCKED` | `true` |
+| `TRADE_COUNT` | `0` |
+| `FULL_CANONICAL_CHAIN_VERIFIED` | `true` |
+| `MANDATORY_BOUNDARY_CHAIN_VERIFIED` | `true` |
+| `BOUNDARY_BYPASS_REMAINING_COUNT` | `0` |
+| `ECONOMIC_EVIDENCE_VALID` | `true` |
+| `BASELINE_CONTRACT_UNCHANGED` | `true` |
+| `ROBUSTNESS_ADMISSIBLE` | `false` |
+| `ROBUSTNESS_NOT_STARTED` | `true` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `UNCHANGED_BINDING_RETRY_ADMISSIBLE` | `false` |
+| `PARAMETER_TUNING_AUTHORIZED` | `false` |
+| `THRESHOLD_RELAXATION_AUTHORIZED` | `false` |
+| `POST_RESULT_SELECTION_AUTHORIZED` | `false` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `NO_UNCHANGED_BINDING_RETRY` | `true` |
+| `NO_AUTOMATIC_ROBUSTNESS` | `true` |
+| `NO_PARAMETER_OPTIMIZATION` | `true` |
+| `NO_THRESHOLD_RELAXATION` | `true` |
+| `NO_POLICY_RESCUE` | `true` |
+| `NO_POST_RESULT_SELECTION` | `true` |
+| `NO_RUNTIME_REWIRE` | `true` |
+| `NO_PROMOTION` | `true` |
+| `IMMUTABLE_BINDING_RETRY_ALLOWED` | `false` |
+| `SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `NEW_EVIDENCE_CLASS_REQUIRED_FOR_FURTHER_EVALUATION` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `NO_RUNTIME_OR_PROMOTION_ACTION` | `true` |
+| `TERMINAL_NEGATIVE_EVIDENCE_FOR_UNCHANGED_BINDING` | `true` |
+| `CURRENT_PHASE` | `TERMINAL_ECONOMIC_FAIL_CLOSEOUT` |
+| `RECOVERY_PATH_STATUS` | `COMPLETE_WITH_ECONOMIC_FAIL` |
+| `REASON_CODES` | `METRIC_MISSING:parameter_neighbor_degradation;METRIC_MISSING:single_regime_profit_contribution;METRIC_MISSING:single_trade_profit_contribution;PROFIT_FACTOR_BELOW_THRESHOLD;TRADE_COUNT_BELOW_THRESHOLD;ZERO_TRADE_DEGENERATION` |
+| `POST_REPAIR_BASELINE_ECONOMIC_REEVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/trend_following_v2_post_repair_baseline_economic_reevaluation_v0_20260715T145755Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5219_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5219_merge_closeout_trend_following_v2_baseline_e2e_test_runtime_bound_repair_v0_20260715T134243Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5220_IMPLEMENTATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/trend_following_v2_mandatory_boundary_rewire_canonical_plan_freeze_v0_20260715T142233Z (MANIFEST_VERIFY_RC=0)` |
+| `PR5220_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5220_merge_closeout_trend_following_v2_canonical_mandatory_boundary_rewire_v0_20260715T143605Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_MERGE_FULL_CHAIN_REAUDIT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/trend_following_v2_post_merge_full_canonical_system_chain_e2e_parity_reaudit_v0_20260715T144719Z (MANIFEST_VERIFY_RC=0)` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `GOVERNANCE_REF` | `docs/governance/TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0.md` |
+| `CONFIG_REF` | `config/research/trend_following_v2_post_repair_economic_fail_governance_closeout_v0.json` |
+| `NEXT_CANONICAL_STEP` | `NONE_WITHOUT_NEW_OPERATOR_RATIFICATION` |
+| `NEXT_ADMISSIBLE_SCOPE` | `NONE_WITHOUT_NEW_OPERATOR_RATIFICATION` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
+#### MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0
+
+| Feld | Wert |
+|---|---|
+| `SCOPE_CLASSIFICATION` | `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0` |
+| `GO_TOKEN` | `GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0` |
+| `VERDICT` | `AUTHORIZATION_RATIFICATION_COMPLETE` |
+| `RESEARCH_SCOPE` | `momentum_1h&#47;v2` |
+| `STRATEGY_ARCHETYPE` | `MOMENTUM_HORIZON_V2` |
+| `EXCLUDED_FAILED_BINDING` | `momentum_1h&#47;v1` |
+| `BINDING_GENERATION` | `post_pr4921` |
+| `BINDING_DIGEST` | `366f7aeb21d781a2531d477ef32943c04d5edb262b7be9e540bbfcfc2528985f` |
+| `AUTHORIZATION_STATUS` | `RATIFIED` |
+| `AUTHORIZATION_SCOPE` | `OFFLINE_ECONOMIC_EVALUATION` |
+| `ECONOMIC_EVALUATION_AUTHORIZED_FOR_SEPARATE_EXECUTION` | `true` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `ECONOMIC_RESULT` | `NOT_EVALUATED` |
+| `NO_NEW_CANDIDATE_HOLD_BEFORE` | `ACTIVE` |
+| `NO_NEW_CANDIDATE_HOLD_AFTER` | `ACTIVE` |
+| `GLOBAL_HOLD_RELAXED` | `false` |
+| `CANDIDATE_SPECIFIC_AUTHORIZATION` | `true` |
+| `TREND_FOLLOWING_V2_TERMINAL_STATUS_UNCHANGED` | `true` |
+| `TREND_FOLLOWING_V2_RETRY_ADMISSIBLE` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `ROBUSTNESS_ADMISSIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `NEXT_ADMISSIBLE_SCOPE` | `MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `NEXT_OPERATOR_GO` | `GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0` |
+| `DISCOVERY_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/new_distinct_research_scope_discovery_v0_20260715T104548Z (MANIFEST_VERIFY_RC=0)` |
+| `DECISION_PACKET_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/post_trend_following_v2_terminal_fail_next_admissible_scope_decision_packet_v0_20260715T154217Z (MANIFEST_VERIFY_RC=0)` |
+| `TREND_FOLLOWING_V2_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5221_merge_closeout_trend_following_v2_post_repair_economic_fail_governance_closeout_v0_20260715T153815Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_REF` | `docs/governance/MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_V0.md` |
+| `CONFIG_REF` | `config/research/momentum_1h_v2_offline_economic_evaluation_authorization_ratification_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `OFFLINE_EVALUATION_AUTHORIZATION_ONLY` |
+| `TRADING_EFFECT` | `NONE` |
+
+---
+
+
+#### STEP29M_VERSIONED_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_AND_PROGRESS_REGISTRY_V4_4_12_SUPERSESSION_SYNC_V0
+
+Docs-only inventory and progress-registry supersession sync after PR #5239 / Runbook v4.4.12. No strategy selection, no economic evaluation, no runtime/authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `STEP29M_VERSIONED_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_AND_PROGRESS_REGISTRY_V4_4_12_SUPERSESSION_SYNC_V0` |
+| `GO_TOKEN` | `GO_STEP29M_VERSIONED_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_AND_PROGRESS_REGISTRY_V4_4_12_SUPERSESSION_SYNC_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `STEP29M_BINDING_ADMISSIBILITY_INVENTORY_AND_PROGRESS_REGISTRY_V4_4_12_SUPERSESSION_SYNC_COMPLETE_V0` |
+| `ORIGIN_MAIN` | `05c814a06eb5ef46b88495b9a392268b65c57246` |
+| `STEP29M_PASS_ADMISSIBLE_BINDING_PRESENT` | `false` |
+| `STEP_29M_STATUS` | `BLOCKED_BY_MISSING_VERSIONED_SYSTEM_ECONOMIC_BINDING` |
+| `STEP_29N_STATUS` | `COMPLETE_AND_PRODUCTIVELY_BOUND_FAIL_CLOSED_BLOCKED` |
+| `STEP_29R_STATUS` | `BLOCKED_BY_PRIOR_GATE` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `NEXT_CANONICAL_STEP` | `AWAIT_SEPARATE_OPERATOR_GO_FOR_NEW_VERSIONED_FULL_CANONICAL_SYSTEM_ECONOMIC_BINDING_OR_NEW_EVIDENCE_CLASS_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `READ_ONLY_ASSESSMENT_COMPLETED` | `true` |
+| `READ_ONLY_ASSESSMENT_EXTERNAL_EVIDENCE_PERSISTED` | `false` |
+| `READ_ONLY_ASSESSMENT_EXTERNAL_EVIDENCE_BLOCKED_BY_CURSOR_POLICY` | `true` |
+| `READ_ONLY_ASSESSMENT_MANIFEST_VERIFY_STATUS` | `NOT_OBTAINED` |
+| `GOVERNANCE_REF` | `docs/governance/STEP29M_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_V0.md` |
+| `CONFIG_REF` | `NONE_DOCS_INVENTORY_ONLY` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `STRATEGY_SELECTED` | `false` |
+| `PARAMETER_OPTIMIZATION_EXECUTED` | `false` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+
+---
+
+
+#### FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFICATION_V0
+
+Binding/evidence-class ratification for FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1 selecting bollinger_bands/v2. Historical ratification snapshot (superseded as current state by offline execution).
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `BINDING_RATIFIED_NOT_EXECUTED` |
+| `SCOPE_CLASSIFICATION` | `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFICATION_V0` |
+| `GO_TOKEN` | `GO_FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFICATION_V1` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFIED_NOT_EXECUTED` |
+| `SELECTED_EVIDENCE_CLASS` | `BOLLINGER_BANDS_V2_FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_V1` |
+| `SELECTED_BINDING_ID` | `bollinger_bands_v2_full_canonical_system_economic_binding_v1` |
+| `SELECTED_BINDING_DIGEST` | `b0b51de225a7e282263c1b00091ccb457612f74df0e817d8dd03efc7af837320` |
+| `CANDIDATE_ID` | `bollinger_bands&#47;v2` |
+| `MATERIAL_DIFFERENCE_PROVEN` | `true` |
+| `TERMINAL_NEGATIVE_BINDING_RETRY` | `false` |
+| `PR5240_CLOSEOUT_COMPLETE` | `true` |
+| `STEP29M_BINDING_ADMISSIBILITY_INVENTORY_COMPLETE` | `true` |
+| `NEW_ECONOMIC_EVIDENCE_GENERATION_STATUS` | `BINDING_RATIFIED_NOT_EXECUTED` |
+| `ECONOMIC_EVALUATION_AUTHORIZED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `GOVERNANCE_REF` | `docs/governance/FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFICATION_V0.md` |
+| `CONFIG_REF` | `config/research/full_canonical_system_economic_evidence_generation_v1_binding_ratification_v0.json` |
+| `NEXT_STEP` | `SEPARATE_OPERATOR_GO_FOR_FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_EXECUTION` |
+| `NEXT_OPERATOR_GO` | `GO_FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_EXECUTION_V1` |
+
+#### FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION_V0
+
+Offline-only full-canonical baseline economic evidence execution for bollinger_bands/v2 under ratified binding digest `b0b51de225a7e282263c1b00091ccb457612f74df0e817d8dd03efc7af837320`. Terminal FAIL (zero-trade degeneration across 118 panel members). Robustness stages not executed (`NOT_EXECUTED_BASELINE_NEGATIVE`). No runtime/authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE_FAIL` |
+| `SCOPE_CLASSIFICATION` | `FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION_V0` |
+| `GO_TOKEN` | `GO_FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_EXECUTION` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `VERDICT` | `FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_FAIL` |
+| `SELECTED_EVIDENCE_CLASS` | `BOLLINGER_BANDS_V2_FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_V1` |
+| `SELECTED_BINDING_ID` | `bollinger_bands_v2_full_canonical_system_economic_binding_v1` |
+| `SELECTED_BINDING_DIGEST` | `b0b51de225a7e282263c1b00091ccb457612f74df0e817d8dd03efc7af837320` |
+| `CANDIDATE_ID` | `bollinger_bands&#47;v2` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `true` |
+| `ECONOMIC_STATUS` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PRIMARY_REASON_CODES` | `ZERO_TRADE_DEGENERATION,ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL` |
+| `TRADE_COUNT` | `0` |
+| `PANEL_INSTRUMENTS_SCANNED` | `118` |
+| `INSTRUMENTS_WITH_NONZERO_TRADES` | `0` |
+| `ROBUSTNESS_EXECUTED` | `false` |
+| `ROBUSTNESS_NOT_EXECUTED_REASON` | `NOT_EXECUTED_BASELINE_NEGATIVE` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `CANONICAL_ENTRY_POINT` | `scripts&#47;ops&#47;run_economic_viability_evidence_evaluation_v1.py` |
+| `CONFIG_REF` | `config/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_result_v0.json` |
+| `EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z` |
+| `MANIFEST_VERIFY_RC` | `0` |
+| `NEXT_STEP` | `NO_UNCHANGED_RETRY_REQUIRES_NEW_DISTINCT_FULL_CANONICAL_SYSTEM_BINDING_OR_EVIDENCE_CLASS` |
+| `NEXT_OPERATOR_GO` | `NONE_REQUIRES_SEPARATE_OPERATOR_GO` |
+
+---
+
+## PR #4629 Evidence-Drift (historisch, transparent)
+
+| Bundle | MANIFEST_VERIFY_RC | Hinweis |
+|---|---|---|
+| Closeout | `0` | `closeout&#47;pr4629_comparison_promotion_candidate_model_parameter_identity_binding_v1_squash_merge_closeout_v0_20260628T225509Z` |
+| Implementation | `1` | Drift nur in `00_VERDICT.txt`; Dateien 01–20 verify clean |
+| Check-Recovery | `MISSING` | Kein `MANIFEST.sha256` |
+
+Diese Befunde blockieren nicht die strategische Runbook-Sequenz.
+
+## Historisch überholte Next-Step-Angaben
+
+Runbook-Next-Step-Hinweise, die durch gemergte PRs #4623–#4629 überholt wurden, gelten als `COMPLETE` bzw. `IN_PROGRESS` gemäß obiger Registry — **ohne** Änderung der strategischen Reihenfolge.
+
+`NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` ist durch PR #4846/#4847 offline economic evaluation und PR #4847 progress registry closeout **superseded/complete**; authoritativer Next Step = `NO_RUNTIME_OR_PROMOTION_ACTION`.

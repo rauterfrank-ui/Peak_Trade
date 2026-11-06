@@ -1,0 +1,26 @@
+{
+    "artifact_class": "LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_DECISION_V1",
+    "workpackage_id": "SELF_LEARNING_PRODUCTIVE_CLOSED_LOOP_V1",
+    "bound_origin_main_sha": "d2bb81c340fe30b48139746058512e1cc357c20c",
+    "owner_go_token": "OWNER_GO_SELF_LEARNING_CLOSED_LOOP_SEMANTIC_FOUNDATION_A+C",
+    "owner_adjudication_bound": true,
+    "architecture_choice": "A+C",
+    "normative_spec": "docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md",
+    "ingest_contract_id": "peak_trade.learning.ddo.learning_outcome_evidence_ingest_v1",
+    "learning_state_schema": "learning_state_record_v0",
+    "durable_store": "AppendOnlyDdoLedgerV0",
+    "implementation_authorized": true,
+    "learning_productive_authority": "NONE",
+    "promotion_join_authorized": false,
+    "optimization_universe_join_authorized": false,
+    "external_effect_authorized": false,
+    "feedback_seam": {
+        "consumer": "peak_trade.learning.ddo.real_outcome_horizon_productive_host_v1",
+        "bridge_field": "ddo_n_bars_economic_score",
+        "consumed_state_fields": ["next_cycle_economic_score_label"],
+        "semantic_effect": "opaque_evaluation_label_only"
+    },
+    "drift_auto_projection_authorized": false,
+    "calibration_numeric_update_authorized": false,
+    "regime_update_authorized": false
+}

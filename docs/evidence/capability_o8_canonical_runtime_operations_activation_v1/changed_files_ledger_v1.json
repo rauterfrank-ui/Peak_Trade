@@ -1,0 +1,32 @@
+{
+  "changed_files": [
+    "config/ops/canonical_runtime_operations_activation_contract_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/IMPLEMENTATION_SUMMARY.md",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/MANIFEST.sha256",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/SUMMARY.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/activation_contract_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/authority_boundary_proof_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/canonical_operator_surface_inventory_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/changed_files_ledger_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/failure_injection_results_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/legacy_dependency_classification_ledger_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/plaintext_secret_scan_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/repository_binding_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/rollback_proof_v1.json",
+    "docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/tests_and_failure_injection_results_v1.json",
+    "docs/ops/CANONICAL_RUNTIME_OPERATOR_ENTRYPOINT_O8_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md",
+    "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json",
+    "scripts/ops/peak_trade_runtime.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/cli_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+    "src/ops/canonical_runtime_operations_activation_v1/__init__.py",
+    "src/ops/canonical_runtime_operations_activation_v1/constants_v1.py",
+    "src/ops/canonical_runtime_operations_activation_v1/contract_v1.py",
+    "tests/ops/test_canonical_runtime_operations_activation_v1.py"
+  ],
+  "config_trading_changed": false,
+  "core_logic_changed": false,
+  "forbidden_paths_touched": false,
+  "o7_evidence_mutated": false
+}

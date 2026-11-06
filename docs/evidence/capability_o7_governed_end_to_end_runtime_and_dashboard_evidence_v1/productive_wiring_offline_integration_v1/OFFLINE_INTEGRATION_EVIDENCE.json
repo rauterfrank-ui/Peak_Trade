@@ -1,0 +1,52 @@
+{
+  "authorization_consumed": false,
+  "authorization_issued": false,
+  "bridge_ingest_accepted": true,
+  "confirm_token_minted": false,
+  "credentials_used": false,
+  "durable_reload_bar_count": 1,
+  "http_host": "127.0.0.1",
+  "http_port": 52945,
+  "live_trading_used": false,
+  "market_route_ok": true,
+  "network_session_started": false,
+  "notes": [
+    "Attempt-2 already proves long-running public-MD.",
+    "Separate post-merge Owner-GO network evidence session required to close residual gaps."
+  ],
+  "o7_full_capability_closed": false,
+  "ohlcv_route_ok": true,
+  "ok": true,
+  "orders_submitted": false,
+  "productive_wiring_implemented": {
+    "DASHBOARD_RESTART_WITHOUT_PSO_RESTART": true,
+    "JOINED_TIMESTAMP_PROVENANCE": true,
+    "NETWORK_BOUND_PROOF_STILL_REQUIRED": true,
+    "O2_SUPERVISED_FASTAPI_HTTP_HOST": true,
+    "O4_TO_O5_DURABLE_READ_MODEL": true,
+    "PSO_TO_O4_LIVE_BRIDGE": true
+  },
+  "residual_gaps": [
+    "LIVE_OHLCV_MATRIX_CONTINUITY",
+    "DASHBOARD_HTTP_POLL_CONTINUITY",
+    "END_TO_END_NETWORK_LATENCY",
+    "NETWORK_FAILURE_RECOVERY_EVIDENCE"
+  ],
+  "restart_ok": true,
+  "restart_pid_changed": true,
+  "schema_id": "ops.o7_productive_wiring_offline_integration_evidence_v1",
+  "stop_ok": true,
+  "testnet_used": false,
+  "timestamp_chain": {
+    "bar_projection_time": 1785778425.6298509,
+    "http_response_observed_time": null,
+    "http_response_observed_time_supported": false,
+    "ingestion_time": 1700300000.01,
+    "market_event_time": 1700300000.0,
+    "notes": [
+      "HTTP_OBSERVATION_STAMPED_BY_DASHBOARD_HOST_ON_POLL",
+      "NO_TIMESTAMP_FABRICATION"
+    ],
+    "read_model_commit_time": 1785778425.6298509
+  }
+}

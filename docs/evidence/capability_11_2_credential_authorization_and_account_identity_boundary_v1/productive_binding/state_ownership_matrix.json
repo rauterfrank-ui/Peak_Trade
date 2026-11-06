@@ -1,0 +1,32 @@
+[
+  {
+    "classification": "DURABLE_CONTROL_STATE",
+    "field": "authorization_id_scope_expiry",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1"
+  },
+  {
+    "classification": "DURABLE_CONTROL_STATE",
+    "field": "credential_reference_metadata",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1"
+  },
+  {
+    "classification": "DURABLE_CONTROL_STATE",
+    "field": "account_identity",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1"
+  },
+  {
+    "classification": "FORBIDDEN_TO_PERSIST",
+    "field": "plaintext_credentials",
+    "mutable_by_adapter": "false",
+    "owner": "none"
+  },
+  {
+    "classification": "FORBIDDEN_TO_PERSIST",
+    "field": "confirm_tokens_and_secret_material",
+    "mutable_by_adapter": "false",
+    "owner": "none"
+  }
+]

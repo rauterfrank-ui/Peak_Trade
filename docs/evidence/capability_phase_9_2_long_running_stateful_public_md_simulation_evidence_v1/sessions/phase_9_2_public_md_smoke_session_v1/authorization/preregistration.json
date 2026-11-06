@@ -1,0 +1,76 @@
+{
+  "approval_identity": "owner_phase_9_2_smoke_v1",
+  "armed": true,
+  "arming_state": "armed",
+  "capability_id": "PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1",
+  "code_identity": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/",
+  "config_identity": "config/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1.toml",
+  "confirm_token_binding_sha256": "a60921b8f7760b310d8bcbbd262afcd3ac14a1bf3f162a7c49fbd401b78bced3",
+  "confirm_token_hash_reference": "sha256:e8470b9ff95ddca57297137134c130c81897c123f17e34dd58fac6fbe2b467da",
+  "consumed": false,
+  "contract_version": "v1",
+  "credential_policy": "deny",
+  "earliest_start": 1785699709.116576,
+  "enabled": true,
+  "evidence_root": "docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1/wallclock_run",
+  "evidence_target_paths": [
+    "session_manifest.json",
+    "no_order_attestation.json",
+    "evidence_manifest.sha256",
+    "issuance_manifest.json"
+  ],
+  "expected_repository_sha": "870445764c64dde8c05cf4ecf672185e2b3480f5",
+  "expires_at": 1785700489.116576,
+  "fixture_non_authoritative": false,
+  "instrument_allowlist": [
+    "ETH-USD_UM_XPERP-310404"
+  ],
+  "instrument_denylist": [
+    "BTC-USD_UM_XPERP-1"
+  ],
+  "killstate_policy": "ipso_killstate_v1",
+  "lock_policy": "single_session_lock_v1",
+  "market_type": "FUTURES",
+  "network_policy": "okx_eea_futures_public_md_observe_v1",
+  "network_scope": "okx_eea_futures_public_md_observe_v1",
+  "no_auto_promotion": true,
+  "no_live": true,
+  "no_order_invariant": true,
+  "no_orders": true,
+  "no_testnet": true,
+  "notes": [
+    "PRODUCTIVE_PREREGISTRATION",
+    "NOT_A_FIXTURE",
+    "HOST_ALLOWLIST=eea.okx.com",
+    "ORDERS=false",
+    "PAPER_EXECUTION=false",
+    "TESTNET=false",
+    "LIVE=false",
+    "CREDENTIALS=false",
+    "PRIVATE_ENDPOINTS=false",
+    "AUTO_PROMOTION=false",
+    "ECONOMIC_VALIDITY_MUTATION=false"
+  ],
+  "observation_mode": "observation",
+  "operator_identity": "owner_phase_9_2_smoke_v1",
+  "planned_duration_seconds": 180,
+  "purpose": "PHASE_9_2_PUBLIC_MD_SMOKE_SESSION",
+  "required_evidence_schema_versions": [
+    "ops.integrated_paper_shadow_observation_wallclock_evidence_v1"
+  ],
+  "retry_policy": "transient_http_retry_v1",
+  "revocation_state": "none",
+  "revoked": false,
+  "schema_version": "paper_shadow_observation_session_preregistration.v1",
+  "session_execution_scope": "paper_shadow_observation_wallclock_v1",
+  "session_id": "phase_9_2_public_md_smoke_session_v1",
+  "single_use": true,
+  "strategy_component_identities": [
+    "trading.master_v2.double_play_entry_exit_policy_v0",
+    "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1",
+    "ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1"
+  ],
+  "strategy_portfolio_id": "master_v2_double_play_paper_shadow_observation_portfolio_v1",
+  "timeout_policy": "hard_timeout_v1",
+  "venue": "OKX"
+}

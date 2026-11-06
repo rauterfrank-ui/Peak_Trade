@@ -1,0 +1,89 @@
+{
+  "adverse_scope_exit_backtest_parity_status": "WIRED",
+  "assessment_source_contract": "docs/research/adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json",
+  "assessment_source_pr": 5060,
+  "authority_effect": "NONE",
+  "backtest_consumer": "src/backtest/mv2_research_wiring_v1.py",
+  "backtest_runtime_decision_parity_pass_claim": false,
+  "bitcoin_direction_allowed": false,
+  "blocking_if_not_proven": [
+    "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE=false",
+    "RUNTIME_REWIRE_ADMISSIBLE=false",
+    "ECONOMIC_EVALUATION_AUTHORIZED=false"
+  ],
+  "canonical_adverse_exit_owner": "trading.master_v2.deterministic_scope_event_generator_v1",
+  "canonical_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1",
+  "canonical_reversal_preparation_adapter_owner": "trading.master_v2.reversal_preparation_scenario_binding_adapter_v0",
+  "canonical_scope_adapter_owner": "trading.master_v2.scope_event_generator_scenario_binding_adapter_v0",
+  "decision_precedence_evidence": {
+    "adverse_exit_stage": "MANDATORY_EXIT",
+    "exit_before_reversal": true,
+    "opposite_side_requires_reconciled_flat": true,
+    "position_flip_allowed": false,
+    "reduce_only": true,
+    "reversal_preparation_stage": "REVERSAL"
+  },
+  "economic_evaluation_authorized": false,
+  "forbidden_claims_remain_false": {
+    "BACKTEST_RUNTIME_DECISION_PARITY_PASS": false,
+    "ECONOMIC_CLAIM": false,
+    "FULL_CANONICAL_CHAIN_WIRED": false,
+    "ORDERS_ALLOWED": false,
+    "RUNTIME_AUTHORITY": false,
+    "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE": false
+  },
+  "full_canonical_chain_wired_claim": false,
+  "futures_only": true,
+  "gap_review_findings": {
+    "bypass_path_reproducible": false,
+    "duplicate_decision_path_reproducible": false,
+    "integrated_replay_derives_scope_adverse_exit_signal": true,
+    "integrated_replay_reversal_preparation_projection_bound": true,
+    "integrated_replay_scope_signal_passthrough_gap": false,
+    "missing_owner_call_reproducible": false,
+    "missing_parity_contract_reproducible": false
+  },
+  "live_authorized": false,
+  "narrow_rewire_decision": {
+    "functional_rewire_performed": true,
+    "integrated_reversal_binding": "project_composition_for_reversal_preparation_entry_exit_v0 via resolve_integrated_reversal_preparation_entry_exit_binding_v0",
+    "integrated_signal_binding": "derive_scope_adverse_exit_signal_v0(scope_event) via resolve_integrated_scope_adverse_exit_signal_v0",
+    "mode": "NARROW_INTEGRATED_CONSUMER_BINDING",
+    "new_parallel_owner_created": false,
+    "rewire_implemented": true
+  },
+  "orders_allowed": false,
+  "paper_authorized": false,
+  "plan_type": "BACKTEST_PARITY_NARROW_REWIRE",
+  "required_contract_tests": [
+    "ADVERSE_SCOPE_EXIT_WIRED_TO_BACKTEST",
+    "REVERSAL_PREPARATION_WIRED_TO_BACKTEST",
+    "REVERSAL_PREPARATION_PRODUCES_EXIT_BEFORE_OPPOSITE_ENTRY",
+    "OPPOSITE_SIDE_REQUIRES_RECONCILED_FLAT",
+    "POSITION_FLIP_NOT_ALLOWED",
+    "REDUCE_ONLY_EXIT_PRESERVED"
+  ],
+  "reuse_decision": "REUSE_WITH_NARROW_INTEGRATED_CONSUMER_BINDING",
+  "reversal_preparation_backtest_parity_status": "WIRED",
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "scheduler_runtime_allowed": false,
+  "schema_version": 1,
+  "scope_exit_reversal_backtest_parity_pass": true,
+  "shadow_authorized": false,
+  "slice": "adverse_exit_and_reversal_preparation_backtest_parity_narrow_rewire_v0",
+  "source_evidence_manifest_verify_rc": 0,
+  "source_evidence_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0_20260710T011425Z",
+  "surface_id": "scope_adverse_exit_and_reversal_preparation",
+  "system_economic_evidence_admissible": false,
+  "target_surface": "Scope Adverse Exit and Reversal Preparation Backtest Parity Narrow Rewire",
+  "testnet_authorized": false,
+  "verdict": "PASS_SCOPE_ADVERSE_EXIT_AND_REVERSAL_PREPARATION_BACKTEST_PARITY_NARROW_REWIRE_V0",
+  "wiring_proof_paths": [
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py",
+    "src/trading/master_v2/reversal_preparation_scenario_binding_adapter_v0.py",
+    "src/backtest/mv2_research_wiring_v1.py",
+    "tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_narrow_rewire_v0.py"
+  ]
+}

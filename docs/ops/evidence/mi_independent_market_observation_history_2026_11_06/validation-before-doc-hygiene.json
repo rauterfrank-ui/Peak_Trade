@@ -1,0 +1,22 @@
+{
+  "result": "PASS",
+  "scope": "HISTORICAL_PROVENANCE_CURRENT_CONTRACT_PROBES_AND_VIEW_PRESERVATION",
+  "historical_sources_verified": 18,
+  "current_sources_verified": 25,
+  "pr_merge_bindings_verified": 5,
+  "recorded_stateless_consumer_cases": 8,
+  "historical_runtime_reexecuted": false,
+  "product_code_changed": false,
+  "independent_end_to_end_measurement_implemented": false,
+  "global_semantic_recertified": false,
+  "documentation_checks": {
+    "token_violations": [],
+    "missing_repo_references": [],
+    "repo_references_checked": 1,
+    "introduced_wikilinks_checked": 4,
+    "introduced_markdown_links_checked": 5,
+    "historical_systemindex_fields_preserved": true,
+    "introduction_parent_deltas_verified": 6,
+    "lint_and_format": "PASS"
+  }
+}

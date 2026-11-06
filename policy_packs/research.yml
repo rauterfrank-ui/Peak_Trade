@@ -1,0 +1,56 @@
+# Policy Pack: Research
+# Context: Experimental branches, R&D work, backtest iterations
+# Philosophy: Permissive on patterns, STRICT on secrets & live-unlock
+
+pack_id: research
+version: "1.0.0"
+description: "Permissive policy pack for research/experimental work"
+
+# All rules enabled, but many downgraded to INFO/WARN
+enabled_rules:
+  - NO_SECRETS
+  - NO_LIVE_UNLOCK
+  - EXECUTION_ENDPOINT_TOUCH
+  - RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION
+  - MISSING_TEST_PLAN
+
+# Severity overrides: more permissive for research
+# CRITICAL INVARIANT: NO_SECRETS and NO_LIVE_UNLOCK always BLOCK
+severity_overrides:
+  EXECUTION_ENDPOINT_TOUCH: INFO                    # Research can touch execution freely
+  RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION: INFO     # Research can experiment with limits
+  MISSING_TEST_PLAN: INFO                           # Less formal testing in R&D
+
+# Critical paths (still monitored, but with INFO/WARN only)
+critical_paths:
+  - "src/live/"        # Still tracked, but not blocking
+  - "src/execution/"
+  - "src/exchange/"
+  - "config/production/"
+  - "config/live/"
+
+# Context keys (optional for research)
+required_context_keys: []  # No required context for R&D
+
+# Fail-closed: still required
+default_action_on_error: REVIEW_REQUIRED
+
+# Pack-specific settings
+settings:
+  # More permissive thresholds
+  docs_only_fast_path: true
+  docs_patterns:
+    - "*.md"
+    - "docs/"
+    - "README"
+    - "notebooks/"
+    - "experiments/"
+
+  # Higher threshold for test plan requirement
+  test_plan_threshold_lines: 200
+
+  # Higher violation tolerance
+  max_violation_count: 50
+
+  # Research-specific: allow rapid iteration
+  allow_missing_justification: true

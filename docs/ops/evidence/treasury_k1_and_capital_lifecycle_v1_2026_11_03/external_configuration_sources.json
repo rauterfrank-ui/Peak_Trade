@@ -1,0 +1,49 @@
+{
+  "backup_root": "/Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo",
+  "backup_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+  "backup_comparisons": [
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_concrete_backend_item_identity_v1.py",
+      "backup_sha256": "816502cbed96a2d73374469848399d909bc15dbe153ce168ac883c46784ed2cc",
+      "current_sha256": "816502cbed96a2d73374469848399d909bc15dbe153ce168ac883c46784ed2cc",
+      "identical": true,
+      "backup_HEAD_blob_sha256": "816502cbed96a2d73374469848399d909bc15dbe153ce168ac883c46784ed2cc",
+      "working_file_matches_backup_HEAD_blob": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py",
+      "backup_sha256": "87b84e8fb11f02f00965f645ae70fa8fa57d49ad4d73b0c7f367f5b473fed1c4",
+      "current_sha256": "87b84e8fb11f02f00965f645ae70fa8fa57d49ad4d73b0c7f367f5b473fed1c4",
+      "identical": true,
+      "backup_HEAD_blob_sha256": "87b84e8fb11f02f00965f645ae70fa8fa57d49ad4d73b0c7f367f5b473fed1c4",
+      "working_file_matches_backup_HEAD_blob": true
+    },
+    {
+      "path": "config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json",
+      "backup_sha256": "d1a45567e70b3035415d7b50f6f29003707846ef3990f24dddc4bb1109e0ce35",
+      "current_sha256": "d1a45567e70b3035415d7b50f6f29003707846ef3990f24dddc4bb1109e0ce35",
+      "identical": true,
+      "backup_HEAD_blob_sha256": "d1a45567e70b3035415d7b50f6f29003707846ef3990f24dddc4bb1109e0ce35",
+      "working_file_matches_backup_HEAD_blob": true
+    }
+  ],
+  "recovery_sources": [
+    {
+      "path": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/K1_PRODUCTIVE_MACOS_CREDENTIAL_STORE_PROVISIONING_AUTHORITY_V1.Id_dc00001007c6226.md",
+      "sha256": "5686c792aa4002f5ac3bcd518316e8b530880a698ea35909f29ef7cf251610ce"
+    },
+    {
+      "path": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.Id_dc000010091c964.md",
+      "sha256": "ae0c9f42255b4d3239f831a4538e6807210a52057b53b88d74c8d76c79ed62ab"
+    }
+  ],
+  "recovery_search": "CodeRecovery targeted filename/content search found no matching key identity; MDRecovery00 search partially completed, then stopped on I/O error in unrelated AppleDouble file. Only two already-found small documents were read subsequently. Not exhaustive.",
+  "io_error_file": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/._ehlers_method_analysis.Id_dc0000100728474.md",
+  "other_checkout": {
+    "root": "/Users/frnkhrz/Peak_Trade_M1_5_CURRENT",
+    "head": "fffb95ef41f7e78c145f022144947911cce27279",
+    "candidate": "src/ops/current_read_only_observation_get_path_v1",
+    "status": "Mixed tracked/dirty files; inspected as variant, not copied or executed"
+  },
+  "external_writes_or_recovery_repairs": false
+}

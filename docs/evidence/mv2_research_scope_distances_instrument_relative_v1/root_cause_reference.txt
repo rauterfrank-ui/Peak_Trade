@@ -1,0 +1,10 @@
+ROOT_CAUSE_AUDIT=docs/evidence/scope_event_noop_root_cause_audit_v1/
+ROOT_CAUSE_CLASS=UNIT_MISMATCH
+FIRST_VALUE_LOSS_BOUNDARY=src/backtest/mv2_research_wiring_v1.py::_build_replay_input:1704
+LEGACY_ABSOLUTE=up_distance=120.0; adverse_exit_distance=60.0; reversal_distance=90.0
+BEFORE_NOOP_COUNT=2893
+BEFORE_THRESHOLD_MISS_COUNT=2893
+BEFORE_BULL_CANDIDATE_COUNT=0
+BEFORE_BEAR_CANDIDATE_COUNT=0
+DOMINANT_NOOP_REASON=threshold_miss_no_candidate
+EXPECTED_MAIN_SHA=a55c4000f33269a98107fd1294b1c9ba82433cad

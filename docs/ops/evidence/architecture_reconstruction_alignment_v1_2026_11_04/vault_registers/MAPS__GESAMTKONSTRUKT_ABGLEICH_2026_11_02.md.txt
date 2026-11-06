@@ -1,0 +1,65 @@
+# Gesamtkonstrukt: gesamter erarbeiteter Stand im Abgleich
+
+Stand RUN-0077 · 02.11.2026 · abgeleitete Navigation · AUTHORITY=NONE. Führende Aussagen stehen in den bestehenden Registern.
+
+[README](../README.md) · [INDEX](../INDEX.md) · [Kanonische Verträge](../REGISTERS/contracts_edges.md#run-0077--abgleich-des-gesamten-bisher-erarbeiteten-stands) · [Lücken](../REGISTERS/gaps_decisions.md#run-0077--abgleich-des-gesamten-bisher-erarbeiteten-stands) · [Originalbericht](../RUNS/RUN-0077/RUN-0077.md) · [Quellen und Provenienz](../RUNS/RUN-0077/RECONCILIATION.json)
+
+## Was hier einbezogen ist
+
+Der frühere Gesamtentwurf und alle 99 im geschlossenen Quellenkatalog ausgewählten lokalen Ergebnis-/Übergabedokumente: frühere Architektur- und Research-Befunde ebenso wie Preisversorgung, GGE/Double Play, Ranking/Residenz, N1/N5, Kapital, K1, Safety, Execution, State, Outcome, Learning, Meta und Governance. Die Themen sind Navigation, keine neuen Universen oder festen Layer.
+
+99 Quellen thematisch zugeordnet bedeutet keine vollständige erneute Prüfung sämtlicher Einzelaussagen und Primärartefakte. Nicht tief erneut geprüfte Inhalte bleiben in den datierten Berichten erhalten. Globale Vollständigkeit und Gesamtfunktion sind nicht bewiesen.
+
+## Thematischer Einstieg
+
+- [CON-2064 — Ausgangspunkt und Reichweite](../RUNS/RUN-0077/RUN-0077.md#con-2064--ausgangspunkt-und-reichweite) · Registerstatus PARTIAL · `EVI-2208`, `EVI-2247`, `EVI-2289`, `EVI-2225`, `EVI-2226`
+- [CON-2065 — Architekturvarianten und Außenring](../RUNS/RUN-0077/RUN-0077.md#con-2065--architekturvarianten-und-außenring) · Registerstatus PARTIAL · `EVI-2227`, `EVI-2228`, `EVI-2229`, `EVI-2230`, `EVI-2231`, `EVI-2232`, `EVI-2233`, `EVI-2292`, `EVI-2293`, `EVI-2294`, `EVI-2217`
+- [CON-2066 — Wiedergefundenes Self-Learning-Master-Runbook](../RUNS/RUN-0077/RUN-0077.md#con-2066--wiedergefundenes-self-learning-master-runbook) · Registerstatus PARTIAL · `EVI-2208`, `EVI-2279`, `EVI-2283`, `EVI-2281`, `EVI-2282`
+- [CON-2067 — Double Play als gesamte fachliche Konstruktion](../RUNS/RUN-0077/RUN-0077.md#con-2067--double-play-als-gesamte-fachliche-konstruktion) · Registerstatus PARTIAL · `EVI-2204`, `EVI-2214`, `EVI-2239`, `EVI-2275`, `EVI-2276`, `EVI-2207`
+- [CON-2068 — Mehrere Zustands- und Entscheidungspfade](../RUNS/RUN-0077/RUN-0077.md#con-2068--mehrere-zustands--und-entscheidungspfade) · Registerstatus PARTIAL · `EVI-2214`, `EVI-2293`, `EVI-2277`, `EVI-2208`
+- [CON-2069 — Preisrollen und Nulllinie](../RUNS/RUN-0077/RUN-0077.md#con-2069--preisrollen-und-nulllinie) · Registerstatus PARTIAL · `EVI-2207`, `EVI-2212`, `EVI-2219`, `EVI-2214`, `EVI-2297`, `EVI-2275`
+- [CON-2070 — Preisfrische, Wiederverbindung und Anzeige](../RUNS/RUN-0077/RUN-0077.md#con-2070--preisfrische-wiederverbindung-und-anzeige) · Registerstatus PARTIAL · `EVI-2219`, `EVI-2295`, `EVI-2297`
+- [CON-2071 — Volatilität, G17 und ursprüngliche GGE-Rechnung](../RUNS/RUN-0077/RUN-0077.md#con-2071--volatilität-g17-und-ursprüngliche-gge-rechnung) · Registerstatus PARTIAL · `EVI-2298`, `EVI-2299`, `EVI-2297`, `EVI-2203`, `EVI-2246`, `EVI-2213`, `EVI-2212`
+- [CON-2072 — Instrumentidentität an der unteren Volatilitätsübergabe](../RUNS/RUN-0077/RUN-0077.md#con-2072--instrumentidentität-an-der-unteren-volatilitätsübergabe) · Registerstatus PARTIAL · `EVI-2295`, `EVI-2296`, `EVI-2203`
+- [CON-2073 — Ranking vor Auswahl und Binding](../RUNS/RUN-0077/RUN-0077.md#con-2073--ranking-vor-auswahl-und-binding) · Registerstatus PARTIAL · `EVI-2213`, `EVI-2246`, `EVI-2245`, `EVI-2238`, `EVI-2220`
+- [CON-2074 — Residenz, Membership, Active Set und Kontinuität](../RUNS/RUN-0077/RUN-0077.md#con-2074--residenz-membership-active-set-und-kontinuität) · Registerstatus PARTIAL · `EVI-2221`, `EVI-2220`, `EVI-2222`, `EVI-2203`
+- [CON-2075 — Fünf vorbereitete Lanes und zunächst N1](../RUNS/RUN-0077/RUN-0077.md#con-2075--fünf-vorbereitete-lanes-und-zunächst-n1) · Registerstatus PARTIAL · `EVI-2206`, `EVI-2220`, `EVI-2221`, `EVI-2292`
+- [CON-2076 — A/B-Informationsgrenze auf Master-V2-Ebene](../RUNS/RUN-0077/RUN-0077.md#con-2076--ab-informationsgrenze-auf-master-v2-ebene) · Registerstatus PARTIAL · `EVI-2216`, `EVI-2214`, `EVI-2224`, `EVI-2294`, `EVI-2274`
+- [CON-2077 — L6-Zulassung und numerischer Wert sind getrennt](../RUNS/RUN-0077/RUN-0077.md#con-2077--l6-zulassung-und-numerischer-wert-sind-getrennt) · Registerstatus PARTIAL · `EVI-2216`, `EVI-2214`, `EVI-2224`
+- [CON-2078 — Survival, Suitability und Confirmation](../RUNS/RUN-0077/RUN-0077.md#con-2078--survival-suitability-und-confirmation) · Registerstatus PARTIAL · `EVI-2214`, `EVI-2204`, `EVI-2203`, `EVI-2270`
+- [CON-2079 — Treasury, Kapitalquelle und Reconciliation](../RUNS/RUN-0077/RUN-0077.md#con-2079--treasury-kapitalquelle-und-reconciliation) · Registerstatus PARTIAL · `EVI-2234`, `EVI-2235`, `EVI-2209`, `EVI-2214`, `EVI-2292`, `EVI-2240`
+- [CON-2080 — Sizing, Einheiten und Scope-Kopplung](../RUNS/RUN-0077/RUN-0077.md#con-2080--sizing-einheiten-und-scope-kopplung) · Registerstatus PARTIAL · `EVI-2235`, `EVI-2234`, `EVI-2240`, `EVI-2217`
+- [CON-2081 — Simulationskapital und Quellenrevision](../RUNS/RUN-0077/RUN-0077.md#con-2081--simulationskapital-und-quellenrevision) · Registerstatus PARTIAL · `EVI-2214`, `EVI-2295`, `EVI-2217`
+- [CON-2082 — Keychain/K1 und Treasury als gemeinsamer Dienst](../RUNS/RUN-0077/RUN-0077.md#con-2082--keychaink1-und-treasury-als-gemeinsamer-dienst) · Registerstatus PARTIAL · `EVI-2210`, `EVI-2209`, `EVI-2294`
+- [CON-2083 — Kill-All, persistenter Kill-Switch und Safety-Exit](../RUNS/RUN-0077/RUN-0077.md#con-2083--kill-all-persistenter-kill-switch-und-safety-exit) · Registerstatus PARTIAL · `EVI-2215`, `EVI-2223`, `EVI-2234`, `EVI-2214`
+- [CON-2084 — Safety-Producer, Drawdown und derselbe Tick](../RUNS/RUN-0077/RUN-0077.md#con-2084--safety-producer-drawdown-und-derselbe-tick) · Registerstatus PARTIAL · `EVI-2215`, `EVI-2223`, `EVI-2269`, `EVI-2217`, `EVI-2214`
+- [CON-2085 — F1/M9 und tatsächliche Veto-Präzedenz](../RUNS/RUN-0077/RUN-0077.md#con-2085--f1m9-und-tatsächliche-veto-präzedenz) · Registerstatus PARTIAL · `EVI-2224`, `EVI-2217`, `EVI-2214`, `EVI-2203`
+- [CON-2086 — Execution-Modi und vollständiger Handelslebenszyklus](../RUNS/RUN-0077/RUN-0077.md#con-2086--execution-modi-und-vollständiger-handelslebenszyklus) · Registerstatus PARTIAL · `EVI-2220`, `EVI-2295`, `EVI-2234`, `EVI-2240`, `EVI-2273`
+- [CON-2087 — Persistenz, Rotation und Wiederanlauf](../RUNS/RUN-0077/RUN-0077.md#con-2087--persistenz-rotation-und-wiederanlauf) · Registerstatus PARTIAL · `EVI-2292`, `EVI-2293`, `EVI-2221`, `EVI-2214`, `EVI-2234`
+- [CON-2088 — Owner-Run-Evidence und maschinelle Lernversorgung](../RUNS/RUN-0077/RUN-0077.md#con-2088--owner-run-evidence-und-maschinelle-lernversorgung) · Registerstatus PARTIAL · `EVI-2218`, `EVI-2263`, `EVI-2284`, `EVI-2209`
+- [CON-2089 — DDO: Erfassung, Outcome und Lernzustand](../RUNS/RUN-0077/RUN-0077.md#con-2089--ddo-erfassung-outcome-und-lernzustand) · Registerstatus PARTIAL · `EVI-2236`, `EVI-2237`, `EVI-2247`, `EVI-2256`, `EVI-2257`, `EVI-2284`, `EVI-2285`, `EVI-2269`, `EVI-2289`
+- [CON-2090 — N-Bars: entdeckter Seed, lokale Sperre und Ersatzteilweg](../RUNS/RUN-0077/RUN-0077.md#con-2090--n-bars-entdeckter-seed-lokale-sperre-und-ersatzteilweg) · Registerstatus PARTIAL · `EVI-2271`, `EVI-2272`, `EVI-2266`, `EVI-2267`, `EVI-2268`, `EVI-2295`, `EVI-2237`
+- [CON-2091 — Experimentidentität und konkrete Forschungsergebnisse](../RUNS/RUN-0077/RUN-0077.md#con-2091--experimentidentität-und-konkrete-forschungsergebnisse) · Registerstatus PARTIAL · `EVI-2253`, `EVI-2286`, `EVI-2259`, `EVI-2260`, `EVI-2249`, `EVI-2250`, `EVI-2205`
+- [CON-2092 — Frühe Research- und Parameterwege](../RUNS/RUN-0077/RUN-0077.md#con-2092--frühe-research--und-parameterwege) · Registerstatus PARTIAL · `EVI-2244`, `EVI-2255`, `EVI-2252`, `EVI-2250`, `EVI-2248`, `EVI-2254`, `EVI-2280`
+- [CON-2093 — Ursprüngliche Forschungsbausteine und seitliche Eingänge](../RUNS/RUN-0077/RUN-0077.md#con-2093--ursprüngliche-forschungsbausteine-und-seitliche-eingänge) · Registerstatus PARTIAL · `EVI-2279`, `EVI-2283`, `EVI-2285`, `EVI-2286`, `EVI-2287`, `EVI-2288`, `EVI-2282`, `EVI-2262`, `EVI-2264`
+- [CON-2094 — G2-Projektion und M4-Werteversorgung](../RUNS/RUN-0077/RUN-0077.md#con-2094--g2-projektion-und-m4-werteversorgung) · Registerstatus PARTIAL · `EVI-2211`, `EVI-2263`, `EVI-2258`, `EVI-2224`
+- [CON-2095 — Meta, Suchwirkung und nächster ausgeführter Versuch](../RUNS/RUN-0077/RUN-0077.md#con-2095--meta-suchwirkung-und-nächster-ausgeführter-versuch) · Registerstatus PARTIAL · `EVI-2261`, `EVI-2265`, `EVI-2251`, `EVI-2258`, `EVI-2295`, `EVI-2287`, `EVI-2224`
+- [CON-2096 — Market Intelligence und gemeinsame Outcome-Identität](../RUNS/RUN-0077/RUN-0077.md#con-2096--market-intelligence-und-gemeinsame-outcome-identität) · Registerstatus PARTIAL · `EVI-2211`, `EVI-2224`, `EVI-2274`, `EVI-2270`, `EVI-2245`
+- [CON-2097 — Vorschlag, Governance und tatsächliche Parameteranwendung](../RUNS/RUN-0077/RUN-0077.md#con-2097--vorschlag-governance-und-tatsächliche-parameteranwendung) · Registerstatus PARTIAL · `EVI-2211`, `EVI-2224`, `EVI-2216`, `EVI-2258`, `EVI-2293`, `EVI-2207`
+- [CON-2098 — Golden, Vector, Happy und beobachtende Nebenpfade](../RUNS/RUN-0077/RUN-0077.md#con-2098--golden-vector-happy-und-beobachtende-nebenpfade) · Registerstatus PARTIAL · `EVI-2241`, `EVI-2242`, `EVI-2243`, `EVI-2270`, `EVI-2232`, `EVI-2294`
+- [CON-2099 — Nachweise, historische Labels und Quellenzugang](../RUNS/RUN-0077/RUN-0077.md#con-2099--nachweise-historische-labels-und-quellenzugang) · Registerstatus PARTIAL · `EVI-2201`, `EVI-2202`, `EVI-2205`, `EVI-2204`, `EVI-2290`, `EVI-2291`, `EVI-2295`, `EVI-2269`, `EVI-2270`, `EVI-2299`, `EVI-2278`
+
+## Neue semantische Anschlussfragen
+
+- [CON-2100 — Gemeinsamer semantischer Kontext statt bloß gemeinsamer Digest](../RUNS/RUN-0077/RUN-0077.md#con-2100--gemeinsamer-semantischer-kontext-statt-bloß-gemeinsamer-digest) · GAP-0350 · UNPROVEN / DERIVED_INFERENCE
+- [CON-2101 — Nicht-Entry ist ein zensierter Beobachtungsfall](../RUNS/RUN-0077/RUN-0077.md#con-2101--nicht-entry-ist-ein-zensierter-beobachtungsfall) · GAP-0351 · UNPROVEN / DERIVED_INFERENCE
+- [CON-2102 — Scope-Änderungen brauchen ökonomische Identität](../RUNS/RUN-0077/RUN-0077.md#con-2102--scope-änderungen-brauchen-ökonomische-identität) · GAP-0352 · UNPROVEN / DERIVED_INFERENCE
+- [CON-2103 — Slot-Lebenszyklen haben verschiedene Enden](../RUNS/RUN-0077/RUN-0077.md#con-2103--slot-lebenszyklen-haben-verschiedene-enden) · GAP-0353 · UNPROVEN / DERIVED_INFERENCE
+- [CON-2104 — Credential-Schutz und Sicherheitsausstieg müssen gemeinsam passen](../RUNS/RUN-0077/RUN-0077.md#con-2104--credential-schutz-und-sicherheitsausstieg-müssen-gemeinsam-passen) · GAP-0354 · UNPROVEN / DERIVED_INFERENCE
+- [CON-2105 — Consumer-Wirkung benötigt eine gestufte Nachweiskette](../RUNS/RUN-0077/RUN-0077.md#con-2105--consumer-wirkung-benötigt-eine-gestufte-nachweiskette) · GAP-0355 · UNPROVEN / DERIVED_INFERENCE
+- [CON-2106 — Historische numerische Wege sind Wiederverwendungskandidaten](../RUNS/RUN-0077/RUN-0077.md#con-2106--historische-numerische-wege-sind-wiederverwendungskandidaten) · GAP-0356 · UNPROVEN / DERIVED_INFERENCE
+- [CON-2107 — Alte CONFLICT-Etiketten brauchen Aussagepaar und Scope](../RUNS/RUN-0077/RUN-0077.md#con-2107--alte-conflict-etiketten-brauchen-aussagepaar-und-scope) · GAP-0357 · UNPROVEN / DERIVED_INFERENCE
+
+## Grenzen
+
+Kein neuer Laufzeitnachweis, keine Produktänderung, keine Aktivierung und keine Zielarchitektur ratifiziert. End-to-End-Kette nach dem Umbau prüfen. Bestehender Pin und Originalberichte bleiben erhalten. VIEWER_NOT_VERIFIED für das neue Dokument; statische Referenzprüfung im Abschlussmanifest.

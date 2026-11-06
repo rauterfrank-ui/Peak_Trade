@@ -1,0 +1,37 @@
+{
+  "source_commit": "df6f5af25195e5d60d211ef93ae0747fa3958931",
+  "source_paths_sha256": {
+    "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py": "4238612026bfc34466d57eaf6617b54f7053c48e59673707f753614bb1fcd9a4",
+    "tests/experiments/test_representation_plan_required_context_v1.py": "fa3c6fac48f8937c66c1522f3d6795237cec4e467a9b1eef592a1f9923a87e08",
+    "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py": "a1c74a0b20ece32e3d67c81b283db430a4d91644d2b704357f35b3d0d1fed9eb"
+  },
+  "tests": {
+    "before": "10 FAIL",
+    "after": "37 PASS",
+    "positive_output": "Seven full known plans/digests IDENTICAL"
+  },
+  "boundaries": [
+    "Full upstream adaptation decision digest not independently revalidated in this scope",
+    "Real numeric evaluation and useful next adaptation remain open",
+    "U04/GAP-0370 deferred; no activation, original-ledger mutation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/representation_plan_required_context_v1_2026_11_04/README.md",
+      "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 201,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

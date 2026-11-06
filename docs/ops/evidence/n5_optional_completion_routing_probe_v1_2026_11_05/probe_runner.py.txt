@@ -1,0 +1,60 @@
+"""Control-flow-only probe: real orchestration/completion, mocked IO/cycle owners.
+
+This proves neither admission nor budget arithmetic nor actual N5 runtime. All
+publication, input validation, binding, market injection, cycles and host join
+are replaced before the real functions are invoked. No stores/transport run.
+"""
+from dataclasses import MISSING, fields
+from decimal import Decimal
+from pathlib import Path
+from types import SimpleNamespace
+import json,socket
+import pytest
+import src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.orchestrator_v1 as orch
+import src.ops.current_mf_n5_full_autonomy_runtime_n5_completion_v1.completion_join_v1 as completion
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import IsolatedLaneSlotV1
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import LANE_IDS,OCCUPANCY_OCCUPIED
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+
+OUT=Path(__file__).resolve().parent/'observations';OUT.mkdir(exist_ok=True)
+
+class BudgetObservationOnly:
+    def budget_state_v1(self):return SimpleNamespace(active_reservation_sum=Decimal('0'),admitted=False)
+
+@pytest.mark.parametrize('target',[1,5])
+@pytest.mark.parametrize('include',[False,True])
+def test_optional_completion_reenters_readiness_without_explicit_owner(monkeypatch,tmp_path,target,include):
+    def deny(*args,**kwargs):raise AssertionError('NETWORK_FORBIDDEN')
+    monkeypatch.setattr(socket.socket,'connect',deny)
+    pairs={}
+    for i,lane in enumerate(LANE_IDS[:target]):
+        slot=IsolatedLaneSlotV1(lane_id=lane,occupancy=OCCUPANCY_OCCUPIED,canonical_instrument_id='OFFLINE_'+str(i),lane_state_root=str(tmp_path/lane),universe_snapshot_id='OFFLINE',ranking_snapshot_id='OFFLINE',ranking_integrity_digest='a'*64)
+        required={f.name:'OFFLINE_'+f.name for f in fields(BoundInstrumentV1) if f.default is MISSING and f.default_factory is MISSING}
+        pairs[lane]=(slot,BoundInstrumentV1(**required))
+    owner=BudgetObservationOnly();calls=[]
+    def readiness_spy(composed_pairs,**kwargs):
+        calls.append(dict(lanes=sorted(composed_pairs),portfolio_owner_supplied='portfolio_budget_owner' in kwargs,owner_is_original=kwargs.get('portfolio_budget_owner') is owner))
+        return {lane:SimpleNamespace() for lane in composed_pairs}
+    monkeypatch.setattr(orch,'validate_membership_context_artifact_v1',lambda *a:None)
+    monkeypatch.setattr(orch,'pin_open_positions_in_membership_v1',lambda membership,**k:membership)
+    monkeypatch.setattr(orch,'publish_checked_lane_selections_v1',lambda **k:SimpleNamespace(selections={},topology=object(),resumed=False))
+    monkeypatch.setattr(orch,'bind_occupied_lane_cap24_n1_instruments_v1',lambda **k:{})
+    monkeypatch.setattr(orch,'admit_occupied_lane_bound_instruments_v1',lambda *a:object())
+    monkeypatch.setattr(orch,'compose_occupied_lane_mv2_dp_handoff_v1',lambda *a:object())
+    monkeypatch.setattr(orch,'_select_target_lanes',lambda *a,**k:pairs)
+    monkeypatch.setattr(orch,'_inject_cap24_lane_canonical_price_provenance_v1',lambda *a:None)
+    monkeypatch.setattr(orch,'_inject_cap24_lane_candles_payload_by_lane_v1',lambda *a:None)
+    monkeypatch.setattr(orch,'_rollup_from_readiness',lambda *a:())
+    monkeypatch.setattr(orch,'compose_occupied_lane_n1_host_join_readiness_v1',readiness_spy)
+    monkeypatch.setattr(completion,'compose_occupied_lane_n1_host_join_readiness_v1',readiness_spy)
+    monkeypatch.setattr(completion,'join_occupied_lane_host_activation_v1',lambda projections:{lane:SimpleNamespace(post_count=0,permit_created=False,external_effect_count=0,host_live_execution_port_present=False) for lane in projections})
+    context=orch.ProductiveFullAutonomyCap24BindContextV1(ranking_state_root=tmp_path/'ranking',universe_state_root=tmp_path/'universe',reconciliation_state_root=tmp_path/'reconciliation',observed_portfolio=object(),mark_price_by_native_id={},session_id='OFFLINE_ROUTING_ONLY',now_unix=0)
+    result=orch.run_productive_full_autonomy_n5_runtime_orchestrator_v1(membership=object(),ranking_snapshot={},topology_state_root_base=tmp_path/'topology',lane_assignment_writer=object(),cap24_bind=context,repository_sha='a'*40,producer_observed_at_unix=0,origin_main_sha='b'*40,target_cardinality=target,portfolio_budget_owner=owner,include_host_completion_rollup=include)
+    assert len(calls)==(2 if include else 1)
+    assert calls[0]['owner_is_original'] is True
+    if include:
+        assert calls[1]['portfolio_owner_supplied'] is False and calls[1]['owner_is_original'] is False
+        assert result.completion_result is not None
+    else:assert result.completion_result is None
+    observation=dict(target_cardinality=target,include_host_completion_rollup=include,readiness_calls=calls,readiness_call_count=len(calls),original_portfolio_owner_only_in_first_call=True,actual_budget_effect_tested=False,actual_admission_validated=False,actual_governed_cycles_executed=False,actual_host_join_executed=False,io_owners_mocked=True,productive_runtime_sessions=0,implementation_changed=False,scope='Real outer control flow and real optional completion function; boundary dependencies mocked. No original shared adapter identified by this probe.')
+    (OUT/(str(target)+'_'+str(include)+'.json')).write_text(json.dumps(observation,indent=2)+'\n')

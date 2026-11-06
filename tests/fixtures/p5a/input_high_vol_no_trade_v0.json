@@ -1,0 +1,32 @@
+{
+  "activation_authorized": false,
+  "asof_utc": "2026-02-11T11:02:19Z",
+  "decision": "NO_TRADE",
+  "live_authorized": false,
+  "no_trade": true,
+  "orders": [],
+  "p4c_outlook": {
+    "no_trade": true,
+    "no_trade_reasons": [
+      "VOL_EXTREME"
+    ],
+    "regime": "HIGH_VOL"
+  },
+  "reason": "Synthetic no-trade input for high-volatility P7 Shadow spec contract.",
+  "regime": "VOL_EXTREME",
+  "risk": {
+    "max_gross_exposure": 1,
+    "max_leverage": 1
+  },
+  "schema_version": "p5a.input.v0",
+  "scenario": "high_vol_no_trade",
+  "should_trade": false,
+  "testnet_authorized": false,
+  "timeframe": "1m",
+  "trade_allowed": false,
+  "universe": [
+    "BTC/USDT",
+    "ETH/USDT"
+  ],
+  "volatility_regime": "VOL_EXTREME"
+}

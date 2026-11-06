@@ -1,0 +1,11 @@
+docs/ops/EVIDENCE_INDEX.md
+docs/ops/roadmap/CURRENT_FOCUS.md
+docs/ops/runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md
+docs/ops/runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md
+scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py
+src/ops/step_29u_activation_eligibility_inventory_v0.py
+src/ops/step_29u_audit_provenance_v0.py
+src/ops/step_29u_economic_validity_readiness_v0.py
+tests/ops/test_step_29u_activation_eligibility_inventory_v0.py
+tests/ops/test_step_29u_audit_provenance_v0.py
+tests/ops/test_step_29u_economic_validity_readiness_v0.py

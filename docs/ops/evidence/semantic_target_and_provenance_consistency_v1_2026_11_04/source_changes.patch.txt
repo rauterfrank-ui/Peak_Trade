@@ -1,0 +1,76 @@
+diff --git a/src/experiments/canonical_advanced_search_v1.py b/src/experiments/canonical_advanced_search_v1.py
+index 09de7605e..a6071a554 100644
+--- a/src/experiments/canonical_advanced_search_v1.py
++++ b/src/experiments/canonical_advanced_search_v1.py
+@@ -1270,7 +1270,7 @@ def _signal_applies(
+     target_kind = str(signal["target_kind"])
+     if target_kind == "strategy_family":
+         return target == strategy_family
+-    if target_kind == "search_space_id":
++    if target_kind in {"search_space", "search_space_id"}:
+         return target == search_space_id
+     if target_kind == "hypothesis_kind":
+         return target == hypothesis_kind
+@@ -1280,7 +1280,9 @@ def _signal_applies(
+         return target in {str(value) for value in parameter_region.values()} or target in {
+             f"{key}={value}" for key, value in parameter_region.items()
+         }
+-    return target in {strategy_family, search_space_id, hypothesis_kind}
++    # Equal text does not make a metric, regime, cost model or research path a
++    # candidate identity target. Those proposals need their own consumer seam.
++    return False
+ 
+ 
+ def _offline_request(
+diff --git a/src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py b/src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py
+index 89f996759..acf7fc5ca 100644
+--- a/src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py
++++ b/src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py
+@@ -272,6 +272,11 @@ def build_learning_evidence_record_v1(payload: Mapping[str, Any]) -> MappingProx
+         raise DdoValidationError("LEARNING_EVIDENCE_PROVENANCE_DIGEST_UNKNOWN_FORBIDDEN")
+     if canonical["outcome_semantic_class"] != canonical["evidence_pool_class"]:
+         raise DdoValidationError("LEARNING_EVIDENCE_POOL_CLASS_MISMATCH")
++    if (
++        canonical["outcome_semantic_class"]
++        != canonical["outcome_evidence_provenance"]["outcome_semantic_class"]
++    ):
++        raise DdoValidationError("LEARNING_EVIDENCE_OUTCOME_SEMANTIC_CLASS_MISMATCH")
+     if (
+         str(canonical["outcome_evidence_provenance"]["provenance_digest"])
+         != canonical["outcome_evidence_provenance_digest"]
+diff --git a/src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py b/src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py
+index 524dd1c20..11f1da6d4 100644
+--- a/src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py
++++ b/src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py
+@@ -42,7 +42,6 @@ def evaluate_optimization_provenance_eligibility_v1(
+     provenance = validate_outcome_evidence_provenance_v1(block)
+     oclass = str(provenance["outcome_semantic_class"])
+     digest = str(provenance["provenance_digest"])
+-    pool = oclass
+     status = str(provenance["provenance_status"])
+     if status in {"UNKNOWN", "AMBIGUOUS"}:
+         return OptimizationEligibilityResultV1(
+@@ -60,6 +59,23 @@ def evaluate_optimization_provenance_eligibility_v1(
+             provenance_digest=digest,
+             evidence_pool_class=pool,
+         )
++    if learning_evidence.get("outcome_semantic_class") != oclass:
++        return OptimizationEligibilityResultV1(
++            admitted=False,
++            reason_code="OUTCOME_SEMANTIC_CLASS_MISMATCH",
++            outcome_semantic_class=oclass,
++            provenance_digest=digest,
++            evidence_pool_class=pool,
++        )
++    declared_digest = learning_evidence.get("outcome_evidence_provenance_digest")
++    if declared_digest is not None and declared_digest != digest:
++        return OptimizationEligibilityResultV1(
++            admitted=False,
++            reason_code="PROVENANCE_DIGEST_MISMATCH",
++            outcome_semantic_class=oclass,
++            provenance_digest=digest,
++            evidence_pool_class=pool,
++        )
+     if pool != oclass:
+         return OptimizationEligibilityResultV1(
+             admitted=False,

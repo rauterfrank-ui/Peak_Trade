@@ -1,0 +1,19 @@
+{
+  "checks": {
+    "blocked_same_side_reentry_count": 381,
+    "control_max_drawdown": -0.013815589641896126,
+    "control_net_profit_factor": 0.9239374016390719,
+    "control_net_return": -0.002457298566155952,
+    "exit_fills_identical": true,
+    "max_drawdown_operator": "treatment >= control (signed negative)",
+    "net_profit_factor_operator": ">=",
+    "reentry_divergence_observed": true,
+    "treatment_max_drawdown": -0.0077487894472226815,
+    "treatment_net_profit_factor": 1.0188317187880584,
+    "treatment_net_return": 0.0003498214760822016
+  },
+  "economic_verdict": "PASS",
+  "evaluable": true,
+  "reason": "ALL_PASS_REQUIRES_MET",
+  "result_class": "PASS"
+}

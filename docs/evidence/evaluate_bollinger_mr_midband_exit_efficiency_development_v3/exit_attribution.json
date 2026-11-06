@@ -1,0 +1,19 @@
+{
+  "baseline": {
+    "exit_bars_observed": 0,
+    "exit_efficiency_gate_enabled": false,
+    "exits_forced_by_gate": 0,
+    "instruments_with_forced_exits_count": 0
+  },
+  "exit_divergence_observed": false,
+  "exit_reasons_differ": false,
+  "exit_time_differs": false,
+  "exits_forced_by_gate": 0,
+  "trade_count_differs": false,
+  "treatment": {
+    "exit_bars_observed": 0,
+    "exit_efficiency_gate_enabled": true,
+    "exits_forced_by_gate": 0,
+    "instruments_with_forced_exits_count": 0
+  }
+}

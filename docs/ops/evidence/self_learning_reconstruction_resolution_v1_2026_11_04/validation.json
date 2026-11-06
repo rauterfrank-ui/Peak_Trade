@@ -1,0 +1,15 @@
+{
+  "resolution_questions": 24,
+  "unique_source_requirements": 31,
+  "historical_program_syntax": "4 PASS; none executed",
+  "copied_artifact_hashes": "PASS",
+  "referenced_evidence_packages": "ALL_PRESENT",
+  "implementation_vs_source_commit": "UNCHANGED_src_tests_config_scripts",
+  "scope_sha256": "PASS",
+  "protected_ledger_sha256": "PASS",
+  "canvas_typescript": "NO_ERRORS",
+  "canvas_visual_render": "NOT_PERFORMED",
+  "documentation_checks": "5 Markdown files;251 references;PASS",
+  "atlas_validation": "PASS",
+  "new_product_tests": "NONE; bounded prior results source-bound and reused"
+}

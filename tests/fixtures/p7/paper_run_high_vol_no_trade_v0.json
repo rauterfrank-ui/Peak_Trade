@@ -1,0 +1,34 @@
+{
+  "activation_authorized": false,
+  "asof_utc": "2026-02-11T13:40:00Z",
+  "broker_authorized": false,
+  "daemon_authorized": false,
+  "decision": "NO_TRADE",
+  "exchange_authorized": false,
+  "expected_fills": [],
+  "expected_positions": {
+    "BTC": 0.0
+  },
+  "fee_rate": 0.001,
+  "initial_cash": 1000.0,
+  "live_authorized": false,
+  "mid_prices": {
+    "BTC": 100.0
+  },
+  "notes": [
+    "empty_fills_expected",
+    "flat_account_expected",
+    "offline_spec_contract_only"
+  ],
+  "order_submission_authorized": false,
+  "orders": [],
+  "profile": "high_vol_no_trade",
+  "scenario": "high_vol_no_trade",
+  "scheduler_authorized": false,
+  "schema_version": "p7.paper_run.v0",
+  "should_trade": false,
+  "slippage_bps": 10.0,
+  "testnet_authorized": false,
+  "timeframe": "1m",
+  "trade_allowed": false
+}

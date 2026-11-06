@@ -1,0 +1,9 @@
+### CON-2084 — Safety-Producer, Drawdown und derselbe Tick
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Host-Drawdown-Produktion bis Safety bleibt offen; ein Defaultwert beweist keine Messung. Negative relative Drawdowns, positive absolute Beträge, Prozentwerte und Brüche werden nicht automatisch verglichen. Ein historischer Autotrigger wurde als unverdrahtet entfernt. Entry/Exit kann next_side_state verwenden, während Safety-/Kill-Binder noch inp.side_state lesen.
+
+**Grenze:** Ein pauschales Fail-Closed-Label beweist weder passende Einheit noch wirksame Reihenfolge. Kein automatisches Resume, kein durch Lernen freigegebener Kill-Reset. Konkrete Consumer-/Tick-Semantik nach Umbau nachweisen.
+
+Quellen: EVI-2215, EVI-2223, EVI-2269, EVI-2217, EVI-2214.

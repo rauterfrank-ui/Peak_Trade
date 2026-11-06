@@ -1,0 +1,325 @@
+PEAKTRADE – FUTURE-PREIS → GGE → DYNAMIC SCOPE → DOUBLE PLAY
+02.11.2026 · Quellengebundene Rekonstruktion · keine Integrationsfreigabe
+
+AKTUELLE FACHLICHE AUSGANGSBASIS
+
+Frank hat in diesem Chat klargestellt:
+Die Nulllinie repräsentiert laufend den aktuellen Marktpreis genau des
+betreffenden Futures. Von dieser Preisbasis aus wird der Scope für beide
+Richtungen berechnet. Alle vorgesehenen L1–L10-Phasen, Adapter und
+Eintrittsvoraussetzungen sind dabei einzubeziehen.
+
+Dies ist die aktuelle fachliche Arbeitsvorgabe. Eine feste Zweistundenregel
+wird nicht daraus abgeleitet. L1–L10 und ihre verschiedenen Zustände sind
+keine Fehleranzeichen. Weitere Integrationsänderungen wurden gestoppt.
+
+KORREKTUR DER BISHERIGEN EINORDNUNG
+
+Die frühere Aussage „NullLine bleibt fest“ beschrieb einen gelesenen
+Codezustand und einen späteren historischen Auftrag. Sie war kein Beleg
+der allerersten fachlichen Absicht. Diesen Stand als Zielbild zu behandeln
+war zu weitgehend. Die aktuelle Anforderung wird nicht an diese Architektur
+angepasst, und das Feld L5.nullline_price wird nicht ungeprüft verändert.
+
+Der wesentliche Bedeutungsunterschied ist jetzt ausdrücklich sichtbar:
+- M_t / mark_px: laufend übergebener Preis im Runtime-Cycle.
+- L5.nullline_price: im gelesenen Code gespeicherte Initialpreisbasis.
+- R_t: laufende Referenz zur Messung von Gegenbewegungen.
+- D_t: Scope-Distanz.
+
+Das vorhandene Register führt M_t ↔ L5.nullline_price bereits als
+unk_mt_l5_nullline_identity / UNKNOWN_RELATION. Die Gleichheit ist dort
+ausdrücklich offen. Ein Feldname beweist keine gemeinsame Bedeutung.
+Auch ein eingefrorener Kandidaten-Abstand während einer Bestätigungsphase
+wäre ein weiterer, davon zu unterscheidender Freeze-Mechanismus.
+
+HISTORISCHE BELEGE UND VARIANTEN
+
+Gezielt gelesene Originalnachrichten aus lokalen Cursor-Transkripten:
+
+21.09.2026, 22:59/23:12, Chat 98e2f4e…, Zeilen 51/94:
+Nulllinie folgt der aktuellen Marktbewegung; neutral hinsichtlich Richtung.
+Peak/Trough bzw. R_t ist eine gesonderte nachgeführte Referenz. Günstige
+Bewegung soll in BULL/BEAR nicht durch eine Gewinnrichtungsgrenze gedeckelt
+werden. Beide Richtungen beziehen sich auf denselben ausgewählten Future.
+
+21.09.2026, spätere Ergänzungen, Zeilen 127/167/188:
+Zunächst σ×M als Scope-Skala beschrieben, danach die endgültige
+Kalibrierungsrichtung wieder geöffnet. Direct, inverse und fixed wurden
+nicht als endgültig ratifiziert. Eine während Confirmation eingefrorene
+Kandidaten-Distanz wurde als eigene Semantik beschrieben.
+Ein früher Zwischenstand ersetzt daher keine endgültige Formelentscheidung.
+
+22.09.2026, 01:03, Chat 35b23b25…, Zeile 1:
+L1–L10 explizit beauftragt. Keine Ebene überspringen oder zusammenziehen.
+NullLine, Dynamic Scope, Running Reference und Counter Move trennen.
+L6 austauschbar, finale D_t-Formel offen, V1 darf gültiges externes D_t
+validieren/durchreichen. L4 etabliert BULL/BEAR, L5 initiale Preisbasis.
+
+23.10.2026, 03:58/04:06, Chat 511bc98b…, Zeilen 2/31:
+Erst erneut laufende Nulllinie beschrieben. Danach wurden ein fixierter
+geometrischer Anker plus laufender separater Preis ausdrücklich als
+unverifizierte Architekturhypothese zur Untersuchung offengelassen.
+Keine dieser historischen Nachrichten ist ein neuer auszuführender Auftrag.
+Die heutige Klarstellung ist die aktuelle Arbeitsvorgabe.
+
+Die zehn gelesenen L1–L10-Dateien sind bytegleich zum verfügbaren historischen
+Stand 59a9756215ba796ff2e463f70f3627cc6787d7af aus PR 6718.
+Das bestätigt erhaltenen Code, nicht einen damaligen oder heutigen
+vollständigen Betrieb. Der Git-Verlauf ist shallow; kein allererster Ursprung
+und keine Erfassung aller Entwürfe oder Cursor-Gespräche wird behauptet.
+
+PREISEINGANG UND ZWEI GETRENNTE INPUT-STRÄNGE
+
+Aktueller Mark-Preis:
+
+EEA-Public-GET-Transport
+→ /api/v5/public/mark-price
+→ entweder Universums-Snapshot FUTURES/SWAP oder instrumentgebundener Poll
+→ ausgewähltes Future aus Cap21/22/23/24 und Native-ID
+→ extract_mark_and_index_from_payload_v1 sucht passende instId
+→ markPx als mark_px, Index separat
+→ Provenienzprüfung auf Instrument, Preis-Klasse und Wert
+→ Runtime-Cycle mit M_t / current_price / CMC.mark_price.
+
+Die Quelle liefert hier einen MARK-Preis. Letzter Handelspreis und echte
+Geld-/Briefkurse sind fachlich andere Werte. Dass diese Mark-Quelle die
+endgültige Bedeutung von Franks „tatsächlichem Marktpreis“ vollständig
+erfüllt, wird nicht allein aus der heutigen Namensgebung abgeleitet.
+
+Historische Mark-Reihe für Volatilität:
+
+/api/v5/market/history-mark-price-candles
+→ Economic-MD-Parser: Kerzenzeit, Mark-Close, confirm
+→ finale zusammenhängende PT1M-Reihe, älteste bis neueste Beobachtung
+→ expliziter G17-Sample-Adapter
+→ Instrument-/Reihenfolge-/Distinct-Akzeptanz und Mark-History-Checkpoint
+→ 61 zusammenhängende Preise / 60 logarithmische Minutenrenditen
+→ Materializer
+→ CanonicalVolatilityEstimate mit Wert, Einheit und As-of
+→ G17-to-CMC-Bind
+→ typisierter CMC-Carrier und validierter Float-Adapter.
+
+Gewöhnliche Handels-Candles bilden einen weiteren Eingang für Features und
+in einem Layered-Initialisierungsadapter für die anfängliche Beobachtungsfolge.
+Sie sind weder aktuelle Mark-Quote noch die ausdrücklich typisierte
+G17-Mark-Volatilitätsreihe. Auch diese drei Rollen bleiben getrennt.
+
+Im Host werden Features zuerst berechnet; bei erfolgreichem G17-Bind wird
+der CMC-Volatilitätswert durch den typisierten Schätzerwert gebunden.
+Eligibility-, Presence- und gegebenenfalls Parameter-/Authority-Gates liegen
+zwischen Datenvorhandensein und wirksamer Verwendung. Dateiexistenz allein
+beweist keine Zulassung oder tatsächlich ausgeführte Produktionskette.
+
+WAS DER GELESENE GGE-WEG TATSÄCHLICH BERECHNET
+
+Aktueller Ist-Vertrag für σ:
+ r_i = ln(P_i / P_(i-1))
+ μ = Mittelwert der 60 Renditen
+ σ = sqrt(sum((r_i - μ)^2) / 60)
+
+Population-Standardabweichung, ddof=0, keine Annualisierung.
+Einheit: PER_BAR_DECIMAL_RETURN_VOLATILITY.
+Der beobachtete Float-Adapter übernimmt diesen Wert ohne zusätzliche
+Multiplikation, Prozentumrechnung oder Zeitskalierung.
+
+Der heute implementierte GGE-Kontrollweg berechnet:
+ G = σ × M
+ G ist eine Distanz in derselben Preiseinheit wie M.
+
+Der nachvollzogene Auftrag vom 06.10.2026 (Commit 4e4711452…) konsolidierte
+diese schon vorher inline vorhandene Multiplikation in einem GGE-Owner.
+Ein weiterer Wiring-Commit und dessen Rücknahme sind eigene historische
+Varianten; heutige Berechnung ist kein Beweis endgültiger Kalibrierungsabsicht.
+
+Von GGE nach L6/L7:
+CMC
+→ compute_raw_volatility_times_price_scope_distance_v1 (GGE-Wrapper)
+→ ExplicitDtProposalV1 mit Wert, Instrument und Provenienz
+→ P4-Validierung / Transport
+→ MechanicalStepSpecV1.proposed_d_t
+→ L6 ExplicitPassthroughDynamicScopeGeneratorV1
+→ L7 ScopeStateV1.
+
+L6 berechnet in dieser V1 keine zusätzliche Scope-Formel; es validiert den
+angelieferten Abstand. Wiederholte GGE-/Adapter-Aufrufe in verschiedenen
+Consumern dürfen nicht als mehrfach hintereinander multiplizierte Formel
+interpretiert werden. Der Aufruftrace bindet jeden Eingang/Ausgang einzeln.
+
+L1–L10: AUFGABEN, VORAUSSETZUNGEN UND WIRKUNG
+
+L1 Selected Future:
+Ein bestimmtes Future mitsamt Canonical-ID, Native-ID und Venue binden.
+Output ist der instrumentgebundene Ausgangskontext.
+
+L2 Market Observation:
+Beobachtung für dieses Instrument akzeptieren. DISTINCT-Beobachtungen
+schreiben die Akzeptanz fort; Duplikate und Reihenfolge sind eigene Fälle.
+Das ist ein Identitäts-/Fortschrittsvertrag, kein alleiniger Nachweis
+beliebiger Echtzeit-Latenz oder ununterbrochener Datenversorgung.
+
+L3 Initial Direction:
+Akzeptierte aufeinanderfolgende unterschiedliche Preise vergleichen.
+Steigend BULL, fallend BEAR. Ohne verwertbare Richtung kein Start von L4/L5.
+
+L4 Initial State:
+BULL/BEAR initial etablieren. Diese Initialisierung ist nicht bereits
+ein ausgeführter Börseneinstieg. Order-/Entry-Gates liegen außerhalb des
+nackten mechanischen Kernschritts.
+
+L5 NullLine / Initial Price Basis im heutigen Code:
+Initialisierungspreis und zugehörige Epoche speichern. Dieser Zustand bleibt
+in der gelesenen Schichtenkonstruktion erhalten. Seine Beziehung zur von
+Frank bezeichneten laufenden Nulllinie M_t ist gerade zu klären.
+
+L6 Dynamic Scope Generator:
+Explizites D_t über austauschbaren Generator validieren. Fehlend/ungültig:
+kein gültiger L7-Scope, nachfolgende mechanische Ebenen werden nicht erreicht.
+
+L7 Scope State:
+Eigenen Scope-Zustand aus gültigem D_t plus L5-Bezug/Provenienz bilden.
+Hier entsteht keine eigene Bull/Bear-Switch-Autorität.
+
+L8 Running Reference:
+BULL: R_t=max(previous R_t,M_t).
+BEAR: R_t=min(previous R_t,M_t).
+Damit wird die Referenz in günstiger Richtung nachgeführt, bei
+Gegenbewegung gehalten. M_t bleibt davon ein eigener aktueller Eingang.
+
+L9 Counter Move:
+BULL: CM_t=max(0,R_t-M_t).
+BEAR: CM_t=max(0,M_t-R_t).
+Gegenbewegung ist eine Preisdistanz; sie ersetzt weder Marktpreis noch Scope.
+
+L10 Bull/Bear State Switch:
+Mechanischer Vergleich CM_t >= D_t; bei Erreichen Regime spiegeln und
+R_t für den neuen Zustand auf M_t zurücksetzen. Die reine L10-Funktion
+enthält keine komplette Order-, Entry-/Exit-, Safety- oder Confirmation-Kette.
+
+„Beide Richtungen“ bezeichnet in den gefundenen historischen Beschreibungen
+auch die Spiegelung von BULL und BEAR auf demselben Future. Daraus wird
+keine zusätzliche Gewinnrichtungsbegrenzung oder symmetrische Take-Profit-
+Wand erfunden. Die genaue Geometrie gehört zum abzugleichenden Vertrag.
+
+ZUSTAND UND LAUFZEIT-ZWEIGE
+
+Bootstrap / kein Layered-Bind:
+CMC → Scope-Initialisierung → Snapshot → DynamicScopeRules
+→ Runtime-State-Seed/Restore → update_dynamic_boundaries mit GGE und Clamp
+→ Layer-C-Distanzen → deterministisches Scope-Ereignis
+→ Zustandswechsel → erneutes Trailing → ausgehender Cursor.
+
+Dieser Zweig besitzt eigene historischen Band-/Threshold-Verträge. Der
+aktuelle instrumentrelative Initialisierungspfad verwendet den rohen GGE-
+Abstand; andere Policy-Varianten haben andere Begrenzungsregeln.
+
+Layered-Bind bei vorhandenem Scope und passendem Store:
+Vorheriger Scope/SideState/Bestätigungs-Cursor wird wiederhergestellt.
+Expliziter Bind-Request → GGE/Proposal → P5-Seam.
+Eine neue Episode initialisiert L1–L5; laufende mechanische Schritte
+verarbeiten L6–L10. Episode wird separat persistiert, Seal ausgestellt.
+CZ4 delegiert die alten Scope-/Transition-Schreiber; die kanonische
+Zustandsübergabe und der Host-Cursor sind danach eigene Übergabegrenzen.
+
+Die Bind-Hilfe fordert diesen Weg erst bei Store und vorhandenem Scope-
+Carrier an. Ein Codepfad oder ein gesetztes ENABLED-Flag beweist daher
+nicht, dass jeder Start, jeder Caller oder ein beobachteter Live-Run ihn nutzt.
+
+Zusätzliche Verbraucher:
+Layer-C bildet aus einer Distanz Up=D, Adverse=0,4D, Reversal=0,6D.
+Unter anderem werden Adverse-Distanzen auch an Schutz-/Sizing-Kontexte
+weitergereicht. Diese Übergaben sind von der nackten L10-Mechanik zu trennen.
+Ihre fachliche Autorität wird nicht durch das gemeinsame Wort Scope bewiesen.
+
+AUFGEZEICHNETE OFFLINE-WIRKUNG
+
+trace002 enthält drei vollständige konstruierte Host-Fälle:
+1. erster Cycle ohne Layered-Request;
+2. wiederhergestellter Cursor mit explizitem Layered-Request;
+3. weiterer Schritt mit geändertem Testpreis.
+Alle drei enden im lokalen Fixture mit replay_pass=true, ohne input_blocker.
+Das sind keine echten aktuellen Marktquotierungen oder produktiven Runs.
+
+σ wurde zusätzlich unabhängig aus der Test-Historie berechnet und stimmt
+mit dem vorhandenen Schätzer überein:
+ σ = 0.0010665792636619144
+ M = 1630 → G = 1.7385241997689205
+ M = 1793 → G = 1.9123766197458127.
+
+Bei geändertem Testpreis wird die neue Distanz über Proposal/L6 an L7
+weitergegeben. R steigt auf 1793, CM bleibt 0, daher kein BULL→BEAR.
+Die separat persistierte L5-Initialpreisbasis bleibt in diesem Beispiel 1010.
+Ein anderer Kompatibilitäts-Consumer liest noch das vorige Runtime-Band
+1.7385241997689205. Verschiedene Rollen sind damit beobachtet; eine
+unerwünschte Gesamtwirkung oder Fehlerklasse ist damit nicht entschieden.
+
+19 vorhandene Phasentests bestanden: Voraussetzungen/Initialisierung,
+fehlendes D_t, austauschbarer Generator, mitwanderndes R bei eigener
+L5-Preisbasis, BULL/BEAR-Spiegelung und deterministischer Ablauf.
+Der Evidence-Schreibtest und ein nicht benötigter Git-Diff-Test wurden
+ausgeschlossen, um bestehende Artefakte und fremde Arbeit zu erhalten.
+Kein redundanter Re-Run zur Belegsiegelung.
+
+PREISZEIT UND ANZEIGE: GETRENNTE BELEGGRENZEN
+
+Der zuvor konstruierte Preiszeit-Gegencheck bleibt ein Befund am konkreten
+Host-Eingang: Die Provenienz hat keinen ursprünglichen Preis-Zeitstempel.
+Er beweist keine allgemeine Abwesenheit aller Frischeprüfungen.
+Es existiert beispielsweise ein eigener Public-MD-Freshness-Owner; dessen
+Vorhandensein beweist wiederum nicht seine aktive Vorschaltung vor jedem
+untersuchten Scope-Consumer. Das ist anhand des gewählten Pfads zu binden.
+
+In gelesenen Anzeige-/Readmodel-Pfaden wird live_mark_price separat von
+Candle-Close und Scope-Identität geführt, teils einschließlich Provider-ts.
+Die Scope-Projektion allein führt überwiegend Lifecycle-/Ref-Felder.
+Ein laufender Preis und ein zugehöriger Scope können daher verschiedene
+Darstellungswege haben. Eine kontinuierlich gemeinsame Anzeige wurde nicht
+beobachtet. Einige gelesene UI-Dateien liegen nur in dieser älteren
+Arbeitskopie, nicht auf origin/main. Keine aktive UI daraus abgeleitet.
+
+In einem separat gelesenen Upstream-Entry-Caller fehlt zudem ein inzwischen
+erforderliches economic_md_public_source-Argument. inspect.signature.bind
+bestätigt den fehlenden Parameter ohne Netzwerk oder Ausführung dieses
+Entrypfads. Das bleibt ein eigener Erreichbarkeitsbefund; die erfolgreichen
+unteren Host-Fixtures schließen diese Eingangsabhängigkeit nicht automatisch.
+Keine zusätzliche Reparatur wurde daraus abgeleitet.
+
+PRÜFSTAND, HERKUNFT UND NÄCHSTE ENTSCHEIDUNG
+
+Arbeitskopie HEAD 242b7974fc93f0bdb47706556101bd6f0c497414;
+origin/main 5d1c838c15369507c5247834db4dd0df25592169, frisch abgeglichen.
+49 Quelldateien samt Symbolen/Zeilen/Hashes in source-evidence.json.
+GGE und die untersuchten Layer-Dateien entsprechen origin/main; der
+Runtime-Host hat dort weitere Positions-/CRS-Änderungen. Die Offline-Traces
+gelten für diese gebundene Arbeitskopie und nicht pauschal für origin/main.
+Der bestehende GHV-Gesamtgraph bleibt REFERENCE_ONLY/NOT_PROVEN.
+
+Seit Beginn der vollständigen Flow-Rekonstruktion keine Integrations- oder
+Trading-Codeänderung. Die zuvor entstandenen zwei neuen Research-Dateien
+bleiben isolierte Offline-Quelladapter/Tests ohne produktive Anbindung.
+Die vorbestehenden Änderungen und bisherigen Prototyp-Dateien sind hashgleich.
+Keine Orders, Markt-GETs, Credentials, Dienste, Commits, Pushes oder neue
+Obsidian-Runs. Frühere Archivfälle bleiben historische Belege.
+
+Vor einer neuen Reparatur ist die semantische Zuordnung zu schließen:
+Welche Codegröße bildet Franks laufende Nulllinie tatsächlich ab, welche
+Rolle behält L5, wie gehen aktuelle Preisbasis/GGE-Distanz/R_t zusammen in
+die beiden Richtungsfälle ein, und welche Update-/Frische-/Confirmation-
+Verträge gelten an den tatsächlich gewählten Consumern?
+
+Das ist eine Rekonstruktion mit prüfbaren Zwischenergebnissen. Sie ratifiziert
+keine endgültige Scope-Formel, keine Fixed-Horizon-Regel und keine allgemeine
+Betriebsbereitschaft. Bestehende Layer oder Freeze-Zustände werden nicht
+ohne ihren Phasenvertrag als Fehler bewertet.
+
+CAUSAL_MODE=READ_ONLY_PRICE_GGE_SCOPE_PHASE_RECONSTRUCTION
+WORKING_MODEL_DRIFT=NONE_WITHIN_BOUND_CODE_SCOPE;TARGET_SEMANTICS_REMAIN_TO_BE_MAPPED
+FIXPOINT_STATUS=OPEN_AT_REQUIREMENT_TO_CONSUMER_MAPPING
+GHV_GRAPH_STATUS=NOT_PROVEN_REFERENCE_ONLY
+COVERAGE=49_FILES;8_HISTORICAL_REQUESTS;3_CONSTRUCTED_HOST_TRACES;19_PHASE_TESTS
+ISOLATION=NOT_PROVEN_GLOBALLY
+EVIDENCE_INTEGRITY_V1=BOUNDED_SOURCE_AND_FIXTURE_BINDING
+RESULT=NOT_PROVEN_FOR_COMPLETE_LIVE_PRICE_SCOPE_AND_DISPLAY_FUNCTION
+FINANCIAL_GUARANTEE=NONE
+CAPITAL_SAFETY_GATE=CLOSED_NO_RELEASE
+NEXT_SAFE_ACTION=FINISH_SEMANTIC_MAPPING_BEFORE_ANY_FURTHER_INTEGRATION

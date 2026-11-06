@@ -1,0 +1,18 @@
+{
+  "btc_excluded": true,
+  "canonical_step_29u_reference": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md##STEP_29U",
+  "capability_id": "STEP_29U_OFFLINE_CAPABILITY_V0",
+  "effective_at": "1970-01-01T00:00:00Z",
+  "instrument_class": "USDT_PERPETUAL_FUTURES",
+  "instrument_id": "ETH-USD_UM_XPERP-310404",
+  "mode": "SHADOW_OFFLINE",
+  "network_runtime_allowed": false,
+  "orders_allowed": false,
+  "runtime_activation_allowed": false,
+  "scheduler_allowed": false,
+  "schema_id": "ops.step_29u_offline_capability_v0",
+  "schema_version": "v0",
+  "source_git_sha": "237cfe07850d9a579f73f596bb4df18adddfbe69",
+  "spot_excluded": true,
+  "venue": "OKX"
+}

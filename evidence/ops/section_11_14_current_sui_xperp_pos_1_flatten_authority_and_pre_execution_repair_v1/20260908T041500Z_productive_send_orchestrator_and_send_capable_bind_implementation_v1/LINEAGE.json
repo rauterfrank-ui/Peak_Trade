@@ -1,0 +1,9 @@
+{
+  "bound_envelope_origin_main_sha": "565cee16783ba0a3f1aea606626bf6418bad21e8",
+  "exact_envelope_id": "76f0ad245070206d7fe8807fca8d130dbdedbdc3969e7ba42f23ca88901c164a",
+  "instrument_id": "SUI-USD_UM_XPERP-310404",
+  "mint_authority_hash": "5a4e7c422a5b4a97677e86c161916d65e4d645a7fb00e7a167b588cb429727c5",
+  "mint_authority_id": "5ae31e1f63ae07eb3abea0989fa549a95d9dcba1cd0dda04aa04ce454b32355f",
+  "origin_main_sha": "dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1",
+  "spec_commit": "f48dcd3f9294d17f6199afc5e4a12ef7fe979e65"
+}

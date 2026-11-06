@@ -1,0 +1,116 @@
+{
+  "authority_effect": "NONE",
+  "corrected_evidence_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001500Z",
+  "dataset_content_digest_sha256": "7b301d5804476ac9cc03dac668a8505573a595c1e5df6c104fb90e2df1509dfe",
+  "decision_epochs": 1989540,
+  "economic_interpretation_supersession": {
+    "old_v3_superseded_for_economic_interpretation": true,
+    "reason": "PROVEN_REPLAY_STATE_DEFECT_STALE_MV2_CRS_POSITION_TRUTH",
+    "supersedes_artifact": "SUPERSEDES_DEFECTIVE_V3_ECONOMIC_INTERPRETATION_V1.json"
+  },
+  "exposure_amplification_proof": {
+    "corrected_unintended_exposure_amplification_count": 0,
+    "old_v3_artifact_not_recomputed": true,
+    "proof_basis": "POSITION_STATE_TRUTH_REQUALIFICATION_AUDIT_V1.json on full corrected replay"
+  },
+  "old_defective_v3_evidence_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_funding_archive_20261010T124700Z",
+  "position_state_reconciliation": {
+    "corrected_false_repeated_new_entry_count": 0,
+    "corrected_position_state_reconciliation_pass": true,
+    "corrected_round_trip_initial_vs_max_abs": [
+      {
+        "direction": "LONG",
+        "initial_quantity": "4.07",
+        "max_abs_quantity": "4.07",
+        "round_trip_id": 1
+      }
+    ]
+  },
+  "position_truth_remediation_commit": "4b668c88dbf4e79af0a627216713aba759b70369",
+  "profit_factor_sharpe_note": "Single completed RT on corrected replay: profit_factor and sharpe not defined (0 losing legs; n=1 return series). Old defective replay had 15 losers / 1 winner — PF computable but economically invalid under superseded interpretation.",
+  "schema_id": "ops.integrated_offline_economic_v3_pre_post_position_truth_comparison.v1",
+  "schema_version": "v1",
+  "side_by_side": {
+    "corrected": {
+      "adjudicated_economic_validity_pass": false,
+      "adjudicated_failure_reasons": [
+        "ECONOMIC_ZERO_OR_INSUFFICIENT_TRADES"
+      ],
+      "decision_equivalence_digest_sha256": "5d239f8da5ccd63b37588ff9e202ca192b9ab1adcdab7ff36408319a72ddea66",
+      "economic_metrics": {
+        "completed_trade_count": 1,
+        "exposure": "0.00",
+        "expectancy": "147.487436402526",
+        "fees": "2.013663587474",
+        "fill_count": 2,
+        "gross_pnl": "150.50793252",
+        "max_drawdown": "0.0499934853974699",
+        "net_pnl": "147.487436402526",
+        "slippage_cost": "1.00683253",
+        "turnover": "10068.31793737"
+      },
+      "provenance_source_sha": "4b668c88dbf4e79af0a627216713aba759b70369",
+      "replay_stats": {
+        "blocked_count": 0,
+        "enter_long_count": 1,
+        "enter_short_count": 0,
+        "exit_count": 0,
+        "hold_count": 24963,
+        "no_action_count": 1948602,
+        "order_intent_count": 2,
+        "reduce_count": 15968,
+        "safety_reject_count": 0,
+        "simulated_economic_action_admitted_count": 2
+      },
+      "terminal_class": "INSUFFICIENT_TRADES_UNDER_CURRENT",
+      "wallclock_seconds": 21830.00977212499
+    },
+    "old_defective_superseded": {
+      "adjudicated_economic_validity_pass": false,
+      "adjudicated_failure_reasons": [
+        "ECONOMIC_ZERO_OR_INSUFFICIENT_TRADES"
+      ],
+      "decision_equivalence_digest_sha256": "a9e3455fddd68cbbe574e176cc9830e4d7dca831306124e70167660513fa3230",
+      "economic_metrics": {
+        "completed_trade_count": 16,
+        "exposure": "224218.4857090200000000000000",
+        "expectancy": "-25566.18036159279399999999999",
+        "fees": "425.623873724704",
+        "fill_count": 211,
+        "gross_pnl": "-408420.4518058799999999999999",
+        "max_drawdown": "2.947962261318429039015210732",
+        "net_pnl": "-409058.8857854847039999999999",
+        "slippage_cost": "212.81010588",
+        "turnover": "2128119.36862352"
+      },
+      "provenance_source_sha": "f28f3feb69468550972bdca7b055439cb65b4ce8",
+      "replay_stats": {
+        "blocked_count": 5,
+        "enter_long_count": 1,
+        "enter_short_count": 194,
+        "exit_count": 0,
+        "hold_count": 0,
+        "no_action_count": 1967048,
+        "order_intent_count": 211,
+        "reduce_count": 15583,
+        "safety_reject_count": 0,
+        "simulated_economic_action_admitted_count": 211
+      },
+      "terminal_class": "INSUFFICIENT_TRADES_UNDER_CURRENT"
+    }
+  },
+  "top_blocking_reasons_delta_note": "Corrected replay shows existing_short_hold (24155) vs old hold_count=0 — consistent with position truth feeding entry policy after remediation.",
+  "ratification_closure_v1": {
+    "CORRECTED_V3_VALID": true,
+    "ECONOMIC_QUALIFICATION": "CLOSED",
+    "ECONOMIC_QUALIFICATION_REASON": "ECONOMIC_ZERO_OR_INSUFFICIENT_TRADES",
+    "FALSE_REPEATED_NEW_ENTRY_COUNT": 0,
+    "FULL_REQUALIFICATION_COMPLETE": true,
+    "OLD_V3_ECONOMIC_INTERPRETATION_SUPERSEDED": true,
+    "POSITION_STATE_RECONCILIATION_PASS": true,
+    "ROUND_TRIPS": 1,
+    "UNINTENDED_EXPOSURE_AMPLIFICATION_COUNT": 0,
+    "economic_performance_not_statistically_qualified": true,
+    "net_pnl_descriptive_only": "147.487436402526"
+  }
+}

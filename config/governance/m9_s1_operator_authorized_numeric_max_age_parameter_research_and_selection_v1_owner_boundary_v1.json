@@ -1,0 +1,20 @@
+{
+  "artifact_class": "M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_OWNER_BOUNDARY_V1",
+  "workpackage_id": "M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_V1",
+  "bound_origin_main_sha": "798bb481c60f619cec34ee8f408626725921e544",
+  "normative_spec": "docs/ops/specs/M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_NORMATIVE_V1.md",
+  "owner_authorization_record_schema_version": "m9_s1_operator_authorized_numeric_max_age_research_selection_owner_input/v1",
+  "allowed_owner_authorization_ids": [
+    "m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_owner_input/v1"
+  ],
+  "allowed_authorized_surface_ids": [
+    "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1"
+  ],
+  "require_repository_sha_match": false,
+  "research_execution_implies_threshold_selection": false,
+  "research_execution_implies_parameter_promotion": false,
+  "research_execution_implies_enforcement": false,
+  "research_execution_implies_productive_configuration": false,
+  "deterministic_numeric_point_selection_from_evidence": false,
+  "external_effect_authorized": false
+}

@@ -1,0 +1,21 @@
+{
+  "binding_report": {
+    "cap61_binding_complete": true,
+    "capital_context_binding_complete": true,
+    "confirmation_binding_complete": true,
+    "crs_boundary_bound": true,
+    "double_play_binding_complete": true,
+    "f1_m9_blocker": "",
+    "g17_binding_complete": true,
+    "g17_blocker": "",
+    "host_confirmation_binding_complete": true,
+    "productive_context_complete": false,
+    "risk_context_binding_complete": false,
+    "safety_binding_complete": true,
+    "scope_gge_binding_complete": true,
+    "sizing_binding_complete": false,
+    "suitability_binding_complete": true
+  },
+  "decision_epochs_scanned": 1000,
+  "productive_context_preflight_pass": true
+}

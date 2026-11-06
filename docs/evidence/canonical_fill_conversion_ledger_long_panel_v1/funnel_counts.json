@@ -1,0 +1,44 @@
+{
+  "conversion_stages": {
+    "converted_instruments": 63,
+    "engine_to_ledger_zero_trade_instruments": 52,
+    "intent_present_instruments": 115,
+    "intent_to_mapped_drop_instruments": 0,
+    "mapped_to_engine_drop_instruments": 0
+  },
+  "fill_class_counts": {
+    "CONVERTED": 63,
+    "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE": 52,
+    "NO_ENTRY_INTENT": 3
+  },
+  "first_drop_boundary_counts": {
+    "NONE": 63,
+    "backtest_engine_fill_or_roundtrip_ledger": 52,
+    "entry_exit_policy": 3
+  },
+  "notes": [
+    "Stage counts derived by aggregating per-instrument CSV rows from the offline long-panel probe.",
+    "Intent\u2192map and map\u2192engine mechanical mismatch sums are both 0 (no stage drop before engine signal)."
+  ],
+  "panel_totals": {
+    "bars": 348454,
+    "classic_bypass_instruments": 0,
+    "engine_nonzero_bars": 4226,
+    "enter_engine_mismatch_sum": 0,
+    "enter_long": 69,
+    "enter_map_mismatch_sum": 0,
+    "enter_short": 4157,
+    "entry_intents": 4226,
+    "exit_or_reduce": 240230,
+    "funnel_engine_mismatch_instruments": 0,
+    "instruments": 118,
+    "instruments_enter_and_zero_trade": 52,
+    "instruments_no_entry_intent": 3,
+    "instruments_with_enter": 115,
+    "instruments_with_trades": 63,
+    "mapped_nonzero_bars": 4226,
+    "mechanical_defect_instruments": 0,
+    "total_trades": 69
+  },
+  "source": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_fill_conversion.csv + probe_summary.json"
+}

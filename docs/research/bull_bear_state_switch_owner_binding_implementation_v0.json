@@ -1,0 +1,38 @@
+{
+  "schema_version": "bull_bear_state_switch_owner_binding_implementation_v0",
+  "source_contract": "docs/research/owner_bound_narrow_reuse_first_integration_slice_for_highest_priority_confirmed_gap_v0.json",
+  "surface_id": "bull_bear_state_switch_owner",
+  "surface_name": "Bull/Bear State Switch Owner Surface",
+  "canonical_owner": "src/trading/master_v2",
+  "reuse_decision": "REUSE_WITH_NARROW_ADAPTER",
+  "implementation_mode": "OWNER_BINDING_ONLY_NO_RUNTIME_REWIRE",
+  "authority_effect": "NONE",
+  "runtime_effect": "NONE",
+  "system_economic_evidence_admissible": false,
+  "backtest_runtime_decision_parity_pass": false,
+  "runtime_rewire_admissible": false,
+  "blocked_effects": [
+    "runtime_rewire",
+    "runtime_evidence",
+    "shadow_evidence",
+    "paper_evidence",
+    "testnet_evidence",
+    "canary_evidence",
+    "live_evidence",
+    "order_submission",
+    "credential_use",
+    "arming",
+    "scheduler_start",
+    "promotion_pass",
+    "economic_pass_claim"
+  ],
+  "required_assertions": [
+    "BULL_BEAR_STATE_SWITCH_OWNER_BOUND",
+    "NO_PARALLEL_STATE_SWITCH_OWNER",
+    "NO_RUNTIME_AUTHORITY_FROM_OWNER_BINDING",
+    "NO_ORDER_AUTHORITY_FROM_OWNER_BINDING",
+    "BACKTEST_PARITY_NOT_CLAIMED_BY_THIS_SLICE",
+    "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE_FALSE"
+  ],
+  "next_step_after_merge": "BULL_BEAR_STATE_SWITCH_BACKTEST_PARITY_WIRING_ASSESSMENT_OR_NARROW_REWIRE_V0"
+}

@@ -1,0 +1,39 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_12_PRODUCTIVE_LINEAGE_CLOSURE_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_12_PRODUCTIVE_LINEAGE_CLOSURE_V1",
+  "authorized_baseline_sha": "8e7d29613563eac1cbb5bd126067013590e23290",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_12_PRODUCTIVE_LINEAGE_CLOSURE_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_12_productive_lineage_closure_v1.py",
+  "lineage_registry_module": "src/experiments/canonical_optimization_productive_lineage_registry_v1.py",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_12_productive_lineage_closure_status": "PROVEN_COMPLETE",
+  "authority_invariants": {
+    "research_authorization_implies_productive_authorization_false": true,
+    "candidate_implies_productive_configuration_false": true,
+    "proposal_implies_authorization_false": true,
+    "evidence_implies_authorization_false": true,
+    "configuration_implies_runtime_apply": false,
+    "no_self_deploy": true,
+    "risk_is_hard_boundary": true,
+    "mv2_dp_unchanged": true,
+    "cap_2_3_unchanged": true,
+    "no_promotion_authority_created": true,
+    "no_external_effect_path": true,
+    "risk_sizing_not_optimizable": true,
+    "phase_11_portfolio_closure_required": true,
+    "optimization_direct_productive_write_authorized": false,
+    "promotion_authorized": false,
+    "runtime_apply_authorized_by_optimizer": false
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_12_PRODUCTIVE_LINEAGE_CLOSURE_NORMATIVE_V1.md",
+    "src/experiments/canonical_optimization_productive_lineage_registry_v1.py",
+    "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json",
+    "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json",
+    "tests/experiments/test_canonical_optimization_productive_lineage_registry_v1.py",
+    "tests/governance/test_unified_blueprint_phase_12_productive_lineage_closure_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 13 — M10 Promotion Boundary (separate Owner authorization; not started by Phase 12)",
+  "next_implementation_boundary": "Phase 13 promotion boundary only under separate Owner GO; no automatic promotion or optimizer self-deploy"
+}

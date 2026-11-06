@@ -1,0 +1,55 @@
+# ============================================================================
+# Peak_Trade Default Configuration
+# ============================================================================
+# Einfache TOML-Config für Backtests
+# ============================================================================
+
+[backtest]
+# Startkapital für Backtests
+initial_cash = 10000.0
+
+# Verzeichnis für Ergebnisse
+results_dir = "results"
+
+[risk]
+# Position Sizing
+position_sizing_method = "fixed_fractional"
+risk_per_trade = 0.01          # 1% Risiko pro Trade
+max_position_size = 0.25       # Max 25% des Kapitals
+min_position_value = 50.0      # Min $50 Position
+min_stop_distance = 0.005      # Min 0.5% Stop-Distanz
+
+# Portfolio Risk Limits
+max_drawdown_pct = 20.0        # Max 20% Drawdown
+max_position_pct = 10.0        # Max 10% Position
+daily_loss_limit_pct = 5.0     # Max 5% Daily Loss
+
+# Kelly (falls verwendet)
+kelly_scaling = 0.5
+
+[data]
+# Daten-Einstellungen
+default_timeframe = "1h"
+data_dir = "data"
+use_cache = true
+cache_format = "parquet"
+
+[strategy.ma_crossover]
+# MA Crossover Strategie
+fast_period = 10
+slow_period = 30
+stop_pct = 0.02
+
+[strategy.momentum_1h]
+# Momentum Strategie
+lookback_period = 20
+entry_threshold = 0.02
+exit_threshold = -0.01
+stop_pct = 0.025
+
+[strategy.rsi_strategy]
+# RSI Strategie
+rsi_period = 14
+oversold = 30
+overbought = 70
+stop_pct = 0.02

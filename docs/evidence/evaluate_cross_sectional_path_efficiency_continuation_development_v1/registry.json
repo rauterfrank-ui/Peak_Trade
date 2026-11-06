@@ -1,0 +1,19 @@
+{
+  "config_digest": "087b1769caa1b4b5c527aa31abb7db143a0c7d225d606f76ea1f02d7d8c16d98",
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "economic_gate_open": false,
+  "evaluation_authorized": false,
+  "evaluation_executed": true,
+  "evaluation_run_count": 1,
+  "holdout_accessed": false,
+  "measurement_contract_digest": "cf6168556a7ae36c15381ab78bc57f2c46d49e17257556ea5198dd3adf4aaec7",
+  "promotion_eligible": false,
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "runner_started": true,
+  "schema_version": "evaluate_cross_sectional_path_efficiency_continuation_development_registry.v1",
+  "strategy_params_digest": "b8f21f66870a03902dacaedc118e68d242098759d9d7752960a7c9c59493b381",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
+}

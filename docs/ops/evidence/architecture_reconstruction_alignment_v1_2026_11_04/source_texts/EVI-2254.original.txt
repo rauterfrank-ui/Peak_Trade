@@ -1,0 +1,106 @@
+# Voraussetzungen der Sperrentscheidung vom 17.08.2026
+
+Stand der Untersuchung: 02.11.2026. Ausschließlich lesende Rekonstruktion.
+
+## Ergebnis
+
+Die wiedergefundenen Entscheidungsunterlagen verlangen eine sichere Isolation der Legacy-Schreibwege. Sie setzen keinen nachgewiesen vollständigen Datenaustausch beider Universen voraus.
+
+Präziser: Die Entscheidung war als vorgeschaltete Absicherung für weitere Self-Learning-Arbeiten formuliert. Eine abgeschlossene Learning-/Optimization-Gesamtfunktion ist in den gesicherten Unterlagen weder Freigabebedingung noch Abnahmeergebnis. Das widerlegt nicht jede denkbare unausgesprochene Erwartung. Es korrigiert aber die Annahme, die Sperre selbst habe einen bereits fertigen Datenaustausch bestätigt.
+
+## Entscheidungsquellen und Zeitbezug
+
+- Originalauftrag 17.08., 17:00: [Phase-0-Untersuchung](cursor-42291.md).
+- Zeitgenössische [Bestandsanalyse](cursor-42296.md), danach [Planungsauftrag](cursor-42297.md) 17:21 und [Umsetzungsplan](cursor-42299.md).
+- Originalauftrag 17.08., 17:30: [Phase-0B-Implementierungsauftrag](cursor-165578.md).
+- [PR #5927](https://github.com/rauterfrank-ui/Peak_Trade/pull/5927), Merge 17.08.2026, 19:22:56 Berlin; lokal gesicherte [PR-Metadaten](github-pr-5927.json).
+- Unmittelbarer Parent `c38cdfb4e8e1b3d5ff84021a682387dc8701beaf`; Sperrcommit `a7f4502e04e168b2dd12b56fecb745323bd6c783`. [Gesamtdiff](decision.diff), [Quellenregister](sources.json).
+
+Alle acht verwendeten Nachrichten wurden aus dem lokalen Suchindex erschlossen und mit dem Text an der angegebenen Zeile des Original-JSONL abgeglichen. Die ursprünglichen Tool-Ergebnisse und alle historischen Gespräche sind damit nicht vollständig erfasst.
+
+## Was ausdrücklich vorausgesetzt wurde
+
+### P01 · ausdrücklich verlangt
+
+Exakter Ausgangsstand c38cdfb4; sauber abgegrenzter Arbeitsstand; kanonischer Next-Step bleibt bestehen.
+
+Beleg: Originalauftrag 165578, Abschnitte 1 und 9; PR #5927.
+
+Einordnung: Ausgangs-/Umsetzungsbedingung; keine Aussage zur Lernvollständigkeit.
+
+### P02 · ausdrücklich verlangt
+
+Aktive Session nutzt bounded-live Loader; unbekannter produktiver Overlay-Caller erzwingt Abbruch.
+
+Beleg: 165578 Abschnitt 2; Parent live_session.py:550–553; begrenzte Literal-Suche ohne Treffer.
+
+Einordnung: Statisch bestätigt für den untersuchten direkten Pfad; externe/dynamische Nutzung bleibt offen.
+
+### P03 · ausdrücklich verlangt
+
+Drei Authority-Senken sperren; keine Änderung von produktiven Werten, Risiko oder Ausführung.
+
+Beleg: 165578 Abschnitt 3; Decision-Diff: Overlay → load_config, Engine → None, Apply-Writer verweigert.
+
+Einordnung: Sicherheitsgrenze, kein Datenverarbeitungsnachweis.
+
+### P04 · ausdrücklich verlangt
+
+Vorhandene 2026 Comparison-/Lineage-/Evidence-Verarbeitung und Candidate-/Proposal-Logik erhalten.
+
+Beleg: 42297/42299 und 165578; vier zusätzlich gesicherte Evidence-/Testdateien unverändert.
+
+Einordnung: Erhaltung vorhandener Bausteine; kein Beweis ihrer gesamten Semantik oder Nutzung.
+
+### P05 · damalige Begründung
+
+Wertvolle Offline-Verträge wiederverwenden; Feedback und Forschungsloop noch unvollständig.
+
+Beleg: Analyse 42296: Feedback CLI_ONLY/Tests; Offline Research Loop teilweise; Quarantäne vor weiterer Implementierung.
+
+Einordnung: Zeitgenössische fachliche Einschätzung, keine selbständige Laufzeitmessung.
+
+### P06 · nicht als Bedingung gefunden
+
+Beide Universen verarbeiten bereits vollständig chronologisch, tauschen Messwerte aus und erzeugen verwertete Folgedatensätze.
+
+Beleg: Keine solche Abnahmebedingung in den acht gesicherten Nachrichten oder im PR-Text.
+
+Einordnung: Nicht durch diese Entscheidung belegt; als eigene fachliche Voraussetzung weiter zu untersuchen.
+
+## Unabhängiger Codeabgleich
+
+Die Session importiert im Parent `load_config_with_bounded_live` und verwendet diesen bei gesetztem Konfigurationspfad (live_session.py:550–553). Die wörtliche Suche nach `load_config_with_live_overrides` in `src/execution`, `src/ops`, `src/trading`, `src/live` ergibt keinen Treffer. In der weiteren Suche über `src` und `scripts` finden sich Definition, Re-Exports und Demo. Das ist ein begrenzter statischer Reachability-Befund; dynamische Aufrufe, externe Cronjobs und nicht erfasste Installationen werden dadurch nicht ausgeschlossen. [Suchergebnis](parent-call-sites.txt).
+
+Der Diff sperrt drei zuvor mögliche Wirkungen: Overlay-Merge, Proposal-Schreibsenke und Apply-Cycle-TOML-Writer. Zusätzlich wurden Negativtests und die exakte technische Pfadfreigabe geändert. Diese Pfadfreigabe erteilt keine fachliche Lern-, Runtime- oder Order-Autorität. Die neun geänderten Dateien enthalten keinen Ersatzalgorithmus für Learning/Optimization.
+
+Vier separat gesicherte Dateien — Runtime-to-Learning-CLI, Feedback-Modul, Contract-Safety-Modul und Offline-Promotion-E2E-Test — besitzen vor und nach dem Sperrcommit identische Git-Blobs. Dies belegt ihren Erhalt in diesem Patch; es beweist weder vollständige Kopplung noch funktionierende historische Verarbeitung.
+
+## Was „vorhandener Feedback-Pfad“ damals tatsächlich bedeutete
+
+**Eingang:** CLI verlangt ein vorhandenes runtime-observation-bundle-Verzeichnis und reverifiziert das Bundle. Quelle: Parent scripts/run_runtime_to_learning_input_v1.py:24–63.
+
+**Verarbeitung / Ausgang:** Erzeugt aus der verifizierten Beobachtung einen eigenständigen Learning-Input samt Referenz/Digest/Status. Quelle: Parent CLI:49–63; runtime_observation_feedback_v1.py.
+
+**Vertragsgrenze:** Offline-Projektion; real_runtime_observation_allowed=False; Learning-Input trainiert, selektiert und promotet nicht und verändert keine Modellparameter. Quelle: Parent runtime_observation_feedback_v1.py:145–199.
+
+**Was fehlt als Gesamtbeweis:** Tatsächliche historische Messwertquelle, vollständige zeitliche Kette, fachliche Verwertung und Wirkung im nächsten Forschungszyklus. Quelle: Weder Sperrentscheidung noch Dateierhalt liefern diesen Nachweis..
+
+Der Offline-E2E-Test erzeugt selbst einen JSON-Eingang mit `research.offline.window_days`, führt Manifest-/Candidate-/Proposal-Schritte durch und erwartet keinen Live-Override. Er dokumentiert eine begrenzte Vertragskette mit vorgegebenem Wert, keine Entdeckung dieses Wertes aus realen Markt- oder Ausführungsergebnissen. Testcode wurde hier gelesen, nicht ausgeführt.
+
+## Welche damalige Einschätzung nicht als Laufzeitbeweis gelten darf
+
+Die damalige Analyse 42296 nennt den automatisierten Offline Research Loop „teilweise“, beschreibt eine CLI-Kette ohne Scheduler und ordnet Feedback als CLI_ONLY/Tests ein. Sie empfiehlt die Quarantäne ausdrücklich „bevor irgendeine Self-Learning-Implementierung startet“. Ihre COMPLETE-Kennzeichen betreffen den Abschluss der damaligen Legacy-Untersuchung, nicht den Abschluss eines funktionierenden Universums. Auch diese Analyse bleibt ein historischer Befundbericht, dessen Einzelaussagen nur im oben ausgewiesenen Umfang erneut am Code geprüft wurden.
+
+## Was fachlich weiter offen bleibt
+
+- Welche fachlichen Eingangsbedingungen setzten die jeweils anschließenden August-Verträge voraus — unabhängig von der Firewall?
+- Woher kamen die dafür benötigten echten Messwerte, Identitäten und Zeitbezüge, und wurden sie historisch tatsächlich geliefert?
+- Welche Umrechnung, Bewertung oder Auswahl führte aus jedem Eingang zu einem neuen Datensatz, und nutzte der nächste Consumer ihn kausal?
+- Wurden spätere Fertigmeldungen auf erhaltene Teilverträge gestützt, ohne diese gesamte Kette erneut nachzuweisen?
+
+Dafür sind zwei getrennte Nachweise erforderlich: (1) jeder ursprüngliche Vertrag und Consumer zeigt, was er voraussetzt; (2) historische Artefakte zeigen, ob diese Voraussetzung tatsächlich erfüllt wurde. Die Firewall-Freigabe ersetzt keinen dieser Nachweise. Diese Untersuchung schließt die Frage nach den dokumentierten Sperrvoraussetzungen, nicht die gesamte Rekonstruktion beider Universen.
+
+## Prüfung und Grenzen
+
+Originalnachrichten textgleich abgeglichen; historische Dateien direkt aus Git-Objekten gesichert; PR-Merge-SHA gegen GitHub geprüft. Keine Produktmodule importiert, keine Produkt-/Trainingstests und keine Sessions gestartet. Der vorhandene Checkout und seine lokalen Änderungen bleiben erhalten. Hashes, Code-Erhalt und technische Prüfungen stehen im Quellen-/Prüfregister.

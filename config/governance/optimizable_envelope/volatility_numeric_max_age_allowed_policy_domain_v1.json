@@ -1,0 +1,16 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_ALLOWED_POLICY_DOMAIN_V1",
+  "schema_version": "canonical_volatility_numeric_max_age_allowed_policy_domain/v1",
+  "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+  "candidate_domain_schema_version": "canonical_volatility_numeric_max_age_candidate_domain/v1",
+  "age_unit": "SECONDS",
+  "age_reference_clock": "MARKET_EVENT_TIME",
+  "candidate_authority": "EXPLICIT_OPERATOR_OR_CALLER_SUPPLIED_CANDIDATE_ARGUMENTS_ONLY",
+  "candidate_max_age_seconds": [60, 120, 300, 600, 900, 1800, 3600, 7200],
+  "interpolation_allowed": false,
+  "extension_allowed": false,
+  "implicit_defaults_allowed": false,
+  "productive_policy_literal_allowed": false,
+  "source_constant": "OPERATOR_BOUND_CANDIDATE_MAX_AGE_SECONDS",
+  "source_module": "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/constants_v1.py"
+}

@@ -1,0 +1,23 @@
+{
+  "CONFIG_DIGEST": "59f3062f719dcf4efe73aaa52b74527969aa1fb746b7cb9b12cdd69a5bdfc31b",
+  "CONFIG_VERSION": "v1",
+  "CORE_LOGIC_CHANGE": false,
+  "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": true,
+  "LIVE_TESTNET_ORDERS": false,
+  "RUNTIME_ACTIVATED": false,
+  "capability_id": "CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1",
+  "evidence_digest": "4d6d3f32149a9851f2fca3a2909e2cef83771a87f032ef1d16c1c874886f2a36",
+  "migrated_keys": [
+    "confirmation_epochs",
+    "up_distance",
+    "adverse_exit_distance",
+    "reversal_distance"
+  ],
+  "not_migrated_keys": [
+    "PRICE_PATH_MAX_LEN",
+    "fee_rate_bps",
+    "slippage_bps"
+  ],
+  "ok": true,
+  "repository_sha": "0003c493a66f27a619638e88e3b58b05b64ce02e"
+}

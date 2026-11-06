@@ -1,0 +1,12 @@
+{
+  "PRODUCTIVE_POLICY_EXPECTATION_UPDATED": [
+    "tests/ops/test_scope_init_min_max_semantic_class_owner_decision_v1.py",
+    "tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py"
+  ],
+  "NEW_IR_GENERALIZATION_TEST": [
+    "tests/trading/master_v2/test_raw_instrument_relative_scope_cutover_productive_v1.py"
+  ],
+  "CONTRACT_TEST_UNCHANGED": [
+    "tests/trading/master_v2/test_canonical_scope_initialization_v1.py"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "cleanup": "TemporaryDirectory.cleanup() in finally; injected roots caller-owned",
+  "create": "TemporaryDirectory or mkdir on injected root",
+  "not_committed": true,
+  "use": "exclusive FI persistence for one materialize invocation"
+}

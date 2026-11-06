@@ -1,0 +1,18 @@
+{
+  "corrective_measurement_reevaluation_count": 1,
+  "development_artifacts_preserved_unmodified": true,
+  "measurement_repair_merge_commit": "00a820f080973600378c3c2d5513905ee07217e9",
+  "original_development_run_count": 1,
+  "portfolio_aggregation_id": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+  "prior_evidence_deleted": false,
+  "prior_evidence_path_preserved": "docs/evidence/evaluate_volatility_decay_breakout_development_v1/",
+  "replacement_evidence_ref": "docs/evidence/evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_v1/",
+  "replacement_terminal_result": "FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
+  "replacement_terminal_verdict": "CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
+  "schema_version": "evaluate_volatility_decay_breakout_corrective_measurement_supersession.v1",
+  "superseded_evidence_ref": "docs/evidence/evaluate_volatility_decay_breakout_development_v1/",
+  "superseded_prior_terminal_result": "FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
+  "superseded_prior_terminal_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
+  "supersession_classification": "INVALID_INSTRUMENT_COUNT_SCALED_PORTFOLIO_MEASUREMENT",
+  "supersession_reason": "INVALID_INSTRUMENT_COUNT_SCALED_PORTFOLIO_MEASUREMENT"
+}

@@ -1,0 +1,6 @@
+START_UTC=2026-07-23T00:45:24Z
+base_sha=d3f41701e8d4fa693257446b610e64794bdd67ab
+exact_command=python3 scripts/research/run_evaluate_volatility_expansion_failed_continuation_fade_development_v1.py --mode evaluate --authorize-single-development-evaluation VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1 --output-dir /tmp/vefcf_dev_eval_go/cli_output
+exit_code=0
+start_utc=2026-07-23T00:45:24Z
+end_utc=2026-07-23T00:48:58Z

@@ -1,0 +1,101 @@
+PEAKTRADE – KANDIDATENQUALIFIZIERUNG, G17 UND GGE: HISTORISCHE ZUORDNUNG
+Stand02.11.2026; HEAD242b7974 plus vorhandene lokale Änderungen.
+
+AUFTRAG UND GRENZE
+Der Owner erinnert einen ausdrücklich eingebauten Prüfmechanismus zwischen Ranking-/IU-Bereich und Natural Enter und fragt, wohin dessen positives Ergebnis geht. Diese konkrete Identität ist noch NICHT abschließend gefunden. Es wird weder ein neuer Mechanismus erfunden noch aus einem ähnlichen Namen abgeleitet, dass die Erinnerung falsch oder die Fähigkeit global nicht vorhanden sei.
+Belegbar sind mehrere unterschiedliche Prüfungen und eine konkrete heutige G17/GGE-Übergabe. Ein pauschales „gut befundenes Signal → G17 → GGE → Entry“ ist damit nicht belegt.
+
+BELEGTE HEUTIGE SCHNITTSTELLEN
+Cap23-Auswahl-Eignung
+Eingang: Cap22-Kandidat, optionale Instrumentstatus-/Qualitätsdaten, Vorzustand
+Ausgang: Auswahlzustand mit Instrumentidentität oder Ausschlussgründen
+Tatsächlicher Consumer: Cap24 bindet die Auswahl; danach konkreter Host
+Abgrenzung: Qualifiziert Auswahl; weder Entry noch Volatilitätsschätzung.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/single_selected_future_policy_v1/policy_v1.py
+
+Residenz-Abschluss-Gate
+Eingang: SELECTED_ACTIVE und passender abgeschlossener Replay-/Residency-Witness
+Ausgang: Completion-Ref oder NO_SELECTION
+Tatsächlicher Consumer: Cap23-Produce/Persist, anschließend Cap24
+Abgrenzung: Abgeschlossene Auswertung bedeutet nicht Suitability-PASS oder Entry.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/single_selected_future_policy_v1/residency_eligibility_gate_v1.py
+
+G17-Historie / typisierte Volatilität
+Eingang: Gebundenes Instrument, finalisierte Markhistorie, Empfangs-/Capture-Zeit
+Ausgang: Producer-Handle und typisierte Schätzung mit Herkunft/Status
+Tatsächlicher Consumer: CMC-Bind im Master-V2-Zyklus; separate Presence-/Freshness-Verwendung
+Abgrenzung: Kein Eingang für ein allgemeines freigegebenes Ranking-Signal an dieser Schnittstelle.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py
+
+F1/M9 / Typed-Volatility-Consumer
+Eingang: Market Context, Bindungs-/Volatilitätseignung und governte Seam-/Schwellenwerte
+Ausgang: Presence-/Enforcement-Ergebnis und effektive Scope-/Entry-Zulässigkeit
+Tatsächlicher Consumer: Replay mit zusätzlicher Kompatibilitäts-Präzedenz
+Abgrenzung: Liegt nach Schätzungsbereitstellung; eigenes Gate, nicht automatisch die erinnerte Kandidatenprüfung vor G17.
+Code: /Users/frnkhrz/Peak_Trade/src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py
+
+GGE-Geometrie
+Eingang: Instrument, Markpreis und aufgelöste Volatilität
+Ausgang: CanonicalBaseGeometryMagnitudeV1, D=σ×P in Preis-Einheit
+Tatsächlicher Consumer: Scope-Initialisierung und Layer-C-Distanzen
+Abgrenzung: Keine Auswahl, Suitability-Freigabe, Long/Short- oder Entry-Entscheidung.
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/golden_geometry_engine_v1.py
+
+Survival / Suitability im Core
+Eingang: C3-/Directional-Evidence, Survival, Regime, Registry und ggf. Strategy-Agreement
+Ausgang: SuitabilityResultV1 mit PASS/FAIL/BLOCKED, Gründen und Provenienz
+Tatsächlicher Consumer: Single-Lane-Composition-Candidate → Composition → nachgelagerte DP-/Entry-Exit-Policy
+Abgrenzung: Aktueller Aufruf nach C1/C2/C3; kein vorgelagertes Weiterleitungssignal an G17. Nach C3 ist eine Aufrufposition, keine Aussage, dass jeder Fall bereits CONFIRMED ist.
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/suitability_binding_v1.py
+
+KONKRETER HEUTIGER G17/GGE-PFAD
+Der gelesene Einstieg run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py liest zunächst ein Cap24-BoundInstrument. _resolve_g17_producer erstellt daraus eine instrumentbezogene öffentliche GET-Anfrage für Markhistorie und übergibt Payload plus Instrumentbindung und Capture-Zeit an prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1.
+Dieser Join extrahiert Marksamples, erstellt/restauriert einen identitätsgebundenen Checkpoint und gibt einen typisierten Volatilitäts-Producer zurück. Er nimmt kein separates Candidate-PASS-/Ranking-Freigabesignal entgegen.
+run_current_productive_master_v2_runtime_cycle_v1 ruft apply_current_productive_g17_typed_vol_cmc_bind_v1 auf. Die Schätzung wird abhängig von Producer-Status und Wiederverwendungsregel in CanonicalMarketContext gebunden.
+GGE löst die Volatilität aus dem Market Context und berechnet D=volatility_estimate×mark_price. Die Scope-/Layer-C-Adapter verwenden die Geometriemagnitude. Das ist eine Datentransformation, keine Eintrittserlaubnis.
+Weitere Eignungs-/Presence-/Freshness-/Governance-Prüfungen können den Replay begrenzen. F1/M9 und die abschließende DP-Kompatibilitätsregel sind separate Consumer-/Veto-Stellen.
+Innerhalb des aktuellen integrierten Replays: C1-Akzeptanz → Single-Lane-Confirmation-Lifecycle/C2/C3 → Survival → Suitability → Composition-Candidate → Composition → DP-Zustand und Entry/Exit. Suitability-Snapshots liefern an Composition, nicht an den G17-Historien-Ingest.
+Die einzelnen Listen sind verschiedene Datenseiten und Prüfungen, keine neue kanonische lineare Gesamthierarchie. Der gesamte reale Lauf und alle alternativen Hosts wurden hier nicht ausgeführt.
+
+HISTORISCHE PRIMÄRQUELLEN
+1. #3039, Commit e5c7b62c3af16a2638dfdf17b3dff7df0e83c04a, 26.04.2026 Berliner Zeit:
+Der über GitHub gelesene Einführungscode double_play_suitability.py bezeichnet sich ausdrücklich als reine Metadaten-Projektion ohne Runtime/Live-Rechte. Er kennt Candidate-Klassen, ist dadurch aber noch kein aktiver vorgelagerter Natural-Enter-Prüfer.
+2. #4685, Commit45bc596f52cab3bb5df39e47766740994e7a8ced,30.06.2026:
+Der Einführungscode suitability_binding_v1.py konsumiert DirectionalAssessment und SurvivalResult sowie Regime/Registry und erzeugt fachliche Suitability-Evidence. Das ist eine andere Funktion als die April-Projektion. Ihr Ergebnis ist kein G17-Marksample.
+3. #5231,02232c0a,15.07.:
+Dateihistorie dokumentiert Strategy-Signal-Agreement als familienbezogenes Suitability-Material statt pauschaler Rohsignalautorität.
+4. #5314,94597bc7,17.07., und #5337,a55c4000,18.07.:
+Spätere Änderungen betreffen Regime-Wildcard und einen Zero-Trade-Kettenblocker. Ihre Existenz zeigt reale Semantikänderungen. PR-Titel allein sind kein damaliger Gesamtfunktionsnachweis.
+5.06.10.: Lokaler GGE-Verlauf enthält4e471145 (Modulgründung),1c6f43e8 (Änderung) und adf73d16 (Revert). GGE als Modul ist nicht automatisch Ursprung der schon früher vorhandenen Preis×Volatilität-Rechnung.
+6.23.10.,07:35 und07:38:
+Verifizierte Originalnachrichten verlangen eine zeitnahe Kandidatenprüfung mit aktuellen Markt-/Safety-/Suitability-Daten, Weitergabe geeigneter Kandidaten und Fail-Closed bei unzureichender Evidence. Die zweite Nachricht stellt ausdrücklich fest, dass in der vorherigen begrenzten Suche kein eigener früher ACCEPT/REJECT-Gate gefunden worden war und fordert Suche nach vorhandenen wiederverwendbaren Evaluatoren.
+Diese historischen Aufträge belegen den gewünschten Nutzen und die damalige offene Identifikation. Sie belegen keine anschließende Implementierung.
+7.23.10.,12:09:
+Eine weitere verifizierte Originalnachricht trennt kontinuierliche Top20-Kandidatenbewertung, GET-Budget, Cap21-Eligibility, Cap23-Selection und Natural Enter und verlangt ihre Wirkungen getrennt zu untersuchen.
+Der alte Untersuchungsledger PT-R054–056 an f3b33f937 nennt die gleiche offene Vorprüfer-Frage. Seine PROVEN-/MISSING-Labels werden nicht global oder ungeprüft als heutiger Zustand übernommen.
+
+WAS BEI „GUT BEFUNDEN“ GENAU ZU KLÄREN IST
+A. Technische Datenqualität bestanden?
+B. Wirtschaftlich im Ranking geeignet?
+C. Auswertung vollständig?
+D. Instrument für Auswahl/Binding zulässig?
+E. Volatilitätsschätzung gültig und frisch?
+F. Strategy-Suitability PASS?
+G. Core-Confirmation und Composition zulässig?
+H. Entry-Entscheidung und ausführbarer Intent?
+Diese Ergebnisse haben verschiedene DTOs, Owner und Consumer. Ein positiver Status aus A–F ist nicht automatisch ein Trading-Signal aus G/H.
+
+NOCH OFFENE IDENTIFIKATION
+Der erinnerte eigene Mechanismus wird weiter als OWNER_REPORTED_IMPLEMENTED / EXACT_IDENTITY_UNRESOLVED geführt. Als Beweis sind erforderlich:
+- historischer Name und tatsächlicher Einführungspfad;
+- konkreter Code/Commit statt nur Entwurf oder Fertigmeldung;
+- vollständige Prüfparameter und ihre Datenquellen;
+- tatsächlicher Ausgangsdatenträger und lesender Consumer;
+- positive und negative Wirkung, keine reine Dateiexistenz;
+- Verhältnis zu den schon getrennten Hold-/Residency-/Selection-/Confirmation-Mechanismen.
+Bis dahin darf weder Cap23-Eignung, Residenz-Gate, F1/M9, Suitability-Binding noch G17 selbst vorschnell als genau diese erinnerte Instanz bezeichnet werden.
+
+PRÜFUNG UND ERHALT
+Historische GitHub-Dateien wurden über gh read-only bezogen, nachdem die Connector-Tools mit Unknown tool fehlschlugen. Die Suitability-Dateihistorie ist am bekannten Vergleichspin5d1c838 gebunden. Zwei historische Code-Snapshots und drei originale Cursor-Nachrichten sind mit Herkunft gesichert.
+Diese Untersuchung ist statische/historische Kettenverfolgung. Keine neue Runtime-/Produkttestsuite und kein Live-/Testnet-/Market-GET. Netzwerkzugriffe betrafen nur GitHub-Quellen. Keine Credentials im Output, keine Orders, Produkt-/Konfigurationsänderung oder Aktivierung.
+

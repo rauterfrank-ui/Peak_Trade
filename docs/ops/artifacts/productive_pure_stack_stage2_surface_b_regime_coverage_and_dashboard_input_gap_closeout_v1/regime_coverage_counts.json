@@ -1,0 +1,9 @@
+{
+  "observation_pack_digest": "268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676",
+  "partition_id": "surface_b_regime_coverage_structural_partition_v1",
+  "producer_digest": "952b7b63c369dccfc01d5ee2802473c12911da18b1df57be8a91ba566ffe9d57",
+  "regime_coverage_counts": {
+    "missing": 299,
+    "unknown": 0
+  }
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "commit": "2c67dd736216151b7bc1f70acaaff515e17b56ea",
+    "path": "src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py",
+    "actual_parent_delta": "ADDED"
+  },
+  {
+    "commit": "5320a087f4c4d58a54b9710ac663bb9cd355bcea",
+    "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py",
+    "actual_parent_delta": "ADDED"
+  },
+  {
+    "commit": "3279f991e155a5fc0a31df521ab72e5edc279778",
+    "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+    "actual_parent_delta": "ADDED"
+  },
+  {
+    "commit": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+    "actual_parent_delta": "ADDED"
+  },
+  {
+    "commit": "221755e3ae8d0c04bff2677f57879bb44ecb717d",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py",
+    "actual_parent_delta": "ADDED"
+  },
+  {
+    "commit": "3aa3ad751123c95f4f8e46fc3637e759267742bc",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py",
+    "actual_parent_delta": "ADDED"
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "base_commit": "3bfd8e64024f8bbae96e52cdbfbb52a65499c1c3",
+  "code_state": "Source snapshots captured after the second Treasury-input probe, before config/validator/quota refinements",
+  "sources": {
+    "src/ops/okx_eea_private_account_state_runtime_v1/k1_source_v1.py": {
+      "sha256": "dd4f11e59532f849b778aaa9461ce11133ef0e148ac3d3b9af90eca2be1f531d",
+      "snapshot": "docs/ops/evidence/treasury_k1_and_capital_lifecycle_v1_2026_11_03/real_probe_k1_source_v1.py.txt"
+    },
+    "src/ops/okx_eea_private_account_state_runtime_v1/startup_source_v1.py": {
+      "sha256": "a4287b10205daf2e8b75fa5d8c7365730e67471d20115b21e3e34715387e42a2",
+      "snapshot": "docs/ops/evidence/treasury_k1_and_capital_lifecycle_v1_2026_11_03/real_probe_startup_source_v1.py.txt"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py": {
+      "sha256": "c9e0669623d85b0867bab67b41759101c786548575a5246c4fb439b9ea5bef2b",
+      "snapshot": "docs/ops/evidence/treasury_k1_and_capital_lifecycle_v1_2026_11_03/real_probe_productive_read_only_get_transport_v1.py.txt"
+    },
+    "scripts/ops/run_k1_account_observation_readiness_v1.py": {
+      "sha256": "ce6cf781af3617de341dc7952e978b3a13d11f83b5f131742e77519aeb8d8d8f",
+      "snapshot": "docs/ops/evidence/treasury_k1_and_capital_lifecycle_v1_2026_11_03/real_probe_run_k1_account_observation_readiness_v1.py.txt"
+    }
+  },
+  "exact_snapshot_applies_to": "real_treasury_inputs.json",
+  "first_scope_probe_binding": "Whole-source digest not captured at first probe. Its scope logic and shared collector/transport were present, but source/CLI later gained Treasury inspection before this snapshot. No exact whole-source proof is claimed for real_readiness.json."
+}

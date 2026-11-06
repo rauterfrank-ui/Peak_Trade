@@ -1,0 +1,22 @@
+{
+  "wp": "DOUBLE_PLAY_LIVE_COLD_S7_BOOTSTRAP_INITIALIZATION_GOLDEN_VECTOR_V1",
+  "mode": "READ_ONLY_RUNTIME_DIFFERENTIAL_GOLDEN_VECTOR",
+  "baseline_sha": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+  "branch": "wp3/double-play-compatibility-boundary-v1",
+  "failure_source_file": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py",
+  "failure_source_function": "initialize_naked_layered_core_episode_v1",
+  "failure_gate": "layered_core_bootstrap_init_fail_closed",
+  "failure_reason": "INITIALIZATION_INCOMPLETE",
+  "failure_branch": "nullline is None or regime_state is None after initialization_observations loop",
+  "initialization_contracts_total": 9,
+  "minimal_causal_input_set": [
+    "INIT_OBS_BUILDER_LIVE"
+  ],
+  "root_divergence_ids": [
+    "INIT_ROOT_01_WP3_CMC_STATIC_MARK_L3_INCOMPATIBLE"
+  ],
+  "historical_root_semantics": "DIFFERENT_WIRING",
+  "production_files_changed": 0,
+  "post_count": 0,
+  "external_effect_count": 0
+}

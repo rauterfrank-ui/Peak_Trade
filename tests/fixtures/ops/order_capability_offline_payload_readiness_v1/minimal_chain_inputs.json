@@ -1,0 +1,21 @@
+{
+  "schema_version": "order_capability_offline_payload_readiness_fixture.v1",
+  "contract_marker": "ORDER_CAPABILITY_OFFLINE_PAYLOAD_READINESS_FIXTURE_V1=true",
+  "evidence_correlation_id": "ev-offline-readiness-v1-001",
+  "environment": "demo_testnet_only",
+  "side": "buy",
+  "limit_price": 100.0,
+  "quantity": 0.01,
+  "max_notional_eur": 10.0,
+  "max_loss_cap_eur": 1.0,
+  "session_duration_seconds": 60,
+  "operator_go_token_binding": "GO_ORDER_CAPABILITY_OFFLINE_PAYLOAD_TESTS_ONLY_IMPLEMENTATION_NO_RUN_V1",
+  "path_c_private_readonly_proven": true,
+  "add_order_proven": false,
+  "cancel_order_proven": false,
+  "dry_order_proven": false,
+  "official_dry_run_endpoint_present": false,
+  "dry_run_network_scope_allowed": false,
+  "primary_evidence_required_for_future_run": true,
+  "credential_use_required": false
+}

@@ -1,0 +1,218 @@
+# Systemzusammenhang: Architektur und Querschnittsbereiche
+
+Dieser Untersuchungsstand ergänzt die relevante Architektur um Aufgaben, Übergabearten und Grenzen. Keine neue operative SSOT, keine vollständige ursprüngliche Ebenentaxonomie. Die Gruppen sind Navigation, keine neue Bereichszahl.
+
+## Wesentliche Trennungen
+
+- Datenbeobachtung, Instrumentauswahl, Handelsentscheidung, Mengenbestimmung, Schutz, Orchestrierung und externe Wirkung sind verschiedene Verantwortungen.
+- Eine Map-Kante kann eine Datenübergabe, Sequenzierung, Beobachtung, Schutzgrenze oder ausdrückliche Nichtimplikation beschreiben. Sie ist nicht automatisch eine aktive Pipeline.
+- N5-Zielarchitektur und Full-Core-Technik bleiben unterscheidbar; ihre Zielverbindung ist nach SA05 und RF08 noch nachzuweisen.
+- Persistenz bewahrt bestimmte Zustände; ein einzelner Lane-Checkpoint stellt nicht den gesamten Systemzustand wieder her.
+- Kapitalbeobachtung, rekonstruierter Bestand, verfügbare Sizing-Equity und Reservierung sind eigene Architekturfragen.
+
+## Querschnittsaufbau
+
+### Marktfakten, private Zustände und Konvergenz
+
+Die Datenbasis mit getrennten Zuständigkeiten bereitstellen.
+
+- **Public Plane**: WS/REST-Aufnahme, Historie/Lückenfüllung, kanonische Fakten, abgestufte Haltbarkeit und Replay. Quelle: `SA01:10-13`.
+- **Private Plane**: Konten, Salden, Positionen, Orders und Fills beobachten, normalisieren und abstimmen. Quelle: `SA02:10-13`.
+- **Konvergenz / Adapter**: Governed Consumer-Handoffs auf die beiden Daten-/Zustandsquellen führen. Quelle: `SA03:10-13`.
+
+Grenze: Private Zustandsbeobachtung ersetzt laut Vertrag weder Fresh-GET-Verantwortung noch Equity-Sizing-Autorität.
+
+Offen: Ursprüngliche gesamte Ingress-Architektur und alle Consumer nicht geschlossen.
+
+### Hosts, Full-Core und N5
+
+Abläufe koordinieren, ohne die fachlichen Verantwortungen einzusammeln.
+
+- **Einzelner Governed Cycle**: Bestehende untergeordnete Schritte sequenzieren; reguläres HOLD und PRE_EXTERNAL als unterschiedliche Enden. Quelle: `SA04`.
+- **N5 Compose**: Ranking-/Membership-Inputs über Lane-Bindung und MV2-Handoff in sequenzielle Lane-Zyklen zusammenführen. Quelle: `SA05:Purpose`.
+- **Ziel-Stackarchitektur**: Fünf-Stack-Ziel von Runtime-Kardinalität und Freigaben unterscheiden. Quelle: `SA05:Architecture note`.
+
+Grenze: SA05 nennt N5→Full-Core CURRENT_EVIDENCE_REQUIRED. Eine dokumentierte Zielkante ist kein Integrationsnachweis.
+
+Offen: Ursprüngliche gesamte Host-/Scheduler-Struktur und technische N5/Full-Core-Kante offen.
+
+### Persistenz und Wiederanlauf
+
+Bereits entschiedene Zustände bewahren und identitätsgebunden zurückgeben.
+
+- **Single Writer / publizierter Checkpoint**: Kustodie, Manifest und Commit-Marker eines Zustands beschreiben. Quelle: `SA06:2-3`.
+- **Exakte Lane-Topologie**: Bereits governte Topologie erhalten; Zuordnung bleibt beim Topologie-Owner. Quelle: `SA06:1;3`.
+- **Bootstrap vs Restart**: Neue Initialisierung von validierter Fortsetzung unterscheiden; fehlender Wiederanlaufbeleg wird nicht still zum Bootstrap. Quelle: `SA06:5`.
+- **Kontextisolation**: Universe-, Ranking- und State-Root-Bezug bei Recovery erhalten. Quelle: `SA06:6-7`.
+
+Grenze: Die Lane-Persistenz schließt globale Equity, Orders, Ausführungsbelegung, Kill-State und MV2/DP-Handelszustand ausdrücklich aus. Sie ist kein globales Restart-System.
+
+Offen: Vollständiger systemweiter Zustandskatalog und konsistenter gemeinsamer Restart nicht bewiesen.
+
+### Kapitalbeobachtung, Rekonstruktion, Sizing und Reservierung
+
+Verschiedene Bedeutungen von Kapital statt einer einzigen undifferenzierten Größe führen.
+
+- **Beobachtung vs Rekonstruktionsbestand**: Venue-Beobachtung und Option-D-Rekonstruktions-/Equity-Stock-Track getrennt behandeln. Quelle: `SA07:Track separation`.
+- **Checkpoint / Ereignisse / Abstimmungsziel**: Option-D-Vertrag beschreibt eigene Verträge für Anker, Event-Taxonomie und eq als Vergleichsziel. Quelle: `SA08`.
+- **Available-for-Sizing**: Separate fachliche Quelle und Mapping erforderlich; Vergleichsübereinstimmung allein erzeugt keine Sizing-Autorität. Quelle: `SA07:Track separation`.
+- **Reservierung**: Ausstehende Order-Reservierung und Bestands-/Sizing-Bedeutung sind getrennte Fragen. Quelle: `SA09`.
+
+Grenze: Alte UNRESOLVED- und BLOCKED-Statuswerte dieser Slice-Verträge werden nicht als heutiger Gesamtstatus übernommen. Architekturrolle und damaliger Fortschritt bleiben getrennt.
+
+Offen: Historische Varianten, gewählter späterer Quellenpfad und originale Kapital-Architektur bleiben weiter zu rekonstruieren; keine Formelprüfung.
+
+### Forschung, Governance und Änderungen
+
+Forschungsoutput kontrolliert über definierte Prüf-/Änderungsgrenzen führen.
+
+- **Learning-/MI-Evidence**: Typisierte Nachweise in getrennte Forschungsconsumer leiten. Quelle: `RF02:/d02_inter_loop_edges`.
+- **Meta-Return / Failure Memory**: Feedback und Fehlerwissen als Forschungsprodukte führen. Quelle: `RF02:/d02_inter_loop_edges`.
+- **M10-Ingress / Freigabe**: Proposal, explizite Autorisierung und Promotion-Record trennen. Quelle: `RF03:/entries`.
+- **Separate Materialisierung**: Konkrete Runtime-Änderung nicht aus einem Proposal oder Promotion-Record ableiten. Quelle: `RF03:/entries;MAP`.
+
+Grenze: Alte AI L0–L6 bleibt historische Referenz. Ein anderer heutiger Vertrag mit einem ähnlich benannten L6-Seam wird nicht allein wegen des Namens ausgeschlossen.
+
+Offen: Originales Gesamtmodell der Änderungssteuerung und jeder tatsächliche Consumer-Effekt noch offen.
+
+## Beziehungen auf Gesamtsystemebene
+
+Alle nachstehenden Beziehungen stammen aus der Map am Vergleichspin. Auch ein dortiges PROVEN_CURRENT ist hier nur ein übernommenes Quellenlabel. Jede Kante braucht später einen passenden Code-/Runtime-Nachweis.
+
+### Fakten und Zustandsbeobachtung
+
+Öffentliche Marktfakten und private Kontozustände getrennt an passende Consumer übergeben.
+
+- **Public Market Data → Daten-/Zustandskonvergenz**: `public_md_runtime_to_wp_c_convergence`; Payload: converged_public_handoff_v1; WP-A canonical facts only; no competing transport consumer truth. Quellenstatus: `PROVEN_CURRENT`.
+- **Private Account State → Daten-/Zustandskonvergenz**: `private_state_runtime_to_wp_c_convergence`; Payload: converged_private_handoff_v1; WP-B normalized state only; no second productive truth. Quellenstatus: `PROVEN_CURRENT`.
+- **Daten-/Zustandskonvergenz → Ranking**: `wp_c_converged_public_ranking_handoff`; Payload: Converged B05 handoff via WP-A finalized PT1M marks only; competing transport consumer truth forbidden; Cap 2.3 unchanged. Quellenstatus: `PROVEN_CURRENT`.
+- **Private Account State → Fresh Pretrade GET**: `private_state_runtime_adapts_fresh_pretrade_get`; Payload: Non-authoritative WP-B observation hints only; FRESH_GET_PER_PRETRADE_DECISION owner unchanged; cached WP-B must not substitute required fresh GETs. Quellenstatus: `PROVEN_CURRENT`.
+- **Daten-/Zustandskonvergenz → Learning / DDO**: `wp_c_converged_o4_to_ddo_learning`; Payload: converged_o4_handoff_v1 for consumer o4_n_bars_learning; WP-A FinalizedPt1hO4BarFactV1 only; no forward_fill; no competing productive O4 session read. Quellenstatus: `PROVEN_CURRENT`.
+
+Bedeutungsgrenze: Beobachtung wird nicht allein durch Übergabe zur Auswahl-, Sizing- oder Ausführungsautorität.
+
+### Vorauswahl → Bindung → Entscheidung
+
+Zulässigkeit, Ranking, Auswahl und instrumentgebundene Entscheidung auseinanderhalten.
+
+- **Futures-Universum / Eligibility → Ranking**: `universe_to_ranking`; Payload: governed_futures_universe_snapshot.v1. Quellenstatus: `PARTIAL`.
+- **Ranking → Selection**: `ranking_to_selection`; Payload: top20 context limit 20; SingleSelectedFutureSelectionV1. Quellenstatus: `PROVEN_CURRENT`.
+- **Selection → Instrument- und Runtime-Bindung**: `selection_to_binding`; Payload: SingleSelectedFutureSelectionV1 to BoundInstrumentV1. Quellenstatus: `PROVEN_CURRENT`.
+- **Instrument- und Runtime-Bindung → Master V2 / Double Play**: `binding_to_mv2`; Payload: BoundInstrumentV1. Quellenstatus: `PROVEN_CURRENT`.
+- **Reconciliation-Bindung → Instrument- und Runtime-Bindung**: `reconciliation_startup_before_cap24_bind`; Payload: run_productive_reconciliation_startup_gate_v1 before alpha in binding_gate_v1. Quellenstatus: `PROVEN_CURRENT`.
+- **Instrument- und Runtime-Bindung → Master V2 / Double Play**: `reconciliation_admission_to_mv2_entry`; Payload: ProductiveMasterV2ReconciliationAdmissionV1 witness; PRODUCTIVE_PORTFOLIO_RECONCILIATION_SINGLE_CHECK=true; RECONCILIATION_AUTHORITY_TRANSFER=false; MASTER_V2_RECHECK_REQUIRED=false. Quellenstatus: `PROVEN_CURRENT`.
+
+Bedeutungsgrenze: Derselbe Instrumentname beweist keine vollständige Herkunfts-/Zustandsbindung. Reconciliation-Witness und Bindung sind verschiedene Aufgaben.
+
+### Entscheidung, Mengenbestimmung und Kapital
+
+Kapitalquellen, Sizing, Treasury-Lifecycle und Reservierung als getrennte Übergaben führen.
+
+- **Master V2 / Double Play → Kapital / Risiko / Sizing**: `mv2_to_sizing`; Payload: CanonicalCoreRuntimeCapitalContextV0. Quellenstatus: `PARTIAL`.
+- **Kontoeigenkapital-Autorität → Kapital / Risiko / Sizing**: `b05_account_equity_to_crs`; Payload: typed_29p_available_for_sizing_account_equity to four CRS slots via mv2_capital_context_rebind. Quellenstatus: `PROVEN_CURRENT`.
+- **Referenzpreis-Autorität → Kapital / Risiko / Sizing**: `b05_reference_price_to_crs`; Payload: mark_price reference for quantity algebra. Quellenstatus: `PROVEN_CURRENT`.
+- **Instrumentmetadaten-Autorität → Kapital / Risiko / Sizing**: `b05_instrument_metadata_to_crs`; Payload: OKX instruments row metadata for quantity constraints. Quellenstatus: `PROVEN_CURRENT`.
+- **Kapital / Risiko / Sizing → Order Intent**: `sizing_to_intent`; Payload: final quantity and notional fields. Quellenstatus: `PARTIAL`.
+- **Treasury-Lifecycle → Kapital / Risiko / Sizing**: `treasury_to_admission`; Payload: treasury single-source handoff then capital admission then step29p admissibility; treasury does not mint risk_admissible | SEMANTIC_PAIR=treasury_to_admission; DISTINCT_FROM=equity_value_unbound. Quellenstatus: `PROVEN_CURRENT`.
+- **Portfolio / Reservierung → Treasury-Lifecycle**: `portfolio_to_enter`; Payload: admit_sized_slot_reservation_v1. Quellenstatus: `PARTIAL`.
+
+Bedeutungsgrenze: Der Map-Stand enthält hier auch PARTIAL-Verbindungen. Ein Beobachtungswert, Rekonstruktionsbestand oder Treasury-Handoff ist nicht automatisch verfügbare Sizing-Equity.
+
+### Safety und äußere Wirkungsgrenze
+
+Schutzsignale und zulässige Endzustände als eigene Beziehungen zeigen.
+
+- **Safety → Master V2 / Double Play**: `safety_signals_into_integrated_replay`; Payload: safety_mode, safety_exit_signal, trading_gate on IntegratedOfflineReplayInputV1. Quellenstatus: `PROVEN_CURRENT`.
+- **Master V2 / Double Play → Order Intent**: `integrated_replay_safety_gate_before_intent`; Payload: safety_kernel hard_block skips canonical_order_intent bind; ReplayExecutionSafetyV1 at composition admission. Quellenstatus: `PROVEN_CURRENT`.
+- **Order Intent → Execution / externe Wirkung**: `intent_to_execution`; Payload: standing non-implication pins; PRE_EXTERNAL_TERMINAL; POST_ALLOWED=false; EXTERNAL_EFFECT_AUTHORIZED=false. Quellenstatus: `PROVEN_CURRENT`.
+- **Master V2 / Double Play → Execution / externe Wirkung**: `mv2_valid_no_trade_terminal`; Payload: NO_EXECUTABLE_DECISION/HOLD/observe; DECISION_EXECUTION_ELIGIBLE=false; POST_COUNT=0; valid terminal not failure | SEMANTIC_PAIR=mv2_valid_no_trade_terminal; DISTINCT_FROM=mv2_executable_pre_external_terminal. Quellenstatus: `PROVEN_CURRENT`.
+- **Master V2 / Double Play → Execution / externe Wirkung**: `mv2_executable_pre_external_terminal`; Payload: EXECUTABLE_VENUE_PLAN_BOUND with eligibility true; PRE_EXTERNAL_EFFECT boundary; POST still unauthorized in cycle | SEMANTIC_PAIR=mv2_executable_pre_external_terminal; DISTINCT_FROM=mv2_valid_no_trade_terminal. Quellenstatus: `PARTIAL`.
+
+Bedeutungsgrenze: Ein Teil dieser Map-Kanten beschreibt ausdrücklich Grenzen oder Nichtimplikationen. Sie dürfen nicht als positive Order-Sendekette gelesen werden. HOLD / Nicht-Handeln kann ein regulärer Endzustand sein.
+
+### Entscheidung → Outcome / Learning → Forschungsinput
+
+Beobachtungen und Learning-Evidence von Forschungsentscheidung und Promotion trennen.
+
+- **Master V2 / Double Play → Learning / DDO**: `learning_capture`; Payload: OBSERVATION_ONLY_CAPTURE_ADAPTER. Quellenstatus: `PARTIAL`.
+- **Learning / DDO → Optimierungsuniversum**: `learning_evidence_export_to_optimization`; Payload: CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 fail-closed ack; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false. Quellenstatus: `PROVEN_CURRENT`.
+- **Primäre Runtime-Evidence → G2 Offline-Projektion**: `g2_primary_evidence_to_offline_projection`; Payload: GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out | DISTINCT_FROM=productive_ddo_offline_export_to_g2_primary_evidence (Case B: productive DDO export not admissible as primary evidence). Quellenstatus: `PROVEN_CURRENT`.
+- **G2 Offline-Projektion → G2→Optimierungsinput-Bindung**: `g2_runtime_learning_to_optimization_input_binding`; Payload: runtime_to_learning_input_v1 (LEARNING_INPUT_VALID) + G2 provenance. Quellenstatus: `PROVEN_CURRENT`.
+
+Bedeutungsgrenze: DDO-Learning-Export und primäre Runtime-Archive sind verschiedene Herkunftsarten; kein beliebiger Austausch als Evidence.
+
+### Market Intelligence und Forschungsübergaben
+
+Prognose-/Kalibrierungsnachweise an getrennte Learning- und Optimierungsconsumer übergeben.
+
+- **market_intelligence_forecast_calibration_offline_stack_d03 → Learning / DDO**: `mi_offline_compose_ddo_n_bars_outcome`; Payload: forecast_outcome_join_v1 references N_BARS actual_outcome_ref only; NO_DUPLICATE_OUTCOME_TRUTH; normative N_BARS semantics unchanged | SEMANTIC_PAIR=mi_offline_compose_ddo_n_bars_outcome; DISTINCT_FROM=mi_offline_typed_export_to_learning_path. Quellenstatus: `PROVEN_CURRENT`.
+- **market_intelligence_forecast_calibration_offline_stack_d03 → Learning / DDO**: `mi_offline_typed_export_to_learning_path`; Payload: MARKET_INTELLIGENCE_LEARNING_EVIDENCE via mi_to_learning_evidence_bridge_v1 and mi_learning_evidence_learning_export_v1; DDO reducers unchanged; learning_evidence_export_v1 path routing only | SEMANTIC_PAIR=mi_offline_typed_export_to_learning_path; DISTINCT_FROM=mi_offline_compose_ddo_n_bars_outcome. Quellenstatus: `PROVEN_CURRENT`.
+- **market_intelligence_forecast_calibration_offline_stack_d03 → Optimierungsuniversum**: `mi_offline_to_optimization_research_input`; Payload: MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 → run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE | SEMANTIC_PAIR=mi_offline_to_optimization_research_input; DISTINCT_FROM=mi_offline_to_multi_cycle_m5_m8_replay. Quellenstatus: `PROVEN_CURRENT`.
+- **market_intelligence_forecast_calibration_offline_stack_d03 → Optimierungsuniversum**: `mi_offline_to_multi_cycle_m5_m8_replay`; Payload: Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure → M5 return → M6 meta ingest → M7 feedback → deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false | SEMANTIC_PAIR=mi_offline_to_multi_cycle_m5_m8_replay; DISTINCT_FROM=mi_offline_to_optimization_research_input. Quellenstatus: `PROVEN_CURRENT`.
+- **market_intelligence_forecast_calibration_offline_stack_d03 → market_intelligence_forecast_calibration_offline_stack_d03**: `mi_offline_durable_evidence_store_loop_b`; Payload: mi_offline_durable_evidence_record_v1 append-only store for ForecastEvidence+CalibrationEvidence+MI_RESEARCH; idempotent identical replay; AUTHORITY=NONE. Quellenstatus: `PROVEN_CURRENT`.
+
+Bedeutungsgrenze: Nutzung eines Outcome-Verweises, Learning-Export, M4-Input und Mehrzyklus-Replay sind unterschiedliche Beziehungen, keine beliebig zusammengefasste Lernschleife.
+
+### Optimierung → Governance / gesonderter Apply-Pfad
+
+Vorschläge und nachgelagerte Materialisierung sichtbar voneinander abgrenzen.
+
+- **Optimierungsuniversum → governance_promotion**: `optimization_to_governance`; Payload: ADMITTED_FOR_GOVERNANCE_REVIEW or DENIED_FAIL_CLOSED. Quellenstatus: `PROVEN_CURRENT`.
+- **governance_promotion → f1_m9_scoped_owner_apply_execution**: `governance_promotion_to_f1_m9_scoped_owner_apply_execution`; Payload: evaluate_f1_m9_productive_apply_execution_boundary_v1. Quellenstatus: `PARTIAL`.
+- **p4_l6_productive_seam → governed_runtime_apply_materialization**: `real_runtime_p4_l6_seam_to_runtime_apply_materialization`; Payload: evaluate_runtime_apply_materialization_v1. Quellenstatus: `PROVEN_CURRENT`.
+- **f1_m9_productive_runtime_threshold_consumer_wiring → Master V2 / Double Play**: `f1_m9_canonical_durable_bootstrap_to_master_v2_seam`; Payload: ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1 then governed authorized_productive_parameter_seam for Master-V2 cycle admission. Quellenstatus: `PARTIAL`.
+
+Bedeutungsgrenze: Nicht als automatische Selbstanpassung oder geschlossene produktive Lernschleife behandeln. Teilverbindungen bleiben in der Map PARTIAL; Autorisierung und Wirkung sind eigenständig zu prüfen.
+
+### Orchestrierung und Zustandsfortsetzung
+
+Sequenzierung, Fachentscheidung und persistierte Zustände mit eigenen Rollen darstellen.
+
+- **Full Autonomy / Orchestrierung → Selection**: `fa_compose_cap23_produce_join`; Payload: produce_occupied_lane_cap23_n1_selections_v1; compose-only; Cap23 sole writer preserved. Quellenstatus: `PROVEN_CURRENT`.
+- **Full Autonomy / Orchestrierung → Instrument- und Runtime-Bindung**: `fa_compose_cap24_bind_join`; Payload: bind_occupied_lane_cap24_n1_instruments_v1 with reconciliation_state_root and observed_portfolio. Quellenstatus: `PROVEN_CURRENT`.
+- **Full Autonomy / Orchestrierung → Master V2 / Double Play**: `fa_compose_mv2_dp_handoff_join`; Payload: compose_occupied_lane_mv2_dp_handoff_v1 admitted bound instruments. Quellenstatus: `PROVEN_CURRENT`.
+- **Full Autonomy / Orchestrierung → Governed Cycle / Full-Core**: `fa_compose_governed_cycle_n1`; Payload: invoke_occupied_lane_governed_cycle_n1_consumer_v1 per lane; T2/S7 per-lane dispatch (T2_S7_USED; non-V5 EG); terminal PRE_EXTERNAL or HOLD_CLOSED. Quellenstatus: `PROVEN_CURRENT`.
+- **Full Autonomy / Orchestrierung → Portfolio / Reservierung**: `fa_compose_portfolio_budget`; Payload: PortfolioCapitalReservationBudgetOwnerV1 passed into readiness compose. Quellenstatus: `PARTIAL`.
+- **Full Autonomy / Orchestrierung → N5 Lane-Assignment-Persistenz**: `fa_n5_orchestrator_to_lane_persistence`; Payload: consume_recovered_isolated_lane_topology_v1 → persist_durable_lane_assignment_v1 (recovery re-entry included). Quellenstatus: `PROVEN_CURRENT`.
+- **SideState-/Confirmation-Cursor → Master V2 / Double Play**: `sidestate_cursor_to_mv2_cycle`; Payload: Durable cursor floor + side-state confirmation inputs for productive MV2 cycle. Quellenstatus: `PROVEN_CURRENT`.
+- **Cap21–23 Persistenz-Orchestrierung → Auswahlzustand: Persistenzträger**: `cap21_cap23_persist_to_cap24_productivity_carrier`; Payload: Cap-2.3 decision authority unchanged; orchestrated snapshots published/read from runtime/current_productive/cap24_selection_state. Quellenstatus: `PROVEN_CURRENT`.
+
+Bedeutungsgrenze: Compose- und Persistenzkanten belegen keine neue fachliche Autorität, keine fünf aktiven Stacks und keine universelle Wiederherstellung des gesamten Zustands.
+
+### Abgeleitete Informationsprodukte
+
+Auswahl- und Laufkontext lesbar machen, ohne neue Entscheidung zu erzeugen.
+
+- **Selection → Future Profile**: `selection_reference_to_future_profile_b07`; Payload: optional selected_future_id observability reference. Quellenstatus: `PROVEN_CURRENT`.
+- **Instrument- und Runtime-Bindung → Operator Explainability**: `binding_cap24_to_operator_profile_b11`; Payload: RuntimeBindingEvidenceV1 bound selected identity projected only. Quellenstatus: `PROVEN_CURRENT`.
+- **Governed Cycle / Full-Core → Präsentation / Readmodels**: `governed_cycle_to_presentation_read`; Payload: productive runtime/cycle SSOT to read model (non-authority). Quellenstatus: `PROVEN_CURRENT`.
+
+Bedeutungsgrenze: Readmodels bleiben relevant als Informationsprodukte; das bewusst entfernte alte Dashboard ist kein Wiederherstellungsziel.
+
+## Gesonderte negative / offene Beziehungen
+
+- `productive_ddo_offline_export_to_g2_primary_evidence`: Quellenklassifikation CONFLICTING und CASE_B_FORBIDDEN; kein gültiger Evidence-Transfer daraus abgeleitet.
+- `meta_search_backflow`: Quellenklassifikation FORBIDDEN; nicht als geschlossene produktive Meta-Steuerung dargestellt. Spätere begrenzte Forschungsfeedback-Projektionen aus RF02 sind eine getrennte Aussage.
+- `TARGET_N5_FULL_CORE`: dokumentiertes Architekturziel mit Nachweisbedarf, keine neu belegte technische Integration.
+
+43 weitere Map-Kanten sind in diesem Durchgang nicht im Detail ausgearbeitet; ihre IDs stehen im JSON, die vollständige Map bleibt im bisherigen Quellenregister erhalten.
+
+## Relevanz und zeitliche Grenzen
+
+L0–L6, das alte Dashboard und der historische Promotion-Loop werden nicht als aktuelle Zielbausteine reaktiviert. Ein alter Gesamtentwurf wird nur bei konkreter fachlicher Relevanz hinzugezogen. Gleiche Namen, Nummern oder Wörter bedeuten keine identische Architektur.
+
+Die SA-Verträge beschreiben verschiedene zeitlich begrenzte Ausbaustufen. Insbesondere September-Statuswerte wie UNRESOLVED, PLAN_ONLY und damalige Owner-GO-Texte sind keine neue heutige Statusfeststellung und keine auszuführenden Aufträge. Hier werden ihre Architekturverantwortungen und Grenzen herausgearbeitet.
+
+## Quellen und Prüfung
+
+Neun Vertragsdokumente vollständig für ihre strukturellen Aussagen gelesen und mit Git-Blob und SHA256 am Vergleichspin 5d1c838c15369507c5247834db4dd0df25592169 gesichert. Die verwendete Map wurde gegen den erneut gelesenen Git-Blob abgeglichen. RF02, RF03 und RF08 verweisen auf die Quellen im Relevanzregister. Keine Projektimporte, Produktläufe, Ledger-Runs oder externen Laufwerkszugriffe.
+
+- **SA01**: `docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA01-PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md>).
+- **SA02**: `docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA02-OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md>).
+- **SA03**: `docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA03-MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md>).
+- **SA04**: `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA04-FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1.md>).
+- **SA05**: `docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA05-CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md>).
+- **SA06**: `docs/ops/specs/CURRENT_MF_N5_DURABLE_LANE_ASSIGNMENT_PERSISTENCE_CONTRACT_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA06-CURRENT_MF_N5_DURABLE_LANE_ASSIGNMENT_PERSISTENCE_CONTRACT_V1.md>).
+- **SA07**: `docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA07-FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md>).
+- **SA08**: `docs/ops/specs/FULL_CORE_OPTION_D_SSOT_CHECKPOINT_EVENT_TAXONOMY_AND_EQ_RECONCILIATION_TARGET_CONTRACTS_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA08-FULL_CORE_OPTION_D_SSOT_CHECKPOINT_EVENT_TAXONOMY_AND_EQ_RECONCILIATION_TARGET_CONTRACTS_V1.md>).
+- **SA09**: `docs/ops/specs/FULL_CORE_U04_PENDING_ORDER_RESERVATION_OR_ACCOUNT_EQUITY_MAPPING_V1.md`. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-architecture-connections/SA09-FULL_CORE_U04_PENDING_ORDER_RESERVATION_OR_ACCOUNT_EQUITY_MAPPING_V1.md>).

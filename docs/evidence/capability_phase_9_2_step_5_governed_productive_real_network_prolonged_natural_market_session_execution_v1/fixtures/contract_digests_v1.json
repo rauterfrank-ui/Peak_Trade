@@ -1,0 +1,33 @@
+{
+  "binding_config_digest": "42772ed8339bf35912433a9bffd021f9f027acaa37617decdece84b6e780efb7",
+  "binding_config_path": "config/ops/phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.json",
+  "minimum_successful_wallclock_seconds": 7200,
+  "pacing": {
+    "backoff_initial_seconds": 1.0,
+    "backoff_max_seconds": 30.0,
+    "backoff_multiplier": 2.0,
+    "consecutive_stale_budget": 3,
+    "disk_free_minimum_bytes_before": 1610612736,
+    "disk_reserve_bytes": 1073741824,
+    "heartbeat_loss_seconds": 15.0,
+    "heartbeat_seconds": 5.0,
+    "max_consecutive_transport_errors": 3,
+    "max_evidence_bytes": 536870912,
+    "max_evidence_growth_bytes_per_minute": 2097152,
+    "max_gap_seconds": 10.0,
+    "max_recovery_count": 1,
+    "max_restart_count": 1,
+    "minimum_interval_seconds": 2.0,
+    "per_request_max_retries": 2,
+    "poll_interval_seconds": 2.0,
+    "reconnect_attempt_limit": 3,
+    "reconnect_time_limit_seconds": 60,
+    "retry_after_max_seconds": 60.0,
+    "session_http_429_budget": 5,
+    "shutdown_grace_seconds": 30.0,
+    "staleness_budget_seconds": 5.0
+  },
+  "planned_session_duration_seconds": 7200,
+  "session_contract_digest": "074b04142e0ffd2d1ded56527c63ec7d6ccb3c9abd25f86017cd873b6d5a7d17",
+  "session_contract_path": "config/ops/phase_9_2_public_md_prolonged_natural_market_session_contract_v1.json"
+}

@@ -1,0 +1,17 @@
+# Fee model for backtest/paper/testnet accounting (Phase B)
+# Deterministic defaults. No live exchange fees here.
+
+[fees]
+# Default maker/taker in basis points (1 bp = 0.01%)
+maker_bps = 10
+taker_bps = 15
+
+# Minimum fee per trade (in quote currency units)
+min_fee_quote = 0.0
+
+# Fee cap as fraction of notional (0 = no cap)
+cap_fraction = 0.0
+
+[fees.formula]
+# fee = max(min_fee, min(cap, notional * rate_bps / 10000))
+# rate_bps = maker_bps for maker, taker_bps for taker

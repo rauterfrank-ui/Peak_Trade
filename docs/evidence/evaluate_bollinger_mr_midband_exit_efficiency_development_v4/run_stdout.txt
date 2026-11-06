@@ -1,0 +1,1 @@
+{"phase": "baseline", "i": 1, "n": 46, "member": "1INCH-USDT-SWAP", "trades": 3, "exits_forced_by_gate": 0}

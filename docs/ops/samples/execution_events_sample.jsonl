@@ -1,0 +1,3 @@
+{"ts":"2026-02-24T00:00:00Z","event_type":"rate_limit","level":"warning","is_anomaly":true,"is_error":false,"msg":"rate limit hit"}
+{"ts":"2026-02-24T00:00:01Z","event_type":"reconnect","level":"warning","is_anomaly":true,"is_error":false,"msg":"ws reconnect"}
+{"ts":"2026-02-24T00:00:02Z","event_type":"order_error","level":"error","is_anomaly":false,"is_error":true,"msg":"order rejected"}

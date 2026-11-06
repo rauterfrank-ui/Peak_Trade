@@ -1,0 +1,9 @@
+{
+  "adapter_module": "src/ops/phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1/session_request_cli_adapter_v1.py",
+  "binding_module": "src/ops/phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1/governed_execution_binding_v1.py",
+  "cli": "scripts/ops/run_phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.py",
+  "confirm_token_plaintext_in_evidence": false,
+  "governed_network_module": "src/ops/phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1/governed_network_authorization_v1.py",
+  "hidden_pty_module": "src/ops/phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1/hidden_pty_confirm_handoff_v1.py",
+  "session_lock_owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_lock_v1"
+}

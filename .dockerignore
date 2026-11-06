@@ -1,0 +1,43 @@
+# VCS
+.git
+.gitignore
+
+# Python caches / virtualenvs
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyright/
+.venv/
+venv/
+.env
+.env.*
+
+# Build / dist artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+.coverage
+coverage.xml
+htmlcov/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Large runtime outputs / artifacts
+reports/
+artifacts/
+mlruns/
+data/
+tmp/
+.tmp_*
+# local operator area (often large / host-specific)
+.ops_local/

@@ -1,0 +1,22 @@
+# Safety attestation — VEPC v1 preregistration
+
+- `DEVELOPMENT_EVALUATION_EXECUTED=false`
+- `DEVELOPMENT_RUN_COUNT=0`
+- `DEVELOPMENT_SLOT_CONSUMED=false`
+- `HOLDOUT_ACCESSED=false`
+- `HOLDOUT_AUTHORIZED=false`
+- `LIVE_AUTHORIZED=false`
+- `ORDERS=false`
+- `RUNTIME_ACTIVATED=false`
+- `SHADOW_ACTIVATED=false`
+- `TESTNET_ACTIVATED=false`
+- `SCHEDULER_AUTHORIZED=false`
+- `SECOND_PNL_TRUTH_CREATED=false`
+- `STRATEGY_IMPLEMENTATION_PRESENT=false`
+- `NO_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_RETRY`
+- `NO_VOLATILITY_COMPRESSION_BREAKOUT_V1_RETRY`
+- `NO_VOLATILITY_EXPANSION_PERSISTENCE_V1_RETRY`
+- `NO_VOLATILITY_DECAY_BREAKOUT_V1_RETRY`
+- `NO_VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_RETRY`
+- Master V2 / Double-Play / Risk / Sizing / Execution unchanged
+- Productive PnL evaluator referenced only (`src/research/volatility_compression_breakout_v1_development_evaluation_v1/productive_exit_pnl_evaluator_v1.py`)

@@ -1,0 +1,12 @@
+RECOVERY_VALIDATION
+git_diff_check_rc=0
+git_diff_check_out=
+only_evidence_paths=True
+bad_paths=[]
+bearish_sha=3d420d4d90b1f8dd869ab8fee336bf4ed0d1a2f6bb802f9f2199fb3587c941f7
+bearish_preserved=True
+productive_files_changed=false
+packs_requested=6
+NO_NEW_GOVERNANCE_TESTS=true
+RUFF_FORMAT=Would reformat: [1mdocs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/audit_probe_v1.py[0m Would reformat: [1mdocs/evidence/scope_event_noop_root_cause_audit_v1/audit_probe_v1.py[0m 2 files would be reformatted 
+RUFF_CHECK=All checks passed! 

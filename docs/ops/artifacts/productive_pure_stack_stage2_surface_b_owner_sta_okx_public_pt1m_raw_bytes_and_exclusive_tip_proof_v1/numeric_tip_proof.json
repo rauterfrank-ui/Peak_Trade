@@ -1,0 +1,46 @@
+{
+  "authorized_endpoints": [
+    "/api/v5/market/history-candles",
+    "/api/v5/market/history-mark-price-candles"
+  ],
+  "authorized_observation_window_candidate": {
+    "bar_interval": "PT1M",
+    "exclusive_tip_event_time_epoch_s": 1785934680,
+    "first_finalized_common_bucket_open_event_time_epoch_s": 1785916740,
+    "last_finalized_common_bucket_open_event_time_epoch_s": 1785934620,
+    "row_count": 299,
+    "semantics": "HALF_OPEN_EVENT_TIME_WINDOW_[first_open, exclusive_tip)"
+  },
+  "baseline_sha": "54642d8250bb59ba58d98da7ce7b6ab52558e43b",
+  "candle_finalized_row_count_in_response": 299,
+  "candle_mark_join_proof": true,
+  "candle_raw_byte_count": 29172,
+  "candle_raw_digest": "e1da39436377d5c9eeae2470b7b21041e7894276e0fb32d9e96e2a60b826c739",
+  "candle_row_count": 299,
+  "contiguity_proof": true,
+  "digest_bound_row_count_proof": true,
+  "duplicate_free_proof": true,
+  "exclusive_tip_event_time_epoch_s": 1785934680,
+  "exclusive_tip_utc": "2026-08-05T12:58:00Z",
+  "first_finalized_common_bucket_open_event_time_epoch_s": 1785916740,
+  "first_open_utc": "2026-08-05T07:59:00Z",
+  "last_finalized_common_bucket_open_event_time_epoch_s": 1785934620,
+  "last_open_utc": "2026-08-05T12:57:00Z",
+  "mark_finalized_row_count_in_response": 299,
+  "mark_raw_byte_count": 18436,
+  "mark_raw_digest": "1a2a9d48dea7fe44663cc9b3f7a422a0ade9e9f19ca4ae6c0c5effab23aec610",
+  "mark_row_count": 299,
+  "monotonicity_proof": true,
+  "pt1m_alignment_proof": true,
+  "raw_source_digest": "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57",
+  "request_limits": {
+    "page_limit": "300",
+    "source": "scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py:PAGE_LIMIT"
+  },
+  "request_parameters": {
+    "bar": "1m",
+    "instId": "ETH-USDT-SWAP",
+    "limit": "300"
+  },
+  "request_window_source": "CANONICAL_OKX_PUBLIC_INGEST_V1_PAGE_LIMIT_300_SINGLE_PAGE_MOST_RECENT_HISTORY_COMMON_FINALIZED_CONTIGUOUS_WINDOW"
+}

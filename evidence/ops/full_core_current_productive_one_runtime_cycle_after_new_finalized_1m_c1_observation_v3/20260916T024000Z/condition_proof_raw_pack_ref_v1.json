@@ -1,0 +1,13 @@
+{
+  "CONDITION_PROOF_BODY_SHA256": "7a2b799bc2311c2e4e7440d18a8bc6d57e31f5004c1fe002c970b9f823b44a3b",
+  "CONDITION_PROOF_RAW_PACK": "evidence/ops/full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3/20260916T023738Z",
+  "CONDITION_PROOF_RAW_PAYLOAD": "evidence/ops/full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3/20260916T023738Z/raw_public_candles_get_v1.json",
+  "CONDITION_PROOF_VENUE_EVENT_TIME": "1789526160.0",
+  "CYCLE_C1_VENUE_EVENT_TIME": "1789526340.0",
+  "CYCLE_PACK": "evidence/ops/full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3/20260916T024000Z",
+  "EPISTEMIC_LAYER": "NAVIGATION",
+  "GATE_C1_VENUE_EVENT_TIME": "1789526340.0",
+  "POST_COUNT": "0",
+  "PREVIOUS_C1_BOUNDARY": "1789525080.0",
+  "RAW_EVIDENCE_MODIFIED": "false"
+}

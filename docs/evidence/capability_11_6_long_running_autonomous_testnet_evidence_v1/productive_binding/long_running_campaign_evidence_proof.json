@@ -1,0 +1,21 @@
+{
+  "CAPABILITY_11_6_LONG_RUNNING_AUTONOMOUS_TESTNET_STARTED": true,
+  "CAPABILITY_11_7_LIVE_PRIVATE_READONLY_STARTED": false,
+  "LONG_RUNNING_AUTONOMOUS_TESTNET_CAMPAIGN_ACTIVATED": false,
+  "LONG_RUNNING_AUTONOMOUS_TESTNET_EVIDENCE_FIXTURE_ONLY": true,
+  "LONG_RUNNING_CAMPAIGN_EVIDENCE_CONTRACT_ACTIVATED": false,
+  "LONG_RUNNING_CAMPAIGN_EVIDENCE_CONTRACT_BOUND": true,
+  "OWNER": "ops.capability_11_6_long_running_autonomous_testnet_evidence_v1",
+  "TESTNET_EVIDENCE_VERIFIED": false,
+  "TESTNET_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_6": false,
+  "activation_blocked": true,
+  "cap_11_7_surface_blocked": true,
+  "network_session_blocked": true,
+  "ok": true,
+  "paths": [
+    "long_running_autonomous_campaign_continuity",
+    "long_running_autonomous_campaign_degradation_evidence",
+    "long_running_autonomous_campaign_evidence_cursor"
+  ],
+  "unknown_path_blocked": true
+}

@@ -1,0 +1,41 @@
+---
+docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1
+status: active
+scope: Full-Core WP-1+WP-2 productive pre-external closure; common epoch; occupied lane; PRE_EXTERNAL hard stop; no POST
+capability: FULL_CORE_CURRENT_PRODUCTIVE_PRE_EXTERNAL_CLOSURE_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-27
+---
+
+# Full Core Current Productive Pre-External Closure V1
+
+Derived spec. Non-SSOT.
+
+Consumes Owner-GO `OWNER_GO_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1`.
+
+```text
+OWNER_GO=OWNER_GO_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1
+BASELINE_ORIGIN_MAIN_SHA=9f2ab677cfdb3ef62d604ba62789b135bf83fe5f
+WP1=COMMON_EPOCH_PLUS_TRUSTED_29P_CAPITAL_SURFACE
+WP2=OCCUPIED_LANE_GOVERNED_CYCLE_TO_PRE_EXTERNAL
+POST_COUNT=0
+PERMIT_CREATED=false
+EXTERNAL_EFFECT_OCCURRED=false
+TERMINAL_BOUNDARY=PRE_EXTERNAL_EFFECT
+RUNTIME_OWNER_GOS_CONSUMED=RUNTIME_OWNER_GO,GET_OWNER_GO,EG_OWNER_GO,OCCUPANCY_OWNER_GO,T2_RUNTIME_OWNER_GO
+```
+
+Executable: `current_productive_full_core_pre_external_closure_v1.py`.
+
+## WP-1 public `instType` binding
+
+WP-1 must resolve OKX public `instType` from the Cap-2.1 universe lineage for the Cap-2.4
+bound instrument via `_resolve_public_inst_type_for_bound_instrument_v1` (same authority as the
+common-epoch handoff store path). The resolved value is passed explicitly to
+`compose_current_productive_29p_common_epoch_handoff_v1(..., inst_type=...)`. Silent default
+`FUTURES` is forbidden for productive compose. Fail-closed when Cap-21 lineage is missing or
+does not authorize the bound `venue_native_id`.
+
+## Scoped correction — 2026-11-03
+
+The prepare API forwards an explicitly supplied shared portfolio budget owner; absence remains fail-closed. ENTER blocked downstream reports its genuine blocker. Natural long/short fixtures now use causal G17 history; the persistent account-bound test requires actual PRE_EXTERNAL and a reservation. No owner/source acquisition, capital-rule or learning change is implied. See [full-flow repair evidence](../evidence/FIVE_FULL_FLOW_REPAIRS_2026_11_03.md) for the 68-case injected proof and remaining limits.

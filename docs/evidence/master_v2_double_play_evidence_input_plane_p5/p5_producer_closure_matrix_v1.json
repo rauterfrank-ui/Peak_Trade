@@ -1,0 +1,50 @@
+{
+  "learning": {
+    "DIRECT_TO_B": false,
+    "DIRECT_TO_DP": false,
+    "PRODUCER_PRESENT": true,
+    "PRODUCTIVE_LINEAGE_PROVEN": true,
+    "PROMOTION_ADMITTED": true,
+    "REGISTERED": true,
+    "RUNTIME_REACHABLE": true,
+    "TERMINATES_AT_A": true,
+    "TRADING_AUTHORITY": "NONE",
+    "blocker": null
+  },
+  "market_intelligence": {
+    "DIRECT_TO_B": false,
+    "DIRECT_TO_DP": false,
+    "PRODUCER_PRESENT": true,
+    "PRODUCTIVE_LINEAGE_PROVEN": true,
+    "PROMOTION_ADMITTED": true,
+    "REGISTERED": true,
+    "RUNTIME_REACHABLE": true,
+    "TERMINATES_AT_A": true,
+    "TRADING_AUTHORITY": "NONE",
+    "blocker": null
+  },
+  "meta_learning": {
+    "DIRECT_TO_B": false,
+    "DIRECT_TO_DP": false,
+    "PRODUCER_PRESENT": true,
+    "PRODUCTIVE_LINEAGE_PROVEN": true,
+    "PROMOTION_ADMITTED": true,
+    "REGISTERED": true,
+    "RUNTIME_REACHABLE": true,
+    "TERMINATES_AT_A": true,
+    "TRADING_AUTHORITY": "NONE",
+    "blocker": null
+  },
+  "optimization": {
+    "DIRECT_TO_B": false,
+    "DIRECT_TO_DP": false,
+    "PRODUCER_PRESENT": true,
+    "PRODUCTIVE_LINEAGE_PROVEN": true,
+    "PROMOTION_ADMITTED": true,
+    "REGISTERED": true,
+    "RUNTIME_REACHABLE": true,
+    "TERMINATES_AT_A": true,
+    "TRADING_AUTHORITY": "NONE",
+    "blocker": null
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_14_POS_ACCOUNT_MODE_PRODUCER_CONTRACT_V1",
+  "IRRELEVANT_PROVEN": true,
+  "POS_ACCOUNT_MODE_BINDING": "IRRELEVANT_FOR_HANDOFF_POS_QUANTITY; tdMode=cross is margin mode and does not change the quantity domain or unsigned-magnitude sign model",
+  "acctLv": "UNBOUND_AND_IRRELEVANT_TO_POS_QUANTITY",
+  "cross_versus_isolated_does_not_change_unsigned_magnitude_model": true,
+  "mgnMode_does_not_change_quantity_domain": true,
+  "tdMode": "cross"
+}

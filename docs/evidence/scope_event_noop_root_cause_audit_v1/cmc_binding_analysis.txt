@@ -1,0 +1,28 @@
+CANONICAL MARKET CONTEXT BINDING
+
+Probe path: run_mv2_research_backtest_wiring_v1 with ECONOMIC_RESEARCH_V1 profile on durable 1INCH bars.
+
+CMC provides:
+  mark_price -> reference_price / current_price (BOUND, DYNAMIC)
+  context_id / input_digest -> market_context_id / market_context_digest (BOUND)
+  data_integrity / clock_trust / bar_finality (BOUND; not causing scope_blocked)
+
+price_path:
+  project_mv2_agreement_bound_price_path_v1 uses mark + prior_mark_price trail (post-#5337)
+  bearish samples show distinct (prior, mark) pairs, e.g. (0.3799, 0.3797)
+  PRICE_PATH_DYNAMIC=true
+  PRIOR_MARK_BOUND=true
+
+bull/bear features in CMC:
+  Scope generator does NOT consume separate bull/bear CMC distance features.
+  Distances come exclusively from replay_input wiring constants.
+
+Instrument/timeframe:
+  Panel member okx:linear_perpetual:1INCH:USDT:USDT:perp bars used; mark scale matches 1INCH.
+
+Boundary loss CMC -> generator:
+  Price/context intact.
+  Loss is NOT CMC omission; loss is distance unit/scale injected in wiring before generator.
+
+CMC_BINDING_OK=true
+CMC_CAUSES_EXCLUSIVE_NOOP=false

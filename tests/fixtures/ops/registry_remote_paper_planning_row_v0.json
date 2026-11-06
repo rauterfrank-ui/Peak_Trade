@@ -1,0 +1,17 @@
+{
+  "schema_version": "peak_trade.generic_evidence_run_registry.v1",
+  "registry_name": "registry_remote_paper_planning_row_v0",
+  "runs": [
+    {
+      "run_id": "remote_paper_planning_run_20260526T120000Z",
+      "lane_id": "paper",
+      "runtime_host": "remote",
+      "runtime_backend": "ec2",
+      "runtime_mode": "paper_only",
+      "evidence_root_type": "remote_durable",
+      "evidence_transport": "local_only",
+      "live_authority": false,
+      "testnet_authority": false
+    }
+  ]
+}

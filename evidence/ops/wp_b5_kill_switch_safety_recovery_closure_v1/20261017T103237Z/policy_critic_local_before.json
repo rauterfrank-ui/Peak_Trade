@@ -1,0 +1,26 @@
+{
+  "max_severity": "BLOCK",
+  "recommended_action": "AUTO_APPLY_DENY",
+  "violations": [
+    {
+      "rule_id": "NO_LIVE_UNLOCK",
+      "severity": "BLOCK",
+      "message": "Attempt to disable safety checks. Live unlocks require explicit governance approval.",
+      "evidence": [
+        {
+          "file_path": "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+          "line_range": null,
+          "snippet": "DISABLED and PEAK_KILL_SWITCH=1 always deny, and an attested ACTIVE that the existing productive POST kill-switch gate verifies. CSIA domain safety (DURABLE_KILL_SWITCH=src.ops.gates.risk_gate+durable_filegate_join_v1) and execution_external_effect (standing EXTERNAL_EFFECT_AUTHORIZED/POST_ALLOWED/REAL_VENUE_POST_ALLOWED false) stay accurate: the attestation and journal are internal integrity check",
+          "pattern": "disable.*safety.*check"
+        }
+      ],
+      "suggested_fix": "Remove this change. Live mode changes require manual review and owner approval."
+    }
+  ],
+  "minimum_test_plan": [
+    "Run integration tests for execution pipeline",
+    "Verify order routing in paper/shadow mode"
+  ],
+  "operator_questions": [],
+  "summary": "Policy review: 1 blocking violation(s). Auto-apply DENIED. Manual review required."
+}

@@ -1,0 +1,39 @@
+{
+  "ALTERNATIVE_FRESHNESS_PREDICATE": "VALID_WITH_FRESH_GET_WHEN_COMPUTED_EQUALS_FROZEN",
+  "ALWAYS_REQUIRED_GET_COUNT": 6,
+  "ALWAYS_REQUIRED_GET_ENDPOINTS": [
+    "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+    "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+    "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+    "/api/v5/account/positions",
+    "/api/v5/account/trade-fee?instType=FUTURES&instFamily=SUI-USD_UM_XPERP",
+    "/api/v5/trade/orders-pending"
+  ],
+  "CONDITIONAL_GET_COUNT": 1,
+  "CONDITIONAL_GET_ENDPOINTS": [
+    "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=<computed_limit>"
+  ],
+  "ENVELOPE_PRODUCER": "build_flatten_sell_envelope_v1",
+  "ENVELOPE_REBUILD_SEMANTICS": "FULL_REBUILD_NEW_IDENTITY_NO_IN_PLACE_MUTATION",
+  "FRESHNESS_THRESHOLD_MS": 5000,
+  "GET_CONTRACT_STATUS": "DEFINED",
+  "HISTORICAL_VALUES_REUSED_AS_FRESH": false,
+  "HMAC_POST_FORBIDDEN": true,
+  "MAX_GET_CALL_COUNT": 7,
+  "NOT_REQUIRED_BY_ENVELOPE_PRODUCER": [
+    "/api/v5/account/config",
+    "/api/v5/account/balance",
+    "/api/v5/account/leverage-info",
+    "/api/v5/public/mark-price",
+    "/api/v5/market/books"
+  ],
+  "POST_FORBIDDEN": true,
+  "PRICE_BAND_RULE": "LIMIT_PX_MUST_BE_GTE_FRESH_SELL_LMT",
+  "PRICE_CONTRACT": "evaluate_canary_flatten_limit_price_contract_v1",
+  "RECEIPT_MINT_FORBIDDEN": true,
+  "REPRICE_ALGORITHM_SOURCE": "evaluate_canary_flatten_limit_price_contract_v1+build_flatten_sell_envelope_v1",
+  "REPRICE_CONTRACT_STATUS": "DEFINED",
+  "ROUNDING_RULE": "SELL_ROUND_DOWN_TO_TICK",
+  "SIDE_QUOTE_RULE": "SELL_SELECTS_BID",
+  "WIRE_SEND_FORBIDDEN": true
+}

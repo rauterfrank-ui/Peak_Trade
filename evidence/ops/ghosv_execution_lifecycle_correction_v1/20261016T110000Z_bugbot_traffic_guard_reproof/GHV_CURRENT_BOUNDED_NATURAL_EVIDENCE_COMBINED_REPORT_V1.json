@@ -1,0 +1,161 @@
+{
+  "CURRENT_AUTHORITY_SHA": "f87032845fd21c0deb6aee0bddb553be9a43691f",
+  "CURRENT_TERMINAL_DISPOSITION": "PRE_EXTERNAL_EFFECT",
+  "CYCLES_EXECUTED": 7,
+  "ECONOMIC_QUALIFICATION_STATUS": "UNKNOWN_FIXPOINT_ABSENT",
+  "EVIDENCE_COMPLETENESS": {
+    "artifacts_present": {
+      "current_pre_external_report": true,
+      "flight_record": true,
+      "ghv_causal_blocker_report": true
+    },
+    "cycle_summaries_align_with_cycle_count": true,
+    "ghv_materialization": {
+      "attempted": true,
+      "blocker": "",
+      "status": "PASS"
+    },
+    "optional_ghv_artifacts_checked": [
+      "ghv_pre_external_runtime_flight_record_v1.jsonl",
+      "ghv_pre_external_causal_blocker_report_v1.json",
+      "ghv_pre_external_runtime_state_graph_v1.json"
+    ],
+    "overall_complete": true,
+    "schema_version": "ghv_current_bounded_evidence_completeness.v1"
+  },
+  "EVIDENCE_ROOT": "/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T190205Z_ghv_l10_integrated_natural_enter_pre_external_v1",
+  "FINALIZATION_ELAPSED_SECONDS": 0.004589,
+  "GHV_AUTHORITY": "NONE",
+  "GHV_CAUSAL_CHAIN_STATUS": "CAUSAL_ANALYSIS_COMPLETE",
+  "GHV_CONTRACT_VIOLATIONS": [],
+  "GHV_ROOT_BLOCKERS": [],
+  "HOLD_CLOSED_EXPLANATIONS": [
+    {
+      "classification": "FACT",
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "CURRENT S5 terminal disposition for this cycle was HOLD_CLOSED (authoritative productive cycle outcome).",
+      "supporting_artifact": "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+    },
+    {
+      "classification": "FACT",
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "CURRENT S5 terminal disposition for this cycle was HOLD_CLOSED (authoritative productive cycle outcome).",
+      "supporting_artifact": "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+    },
+    {
+      "classification": "INFERENCE",
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "GHV directional signal observability row present for cycle; side=None signal_strength=0.06711842529848333 threshold=None. Does not override CURRENT disposition.",
+      "supporting_artifact": "directional_signal_observability_v1.jsonl"
+    },
+    {
+      "classification": "FACT",
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "CURRENT S5 terminal disposition for this cycle was HOLD_CLOSED (authoritative productive cycle outcome).",
+      "supporting_artifact": "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+    },
+    {
+      "classification": "INFERENCE",
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "GHV directional signal observability row present for cycle; side=None signal_strength=-0.06128404669260691 threshold=None. Does not override CURRENT disposition.",
+      "supporting_artifact": "directional_signal_observability_v1.jsonl"
+    },
+    {
+      "classification": "FACT",
+      "cycle_index": 4,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "CURRENT S5 terminal disposition for this cycle was HOLD_CLOSED (authoritative productive cycle outcome).",
+      "supporting_artifact": "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+    },
+    {
+      "classification": "INFERENCE",
+      "cycle_index": 4,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "GHV directional signal observability row present for cycle; side=None signal_strength=-0.060527172144484234 threshold=None. Does not override CURRENT disposition.",
+      "supporting_artifact": "directional_signal_observability_v1.jsonl"
+    },
+    {
+      "classification": "FACT",
+      "cycle_index": 5,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "CURRENT S5 terminal disposition for this cycle was HOLD_CLOSED (authoritative productive cycle outcome).",
+      "supporting_artifact": "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+    },
+    {
+      "classification": "INFERENCE",
+      "cycle_index": 5,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "GHV directional signal observability row present for cycle; side=None signal_strength=0.06262167423750807 threshold=None. Does not override CURRENT disposition.",
+      "supporting_artifact": "directional_signal_observability_v1.jsonl"
+    },
+    {
+      "classification": "FACT",
+      "cycle_index": 6,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "CURRENT S5 terminal disposition for this cycle was HOLD_CLOSED (authoritative productive cycle outcome).",
+      "supporting_artifact": "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+    },
+    {
+      "classification": "INFERENCE",
+      "cycle_index": 6,
+      "s5_disposition": "HOLD_CLOSED",
+      "statement": "GHV directional signal observability row present for cycle; side=None signal_strength=0.06401551891367599 threshold=None. Does not override CURRENT disposition.",
+      "supporting_artifact": "directional_signal_observability_v1.jsonl"
+    }
+  ],
+  "MAX_RUN_DURATION_SECONDS_SCOPE": "S6_OBSERVATION_SEQUENCER_ONLY",
+  "NATURAL_ENTER_ACCOUNTING": {
+    "dpo_decision_outcome": "no_action",
+    "natural_pre_external_reached": false,
+    "reporting_s5_disposition": "PRE_EXTERNAL_EFFECT"
+  },
+  "NATURAL_ENTER_OBSERVED": false,
+  "NEXT_RECOMMENDED_ACTION": "REVIEW_COMBINED_REPORT_AND_GHV_CAUSAL_ARTIFACTS",
+  "ORDER_COUNT": 0,
+  "POST_COUNT": 0,
+  "PREFLIGHT_ELAPSED_SECONDS": 290.367215,
+  "PRE_EXTERNAL_REACHED": true,
+  "RUNTIME_COMPLETED": true,
+  "RUNTIME_STARTED": true,
+  "S5_DISPOSITIONS": [
+    {
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 4,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 5,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 6,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 7,
+      "s5_disposition": "PRE_EXTERNAL_EFFECT"
+    }
+  ],
+  "SAFETY_VIOLATIONS": [],
+  "SEQUENCER_ELAPSED_SECONDS": 359.387806,
+  "TOTAL_WALLCLOCK_SECONDS": 651.112659,
+  "owner": "full_core_live_path_composition_root_v1.ghv_current_bounded_natural_evidence_forensic_adapter_v1",
+  "schema_version": "ghv_current_bounded_natural_evidence_combined_report.v1",
+  "work_package": "GHV_CURRENT_BOUNDED_NATURAL_EVIDENCE_INTEGRATION_V1"
+}

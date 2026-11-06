@@ -1,0 +1,101 @@
+{
+  "mission": "OKX_MAXIMUM_OBSERVATION_V6F",
+  "mode": "STRICT_OBSERVATION_ONLY",
+  "phase": "VISUAL_WORKSTATION_OPTIMIZATION",
+  "timestamp_utc": "2026-10-16T07:36:00Z",
+  "evidence_path": "evidence/ops/okx_maximum_observation_workstation_v6/20261016T092800Z_v6f",
+  "baseline": {
+    "v6d": "evidence/ops/okx_maximum_observation_workstation_v6/20261016T092300Z_v6d",
+    "protected_ws1_id": "1006418239457071104",
+    "optimized_ws2_id": "1031216400532770816"
+  },
+  "WS1_STATUS": "UNCHANGED",
+  "WS1_VERIFICATION": {
+    "klineLayout": "3A",
+    "instCount": 3,
+    "note": "Keine Layout- oder Slot-Experimente in V6F; Stichprobe via Deep-Link unverändert zu V6D",
+    "screenshot": "screenshots/WS1_unchanged_check.png"
+  },
+  "PHASE_1_UI_CAPABILITY": {
+    "artifact": "phase1/UI_CAPABILITY_ASSESSMENT_V6F.json",
+    "summary": {
+      "hide_order_form_right": "SUPPORTED",
+      "orderbook_and_tas_parallel": "UNSUPPORTED",
+      "native_observation_preset": "UNKNOWN",
+      "full_hide_bottom_order_bar": "UNSUPPORTED"
+    }
+  },
+  "PHASE_2_VISUAL_COMPARISON": {
+    "artifact": "phase2/VISUAL_LAYOUT_COMPARISON.json"
+  },
+  "PHASE_3_SAFE_OPTIMIZATION": {
+    "ws2_layout_baseline": "phase3/WS2_layout_baseline.json (klineLayout 1A, workspaceId 1031216400532770816)",
+    "actions_applied": [
+      "Rechter Handeln-/Order-Spalte via Workspace-Rail expand-left eingeklappt (verifiziert)",
+      "Flexlayout-Close auf Handeln/Futures-Modus-Tabsets (teilweise, Order-Leiste unten verbleibt)",
+      "Exploration: Vorlagen/Widgets, Anzeige-Menü, Einstellungen — ohne Order-Submit"
+    ],
+    "actions_not_applied_or_reverted": [
+      "Vollständiges Entfernen Limit|Market-Zeile am Chartfuß",
+      "Paralleles Orderbuch + Letzte Trades",
+      "Dauerhafte Persistenz nach Reload (OKX stellt Standard-Handelsspalte wieder her)"
+    ],
+    "screenshots_sequence": [
+      "screenshots/BEFORE_WS2_baseline.png",
+      "screenshots/OPT_expand_icon_click.png",
+      "screenshots/AFTER_WS2_primary_evidence.png"
+    ]
+  },
+  "VISUAL_EVIDENCE": {
+    "before": "screenshots/BEFORE_WS2.png (alias BEFORE_WS2_baseline.png)",
+    "after_primary": "screenshots/AFTER_WS2_primary_evidence.png (Order-Spalte rechts ausgeblendet; Chart breiter; Orderbuch + Header-Funding/OI sichtbar; kein Kaufen/Verkaufen rechts)",
+    "after_session_drift_note": "Nach weiteren UI-Experimenten/Reload kann OKX die volle Order-Spalte zurücksetzen — reproduzierbarer Pfad siehe operator_runbook"
+  },
+  "VISIBLE_IMPROVEMENTS_VERIFIED": [
+    "Rechtes Orderformular (Kaufen/Verkaufen, Limit-Felder) ausgeblendet in AFTER_PRIMARY",
+    "TradingView-Chart visuell vergrößert (mehr horizontale Fläche)",
+    "Orderbuch-Spalte bleibt parallel zum Chart sichtbar",
+    "Funding-Countdown, Open Interest, Index/Richtpreis in Header-Leiste integriert",
+    "Unteres Positions-/Orders-Tabset weiterhin verfügbar",
+    "USDC Eigenkapital / Variabler PnL in kompakter Futures-Vermögensanzeige (ohne rechte Order-Spalte)"
+  ],
+  "REMAINING_VISUAL_GAPS": [
+    "Letzte Trades nur per Tabwechsel, nicht parallel zum Orderbuch",
+    "Limit | Market-Zeile am unteren Chartrand kann verbleiben",
+    "Workspace-Manager-Drawer kann rechts Fläche belegen, bis per expand erneut geschlossen",
+    "Layout-Optimierung überlebt Browser-Reload nicht zuverlässig (Session/ok_comb_trade)"
+  ],
+  "TECHNICAL_OKX_LIMITS": [
+    "Kein natives EEA-„Observation-only“-Layout ohne Handelswidgets in Persistenz",
+    "Market-Panel: exklusive Tabs Orderbuch vs Letzte Trades",
+    "Zwei persistente comb_trade-Workspaces (V6C); WS1 unangetastet",
+    "Widget-/Vorlagen-UI erfordert manuelle Schritte; Automation per DOM fragil (expand-Icon nicht immer im DOM)"
+  ],
+  "OPERATOR_RUNBOOK_OBSERVATION_MODE_WS2": [
+    "1. Safari: trade-futures BTC XPERP, Sidebar-Slot 2, Hash #workspaceId=1031216400532770816",
+    "2. Rechte Leiste: Icon expand-left (okx-trading-expand-left) — Handeln-Spalte einklappen",
+    "3. Optional: Widgets → Order und Positionen deaktivieren (Vorsicht: kann Chart-Overlays beeinflussen)",
+    "4. Drawer wieder schließen (gleiches expand-Icon)",
+    "5. Diagramm/TradingView, Orderbuch-Tab, Offene Positionen-Tab für Routine-Beobachtung",
+    "6. Handelsdaten-Tab für OI/L/S/Taker ohne Orderformular"
+  ],
+  "PERSISTENCE_CHECK": {
+    "same_session_improvement": "PASS — AFTER_PRIMARY dokumentiert",
+    "after_location_reload": "PARTIAL_FAIL — volle Order-Spalte kehrt zurück (screenshots/AFTER_WS2_post_reload.png in Sequenz)",
+    "ws1_klineLayout_unchanged": "PASS (3A)"
+  },
+  "SECURITY_INVARIANTS": {
+    "TRADING_ACTIONS": 0,
+    "ORDER_FORM_SUBMIT": 0,
+    "BUY_SELL_CLICKED": 0,
+    "TRANSFERS_BOTS_MARGIN_API_ACCOUNT_CHANGES": 0,
+    "PEAK_TRADE_MUTATIONS": 0,
+    "AGENT_STORAGE_WRITES": 0
+  },
+  "V6F_VERDICT": {
+    "visual_improvement_demonstrated": true,
+    "fully_persistent_observation_layout": false,
+    "ws1_protected": true,
+    "overall": "PARTIAL_PASS — sichtbare WS2-Optimierung belegt; OKX-Grenzen bei Parallel-T&S, unterer Order-Leiste und Reload-Persistenz"
+  }
+}

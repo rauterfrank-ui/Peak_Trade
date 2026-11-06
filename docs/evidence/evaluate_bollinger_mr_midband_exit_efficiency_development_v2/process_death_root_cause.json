@@ -1,0 +1,39 @@
+{
+  "auto_rerun_executed": false,
+  "baseline_members_completed": "0/46",
+  "death_class": "WORKER_EXCEPTION",
+  "economic_metrics_computed": false,
+  "exception_message_truncated": "CONTRACT_EVALUATION_RUN_COUNT_NOT_ZERO",
+  "exception_type": "RuntimeError",
+  "excluded_with_available_evidence": [
+    "panel temporary directory disappeared",
+    "OOM/jetsam kill",
+    "unknown silent process death without traceback"
+  ],
+  "holdout_data_accessed": false,
+  "measurement_started_at_utc": "2026-07-21T14:10:01Z",
+  "observed_facts": [
+    "Python PID 52986 started and attached EvaluationRunnerLifecycleObservabilityV1",
+    "run_attempt_marker.txt and run_pid.txt persisted before measurement",
+    "Contract file evaluation_run_count was 0 (DEFINITION_ONLY_PREREGISTERED) at start marker",
+    "Runner aborted in init/premeasurement with CONTRACT_EVALUATION_RUN_COUNT_NOT_ZERO",
+    "No baseline/treatment member progress was recorded",
+    "No holdout path accessed"
+  ],
+  "panel_archive_still_present": true,
+  "pid": 52986,
+  "process_death_root_cause": "PREMEASUREMENT_GATE_FALSE_POSITIVE_ZERO_OR_SENTINEL",
+  "process_death_root_cause_notes": [
+    "panel_runner_v2 used `int(evaluation_run_count or -1) != 0` as a premeasurement gate",
+    "With legitimate DEFINITION_ONLY run_count=0, Python treats 0 as falsy so `0 or -1` yields -1",
+    "Gate then incorrectly raised RuntimeError CONTRACT_EVALUATION_RUN_COUNT_NOT_ZERO",
+    "Lifecycle observability correctly classified WORKER_EXCEPTION \u2192 INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+    "No auto-rerun; slot consumed"
+  ],
+  "process_died_observed_at_utc": "2026-07-21T14:10:03Z",
+  "process_exit_code": 1,
+  "run_attempt_started_at_utc": "2026-07-21T14:10:01Z",
+  "schema_version": "bollinger_mr_midband_exit_efficiency_process_death_root_cause.v2",
+  "traceback_present": true,
+  "treatment_members_completed": "0/46"
+}

@@ -1,0 +1,8 @@
+# RECOVERY PLACEHOLDER — NOT ORIGINAL BYTES
+ORIGINAL_BYTES_AVAILABLE=false
+MISSING_REASON=original_worktree_snapshot_unavailable
+RECOVERED_AT=2026-07-18T23:23:10Z
+PATH=/Users/frnkhrz/Peak_Trade/docs/evidence/scope_event_noop_root_cause_audit_v1/worktree_before.txt
+
+This artifact was listed in the pre-delete untracked inventory but could not be
+byte-recovered from transcripts/PRs/branches. Content is intentionally minimal.

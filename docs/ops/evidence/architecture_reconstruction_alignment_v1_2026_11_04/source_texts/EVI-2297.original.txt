@@ -1,0 +1,141 @@
+GGE: MARKTPREIS, VOLATILITÄT UND WEITERE KONTEXTDATEN
+Untersuchung 02.11.2026 · Read-only · keine Betriebsfreigabe
+
+GELTUNGSBEREICH
+Checkout /Users/frnkhrz/Peak_Trade, HEAD 242b7974fc93f0bdb47706556101bd6f0c497414.
+Arbeitskopie einschließlich vorhandener Änderungen untersucht; nicht mit origin/main,
+laufendem Prozess oder fachlich richtigem Zielbild gleichgesetzt. 16 Dateien mit
+SHA256 gebunden, darunter bereits geänderte runtime_cycle-Datei. Git-Status/HEAD/
+Diff während der Offline-Prüfung unverändert. Keine Marktanfrage, kein Runtime-Zyklus.
+Der folgende Weg ist ein konkreter aktueller Natural-Enter/N1-Pfad. Andere Hosts,
+N5-Harnesses, Offline-/Testpfade und WS-Verbindungen sind dadurch nicht vollständig erfasst.
+
+ERGEBNIS
+GGE hat selbst weder WebSocket noch REST-Client. Es bekommt mark_price und aufgelöste
+volatility_estimate über CanonicalMarketContextV1 oder seine direkte Skalarschnittstelle.
+Es berechnet D = volatility_estimate × mark_price in der Einheit des Markpreises.
+Es berechnet keinen neuen Marktpreis und erteilt keine Handelsfreigabe.
+
+DER KONKRETE PREISWEG
+1. run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
+   bindet das durch Cap24 übergebene Instrument und dessen venue_native_id. Es baut
+   LiveFreshC1ContinuousObservationSourceV1 mit dieser Native-ID und dem GET-Transport.
+2. current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py:100–147
+   fragt je Poll gesondert /api/v5/public/mark-price?instId=<native_id> ab.
+   auth_required=False; GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED.
+   Zusätzlich: normale /api/v5/market/candles für C1/Historie; falls Index fehlt,
+   /api/v5/market/index-tickers mit der abgeleiteten Index-ID.
+3. productive_read_only_get_transport_v1.py:32–33,73–169
+   Ziel https://eea.okx.com. Die dynamische Policy umgeht den endpointbezogenen
+   Transportcache. Das ist eine neue HTTP-Anfrage, noch kein Alterstest des Inhalts.
+4. current_productive_master_v2_runtime_cycle_v1.py:344–360
+   extract_mark_and_index_from_payload_v1 sucht exakte instId, liest markPx als
+   endliche positive Zahl. Es liest nicht last und nicht candle.close als Marktpreis.
+5. current_productive_canonical_price_provenance_v1.py:91–142
+   bindet MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD und native_id an mark_px. Index separat:
+   mark.idxPx, optional ticker.idxPx, sonst index-tickers.idxPx. Fehlender Mark oder
+   fehlender Index führt im Builder zum Abbruch. Numerische Gleichheit von Mark und
+   Index allein ist kein Fehler; Herkunft und Bedeutung sind getrennt.
+6. current_productive_persistent_natural_enter_convergence_v1.py:470–514,640–675
+   _market_kwargs_from_observation_v1 übernimmt provenance.mark_px unverändert als
+   mark_px. mark_price_payload läuft aus InjectedContinuousObservationV1 über den
+   Continuous-Orchestrator in diesen Adapter.
+7. current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/
+   invoke_join_v1.py:339–391: _t2_from_s7 bildet den dispatch und reicht s7_base an
+   compose_occupied_lane_mv2_dp_durable_cycle_v1 weiter. Der Persistenz-/Adressierungsweg
+   liegt unter current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/
+   addressing_join_v1.py, Runtime-Aufruf u.a.753ff. mark_px und Provenienz werden weitergereicht.
+8. current_productive_master_v2_runtime_cycle_v1.py:640–670,735–784
+   prüft Provenienzwerte/Native-ID, verbietet ORDINARY_MARKET_CANDLE_CLOSE als Markquelle
+   und erstellt CMC.mark_price=float(mark_px). Danach G17-Bindung und Layer-C/GGE-Aufruf.
+9. golden_geometry_engine_v1.py:166–205
+   nimmt CMC.mark_price unverändert; löst Volatilität über den kanonischen Adapter auf;
+   berechnet Geometrie und trägt Preis, Volatilität, Instrument und Herkunft im Output.
+   canonical_scope_initialization_v1.py:245–286,464–486 sowie
+   layer_c_scope_event_distance_binding_v1.py:96–154 sind konkrete Consumer-Verbindungen.
+   Scope-Initialisierung setzt reference_price und trailing_anchor anfangs auf den
+   Markpreis. Das beweist keine später mitwandernde UI-Nulllinie oder Scope-Anzeige.
+
+GETRENNTER VOLATILITÄTSWEG
+Das Startskript lädt in _resolve_g17_producer (151–190) separat
+/api/v5/market/history-mark-price-candles für dieselbe gebundene Native-ID.
+current_productive_g17_pt1m_mark_sample_adapter_v1.py verlangt finalisierte,
+zusammenhängende PT1M-Markpreis-Samples (Cold-Start mind.61). Normale Handelskerzen
+werden hier ausdrücklich als Mark-Historienersatz zurückgewiesen.
+Der Hot-Path-Join erstellt/restauriert den G17-Producer und seine typisierte Schätzung.
+current_productive_g17_typed_vol_cmc_bind_v1.py:79–149 bindet diese in CMC; pro Runtime-
+Aufruf wird on_runtime_cycle_without_sample_v1 aufgerufen. Eine vorhandene Schätzung
+kann gemäß Outcome und Kompatibilitätsregel wiederverwendet werden. Das ist kein
+automatisch neuer Mark-Historienabruf je Preis-Poll. Der hier gelesene Startskriptpfad
+ruft den initialen Resolver einmal vor dem Continuous-Run auf. Eine umfassende
+Untersuchung aller möglichen Nachspeiser ist damit nicht ersetzt.
+CMC enthält zuvor eine aus normalen finalized_closes berechnete Feature-Volatilität.
+Der GGE-Resolver nutzt bei vorhandenem Typed-Carrier dessen validierte Adaption und
+prüft Float-Übereinstimmung; ohne Typed-Carrier erlaubt die allgemeine Schnittstelle
+das bestehende Floatfeld. Produktive Presence-/F1/M9-/Kompatibilitätsgates sind davon
+getrennte Zulässigkeitsprüfungen. GGE allein garantiert kein G17-only oder Frische.
+B05-/Ranking-Volatilität ist an dieser Verbindung nicht als GGE-Quelle belegt.
+
+WEITERE KONTEXTFELDER IN DIESEM ADAPTER
+_market_kwargs_from_observation_v1 setzt volume=10.0, open_interest=20.0,
+funding_rate=0.0001. Das sind konstante Kontextwerte, keine dort akquirierten Fakten.
+Bid/Ask werden aus Low/High der jüngsten finalisierten normalen Kerze abgeleitet.
+Fehlen geeignete Low/High-Werte, wird mark_px ± max(mark_px×0.001,1e-6) verwendet.
+Die Felder heißen später best_bid/best_ask, sind hier aber keine frischen Orderbuchquotes.
+GGE benutzt diese Felder nicht direkt. Andere Core-Consumer können sie verwenden;
+deren vollständige kausale Auswirkung wurde in dieser Untersuchung nicht ausgeführt.
+
+FRISCHE UND ZEITBEZUG: KONKRETE GRENZEN
+Der Markparser/Provenienz-Builder transportiert row.ts nicht. Seine Provenienz-Dataclass
+besitzt keine numerischen Felder für Mark-Eventzeit oder tatsächliche Empfangszeit.
+Die Labels CURRENT/DERIVED_CURRENT_VALUE sind keine gemessene Altersgarantie.
+Der Beobachtungsadapter setzt observed_unix zunächst auf letzte normale Kerzenzeit+1s.
+_t2_from_s7 kann diesen Wert durch akzeptierte C1-Zeit+1s ersetzen. Beides ist keine
+übernommene Mark-Event-/HTTP-Empfangszeit. CMC.market_event_time stammt aus der letzten
+finalisierten Kerze; CMC.decision_time wird daraus und observed_unix konstruiert.
+CMC setzt data_integrity_status und clock_trust_status auf TRUSTED. Diese Zuweisung
+allein ersetzt weder Markalter- noch Quellenzeitabgleich.
+GGE nutzt decision_time/market_event_time als reference_timestamp; die Frische des
+Markpreises wird dadurch nicht nachgewiesen. GGE prüft positive endliche Werte,
+keine Altersgrenze gegen eine aktuelle Uhr. Sein input_digest bindet Instrument,
+Preis, Volatilität und Modell; die Zeit-/Lineagefelder sind nicht darin enthalten.
+Das ist ein begrenzter belegter Verlust der Markzeit an diesen Übergaben. Daraus
+folgt nicht, dass jede Gesamtstrecke stale akzeptiert oder real stale gehandelt hat.
+
+OFFLINE-GEGENPROBE
+offline-boundary-probe.json; ausgedachte isolierte Fixture, kein ausgewählter Future.
+Originaladapter aufgerufen mit markPx123.45 und gewöhnlichem Kerzenclose71.9:
+mark_px bleibt123.45; GGE-Skalarschnittstelle mit σ0.02 ergibt D2.469.
+Die eigentliche Laufkette wurde dabei nicht ausgeführt; Adapter und GGE als getrennte
+reale Grenzfunktionen geprüft. Keine Probe produktiver Entry-/Ausführungswirkung.
+Markpayload mit ts=1, ts=1999999999000 oder ohne ts erzeugt identische Provenienz.
+Falsche instId sowie nur last ohne markPx werden vom Provenienz-Builder abgewiesen.
+Alle Assertions bestanden. Erster Dateistart scheiterte an src-Importauflösung;
+anschließend kanonischer scripts/pt-STDIN-Start aus dem Checkout, ohne Pfad-Hacks.
+
+HISTORISCHE VERÄNDERUNGEN
+01.10.2026 20:41 Berlin: b730dd646 / #6995 fordert dynamische Kerzen-GETs.
+02.10.2026 03:26 Berlin: 1a7235f20515aaa54b9dcb77ff0bc0f42e2df1a2 / #7003
+ergänzt DYNAMIC_REFRESH_REQUIRED auch am konkreten S6-Mark-GET-Aufruf. Der Original-
+Diff ist gespeichert. Im vorherigen Aufruf galt der cachefähige Transportdefault;
+dieses frühere Cache-Risiko darf nicht ungeprüft als heutiger Fehler behauptet werden.
+06.10.2026: 4e4711452 führt das separate GGE-Modul ein, 1c6f43e89 ergänzt Typed-
+Volatilitätsverbindung, adf73d16e nimmt unautorisierte Validierungsänderungen zurück.
+Das Modulanlagedatum ist kein Beleg für den Ursprung der fachlichen Geometrieformel.
+Historie lokal gelesen, nicht vollständige GitHub-/Archiv-/Recovery-Rekonstruktion.
+
+WAS NOCH NICHT BEWIESEN IST
+- Ob Franks fachlicher Begriff aktueller Marktpreis genau Venue-Mark, Last-Trade,
+  ausführbares Bid/Ask oder eine andere definierte Preisgröße meint. Diese Größen
+  dürfen nicht stillschweigend gleichgesetzt werden; heutiger Code verwendet Mark.
+- Reale Markalter, Poll-/Entscheidungslatenz, Preis-/Volatilitätssynchronität und
+  aktive Konfiguration eines tatsächlich laufenden Prozesses.
+- Lückenlose Versorgung der mitwandernden Nulllinie/UI und Scope-Fortführung.
+- Vollständige andere Hosts/WS/N5/Testnet/Canary-Datenwege und Ersatzwerte.
+- Identität des gesondert erinnerten frühen Qualifizierungsmechanismus und B5-Holds.
+Es wurde nichts repariert, restauriert oder aktiviert. Der Ist-Pfad ist kein Zielbild.
+
+BELEGE
+source-manifest.json · history.json · offline-boundary-probe.json · verification.json.
+Quellen unter /Users/frnkhrz/Peak_Trade/; genannte Pfade sind an dortige Arbeitsbytes
+gebunden. Lokale Zeilen sind Navigation; Hashes sind die exakte Inhaltsbindung.

@@ -1,0 +1,6 @@
+{
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+  "exclude_from_economic_metrics": false,
+  "mode": "canonical_strategy_probe",
+  "ok": true
+}

@@ -1,0 +1,228 @@
+{
+  "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py": {
+    "closure_size": 1053,
+    "post_module_hits": {
+      "full_core_productive_http_post_transport_v1": [
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py"
+      ],
+      "gated_productive_wire_transport_v1": [
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/gated_productive_wire_transport_v1.py"
+      ],
+      "external_effect_permit_v1": [
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py"
+      ],
+      "current_productive_global_venue_effect_authority_ledger_v1": [
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py"
+      ]
+    }
+  },
+  "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py": {
+    "closure_size": 1023,
+    "post_module_hits": {
+      "full_core_productive_http_post_transport_v1": [
+        "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "src/governance/current_productive_activation_policy_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py"
+      ],
+      "gated_productive_wire_transport_v1": [
+        "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "src/governance/current_productive_activation_policy_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/gated_productive_wire_transport_v1.py"
+      ],
+      "external_effect_permit_v1": [
+        "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "src/governance/current_productive_activation_policy_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py"
+      ],
+      "current_productive_global_venue_effect_authority_ledger_v1": [
+        "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "src/governance/current_productive_activation_policy_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py"
+      ]
+    }
+  },
+  "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": {
+    "closure_size": 1011,
+    "post_module_hits": {
+      "full_core_productive_http_post_transport_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py"
+      ],
+      "gated_productive_wire_transport_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/gated_productive_wire_transport_v1.py"
+      ],
+      "external_effect_permit_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py"
+      ],
+      "current_productive_global_venue_effect_authority_ledger_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py"
+      ]
+    }
+  },
+  "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py": {
+    "closure_size": 1011,
+    "post_module_hits": {
+      "full_core_productive_http_post_transport_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py"
+      ],
+      "gated_productive_wire_transport_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/gated_productive_wire_transport_v1.py"
+      ],
+      "external_effect_permit_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py"
+      ],
+      "current_productive_global_venue_effect_authority_ledger_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py"
+      ]
+    }
+  },
+  "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": {
+    "closure_size": 1021,
+    "post_module_hits": {
+      "full_core_productive_http_post_transport_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py"
+      ],
+      "gated_productive_wire_transport_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/gated_productive_wire_transport_v1.py"
+      ],
+      "external_effect_permit_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py"
+      ],
+      "current_productive_global_venue_effect_authority_ledger_v1": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py"
+      ]
+    }
+  }
+}

@@ -1,0 +1,19 @@
+=== GIT STATE ===
+ROOT=/Users/frnkhrz/Peak_Trade
+BRANCH=audit/canonical-fill-conversion-ledger-long-panel-v1
+HEAD=bf74d4e3b15daeb6b4d25411ebd016694c54370b
+ORIGIN_MAIN=bf74d4e3b15daeb6b4d25411ebd016694c54370b
+STASH_BEFORE=STASH_BEFORE=9dee9fcdfc2800d5051d82fa85a329d19ae3d15e0e896220ac9cafabfcb30c30
+STASH_NOW=9dee9fcdfc2800d5051d82fa85a329d19ae3d15e0e896220ac9cafabfcb30c30
+STASHES_UNCHANGED=true
+--- status ---
+?? docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/
+?? docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+?? docs/evidence/scope_event_noop_root_cause_audit_v1/
+?? tests/governance/test_canonical_fill_conversion_ledger_long_panel_audit_harness_v1.py
+--- pr5342 ---
+{"headRefOid":"6a9b93611dd8bfd59698c41af69ccbd6aa35d750","state":"OPEN","url":"https://github.com/rauterfrank-ui/Peak_Trade/pull/5342"}

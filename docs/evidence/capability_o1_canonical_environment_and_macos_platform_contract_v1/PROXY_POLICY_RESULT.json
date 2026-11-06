@@ -1,0 +1,26 @@
+{
+  "NO_PROXY_POLICY": "NO_PROXY_AND_no_proxy_MUST_BE_ABSENT",
+  "PROXY_POLICY": "MODE_PUBLIC_MD_NO_ORDER_AND_OHLCV_DASHBOARD_READ_ONLY_FAIL_CLOSED_ABSENCE",
+  "ProxyHandler_present": false,
+  "REJECTED_PROXY_KEYS": [
+    "ALL_PROXY",
+    "GIT_HTTPS_PROXY",
+    "GIT_HTTP_PROXY",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "NO_PROXY",
+    "SOCKS5_PROXY",
+    "SOCKS_PROXY",
+    "all_proxy",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy",
+    "socks5_proxy",
+    "socks_proxy"
+  ],
+  "proxy_free_opener_handlers": [
+    "HTTPDefaultErrorHandler",
+    "HTTPErrorProcessor",
+    "HTTPSHandler"
+  ]
+}

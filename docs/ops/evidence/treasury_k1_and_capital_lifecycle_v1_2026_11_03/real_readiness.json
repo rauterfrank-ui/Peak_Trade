@@ -1,0 +1,40 @@
+{
+  "capital_admitted": false,
+  "expected_account_configured": true,
+  "keychain_access_attempted": true,
+  "keychain_account": "okx-eea.productive",
+  "keychain_service": "peak-trade.full-core.venue-credentials",
+  "last_read": {
+    "endpoint_path": "/api/v5/trade/orders-algo-pending",
+    "get_performed": true,
+    "historical_reuse": false,
+    "http_status": 200,
+    "method": "GET",
+    "transport_error_present": false
+  },
+  "mode": "REAL_READ_ONLY_ONCE",
+  "observation": {
+    "algo_pending_counts": {
+      "conditional": 0,
+      "move_order_stop": 0,
+      "oco": 0,
+      "trigger": 0
+    },
+    "blockers": [],
+    "capital_admitted": false,
+    "completed_at_unix": 1793740929.7476811,
+    "configured_account_matched": true,
+    "equity_reconstructed": false,
+    "observed_at_unix": 1793740928.532416,
+    "ordinary_pending_count": 0,
+    "position_product_counts": {},
+    "profile": "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1",
+    "supported_scope_clear": true
+  },
+  "order_or_transfer_count": 0,
+  "private_get_attempt_count": 7,
+  "profile": "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1",
+  "result": "PASS",
+  "service_activated": false,
+  "source_ref": "fullcore-cred://provider-ref/okx-eea-productive"
+}

@@ -1,0 +1,17 @@
+[[job]]
+name = "other_job"
+enabled = true
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/foo.py" }
+
+[[job]]
+name = "target_runtime_v0"
+enabled = false
+schedule_type = "once"
+command = "python"
+
+[job.args]
+script = "scripts/aiops/run_paper_trading_session.py"
+spec = "tests/fixtures/p7/paper_run_min_v0.json"
+outdir = "out/paper_shadow_247/runtime/min/__DRY_RUN_PLACEHOLDER__"

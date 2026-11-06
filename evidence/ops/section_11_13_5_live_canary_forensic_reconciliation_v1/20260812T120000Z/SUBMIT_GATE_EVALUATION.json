@@ -1,0 +1,48 @@
+{
+  "REASONS": [
+    "NO_OWNER_GO",
+    "AUTHORIZATION_SCOPE_MISMATCH:<empty>",
+    "LIVE_CANARY_MINIMUM_EXPOSURE_AUTHORIZED_FALSE",
+    "LIVE_ENABLED_FALSE",
+    "LIVE_ARMED_FALSE",
+    "CONFIRM_TOKEN_MISMATCH",
+    "BLOCKS_NEW_ENTRY_TRUE",
+    "UNRESOLVED_ECONOMIC_DIVERGENCE",
+    "LIVE_RECONCILIATION_PROVEN_FALSE",
+    "TRADE_ATTESTATION_FALSE_OR_INCOMPLETE",
+    "NOTIONAL_BOUNDS_UNRESOLVED"
+  ],
+  "SUBMIT_ALLOWED": false,
+  "gates": {
+    "authorization_scope": "",
+    "blocks_new_entry": true,
+    "confirm_token_match": false,
+    "environment": "LIVE",
+    "exposure_above_minimum_bound": false,
+    "live_armed": false,
+    "live_canary_authorized": false,
+    "live_enabled": false,
+    "live_reconciliation_proven": false,
+    "max_notional": null,
+    "min_executable_notional": null,
+    "minimum_ratified_notional_only": true,
+    "order_count": 1,
+    "owner_go_consumed": false,
+    "owner_go_is_execute_token": false,
+    "owner_go_present": false,
+    "permission_attestation": {
+      "READ": true,
+      "TRADE": false,
+      "WITHDRAW": false,
+      "ok": false,
+      "required": {
+        "READ": true,
+        "TRADE": true,
+        "WITHDRAW": false
+      }
+    },
+    "position_count": 0,
+    "sha_match": true,
+    "unresolved_economic_divergence": true
+  }
+}

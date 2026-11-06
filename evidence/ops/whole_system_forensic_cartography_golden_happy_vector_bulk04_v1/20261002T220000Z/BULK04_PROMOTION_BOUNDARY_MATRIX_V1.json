@@ -1,0 +1,64 @@
+{
+  "rows": [
+    {
+      "SEAM": "DDO outcome \u2192 promotion",
+      "WHO_PRODUCES": "promotion_controller_v0 (dry-run only)",
+      "WHO_APPROVES": "NONE \u2014 implementation_authorized=false",
+      "WHO_LOADS": "NO_EDGE",
+      "DEFAULT_STATE": "PROMOTION_ELIGIBILITY_DRY_RUN",
+      "CURRENT_STATE": "inactive",
+      "GHV_CROSSED": false,
+      "GHV_STOP_REASON": "NO_N_BARS_TO_PROMOTION_BINDING adjudication C"
+    },
+    {
+      "SEAM": "learning evidence \u2192 optimization universe",
+      "WHO_PRODUCES": "learning_evidence_export_v1",
+      "WHO_APPROVES": "validate_canonical_optimization_universe_learning_input_v1",
+      "WHO_LOADS": "experiment plane (research)",
+      "DEFAULT_STATE": "research-only intake",
+      "CURRENT_STATE": "fail-closed on requested_productive_join",
+      "GHV_CROSSED": true,
+      "GHV_STOP_REASON": "PRODUCTIVE_JOIN_FORBIDDEN at flag check"
+    },
+    {
+      "SEAM": "optimization proposal \u2192 productive config",
+      "WHO_PRODUCES": "optimization_proposal_governance_ingress_v1",
+      "WHO_APPROVES": "governance ingress (no apply)",
+      "WHO_LOADS": "NO_EDGE",
+      "DEFAULT_STATE": "PROPOSAL_NOT_AUTHORITY",
+      "CURRENT_STATE": "ingress only",
+      "GHV_CROSSED": false,
+      "GHV_STOP_REASON": "OPTIMIZATION_CAN_WRITE_PRODUCTIVE_CONFIG=false"
+    },
+    {
+      "SEAM": "MI MARKET_CONTEXT \u2192 MV2 decision",
+      "WHO_PRODUCES": "phase 17-25 materializers",
+      "WHO_APPROVES": "NONE",
+      "WHO_LOADS": "NO_EDGE",
+      "DEFAULT_STATE": "FORECAST_IS_NOT_DECISION",
+      "CURRENT_STATE": "evidence-only",
+      "GHV_CROSSED": false,
+      "GHV_STOP_REASON": "NO_AUTOMATIC_PROMOTION + LEARNING_TRADING_AUTHORITY=NONE"
+    },
+    {
+      "SEAM": "registry artifact \u2192 runtime activation",
+      "WHO_PRODUCES": "canonical_optimization_universe capability registry",
+      "WHO_APPROVES": "N/A",
+      "WHO_LOADS": "NO_EDGE proven",
+      "DEFAULT_STATE": "runtime_reachability=false on registry entries",
+      "CURRENT_STATE": "research capabilities only",
+      "GHV_CROSSED": false,
+      "GHV_STOP_REASON": "UNIVERSE_MEMBERSHIP_IMPLIES_OPTIMIZATION_AUTHORIZATION=false"
+    },
+    {
+      "SEAM": "STEP29M evaluation \u2192 Cap23",
+      "WHO_PRODUCES": "STEP29M offline evaluators",
+      "WHO_APPROVES": "N/A",
+      "WHO_LOADS": "NO_EDGE",
+      "DEFAULT_STATE": "STEP29M_SELECTION_AUTHORITY=false",
+      "CURRENT_STATE": "post-selection bind read-only",
+      "GHV_CROSSED": false,
+      "GHV_STOP_REASON": "STEP29M_RANKING_UNIVERSE_CONSUMPTION_FORBIDDEN"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "contract_name": "whole_core_completion_egress_q0_authority_v1",
+  "contract_id": "WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1",
+  "contract_version": "v1",
+  "schema_version": "whole_core_completion_egress_q0_authority_schema_v1",
+  "ssot_doc": "docs/governance/WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "9647cb7bbab8137d1db1f47cf053ab6fcb7057a9",
+  "source_census": "WHOLE_CORE_E2E_AND_EXECUTE_EGRESS_CENSUS_V1",
+  "workpackage_id": "WHOLE_CORE_COMPLETION_PACKAGE_V1",
+  "decision_authority": {
+    "owner_go": "WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO"
+  },
+  "included_work_packages": [
+    "WP-A",
+    "WP-B",
+    "WP-C",
+    "WP-D",
+    "WP-E",
+    "WP-F"
+  ],
+  "excluded_work_packages": [],
+  "markers": {
+    "WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+    "TRADING_DECISION_AUTHORITY_CHANGED": false,
+    "EXTERNAL_EFFECT_AUTHORIZED_CHANGED": false,
+    "POST_ALLOWED_CHANGED": false,
+    "WIRE_SEND_PERMITTED_CHANGED": false,
+    "LEARNING_PRODUCTIVE_BINDING_CHANGED": false,
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED_CHANGED": false,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false
+  },
+  "f01_egress_proof": {
+    "finding_id": "F-01",
+    "isolated_post_slice": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+    "classification": "INTENTIONALLY_ISOLATED_OWNER_GO",
+    "post_owner_go": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+    "post_go_status": "UNCONSUMED",
+    "current_productive_reachability_without_owner_go": false,
+    "pre_external_external_effect_proof_ok": true,
+    "unclassified_external_effect_sink_count": 0
+  },
+  "f02_fresh_trusted_q0": {
+    "finding_id": "F-02",
+    "previous_dependency": "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET",
+    "actual_gap_class": "GOVERNANCE_TRUTH_REPAIR",
+    "status": "CLOSED_FOR_ENTER_LIVE_TREASURY_SINGLE_SOURCE_PATH",
+    "new_owner_decision_required": false,
+    "read_only": true,
+    "fresh": true,
+    "trusted": true,
+    "account_scope_correct": true,
+    "venue_scope_correct": true,
+    "currency_scope_correct": true,
+    "get_endpoint": "/api/v5/account/balance",
+    "economic_field": "details[ccy=USDC].availEq",
+    "treasury_c08_single_source_handoff": "execute_current_productive_treasury_single_source_capital_handoff_v1",
+    "enter_live_join": "join_current_productive_enter_live_29p_before_venue_plan_v1",
+    "full_core_productive_equity_observation_owner_count": 1,
+    "treasury_and_direct_get_parallel_active": false,
+    "fresh_read_only_economic_observation_bound": true,
+    "standalone_owner_go_get_module": "current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1",
+    "standalone_module_parallel_to_enter_live": false
+  },
+  "productive_authority_ratification": {
+    "current_productive_q0_owner": "ops.governed_productive_account_equity_authority_producer_v1",
+    "current_productive_q1_owner": "src.governance.capital_risk_sizing_v1",
+    "current_productive_q1_owner_count": 1,
+    "q5_offline_scoped_owners_not_competing_full_core_q1": [
+      "backtest.offline_evaluation_sizing_contract_v1",
+      "src.core.position_sizing",
+      "src.execution.pipeline.execute_from_signals",
+      "src.risk.position_sizer"
+    ],
+    "current_productive_q6_owner": "NONE",
+    "current_productive_q8_owner": "NONE",
+    "learning_productive_bypass_found": false,
+    "no_n_bars_to_promotion_binding": "ACTIVE",
+    "promotion_authority_activation": false,
+    "productive_promotion_join_authorized": false,
+    "optimization_universe_join_authorized": false,
+    "optimization_can_write_productive_config": false,
+    "learning_productive_authority": "NONE"
+  },
+  "c2_clarification": {
+    "c2_status": "UNRESOLVED",
+    "c2_blocks_current_q0_q1": false,
+    "c2_blocks_treasury": false,
+    "companion_conversion_touched": false
+  },
+  "execute_egress_invariants": {
+    "execute_current_authorized_path_count": 1,
+    "unauthorized_current_external_effect_bypass_count": 0,
+    "ambiguous_current_external_effect_path_count": 0,
+    "external_effect_authorized": false,
+    "post_allowed": false
+  },
+  "evidence_refs": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+    "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
+  ]
+}

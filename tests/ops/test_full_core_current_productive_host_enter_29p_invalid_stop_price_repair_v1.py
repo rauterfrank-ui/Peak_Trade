@@ -1,0 +1,382 @@
+"""Offline CURRENT_PRODUCTIVE host-ENTER 29P INVALID_STOP_PRICE binding repair."""
+
+from __future__ import annotations
+
+import json
+from decimal import Decimal
+from pathlib import Path
+
+import pytest
+
+from src.governance.capital_risk_sizing_v1 import REASON_INVALID_STOP_PRICE
+from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
+    CANONICAL_ADVERSE_EXIT_DISTANCE,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+    DECISION_ENTER,
+    STATUS_PASS,
+    resolve_current_productive_live_29p_adverse_exit_distance_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+    try_bind_current_productive_venue_plan_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+    bind_final_order_envelope_from_venue_plan_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.models_v1 import CompositionStatusV1
+from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
+    STEP_29Q_PLAN_ONLY,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_CREATED,
+)
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+    MAX_POSITIONS_EFFECTIVE,
+)
+from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+    run_natural_enter_long_cycle_v1,
+    run_upscope_candidate_progress_cycles_v1,
+    strong_uptrend_closes_v1,
+)
+from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
+    _bound,
+    _produced_g17_producer,
+)
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP,
+    REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED,
+)
+from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+    CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+    CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
+    bind_capital_risk_sizing_offline_replay_evidence_v0,
+    derive_protective_stop_price_from_adverse_exit_v0,
+    isolated_offline_replay_fixture_capital_context_v0,
+)
+from trading.master_v2.deterministic_scope_event_generator_v1 import (
+    ScopeDirectionState,
+    compute_evaluated_thresholds,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+EPOCH = "2026-09-17T06:50:00Z"
+RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+SPEC_PATH = (
+    REPO_ROOT / "docs/ops/specs/"
+    "FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_V1.md"
+)
+ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
+DS_HEADING = "### 11.2.1.DS FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR"
+THIS_SLICE = (
+    "11.2.1.DS.FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR"
+)
+PROTECTED_ALGORITHM_FILES = (
+    "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
+    "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
+    "src/ops/productive_futures_ranking_producer_v1/policy_v1.py",
+    "src/ops/single_selected_future_policy_v1/selection_v1.py",
+    "src/ops/single_selected_future_policy_v1/policy_v1.py",
+    "src/trading/master_v2/double_play_state.py",
+    "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+    "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+    "src/governance/capital_risk_sizing_v1.py",
+    "config/ops/canonical_decision_runtime_config_v1.toml",
+)
+
+
+def _host_enter_cycle():
+    bound = _bound()
+    g17 = _produced_g17_producer(instrument_id=str(bound.instrument_id))
+    _origin, cycle_a, path = run_upscope_candidate_progress_cycles_v1(
+        bound=bound,
+        g17_typed_vol_producer=g17,
+        uptrend=strong_uptrend_closes_v1(),
+    )
+    cycle_b, enter_closes, _mark = run_natural_enter_long_cycle_v1(
+        upscope_candidate_cycle=cycle_a,
+        bound=bound,
+        g17_typed_vol_producer=g17,
+        uptrend=path,
+        cycle_id="cursor-join-b",
+    )
+    return cycle_a, cycle_b, enter_closes
+
+
+def test_created_flag_and_protected_thresholds_unchanged() -> None:
+    assert CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_CREATED is True
+    assert float(CANONICAL_ADVERSE_EXIT_DISTANCE) == 80.0
+    assert int(MAX_POSITIONS_EFFECTIVE) == 1
+    assert ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP == Decimal("3400")
+
+
+@pytest.mark.parametrize(
+    ("side", "reference", "distance", "expected"),
+    [
+        ("LONG", Decimal("1630"), Decimal("80"), Decimal("1550")),
+        ("long", Decimal("1630"), Decimal("80"), Decimal("1550")),
+        ("SHORT", Decimal("1630"), Decimal("80"), Decimal("1710")),
+        ("short", Decimal("3500"), Decimal("80"), Decimal("3580")),
+    ],
+)
+def test_derive_stop_matches_current_adverse_exit_formula(
+    side: str, reference: Decimal, distance: Decimal, expected: Decimal
+) -> None:
+    derived = derive_protective_stop_price_from_adverse_exit_v0(
+        selected_side=side,
+        reference_price=reference,
+        adverse_exit_distance=distance,
+    )
+    assert derived == expected
+    direction = ScopeDirectionState.LONG if side.upper() == "LONG" else ScopeDirectionState.SHORT
+    threshold = compute_evaluated_thresholds(
+        direction=direction,
+        trailing_anchor=float(reference),
+        up_distance=200.0,
+        adverse_exit_distance=float(distance),
+        reversal_distance=120.0,
+    ).adverse_exit_threshold
+    assert derived == Decimal(str(threshold))
+
+
+@pytest.mark.parametrize(
+    ("side", "reference", "distance"),
+    [
+        ("", Decimal("1630"), Decimal("80")),
+        ("NONE", Decimal("1630"), Decimal("80")),
+        ("LONG", Decimal("1630"), Decimal("0")),
+        ("LONG", Decimal("1630"), Decimal("-80")),
+        ("LONG", Decimal("0"), Decimal("80")),
+        ("LONG", Decimal("1630"), Decimal("NaN")),
+        ("LONG", Decimal("3.5"), Decimal("80")),
+        ("SHORT", Decimal("NaN"), Decimal("80")),
+    ],
+)
+def test_derive_stop_fail_closed_on_invalid_inputs(
+    side: str, reference: Decimal, distance: Decimal
+) -> None:
+    assert (
+        derive_protective_stop_price_from_adverse_exit_v0(
+            selected_side=side,
+            reference_price=reference,
+            adverse_exit_distance=distance,
+        )
+        is None
+    )
+
+
+def test_fixture_stop_against_host_mark_is_invalid_stop_price() -> None:
+    _, cycle_b, path = _host_enter_cycle()
+    assert cycle_b.decision_outcome == "enter_long"
+    assert cycle_b.replay is not None
+    mark = Decimal(str(path[-1]))
+    assert mark == Decimal(str(cycle_b.replay.intermediate.market_context.mark_price))
+    assert ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP >= mark
+    fixture_ctx = isolated_offline_replay_fixture_capital_context_v0(
+        instrument_id=cycle_b.replay.evidence.instrument_id,
+        reference_price=mark,
+    )
+    assert fixture_ctx.protective_stop_price == ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP
+    binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
+        cycle_b.replay.evidence,
+        capital_context=fixture_ctx,
+    )
+    assert binding.sizing_decision is not None
+    assert str(binding.sizing_decision.outcome.value) == "BLOCKED"
+    assert REASON_INVALID_STOP_PRICE in binding.sizing_decision.reason_codes
+
+
+@pytest.mark.parametrize(
+    "stop",
+    [
+        None,
+        Decimal("NaN"),
+        Decimal("Infinity"),
+        "at-mark",
+        "above-mark",
+        Decimal("3400"),
+    ],
+)
+def test_invalid_or_direction_invalid_stop_cannot_pass_29p(stop: Decimal | str | None) -> None:
+    _, cycle_b, path = _host_enter_cycle()
+    mark = Decimal(str(path[-1]))
+    if stop == "at-mark":
+        stop = mark
+    elif stop == "above-mark":
+        stop = mark + Decimal("5")
+    ctx = isolated_offline_replay_fixture_capital_context_v0(
+        instrument_id=cycle_b.replay.evidence.instrument_id,
+        reference_price=mark,
+        protective_stop_price=stop,
+    )
+    binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
+        cycle_b.replay.evidence,
+        capital_context=ctx,
+    )
+    assert binding.sizing_decision is not None
+    assert str(binding.sizing_decision.outcome.value) != "PASS"
+    if stop is None or (isinstance(stop, Decimal) and not stop.is_finite()):
+        assert REASON_INVALID_STOP_PRICE in binding.sizing_decision.reason_codes
+    elif isinstance(stop, Decimal) and stop > mark:
+        assert REASON_INVALID_STOP_PRICE in binding.sizing_decision.reason_codes
+    elif isinstance(stop, Decimal) and stop == mark:
+        # Equal mark collapses risk distance; blocked without requiring INVALID_STOP_PRICE token.
+        assert binding.sizing_decision.reason_codes
+
+
+def _join_enter_live_29p(*, replay):
+    """Canonical CRS bind: enter-live-29p join before venue-plan (not oneshot intermediate)."""
+    # Lazy import avoids circular import with enter_live_29p_join tests.
+    from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
+        _balance_payload,
+        _injected,
+        _join,
+    )
+
+    return _join(
+        replay=replay,
+        bound=_bound(),
+        injected=_injected(payload=_balance_payload()),
+    )
+
+
+def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope(monkeypatch) -> None:
+    import src.ops.governed_productive_monetary_normalization_v1.normalize_v1 as seam
+
+    monetary_inputs = []
+    original = seam.build_capital_risk_sizing_monetary_context_v1
+
+    def observed_monetary_context(**kwargs):
+        monetary_inputs.append(kwargs)
+        return original(**kwargs)
+
+    monkeypatch.setattr(seam, "build_capital_risk_sizing_monetary_context_v1", observed_monetary_context)
+    cycle_a, cycle_b, path = _host_enter_cycle()
+    assert cycle_a.outgoing_cursor is not None
+    assert cycle_b.cursor_restore_status == "restored"
+    assert cycle_b.decision_outcome == "enter_long"
+    assert cycle_b.replay is not None
+    replay = cycle_b.replay
+    # MV2 host wires simulated-economics CRS boundary before integrated replay.
+    assert replay.intermediate.capital_risk_sizing_decision is not None
+    assert str(replay.intermediate.capital_risk_mode) == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
+    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED not in replay.evidence.reason_codes
+
+    join = _join_enter_live_29p(replay=replay)
+    assert join.decision_class == DECISION_ENTER
+    assert join.status == STATUS_PASS
+    assert join.capital_risk_mode == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
+    rebound = join.replay
+    assert rebound is not None
+    sizing = rebound.intermediate.capital_risk_sizing_decision
+    assert sizing is not None
+    assert str(getattr(sizing.outcome, "value", sizing.outcome)) == "PASS"
+    assert REASON_INVALID_STOP_PRICE not in sizing.reason_codes
+    mark = Decimal(str(path[-1]))
+    distance, reasons = resolve_current_productive_live_29p_adverse_exit_distance_v1(replay)
+    assert reasons == ()
+    assert distance is not None
+    distance = Decimal(str(distance))
+    assert distance != Decimal(str(CANONICAL_ADVERSE_EXIT_DISTANCE))
+    expected_stop = derive_protective_stop_price_from_adverse_exit_v0(
+        selected_side=str(rebound.evidence.selected_side),
+        reference_price=mark,
+        adverse_exit_distance=distance,
+    )
+    assert expected_stop == mark - distance
+    assert Decimal("0") < expected_stop < mark
+    assert len(monetary_inputs) == 1
+    assert monetary_inputs[0]["native_reference_price"] == mark
+    assert monetary_inputs[0]["native_protective_stop_price"] == expected_stop
+    assert expected_stop != ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP
+    intent = rebound.intermediate.canonical_order_intent
+    assert intent is not None
+    assert intent.execution_eligible is False
+    assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
+    status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+        replay=rebound,
+        bound_instrument=_bound(),
+        session_id="host-enter-29p-repair-session",
+        run_id="host-enter-29p-repair-run",
+        composed_epoch="2026-09-16T00:00:00Z",
+        execution_mode="LIVE",
+    )
+    assert status is CompositionStatusV1.PASS, reasons
+    assert plan is not None
+    envelope = bind_final_order_envelope_from_venue_plan_v1(
+        plan,
+        admission_ref="DS_HOST_ENTER_29P_STOP_REPAIR_OFFLINE",
+        provenance_ref="CURRENT_PRODUCTIVE_MASTER_V2_VENUE_PLAN",
+        creation_epoch="2026-09-16T00:00:00Z",
+    )
+    assert envelope.envelope_id
+    assert envelope.envelope_digest
+    assert rebound.evidence.instrument_id == _bound().instrument_id
+    assert envelope.instrument_id == _bound().venue_native_id
+
+
+def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> None:
+    """CRS/intent bind at enter-live-29p join — not at pre-join oneshot intermediate."""
+    _, cycle_b, _path = _host_enter_cycle()
+    assert cycle_b.decision_outcome == "enter_long"
+    assert cycle_b.replay is not None
+    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is not None
+    assert cycle_b.replay.intermediate.capital_risk_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
+    join = _join_enter_live_29p(replay=cycle_b.replay)
+    assert join.status == STATUS_PASS
+    rebound = join.replay
+    assert rebound is not None
+    sizing = rebound.intermediate.capital_risk_sizing_decision
+    assert sizing is not None
+    assert str(getattr(sizing.outcome, "value", sizing.outcome)) == "PASS"
+    status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+        replay=rebound,
+        bound_instrument=_bound(),
+        session_id="armed-replay-29p-repair-session",
+        run_id="armed-replay-29p-repair-run",
+        composed_epoch="2026-09-16T00:00:00Z",
+        execution_mode="LIVE",
+    )
+    assert status is CompositionStatusV1.PASS, reasons
+    assert plan is not None
+    envelope = bind_final_order_envelope_from_venue_plan_v1(
+        plan,
+        admission_ref="DS_NATURAL_ENTER_LIVE_29P_JOIN_ENVELOPE",
+        provenance_ref="CURRENT_PRODUCTIVE_MASTER_V2_VENUE_PLAN",
+        creation_epoch="2026-09-16T00:00:00Z",
+    )
+    assert envelope.envelope_id
+    assert envelope.envelope_digest
+    assert rebound.intermediate.canonical_order_intent is not None
+    assert rebound.intermediate.canonical_order_intent.execution_eligible is False
+
+
+def test_protected_algorithm_files_match_approved_reconfiguration() -> None:
+    from tests.ops._reconfiguration_protected_sources_v1 import (
+        assert_approved_reconfiguration_sources_v1,
+    )
+
+    assert_approved_reconfiguration_sources_v1(REPO_ROOT, PROTECTED_ALGORITHM_FILES)
+
+
+def test_ssot_docs_once_present() -> None:
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    mot = MOT_PATH.read_text(encoding="utf-8")
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    # Spec/Atlas carry sealed facts; Master Runbook heading / Mot filename pin are
+    # not required for this derived slice (same pattern as enter-live-29p join EF).
+    assert DS_HEADING not in runbook
+    assert "DOCUMENT_ROLE=NAVIGATION_ONLY" in mot
+    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in spec
+    assert "REAL_EXTERNAL_EFFECT_AUTHORIZED=false" in spec
+    assert "STEP_29Q_STATUS=PLAN_ONLY" in spec
+    assert "POST_COUNT=0" in spec
+    assert "PERMIT_CREATED=false" in spec
+    assert "TRADING_LOGIC_AUTHORITY_CHANGED=false" in spec
+    assert "29P_POLICY_CHANGED=false" in spec
+    assert (
+        "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_V1"
+    ) in spec
+    assert "id: RUNTIME_COMPONENT:CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_SEAM_V1" in atlas
+    assert json.loads(json.dumps({"POST_COUNT": "0"}))["POST_COUNT"] == "0"

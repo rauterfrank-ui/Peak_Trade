@@ -1,0 +1,193 @@
+{
+  "FAILURE_INJECTION_TESTS_PASS": true,
+  "authorization_consumed": false,
+  "cases": [
+    {
+      "case": "default_disabled",
+      "detail": {
+        "STALE_CONTROL_DEFAULT_DISABLED": true,
+        "enabled": false,
+        "faults": 0,
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "binding_only_starts_no_network",
+      "detail": {
+        "network_session_started": false,
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "stale_injection_classifies_canonical",
+      "detail": {
+        "ALPHA_FAILS_CLOSED_ON_STALE": true,
+        "NO_DUPLICATE_CONFIRMATION_ADVANCE": true,
+        "NO_FABRICATED_MARKET_OBSERVATION": true,
+        "adverse_classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+        "classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+        "fabricated_observation_count": 0,
+        "last": {
+          "ADVERSE_CONDITION_OBSERVED": true,
+          "STALE_CONDITION_OBSERVED": true,
+          "STALE_CONFIRMATION_ADVANCE": false,
+          "adverse_classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+          "classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+          "confirmation_advance_delta": 0,
+          "kill": "STALE_DATA",
+          "status": "kill"
+        },
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "alpha_blocked_on_stale",
+      "detail": {
+        "ALPHA_FAILS_CLOSED_ON_STALE": true,
+        "NO_DUPLICATE_CONFIRMATION_ADVANCE": true,
+        "NO_FABRICATED_MARKET_OBSERVATION": true,
+        "adverse_classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+        "classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+        "fabricated_observation_count": 0,
+        "last": {
+          "ADVERSE_CONDITION_OBSERVED": true,
+          "STALE_CONDITION_OBSERVED": true,
+          "STALE_CONFIRMATION_ADVANCE": false,
+          "adverse_classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+          "classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+          "confirmation_advance_delta": 0,
+          "kill": "STALE_DATA",
+          "status": "kill"
+        },
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "no_fabricated_observation",
+      "detail": {
+        "ALPHA_FAILS_CLOSED_ON_STALE": true,
+        "NO_DUPLICATE_CONFIRMATION_ADVANCE": true,
+        "NO_FABRICATED_MARKET_OBSERVATION": true,
+        "adverse_classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+        "classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+        "fabricated_observation_count": 0,
+        "last": {
+          "ADVERSE_CONDITION_OBSERVED": true,
+          "STALE_CONDITION_OBSERVED": true,
+          "STALE_CONFIRMATION_ADVANCE": false,
+          "adverse_classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+          "classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+          "confirmation_advance_delta": 0,
+          "kill": "STALE_DATA",
+          "status": "kill"
+        },
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "no_duplicate_confirmation_advance",
+      "detail": {},
+      "ok": true
+    },
+    {
+      "case": "no_duplicate_fill",
+      "detail": {},
+      "ok": true
+    },
+    {
+      "case": "exit_risk_safety_preserved",
+      "detail": {},
+      "ok": true
+    },
+    {
+      "case": "missing_authorization_hard_stop",
+      "detail": {
+        "blockers": [
+          "AUTHORIZATION_INVALID",
+          "AUTHORIZATION_MISSING",
+          "CONFIRM_TOKEN_DIGEST_MISMATCH",
+          "CONFIRM_TOKEN_INVALID",
+          "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "case": "network_session_allowed_false_hard_stop",
+      "detail": {
+        "blockers": [
+          "NETWORK_SESSION_ALLOWED_FALSE"
+        ],
+        "mode": "GOVERNED_REAL_NETWORK_SESSION",
+        "network_session_may_start": false,
+        "ok": false,
+        "real_tty_required": true
+      },
+      "ok": true
+    },
+    {
+      "case": "non_tty_hard_stop_before_consumption",
+      "detail": {
+        "blockers": [
+          "HIDDEN_PTY_STDIN_NOT_TTY",
+          "REAL_TTY_REQUIRED"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "case": "invalid_confirm_hard_stop",
+      "detail": {
+        "blockers": [
+          "CONFIRM_TOKEN_DIGEST_MISMATCH",
+          "CONFIRM_TOKEN_INVALID",
+          "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "case": "request_real_network_fail_closed",
+      "detail": {
+        "blockers": [
+          "AUTHORIZATION_INVALID",
+          "CONFIRM_TOKEN_INVALID",
+          "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY",
+          "SEPARATE_OWNER_GO_REQUIRED_FOR_STEP6_SESSION_WITH_REAL_TTY"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "case": "step4_transport_fault_unchanged",
+      "detail": {
+        "STEP4_TRANSPORT_FAULT_SEMANTICS_CHANGED": false,
+        "blockers": [],
+        "ok": true,
+        "stale_override_key": "governed_stale_data_control",
+        "step4_surface": "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_injected_transport_fault_v1",
+        "transport_override_key": "governed_fault_schedule"
+      },
+      "ok": true
+    },
+    {
+      "case": "prove_binding_mode_ok",
+      "detail": {
+        "blockers": [],
+        "mode": "PROVE_BINDING_ONLY",
+        "network_session_may_start": false,
+        "ok": true,
+        "real_tty_required": false
+      },
+      "ok": true
+    }
+  ],
+  "confirm_token_consumed": false,
+  "network_session_started": false,
+  "ok": true
+}

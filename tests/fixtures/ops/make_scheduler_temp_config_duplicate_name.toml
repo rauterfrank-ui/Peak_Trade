@@ -1,0 +1,13 @@
+[[job]]
+name = "dup"
+enabled = false
+schedule_type = "once"
+command = "python"
+args = { script = "a.py", outdir = "/tmp/a" }
+
+[[job]]
+name = "dup"
+enabled = false
+schedule_type = "once"
+command = "python"
+args = { script = "b.py", outdir = "/tmp/b" }

@@ -1,0 +1,19 @@
+{
+  "workpackage_id": "EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1",
+  "owner_go": true,
+  "owner_go_token": "EXTERNAL_EFFECT_PERMIT_MINT_OWNER_GO",
+  "baseline_origin_main_sha": "03727c3cd09504beeedf4839b40dab3a26234331",
+  "external_effect_permit_mint_owner_go": true,
+  "external_effect_permit_mint_authorized": true,
+  "governed_permit_mint_authorized": true,
+  "permit_mint_performed": false,
+  "credential_access_authorized": false,
+  "credential_access_performed": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "runtime_authorization_effect": "EXTERNAL_EFFECT_PERMIT_MINT_POLICY_ADMISSION_ONLY",
+  "policy_record_config": "config/governance/external_effect_permit_mint_policy_v1_record.json",
+  "normative_spec": "docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md",
+  "earliest_unclosed_boundary": "CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS",
+  "next_genuine_blocker": "CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_OWNER_GO"
+}

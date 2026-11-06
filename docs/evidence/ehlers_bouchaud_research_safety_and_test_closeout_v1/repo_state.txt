@@ -1,0 +1,21 @@
+REPO_ROOT=/Users/frnkhrz/Peak_Trade
+BRANCH=fix/ehlers-bouchaud-research-safety-closeout-v1
+HEAD=f43822f972cc41542d16d56f5657d3ae3b84abe1
+ORIGIN_MAIN=f43822f972cc41542d16d56f5657d3ae3b84abe1
+CAPTURED_AT=2026-07-18T18:53:25Z
+LIVE_AUTHORIZED=false
+ORDERS_ENABLED=false
+--- git status --porcelain ---
+ M src/strategies/bouchaud/bouchaud_microstructure_strategy.py
+ M src/strategies/ehlers/ehlers_cycle_filter_strategy.py
+ M src/strategies/registry.py
+?? docs/evidence/ehlers_bouchaud_research_safety_and_test_closeout_v1/
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+?? tests/strategies/test_ehlers_bouchaud_research_safety_closeout_v1.py
+--- stash list ---
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework

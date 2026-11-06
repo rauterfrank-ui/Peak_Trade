@@ -1,0 +1,15 @@
+# Learnable surfaces allowlist per layer (governance gate).
+# Reference: docs/governance/LAYER_LEARNING_SURFACES_STUB.md
+# Rule: Learning only allowed if layer has explicit allowlist; default deny.
+# L0, L4, L5, L6: no learnable surfaces (omit or empty list = deny).
+
+[layers.L1]
+learnable = ["retrieval_query_templates", "source_ranking_weights"]
+
+[layers.L2]
+learnable = ["scenario_priors", "no_trade_trigger_thresholds"]
+
+[layers.L3]
+learnable = ["prompt_template_variants"]
+
+# L0, L4, L5, L6 are not listed; runtime treats them as deny-all.

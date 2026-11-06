@@ -1,0 +1,613 @@
+{
+  "contract_name": "legacy_order_intent_inventory_ssot_v1",
+  "contract_version": "v1",
+  "schema_version": "legacy_order_intent_inventory_schema_v1",
+  "ssot_doc": "docs/governance/LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md",
+  "inventory_date": "2026-07-17",
+  "generated_from_main_sha": "19e4b1f26dcbbfeeef3b7138f15dfa5bc4181319",
+  "markers": {
+    "LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1": true,
+    "INVENTORY_ONLY": true,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "DECOMMISSION_STATUS": "NOT_STARTED",
+    "LEGACY_ORDER_INTENT_CLAIMED_DECOMMISSIONED": false,
+    "LEGACY_ORDER_INTENT_CLAIMED_CONSOLIDATED": false,
+    "CANONICAL_ORDER_INTENT_OWNER": "UNRESOLVED",
+    "CANONICAL_ORDER_INTENT_OWNER_MV2_SCOPE": "src.governance.canonical_order_intent_v1",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER_COUNT": 3,
+    "PRODUCTIVE_BYPASS_PATH_COUNT": 4,
+    "DIRECT_SUBMISSION_BYPASS_COUNT": 4,
+    "AUTHORITY_LEAK_DETECTED": false,
+    "THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY": true,
+    "NO_RUNTIME_REWIRE_IN_THIS_SLICE": true,
+    "NO_TRADING_CORE_CHANGE": true,
+    "NO_EXECUTION_SEMANTICS_CHANGE": true,
+    "NO_RISK_SIZING_CHANGE": true,
+    "NO_RUNTIME_BRIDGE_ACTIVATION": true,
+    "ECONOMIC_GATE_REMAINS_FAIL_CLOSED": true,
+    "ELIGIBLE_FOR_LIVE_DEFAULT": false,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "RUNTIME_BRIDGE_STATUS": "BOUND_NOT_ACTIVATED",
+    "AUTHORITY_EFFECT": "NONE",
+    "DIRECT_SUBMISSION_SURFACE_CONTRACT_V1": true,
+    "DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS": "INVENTORY_ONLY_NOT_EXECUTION_PERMISSION",
+    "DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST": true,
+    "DECISION_OWNER_SURFACE_CONTRACT_V1": true,
+    "DECISION_OWNER_SURFACE_CONTRACT_SEMANTICS": "INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT",
+    "DECISION_OWNER_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT": true,
+    "DECISION_OWNER_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER": true
+  },
+  "canonical_order_intent_owner": "UNRESOLVED",
+  "canonical_order_intent_owner_mv2_scope": "src.governance.canonical_order_intent_v1",
+  "canonical_execution_authority_owner": "UNRESOLVED",
+  "productive_order_intent_decision_owner_count": 3,
+  "productive_bypass_path_count": 4,
+  "direct_submission_bypass_count": 4,
+  "authority_leak_detected": false,
+  "consolidation_status": "NOT_STARTED",
+  "decommission_status": "NOT_STARTED",
+  "canonical_status": {
+    "order_intent_repo_wide": "UNRESOLVED",
+    "order_intent_mv2_scope": "RESOLVED_TO_CANONICAL_ORDER_INTENT_V1",
+    "order_intent_reason": "MV2 offline chain uniquely uses build_canonical_order_intent_v1; repo-wide parallel legacy OrderIntent and OrderIntentV1 producers remain.",
+    "execution_authority_repo_wide": "UNRESOLVED",
+    "execution_authority_reason": "No single module uniquely owns live/order submission authority; split across go_no_go, SafetyGuard, canary/transport gates, and executors. Canonical path never grants submission."
+  },
+  "classified_paths": [
+    {
+      "owner_id": "src.governance.canonical_order_intent_v1",
+      "module_path": "src/governance/canonical_order_intent_v1.py",
+      "primary_symbols": [
+        "build_canonical_order_intent_v1",
+        "CanonicalOrderIntentV1",
+        "transform_canonical_order_intent_v1_to_adapter_order_intent_v1"
+      ],
+      "role": "CANONICAL_DECISION_OWNER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": true,
+      "can_submit_orders": false,
+      "rationale": "MV2 offline venue-neutral order-intent builder; rejects execution_eligible/submission_authorized; authority_effect NONE."
+    },
+    {
+      "owner_id": "src.trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0",
+      "module_path": "src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py",
+      "primary_symbols": [
+        "bind_canonical_order_intent_offline_replay_evidence_v0"
+      ],
+      "role": "CANONICAL_ADAPTER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Delegates to build_canonical_order_intent_v1 for offline/scenario replay."
+    },
+    {
+      "owner_id": "src.trading.master_v2.canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0",
+      "module_path": "src/trading/master_v2/canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0.py",
+      "primary_symbols": [
+        "bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0"
+      ],
+      "role": "CANONICAL_ADAPTER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Backtest state-file boundary adapter; delegates to canonical order-intent owner."
+    },
+    {
+      "owner_id": "src.trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0",
+      "module_path": "src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py",
+      "primary_symbols": [
+        "INTEGRATION_STATUS_BOUND_NOT_ACTIVATED"
+      ],
+      "role": "CANONICAL_ADAPTER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "CRS→COI→firewall→plan-only orchestrator; submission_blocked; status BOUND_NOT_ACTIVATED."
+    },
+    {
+      "owner_id": "src.governance.intent_compatibility_firewall_v1",
+      "module_path": "src/governance/intent_compatibility_firewall_v1.py",
+      "primary_symbols": [
+        "evaluate_explicit_canonical_to_adapter_transformation_firewall_v1"
+      ],
+      "role": "CANONICAL_ADAPTER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Fail-closed adapter-compatibility firewall for canonical→adapter transform."
+    },
+    {
+      "owner_id": "src.execution_pipeline.plan_only_boundary_v0",
+      "module_path": "src/execution_pipeline/plan_only_boundary_v0.py",
+      "primary_symbols": [
+        "validate_execution_plan_only_boundary_v0",
+        "PLAN_ONLY_BOUNDARY_OWNER"
+      ],
+      "role": "CANONICAL_ADAPTER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Plan-only boundary always blocks submission for canonical chain."
+    },
+    {
+      "owner_id": "src.execution.pipeline.OrderIntent",
+      "module_path": "src/execution/pipeline.py",
+      "primary_symbols": [
+        "OrderIntent",
+        "ExecutionPipeline",
+        "submit_order",
+        "execute_from_signals"
+      ],
+      "role": "PRODUCTIVE_LEGACY_OWNER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": true,
+      "can_submit_orders": true,
+      "rationale": "Legacy OrderIntent dataclass and pipeline decide/submit outside COI builder; paper/shadow/testnet reachable; live gated."
+    },
+    {
+      "owner_id": "src.execution.adapters.base_v1.OrderIntentV1",
+      "module_path": "src/execution/adapters/base_v1.py",
+      "primary_symbols": [
+        "OrderIntentV1",
+        "ExecutionAdapterV1"
+      ],
+      "role": "PRODUCTIVE_LEGACY_OWNER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": true,
+      "can_submit_orders": true,
+      "rationale": "Parallel adapter-level OrderIntentV1 surface; COI may transform into it structurally but legacy producers also build it directly."
+    },
+    {
+      "owner_id": "src.orders.shadow_paper_testnet_executors",
+      "module_path": "src/orders/paper.py",
+      "primary_symbols": [
+        "PaperOrderExecutor"
+      ],
+      "role": "PRODUCTIVE_LEGACY_OWNER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": true,
+      "rationale": "Simulated submission executors (paper); not COI; no real exchange API."
+    },
+    {
+      "owner_id": "src.live.orders.LiveOrderRequest",
+      "module_path": "src/live/orders.py",
+      "primary_symbols": [
+        "LiveOrderRequest"
+      ],
+      "role": "PRODUCTIVE_LEGACY_OWNER",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": true,
+      "can_submit_orders": false,
+      "rationale": "Legacy live DTO / helpers; not broker submission by itself."
+    },
+    {
+      "owner_id": "bypass.execution_pipeline_legacy_intent",
+      "module_path": "src/execution/pipeline.py",
+      "primary_symbols": [
+        "OrderIntent",
+        "execute_from_signals"
+      ],
+      "role": "PRODUCTIVE_BYPASS",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": true,
+      "can_submit_orders": true,
+      "rationale": "Unguarded core API builds legacy OrderIntent without COI."
+    },
+    {
+      "owner_id": "bypass.execution_router_order_intent_v1",
+      "module_path": "src/execution/router/router_v1.py",
+      "primary_symbols": [
+        "ExecutionRouterV1"
+      ],
+      "role": "PRODUCTIVE_BYPASS",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": true,
+      "can_submit_orders": true,
+      "rationale": "Builds OrderIntentV1 and place_order via mocks; modes limited to shadow/paper."
+    },
+    {
+      "owner_id": "bypass.orders_exchange_executor",
+      "module_path": "src/orders/exchange.py",
+      "primary_symbols": [
+        "ExchangeOrderExecutor",
+        "LiveOrderExecutor"
+      ],
+      "role": "PRODUCTIVE_BYPASS",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": true,
+      "rationale": "OrderRequest submission path outside COI authority chain; LiveOrderExecutor forced dry-run stub."
+    },
+    {
+      "owner_id": "bypass.unguarded_shadow_paper_scripts",
+      "module_path": "scripts/run_shadow_execution.py",
+      "primary_symbols": [],
+      "role": "PRODUCTIVE_BYPASS",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": true,
+      "can_submit_orders": true,
+      "rationale": "Ops/shadow scripts construct legacy intents/pipelines without COI."
+    },
+    {
+      "owner_id": "submission.execution_pipeline_submit_order",
+      "module_path": "src/execution/pipeline.py",
+      "primary_symbols": [
+        "submit_order"
+      ],
+      "role": "PRODUCTIVE_BYPASS",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": true,
+      "rationale": "Direct submit_order outside canonical authority chain."
+    },
+    {
+      "owner_id": "submission.execution_pipeline_adapter_submit",
+      "module_path": "src/execution_pipeline/pipeline.py",
+      "primary_symbols": [
+        "ExecutionPipeline"
+      ],
+      "role": "PRODUCTIVE_BYPASS",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": true,
+      "rationale": "execution_pipeline adapter submit surface (Null default; replaceable); outside COI grant."
+    },
+    {
+      "owner_id": "blocked.live_session_runner",
+      "module_path": "src/execution/live_session.py",
+      "primary_symbols": [
+        "LiveSessionRunner"
+      ],
+      "role": "PRODUCTIVE_BYPASS",
+      "reachability": "UNREACHABLE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": true,
+      "rationale": "Bounded-pilot wiring to KrakenLive exists but legacy entrypoint guard blocks productive start."
+    },
+    {
+      "owner_id": "src.trading.master_v2.legacy_runtime_entrypoint_guard_v0",
+      "module_path": "src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py",
+      "primary_symbols": [
+        "CANONICAL_RUNTIME_ENTRYPOINT_STATUS",
+        "require_legacy_runtime_entrypoint_deauthorized"
+      ],
+      "role": "REPORTING_OR_OBSERVABILITY",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Fail-closed deauthorization gate; CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED."
+    },
+    {
+      "owner_id": "src.meta.learning_loop.order_intent_idempotency_v1",
+      "module_path": "src/meta/learning_loop/order_intent_idempotency_v1.py",
+      "primary_symbols": [
+        "reverify_order_intent_idempotency_v1"
+      ],
+      "role": "REPORTING_OR_OBSERVABILITY",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Non-authorizing offline idempotency evidence; does not submit."
+    },
+    {
+      "owner_id": "src.meta.learning_loop.canonical_order_lifecycle_v1",
+      "module_path": "src/meta/learning_loop/canonical_order_lifecycle_v1.py",
+      "primary_symbols": [
+        "CanonicalOrderIntentIdentity"
+      ],
+      "role": "REPORTING_OR_OBSERVABILITY",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Lifecycle/identity evidence only; non-authorizing."
+    },
+    {
+      "owner_id": "src.governance.go_no_go",
+      "module_path": "src/governance/go_no_go.py",
+      "primary_symbols": [
+        "select_live_order_execution_key"
+      ],
+      "role": "REPORTING_OR_OBSERVABILITY",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Feature map: live_order_execution locked; bounded_pilot separately gated; not sole execution authority."
+    },
+    {
+      "owner_id": "tests.governance.canonical_order_intent",
+      "module_path": "tests/governance/test_canonical_order_intent_v1.py",
+      "primary_symbols": [],
+      "role": "TEST_OR_FIXTURE",
+      "reachability": "REACHABLE_TEST",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Contract tests for COI; not a runtime owner."
+    },
+    {
+      "owner_id": "docs.p2_legacy_order_intent_plan_pointer",
+      "module_path": "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+      "primary_symbols": [],
+      "role": "FALSE_POSITIVE",
+      "reachability": "ARCHIVE",
+      "authoritative_order_intent_decision": false,
+      "can_submit_orders": false,
+      "rationale": "Plan-pointer mentions of Legacy Order Intent are documentation only, not runtime paths."
+    }
+  ],
+  "productive_decision_owners": [
+    "src.governance.canonical_order_intent_v1",
+    "src.execution.pipeline.OrderIntent",
+    "src.execution.adapters.base_v1.OrderIntentV1"
+  ],
+  "productive_bypass_paths": [
+    "bypass.execution_pipeline_legacy_intent",
+    "bypass.execution_router_order_intent_v1",
+    "bypass.orders_exchange_executor",
+    "bypass.unguarded_shadow_paper_scripts"
+  ],
+  "direct_submission_bypasses": [
+    "submission.execution_pipeline_submit_order",
+    "bypass.orders_exchange_executor",
+    "bypass.execution_router_order_intent_v1",
+    "submission.execution_pipeline_adapter_submit"
+  ],
+  "safety_status": {
+    "runtime_bridge_activated": false,
+    "runtime_bridge_status": "BOUND_NOT_ACTIVATED",
+    "eligible_for_live": false,
+    "live_authorized": false,
+    "orders_enabled": false,
+    "economic_gate_fail_closed": true,
+    "authority_leak_detected": false,
+    "market_dashboard_restored": false,
+    "github_settings_mutated": false
+  },
+  "open_governance_decisions": [
+    "Should COI become the sole repo-wide order-intent decision owner including legacy ExecutionPipeline?",
+    "Should OrderIntentV1 producers be forced through COI transform only?",
+    "How to retire or hard-deauthorize unguarded shadow/paper scripts and ExchangeOrderExecutor without changing semantics yet?",
+    "Who is the single execution-authority owner once Operator-GO selects one?",
+    "Historical KrakenLiveClient library path is ABSENT from current tree; do not restore as a second venue."
+  ],
+  "next_plan_item": "P2_LEGACY_ORDER_INTENT_DECOMMISSION_REQUIRES_OPERATOR_GO",
+  "prior_plan_item": "P2_RISK_SIZING_INVENTORY",
+  "risk_sizing_inventory_status": "DONE",
+  "promotion_owner_status": "DONE",
+  "direct_submission_surface_contract": {
+    "contract_name": "direct_submission_surface_contract_v1",
+    "contract_version": "v1",
+    "semantics": "INVENTORY_ONLY_NOT_EXECUTION_PERMISSION",
+    "semantics_clarification": "This frozen set is a static inventory/drift contract only. It is NOT an execution allowlist, NOT authorization, NOT activation, NOT canonicalization, and NOT a safety approval. can_submit_orders=true and REACHABLE_PRODUCTIVE describe technical capability/reachability only.",
+    "expected_surface_count": 4,
+    "surface_ids_sorted": [
+      "bypass.execution_router_order_intent_v1",
+      "bypass.orders_exchange_executor",
+      "submission.execution_pipeline_adapter_submit",
+      "submission.execution_pipeline_submit_order"
+    ],
+    "surfaces": [
+      {
+        "surface_id": "bypass.execution_router_order_intent_v1",
+        "module": "src.execution.router.router_v1",
+        "source_path": "src/execution/router/router_v1.py",
+        "symbol_or_callable": "ExecutionRouterV1.place_order",
+        "classification": "LEGACY_DIRECT_SUBMISSION_BYPASS",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": true,
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "capability_note": "Shadow/paper mock adapter path; not live authorization.",
+        "inventory_pin_reason": "Inventory-pinned ExecutionRouterV1.place_order outside COI authority chain.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED"
+      },
+      {
+        "surface_id": "bypass.orders_exchange_executor",
+        "module": "src.orders.exchange",
+        "source_path": "src/orders/exchange.py",
+        "symbol_or_callable": "ExchangeOrderExecutor.execute_order",
+        "classification": "LEGACY_DIRECT_SUBMISSION_BYPASS",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": true,
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "capability_note": "Technical API capability if trading_client set; not authorization.",
+        "inventory_pin_reason": "Inventory-pinned ExchangeOrderExecutor path outside COI.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED"
+      },
+      {
+        "surface_id": "submission.execution_pipeline_adapter_submit",
+        "module": "src.execution_pipeline.pipeline",
+        "source_path": "src/execution_pipeline/pipeline.py",
+        "symbol_or_callable": "ExecutionPipeline.execute",
+        "classification": "LEGACY_DIRECT_SUBMISSION_BYPASS",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": true,
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "capability_note": "Adapter submit surface with Null default; not COI grant / not live authorization.",
+        "inventory_pin_reason": "Inventory-pinned execution_pipeline.ExecutionPipeline.execute adapter submit surface.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED"
+      },
+      {
+        "surface_id": "submission.execution_pipeline_submit_order",
+        "module": "src.execution.pipeline",
+        "source_path": "src/execution/pipeline.py",
+        "symbol_or_callable": "ExecutionPipeline.submit_order",
+        "classification": "LEGACY_DIRECT_SUBMISSION_BYPASS",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": true,
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "capability_note": "Technical API capability only; not authorization.",
+        "inventory_pin_reason": "Inventory-pinned legacy ExecutionPipeline.submit_order outside COI authority chain.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED"
+      }
+    ],
+    "drift_policy": {
+      "addition": "FAIL",
+      "removal": "FAIL",
+      "rename": "FAIL",
+      "duplicate": "FAIL",
+      "unresolved_symbol": "FAIL"
+    },
+    "pinned_against_main_sha": "9f287c4390edaa32e8b5eba41b53a2134543f3ec",
+    "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",
+    "scan_uncertainty_notes": [
+      "Dynamic getattr/importlib call sites are not claimed exhaustively; this contract pins inventoried surface definitions only.",
+      "No heuristic expansion beyond the five inventory direct_submission_bypasses IDs."
+    ]
+  },
+  "decision_owner_surface_contract": {
+    "contract_name": "decision_owner_surface_contract_v1",
+    "contract_version": "v1",
+    "semantics": "INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT",
+    "semantics_clarification": "This frozen set is a static inventory/drift contract only for the three inventoried productive order-intent decision owners. It is NOT authority assignment, NOT repo-wide owner selection, NOT authorization, NOT activation, NOT canonicalization, NOT consolidation, and NOT decommission. role=CANONICAL_DECISION_OWNER for COI means MV2-scope classification only; CANONICAL_ORDER_INTENT_OWNER and CANONICAL_EXECUTION_AUTHORITY_OWNER remain UNRESOLVED. The direct_submission_surface_contract from PR #5301 remains a separate, already-complete surface contract and is not duplicated here.",
+    "expected_owner_count": 3,
+    "owner_ids_sorted": [
+      "src.execution.adapters.base_v1.OrderIntentV1",
+      "src.execution.pipeline.OrderIntent",
+      "src.governance.canonical_order_intent_v1"
+    ],
+    "owners": [
+      {
+        "stable_id": "src.execution.adapters.base_v1.OrderIntentV1",
+        "module": "src.execution.adapters.base_v1",
+        "source_path": "src/execution/adapters/base_v1.py",
+        "symbol_or_callable": "OrderIntentV1",
+        "primary_symbols": [
+          "OrderIntentV1",
+          "ExecutionAdapterV1"
+        ],
+        "role": "PRODUCTIVE_LEGACY_OWNER",
+        "classification": "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": true,
+        "authoritative_order_intent_decision": true,
+        "capability_note": "Parallel adapter-level OrderIntentV1 decision surface; not COI; not execution authority.",
+        "inventory_pin_reason": "Inventory-pinned OrderIntentV1 decision owner; contract freezes drift only.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED",
+        "scope_note": "Parallel adapter decision owner; not promoted as repo-wide canonical owner."
+      },
+      {
+        "stable_id": "src.execution.pipeline.OrderIntent",
+        "module": "src.execution.pipeline",
+        "source_path": "src/execution/pipeline.py",
+        "symbol_or_callable": "OrderIntent",
+        "primary_symbols": [
+          "OrderIntent",
+          "ExecutionPipeline",
+          "submit_order",
+          "execute_from_signals"
+        ],
+        "role": "PRODUCTIVE_LEGACY_OWNER",
+        "classification": "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": true,
+        "authoritative_order_intent_decision": true,
+        "capability_note": "Legacy OrderIntent decision surface; can_submit_orders describes technical capability only, not authorization.",
+        "inventory_pin_reason": "Inventory-pinned legacy OrderIntent decision owner outside COI; not promoted as canonical or execution authority.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED",
+        "scope_note": "Parallel legacy decision owner; submission capability is separately inventoried in direct_submission_surface_contract."
+      },
+      {
+        "stable_id": "src.governance.canonical_order_intent_v1",
+        "module": "src.governance.canonical_order_intent_v1",
+        "source_path": "src/governance/canonical_order_intent_v1.py",
+        "symbol_or_callable": "build_canonical_order_intent_v1",
+        "primary_symbols": [
+          "build_canonical_order_intent_v1",
+          "CanonicalOrderIntentV1",
+          "transform_canonical_order_intent_v1_to_adapter_order_intent_v1"
+        ],
+        "role": "CANONICAL_DECISION_OWNER",
+        "classification": "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": false,
+        "authoritative_order_intent_decision": true,
+        "capability_note": "MV2-scope decision builder only; rejects execution_eligible/submission_authorized; authority_effect NONE. NOT repo-wide sole owner; NOT authorization.",
+        "inventory_pin_reason": "Inventory-pinned COI decision owner; contract freezes drift only and does not promote repo-wide canonical ownership.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED",
+        "scope_note": "MV2/offline-chain decision owner only; CANONICAL_ORDER_INTENT_OWNER remains UNRESOLVED repo-wide."
+      }
+    ],
+    "drift_policy": {
+      "addition": "FAIL",
+      "removal": "FAIL",
+      "rename": "FAIL",
+      "duplicate": "FAIL",
+      "unresolved_symbol": "FAIL",
+      "role_or_reachability_drift": "FAIL",
+      "authority_escalation": "FAIL"
+    },
+    "global_authority_pins": {
+      "CANONICAL_ORDER_INTENT_OWNER": "UNRESOLVED",
+      "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+      "CONSOLIDATION_STATUS": "NOT_STARTED",
+      "DECOMMISSION_STATUS": "NOT_STARTED"
+    },
+    "related_but_separate_contracts": {
+      "direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_NOT_DUPLICATED",
+      "risk_sizing_owner_and_bypass_surface_contract_v1": "OUT_OF_SCOPE_NEXT_CANDIDATE"
+    },
+    "pinned_against_main_sha": "57fe3c61ca564b245fdbfa20e6b0341e7bc86cc7",
+    "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",
+    "scan_uncertainty_notes": [
+      "Dynamic getattr/importlib producers are not claimed exhaustively; this contract pins inventoried decision-owner definitions only.",
+      "No heuristic expansion beyond the three inventory productive_decision_owners IDs.",
+      "Companion symbols listed in primary_symbols remain inventory-backed; AST fail-closed enforcement applies to symbol_or_callable.",
+      "This contract does not duplicate direct_submission_surface_contract surfaces."
+    ]
+  }
+}

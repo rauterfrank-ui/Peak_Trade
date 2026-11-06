@@ -1,0 +1,11 @@
+{
+  "call_graph": [
+    "okx_public_market_data",
+    "pt1m_mark_observation_finalizer",
+    "feature_pipeline",
+    "regime_pipeline",
+    "canonical_volatility_productive_runtime_cmc_typed_binding(ingest finalized PT1M)",
+    "typed_volatility_presence(present after warmup)",
+    "master_v2_double_play_integrated_offline_replay"
+  ]
+}

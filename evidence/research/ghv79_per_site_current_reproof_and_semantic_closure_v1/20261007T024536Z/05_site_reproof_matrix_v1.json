@@ -1,0 +1,2912 @@
+{
+  "COUNT": 171,
+  "MATRIX": [
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_DOWNSTREAM_GOVERNANCE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 283,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:descriptor"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_GOVERNANCE_ONLY",
+      "SITE_ID": "GHV79-001",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_DOWNSTREAM_GOVERNANCE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 292,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_GOVERNANCE_ONLY",
+      "SITE_ID": "GHV79-002",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_DOWNSTREAM_GOVERNANCE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 1053,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:assessment"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_GOVERNANCE_ONLY",
+      "SITE_ID": "GHV79-003",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_DOWNSTREAM_GOVERNANCE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 308,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:descriptor"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_GOVERNANCE_ONLY",
+      "SITE_ID": "GHV79-004",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_DOWNSTREAM_GOVERNANCE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 322,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_GOVERNANCE_ONLY",
+      "SITE_ID": "GHV79-005",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_DOWNSTREAM_GOVERNANCE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 1070,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:assessment"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_GOVERNANCE_ONLY",
+      "SITE_ID": "GHV79-006",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "CAP22_FULL_RANK_ORDER",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_OFFLINE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 452,
+      "PLACEMENT_RELATION": "OFFLINE_ONLY",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_OFFLINE",
+      "SITE_ID": "GHV79-007",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "CAP22_FULL_RANK_ORDER",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_OFFLINE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 552,
+      "PLACEMENT_RELATION": "OFFLINE_ONLY",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_OFFLINE",
+      "SITE_ID": "GHV79-008",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "CAP22_FULL_RANK_ORDER",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_OFFLINE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 612,
+      "PLACEMENT_RELATION": "OFFLINE_ONLY",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_OFFLINE",
+      "SITE_ID": "GHV79-009",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/governance/v32_current_mv2_dp_concept_alignment_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N17_MV2_DP_DECISION",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 54,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_GOVERNANCE_ONLY",
+      "SITE_ID": "GHV79-010",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/v32_current_mv2_dp_concept_alignment_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N17_MV2_DP_DECISION",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 55,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_GOVERNANCE_ONLY",
+      "SITE_ID": "GHV79-011",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 115,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-012",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 116,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-013",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 338,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-014",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 394,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-015",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 228,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.capability_proofs"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-016",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 340,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-017",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 544,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-018",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 585,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bridge_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-019",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 672,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-020",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 1039,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-021",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 334,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-022",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 681,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-023",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_RECOVERY",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 278,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:link"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-024",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_RECOVERY",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 336,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-025",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 435,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-026",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 478,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-027",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 628,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-028",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 352,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-029",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 582,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-030",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 620,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-031",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 348,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:binding"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-032",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 515,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof_chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-033",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 256,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-034",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 518,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:boundary_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-035",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N21_VENUE_PLAN_ENVELOPE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 402,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-036",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N21_VENUE_PLAN_ENVELOPE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 445,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-037",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N21_VENUE_PLAN_ENVELOPE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 564,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-038",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 867,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-039",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 968,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-040",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 428,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-041",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 843,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-042",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 844,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:pe32_chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-043",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 918,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-044",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 1020,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-045",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 798,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-046",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 458,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:review_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-047",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 296,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:review_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-048",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 337,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:policy"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-049",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 465,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:decision_record"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-050",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 525,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:review_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-051",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 680,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:caps"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-052",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 699,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:risk"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-053",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 351,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:risk"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-054",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 358,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:caps"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-055",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 307,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:capture_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-056",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 355,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:policy"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-057",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N06_PREFLIGHT_S8",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 415,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:capture_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-058",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_private_readonly_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 416,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-059",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_private_readonly_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 614,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-060",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 342,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-061",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 563,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-062",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 599,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bridge_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-063",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 512,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-064",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 871,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-065",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 583,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-066",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 912,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-067",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 645,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-068",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 1459,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-069",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 474,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-070",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 867,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-071",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 378,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-072",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 535,
+      "PLACEMENT_RELATION": "PARALLEL_NONAUTH",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PARALLEL_NONAUTH",
+      "SITE_ID": "GHV79-073",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/authority_envelope_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N21_VENUE_PLAN_ENVELOPE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 101,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-074",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 89,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-075",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_LATERAL",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 90,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-076",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/config_truth_alignment_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "HISTORICAL_NOT_CURRENT",
+      "LINE": 0,
+      "PLACEMENT_RELATION": "GHV_EXPECTATION_NOT_CURRENT",
+      "PROVEN_TARGET_SET": [],
+      "SITE_CLASS": "HISTORICAL_REMOVED",
+      "SITE_ID": "GHV79-077",
+      "SURVIVAL": "REMOVED",
+      "UNRESOLVED_TARGET_SET": [
+        "SITE_ABSENT_AT_CURRENT"
+      ]
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/derive_scope_event_distances_v1/result_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 34,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-078",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/double_play_archive_sibling_exporter_v1/exporter_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N17_MV2_DP_DECISION",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 114,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:panel"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-079",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/completion_chain.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 48,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-080",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/completion_chain.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 59,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:chain"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-081",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/completion_chain.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 60,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:binding"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-082",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/cross_slice_coherence.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 53,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:pe33_proof"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-083",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/event_stream.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 148,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:validation_input"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-084",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/event_stream.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 743,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:validation_input"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-085",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/event_stream.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 332,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-086",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/operator_closure.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 105,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-087",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/traceability.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 84,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-088",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/exit_policy_producer_binding_v1/producers_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "HISTORICAL_NOT_CURRENT",
+      "LINE": 0,
+      "PLACEMENT_RELATION": "GHV_EXPECTATION_NOT_CURRENT",
+      "PROVEN_TARGET_SET": [],
+      "SITE_CLASS": "HISTORICAL_REMOVED",
+      "SITE_ID": "GHV79-089",
+      "SURVIVAL": "REMOVED",
+      "UNRESOLVED_TARGET_SET": [
+        "SITE_ABSENT_AT_CURRENT"
+      ]
+    },
+    {
+      "CURRENT_NODE": "Natural Enter disposition",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/session_integration_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 76,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:inner"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-090",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 169,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self._delegate"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-091",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 128,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-092",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 139,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:directive"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-093",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 149,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:directive"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-094",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 143,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:directive"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-095",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/normalization_inclusion_adjudication_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 775,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:adjudication"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-096",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 352,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-097",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 399,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-098",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 394,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-099",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 539,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-100",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 395,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-101",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 438,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-102",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 433,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-103",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 637,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-104",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 397,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-105",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 480,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-106",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 627,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-107",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 636,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-108",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 473,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-109",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 730,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-110",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 378,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-111",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 266,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-112",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 301,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-113",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 296,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-114",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 418,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-115",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 477,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-116",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 570,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-117",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 411,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-118",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 483,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-119",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 549,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-120",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 774,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-121",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 493,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-122",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 499,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-123",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 652,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-124",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 248,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-125",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 318,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-126",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 311,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-127",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 455,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-128",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 464,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-129",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 273,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-130",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 322,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-131",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 317,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-132",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 425,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-133",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 269,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:sample"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-134",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 349,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:sample"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-135",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/venue_witness_observation_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 492,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:witness"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-136",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_monetary_normalization_v1/contracts_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 119,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-137",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_monetary_normalization_v1/contracts_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 121,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-138",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/hard_facts_system_closure_v1/__init__.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 33,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:handoff"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-139",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/gated_entry_submit_surface_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION",
+      "LINE": 68,
+      "PLACEMENT_RELATION": "OFFLINE_ONLY",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:LiveCanaryHttpClientV1"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_OFFLINE",
+      "SITE_ID": "GHV79-140",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/peak_trade_economic_ranking_runtime_v1/__init__.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 29,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-141",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/peak_trade_economic_ranking_runtime_v1/__init__.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 33,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-142",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1/productive_executor_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 86,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-143",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1/productive_executor_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 87,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-144",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/session_executor_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 28,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-145",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/session_executor_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 29,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-146",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/adverse_stale_executor_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 36,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-147",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/adverse_stale_executor_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 37,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-148",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/productive_campaign_executor_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 142,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-149",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/productive_campaign_executor_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 143,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-150",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/bull_bear_regime_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 144,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-151",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 127,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-152",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 130,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-153",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/double_play_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N17_MV2_DP_DECISION",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 128,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:panel"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-154",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/double_play_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N17_MV2_DP_DECISION",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 201,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-155",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/dynamic_scope_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 151,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-156",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/economic_summary_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 170,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-157",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/execution_reconciliation_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 151,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-158",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/risk_sizing_capital_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N20_CAPITAL_29P_HANDOFF",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 148,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-159",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/safety_authority_presentation_projection_materializer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 148,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-160",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/pt1m_finalized_ohlcv_producer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 32,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:binding"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-161",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/pt1m_finalized_ohlcv_producer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 45,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:candle"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-162",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/__init__.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 38,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:models_v1"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-163",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/producer_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 44,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bar"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-164",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/recovery_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_RECOVERY",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 177,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:cursor"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-165",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/safety_authority_archive_sibling_exporter_v1/replay_commit_source_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 40,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-166",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Full-Core composition root",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/top20_opportunity_evaluation_residency_v1/scoped_productive_residency_evaluation_completion_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N16_N1_S7_T2_COMPOSE",
+      "GRAPH_BUCKET": "HISTORICAL_NOT_CURRENT",
+      "LINE": 0,
+      "PLACEMENT_RELATION": "GHV_EXPECTATION_NOT_CURRENT",
+      "PROVEN_TARGET_SET": [],
+      "SITE_CLASS": "HISTORICAL_REMOVED",
+      "SITE_ID": "GHV79-167",
+      "SURVIVAL": "REMOVED",
+      "UNRESOLVED_TARGET_SET": [
+        "SITE_ABSENT_AT_CURRENT"
+      ]
+    },
+    {
+      "CURRENT_NODE": null,
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/orders/__init__.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "GHV_NOT_ON_REFERENCE_VECTOR",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 74,
+      "PLACEMENT_RELATION": "GHV_EXPECTATION_NOT_CURRENT",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:exchange"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_DORMANT",
+      "SITE_ID": "GHV79-168",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/trading/master_v2/canonical_trading_decision_evidence_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N17_MV2_DP_DECISION",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 89,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-169",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/trading/master_v2/canonical_volatility_default_quarantine_v1.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N17_MV2_DP_DECISION",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 196,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-170",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "CURRENT_NODE": "Master-V2 + Double Play",
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py",
+      "GHV_AUTHORITY": "NONE",
+      "GHV_EXPECTED": "N17_MV2_DP_DECISION",
+      "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+      "LINE": 96,
+      "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL",
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:inp"
+      ],
+      "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
+      "SITE_ID": "GHV79-171",
+      "SURVIVAL": "SURVIVING",
+      "UNRESOLVED_TARGET_SET": []
+    }
+  ]
+}

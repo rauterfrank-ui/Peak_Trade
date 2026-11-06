@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "papertrail_ready": false,
+  "allow_ai_signals_in_shadow_paper": true,
+  "allow_ai_to_execute_live": false,
+  "live_unlock": {
+    "enabled": false,
+    "armed": false,
+    "confirm_token_env": "PT_CONFIRM_TOKEN",
+    "confirm_token_required": true
+  }
+}

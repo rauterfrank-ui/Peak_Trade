@@ -1,0 +1,71 @@
+{
+  "capability_id": "PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1",
+  "current_authoritative_one_hour_session_id": "phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a",
+  "current_authoritative_repository_sha": "b0e882b9714a615f633fb09b8ee4f9a19f54d470",
+  "ok": true,
+  "records": [
+    {
+      "abort_class": "TRANSPORT_FAILURE_DNS_RESOLUTION_FAILED",
+      "authoritative": false,
+      "class": "DNS_ABORTED_ATTEMPT",
+      "durable_in_this_pr": false,
+      "historical": true,
+      "path": "docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_v1",
+      "preservation": "LOCAL_UNTRACKED_HISTORICAL_EVIDENCE_MUST_REMAIN_BYTE_IDENTICAL",
+      "session_id": "phase_9_2_public_md_one_hour_governed_session_v1",
+      "terminal_verdict": "ABORT"
+    },
+    {
+      "abort_class": "RUNNER_PROCESS_DEATH_INCOMPLETE",
+      "authoritative": false,
+      "class": "PROCESS_DEATH_ATTEMPT",
+      "durable_in_this_pr": false,
+      "historical": true,
+      "path": "docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_fresh_9ba4e31c70c9",
+      "preservation": "LOCAL_UNTRACKED_HISTORICAL_EVIDENCE_MUST_REMAIN_BYTE_IDENTICAL",
+      "repository_sha": "9ba4e31c70c92ef02c6489e99aa99a1ff1901dce",
+      "session_id": "phase_9_2_public_md_one_hour_governed_session_fresh_9ba4e31c70c9",
+      "terminal_verdict": "ABORT"
+    },
+    {
+      "abort_class": "PROXY_EGRESS_FORBIDDEN_AFTER_AUTH_CONSUMPTION",
+      "authoritative": false,
+      "authorization_id": "auth_v2_0c0fe315d13888497328adecb39ac4c7",
+      "class": "PROXY_EGRESS_ABORT_ON_CURRENT_TRUTH_SHA",
+      "durable_in_this_pr": false,
+      "historical": true,
+      "path": "docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_b0e882b9714a",
+      "preservation": "LOCAL_UNTRACKED_HISTORICAL_EVIDENCE_MUST_REMAIN_BYTE_IDENTICAL_DO_NOT_REWRITE",
+      "repository_sha": "b0e882b9714a615f633fb09b8ee4f9a19f54d470",
+      "session_id": "phase_9_2_public_md_one_hour_governed_session_b0e882b9714a",
+      "terminal_verdict": "ABORT"
+    },
+    {
+      "activation_config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+      "authoritative": true,
+      "authorization_id": "auth_v2_6198d1a72de5138de6bad43f1aa32693",
+      "authorization_state": "CONSUMED",
+      "class": "FINAL_SUCCESSFUL_NOPROXY_REAL_PTY_ONE_HOUR_PASS",
+      "config_digest": "84b9ea0611809bf64486d5d69f3774d43920b7796910dc3dc34d163c5ca212cc",
+      "config_digest_difference_classified": "ACTIVATION_DIGEST_HISTORICAL_BINDING_VS_EFFECTIVE_SESSION_CONFIG_DIGEST_CONTRACT",
+      "credentials_used": false,
+      "cursor_sandbox_used": false,
+      "cycle_count": 1453,
+      "durable_in_this_pr": true,
+      "historical": false,
+      "killstate": 0,
+      "manifest_rc": 0,
+      "network_opened": true,
+      "orders_submitted": 0,
+      "path": "docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a",
+      "proxy_env_cleared_before_issuance": true,
+      "proxy_env_cleared_before_network": true,
+      "real_local_pty_used": true,
+      "repository_sha": "b0e882b9714a615f633fb09b8ee4f9a19f54d470",
+      "session_elapsed_seconds": 3603.007,
+      "session_id": "phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a",
+      "terminal_verdict": "PASS"
+    }
+  ],
+  "schema_version": "phase_9_2_one_hour_session_history_index_v1"
+}

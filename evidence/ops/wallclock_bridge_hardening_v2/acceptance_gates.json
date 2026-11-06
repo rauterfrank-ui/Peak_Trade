@@ -1,0 +1,28 @@
+{
+  "blockers": [],
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+  "fail_closed": true,
+  "gates": {
+    "CANONICAL_STRATEGY_PROBE_FORCED_ACTION": false,
+    "CANONICAL_STRATEGY_PROBE_PASS": true,
+    "CANONICAL_STRATEGY_PROBE_USES_REAL_DECISION_GRAPH": true,
+    "DEFAULT_REGIME_FALLBACK_ACTIVE": false,
+    "FORCED_FIXTURE_ECONOMIC_METRICS_EXCLUDED": true,
+    "FORCED_FIXTURE_WALLCLOCK_REACHABLE": false,
+    "FORCED_WIRING_FIXTURE_PASS": true,
+    "FULL_ECONOMIC_RECONSTRUCTION_PASS": true,
+    "HARDCODED_HOLD_PRESENT": false,
+    "LIVE_EXECUTION_OCCURRED": false,
+    "ORDERS_CREATED": false,
+    "ORDER_ROUTING_REACHABLE": false,
+    "PRIVATE_API_USED": false,
+    "STUB_FALLBACK_SCAN_PASS": true,
+    "TESTNET_EXECUTION_OCCURRED": false
+  },
+  "gates_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.acceptance_gates_v2",
+  "go": false,
+  "go_for_1h_run": false,
+  "go_for_authorization": false,
+  "go_for_preregistration": false,
+  "ok": true
+}

@@ -1,0 +1,42 @@
+{
+  "artifact_class": "OPTIMIZATION_SURFACE_FAMILIES_PRE_TEST_PREPARATION_DECISION_V1",
+  "workpackage_id": "OPTIMIZATION_SURFACE_FAMILIES_PRE_TEST_PREPARATION_V1",
+  "bound_origin_main_sha": "3abeffae801f2973408e8e613b1c03f903b08d0a",
+  "predecessor_closed": "NAKED_MV2_DOUBLE_PLAY_CORE_AUTHORITY_HARDENING_V1",
+  "owner_grants_materialization_wp": "OPTIMIZATION_SURFACE_OWNER_GRANTS_MATERIALIZATION_V1",
+  "normative_spec": "docs/ops/specs/OPTIMIZATION_SURFACE_FAMILIES_PRE_TEST_PREPARATION_V1.md",
+  "learning_productive_authority": "NONE",
+  "optimization_productive_authority": "NONE",
+  "external_effect_authorized": false,
+  "productive_effect": "NONE",
+  "mv2_double_play_sole_trading_decision_authority": true,
+  "core_boundary_changed": false,
+  "trading_logic_changed": false,
+  "family_status": {
+    "F1": "TEST_READY",
+    "F2": "TEST_READY",
+    "F5-FRESH": "TEST_READY_SHADOW_RESEARCH",
+    "F5-SURV": "TEST_READY_PER_TOKEN_SHADOW_CALIBRATION_ONLY",
+    "F5-CAP": "TEST_READY_PER_TOKEN_SHADOW_CALIBRATION_ONLY",
+    "F3": "EXCLUDED_BY_AUTHORITY_BOUNDARY"
+  },
+  "test_ready_surface_ids": [
+    "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+    "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1"
+  ],
+  "authorized_optimization_surface_ids": [
+    "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+    "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+    "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1"
+  ],
+  "owner_decision_required_family_gate_ids": [],
+  "excluded_family_gate_ids": [
+    "F3",
+    "F4-OPTUNA",
+    "FUNDING-ONLY",
+    "OLS-DIAG",
+    "RISK-SIZE",
+    "META-M4-M8"
+  ],
+  "family_set_closed": true
+}

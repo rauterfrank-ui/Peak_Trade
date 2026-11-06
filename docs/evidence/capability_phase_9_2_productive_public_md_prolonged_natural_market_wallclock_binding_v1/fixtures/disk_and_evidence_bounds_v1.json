@@ -1,0 +1,58 @@
+{
+  "blockers": [],
+  "growth_fail": {
+    "blockers": [
+      "EVIDENCE_GROWTH_BOUND_EXCEEDED_TOTAL",
+      "EVIDENCE_GROWTH_BOUND_EXCEEDED_RATE"
+    ],
+    "classification": "EVIDENCE_GROWTH_BOUND_EXCEEDED",
+    "evidence_bytes": 536870913,
+    "evidence_growth_rate": 2097153.0,
+    "max_evidence_bytes": 536870912,
+    "max_evidence_growth_bytes_per_minute": 2097152,
+    "ok": false
+  },
+  "growth_ok": {
+    "blockers": [],
+    "classification": "EVIDENCE_GROWTH_WITHIN_BOUNDS",
+    "evidence_bytes": 1024,
+    "evidence_growth_rate": 1024.0,
+    "max_evidence_bytes": 536870912,
+    "max_evidence_growth_bytes_per_minute": 2097152,
+    "ok": true
+  },
+  "network_session_started": false,
+  "ok": true,
+  "preflight_fail": {
+    "STEP5_SESSION_STARTED": false,
+    "blockers": [
+      "DISK_PREFLIGHT_FAIL"
+    ],
+    "check_path": "/Users/frnkhrz/Peak_Trade/docs/evidence/capability_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1/fixtures/disk_check",
+    "classification": "DISK_PREFLIGHT_FAIL",
+    "disk_free_bytes_before": 1610612735,
+    "disk_free_minimum_bytes_before": 1610612736,
+    "disk_reserve_bytes": 1073741824,
+    "notes": [
+      "FAIL_CLOSED_ON_PREFLIGHT_FAIL=true",
+      "RUNTIME_DISK_PRESSURE_IF_FREE_LT_RESERVE=true"
+    ],
+    "ok": false,
+    "runtime_disk_pressure": false
+  },
+  "preflight_ok": {
+    "STEP5_SESSION_STARTED": null,
+    "blockers": [],
+    "check_path": "/Users/frnkhrz/Peak_Trade/docs/evidence/capability_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1/fixtures/disk_check",
+    "classification": "DISK_PREFLIGHT_PASS",
+    "disk_free_bytes_before": 1610612737,
+    "disk_free_minimum_bytes_before": 1610612736,
+    "disk_reserve_bytes": 1073741824,
+    "notes": [
+      "FAIL_CLOSED_ON_PREFLIGHT_FAIL=true",
+      "RUNTIME_DISK_PRESSURE_IF_FREE_LT_RESERVE=true"
+    ],
+    "ok": true,
+    "runtime_disk_pressure": false
+  }
+}

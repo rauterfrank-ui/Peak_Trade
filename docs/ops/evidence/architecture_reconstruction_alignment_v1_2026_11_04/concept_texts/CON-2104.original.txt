@@ -1,0 +1,9 @@
+### CON-2104 — Credential-Schutz und Sicherheitsausstieg müssen gemeinsam passen
+
+Status im Quellenabgleich: **UNPROVEN** · Klasse: `DERIVED_INFERENCE`.
+
+Eine spätere Dienstgrenze für K1 muss Read-Abgleich nach unklarem POST und ausdrücklich erlaubten Reduce/Exit erreichbar halten, während Agent/Client kein Material erhält. Account-/Lane-Identität und Single-Use-Envelope/Permit müssen über die Grenze erhalten bleiben; ein Loader-Austausch allein erfasst diese Abhängigkeit nicht.
+
+**Grenze:** Nur Umbauanforderung aus dokumentierten Consumern. Keine Secrets gelesen, kein Dienst implementiert und keine heutige OS-Isolation behauptet.
+
+Quellen: EVI-2209, EVI-2210, EVI-2214, EVI-2215, EVI-2220, EVI-2221, EVI-2223, EVI-2234, EVI-2240, EVI-2273, EVI-2292, EVI-2293, EVI-2294, EVI-2295.

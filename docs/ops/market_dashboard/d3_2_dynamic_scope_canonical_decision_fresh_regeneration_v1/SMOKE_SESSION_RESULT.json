@@ -1,0 +1,46 @@
+{
+  "wp_id": "D3_2_DYNAMIC_SCOPE_CANONICAL_DECISION_FRESH_REGENERATION_V1",
+  "canonical_base_sha": "80700cb074fa0e49dfc9befbb4921a7ac21f0274",
+  "session_id": "d3-2-dynamic-scope-canonical-decision-80700cb",
+  "smoke_status": "PASS",
+  "ok": true,
+  "cycles_attempted": 8,
+  "cycles_committed": 8,
+  "archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "runtime_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_d3_2_runtime_80700cb",
+  "instrument_id": "SATS-USDT-SWAP",
+  "instrument_source": "archive:readmodels/universe_selection_readmodel.v1.json:selected_future.symbol",
+  "activation_enabled": true,
+  "network_session_allowed": false,
+  "orders_authorized": false,
+  "live_authorized": false,
+  "testnet_authorized": false,
+  "public_md_cycle_observed": false,
+  "dynamic_scope": {
+    "cycle_id": "d3-2-dynamic-scope-canonical-decision-80700cb:cycle:7",
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "source_digest": "59aa9f79ac8d8dd5dbfa25698015b06e4ae2f3ed9004c3a894b9aa8e6d71036c",
+    "target_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/dynamic_scope_state_v1.json"
+  },
+  "canonical_decision": {
+    "cycle_id": "d3-2-dynamic-scope-canonical-decision-80700cb:cycle:7",
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "source_digest": "e454f1ace492b5681a10d993a28cddec3b1f72af3e3998ee9dff2907c0567f49",
+    "target_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/canonical_trading_decision_evidence.v1.json"
+  },
+  "double_play": {
+    "exported": false,
+    "error_code": "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE",
+    "skipped_reason": "canonical_display_inputs_incomplete"
+  },
+  "regime_bull_bear_switch": {
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "cycle_id": "d3-2-dynamic-scope-canonical-decision-80700cb:cycle:7"
+  }
+}

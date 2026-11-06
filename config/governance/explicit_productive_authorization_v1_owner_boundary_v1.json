@@ -1,0 +1,22 @@
+{
+  "artifact_class": "EXPLICIT_PRODUCTIVE_AUTHORIZATION_OWNER_BOUNDARY_V1",
+  "workpackage_id": "M10_PRODUCTIVE_PARAMETER_LINEAGE_CLOSURE_V1",
+  "slice": "A_EXPLICIT_PRODUCTIVE_AUTHORIZATION_V1",
+  "bound_origin_main_sha": "590256130cd9b2fa08fc6c115010686a48c3d4b8",
+  "normative_spec": "docs/ops/specs/EXPLICIT_PRODUCTIVE_AUTHORIZATION_NORMATIVE_V1.md",
+  "owner_authorization_record_schema_version": "explicit_productive_authorization_owner_input/v1",
+  "allowed_owner_authorization_ids": [
+    "explicit_productive_authorization_m9_owner_input/v1"
+  ],
+  "allowed_productive_target_ids": [
+    "peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds/v1"
+  ],
+  "authorization_implies_threshold_value_ratification": false,
+  "authorization_implies_governed_productive_configuration": false,
+  "authorization_implies_policy_mutation": false,
+  "authorization_implies_enforcement": false,
+  "authorization_implies_productive_apply": false,
+  "admission_implies_authorization": false,
+  "optimization_can_issue_authorization": false,
+  "external_effect_authorized": false
+}

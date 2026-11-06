@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "required_contexts": [
+    "missing-check-context"
+  ],
+  "ignored_contexts": [],
+  "notes": "Test config for missing context case"
+}

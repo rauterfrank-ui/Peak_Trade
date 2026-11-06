@@ -1,0 +1,54 @@
+[
+  {
+    "command": [
+      "rg",
+      "-n",
+      "ddo_n_bars_economic_score|apply_learning_state_feedback_to_next_cycle_v1",
+      "src",
+      "scripts",
+      "--glob",
+      "*.py"
+    ],
+    "limits": "Literal-symbol search in tracked source/script space, not global dynamic/external caller absence.",
+    "output": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py:29:    apply_learning_state_feedback_to_next_cycle_v1,\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py:513:    ddo_n_bars_economic_score: Optional[str] = None\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py:1509:    apply_learning_state_feedback_to_next_cycle_v1(state)\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py:1988:            economic_score=state.ddo_n_bars_economic_score,\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py:2058:    ddo_n_bars_economic_score: str | None = None,\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py:2095:    state.ddo_n_bars_economic_score = ddo_n_bars_economic_score\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py:43:def apply_learning_state_feedback_to_next_cycle_v1(state: Any) -> None:\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py:54:        if getattr(state, \"ddo_n_bars_economic_score\", None) == snapshot.get(\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py:57:            state.ddo_n_bars_economic_score = \"UNKNOWN\"\nsrc/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py:62:    state.ddo_n_bars_economic_score = label\n"
+  },
+  {
+    "command": [
+      "rg",
+      "-n",
+      "calibration_result|BRIER_SCORE_V1",
+      "src",
+      "scripts",
+      "--glob",
+      "*.py"
+    ],
+    "limits": "Literal-symbol search in tracked source/script space, not global dynamic/external caller absence.",
+    "output": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:37:METHOD_BRIER_SCORE: Final[str] = \"BRIER_SCORE_V1\"\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:105:            \"calibration_result\": {},\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:135:            \"calibration_result\": {\"reason\": \"INSUFFICIENT_SUPPORT\"},\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:152:    calibration_result: dict[str, Any]\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:157:        calibration_result = _score_directional(\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:165:        calibration_result = {\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:174:        calibration_result = {\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:193:        \"calibration_result\": calibration_result,\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:230:        \"calibration_result\",\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py:247:        \"calibration_result\": raw[\"calibration_result\"],\n"
+  },
+  {
+    "command": [
+      "rg",
+      "-n",
+      "get_by_forecast_evidence_id|MiOfflineDurableEvidenceStoreV1",
+      "src",
+      "scripts",
+      "--glob",
+      "*.py"
+    ],
+    "limits": "Literal-symbol search in tracked source/script space, not global dynamic/external caller absence.",
+    "output": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_persist_v1.py:13:    MiOfflineDurableEvidenceStoreV1,\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_persist_v1.py:38:    store = MiOfflineDurableEvidenceStoreV1(store_root)\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_persist_v1.py:52:    replay_store = MiOfflineDurableEvidenceStoreV1(store_root)\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_store_v1.py:23:class MiOfflineDurableEvidenceStoreV1:\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_store_v1.py:64:    def get_by_forecast_evidence_id(self, forecast_evidence_id: str) -> Mapping[str, Any] | None:\n"
+  },
+  {
+    "command": [
+      "rg",
+      "-n",
+      "MiLearningEvidenceStoreV1",
+      "src",
+      "scripts",
+      "--glob",
+      "*.py"
+    ],
+    "limits": "Literal-symbol search in tracked source/script space, not global dynamic/external caller absence.",
+    "output": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py:10:    MiLearningEvidenceStoreV1,\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py:38:    store = MiLearningEvidenceStoreV1(store_root)\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py:77:    replay_store = MiLearningEvidenceStoreV1(store_root)\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_store_v1.py:23:class MiLearningEvidenceStoreV1:\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py:43:    MiLearningEvidenceStoreV1,\nsrc/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py:239:    store = MiLearningEvidenceStoreV1(store_root)\n"
+  }
+]

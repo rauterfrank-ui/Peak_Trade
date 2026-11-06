@@ -1,0 +1,31 @@
+{
+  "consumers": {
+    "legacy_BacktestEngine": {
+      "binding_site": "src/backtest/mv2_research_wiring_v1.py (use_execution_pipeline=False x2)",
+      "capabilities": {
+        "long_close": true,
+        "long_open": true,
+        "short_close": false,
+        "short_open": false
+      },
+      "selected_on_mv2_path": true
+    },
+    "pipeline_BacktestEngine": {
+      "binding_site": "UNBOUND (engine default True; wiring never selects)",
+      "capabilities": {
+        "long_close": true,
+        "long_open": true,
+        "short_close": true,
+        "short_open": true
+      },
+      "proof_scenario": "S12/S15/S17",
+      "selected_on_mv2_path": false
+    }
+  },
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "upstream_short_support": {
+    "capability_gate_before_dispatch": false,
+    "map_enter_short_to_minus_one": true,
+    "master_v2_enter_short": true
+  }
+}

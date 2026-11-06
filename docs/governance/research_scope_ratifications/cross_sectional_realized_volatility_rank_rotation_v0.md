@@ -1,0 +1,35 @@
+# Realized Volatility Rank Rotation v0 — Scope Ratification
+
+VERDICT=CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_PASS
+PROCESS_CLASSIFICATION=VERSIONED_OFFLINE_ONLY_RESEARCH_SCOPE_RATIFICATION_NO_EVAL
+SCOPE_CLASSIFICATION=CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_NO_EVAL_NO_RUNTIME_AUTHORITY_V0
+GO_TOKEN_CONSUMPTION=CONSUMED_ONCE
+
+BASE_HEAD=f64ef5eabc30cb39fcd7811c5e22ee8a51df4050
+ORIGIN_MAIN=f64ef5eabc30cb39fcd7811c5e22ee8a51df4050
+WORKTREE_STATUS=?? .python-version
+STRATEGY_ID=cross_sectional_realized_volatility_rank_rotation
+STRATEGY_VERSION=v0
+
+Selected scope boundary:
+cross_sectional_realized_volatility_rank_rotation/v0
+
+Material difference:
+- realized volatility rank signal family
+- volatility dispersion rotation
+- panel OHLCV realized volatility
+- cross-sectional rank single-slot rotation
+- low-vol long / high-vol short
+- non-Bitcoin perpetual panel volatility rank
+
+Reuse-first decision:
+REUSE_PIT_CROSS_SECTIONAL_PANEL_DATASET_AND_RELATIVE_STRENGTH_RANKING_SEMANTICS_PATTERN_WITH_NARROW_REALIZED_VOL_FEATURE_ADAPTER_ONLY
+
+Excluded failed bindings:
+- trend_following/v1
+- bollinger_bands/v1
+- momentum_1h/v1
+
+EVALUATION_EXECUTED=false
+RUNTIME_AUTHORITY_TOUCHED=false
+PROMOTION_GRANTED=false

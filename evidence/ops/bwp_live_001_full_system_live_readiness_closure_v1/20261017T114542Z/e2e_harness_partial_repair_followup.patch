@@ -1,0 +1,49 @@
+diff --git a/tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py b/tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py
+index f33eec480..0166e8ebe 100644
+--- a/tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py
++++ b/tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py
+@@ -136,7 +136,7 @@ def prepare_offline_owner_authorization_for_one_shot_v1(
+     )
+     pretrade_id = str(closure.common_epoch_id or "offline-e2e")
+     native_id = str(bound.venue_native_id or _TEST_INST)
+-    atomic = state_root / "atomic" / "pilot_guard"
++    atomic = one_shot_root / "atomic" / "pilot_guard"
+     pilot_bind = enforce_pilot_capital_guard_before_enter_post_v1(
+         pilot_capital_guard_bind_go=OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1,
+         envelope=envelope,
+@@ -196,6 +196,8 @@ class _InstrumentAwarePilotReadTransport(PilotGuardReadTransport):
+         self._avail_eq = avail_eq
+         self._open_orders = False
+         self._balance_ccy = "USDC"
++        self._rr_payloads = None
++        self.get_cache_policies: list[str | None] = []
+         self._inst_family = str(native_inst_id).split("-")[0] + "-USDT"
+         tiers_raw = encode_fixture_position_tiers_payload_v1(
+             inst_family=self._inst_family,
+diff --git a/tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py b/tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py
+index b3bd4aaaf..8ce79cd84 100644
+--- a/tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py
++++ b/tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py
+@@ -72,12 +72,22 @@ from tests.ops.test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v
+     _order_row_join,
+     _origin_main,
+ )
++from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
+ from tests.ops.test_full_core_exchange_reconciliation_v1 import CL
+ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_offline_provider_v1 import (
+     OfflineExchangeFixtureV1,
+ )
+ 
+ 
++@pytest.fixture(autouse=True)
++def _active_kill_switch_state(
++    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
++) -> None:
++    activate_isolated_kill_switch_state_v1(
++        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
++    )
++
++
+ @pytest.fixture(autouse=True)
+ def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
+     def _boom(*_args: Any, **_kwargs: Any) -> None:

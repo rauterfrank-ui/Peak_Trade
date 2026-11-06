@@ -1,0 +1,25 @@
+{
+  "source_checkpoint": "e7e603e35b9e879ffe265bf9661b755d039031ec",
+  "reason": "RAW_OBSIDIAN_SOURCE_TEXT_IS_NOT_ACTIVE_REPOSITORY_MARKDOWN",
+  "original_source_bytes_modified": false,
+  "storage_moves": [
+    {
+      "original_storage": "vault-before/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md",
+      "inert_storage": "vault-before/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt",
+      "sha256": "02b6b260782e16c4fd7a02c11ac61879509aeb7355fa54a3acad5b52bcc9c127",
+      "bytes_unchanged": true
+    },
+    {
+      "original_storage": "vault-before/system/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md",
+      "inert_storage": "vault-before/system/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt",
+      "sha256": "588bbcb9067449141fd7ea48d57c14fc456a0132ba88a4ce69ceeac26db5edb7",
+      "bytes_unchanged": true
+    },
+    {
+      "original_storage": "vault-before/plan/00 Einstieg/Repo und Erkenntnisstand 2026-11-06.md",
+      "inert_storage": "vault-before/plan/00 Einstieg/Repo und Erkenntnisstand 2026-11-06.md.txt",
+      "sha256": "5bc0d65842e0a78644d3b865ee27f4fa31c3c924144bd3ab06725eb2afedfaa2",
+      "bytes_unchanged": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "artifact_class": "M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_DECISION_V1",
+  "workpackage_id": "M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_V1",
+  "bound_origin_main_sha": "798bb481c60f619cec34ee8f408626725921e544",
+  "normative_spec": "docs/ops/specs/M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_NORMATIVE_V1.md",
+  "owner_boundary_config": "config/governance/m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1_owner_boundary_v1.json",
+  "authorization_contract_id": "peak_trade.governance.m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection.v1",
+  "predecessor_capability": "M10_RUNTIME_SEAM_RESEARCH_JOIN_RECONCILIATION_CLOSED",
+  "research_execution_owner": "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1",
+  "selection_boundary_owner": "governance.m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1",
+  "numeric_threshold_ratification_authority": "NONE",
+  "parameter_promotion_authority": "NONE",
+  "enforcement_authority": "NONE",
+  "productive_configuration_authority": "NONE",
+  "optimization_direct_productive_write": "FORBIDDEN",
+  "external_effect_authorized": false
+}

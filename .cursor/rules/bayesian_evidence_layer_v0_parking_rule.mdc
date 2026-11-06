@@ -1,0 +1,25 @@
+---
+description: Bayesian Evidence Layer v0 nur bei natürlichem kleinen offline/read-only Einstieg erneut ansprechen
+globs: []
+alwaysApply: false
+---
+
+# Bayesian Evidence Layer v0 — Parking Rule
+
+Behandle Bayesian Evidence Layer v0 als geparkte Option.
+
+Bringe das Thema nur dann wieder aktiv ins Spiel, wenn in einer Planungs- oder Slice-Runde ein kleiner, additiver Einstieg natürlich sichtbar wird, der:
+- offline/read-only Evidence oder Read-Model bleibt
+- keine Kernpfade von Training, Execution, Risk oder Go/No-Go verändert
+- keine Live- oder Auto-Retraining-Kopplung benötigt
+- ohne versteckte Selbstlern-/Feedback-Schleifen auskommt
+- Paper-/Shadow-/Test-Stabilität nicht gefährdet
+
+Bis dahin:
+- Thema nicht aktiv treiben
+- keine impliziten Vorbereitungen in Kernpfaden vorschlagen
+- keine invasive Architekturarbeit daraus ableiten
+
+Wenn die Bedingungen erfüllt sind, gib genau diesen Hinweis:
+
+Hinweis: Jetzt wäre ein guter Zeitpunkt, den Bayesian Evidence Layer v0 als kleinen, additiven offline/read-only Evidence-Slice zu planen, weil der aktuelle Systemkontext dafür eine risikoarme Integrationsgrenze bietet.

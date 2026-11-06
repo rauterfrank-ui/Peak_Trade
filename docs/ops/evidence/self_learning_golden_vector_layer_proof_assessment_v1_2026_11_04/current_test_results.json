@@ -1,0 +1,33 @@
+{
+  "scope": "Current controlled existing tests only; not reproduction of original Sep30 environment, natural-data study or whole-system certification.",
+  "source_commit": "de0ddf2661274e5f0008dbe40ef88a81b80e1885",
+  "suites": [
+    {
+      "errors": 0,
+      "failures": 0,
+      "sha256": "ec6b76428cf81e4b33bfc43d372c22ddc40f2aafebabae18978f4af304bcf6ed",
+      "test_classes": {
+        "tests.learning.test_ddo_capture_productive_join_v1": 10,
+        "tests.learning.test_ddo_double_play_producer_function_replay_v1": 26,
+        "tests.learning.test_ddo_double_play_semantic_replay_parity_v1": 21,
+        "tests.learning.test_ddo_evaluation_runtime_productive_join_v1": 10,
+        "tests.learning.test_learning_evidence_export_v1": 2
+      },
+      "tests": 69,
+      "xml": "front_layers_tests.xml"
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "sha256": "5822f2295c3ad415492aa629511ef59fd27e9ea41e210e379eba7a8913cda5db",
+      "test_classes": {
+        "tests.learning.test_deterministic_decision_outcome_control_plane_v0": 16,
+        "tests.learning.test_deterministic_decision_outcome_learning_validation_shadow_v0": 26,
+        "tests.learning.test_deterministic_decision_outcome_owner_bindings_and_drift_v0": 17
+      },
+      "tests": 59,
+      "xml": "later_layers_tests.xml"
+    }
+  ],
+  "total": 128
+}

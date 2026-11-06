@@ -1,0 +1,45 @@
+{
+  "source_commit": "b392c2df7dd5672a3c1de07ad3385c446cc52dfa",
+  "tests": "No new product test run. Four reconstructed historical programs syntax-parsed, never executed.31 source requirement IDs parsed and unique. Prior bounded128-test mechanism evidence reused only after checking all retained source hashes. Documentation, provenance, implementation freeze and protected hashes checked separately.",
+  "ruff_status": "NOT_APPLICABLE_DOCUMENTATION_AND_INERT_SOURCE_SNAPSHOTS_ONLY",
+  "runtime_activation_authorized": false,
+  "boundaries": [
+    "No claim of fully useful or natural self-learning universe.24 resolved questions retain exact distinct source/runtime/usefulness limits.",
+    "Original generated manifests and historical BWP5 output ledger bytes not recovered; reconstructed program inputs are a different evidence class.",
+    "No next measured native experiment for the same feedback Search identity established; no implicit parameter-name mapping.",
+    "No authenticated complete Loop A label/knowledge-time to later numerical consumer improvement chain, no Loop C incremental feature benefit proof.",
+    "No product/test/config/script/policy edits; Scope and original ledger unchanged; U04/GAP-0370 deferred; no services, natural market run, activation, orders, push or external-source writes."
+  ],
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/self_learning_reconstruction_resolution_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 251,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_DOCUMENTATION_AND_INERT_SOURCE_SNAPSHOTS_ONLY",
+    "atlas_structure_generated_drift": "PASS"
+  },
+  "validation": {
+    "resolution_questions": 24,
+    "unique_source_requirements": 31,
+    "historical_program_syntax": "4 PASS; none executed",
+    "copied_artifact_hashes": "PASS",
+    "referenced_evidence_packages": "ALL_PRESENT",
+    "implementation_vs_source_commit": "UNCHANGED_src_tests_config_scripts",
+    "scope_sha256": "PASS",
+    "protected_ledger_sha256": "PASS",
+    "canvas_typescript": "NO_ERRORS",
+    "canvas_visual_render": "NOT_PERFORMED",
+    "documentation_checks": "5 Markdown files;251 references;PASS",
+    "atlas_validation": "PASS",
+    "new_product_tests": "NONE; bounded prior results source-bound and reused"
+  }
+}

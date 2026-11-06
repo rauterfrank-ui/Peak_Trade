@@ -1,0 +1,14 @@
+{
+  "init_root_01": "CLOSED",
+  "root_divergences_total": 0,
+  "prior_root": "INIT_ROOT_01_WP3_CMC_STATIC_MARK_L3_INCOMPATIBLE",
+  "fix": "_layered_core_initialization_observations_v1 uses finalized_closes grid",
+  "cmc_binding_semantics": "PRESERVED",
+  "addressing_join_root_cause": false,
+  "edges": [
+    ["LIVE_COLD_S7", "FINALIZED_CLOSES_INIT_OBS"],
+    ["FINALIZED_CLOSES_INIT_OBS", "L3_DIRECTIONAL_WHEN_MARKET_MOVES"],
+    ["L3_DIRECTIONAL_WHEN_MARKET_MOVES", "INITIALIZED_OR_NEUTRAL_POLICY"],
+    ["INITIALIZED_OR_NEUTRAL_POLICY", "S7_COMPOSE_OK"]
+  ]
+}

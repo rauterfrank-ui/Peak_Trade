@@ -1,0 +1,114 @@
+[
+  {
+    "body": "## Summary\n- Adds Phase 1 Canonical Experiment Identity v1 as a deterministic, immutable research-metadata contract.\n- Extends Package N identity only as an explicit incomplete historical projection; existing Package N hashes are not reinterpreted.\n- Fail-closed for missing fee/slippage/funding/dataset/risk/split/seed bindings, dirty trees, and secret fields. No runtime, live, order, funding, canary, or config-write authority.\n\n## Test plan\n- [x] `tests/experiments/test_canonical_experiment_identity_v1.py` (determinism, mutation, ordering, missing inputs, cost decomposition, lineage, secrets, dirty-tree, Package N compatibility, authority boundary)\n- [x] Package N identity tests (`tests/experiments/test_experiment_identity_manifest_v1.py`, `tests/scripts/test_run_experiment_identity_manifest_v1.py`)\n- [x] Existing experiment/sweep/lineage regression tests\n- [x] Ruff format/check on changed Python files\n- [x] Pyright on affected identity files\n- Merge requires a separate `OWNER_MERGE_GO`.\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5928",
+    "merge_commit_sha": "ecbe5b7b4f8a71d3a81443a65949fcce6a5de350",
+    "merged_at": "2026-08-17T17:55:28Z",
+    "number": 5928,
+    "title": "research: add canonical experiment identity v1"
+  },
+  {
+    "body": "## Summary\n- Adds Phase 2 Immutable Experiment Memory v1 as an append-only, digest-verifiable research-evidence store.\n- Reuses the Phase 1 Canonical Experiment Identity in full, including trading-decision-core digests; identical replay is idempotent and divergent duplicates fail closed.\n- No runtime, live-config, promotion, order, funding, risk, or leverage authority. Disposition labels do not authorize live.\n\n## Test plan\n- [x] `tests/experiments/test_canonical_experiment_memory_v1.py` (record correctness, identity/core-digest round-trip, immutability, lineage, atomic write, NaN/Inf, path traversal, authority boundary)\n- [x] Phase 1 identity + Package N identity + learning-loop bridge/emitter regression\n- [x] PR_BOUNDED_FULL selector targets (`tests/ci/*` contracts + smoke)\n- [x] `ruff format --check`, `ruff check`\n- [x] Docs token policy + docs-reference-targets (pre-existing unrelated missing target on origin/main unchanged)\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5929",
+    "merge_commit_sha": "e10f32f56fad0576cd250958401d13f044c5920d",
+    "merged_at": "2026-08-17T18:38:47Z",
+    "number": 5929,
+    "title": "research: add immutable experiment memory v1"
+  },
+  {
+    "body": "## Summary\n- Add Phase 3 Canonical Failure Memory: append-only rejected-hypothesis records bound to Phase 1 experiment identity and Phase 2 `REJECTED_*` tokens.\n- Duplicate detection uses a derived `hypothesis_fingerprint` (identity, hypothesis, parameter region, regime, robustness policy). Duplicates warn/annotate/deprioritize; they never automatic-ban research.\n- No runtime, live-config, promotion, order, funding, risk, leverage, or trading authority.\n\n## Test plan\n- [x] `pytest tests/experiments/test_canonical_failure_memory_v1.py tests/experiments/test_canonical_experiment_memory_v1.py tests/experiments/test_canonical_experiment_identity_v1.py tests/experiments/test_experiment_identity_manifest_v1.py`\n- [x] `ruff check` / `ruff format --check` on the new Python files\n- [x] docs token policy preflight vs `origin/main`\n- [ ] GitHub required checks on this PR\n\nMERGE=false. Requires separate OWNER_MERGE_GO.\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5930",
+    "merge_commit_sha": "e763bf1bf133afab1c3850a6bbaafde6f83e39d2",
+    "merged_at": "2026-08-17T19:12:08Z",
+    "number": 5930,
+    "title": "research: add canonical failure memory v1"
+  },
+  {
+    "body": "## Summary\n- Add Phase 4 Canonical Robustness Suite: one versioned, deterministic, research-only entry contract that produces robustness evidence bound to Phase 1 experiment identity and Phase 2 `experiment_id`.\n- Catalog covers the required split/OOS, Monte Carlo, cost, crash, data-quality, regime, risk, and multiple-testing checks. Missing capabilities are explicit `BLOCKED_MISSING_CAPABILITY` / `NOT_EVALUATED` — never a silent PASS. Advanced statistical controls (DSR, PSR, PBO, CPCV, White, SPA) are deferred with reasons, not stubbed.\n- Failed gates can be projected into existing Phase 3 Failure Memory (`REJECTED_*`). `BEST_SHARPE => PROMOTE` is forbidden. No runtime, live-config, promotion, order, funding, canary, or trading authority.\n\n## Test plan\n- [x] `pytest tests/experiments/test_canonical_robustness_suite_v1.py tests/experiments/test_canonical_failure_memory_v1.py tests/experiments/test_canonical_experiment_memory_v1.py tests/experiments/test_canonical_experiment_identity_v1.py tests/test_monte_carlo_robustness.py tests/test_stress_tests.py`\n- [x] Path-equivalent `PR_BOUNDED_FULL` selector targets (729 passed)\n- [x] `ruff check` / `ruff format --check` on the new Python files\n- [x] docs token policy and docs-reference-targets vs `origin/main` (`--changed`)\n- [ ] GitHub required checks on this PR\n\nMERGE=false. Requires separate OWNER_MERGE_GO.\nPHASE_5_STARTED=false.\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5931",
+    "merge_commit_sha": "2cd8f6b6e1c8051decb3506abc3a2250b4f228c5",
+    "merged_at": "2026-08-17T19:39:35Z",
+    "number": 5931,
+    "title": "research: add canonical robustness suite v1"
+  },
+  {
+    "body": "## Summary\n- Adds the Phase 5 Canonical Comparison SSOT so experiments may be compared or ranked only when dataset, split, fee, slippage, funding, risk, portfolio, robustness version, metric definitions, time horizon, and market universe are identical or covered by an explicit versioned compatibility contract.\n- Reuses Phase 1 Canonical Experiment Identity and Phase 2 `experiment_id`. Does not extend the learning-loop promotion comparison SSOT, does not invent a second identity/robustness truth, and does not implement champion-challenger.\n- Missing or unknown Pflicht-Dimensionen fail closed to `COMPARISON_REJECTED`. Non-comparable candidates cannot be ranked. No live-config, promotion, funding, order, canary, or authority-surface change.\n\n## Test plan\n- [x] `uv run python -m pytest tests/experiments/test_canonical_comparison_ssot_v1.py -q`\n- [x] Phase 1/2 boundary: `tests/experiments/test_canonical_experiment_identity_v1.py` + `tests/experiments/test_canonical_experiment_memory_v1.py`\n- [x] Selector `PR_BOUNDED_FULL` path-equivalent targets (729 passed)\n- [x] `ruff format --check` / `ruff check` on touched Python\n- [x] Docs token policy + docs reference targets on the new spec\n- [ ] GitHub required checks on this PR\n- [ ] Do not merge without separate `OWNER_MERGE_GO`\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5932",
+    "merge_commit_sha": "e1efa56f2bde5fefd48c62260c1f720d99138e71",
+    "merged_at": "2026-08-17T19:59:59Z",
+    "number": 5932,
+    "title": "research: add canonical comparison SSOT v1"
+  },
+  {
+    "body": "## Summary\n- Adds the Phase 6 Canonical Champion-Challenger research contract. Champion and Challengers are Phase-1/2 experiment identities; comparability and subset ranking are delegated to the Phase 5 Comparison SSOT.\n- Incomparable Challengers receive `REJECTED_COMPARABILITY` and are excluded from ranking. A Challenger may be `CHALLENGER_RESEARCH_PREFERRED` without swapping the Champion. No live-config, promotion-apply, risk, leverage, funding, order, canary, or authority-surface change.\n- Does not implement Phase 7 Reality Gap Store.\n\n## Test plan\n- [x] `uv run python -m pytest tests/experiments/test_canonical_champion_challenger_v1.py -q`\n- [x] Phase 1–5 regression: identity, memory, failure memory, robustness, comparison SSOT\n- [x] Selector `PR_BOUNDED_FULL` path-equivalent targets (729 passed)\n- [x] `ruff format --check` / `ruff check` on touched Python\n- [x] Docs token policy + docs reference targets on the new spec\n- [ ] GitHub required checks on this PR\n- [ ] Do not merge without separate `OWNER_MERGE_GO`\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5933",
+    "merge_commit_sha": "bc97d43f715305c8b70eb84ddd12fd718f8460a6",
+    "merged_at": "2026-08-17T20:14:00Z",
+    "number": 5933,
+    "title": "research: add canonical champion-challenger v1"
+  },
+  {
+    "body": "## Summary\n- Adds the Phase 7 Canonical Reality Gap Store. Expected-versus-observed research measurements are bound to the Phase 1 experiment identity and Phase 2 `experiment_id`; cost dimensions reuse the identity fee/slippage/funding digests.\n- Exceeding an explicit threshold reuses the Phase 2/3 token `REJECTED_REALITY_GAP` / `REALITY_GAP_GATE`. The store does not append Failure Memory, rank candidates, swap a Champion, or authorize SHADOW/PAPER_EXCHANGE/TESTNET/LIVE.\n- Does not implement Phase 8 Regime-Aware Evaluation. No live-config, promotion-apply, risk, leverage, funding, order, canary, or authority-surface change.\n\n## Test plan\n- [x] `uv run python -m pytest tests/experiments/test_canonical_reality_gap_store_v1.py -q`\n- [x] Phase 1–6 regression: identity, memory, failure memory, robustness, comparison SSOT, champion-challenger\n- [x] Selector `PR_BOUNDED_FULL` (`category_central_src_requires_full`) plus bounded CI contract targets\n- [x] `ruff format --check` / `ruff check` on the new files\n- [x] Docs token policy and docs reference targets on the new spec\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5934",
+    "merge_commit_sha": "defa59f12813b961d6edce11c7ead91c6e369950",
+    "merged_at": "2026-08-17T20:35:15Z",
+    "number": 5934,
+    "title": "research: add canonical reality-gap store v1"
+  },
+  {
+    "body": "## Summary\n- Adds Self-Learning Phase 8 Canonical Regime-Aware Evaluation: per-regime research metrics, an explicit research/runtime mapping contract, lookahead-blocked canonical core-logic attribution, and Bull/Bear decision quality evidence.\n- Reuses Phase 1 identity, Phase 2 `experiment_id`, and Phase 4 metric/robustness tokens. Does not duplicate comparison SSOT, champion-challenger, reality-gap, runtime regime selection, or trading-core logic.\n- Preserves `SELF_LEARNING != SELF_AUTHORIZING`: no live/testnet/order/funding/canary/promotion/config-write authority and no Phase 9 Portfolio Learning.\n\n## Test plan\n- [x] `uv run python -m pytest tests/experiments/test_canonical_regime_aware_evaluation_v1.py`\n- [x] Reuse regression: identity, robustness suite, reality-gap store\n- [x] Selector `PR_BOUNDED_FULL` targets (729 passed)\n- [x] ruff format/check, docs token policy, docs reference targets\n- [ ] GitHub required checks on this PR\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5935",
+    "merge_commit_sha": "4fa4086ba6a96b0cec18d8171da70b1d1d8099d9",
+    "merged_at": "2026-08-18T05:42:27Z",
+    "number": 5935,
+    "title": "research: add canonical regime-aware evaluation v1"
+  },
+  {
+    "body": "## Summary\n- Adds Self-Learning Phase 9 Canonical Portfolio Learning: a research-only evaluation of multi-member portfolios that keeps strategy-layer quality separate from portfolio-layer evidence (correlation, covariance, diversification, concentration, marginal risk, risk contribution, drawdown, turnover, capacity, allocation stability).\n- Reuses Phase 1 identity, Phase 2 `experiment_id`, Phase 3 `REJECTED_COMPARABILITY`, Phase 4 metric/robustness tokens, and Phase 5 Comparison SSOT. A strong isolated strategy is never an automatic portfolio component. No second comparability SSOT, no optimizer, no allocation apply.\n- Preserves `SELF_LEARNING != SELF_AUTHORIZING`: no live/testnet/order/funding/canary/promotion/config-write authority and no Phase 10 Automated Offline Research Loop.\n\n## Test plan\n- [x] `uv run python -m pytest tests/experiments/test_canonical_portfolio_learning_v1.py`\n- [x] Reuse regression: identity, experiment memory, comparison SSOT, champion-challenger, reality-gap, regime-aware evaluation\n- [x] Selector `PR_BOUNDED_FULL` targets (729 passed)\n- [x] ruff format/check, docs token policy, docs reference targets\n- [ ] GitHub required checks on this PR\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5937",
+    "merge_commit_sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+    "merged_at": "2026-08-18T12:37:26Z",
+    "number": 5937,
+    "title": "research: add canonical portfolio learning v1"
+  },
+  {
+    "body": "## Summary\n- Adds Self-Learning Phase 10 Canonical Automated Offline Research Loop: a research-only orchestrator for hypothesis selection, identity preparation, offline experiment binding, robustness, comparability, challenger report, failure-memory update, reality-gap report, and metadata aggregation.\n- Reuses Phase 1–7 owners. Does not replace identity, memory, robustness, comparison, champion-challenger, or reality-gap truth. Phase 8/9 are not loop steps. No second SSOT, no Champion swap, no optimizer.\n- Preserves `SELF_LEARNING != SELF_AUTHORIZING`: `AUTOMATED_OFFLINE_RESEARCH_LOOP=true` and `AUTOMATED_RUNTIME_AUTHORITY=false`. No live/testnet/order/funding/canary/promotion/config-write authority.\n\n## Test plan\n- [x] `uv run python -m pytest tests/experiments/test_canonical_automated_offline_research_loop_v1.py`\n- [x] Selector `PR_BOUNDED_FULL` (`category_central_src_requires_full`) path-equivalent targets (729 passed, 36s)\n- [x] ruff format/check, docs token policy, docs reference targets\n- [ ] GitHub required checks on this PR\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5938",
+    "merge_commit_sha": "7c36858bb6b9ed036bba901170d370b61a805110",
+    "merged_at": "2026-08-18T13:12:30Z",
+    "number": 5938,
+    "title": "research: add canonical automated offline research loop v1"
+  },
+  {
+    "body": "## Summary\n- Adds Self-Learning Phase 11 Canonical Meta-Learning: a research-only, lineage-bound contract that analyzes existing Phase 1–7 evidence for OOS survival, repeated overfit, false-positive search spaces, robustness/reality-gap association, metric predictive association, cost-model underestimation, recurring failure modes, parameter instability, hypothesis-kind quality, and research-path information gain.\n- Reuses Phase 1 identity, Phase 2 experiment_id, Phase 3 failure records, Phase 4 metric/robustness tokens, Phase 5 comparability, and Phase 7 reality-gap records. Does not create a second identity, comparison, promotion, or ranking authority. Phase 6/8/9/10 are not ranking or execution surfaces here. Phase 12 is not started.\n- Preserves `SELF_LEARNING != SELF_AUTHORIZING` and `META_LEARNING_AUTHORITY=RESEARCH_ONLY`. Missing or incomparable evidence fails closed. Correlation is not treated as causality. Small samples cannot emit strong predictive claims. No live/testnet/order/funding/canary/promotion/config-write authority and no historical-record mutation.\n\n## Test plan\n- [x] `.venv/bin/python -m pytest tests/experiments/test_canonical_meta_learning_v1.py`\n- [x] Related Phase 3/5/7/10 contract tests (56 passed)\n- [x] Selector `PR_BOUNDED_FULL` (`category_central_src_requires_full`) path-equivalent targets plus Phase 11 tests (743 passed, 36.58s)\n- [x] ruff format/check, docs token policy, docs reference targets\n- [ ] GitHub required checks on this PR\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5939",
+    "merge_commit_sha": "fc059d1285be55e433a9ca59e89ce187e7a4b363",
+    "merged_at": "2026-08-18T13:38:34Z",
+    "number": 5939,
+    "title": "research: add canonical meta-learning v1"
+  },
+  {
+    "body": "## Summary\n- Adds Self-Learning Phase 12 Canonical Advanced Search: a research-only contract that enumerates a declared discrete search space, binds every candidate to Canonical Experiment Identity, consults Failure Memory / Reality Gap / Meta-Learning signals, and emits research candidates plus offline-experiment requests.\n- Implements exactly one search mechanism, `BOUNDED_DETERMINISTIC_CONSTRAINED_REGION_SEARCH`. Bayesian/Optuna/evolutionary/ML/agentic/RL tokens fail closed as unsupported. Search score is not Champion–Challenger ranking. `BEST_SHARPE != AUTO_WINNER`.\n- Reuses Phase 1 identity, Phase 2 experiment_id, Phase 3 fingerprint/duplicate assessment, Phase 4 robustness tokens, Phase 7 gap records, Phase 10 as request target (not executor), and Phase 11 research proposals as priority signals. Does not create a second identity, comparison, robustness, ranking, or promotion authority. No live/testnet/order/funding/canary/confirm-token/config-write authority. Phase 13 is not started.\n\n## Test plan\n- [x] `uv run pytest tests/experiments/test_canonical_advanced_search_v1.py`\n- [x] Related Phase 11 contract tests (`tests/experiments/test_canonical_meta_learning_v1.py`)\n- [x] Selector `PR_BOUNDED_FULL` (`category_central_src_requires_full`) path-equivalent targets (729 passed, 36.55s)\n- [x] ruff format/check, docs token policy, docs reference targets\n- [ ] GitHub required checks on this PR\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5940",
+    "merge_commit_sha": "899e154d1bb095227c13690943e13284fb936972",
+    "merged_at": "2026-08-18T14:04:39Z",
+    "number": 5940,
+    "title": "research: add canonical advanced search v1"
+  },
+  {
+    "body": "## Summary\n\n- Closes the adjudicated **Foundation → Optimization Universe → Optimizable Envelope → M9-A** stack on `origin/main` (boundary/learning-evidence export, universe identity, fail-closed envelope resolver, single authorized surface `VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1`, plus offline M4–M8 experiment/return chain).\n- **PR cut at first real blocker:** `F2` (`RESEARCH_BACKTEST_COST_GRID` fee/slip) is **not** included — requires separate Owner surface ratification.\n- DDO forbidden-graph fix: meta-learning evidence uses `serialization_v0`; M5/M6 return/ingest bridges live under `src/experiments`.\n\n## Authority / safety\n\n- `LEARNING_PRODUCTIVE_AUTHORITY=NONE`, `OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE`, `EXTERNAL_EFFECT_AUTHORIZED=false`\n- No trading, promotion, search join, or productive apply\n- M9: research optimization on `candidate_max_age_seconds` only; no threshold selection/enforcement\n\n## Test plan\n\n- [x] Slice tests (74) — optimization universe / envelope / M9 / M4–M8 / learning export / M6\n- [x] PR-bounded local batch (835) incl. `test_ddo_does_not_import_or_name_existing_validation_engines`\n- [x] Ruff format/check (changed Python)\n- [x] Docs token policy (9 normative specs)\n- [x] System Atlas impact: `ATLAS_IMPACT=NONE_WITH_PROOF`\n- [ ] GitHub required checks (STOP before merge)\n\n## Next (out of scope)\n\n- Owner **O1** / **F2** surface: `fee_bps` / `slippage_bps` optimizable envelope after explicit ratification\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/6635",
+    "merge_commit_sha": "25b0518b93f91a9609d70c30fb8cd3bf96401a46",
+    "merged_at": "2026-09-19T19:38:40Z",
+    "number": 6635,
+    "title": "Optimization universe: foundation → envelope → M9-A (research-only)"
+  },
+  {
+    "body": "## Summary\n- Implements canonical **Golden Vector Evaluation Fabric (GVEF) V1.5**: 16 contracts, deterministic generic runner/state machine, five domain evaluators (PTP, Ranking Universe, Optimization, Self-Learning, Market Intelligence), corpus integrity gate, canonical evidence registry, and promotion evidence adapter (handoff only).\n- **23/23** canonical components implemented or reused; **16/16** contracts covered by schema/runner tests; **182** GVEF tests pass locally (`tests/evaluation/golden_vectors/`).\n- Synthetic fixture corpus only (`config/evaluation/golden_vectors/fixture_corpus_v1/`); research evidence under `evidence/research/gvef_*` intentionally **not** committed.\n\n## Authority / safety (explicit)\n- `GVEF_TRADING_AUTHORITY=NONE`\n- `PROMOTION_GVEF_AUTHORITY=false`\n- `POST_ALLOWED=false`\n- No LIVE trading, no productive credentials, no productive writeback/apply, no PRE_EXTERNAL crossing in GVEF paths.\n- `REGISTERED` / evidence-complete ≠ promotion, deployment, or Owner-GO.\n\n## Test plan\n- [x] `./scripts/pt -m pytest tests/evaluation/golden_vectors/ -q` → 182 passed\n- [x] Ruff format/check on staged GVEF paths\n- [x] Forbidden productive dependency scan (0 violations)\n- [ ] GitHub required CI (awaiting owner adjudication)\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/7039",
+    "merge_commit_sha": "9539b55ee4e572b3a0607e97008375bccb36814e",
+    "merged_at": "2026-10-04T09:47:44Z",
+    "number": 7039,
+    "title": "GVEF V1.5 — Golden Vector Evaluation Fabric"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "schema_version": "longer_chronological_pit_sealed_lifecycle_long_panel_config.v1",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+  "production_lifecycle_source_id": "okx_production_instrument_lifecycle_historical_as_of_fail_closed.v1",
+  "inclusion_policy_version": "longer_chronological_pit_sealed_lifecycle_inclusion_policy.v1",
+  "min_history_days_policy": 365,
+  "relist_gap_hours": 168,
+  "btc_excluded": true,
+  "spot_excluded": true,
+  "frequency": "PT1H",
+  "okx_bar_param": "1H",
+  "period_start_utc": "2021-09-01T00:00:00Z",
+  "period_end_utc": "2024-09-01T00:00:00Z",
+  "universe_truth": "production_lifecycle_registry_binding_v1",
+  "sample_universe_forbidden_as_production": true,
+  "economic_gate_opened": false,
+  "promotion_eligible": false,
+  "live_authorized": false,
+  "orders": false,
+  "shadow": false,
+  "paper": false,
+  "testnet": false,
+  "notes": [
+    "Binds existing production lifecycle registry SSOT; does not invent a second universe.",
+    "Long-panel inclusion requires >=365d usable public history after lifecycle clipping.",
+    "Relist/replacement edges are excluded from the continuous long panel with explicit reasons."
+  ]
+}

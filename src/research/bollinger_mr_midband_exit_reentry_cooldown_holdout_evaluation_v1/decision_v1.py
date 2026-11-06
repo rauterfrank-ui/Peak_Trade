@@ -1,0 +1,44 @@
+"""Holdout decision helper: identical frozen V8 criteria (no retune)."""
+
+from __future__ import annotations
+
+from src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8.decision_v8 import (
+    REASON_ALL_PASS_REQUIRES_MET,
+    REASON_COST_DRAG_NOT_IMPROVED,
+    REASON_EXCESSIVE_TRADE_COUNT_REDUCTION,
+    REASON_INSUFFICIENT_TREATMENT_TRADE_COUNT,
+    REASON_MAX_DRAWDOWN_WORSENED,
+    REASON_NET_PROFIT_FACTOR_NOT_IMPROVED,
+    REASON_NET_RETURN_NOT_IMPROVED,
+    REASON_PASS_REQUIRES_NOT_MET,
+    RESULT_FAIL,
+    RESULT_INCONCLUSIVE_INFRA,
+    RESULT_INVALID_BINDING,
+    RESULT_INVALID_CONFIGS,
+    RESULT_INVALID_IDENTICAL_ARMS,
+    RESULT_INVALID_NO_EXIT,
+    RESULT_PASS,
+    decide_development_evaluation_v8,
+)
+
+decide_holdout_evaluation = decide_development_evaluation_v8
+
+__all__ = [
+    "REASON_ALL_PASS_REQUIRES_MET",
+    "REASON_COST_DRAG_NOT_IMPROVED",
+    "REASON_EXCESSIVE_TRADE_COUNT_REDUCTION",
+    "REASON_INSUFFICIENT_TREATMENT_TRADE_COUNT",
+    "REASON_MAX_DRAWDOWN_WORSENED",
+    "REASON_NET_PROFIT_FACTOR_NOT_IMPROVED",
+    "REASON_NET_RETURN_NOT_IMPROVED",
+    "REASON_PASS_REQUIRES_NOT_MET",
+    "RESULT_FAIL",
+    "RESULT_INCONCLUSIVE_INFRA",
+    "RESULT_INVALID_BINDING",
+    "RESULT_INVALID_CONFIGS",
+    "RESULT_INVALID_IDENTICAL_ARMS",
+    "RESULT_INVALID_NO_EXIT",
+    "RESULT_PASS",
+    "decide_development_evaluation_v8",
+    "decide_holdout_evaluation",
+]

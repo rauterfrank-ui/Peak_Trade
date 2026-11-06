@@ -1,0 +1,10 @@
+{
+  "BRIDGE_ORDERS_AUTHORIZED": false,
+  "BRIDGE_PAPER_AUTHORIZED": false,
+  "NETWORK_SESSION_STARTED": false,
+  "NO_LIVE_ORDER_PATH": true,
+  "NO_TESTNET_ORDER_PATH": true,
+  "ORDERS_AUTHORIZED": false,
+  "RUNTIME_BRIDGE_LIVE_ACTIVATED": false,
+  "ok": true
+}

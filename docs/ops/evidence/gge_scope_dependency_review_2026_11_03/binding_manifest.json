@@ -1,0 +1,23 @@
+{
+  "source_commit": "94f2eebc26fe378a9beaea820b09e872605b1f3e",
+  "runtime_modified": false,
+  "source_hashes": {
+    "src/trading/master_v2/golden_geometry_engine_v1.py": "d4e747d55be0eee48b104207f07340a1dfdcea0e057bc5b4af9d42ed8ad7638f",
+    "src/trading/master_v2/canonical_scope_initialization_v1.py": "8bceadf4987c393e6a9f71bf8a0d0e3130820d6437abf2aa45eec762b667ce8e",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py": "7787840fb688f0c85c93094945b257e05d44b4157637528de813165a8ea5cf5d",
+    "src/trading/master_v2/double_play_state.py": "85b3cef04b89cfbf35d58305bbf0cf29ecf5fca37a572d29d662fe0102a0a965",
+    "src/learning/deterministic_decision_outcome_v0/capture_v0.py": "02eeaf374e687d337d7da0a1a9e36adf25a09d9a30826869a464213748ff5abb",
+    "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py": "66fafc0fabbbe4f5a3b8bb792eeeefdc5a86086fa8ed749c7ac296016e9c0d1b",
+    "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py": "7f1fc3c29b9f07452635738abd3b7d64b6401db3dbdd2c30b2a6869e44b5cf47",
+    "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_layered_core_bind_wiring_v1.py": "4c3c0ee769b456c68fd87ad82a58fe4031982569e599c171b71f2762ca7b5a95"
+  },
+  "evidence_hashes": {
+    "capture_dependency_inventory.json": "095966c8827c8f6a17883cf63ac0b4c4d5c5fbb552cb584a419efc7fc35d0328",
+    "current_scale_probe.json": "d398b2b810b6fdb2bf384fcaa74f6a457592a2217aeba986a245e87a007f8662",
+    "existing_tests.xml": "ab9b3ba98ee2a2d538cde95e5089e37fb3f14f2b3c20d939b16a325ccc0efd81",
+    "learning_existing_tests.xml": "0eb5f3657b1b7ae460f7e9c0998d3309b93d78c61d4b7293b2ff62a0d23ae579",
+    "pr_7036.json": "f4aa82c31a09a9c553f98d6d1f6fa0bfc53973bc42fffb0ae621c99543fece43",
+    "pr_7064.json": "da33e5c1ba83929876689d24387afba3589098409aece30b4914dbbdf53f4fb1",
+    "pr_7090.json": "cc0b7ebc16fe14499800b35e3017b6c19019414429033401eb75d55e978236c4"
+  }
+}

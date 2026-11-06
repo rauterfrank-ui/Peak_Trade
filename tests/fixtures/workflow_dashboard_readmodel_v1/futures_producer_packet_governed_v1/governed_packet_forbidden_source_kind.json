@@ -1,0 +1,21 @@
+{
+  "schema_name": "futures_producer_packet_governed.v1",
+  "schema_version": 1,
+  "source_kind": "market_ranking_funnel_readmodel.v0",
+  "producer_id": "market_surface",
+  "generated_at": "2026-06-08T18:00:00Z",
+  "source_run_id": "governed_u2b_forbidden_funnel",
+  "source_stage": "paper",
+  "fixture_only": false,
+  "observability_truth_allowed": false,
+  "non_authorizing": true,
+  "real_metadata_source_marked": true,
+  "metadata_table_ref": "__METADATA_TABLE_REF__",
+  "metadata_refresh_utc": "2026-06-08T18:00:00Z",
+  "evidence_links": ["__EVIDENCE_LINK__"],
+  "selected_candidate_id": "c-eth",
+  "universe": {"notes": "forbidden funnel upstream"},
+  "ranking": {"notes": "forbidden funnel upstream"},
+  "selected_future": {"candidate_id": "c-eth", "symbol": "ETHUSDT"},
+  "packets": []
+}

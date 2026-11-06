@@ -1,0 +1,63 @@
+{
+  "authority": "NONE",
+  "blocker_ids": [
+    "B1_GET_SHA_PIN_NOT_CURRENT",
+    "B1_ELIGIBILITY_FACT_NOT_SUPPLIED",
+    "B1_GET_CREDENTIAL_SOURCE_IS_CANARY_VAULT"
+  ],
+  "classification": "A",
+  "decision_text": "A later Owner-GO may authorize one read-only GET only after a governed rebind of EXPECTED_ORIGIN_MAIN_SHA to the then-current origin/main, an explicit choice that the credential source is the K1 keychain rather than the canary vault URI, and a governed eligibility fact. This pass does not perform that GET.",
+  "executor": {
+    "allowed_owner_go_tokens": [
+      "CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1",
+      "OWNER_GO_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1",
+      "OWNER_GO_REQUIRED_TO_PERFORM_FRESH_TRUSTED_READ_ONLY_GET_OF_DETAILS_USDC_AVAILEQ_AND_PRODUCE_29P_SIZING_VALUE_V1"
+    ],
+    "credential_input": "vault file at secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
+    "credential_is_k1_keychain": false,
+    "current_baseline_satisfies_sha_pin": false,
+    "eligibility_passed_to_producer": null,
+    "execute_get_flag_required": true,
+    "forbidden_methods": [
+      "POST",
+      "PUT",
+      "DELETE",
+      "PATCH"
+    ],
+    "function": "execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_v1",
+    "mint_authorized": false,
+    "mismatch_effect": "ORIGIN_MAIN_SHA_MISMATCH before any network call",
+    "module": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+    "post_count_pin": 0,
+    "producer_result_when_observation_exists": "ELIGIBILITY_FACT_MISSING and no minted sizing value",
+    "required_caller_sha": "389cc5f91da08d30c9ae65af05b6d9f914e8ac45"
+  },
+  "intended_source": {
+    "account_scope_constant": "856964404452495999",
+    "currency": "USDC",
+    "field": "details[ccy=USDC].availEq",
+    "freshness_max_age_seconds": 5,
+    "host": "eea.okx.com",
+    "identity_check": "observed uid must match REUSED_BINDING_ACCOUNT_SCOPE or ACCOUNT_IDENTITY_SCOPE_MISMATCH",
+    "instrument_stamp_on_observation": "SUI-USD_UM_XPERP-310404",
+    "method": "GET",
+    "not_used_as_source": [
+      "account.availEq",
+      "eq",
+      "totalEq",
+      "adjEq",
+      "availBal",
+      "cashBal",
+      "USD"
+    ],
+    "numeric_rule": "non-negative finite decimal; NaN Infinity scientific notation and empty fail closed",
+    "path": "/api/v5/account/balance",
+    "query": "forbidden",
+    "stale_rule": "age < 0 or age > max_age or max_age > 5 appends OBSERVATION_STALE",
+    "td_mode": "cross"
+  },
+  "owner_decision_required": true,
+  "path": "GET /api/v5/account/balance -> exactly one USDC details.availEq -> observation -> P01 fact -> produce() with eligibility None -> fail closed -> capital guard never receives a fresh value -> reservation not created",
+  "schema_version": "bwp_live_004_b1_template.v1",
+  "this_go_authorizes_authenticated_get": false
+}

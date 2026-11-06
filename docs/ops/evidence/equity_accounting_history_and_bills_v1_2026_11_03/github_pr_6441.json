@@ -1,0 +1,8 @@
+{
+  "number": 6441,
+  "title": "feat(full-core): persist D6 classified event-stream acquisition",
+  "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/6441",
+  "merged_at": "2026-09-13T07:06:21Z",
+  "merge_commit_sha": "f066c8d961772bfca415b9de912d812dd41ca54c",
+  "body": "## Summary\n- Persist typed classified event-stream acquisition in the existing equity-authority owner package, bound to D4 identity and the D5 checkpoint observation by reference/digest.\n- Keep completeness UNPROVEN: census found an empty ratified classified kind set and no authorized productive event-source GET seam. Absence of events is not a zero-event complete stream.\n- Fail-closed for UNKNOWN/UNCLASSIFIED, missing source, gaps, duplicates, order ambiguity, and equity mutation. No venue GET/POST, no reconstruction engine, no C17, no source mapping. D7 is not released.\n\n## Test plan\n- [x] Bounded D6 / D5 / D4 / OPTION_D / owner tests (`38 passed`)\n- [x] Repo-conform PR-bounded selector targets (`744 passed` in 37.10s)\n- [x] `ruff format --check` and `ruff check` on D6 Python\n- [x] Docs token policy and docs-reference-targets on changed Markdown\n- [ ] GitHub required checks (snapshot only; no merge)\n\n\nMade with [Cursor](https://cursor.com)"
+}

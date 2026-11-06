@@ -1,0 +1,14 @@
+{
+  "CORE_LOGIC_CHANGE": false,
+  "EXIT_END_TO_END_EVIDENCE_PROVEN": false,
+  "EXIT_INDEPENDENCE_PROVEN": true,
+  "EXIT_PATH_RUNTIME_REACHABLE": true,
+  "EXIT_POLICY_PRODUCERS_BOUND": true,
+  "PLACEHOLDER_FALSE_SIGNAL_USED_AS_UNBOUND_STUB": false,
+  "RUNTIME_ACTIVATED": false,
+  "capability_id": "CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1",
+  "evidence_digest": "094c192ea3b3cd7833a3ccd1a24fdd850201abd7c06b7df15906d5278330e67f",
+  "manifest_sha256": "cff475431aa50f9991e982bc4a4c54c6697240abc2369167437ea8af5cbfa7cf",
+  "ok": true,
+  "repository_sha": "ca2a132adc86b8551c0b87bede0427c198cf3e47"
+}

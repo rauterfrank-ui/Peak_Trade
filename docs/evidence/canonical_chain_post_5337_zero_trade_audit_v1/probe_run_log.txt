@@ -1,0 +1,13 @@
+ConfigRegistry: [strategy.*] blocks not listed in strategies.available: ['breakout_basic', 'vol_regime_basic', 'breakout', 'vol_regime_filter', 'rsi_reversion_v1', 'breakout_v1', 'composite', 'portfolio_phase40_example', 'rsi_reversion_btc_conservative', 'rsi_reversion_btc_moderate', 'rsi_reversion_btc_aggressive', 'rsi_reversion_eth_conservative', 'rsi_reversion_eth_moderate', 'rsi_reversion_eth_aggressive', 'ma_trend_btc_conservative', 'ma_trend_btc_moderate', 'ma_trend_btc_aggressive', 'trend_following_eth_conservative', 'trend_following_eth_moderate', 'trend_following_eth_aggressive', 'armstrong_cycle', 'el_karoui_vol_model']
+{"dominant_stage": "entry_exit", "member": "okx:linear_perpetual:1INCH:USDT:USDT:perp", "raw_entry": 1, "trade_count": 0}
+{"dominant_stage": null, "member": "okx:linear_perpetual:AAVE:USDT:USDT:perp", "raw_entry": 0, "trade_count": 0}
+{"dominant_stage": "composition", "member": "okx:linear_perpetual:ACH:USDT:USDT:perp", "raw_entry": 1, "trade_count": 0}
+{"dominant_stage": null, "member": "okx:linear_perpetual:ADA:USDT:USDT:perp", "raw_entry": 0, "trade_count": 0}
+{"dominant_stage": "composition", "member": "okx:linear_perpetual:AEVO:USDT:USDT:perp", "raw_entry": 4, "trade_count": 0}
+{"dominant_stage": "entry_exit", "member": "okx:linear_perpetual:AGLD:USDT:USDT:perp", "raw_entry": 1, "trade_count": 0}
+{"dominant_stage": null, "member": "okx:linear_perpetual:ALGO:USDT:USDT:perp", "raw_entry": 0, "trade_count": 0}
+{"dominant_stage": "composition", "member": "okx:linear_perpetual:APE:USDT:USDT:perp", "raw_entry": 3, "trade_count": 0}
+{
+  "ok": true,
+  "summary_path": "/private/tmp/pt_recovery_a55c4000/docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/probe_summary.json"
+}

@@ -1,0 +1,17 @@
+{
+  "parent_commit": "6dfa11eb393b461befea5e3b89548ca5f995adaa",
+  "new_additive_paths": {
+    "src/experiments/canonical_native_research_session_v1.py": "7c952bd685cea83d5e685e7fed04c1d88a4c4da6924ac3cf7e676b977b93ba0b",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py": "e068ad2802d7395c27810b65e6b29c96e8e1f5e8fbb750c7bfb6d71c2b5d87c6",
+    "tests/experiments/test_canonical_native_research_session_v1.py": "fb7838e877c1cc17f9008392795230319017060d3feffe96fb49d719da1b0569",
+    "tests/learning/test_measured_return_calibration_v1.py": "63ef7ed7a2b9338d2d6a11994dd90b6bf9ff6fa83425bb04865e4d094eece977"
+  },
+  "existing_implementations_unchanged": true,
+  "historical_executable_bytes_claim": false,
+  "construction_sources": [
+    "docs/ops/evidence/self_learning_original_layers_restoration_v1_2026_11_04/originals/self_learning_master_base.original.txt sections3.1/15/22",
+    "Existing Phase1/2/3/4/5/6/7/10/11/12 research contracts",
+    "Existing N_BARS materialization/forecast/calibration/MI durable triad owners"
+  ],
+  "source_authentication_claim": false
+}

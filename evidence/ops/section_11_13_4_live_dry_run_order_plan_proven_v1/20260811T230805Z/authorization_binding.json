@@ -1,0 +1,18 @@
+{
+  "LIVE_ARMED": false,
+  "LIVE_AUTHORIZED": false,
+  "LIVE_DRY_RUN_ORDER_PLAN_AUTHORIZED": true,
+  "LIVE_ENABLED": false,
+  "LIVE_ORDER_AUTHORIZED": false,
+  "authorization_scope": "LIVE_DRY_RUN_ORDER_PLAN",
+  "authorization_validated": true,
+  "bound_config_digest": "5fab141eae3d8c07011914e96c2217ca01312d4c9959ad8c52c602e73fc1ba02",
+  "bound_origin_main_sha": "7856761f1d3cdb7ea1eeb3d172393f2abeac72b4",
+  "owner_go": "OWNER_GO_LIVE_DRY_RUN_ORDER_PLAN",
+  "permission_attestation": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false
+  },
+  "reusable_for_later_live_stages": false
+}

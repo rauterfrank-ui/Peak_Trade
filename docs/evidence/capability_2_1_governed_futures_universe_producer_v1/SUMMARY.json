@@ -1,0 +1,84 @@
+{
+  "ACTIVATED": false,
+  "BOUND": true,
+  "CODE_EXISTS": true,
+  "MULTI_FUTURE_CLOSED": false,
+  "PERSISTED": true,
+  "RANKING_CLOSED": false,
+  "RESTART_PROVEN": true,
+  "RUNTIME_REACHABLE": true,
+  "SINGLE_SELECTED_FUTURE_CLOSED": false,
+  "alpha_allowed": false,
+  "authority_verification": {
+    "ALPHA_ALLOWED": false,
+    "ALPHA_AUTHORITY_ADDED": false,
+    "AUTHORITY_OWNER": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+    "DASHBOARD_AUTHORITY": false,
+    "EXECUTION_AUTHORITY_ADDED": false,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "OWNER": "ops.governed_futures_universe_producer_v1",
+    "PRODUCER_VERSION": "governed_futures_universe_producer.v1",
+    "RANKING_AUTHORITY_ADDED": false,
+    "SCHEMA_VERSION": "governed_futures_universe_snapshot.v1",
+    "SELECTION_AUTHORITY_ADDED": false,
+    "UNIVERSE_AUTHORITY_OWNER_SINGLE": true,
+    "VENUE": "okx_eea"
+  },
+  "capability_id": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+  "config_digest": "fd9055d2dee6a131847157c25e5416723360b3d8afdfd05ff364857c0e8f334c",
+  "dashboard_independence": true,
+  "deterministic_replay_verification": {
+    "digest": "a0053c39478f07c47149b642725c72ef7174afc5f8316e3b0ac6482bb0ed45bd",
+    "ok": true
+  },
+  "eligible_instrument_count": 2,
+  "excluded_instrument_count": 3,
+  "exclusion_counts_by_reason": {
+    "BTC_INSTRUMENT": 1,
+    "INACTIVE_OR_SUSPENDED": 1,
+    "MARKET_DATA_UNSUPPORTED": 1,
+    "MARK_PRICE_UNSUPPORTED": 1,
+    "SPOT_INSTRUMENT": 1
+  },
+  "no_alpha_proof": true,
+  "no_execution_proof": true,
+  "no_selection_proof": true,
+  "persistence_path": "docs/evidence/capability_2_1_governed_futures_universe_producer_v1/productive_universe/governed_futures_universe_snapshot_v1.json",
+  "persistence_verification": {
+    "ok": true,
+    "payload_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+    "persistence_path": "docs/evidence/capability_2_1_governed_futures_universe_producer_v1/productive_universe/governed_futures_universe_snapshot_v1.json",
+    "reloaded_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+    "snapshot_id": "gfu_evidence_cap21_v1",
+    "verification": {
+      "manifest_path": "docs/evidence/capability_2_1_governed_futures_universe_producer_v1/productive_universe/MANIFEST.sha256",
+      "ok": true
+    }
+  },
+  "producer_version": "governed_futures_universe_producer.v1",
+  "raw_instrument_count": 5,
+  "repository_sha": "02a1c65a1fe9c3c806fb846da949dfd6d864be94",
+  "restart_verification": {
+    "alpha_allowed_after_restart": false,
+    "expected_payload_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+    "failure_codes": [],
+    "identical_canonical_truth": true,
+    "loaded_payload_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+    "loaded_snapshot_id": "gfu_evidence_cap21_v1",
+    "ok": true
+  },
+  "snapshot_digest": "562deae6875f2edfae765c500314e14840a1637cf33eabcad6b99e20dd47ec6c",
+  "snapshot_id": "gfu_evidence_cap21_v1",
+  "source_digest": "18576bb24107419f67e21ac0d07c10cbed556ef3000c0bdb4f1489fc15ee5cef",
+  "universe_status": "ELIGIBLE_UNIVERSE_READY",
+  "verifier_result": {
+    "ALPHA_AUTHORITY_ADDED": false,
+    "DASHBOARD_AUTHORITY": false,
+    "EXECUTION_AUTHORITY_ADDED": false,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "RANKING_AUTHORITY_ADDED": false,
+    "SELECTION_AUTHORITY_ADDED": false,
+    "UNIVERSE_AUTHORITY_OWNER_SINGLE": true,
+    "ok": true
+  }
+}

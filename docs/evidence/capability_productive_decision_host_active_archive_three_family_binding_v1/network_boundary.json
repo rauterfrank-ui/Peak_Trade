@@ -1,0 +1,9 @@
+{
+  "allowed_hosts": [
+    "www.okx.com",
+    "okx.com"
+  ],
+  "network_session_started_in_smoke": false,
+  "private_endpoints_reachable": false,
+  "public_md_only": true
+}

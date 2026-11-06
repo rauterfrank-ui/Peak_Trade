@@ -1,0 +1,13 @@
+{
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "ba7a7a09c38b3fa1b18fad4881771fb34b87689a6e2830c4dbbf62916f5f46b9"
+    },
+    {
+      "path": "remediation_candidates.json",
+      "sha256": "2dee6ca0d65c9f30de6555000665ed360a80bedb86440b4d96f7632de84f0b97"
+    }
+  ]
+}

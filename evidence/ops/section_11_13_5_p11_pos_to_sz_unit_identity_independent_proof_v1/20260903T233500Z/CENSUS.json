@@ -1,0 +1,52 @@
+{
+  "AUTHORITY": "NONE",
+  "BOUND_ORIGIN_MAIN_SHA": "4861bd3feaa2949d62ef2c3eab435ea2d917bf05",
+  "CANARY_EXECUTION": false,
+  "DOCUMENT_CLASS": "P11_POS_TO_SZ_UNIT_IDENTITY_CENSUS_V1",
+  "DOCUMENT_ROLE": "FORENSIC_CENSUS_AUTHORITY_NONE",
+  "EARLIEST_MISSING_QTY_UNIT_PROOF": "NONE_POS_TO_SZ_UNIT_IDENTITY_PROVEN",
+  "EPISTEMIC_CLASS_COUNTS": {
+    "A": 6,
+    "B": 2,
+    "C": 1,
+    "D": 1,
+    "E": 1,
+    "H": 1
+  },
+  "FORBIDDEN_PROMOTION_ALIASES": [
+    "qty",
+    "sz",
+    "size",
+    "contracts",
+    "contract count",
+    "base",
+    "base amount",
+    "quote amount",
+    "notional",
+    "position size",
+    "contracts",
+    "VENUE_CONTRACT_COUNT",
+    "CONTRACTS_SZ",
+    "VENUE_CONTRACT_COUNT",
+    "CONTRACTS_SZ",
+    "minSz",
+    "lotSz",
+    "ctVal",
+    "ctValCcy"
+  ],
+  "GET_PERFORMED_THIS_PERSIST": false,
+  "LIVE_EXECUTION": false,
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_POS_TO_SZ_UNIT_IDENTITY_INDEPENDENT_PROOF_NO_ALIAS_PROMOTION_V1",
+  "POST_PERFORMED": false,
+  "PRIVATE_AUTH_USED": false,
+  "PUBLIC_SPEC_RETRIEVAL_PERFORMED": true,
+  "QTY_UNIT_CENSUS_COMPLETE": true,
+  "SEAM_COUNT": 12,
+  "TARGET_POSITION_QTY_PROVEN_UNITS_FOUND": [
+    "TARGET_POSITION_QTY",
+    "pos",
+    "signed_pos",
+    "sz"
+  ],
+  "THIS_SLICE": "11.13.5.P11"
+}

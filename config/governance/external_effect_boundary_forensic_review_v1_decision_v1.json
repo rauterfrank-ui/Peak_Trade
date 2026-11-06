@@ -1,0 +1,29 @@
+{
+  "workpackage_id": "EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1",
+  "owner_go": true,
+  "owner_wp_decision_config": "config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json",
+  "baseline_origin_main_sha": "7330b6cb8a3cfccca9163028cbdf13e13910088c",
+  "forensic_review_complete": true,
+  "productive_activation_authorized": true,
+  "continuous_run_authorized": true,
+  "continuous_run_module_pin_authorized": false,
+  "pre_external_reachability_implies_external_effect": false,
+  "permit_capability_implies_permit_authorization": false,
+  "consumer_reachability_implies_external_effect": false,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "wire_send_permitted_by_this_wp": false,
+  "autonomy_can_mint_permit": false,
+  "autonomy_can_post": false,
+  "credential_access_performed": false,
+  "real_keychain_access_authorized": false,
+  "earliest_unclosed_boundary": "EXTERNAL_EFFECT_AUTHORIZATION",
+  "next_genuine_blocker": "EXTERNAL_EFFECT_POLICY_OWNER_GO",
+  "normative_spec": "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
+  "bound_lineage": {
+    "continuous_run_policy_record_config": "config/governance/current_continuous_run_policy_v1_record.json",
+    "productive_activation_policy_record_config": "config/governance/current_productive_activation_policy_v1_record.json",
+    "pre_external_boundary_spec": "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md"
+  }
+}

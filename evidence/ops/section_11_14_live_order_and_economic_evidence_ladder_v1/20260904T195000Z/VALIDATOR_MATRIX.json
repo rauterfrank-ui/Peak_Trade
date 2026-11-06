@@ -1,0 +1,72 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_VALIDATOR_MATRIX_V1",
+  "accounting_only": {
+    "ACCOUNTING_ONLY": true,
+    "ADMISSIBLE_SOURCE": false,
+    "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+    "REASON": "ACCOUNTING_ONLY_IS_NOT_RESTART",
+    "artifact_role": "ACCOUNTING_VENUE_GET_NOT_RESTART_HANDOFF",
+    "claim_value": false,
+    "completeness": {
+      "COMPLETE": false,
+      "CORRUPT_POS": false,
+      "DOCUMENT_CLASS": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_V1",
+      "MISSING_FIELDS": [
+        "ordId",
+        "instId",
+        "posSide"
+      ],
+      "POS_DECIMAL": "1",
+      "REASON": "MISSING_REQUIRED_HANDOFF_FIELDS"
+    },
+    "identity": {
+      "IDENTITY_BOUND": false,
+      "NONZERO_FILL_REQUIRES_NONZERO_POS": true,
+      "NO_SILENT_REINITIALIZATION": true,
+      "REASON": "IDENTITY_MISMATCH",
+      "STALE_OR_IDENTITY_MISMATCH": true
+    },
+    "temporal": {
+      "REASON": "NO_RESTART_TIMESTAMP_PRESENT",
+      "TEMPORAL_OK": true,
+      "captured_at_utc": "",
+      "restart_at_utc": ""
+    }
+  },
+  "happy_path_not_persisted_as_live_claim": true,
+  "missing_durable_state": {
+    "ACCOUNTING_ONLY": false,
+    "ADMISSIBLE_SOURCE": false,
+    "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+    "REASON": "SOURCE_KIND_NOT_ADMISSIBLE_LIVE_HANDOFF",
+    "artifact_role": "NOT_A_RESTART_HANDOFF",
+    "claim_value": false,
+    "completeness": {
+      "COMPLETE": false,
+      "CORRUPT_POS": false,
+      "DOCUMENT_CLASS": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_V1",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POS_DECIMAL": null,
+      "REASON": "MISSING_REQUIRED_HANDOFF_FIELDS"
+    },
+    "identity": {
+      "IDENTITY_BOUND": false,
+      "NONZERO_FILL_REQUIRES_NONZERO_POS": true,
+      "NO_SILENT_REINITIALIZATION": false,
+      "REASON": "IDENTITY_MISMATCH",
+      "STALE_OR_IDENTITY_MISMATCH": false
+    },
+    "temporal": {
+      "REASON": "NO_RESTART_TIMESTAMP_PRESENT",
+      "TEMPORAL_OK": true,
+      "captured_at_utc": "",
+      "restart_at_utc": ""
+    }
+  }
+}

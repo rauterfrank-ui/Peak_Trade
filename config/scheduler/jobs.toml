@@ -1,0 +1,315 @@
+# =============================================================================
+# Peak_Trade Scheduler – Job-Konfiguration
+# =============================================================================
+# Diese Datei definiert automatisierte Jobs für den Scheduler.
+#
+# Schedule-Typen:
+#   - "once": Einmalige Ausführung
+#   - "interval": Wiederholung alle N Sekunden
+#   - "daily": Täglich zu einer festen Uhrzeit
+#
+# Wichtige Felder:
+#   - name: Eindeutiger Job-Name
+#   - command: Auszuführendes Kommando (Default: "python")
+#   - args: Argumente als Key-Value-Paare (script, strategy, etc.)
+#   - schedule_type: "once", "interval", oder "daily"
+#   - enabled: true/false (deaktivierte Jobs werden übersprungen)
+#   - tags: Tags für Filterung (--include-tags, --exclude-tags)
+# =============================================================================
+
+
+# =============================================================================
+# DAILY JOBS – Tägliche Routine
+# =============================================================================
+
+[[job]]
+name = "daily_forward_signals_btc"
+description = "Generiert tägliches Forward-Signal für BTC/EUR"
+command = "python"
+args = { script = "scripts/run_forward_signals.py", strategy = "ma_crossover", symbol = "BTC/EUR", timeframe = "1h", bars = 200, tag = "daily-forward" }
+schedule_type = "daily"
+daily_time = "07:30"
+enabled = true
+tags = ["forward", "daily", "prod"]
+timeout_seconds = 120
+
+[[job]]
+name = "daily_forward_signals_eth"
+description = "Generiert tägliches Forward-Signal für ETH/EUR"
+command = "python"
+args = { script = "scripts/run_forward_signals.py", strategy = "ma_crossover", symbol = "ETH/EUR", timeframe = "1h", bars = 200, tag = "daily-forward" }
+schedule_type = "daily"
+daily_time = "07:31"
+enabled = true
+tags = ["forward", "daily", "prod"]
+timeout_seconds = 120
+
+
+# =============================================================================
+# MORNING SCAN – Market-Scan am Morgen
+# =============================================================================
+
+[[job]]
+name = "morning_market_scan"
+description = "Scannt alle Symbole nach aktuellen Signalen"
+command = "python"
+args = { script = "scripts/run_market_scan.py", strategy = "ma_crossover", symbols = "BTC/EUR,ETH/EUR,LTC/EUR", timeframe = "1h", bars = 200, mode = "forward", tag = "morning-scan" }
+schedule_type = "daily"
+daily_time = "07:45"
+enabled = true
+tags = ["scan", "daily", "research"]
+timeout_seconds = 180
+
+
+# =============================================================================
+# PERIODIC RESEARCH – Regelmäßige Analysen
+# =============================================================================
+
+[[job]]
+name = "hourly_backtest_check"
+description = "Stündlicher Mini-Backtest für Monitoring"
+command = "python"
+args = { script = "scripts/run_backtest.py", strategy = "ma_crossover", symbol = "BTC/EUR", bars = 100, tag = "hourly-monitor" }
+schedule_type = "interval"
+interval_seconds = 3600  # 1 Stunde
+enabled = false  # Standardmäßig deaktiviert
+tags = ["backtest", "monitoring", "research"]
+timeout_seconds = 120
+
+
+# =============================================================================
+# WEEKLY OPTIMIZATION – Wöchentliche Parameter-Sweeps
+# =============================================================================
+
+[[job]]
+name = "weekly_sweep_ma"
+description = "Wöchentlicher Parameter-Sweep für MA-Crossover"
+command = "python"
+args = { script = "scripts/run_sweep.py", strategy = "ma_crossover", symbol = "BTC/EUR", grid = "config/sweeps/ma_crossover.toml", tag = "weekly-opt" }
+schedule_type = "interval"
+interval_seconds = 604800  # 7 Tage
+enabled = false  # Manuell aktivieren bei Bedarf
+tags = ["sweep", "optimization", "heavy"]
+timeout_seconds = 600
+
+[[job]]
+name = "weekly_auto_portfolio"
+description = "Generiert wöchentlich neue Auto-Portfolios"
+command = "python"
+args = { script = "scripts/build_auto_portfolios.py", metric = "sharpe", min_sharpe = 0.3, max_components = 3, output_dir = "config/portfolios", prefix = "auto_weekly" }
+schedule_type = "interval"
+interval_seconds = 604800  # 7 Tage
+enabled = false
+tags = ["portfolio", "optimization", "heavy"]
+timeout_seconds = 300
+
+
+# =============================================================================
+# ONE-SHOT JOBS – Einmalige Ausführung
+# =============================================================================
+
+[[job]]
+name = "initial_portfolio_backtest"
+description = "Einmaliger Portfolio-Backtest beim Start"
+command = "python"
+args = { script = "scripts/run_portfolio_backtest.py", tag = "scheduler-init" }
+schedule_type = "once"
+enabled = false
+tags = ["backtest", "init"]
+timeout_seconds = 180
+
+
+# =============================================================================
+# RISK & MONITORING
+# =============================================================================
+
+[[job]]
+name = "daily_risk_check"
+description = "Täglicher Risk-Check für aktive Positionen"
+command = "python"
+args = { script = "scripts/check_live_risk_limits.py", orders = "reports/live/latest_orders.csv", starting_cash = 10000 }
+schedule_type = "daily"
+daily_time = "08:00"
+enabled = false  # Aktivieren wenn Orders vorhanden
+tags = ["risk", "daily", "prod"]
+timeout_seconds = 60
+
+
+# =============================================================================
+# AUTONOMOUS AI-DRIVEN WORKFLOWS
+# =============================================================================
+
+[[job]]
+name = "autonomous_morning_analysis"
+description = "KI-gesteuerter autonomer Workflow für morgendliche Marktanalyse"
+command = "python"
+args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-morning" }
+schedule_type = "daily"
+daily_time = "08:15"
+enabled = true
+tags = ["autonomous", "ai", "daily", "prod"]
+timeout_seconds = 300
+
+[[job]]
+name = "autonomous_midday_check"
+description = "KI-gesteuerter Mittags-Check für Signale und Risiko"
+command = "python"
+args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-midday" }
+schedule_type = "daily"
+daily_time = "12:00"
+enabled = true
+tags = ["autonomous", "ai", "daily", "prod"]
+timeout_seconds = 300
+
+[[job]]
+name = "autonomous_evening_review"
+description = "KI-gesteuerter Tages-Review am Abend"
+command = "python"
+args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "portfolio_analysis", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-evening" }
+schedule_type = "daily"
+daily_time = "20:00"
+enabled = true
+tags = ["autonomous", "ai", "daily", "prod"]
+timeout_seconds = 300
+
+[[job]]
+name = "autonomous_hourly_monitor"
+description = "Stündliches autonomes Monitoring (optional)"
+command = "python"
+args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-hourly" }
+schedule_type = "interval"
+interval_seconds = 3600  # 1 Stunde
+enabled = false  # Manuell aktivieren bei Bedarf
+tags = ["autonomous", "ai", "monitoring"]
+timeout_seconds = 180
+
+
+# =============================================================================
+# Paper-Shadow 247 — read-only preflight reporter (scheduler visibility only)
+# =============================================================================
+# Non-authorizing: runs only scripts/ops/report_paper_shadow_247_preflight_status.py.
+# Safe to inspect with:
+#   python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose
+# Not Testnet/Live/Broker/Exchange/order authorization.
+
+[[job]]
+name = "paper_shadow_247_paper_only_preflight_status_v0"
+enabled = true
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/ops/report_paper_shadow_247_preflight_status.py", json = true }
+description = "Paper/Shadow 24/7 preflight status reporter; dry-run-visible, non-authorizing."
+tags = ["paper_shadow_247", "preflight", "readonly"]
+timeout_seconds = 120
+paper_only = true
+dry_run_visible = true
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
+
+
+# =============================================================================
+# Paper-only runtime job gate v0 (disabled by default)
+# =============================================================================
+# Scheduler-visible Paper runtime shape for a later explicit bounded run.
+# Not Testnet/Live/Broker/Exchange/order authorization.
+[[job]]
+name = "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
+enabled = false
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/aiops/run_paper_trading_session.py", spec = "tests/fixtures/p7/paper_run_high_vol_no_trade_v0.json", outdir = "out/paper_shadow_247/runtime/high_vol_no_trade/__DRY_RUN_PLACEHOLDER__" }
+description = "Paper-only runtime high-vol no-trade fixture runner; disabled until explicit bounded gate."
+tags = ["paper_shadow_247", "paper_runtime", "readonly", "disabled_by_default"]
+timeout_seconds = 600
+paper_only = true
+paper_runtime_job = true
+dry_run_visible = true
+runtime_fixture = "tests/fixtures/p7/paper_run_high_vol_no_trade_v0.json"
+runtime_outdir_template = "out/paper_shadow_247/runtime/high_vol_no_trade/{timestamp}"
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
+
+# Paper-only runtime min fixture job gate v0
+#
+# This job is intentionally disabled by default.
+# It is a scheduler-visible Paper runtime command shape for a later explicit bounded run.
+# It must not be treated as Testnet/Live/Broker/Exchange/Order authorization.
+[[job]]
+name = "paper_shadow_247_paper_only_runtime_min_v0"
+enabled = false
+schedule_type = "once"
+command = "python"
+description = "Paper-only runtime min fixture runner; disabled until explicit bounded gate."
+tags = ["paper_shadow_247", "paper_runtime", "paper_runtime_min", "disabled_by_default"]
+timeout_seconds = 600
+paper_only = true
+paper_runtime_job = true
+dry_run_visible = true
+runtime_fixture = "tests/fixtures/p7/paper_run_min_v0.json"
+runtime_outdir_template = "out/paper_shadow_247/runtime/min/{timestamp}"
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
+
+[job.args]
+script = "scripts/aiops/run_paper_trading_session.py"
+spec = "tests/fixtures/p7/paper_run_min_v0.json"
+outdir = "out/paper_shadow_247/runtime/min/__DRY_RUN_PLACEHOLDER__"
+
+# =============================================================================
+# Paper-Shadow 247 — shadow high-vol no-trade manual runner (disabled by default)
+# =============================================================================
+# Scheduler-visible Shadow command shape for a later explicit bounded run.
+# Not Testnet/Live/Broker/Exchange/order authorization.
+[[job]]
+name = "p7_shadow_high_vol_no_trade_runner_manual_v0"
+enabled = false
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/aiops/run_shadow_session.py", spec = "tests/fixtures/p6/shadow_session_high_vol_no_trade_v0.json", run_id = "__DRY_RUN_PLACEHOLDER__", outdir = "out/paper_shadow_247/shadow/high_vol_no_trade/__DRY_RUN_PLACEHOLDER__", p7_enable = "1", p7_evidence = "0", dry_run = true }
+description = "Shadow high-vol no-trade manual runner; disabled until explicit bounded gate."
+tags = ["paper_shadow_247", "shadow_runtime", "readonly", "disabled_by_default"]
+timeout_seconds = 600
+paper_only = false
+paper_runtime_job = false
+dry_run_visible = true
+runtime_fixture = "tests/fixtures/p6/shadow_session_high_vol_no_trade_v0.json"
+runtime_outdir_template = "out/paper_shadow_247/shadow/high_vol_no_trade/{timestamp}"
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
+
+# =============================================================================
+# Shadow 24/7 Futures wrapper — scheduler placeholder (disabled, non-authorizing)
+# =============================================================================
+# Invokes only the default-off wrapper entrypoint shape when enabled in a future gate.
+# Not Testnet/Live/Broker/Exchange/order authorization. Keep enabled=false until separately approved.
+[[job]]
+name = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
+enabled = false
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py" }
+description = "Placeholder: Futures wrapper fail-closed / prestart-drycheck command shape; disabled; non-authorizing."
+tags = ["shadow_247_futures", "futures_wrapper", "readonly", "disabled_by_default", "prestart_only"]
+timeout_seconds = 120
+paper_only = false
+paper_runtime_job = false
+dry_run_visible = true
+shadow_247_futures_placeholder = true
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
+

@@ -1,0 +1,245 @@
+# Abgleich der lokalen Golden Happy und Vector Aufgaben mit Obsidian und Gesamtbericht
+
+Stand 2. November 2026. Die lokalen Aufgabenbefunde wurden mit 317 Markdown-Dateien des Obsidian-Vaults und dem beigefügten Gesamtbericht vom 31. Oktober abgeglichen. Ergebnis sind 13 fachlich eingegrenzte Befunde. Die getrennte Behandlung gleichnamiger Werkzeuge wird durch Obsidian bestätigt. Besonders ergiebig sind die Unterscheidung von Lernproduzent und GVEF-Prüfer sowie historische Golden-Berichte, die Anschluss, Suchwirkung, ACK-Rückweg und Datenhinlänglichkeit bereits getrennt untersuchen.
+
+## Die wesentlichen Ergänzungen
+
+Der Gesamtbericht lässt den vollständigen GGE-Rechenrumpf offen. Die neue Lesung schließt diese eng begrenzte statische Wissenslücke am selben Vergleichspin: Die Funktion multipliziert Volatilität und Markpreis; die Scope-Initialisierung konsumiert das Ergebnis. Damit ist keine gesamte Geometrie- oder Laufzeitprüfung geschlossen.
+
+Beim Selbstlernen zeigt sich eine wichtige Rollenpräzisierung: Der im Gesamtbericht genannte GVEF-Evaluator prüft Lernartefakte. Die eigentliche Datenproduktion, der Lernzustand und der Export liegen in anderen Modulen. Diese Rollen dürfen in einer Gesamtübersicht nicht ineinander aufgehen.
+
+Drei in Obsidian registrierte historische Dokumente wurden an ihren bekannten Recovery-Pfaden erneut gelesen und gegen die damaligen SHA-256 geprüft: der Self-Learning/Optimization Cross-Universe Golden Vector, der Optimization Golden Vector und der Trading/Intelligence Semantic Differential Golden Vector. Sie sind Untersuchungsberichte, keine drei zusätzlichen Runtime-Adapter. Ihre PROVEN_CURRENT-Marken bleiben an die damalige Revision gebunden.
+
+Der Cross-Universe-Bericht unterscheidet auf seinem M4-Pfad zwischen Validierung der Lernfelder, Digest-/Identitätswirkung und fehlender semantischer Such-/Scorewirkung. Sein Rückweg ist Evidence-ACK ohne Lernzustandsänderung. Die Codevergleiche stützen diese enge Lesart: Plane und Return sind zwischen 5b606f6d und 5d1c838c bytegleich. Export, Record und Eingangsvalidator wurden dagegen um Provenienz-/Poolprüfungen erweitert. Ein alter erfolgreicher Golden-Fall ist dadurch kein unveränderter Beleg für den späteren Eingangsvertrag.
+
+## Quellen und Revisionsgrenzen
+
+- [Beigefügter Gesamtbericht](</Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md>), Codevergleichspin 5d1c838c15369507c5247834db4dd0df25592169 und Tree 97dd289494ed9398c3d988e46f8915c14856cca4.
+- [Obsidian-Einstieg](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/README.md>) und [Registerindex](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/INDEX.md>). Historische Befehle und Freigabetexte wurden als Quellen gelesen. Keine neuen Ledger-IDs und kein Blueprint-RUN wurden angelegt.
+- Historische Golden-Berichte: Baseline 5b606f6daf322995a7f26a7208bba70a43cdd392, datiert 30. September 2026. [Herkunft und verifizierte Hashes](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/recovered-source-manifest.json>).
+- [Fünf direkte Revisionspaare](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/revision-pairs.json>) und [zehn gebundene Codequellen](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/learning-boundary-code-sources.json>). Kein Fetch oder Codeimport.
+- [43 bisherige Quellpfade gegen den Berichtspin](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/historical-source-to-report-pin-comparison.json>): 41 vorhanden, zwei dort nicht vorhanden. Einzelne historische Dateien unterscheiden sich; Rollen aus früheren Revisionen werden deshalb nicht automatisch zu Aussagen über den Berichtspin.
+
+## Fachliche Befunde
+
+### A01 Suchanker unabhängig behandeln
+
+**Einordnung:** Bestätigt.
+
+Die Tools Visual Map verlangt eigenständige Suchgegenstände und untersagt die automatische Gleichsetzung von Vector, Golden Vector und GHV.
+
+**Erkenntnis:** Die neue lokale Aufgabenanalyse entspricht dieser bereits vorhandenen Arbeitsweise.
+
+**Offen bleibt:** Golden Egg bleibt als eigenständige Definition unaufgelöst. Die gefundenen anderen Golden-Namen lösen das nicht auf.
+
+Quelle: [PEAK_TRADE_TOOLS_VISUAL_MAP.md:4](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_TOOLS_VISUAL_MAP.md:4>).
+
+Quelle: [PEAK_TRADE_TOOLS_VISUAL_MAP.md:41](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_TOOLS_VISUAL_MAP.md:41>).
+
+### A02 GGE-Rechenrumpf ergänzt den Gesamtbericht
+
+**Einordnung:** Statisch präzisiert.
+
+Der Gesamtbericht bezeichnet die Formel als deklariert und den vollen Rechenrumpf als nicht untersucht. Der neue Snapshot liest die Multiplikation und die Consumer-Verwendung. GGE-Quellbytes von #7064 und am Berichtspin sind identisch.
+
+**Erkenntnis:** Für diesen Code am Berichtspin ist D = volatility_estimate × mark_price samt positiver endlicher Ausgabe statisch enger belegt; Scope-Initialisierung konsumiert die Magnitude.
+
+**Offen bleibt:** Keine neue Laufzeitbeobachtung. Dieser Befund macht den gesonderten Golden-Vector-Entwurf CON-0314 nicht zu einem vollständigen Geometriebeweis.
+
+Quelle: [PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:565](</Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:565>).
+
+Quelle: [pr-7064-src__trading__master_v2__golden_geometry_engine_v1.py:123](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7064-src__trading__master_v2__golden_geometry_engine_v1.py:123>).
+
+Quelle: [pr-7064-src__trading__master_v2__canonical_scope_initialization_v1.py:471](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7064-src__trading__master_v2__canonical_scope_initialization_v1.py:471>).
+
+Quelle: [contracts_edges.md:371](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/contracts_edges.md:371>).
+
+### A03 Lernartefakt-Prüfer und Lernproduzent unterscheiden
+
+**Einordnung:** Zuordnung präzisiert.
+
+Abschnitt 15 führt Self Learning unter anderem mit dem GVEF-Evaluator auf. Dieser liest Learning-Artefakte aus ReplayTrace; der historische Cross-Universe-Report nennt dagegen DDO-State, Export und Learning-Input als eigentliche Übergabe.
+
+**Erkenntnis:** Der Evaluator gehört zur Nachprüfung. Er ist kein Ersatzbeleg für Capture, Lernzustand, Export oder deren kausale Versorgung.
+
+**Offen bleibt:** Die Gesamtübersicht braucht getrennte Producer-, Zustands-, Export- und Prüferrollen; ihre bloße Existenz schließt die Gesamtversorgung nicht.
+
+Quelle: [PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:500](</Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:500>).
+
+Quelle: [pin-src__evaluation__golden_vectors__evaluators__self_learning_v1.py:33](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/pin-src__evaluation__golden_vectors__evaluators__self_learning_v1.py:33>).
+
+Quelle: [historical-Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md:22](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/historical-Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md:22>).
+
+### A04 Historischer Cross-Universe-Golden beschreibt Digestwirkung
+
+**Einordnung:** Historisch und statisch gestützt.
+
+EVI-0800/CON-0775/GAP-0118 halten proven Loop versus unbekannte Runtime fest. Das hashgleiche Original präzisiert: 39 Felder am damaligen Validierungsgate, Digest-/Identitätswirkung, keine semantische Such-/Scorewirkung auf dem untersuchten M4-Pfad.
+
+**Erkenntnis:** CONNECTED_AND_CONSUMED bedeutet hier keine lernende Anpassung der Suchparameter. Die Plane ist zwischen altem Pin 5b606f6d und Berichtspin 5d1c838c bytegleich; der gelesene Aufruf nimmt SearchSpace, Budget und Seed aus dem Request.
+
+**Offen bleibt:** Keine Wiederholung der historischen A/B-Tests. Der Befund gilt für den beschriebenen M4-Einstieg und beweist keine Abwesenheit anderer Feedbackwege.
+
+Quelle: [contracts_edges.md:832](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/contracts_edges.md:832>).
+
+Quelle: [historical-Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md:9](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/historical-Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md:9>).
+
+Quelle: [5d1c838c-src__experiments__canonical_optimization_universe_experiment_plane_v1.py:197](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/5d1c838c-src__experiments__canonical_optimization_universe_experiment_plane_v1.py:197>).
+
+### A05 Rückweg ist Evidence-ACK ohne Lernzustandsmutation
+
+**Einordnung:** Historisch und statisch gestützt.
+
+Der Cross-Universe-Bericht nennt den Return ein ACK. Das Return-Modul ist zwischen den beiden Pins bytegleich und deklariert LEARNING_STATE_MUTATION_PERFORMED=False; requested_search_feedback wird zurückgewiesen.
+
+**Erkenntnis:** Ein vorhandener SL→OPT→SL-Rückweg kann die Verarbeitung bestätigen, ohne den Lernzustand zu verändern. Die alte Bezeichnung FEEDBACK_LOOP_STATUS=PROVEN_CURRENT ist nur in diesem engeren Sinn lesbar.
+
+**Offen bleibt:** Der separate Meta→OPT-Kanal wird damit nicht pauschal ausgeschlossen und ist keine durch diesen ACK realisierte Rückkopplung.
+
+Quelle: [historical-Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md:134](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/historical-Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md:134>).
+
+Quelle: [5d1c838c-src__experiments__canonical_self_learning_optimization_return_input_v1.py:34](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/5d1c838c-src__experiments__canonical_self_learning_optimization_return_input_v1.py:34>).
+
+Quelle: [5d1c838c-src__experiments__canonical_self_learning_optimization_return_input_v1.py:72](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/5d1c838c-src__experiments__canonical_self_learning_optimization_return_input_v1.py:72>).
+
+### A06 Späterer Eingangsvertrag verlangt zusätzliche Provenienz
+
+**Einordnung:** Revisionsunterschied belegt.
+
+Plane und Return sind bytegleich; Learning-Record, Export und Input-Validator unterscheiden sich zwischen 5b606f6d und 5d1c838c. Neu sind vier verpflichtende Provenienz-/Poolfelder, ein optionales Scalar-Kind und ein Optimization-Provenienz-Gate.
+
+**Erkenntnis:** Die historischen 39-Felder- und Testaussagen dürfen nicht unverändert auf spätere Eingänge übertragen werden. Ein alter Fixture-Export kann am späteren Gate scheitern.
+
+**Offen bleibt:** Tatsächliche spätere Datensätze wurden hier nicht ausgeführt. Die Garantie der Versorgung bleibt zu prüfen.
+
+Quelle: [5d1c838c-src__learning__deterministic_decision_outcome_v0__learning_evidence_export_v1.py:57](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/5d1c838c-src__learning__deterministic_decision_outcome_v0__learning_evidence_export_v1.py:57>).
+
+Quelle: [5d1c838c-src__experiments__canonical_optimization_universe_learning_input_v1.py:124](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/5d1c838c-src__experiments__canonical_optimization_universe_learning_input_v1.py:124>).
+
+Quelle: [5d1c838c-src__learning__deterministic_decision_outcome_v0__learning_evidence_record_v1.py:114](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/5d1c838c-src__learning__deterministic_decision_outcome_v0__learning_evidence_record_v1.py:114>).
+
+### A07 Optimization-Golden trennt Anschluss von Datenhinlänglichkeit
+
+**Einordnung:** Bestätigt und konkretisiert.
+
+CON-1398/GAP-0254 übernehmen die Proven-Marken des Optimization-Berichts nicht. Sein Original lässt Input-, Feature-, Markt-, Outcome-, Label- und Sample-Hinlänglichkeit UNKNOWN; Governance-Handoff-Probe L ist NOT_EXECUTED.
+
+**Erkenntnis:** Die beabsichtigte Autoritätslosigkeit und vorhandene Verträge belegen keine ausreichende Datenversorgung oder statistische Optimierbarkeit.
+
+**Offen bleibt:** Das Original ist am 30.09.2026 auf 5b606f6d entstanden. Seine Testmarken werden hier weder als heutige Laufzeit noch als vollständiger Testexport übernommen.
+
+Quelle: [contracts_edges.md:1455](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/contracts_edges.md:1455>).
+
+Quelle: [historical-Peak_Trade_OPTIMIZATION_GOLDEN_VECTOR_V1.md:406](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/historical-Peak_Trade_OPTIMIZATION_GOLDEN_VECTOR_V1.md:406>).
+
+Quelle: [historical-Peak_Trade_OPTIMIZATION_GOLDEN_VECTOR_V1.md:436](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/historical-Peak_Trade_OPTIMIZATION_GOLDEN_VECTOR_V1.md:436>).
+
+### A08 Intelligence-Differential ist ein eigener semantischer Bericht
+
+**Einordnung:** Historischer Anschluss.
+
+EVI-1890/CON-1825/GAP-0324 referenzieren den Semantic Differential Golden Vector. Das Original unterscheidet Trading-CMC und referenzbasierten MI-market_context sowie verschiedene Volatilitätsquellen und Horizonte.
+
+**Erkenntnis:** Dieses Golden-Artefakt ist eine semantische Vergleichsuntersuchung, kein einzelner GVEF-Testvektor. Es liefert konkrete Producer-/Consumer-Fragen zur Intelligence-Architektur.
+
+**Offen bleibt:** Die ursprünglichen PROVEN_CURRENT-Marken bleiben historisch. Die gesamte damalige Doppel-Spine wird nicht auf den späteren Berichtspin übertragen.
+
+Quelle: [contracts_edges.md:1882](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/contracts_edges.md:1882>).
+
+Quelle: [historical-Peak_Trade_CANONICAL_TRADING_INTELLIGENCE_SEMANTIC_DIFFERENTIAL_GOLDEN_VECTOR_V1.md:22](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/historical-Peak_Trade_CANONICAL_TRADING_INTELLIGENCE_SEMANTIC_DIFFERENTIAL_GOLDEN_VECTOR_V1.md:22>).
+
+Quelle: [PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:454](</Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:454>).
+
+### A09 GHOSV-Beobachtung und deaktivierter Safety-Handoff stimmen überein
+
+**Einordnung:** Bestätigt.
+
+CON-0206 und LYR-0053 halten GHOSV ohne Handelsautorität und deaktivierten Safety-Handoff fest. Die neue lokale Analyse bestätigt genau diese Grenze im Execution-Adapter.
+
+**Erkenntnis:** Der Befund ist konsistent. Der spätere MV2-Checker und generische Guardian-Kernel müssen trotzdem als eigene Prüfer mit eigenen Eingängen geführt werden.
+
+**Offen bleibt:** Kein Gesamt-PASS aus einer Ampel und keine Gleichsetzung aller GHOSV-Kontexte.
+
+Quelle: [contracts_edges.md:263](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/contracts_edges.md:263>).
+
+Quelle: [pr-7121-src__ops__ghosv_bounded_context_v1__s06_safety_authority_adapter_v1.py:41](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7121-src__ops__ghosv_bounded_context_v1__s06_safety_authority_adapter_v1.py:41>).
+
+### A10 Graph vorhanden versus Graph materialisiert ist kein Widerspruch
+
+**Einordnung:** Beleggrenzen vereinbar.
+
+Der Gesamtbericht setzt den GHV-Graphen auf NOT_MATERIALIZED. Die neue Analyse findet Crosswalk-/Traversierungs-Code und einen scoped Adapter, der Aufruferkandidaten untersucht.
+
+**Erkenntnis:** Verfügbares Analysewerkzeug ist kein materialisierter, für diesen Tree validierter Graph. Beide Aussagen können zugleich zutreffen.
+
+**Offen bleibt:** Aktueller konkreter Graphinhalt und seine Laufzeitkorrelation bleiben offen.
+
+Quelle: [PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:592](</Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:592>).
+
+Quelle: [pr-7166-scripts__ops__scoped_ghv_crosswalk_adapter_v1__adapt_v1.py:4](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7166-scripts__ops__scoped_ghv_crosswalk_adapter_v1__adapt_v1.py:4>).
+
+### A11 Fixture-Startability und aktuelle Eingangsbeobachtung sind getrennt
+
+**Einordnung:** Rollen präzisiert.
+
+Abschnitt 13 nennt zwei GGE-importierende Adapter, ohne ihre volle Aufgabe zu entfalten. Einer prüft gespeicherte Referenzdaten, der andere beobachtet gebundene Marktinputs über GET/G17/CMC.
+
+**Erkenntnis:** Der Gesamtbericht lässt sich mit getrennten Fixture-, Current-Input- und Aufnahmeaufgaben ergänzen. Gleicher GHV-Namensbestandteil macht diese Eingänge nicht identisch.
+
+**Offen bleibt:** Erfolgreiche Fixture-Prüfung belegt weder frische Versorgung noch vollständige chronologische Poll-Bundles.
+
+Quelle: [PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:448](</Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:448>).
+
+Quelle: [pr-7067-src__ops__full_core_live_path_composition_root_v1__current_productive_golden_happy_vector_startability_evaluator_v1.py:55](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7067-src__ops__full_core_live_path_composition_root_v1__current_productive_golden_happy_vector_startability_evaluator_v1.py:55>).
+
+Quelle: [pr-7068-src__ops__full_core_live_path_composition_root_v1__current_productive_golden_happy_vector_current_input_observation_adapter_v1.py:73](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/sources/pr-7068-src__ops__full_core_live_path_composition_root_v1__current_productive_golden_happy_vector_current_input_observation_adapter_v1.py:73>).
+
+### A12 Research Golden Path ist bereits im späteren Vault-Lauf präzisiert
+
+**Einordnung:** Vorhandener Anschluss.
+
+LYR-0330 und EVI-2188/EVI-2189 beschreiben Golden-Path-Skript und Research-CLI als Einstiege. Diese Registerergänzung stammt aus RUN-0076; der Gesamtbericht nennt noch Stände bis RUN-0069.
+
+**Erkenntnis:** Das ist ein zeitlicher Dokumentationsunterschied. Die neue PR-Analyse ergänzt den Operatorzweck und explizite Dummy-Daten, ohne die historischen Register zu ersetzen.
+
+**Offen bleibt:** README und INDEX haben selbst unterschiedliche letzte RUN-Kopfzeilen. Die einzelnen datierten Befunde bleiben maßgeblich; keine automatische Fortschreibung.
+
+Quelle: [domains_layers.md:386](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/domains_layers.md:386>).
+
+Quelle: [evidence.md:2290](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/evidence.md:2290>).
+
+Quelle: [PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:681](</Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md:681>).
+
+### A13 CONFLICT im Ledger ist hier oft eine nicht übernommene Beweismarke
+
+**Einordnung:** Begrifflich präzisiert.
+
+Mehrere Ledger-Zeilen vermerken PROVEN_CURRENT zusammen mit Autorität NONE, synthetischen Pfaden oder unbekannter Laufzeiterreichbarkeit und übernehmen die Marke nicht.
+
+**Erkenntnis:** Autorität NONE widerspricht einem erfolgreichen Offline-Test nicht. Der offene Punkt ist, was der Test oder die Untersuchung tatsächlich belegt und ob seine Übertragung auf Current zulässig ist.
+
+**Offen bleibt:** Bestehende CONFLICT-Registerstände werden nicht eigenmächtig umklassifiziert oder geschlossen.
+
+Quelle: [gaps_decisions.md:154](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/gaps_decisions.md:154>).
+
+Quelle: [gaps_decisions.md:290](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/gaps_decisions.md:290>).
+
+Quelle: [gaps_decisions.md:368](</Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/gaps_decisions.md:368>).
+
+## Vollständiger Aufgabenabgleich
+
+Alle 63 Beschreibungen aus der lokalen Aufgabenanalyse wurden mit spezifischen Begriffen, Symbolen und Quellpfaden gegen Vault und Gesamtbericht gesucht. 17 Beschreibungen haben explizite Suchentsprechungen im Vault, sieben im Gesamtbericht, zusammen 21 unterschiedliche Beschreibungen. Für 42 liegt in diesem Textbestand keine explizite Suchentsprechung vor. Diese Zahlen messen Suchentsprechungen, keine fachliche Vollständigkeit oder Systemabdeckung. Eine fehlende Wort-/Pfadentsprechung beweist keine fehlende Komponente; eine vorhandene Referenz beweist keine Funktionsgleichheit.
+
+Die 13 Befunde oben sind der fachlich beurteilte Teil. Die übrigen Zuordnungen bleiben als überprüfbare Navigation mit Fundzeile und Originaltext erhalten. Viele lokale Tests und Hilfswerkzeuge waren im bewusst begrenzten Gesamtbericht nicht einzeln behandelt. Das ist nicht automatisch ein Fehler des Berichts.
+
+- [Alle 63 Aufgaben mit Suchbegriffen und Originalfundstellen](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/all-63-role-source-crosswalk.json>).
+- [Befunde und Zuordnungen als strukturierte Daten](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/crosscheck-findings.json>).
+- [Interaktive Ansicht Abgleich Obsidian](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-golden-vector-pr-register.canvas.tsx).
+
+## Grenzen und Erhaltung
+
+Es wurde kein historischer Test erneut ausgeführt, kein aktueller Datensatz durch die Kette geschickt und kein Graph neu materialisiert. Die lokale Bytegleichheit zweier Module stützt Aussagen zu genau diesen Modulen; sie ersetzt keinen Test ihrer später veränderten Abhängigkeiten. Die historische Intelligence-Differentialanalyse bleibt ein gezielter Anschluss für weitere Quelltextprüfung und wird nicht als aktuelle Gesamtsemantik übernommen.
+
+Bestehende CONFLICT-/GAP-Zeilen werden nicht pauschal geschlossen. Ein erfolgreicher Offline-Test und Autorität NONE können gleichzeitig korrekt sein; eine weitreichende PROVEN_CURRENT-Marke muss trotzdem nach ihrer konkreten Prüfaufgabe und Revision beurteilt werden.
+
+Vault, beigefügter Gesamtbericht, Repository und Recovery-Originale bleiben unverändert. Ergebnisse und Quellenkopien liegen ausschließlich im bestehenden lokalen Recherchebereich. [Integritätsprüfung](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/verification.json>).

@@ -1,0 +1,16 @@
+{
+  "LIVE_flags_false_remain_safe_default": true,
+  "authority_verification_before_transport_invocation": true,
+  "epistemic": "ADJUDICATED",
+  "malformed_unknown_authority_fail_closed": true,
+  "mismatched_sha_envelope_instrument_fail_closed": true,
+  "no_POST_during_bind_construction": true,
+  "no_POST_during_issuance": true,
+  "no_POST_during_validation": true,
+  "no_authority_conflation": true,
+  "no_automatic_arming": true,
+  "no_consume_before_positively_adjudicated_successful_send": true,
+  "no_hidden_boolean_promotion": true,
+  "replay_fail_closed": true,
+  "stale_authority_fail_closed": true
+}

@@ -1,0 +1,22 @@
+{
+  "authorization_fingerprint": "d10d90191b2a5bd98807c057eb308e7cb4335d8b877dffd79a2509313572ddc5",
+  "confirm_token_fingerprint": "e4b8da801694863af0158b63c2683892caeb6557d61c56af883bc1218859e404",
+  "consumed_at": 1785699709.30081,
+  "credentials_used": false,
+  "durable_artifacts_omit_confirm_token": true,
+  "fixture_non_authoritative": false,
+  "host_attestation": "eea.okx.com",
+  "method_attestation": "GET",
+  "orders_submitted": false,
+  "path_attestation": [
+    "/api/v5/market/ticker"
+  ],
+  "preregistration_fingerprint": "1a40e0ab3f2dcf78643a1ddf1a3970d770c9842c0e4495b163487e92868a4a5f",
+  "producer_family": "ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1",
+  "redaction_attestation": true,
+  "schema": "ops.integrated_paper_shadow_productive_issuance_manifest_v1",
+  "schema_version": "v1",
+  "session_id": "phase_9_2_public_md_smoke_session_v1",
+  "transport_after_consumption": true,
+  "transport_open_at": 1785699709.3263822
+}

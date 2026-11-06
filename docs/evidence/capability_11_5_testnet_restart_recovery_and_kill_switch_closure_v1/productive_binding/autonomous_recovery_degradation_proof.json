@@ -1,0 +1,54 @@
+{
+  "AUTONOMOUS_RECOVERY_CONTRACT_ACTIVATED": false,
+  "AUTONOMOUS_RECOVERY_DEGRADATION_CONTRACT_BOUND": true,
+  "CAPABILITY_11_6_LONG_RUNNING_AUTONOMOUS_TESTNET_STARTED": false,
+  "LONG_RUNNING_AUTONOMOUS_TESTNET_CAMPAIGN_ACTIVATED": false,
+  "OWNER": "ops.capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1",
+  "TESTNET_AUTONOMOUS_RECOVERY_PROVEN": false,
+  "cap_11_6_surface_blocked": true,
+  "forbidden_condition_blocked": {
+    "credential_scope_mismatch": true,
+    "evidence_chain_corruption_affecting_economic_truth": true,
+    "kill_switch_activation": true,
+    "repeated_duplicate_order_evidence": true,
+    "repository_or_config_integrity_mismatch": true,
+    "risk_limit_breach_requiring_limit_change": true,
+    "unauthorized_mode_or_venue_transition": true,
+    "unexplained_position_divergence": true,
+    "unknown_account_identity": true
+  },
+  "incomplete_transition_blocked": true,
+  "ok": true,
+  "operating_states": [
+    "OFF",
+    "PREFLIGHT",
+    "RECONCILING",
+    "READY",
+    "ACTIVE",
+    "DEGRADED_NO_NEW_ENTRY",
+    "EXIT_ONLY",
+    "REDUCE_ONLY",
+    "CANCEL_ALL",
+    "RECOVERING",
+    "HALTED",
+    "OWNER_LOCKED"
+  ],
+  "recovery_forbidden_conditions": [
+    "credential_scope_mismatch",
+    "repository_or_config_integrity_mismatch",
+    "unknown_account_identity",
+    "unexplained_position_divergence",
+    "kill_switch_activation",
+    "repeated_duplicate_order_evidence",
+    "risk_limit_breach_requiring_limit_change",
+    "evidence_chain_corruption_affecting_economic_truth",
+    "unauthorized_mode_or_venue_transition"
+  ],
+  "sample_transition": {
+    "from_state": "ACTIVE",
+    "reason_code": "RECONCILIATION_DIVERGENCE",
+    "to_state": "DEGRADED_NO_NEW_ENTRY"
+  },
+  "unknown_forbidden_condition_blocked": true,
+  "unknown_state_blocked": true
+}

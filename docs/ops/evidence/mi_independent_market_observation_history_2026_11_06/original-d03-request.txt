@@ -1,0 +1,680 @@
+<uploaded_documents>
+The following documents have been saved to your filesystem. You can read them using your file-reading tool or other tools:
+- /Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/c2ccaa7a-16ca-4c4c-9833-2577826a0707/Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf
+</uploaded_documents>
+<timestamp>Saturday, Sep 26, 2026, 9:51 AM (UTC+2)</timestamp>
+<user_query>
+OWNER_GO — TRACK_D / D03
+MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1
+
+D02 OWNER ADJUDICATION IS PROVIDED IN THIS COMMAND.
+
+Use the attached updated Blueprint as the Track-D design target:
+
+Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf
+
+DOCUMENT ROLE:
+
+BLUEPRINT_AUTHORITY=NONE
+BLUEPRINT_ROLE=RATIFIED_DESIGN_TARGET_FOR_THIS_WORK_PACKAGE
+
+Authority precedence:
+
+1. Master Runbook / CURRENT ratified authority contracts
+2. CURRENT code/contracts/tests
+3. D01 + D02 mechanically proven CURRENT topology
+4. Updated Blueprint target architecture
+5. Map of Truth = navigation only
+6. System Atlas = navigation only / AUTHORITY=NONE
+
+If the Blueprint conflicts with higher CURRENT authority:
+HARD STOP with exact evidence.
+
+======================================================================
+BASELINE
+======================================================================
+
+Start from CURRENT origin/main.
+
+Do not hard-code the prior D02 SHA as an implementation baseline.
+
+At start:
+
+git fetch --prune
+
+Prove:
+
+CURRENT_ORIGIN_MAIN_SHA
+HEAD_AT_START
+WORKING_TREE_AT_START
+MASTER_RUNBOOK_STATUS
+MAP_OF_TRUTH_STATUS
+SYSTEM_ATLAS_STATUS
+WORKING_MODEL_DRIFT
+
+Require:
+
+HEAD == origin/main
+working tree clean
+
+Otherwise HARD STOP.
+
+======================================================================
+D02 RATIFIED INPUT
+======================================================================
+
+D02 established:
+
+TRACK_D_D02_ADJUDICATION=COMPLETE
+CURRENT_INTERNAL_LOOPS=PROVEN
+LEARNING_OPTIMIZATION_JOIN=PARTIAL
+N_BARS_MULTI_HORIZON_COMPATIBILITY=PROVEN
+FAILURE_MEMORY_REUSE=PROVEN
+
+MV2_DP_AUTHORITY_UNCHANGED=true
+CAP23_AUTHORITY_UNCHANGED=true
+PRODUCTIVE_PROMOTION_OPENED=false
+
+CURRENT productive Learning feedback remains:
+
+evaluation
+→ learning state
+→ opaque next_cycle_economic_score_label
+→ ddo_n_bars_economic_score
+→ next N_BARS supplier cycle
+
+This productive loop MUST NOT be repurposed into a forecast channel.
+
+======================================================================
+OWNER ADJUDICATION — FORECAST / CALIBRATION
+======================================================================
+
+The D02 A/B question is resolved:
+
+SELECTED_OPTION=A
+
+Implement ForecastEvidence as a governed DDO-adjacent
+OFFLINE/OBSERVATION evidence object.
+
+Implement CalibrationEvidence as a separate governed
+OFFLINE/OBSERVATION evidence object.
+
+They may reference existing CURRENT owners.
+
+They MUST NOT acquire ownership of:
+
+- market facts
+- O4
+- market state source facts
+- regime source semantics
+- volatility source semantics
+- DecisionEvent
+- selected future
+- N_BARS realized outcomes
+- MV2/DP decisions
+- experiment identity
+- optimization memory
+- failure memory
+
+Core law:
+
+COMPOSE_REFERENCES_DONT_DUPLICATE_OWNERSHIP=true
+
+======================================================================
+OWNER ADJUDICATION — N / HORIZON
+======================================================================
+
+DO NOT introduce a new global MI default N.
+
+D02 proved multi-horizon compatibility through composition.
+
+Therefore:
+
+FORECAST_HORIZON_MUST_BE_EXPLICIT=true
+GLOBAL_MARKET_INTELLIGENCE_DEFAULT_N=NONE
+
+Each ForecastEvidence identity must explicitly bind its governed:
+
+- horizon / N
+- bar_spec_ref
+- state/information-set boundary
+- forecast creation time
+
+Different N values produce distinct evidence identities.
+
+Existing normative N_BARS semantics remain unchanged.
+
+======================================================================
+MISSION
+======================================================================
+
+Implement the largest technically and semantically coherent
+OFFLINE Market Intelligence foundation that CURRENT D02 evidence
+supports.
+
+The package must establish:
+
+MARKET STATE REFERENCES
+        ↓
+FORECAST EVIDENCE
+        ↓
+REALIZED N_BARS OUTCOME
+        ↓
+CALIBRATION EVIDENCE
+        ↓
+LEARNING / RESEARCH EVIDENCE
+        ↓
+EXISTING OPTIMIZATION / ROBUSTNESS STACK
+        ↓
+FAILURE / EXPERIMENT MEMORY
+        ↓
+GOVERNED RESEARCH OUTPUT
+
+with:
+
+NO AUTOMATIC PRODUCTIVE APPLY.
+
+Do not implement a trading model.
+
+Do not bind forecast output into productive MV2/DP.
+
+======================================================================
+A — FORECAST EVIDENCE CONTRACT
+======================================================================
+
+Create the minimum governed ForecastEvidence contract required by
+CURRENT.
+
+It must represent a forecast made at information time t BEFORE its
+realized outcome is known.
+
+Required semantic categories:
+
+1. identity
+2. information-set boundary
+3. market-state references
+4. explicit forecast horizon
+5. forecast/model/experiment reference
+6. probabilistic forecast payload
+7. uncertainty / support metadata where mechanically available
+8. provenance
+9. authority disposition
+
+Do NOT invent a new MarketState SSOT.
+
+Reference/compose CURRENT:
+
+- O4/public market facts
+- existing regime/volatility/market-state refs where present
+- decision_event_ref where applicable
+- selected instrument/future ref where applicable
+- canonical experiment identity where research model identity is needed
+
+ForecastEvidence must make lookahead impossible by contract.
+
+At minimum prove:
+
+FORECAST_CREATED_BEFORE_OUTCOME_BOUNDARY=true
+FORECAST_HORIZON_EXPLICIT=true
+BAR_SPEC_EXPLICIT=true
+INFORMATION_SET_REF_EXPLICIT=true
+
+AUTHORITY=NONE
+FORECAST_IS_NOT_DECISION=true
+
+======================================================================
+B — PROBABILISTIC FORECAST SEMANTICS
+======================================================================
+
+Do not constrain V1 to a single BUY/SELL-like score.
+
+Provide the minimum generic representation CURRENT can support for
+probabilistic future-market-behavior evidence.
+
+It should be capable of representing research outputs such as:
+
+- directional probability
+- return distribution summary
+- threshold/event probability
+- expected market behavior
+- uncertainty
+
+without requiring every forecast model to emit every field.
+
+Avoid one giant nullable schema if a typed forecast-kind grammar is
+cleaner.
+
+Do not invent model predictions in production.
+
+This package provides contracts/runtime for offline evidence generation
+and evaluation.
+
+======================================================================
+C — REALIZED OUTCOME JOIN
+======================================================================
+
+REUSE CURRENT N_BARS.
+
+Do NOT modify normative N_BARS measurement semantics merely to fit MI.
+
+Join ForecastEvidence to CURRENT realized outcome through existing
+identity/reference semantics.
+
+Required conceptual join:
+
+ForecastEvidence
+    +
+N_BARS actual_outcome_ref
+    ↓
+CalibrationEvidence
+
+The realized market outcome remains owned by CURRENT N_BARS /
+measurement artifacts.
+
+NO_DUPLICATE_OUTCOME_TRUTH=true
+
+======================================================================
+D — CALIBRATION EVIDENCE
+======================================================================
+
+Implement a separate governed CalibrationEvidence object.
+
+It must reference:
+
+- forecast evidence identity
+- realized outcome identity
+- horizon
+- forecast kind
+- evaluation/calibration method
+- resulting error/score/evidence
+- support/provenance where applicable
+
+Do not mutate the CURRENT v1 learning-state reducer to silently insert
+numeric calibration.
+
+Do not redefine:
+
+next_cycle_economic_score_label
+
+CalibrationEvidence is separate evidence.
+
+Support typed evaluation appropriate to forecast kind.
+
+Do not force a Sharpe/PnL metric onto market forecasts.
+
+======================================================================
+E — MULTI-HORIZON COMPOSITION
+======================================================================
+
+Support multiple explicit N/horizons through separate evidence
+identities.
+
+Conceptually:
+
+STATE(t)
+ ├─ FORECAST(N1) → OUTCOME(N1) → CALIBRATION(N1)
+ ├─ FORECAST(N2) → OUTCOME(N2) → CALIBRATION(N2)
+ └─ FORECAST(N3) → OUTCOME(N3) → CALIBRATION(N3)
+
+No global N is introduced.
+
+No multi-N mutation of one existing N_BARS observation payload.
+
+======================================================================
+F — OFFLINE MARKET INTELLIGENCE ORCHESTRATOR
+======================================================================
+
+Implement a deterministic OFFLINE orchestrator using CURRENT
+M8/script/runner patterns where appropriate.
+
+Its responsibility is composition, not new ownership.
+
+Target flow:
+
+historical point-in-time market facts/state refs
+→ ForecastEvidence
+→ wait/select already-realized valid N_BARS outcome in offline dataset
+→ CalibrationEvidence
+→ governed learning/research evidence projection
+→ existing Optimization input
+→ existing experiment/search/robustness machinery
+→ failure/experiment memory
+→ governed proposal/research evidence
+
+It MUST NOT:
+
+- run through the productive trading host;
+- alter MV2/DP;
+- alter Cap 2.3;
+- write execution state;
+- send network orders;
+- open promotion;
+- mutate productive learning feedback.
+
+======================================================================
+G — LEARNING EVIDENCE PROJECTION
+======================================================================
+
+D02 proved CURRENT learning export is intentionally narrow and opaque.
+
+Extend only through a governed additive mechanism.
+
+Do NOT silently reinterpret existing opaque labels.
+
+Preferred design:
+
+existing learning evidence remains valid and unchanged;
+
+Market Intelligence evidence is either:
+
+A. additive typed evidence referenced by the existing research export;
+
+or
+
+B. a versioned additive projection consumed by Optimization.
+
+Choose mechanically based on CURRENT contract/versioning conventions.
+
+Backward compatibility required.
+
+No existing consumer may suddenly interpret forecast/calibration
+numbers as trading scores.
+
+======================================================================
+H — EXISTING OPTIMIZATION STACK REUSE
+======================================================================
+
+Reuse:
+
+canonical optimization universe
+canonical optimization learning input
+canonical experiment identity
+advanced search
+champion/challenger
+canonical robustness suite
+canonical failure memory
+canonical meta learning
+M5/M6/M7/M8 feedback/replay mechanisms
+proposal governance ingress
+
+Do NOT create:
+
+market_intelligence_optimizer_v1
+
+unless mechanically unavoidable.
+
+Optimization should be able to research:
+
+- feature usefulness
+- state representation
+- horizon usefulness
+- forecast model candidates
+- calibration quality
+- stability
+- coverage / abstention behavior
+
+but:
+
+OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE
+OPTIMIZATION_CAN_PROMOTE=false
+
+======================================================================
+I — FAILURE MEMORY CLOSED OFFLINE COMPOSITION
+======================================================================
+
+D02 proved failure-memory ownership already exists but persistence/feed
+is caller-owned.
+
+Use the OFFLINE orchestrator to close this research composition where
+mechanically safe:
+
+experiment/search
+→ robustness failure
+→ canonical failure record
+→ caller persistence/replay state
+→ later search failure_records input
+
+Do not create a second Failure Memory owner.
+
+Prove deterministic replay.
+
+Prove duplicate hypothesis handling remains CURRENT semantics.
+
+======================================================================
+J — FORECAST RELIABILITY / ABSTENTION
+======================================================================
+
+Provide evidence semantics for insufficient support.
+
+The system must be able to represent:
+
+SUFFICIENT_EVIDENCE
+INSUFFICIENT_EVIDENCE
+NOT_EVALUABLE
+
+where supported by the forecast/evaluation context.
+
+Do not fabricate confidence.
+
+If support/calibration cannot be established:
+
+the correct output is evidence insufficiency, not an arbitrary forecast
+confidence value.
+
+CONFIDENCE_IS_NOT_AUTHORITY=true
+
+======================================================================
+K — DRIFT
+======================================================================
+
+Reuse CURRENT drift contracts.
+
+Do not create a second drift SSOT.
+
+Bind/reference drift evidence into Market Intelligence research where
+mechanically compatible.
+
+Drift may affect:
+
+research evidence
+model evaluation
+abstention/reliability evidence
+optimization research prioritization
+
+Drift MUST NOT directly:
+
+select a future
+switch MV2/DP
+send an order
+promote a candidate
+
+======================================================================
+L — DECISION ATTRIBUTION QUERY
+======================================================================
+
+Implement a read-only/evidence-only attribution surface over existing
+references.
+
+Target question:
+
+Under which Market Intelligence / market-state evidence did an existing
+MV2/Double-Play decision produce which realized outcome?
+
+Reuse existing:
+
+decision_event_ref
+attribution_record
+selected future ref
+Bull/Bear ref
+SideState/transition refs
+configuration refs
+
+ONLY where CURRENT carries them.
+
+Missing context must remain explicitly missing.
+
+Do not infer absent SideState/regime values.
+
+IS_EVIDENCE_ONLY=true
+TRADING_AUTHORITY=NONE
+
+======================================================================
+M — COUNTERFACTUAL READINESS
+======================================================================
+
+Do not build a new counterfactual trading engine in this package.
+
+However, contracts must not prevent later offline shadow research.
+
+Preserve explicit distinction:
+
+ACTUAL
+vs
+MODELLED / COUNTERFACTUAL
+
+COUNTERFACTUAL_AUTHORITY=NONE
+
+======================================================================
+N — TESTING / PROOFS
+======================================================================
+
+Add deterministic tests for at least:
+
+1. forecast created before realized horizon boundary
+2. explicit horizon identity
+3. explicit bar_spec_ref
+4. different N → different evidence identity
+5. forecast cannot mutate N_BARS outcome
+6. calibration references exact forecast + exact realized outcome
+7. missing outcome → NOT_EVALUABLE
+8. insufficient support → explicit abstention/evidence insufficiency
+9. no numeric calibration enters existing opaque economic-score seam
+10. Optimization consumes MI evidence only offline
+11. Failure Memory reuse across deterministic offline iterations
+12. no Optimization→MV2/DP binding
+13. no Optimization→Cap2.3 binding
+14. no MI→Execution binding
+15. no promotion opened
+16. existing N_BARS tests remain green
+17. existing Learning/DDO tests remain green
+18. existing Optimization tests remain green
+19. deterministic replay equality
+20. legacy learning evidence consumers remain backward compatible
+
+Run the canonical required test/check surface.
+
+======================================================================
+O — GOVERNANCE / DOCUMENTATION
+======================================================================
+
+Update only governance/docs mechanically required by the implementation.
+
+Master Runbook:
+only if CURRENT governance convention requires normative recording of
+the new subordinate evidence contracts.
+
+Map of Truth:
+navigation only.
+
+System Atlas:
+AUTHORITY=NONE.
+
+No documentation may imply Market Intelligence has trading authority.
+
+======================================================================
+P — SAFETY PROOF
+======================================================================
+
+Final implementation must prove:
+
+MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=true
+CAP23_SOLE_PRODUCTIVE_SELECTION_OWNER=true
+
+LEARNING_TRADING_AUTHORITY=NONE
+MARKET_INTELLIGENCE_TRADING_AUTHORITY=NONE
+OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE
+
+FORECAST_IS_NOT_DECISION=true
+CONFIDENCE_IS_NOT_AUTHORITY=true
+
+N_BARS_NORMATIVE_SEMANTICS_UNCHANGED=true
+PRODUCTIVE_DDO_FEEDBACK_SEAM_UNCHANGED=true
+
+NO_AUTOMATIC_PROMOTION=true
+NO_OPTIMIZER_TO_CAP23_BINDING=true
+NO_OPTIMIZER_TO_MV2_DP_MUTATION=true
+NO_MARKET_INTELLIGENCE_TO_EXECUTION_DIRECT_PATH=true
+NO_NEW_EXTERNAL_EFFECT_PATH=true
+
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+MAX_POSITIONS_EFFECTIVE=1
+
+======================================================================
+Q — EXECUTION
+======================================================================
+
+This OWNER_GO authorizes implementation of the largest coherent package
+described above.
+
+Create ONE implementation branch.
+
+Implement the full coherent boundary.
+
+Do not artificially split mechanically dependent pieces into multiple
+PRs.
+
+Run canonical required checks.
+
+If all implementation work and required checks pass:
+
+push the branch
+open ONE PR
+
+DO NOT MERGE.
+
+Stop after PR creation and report status.
+
+If a genuine unresolved Authority/Safety ambiguity appears that cannot
+be derived from CURRENT:
+
+HARD STOP before crossing it.
+
+======================================================================
+FINAL REPORT
+======================================================================
+
+Return:
+
+BASELINE_SHA
+BRANCH
+FINAL_HEAD_SHA
+PR_NUMBER
+PR_URL
+
+FORECAST_EVIDENCE_IMPLEMENTED
+CALIBRATION_EVIDENCE_IMPLEMENTED
+MULTI_HORIZON_COMPOSITION_IMPLEMENTED
+OFFLINE_MI_ORCHESTRATOR_IMPLEMENTED
+LEARNING_EVIDENCE_PROJECTION_IMPLEMENTED
+OPTIMIZATION_STACK_REUSED
+FAILURE_MEMORY_REUSED
+DECISION_ATTRIBUTION_IMPLEMENTED
+DRIFT_OWNER_REUSED
+
+N_BARS_NORMATIVE_SEMANTICS_UNCHANGED
+PRODUCTIVE_DDO_FEEDBACK_SEAM_UNCHANGED
+MV2_DP_AUTHORITY_UNCHANGED
+CAP23_AUTHORITY_UNCHANGED
+PRODUCTIVE_PROMOTION_OPENED
+
+CANONICAL_REQUIRED_CHECKS
+TEST_STATUS
+WORKING_TREE_STATUS
+
+Any non-required CI failures must be identified separately from
+required checks.
+
+HARD STOP AFTER PR CREATION.
+
+No merge without OWNER_MERGE_GO.
+</user_query>

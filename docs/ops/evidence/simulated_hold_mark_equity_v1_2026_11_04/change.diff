@@ -1,0 +1,12 @@
+diff --git a/src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py b/src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py
+index ceec9cd20..395c97d5f 100644
+--- a/src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py
++++ b/src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py
+@@ -221,6 +221,7 @@ class SimulatedPortfolioEconomicsModelV1:
+         if side_u in {"", "HOLD", "NONE", "FLAT"}:
+             self.state.intended_action_count += 1
+             self._mark_to_market(instrument_id=instrument_id, mark_price=mark_price)
++            self._update_equity_drawdown()
+             return None
+         if side_u not in {"BUY", "SELL"}:
+             raise PortfolioEconomicsModelError(f"INVALID_SIDE:{side_u}")

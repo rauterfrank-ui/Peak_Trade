@@ -1,0 +1,5 @@
+FORMAT:
+3 files already formatted
+
+CHECK:
+All checks passed!

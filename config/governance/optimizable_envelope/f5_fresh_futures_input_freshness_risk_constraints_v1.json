@@ -1,0 +1,25 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_RISK_CONSTRAINTS_V1",
+  "schema_version": "canonical_f5_fresh_futures_input_freshness_risk_constraints/v1",
+  "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+  "authority_scope": "SHADOW_RESEARCH_EVIDENCE_ONLY",
+  "non_authority_scope": "NOT_TRADING_AUTHORITY;NOT_FRESHNESS_STATE_ADMISSION;NOT_INPUT_AUTHORITY;NOT_POLICY_DEFAULT;NOT_CONFIG_DEFAULT;NOT_ORDER_AUTHORITY;NOT_LIVE_AUTHORITY",
+  "input_authority": false,
+  "productive_freshness_state_admission_forbidden": true,
+  "f1_m9_deduplication_required": true,
+  "cmc_volatility_max_age_alpha_reuse_forbidden": true,
+  "enforcement_during_research": false,
+  "parameter_promoted": false,
+  "threshold_selection_forbidden": true,
+  "master_v2_mutation_forbidden": true,
+  "double_play_mutation_forbidden": true,
+  "trading_authority_forbidden": true,
+  "promotion_forbidden": true,
+  "execution_orders_forbidden": true,
+  "external_effect_forbidden": true,
+  "optimizer_search_over_safety_bounds_forbidden": true,
+  "source_modules": [
+    "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/shadow_futures_input_freshness_age_collector_v1.py",
+    "src/experiments/f5_fresh_research_candidate_domain_constants_v1.py"
+  ]
+}

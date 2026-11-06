@@ -1,0 +1,14 @@
+{
+  "authority_boundary_proof_pass": true,
+  "core_logic_changed": false,
+  "credentials_authorized": false,
+  "dashboard_trading_authority_changed": false,
+  "live_trading_authorized": false,
+  "paper_exchange_orders_authorized": false,
+  "read_model_authority_changed": false,
+  "read_model_authority_effect": "NONE",
+  "risk_authority_changed": false,
+  "safety_authority_changed": false,
+  "testnet_authorized": false,
+  "trading_logic_changed": false
+}

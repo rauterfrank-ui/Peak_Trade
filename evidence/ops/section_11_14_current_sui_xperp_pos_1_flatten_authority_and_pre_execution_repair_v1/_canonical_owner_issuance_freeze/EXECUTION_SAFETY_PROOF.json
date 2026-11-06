@@ -1,0 +1,30 @@
+{
+  "LIVE_ARMED": false,
+  "LIVE_ENABLED": false,
+  "NETWORK_SESSION_AUTHORIZED": false,
+  "NO_NETWORK_POST_CALL_REACHABILITY_ADDED": true,
+  "NO_NEW_LIVE_ARMED_TRUE_ASSIGNMENT": true,
+  "NO_NEW_LIVE_ENABLED_TRUE_ASSIGNMENT": true,
+  "NO_NEW_NETWORK_SESSION_AUTHORIZED_TRUE_ASSIGNMENT": true,
+  "POSITION_MUTATION_EXECUTED": false,
+  "POST_ALLOWED": false,
+  "REAL_POST_COUNT": 0,
+  "SESSION_ARMED_STANDING": false,
+  "WIRE_SEND_EXECUTED": false,
+  "postsites": [
+    {
+      "FILE": "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/wrapper_v1.py",
+      "FUNCTION": "evaluate_current_sha_flatten_wrapper_v1 -> transport.post",
+      "NETWORK_CAPABLE": false,
+      "NOTE": "Only after session_armed+fake transport; RecordingFakeFlattenSubmitTransportV1 is offline",
+      "REACHABLE_FROM_AUTHORITY_REPAIR": true
+    },
+    {
+      "FILE": "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/productive_transport_adapter_v1.py",
+      "FUNCTION": "ConstructiveProductiveFlattenSubmitAdapterV1.post",
+      "NETWORK_CAPABLE": false,
+      "NOTE": "Raises PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED before urllib; harness forbids this adapter as send transport",
+      "REACHABLE_FROM_AUTHORITY_REPAIR": true
+    }
+  ]
+}

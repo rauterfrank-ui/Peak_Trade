@@ -1,0 +1,389 @@
+PEAKTRADE – ERGEBNIS DER GESAMTFUNKTIONSPRÜFUNG
+02.11.2026 · Offline-Ausführung am gebundenen aktuellen Arbeitsstand
+
+ERGEBNIS
+
+Ein positiver Gesamtfunktionsnachweis kann für den untersuchten Stand nicht
+ausgestellt werden.
+
+Die Untersuchung hat tatsächliche Funktionsdurchläufe bis Long-/Short-Entry
+und Intent, Ergebnis-/Lernverarbeitung sowie Meta-/Suchwirkung geliefert.
+Sie hat zugleich eine reproduzierbare Annahme instrumentfremder Volatilität
+an einer unteren Übergabe, eine fehlende aktuelle Versorgung am direkten
+Lernexport-Handoff und weitere Beleglücken sichtbar gemacht.
+
+Die positiven Abschnitte sind nicht zu einer angeblich automatisch
+durchlaufenden Gesamtkette zusammengesetzt worden. Die Erkenntnis ist damit
+konkreter als eine weitere Dateibestandsaufnahme: Die vorhandenen Funktionen
+wurden ausgeführt und mit Gegenfällen geprüft; die Grenzen ihrer Aussage
+sind an die jeweiligen Eingänge und Verbraucher gebunden.
+
+GEBUNDENER STAND
+
+Checkout: /Users/frnkhrz/Peak_Trade
+HEAD: 242b7974fc93f0bdb47706556101bd6f0c497414
+lokaler origin/main: 5d1c838c15369507c5247834db4dd0df25592169
+
+Der Checkout enthält zehn bereits vor dieser Untersuchung geänderte
+versionierte Dateien und weitere unversionierte Arbeit. Deshalb gilt der
+Nachweis dem Arbeitsstand samt Diff-/Dateihashes, nicht allein dem HEAD.
+baseline.json bindet 11.010 Quell-/Config-/Test-/Skriptdateien und die
+vorbestehenden Änderungen. Es wurde kein autoritativer Betriebsstand aus
+dem Ordnernamen oder einem Branch abgeleitet.
+
+Runtime: scripts/pt, Python 3.11.14, isolierte Repository-.venv.
+Runtime-Vertragsprüfung erfolgreich.
+Alle Ausgaben liegen ausschließlich im neuen Untersuchungsordner.
+Netzwerk, Shell-/Nicht-Git-Unterprozesse und Schreibzugriffe außerhalb der
+Ausgabeordner waren in den Python-Prüfungen durch Audit-Hooks gesperrt.
+Zugelassen waren nur benötigte lesende Git-rev-parse/status-Aufrufe.
+Keine Credentials, Orders, Markt-/Account-GETs, Dienste oder Veröffentlichung.
+
+1. FUNKTIONAL BELEGT: DOUBLE PLAY LEITET BEIDE EINSTIEGSRICHTUNGEN AB
+
+Mit konstruierten, ausdrücklich als Offline-Fixtures bezeichneten Eingängen
+wurden unveränderte aktuelle Producer und Consumer ausgeführt.
+
+Passender ETH-G17-Producer + steigende Preisfolge:
+Cycle 0: no_action
+Cycle 1: observe
+Cycle 2: enter_long
+
+Passender ETH-G17-Producer + fallende Preisfolge mit fallendem Feature-Verlauf:
+Cycle 0: no_action
+Cycle 1: observe
+Cycle 2: enter_short
+
+Die Entscheidungen wurden von der vorhandenen Logik abgeleitet.
+Es wurde weder eine Entry-Entscheidung noch ein Gate-Ergebnis erzwungen.
+Die jeweiligen Ergebnisse enthalten einen kanonischen ENTER_LONG- bzw.
+ENTER_SHORT-Intent sowie Risiko-/Sizing-Ergebnisse. Submission bleibt
+unautorisiert; execution_eligible bleibt false.
+
+Belege:
+matching-long/summary.json
+matching-long/derived-entry-full.json
+semantic-controls/mirrored-bear-sequence.json
+semantic-controls/mirrored-bear-derived-entry-full.json
+
+Grenzen:
+Instrumentbindung, zusätzliche Marktdaten, Reconciliation und Kapital stammen
+aus expliziten vorhandenen Testkontexten. Dies ist kein Beleg tatsächlicher
+Cap23-Auswahl, eines PRE_EXTERNAL-S5-Callbacks, einer Börsenorder oder realer
+Fills. Der Intent enthält auch ausdrücklich Offline-Provenienz.
+
+Ein erster fallender Verlauf bei noch zuvor steigender Feature-Historie
+erzeugte in 24 Cycles keinen Short-Entry. Das wurde nicht zum Fehler erklärt:
+Der separat gespiegelte vollständige Preis-/Feature-Verlauf liefert den
+Short-Entry. Nicht jedes fallende Preisbeispiel muss sämtliche fachlichen
+Entry-Voraussetzungen erfüllen.
+
+2. FUNKTIONAL BELEGT: GGE-TRANSPORT UND MECHANISCHE SEITENWECHSEL
+
+Der vorhandene G17-Schätzer wurde unabhängig aus seinen 60 logarithmischen
+Renditen nachgerechnet:
+σ = 0.0010665792636619144.
+
+Vier beobachtete L6-Ausgaben stimmen mit σ×M überein:
+M=1646.3              D=1.7559094417666095
+M=1613.7              D=1.7211389577712313
+M=1662.6000000000001   D=1.7732946837642989
+M=1597.3999999999999   D=1.7037537157735418
+
+Die unveränderten L1–L10-Funktionen wurden tatsächlich erreicht.
+Die wechselnde konstruierte Sequenz erzeugt:
+Bull bleibt Bull → Bull zu Bear → Bear zu Bull → Bull zu Bear.
+
+Belege:
+geometry-checks.json
+run002/execution-trace.json
+run002/host-cycle-0.json bis host-cycle-4.json
+
+Wichtige Beleggrenze:
+Der anfänglich wiederverwendete Testhelfer enthält bereits eine BTC-Historie
+zu einem ETH-BoundInstrument. Dieser Fehler der Fixture-Zusammenstellung
+wurde offengelegt und als Identitäts-Gegenfall weiter geprüft, nicht als
+fachlich korrektes ETH-Gesamtergebnis verwendet. Die späteren positiven
+Long-/Short-Kontrollen benutzen passend gebundene ETH-Producer.
+
+Unveränderte Zahlentransformation beweist also nicht allein den richtigen
+Future-Bezug. Unterschiedliche Runtime-Band-/Initialbasis-/Layer-Carriers
+werden ebenfalls nicht allein wegen ihrer Namen gleichgesetzt.
+
+3. REPRODUZIERBARER IDENTITÄTS-GEGENFALL AN DER G17→CMC-ÜBERGABE
+
+Im selben unteren Runtime-Host wurde bei gleicher ETH-Bindung und gleichem
+Mark-Preis nur der angelieferte G17-Producer gewechselt.
+
+Fall A:
+History: BTC-USDT-SWAP-CANON / BTC-USDT-SWAP
+BoundInstrument: inst-eth-usdt-perp / ETH-USDT-SWAP
+Ergebnis: replay_pass=true, input_blocker leer
+CMC übernimmt σ=0.0010665792636619144
+Scope-Distanz: 1.7385241997689205
+
+Fall B:
+History: inst-eth-usdt-perp / ETH-USDT-SWAP
+BoundInstrument: inst-eth-usdt-perp / ETH-USDT-SWAP
+Ergebnis: replay_pass=true, input_blocker leer
+CMC übernimmt σ=0.0011341499485448083
+Scope-Distanz: 1.8486644161280377
+
+Die fremde Instrumentherkunft wird hier nicht zurückgewiesen und ihr Wert
+beeinflusst die Berechnung tatsächlich. Es geht um dieselbe G17-Rolle und
+denselben Schätzervertrag, nicht um die unzulässige Gleichsetzung von
+Ranking-, Feature- und G17-Volatilität mit verschiedenen Berechnungszielen.
+
+Ursache im gelesenen Übergang:
+current_productive_g17_typed_vol_cmc_bind_v1.py reicht den Estimate weiter.
+canonical_volatility_binding_and_provenance_transport_v1.py, ab Zeile 248,
+validiert den Estimate und setzt ihn in den Context, ohne dabei die
+instrumentgebundene Producer-Historie mit dem Context zu vergleichen.
+
+Belege:
+semantic-controls/volatility-identity-comparison.json
+semantic-controls/identity-foreign_btc-full.json
+semantic-controls/identity-matching_eth-full.json
+source-snapshots mit den genannten Consumer-Dateien.
+
+Grenzen:
+Dies belegt die ungeschützte Identität an dieser unteren Übergabe.
+Es belegt nicht, dass ein beobachteter Live-Run BTC tatsächlich an ETH band.
+Ein zusätzlich gelesener oberer DK-Caller konstruiert G17 ausdrücklich aus
+seinem BoundInstrument. Welche übergeordneten Caller diese Garantie vollständig
+tragen, ist damit nicht systemweit ausgeführt oder bewiesen. Ein pauschales
+„die ganze Double-Play-Logik ist falsch“ folgt aus dem Gegenfall nicht.
+
+4. AKTUELLER DIREKTER CAPTURE→LERNEXPORT-PFAD BLEIBT BLOCKIERT
+
+Alle fünf Cycles des ersten aktuellen Host-Durchlaufs erfassen Entscheidungen.
+Der direkte Handoff liefert anschließend reproduzierbar:
+
+status=BLOCKED_UNVERIFIED_OUTCOME_SOURCE
+reason=VERIFIED_N_BARS_SOURCE_NOT_BOUND
+
+Aus genau diesem Handoff entstehen kein neues Outcome, kein Lernzustand,
+kein Lernexport, kein Optimierungs-Ack und kein dauerhafter Pending-Job.
+Die Capture-Datensätze bleiben erhalten. Die Sperre ist die vorhandene
+Schutzmaßnahme gegen eine unbewiesene Forward-Bar-Quelle. Sie wurde nicht
+umgangen und ist kein Fehler der Bull/Bear-Entscheidung.
+
+Belege:
+run002/host-sequence.json
+run002/host/ddo_productive_capture.jsonl
+current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py,
+insbesondere Funktion ab Zeile 139 und Rückgabe ab Zeile 170.
+
+Die tatsächlich erfasste zugehörige Entry/Exit-Decision trägt außerdem:
+selected_instrument_ref=null
+code_sha=UNKNOWN
+config_hash=UNKNOWN
+
+Das ist auch im Capture-Producer selbst lesbar: capture_v0.py setzt die
+Instrumentreferenz im Payload auf None (Zeile 868). Die separat
+instrumentprüfende Forschungsversorgung lehnt den ungeänderten Record ab.
+
+Der für diese direkte Kombination gewählte Archivfall und die Host-Fixture
+gehören auch zeitlich nicht zusammen. Deshalb wird aus dieser Ablehnung
+kein globaler Beweis gemacht, dass nirgends kompatible Quellen existieren.
+Die leere Instrumentreferenz ist unabhängig davon direkt beobachtet und
+eine offene Grenze gegenüber dem ursprünglichen Core-Lernauftrag.
+
+5. ALTERNATIVER VERZÖGERTER ERGEBNISWEG EXISTIERT UND FUNKTIONIERT IM TEST
+
+Die Untersuchung stoppte nicht an der direkten Handoff-Sperre.
+Der vorhandene Cross-Session-Pending-Resolver wurde gesondert ausgeführt.
+
+Mit seinem bestehenden Testhelfer, einem injizierten Entry-/PRE_EXTERNAL-
+Report und expliziten Test-Mark-Beobachtungen erreicht er:
+status=CLOSED
+Learning-State-Referenz vorhanden
+Learning-Evidence-Referenz vorhanden
+Optimierungs-Ack vorhanden.
+
+Ein doppelter Beobachtungszeitpunkt wird als Duplikat behandelt.
+Beleg: diagnostics/alternate-pending-path.json
+
+Damit ist die Aussage „das System hat überhaupt keinen Ergebnisweg“ nicht
+gerechtfertigt. Dieser alternative Nachweis ist aber kein aus dem echten
+Master-V2-Entry derselben Marktdatenfolge abgeleiteter Gesamtbeweis: Der
+Testhelfer injiziert den vorausgesetzten Entry-Bericht. Er verwendet außerdem
+explizit erlaubte TEST_FIXTURE-Beobachtungen. Das ist eine funktionierende
+Teilkomposition und keine echte natürlich beobachtete Handelssitzung.
+
+6. GESPEICHERTE MARKTDATEN → MESSUNG → LERNEN → INTAKE FUNKTIONIEREN OFFLINE
+
+Das unveränderte gespeicherte OKX-Mark-Minutenpayload, sein Request-Log und
+die Instrumentbindung wurden per Hash gebunden.
+
+Zwei neue Forschungsfälle mit ausdrücklich gewähltem N=2 und N=3:
+- vollständige originale Minutenabdeckung prüfen;
+- Bar-Zeit und tatsächliche Empfangszeit auseinanderhalten;
+- vor dem belegten Originalempfang keine Messung erlauben;
+- LOG_RETURN unabhängig als ln(letzter Close / erster Close) nachrechnen;
+- bestehenden Supplier/Evaluator/Ingest/Exporter/Intake verwenden;
+- Instrument, Herkunftsklasse und unbekannte Werte erhalten.
+
+Beide Fälle erreichen ACCEPTED_OFFLINE_RESEARCH_INPUT.
+Ein falsch gebundenes Instrument wird abgewiesen.
+Die Originalquellen bleiben hashgleich.
+Es wird weder eine historische produktive Entscheidung rekonstruiert noch
+ein fixer Zwei-Stunden-Handels- oder Anzeigehorizont festgelegt.
+
+Belege:
+run002/recorded-source-learning-suffix.json
+run002/recorded-n2/
+run002/recorded-n3/
+
+Dieser Abschnitt wird weiterhin über den isolierten Forschungsadapter
+angestoßen. Er ist kein belegter automatischer Ersatz für den gesperrten
+aktuellen direkten Handoff und er beweist keinen wirtschaftlichen Score.
+
+7. FORSCHUNGSLOOP UND META→SUCHE HABEN ECHTE TEILWIRKUNG
+
+Die vorhandenen aktuellen Forschungs-, Meta- und Suchfunktionen wurden
+ausgeführt, mit ausdrücklich als Fixtures gekennzeichneten Beobachtungen
+und Scores.
+
+Forschungsloop: LOOP_COMPLETE.
+Meta-Learning erzeugt sieben echte Proposal-Objekte.
+Die echte Suche nimmt sie an und erhält deren Identität.
+
+Mit allen Vorschlägen zusammen ändern sich in diesem Fall die numerischen
+Prioritäten netto nicht: passende positive und negative Vorschläge heben
+sich auf. Das ist kein Nachweis fehlenden Konsums.
+
+Gezielte Kontrollen mit unveränderten echten Meta-Outputs:
+nur positive Priorisierungsoutputs → +20 je Kandidat;
+nur negative Priorisierungsoutputs → -20 je Kandidat.
+Keine neue Signalbedeutung wurde dafür erfunden. Die Auswahl der Teilmengen
+ist ein erklärender Testeingriff, keine automatisch gelernte Policy.
+
+Belege:
+run002/research-meta-search.json
+run002/research-loop-record.json
+run002/meta-record.json
+run002/search-baseline.json
+run002/search-conditioned.json
+run002/search-control-PRIORITIZE_RESEARCH.json
+run002/search-control-DEPRIORITIZE_RESEARCH.json
+
+Grenzen:
+Der Loop bekommt Scores und Robustheitsbeobachtungen aus dem Testrequest.
+Die aktuelle Host-DDO-Evidence wurde nicht automatisch zu diesen Scores.
+Die Suche produziert Anfragen und startet hier keinen nächsten realen
+Versuch. Die vollständige Core-Attribution des ursprünglichen Masters,
+ein geschlossener autonomer Kreislauf und produktive Übernahme sind daher
+weiterhin nicht bewiesen.
+
+8. PREISFRISCHE: DIE UNTERE ÜBERGABE VERLIERT DIE ORIGINALZEIT
+
+Zwei ausdrücklich konstruierte, OKX-förmige Payloads unterscheiden sich nur
+in ihrer Mark-Quellzeit:
+A: ts=0
+B: ts passend zum Test-Cycle.
+
+Der bestehende Preis-Provenienzadapter erzeugt daraus identische Objekte.
+Sein Carrier enthält keinen originalen Mark-Zeitstempel.
+Beide Objekte passieren den unteren Host bei sonst gleichem Testkontext.
+
+Beleg: diagnostics/stale-quote-boundary.json
+
+Das ist ein reproduzierbarer zeitlicher Informationsverlust an dieser
+Übergabe. Es ist kein beobachteter veralteter Exchange-Feed und widerlegt
+keine separat vorgelagerten Freshness-Guards. Der geforderte Nachweis, dass
+der tatsächliche Preis des ausgewählten Futures durchgängig rechtzeitig
+am wirksamen Scope-Consumer und an der Anzeige ankommt, bleibt offen.
+
+9. DER VORHANDENE GESAMTABSCHLUSSPRÜFER BESTÄTIGT SEIN LABEL NICHT
+
+Die gespeicherte Phase-26-Config und ihre Matrix deklarieren:
+PROVEN_COMPLETE und zwölf PROVEN_CURRENT-Zeilen.
+
+Der unveränderte aktuelle Prüfer
+prove_unified_blueprint_phase_26_final_closed_cycle_dod_v1
+liefert in dieser Untersuchung false.
+
+Die Abhängigkeit wurde bis zum konkreten fehlgeschlagenen Prädikat verfolgt:
+Authority Map baseline_sha =
+1bac0d93302c6e589effafe46fccb055d82bd44e
+D01 authorized_baseline_sha =
+dfcf4d04b8400763bee6ab0b465fa182927dea75
+aktueller HEAD =
+242b7974fc93f0bdb47706556101bd6f0c497414
+
+Der aktuelle Prüfer verlangt die passende Baseline-Bindung und verweigert
+deshalb die Bestätigung; darüber schlagen D01/Data-Substrate/Phase15 und
+schließlich die übergeordnete Phase26-Bestätigung fehl.
+
+Belege:
+run002/existing-phase26-adjudication.json
+diagnostics/closure-diagnostics.json
+followthrough/closure-failing-predicates.json
+
+Die negativen Authority-Pins selbst werden dabei positiv geprüft.
+Das ist kein Beleg eigenmächtig ausgeweiteter Trading Authority.
+Ein bloßes Umetikettieren der Baseline oder der Matrix wäre wiederum kein
+Gesamtfunktionsbeweis. Deshalb wurden weder Labels noch Pins geändert.
+
+PRÜFQUALITÄT UND VERBLEIBENDE BEWEISGRENZEN
+
+Der finale Hauptprüflauf run002 enthält 27 bestandene Assertions und keine
+Ausführungsfehler. Hinzu kommen unabhängige Entry-, Identitäts-, Freshness-,
+Pending- und Abschlussprädikat-Kontrollen. Vier L6-Artefakte wurden unabhängig
+gegen σ×M geprüft. Diese Zahlen sind keine Gesamtsystem-Abdeckungsquote.
+
+run001 bleibt erhalten. Dort wurden Fehler des neuen Prüfskripts sichtbar:
+Ledger-Envelope statt Payload gelesen, ein Hash-Negativtest falsch aufgebaut,
+ein Statusliteral falsch verglichen und eine ungerechtfertigte Erwartung an
+eine Netto-Prioritätsänderung gestellt. Das Prüfskript wurde korrigiert;
+der Produktcode blieb unverändert. Die finalen Aussagen stützen sich auf
+run002 und die gesonderten erfolgreichen Kontrollen.
+
+Die Quellen-/Arbeitsstandintegrität wird separat versiegelt:
+bestehende lokale Änderungen, Git-Diff und Git-Status unverändert;
+keine Originalquelle überschrieben; genaue geladene Modulherkunft erhalten.
+
+Nicht bewiesen:
+- echte Quelle und Aktualität des Marktpreises durch sämtliche wirksamen
+  Producer-/Consumer- und Anzeigegrenzen;
+- vollständige Cap21-/Cap23-/Cap24-/Host-/Ergebnis-/Lern-/Suchversorgung in
+  derselben automatisch ausgeführten Kette;
+- vollständige fachliche Gleichheit des ganzen heutigen Verbunds mit der
+  ursprünglichen Naked-MV2-Konfiguration;
+- echter Order-/Fill-/Positions-/Accounting-Verlauf und realisierte Ökonomie;
+- sämtliche Restart-/Crash-/Live-Eigenschaften des Gesamtsystems;
+- ein historischer Zeitpunkt vollständiger korrekter Zusammenarbeit.
+
+WAS EIN POSITIVER GESAMTFUNKTIONSNACHWEIS NOCH BRAUCHT
+
+Die fachliche Instrumentidentität der Volatilitätsquelle muss an jeder
+zulässigen Übergabe nachgewiesen sein. Die ursprüngliche Preiszeit muss
+bis zum tatsächlichen Verbraucher prüfbar bleiben, oder eine belegte
+übergeordnete Garantie muss diese Aufgabe vollständig tragen.
+
+Die Ergebnisversorgung braucht einen ausdrücklich gebundenen zulässigen
+Weg aus der echten Entscheidung derselben Instrument-/Zeit-/Core-Version,
+einschließlich der passenden Forward-Beobachtungen. Der bestehende
+Pending-Resolver ist dabei zu berücksichtigen; eine pauschale neue Parallel-
+pipeline wäre aus der Untersuchung nicht begründet.
+
+Für Lernen und Suche muss diese konkrete Evidence bis zur veränderten
+Bewertung/Hypothese und zum tatsächlich ausgeführten nächsten Forschungsfall
+verfolgt werden. Ein akzeptierter Export oder ein mit Test-Scores vollständiger
+Loop reicht für diesen ursprünglichen Gesamtzweck nicht.
+
+Die alten Abschlussmarker müssen an ihre belegte Revision gebunden bleiben.
+Ein neuer konsistenter Code-/Config-/Host-/Daten-Kandidat benötigt eine eigene
+Funktionsprüfung. Eine formale Label-Reparatur ersetzt sie nicht.
+
+ABSCHLUSS
+
+Geliefert ist eine abgeschlossene, begrenzte Funktionsuntersuchung mit
+positiven Ausführungsbelegen und konkreten Gegenfällen. Sie begründet am
+untersuchten Stand keinen positiven Gesamtfunktionsnachweis.
+
+Keine Produktreparatur, Wiederherstellung, neue operative Autorität,
+Live-Aktivierung oder Änderung der Obsidian-Register durchgeführt.
+Es laufen keine von dieser Untersuchung gestarteten Hintergrundaufgaben weiter.
+

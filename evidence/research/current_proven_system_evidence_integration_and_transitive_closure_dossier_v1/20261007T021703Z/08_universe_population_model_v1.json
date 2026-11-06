@@ -1,0 +1,110 @@
+{
+  "DISTINCTNESS_LAW": "U_CAP21 / U_S_STAR / U_TOP20 / U_TOP20_RESIDENCY remain semantically distinct; do not normalize to generic Universe",
+  "POPULATIONS": [
+    {
+      "AUTHORITY": "MEMBERSHIP",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVIDENCE_ONLY": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L02",
+      "LEARNING_ONLY": false,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE": false,
+      "OWNER": "ops.governed_futures_universe_producer_v1",
+      "POPULATION_ID": "U_CAP21_GFU",
+      "PRODUCTIVE": true,
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "Governed futures membership",
+      "RELATION_TO_OTHER_UNIVERSES": "superset gate for S_STAR",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "UNIVERSE_ID": "U_CAP21_GFU",
+      "WHY_DISTINCT": "superset gate for S_STAR"
+    },
+    {
+      "AUTHORITY": "RANKING_CONTEXT_MEMBERSHIP",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVIDENCE_ONLY": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L05",
+      "LEARNING_ONLY": false,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE": false,
+      "OWNER": "ops.peak_trade_economic_ranking_runtime_v1",
+      "POPULATION_ID": "U_S_STAR",
+      "PRODUCTIVE": true,
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "Economically complete rankable set",
+      "RELATION_TO_OTHER_UNIVERSES": "subset of Cap21 with features",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "UNIVERSE_ID": "U_S_STAR",
+      "WHY_DISTINCT": "subset of Cap21 with features"
+    },
+    {
+      "AUTHORITY": "RANKING_PROJECTION",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVIDENCE_ONLY": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L08",
+      "LEARNING_ONLY": false,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE": false,
+      "OWNER": "ops.productive_futures_ranking_producer_v1",
+      "POPULATION_ID": "U_TOP20",
+      "PRODUCTIVE": true,
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "Candidate context window",
+      "RELATION_TO_OTHER_UNIVERSES": "cardinality subset of ranked S_STAR",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "UNIVERSE_ID": "U_TOP20",
+      "WHY_DISTINCT": "cardinality subset of ranked S_STAR"
+    },
+    {
+      "AUTHORITY": "EVALUATION_CONTINUITY",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EVIDENCE_ONLY": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L09",
+      "LEARNING_ONLY": false,
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE": false,
+      "OWNER": "ops.top20_opportunity_evaluation_residency_v1",
+      "POPULATION_ID": "U_TOP20_RESIDENCY",
+      "PRODUCTIVE": false,
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "Evaluation residents",
+      "RELATION_TO_OTHER_UNIVERSES": "lifecycle over Top20; default off",
+      "REMOVED_BY": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "UNIVERSE_ID": "U_TOP20_RESIDENCY",
+      "WHY_DISTINCT": "lifecycle over Top20; default off"
+    }
+  ],
+  "TEMPORAL_VIEW": "CURRENT_ONLY"
+}

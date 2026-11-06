@@ -1,0 +1,9 @@
+### CON-2082 — Keychain/K1 und Treasury als gemeinsamer Dienst
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+K1 bedient u.a. Treasury-GET, private Pretrade-Abfragen, Free Margin, PRE-POST, One-shot-POST und Read-only-Abgleich nach unklarem Ausgang. Neben Keychain existieren SecretRef-/Vault-Dateieingänge und direkter HMAC-Vertrag. Materialfreier Occupancy-Bind ist kein Credential-Load. Private-WS-Login erhält im geprüften Pfad Payload vom Caller; kanonischer K1-Produzent bleibt offen.
+
+**Grenze:** Agentenschutz muss Erwerb, Session, Headerbau und Versand einschließen; keine Rohheader oder Secretwerte herausgeben. OS-/Prozess-Isolation und heutige ACLs sind unbewiesen. Historischer GET-Witness ist kein heutiger Vollnachweis.
+
+Quellen: EVI-2210, EVI-2209, EVI-2294.

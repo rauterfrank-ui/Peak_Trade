@@ -1,0 +1,43 @@
+THRESHOLD / DISTANCE ANALYSIS
+
+Wiring constants (src/backtest/mv2_research_wiring_v1.py::_build_replay_input:1704-1707):
+  up_distance=120.0
+  adverse_exit_distance=60.0
+  reversal_distance=90.0
+
+Generator convention (compute_evaluated_thresholds, direction=LONG):
+  up_candidate_threshold      = trailing_anchor + up_distance
+  downscope_candidate_threshold = trailing_anchor - up_distance
+  adverse_exit_threshold      = trailing_anchor - adverse_exit_distance
+  reversal_candidate_threshold  = trailing_anchor - reversal_distance
+
+Observed 1INCH research marks (probe):
+  mark_min=0.2303
+  mark_max=0.5301
+  median_mark=0.3895
+  max_abs_bar_to_bar_move=0.0293
+
+Example from bearish_bar_samples.csv (trailing_anchor≈0.3754):
+  bull_threshold ≈ 120.3754
+  bear_threshold ≈ -119.6246   # NEGATIVE because anchor < up_distance
+  gap_to_bull ≈ +119.99
+  gap_to_bear ≈ +120.00 (price would need to go below negative threshold)
+
+MATHEMATICALLY_UNREACHABLE=true
+  required_move_to_hit = 120.0 absolute price units
+  observed_max_bar_move ≈ 0.029
+  full-sample mark range ≈ 0.30 << 120
+
+UNIT_MIXING:
+  Generator expects absolute price distance in same units as mark/trailing_anchor.
+  Wiring supplies ETH-fixture-scale absolutes (tests use ~3500 marks with distances 50–100).
+  Economic research perps (1INCH etc.) use sub-1.0 marks → UNIT_MISMATCH.
+
+CLAMPS / ABS / DEFAULTS that kill bear:
+  No abs() on distance in compute_evaluated_thresholds.
+  No productive clamp converts distances to percent.
+  Negative downscope threshold is not blocked by input gates (gates check price>0, not threshold>0).
+  Result: bear candidate condition price <= (anchor-120) never true for positive marks when anchor<120.
+
+IMPLICIT_LONG_BIAS_VIA_SEED=true (separate): initial SideState.LONG_ARMED allows long activity without upscope;
+  but exclusive noop itself is explained by threshold miss, not by confirmation asymmetry.

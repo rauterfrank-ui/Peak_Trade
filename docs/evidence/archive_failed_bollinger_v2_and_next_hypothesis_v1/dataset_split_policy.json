@@ -1,0 +1,35 @@
+{
+  "schema_version": "dataset_split_policy.v1",
+  "sealed_holdout": {
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+    "period_start": "2023-08-16T05:55:00Z",
+    "period_end": "2024-09-01T00:00:00Z",
+    "instrument_count": 65,
+    "content_hash": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+    "sealed_manifest_sha256": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56",
+    "role": "FINAL_AUDIT_ONLY",
+    "tuning_forbidden": true,
+    "hypothesis_selection_forbidden": true,
+    "parameter_search_forbidden": true
+  },
+  "independent_development_requirements": {
+    "futures_only": true,
+    "btc_excluded": true,
+    "spot_excluded": true,
+    "public_okx_read_only": true,
+    "credentials_forbidden": true,
+    "frequency": "PT1H",
+    "pit_chronological": true,
+    "must_not_overlap_sealed_holdout": true,
+    "preferred_window_end_exclusive": "2023-08-16T05:55:00Z",
+    "preferred_window_start_example": "2021-09-01T00:00:00Z",
+    "min_history_days_policy": 365,
+    "download_now": false,
+    "materialized": false
+  },
+  "availability": {
+    "independent_development_data_available": "unknown",
+    "note": "History-depth probe evidence shows many OKX instruments have public PT1H history before the sealed common-panel start, but no sealed independent development panel is present in-repo.",
+    "research_status": "READY_FOR_INDEPENDENT_DATA"
+  }
+}

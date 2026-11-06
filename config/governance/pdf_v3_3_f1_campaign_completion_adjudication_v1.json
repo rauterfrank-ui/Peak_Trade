@@ -1,0 +1,11 @@
+{
+    "artifact_class": "PDF_V3_3_F1_CAMPAIGN_COMPLETION_ADJUDICATION_V1",
+    "schema_version": "pdf_v3_3_f1_campaign_completion_adjudication_v1",
+    "s02_required_for_pdf_completion": false,
+    "s02_authorized_under_this_owner_go": false,
+    "s02_dependency_analysis": "No D1-D29 criterion requires S02-specific evidence exclusively; F1 S01 REAL campaign + threshold closure satisfies promotion-relevant and lineage requirements for CURRENT M9 productive surface.",
+    "s01_real_campaign_closure_proven_by": "src/governance/f1_m9_prospective_real_campaign_durable_evidence_verification_v1.py",
+    "post_real_handoff_decision_ref": "config/governance/f1_m9_post_real_campaign_productive_handoff_v1_decision_v1.json",
+    "threshold_closure_decision_ref": "config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json",
+    "block_a_status_when_s01_and_threshold_proven": "PROVEN"
+}

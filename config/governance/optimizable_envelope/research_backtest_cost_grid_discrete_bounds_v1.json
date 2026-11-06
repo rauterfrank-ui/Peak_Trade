@@ -1,0 +1,13 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_BOUNDS_V1",
+  "schema_version": "canonical_research_backtest_cost_grid_discrete_bounds/v1",
+  "surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+  "bound_semantics": "DISCRETE_GRID_CARTESIAN_PRODUCT_ONLY",
+  "not_included": "FUNDING_RATE_OPTIMIZATION;STRATEGY_HYPERPARAMETERS;ROBUSTNESS_REJECTION_THRESHOLDS",
+  "fee_bps": [8.0, 10.0, 12.0],
+  "slippage_bps": [4.0, 5.0, 6.0],
+  "continuous_range_allowed": false,
+  "extrapolation_allowed": false,
+  "source_constant": "OPERATOR_BOUND_FEE_BPS_AND_SLIPPAGE_BPS",
+  "source_module": "src/backtest/okx_eth_perp_research_cost_grid_v1_constants.py"
+}

@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_docs_registry_integration
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-docs-registry-integration
+MODE: paper_stability_guard
+
+GOAL
+- integrate the bounded acceptance chain into broader docs navigation
+
+OUTPUTS
+- updated docs hub references
+- docs/ops/reviews/bounded_acceptance_docs_registry_integration/REVIEW.md
+
+NEXT SUGGESTED STEP
+- bounded_acceptance_operator_verify_checklist

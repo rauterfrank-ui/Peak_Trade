@@ -1,0 +1,371 @@
+{
+  "artifact_kind": "cross_sectional_relative_strength_v0_versioned_research_binding",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "binding": {
+    "binding_status": {
+      "cost_model_binding_status": "BOUND",
+      "dataset_binding_status": "BOUND",
+      "digest_binding_status": "BOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "COMPLETE",
+      "period_binding_status": "BOUND",
+      "policy_classes_status": "BOUND",
+      "universe_binding_status": "BOUND"
+    },
+    "digest_bindings": {
+      "config_digest": {
+        "status": "BOUND",
+        "value": "c479e952e93b1c1ad2e8de7cd7a17e342f490cef059db13e05f3ab656ac35771"
+      },
+      "data_digest": {
+        "status": "BOUND",
+        "value": "7e856baff0ad7bf4d1b8662d4d92cfe4abe0e76561637db0212d6debe0b42d37"
+      },
+      "implementation_digest": {
+        "status": "BOUND",
+        "value": "f9f9a6d59410ee42bff8b9125a6a7696f6e0119834e3294ba571e7c51795d0ea"
+      }
+    },
+    "direction_semantics": {
+      "ascending_rank_for_short_selection_forbidden": true,
+      "bottom1_selection_allowed": false,
+      "dual_rank_forbidden": true,
+      "negative_top1_means": "SHORT_TOP1",
+      "non_finite_score_target": "FLAT",
+      "panel_insufficient_target": "FLAT",
+      "positive_top1_means": "LONG_TOP1",
+      "selection_mode": "single_top1_by_score_desc",
+      "warmup_incomplete_target": "FLAT",
+      "zero_score_target": "FLAT"
+    },
+    "external_bindings": {
+      "admissibility_manifest_ref": {
+        "ref": "pit_cross_sectional_research_dataset_envelope.v0:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:v1",
+        "status": "BOUND"
+      },
+      "evaluation_period_binding": {
+        "ref": "pit_cross_sectional_research_chronological_holdout_v1:v1",
+        "status": "BOUND"
+      },
+      "execution_model_version": {
+        "status": "BOUND",
+        "value": "backtest_execution_v0"
+      },
+      "fee_model_version": {
+        "status": "BOUND",
+        "value": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_version": {
+        "status": "BOUND",
+        "value": "backtest_funding_perpetual_interval_v1"
+      },
+      "instrument_id_canonicalization_version": {
+        "status": "BOUND",
+        "value": "instrument_id_canonicalization.v1"
+      },
+      "panel_ohlcv_dataset_manifest_ref": {
+        "ref": "pit_okx_pt1h_panel_ohlcv_dataset_v1:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:v1",
+        "status": "BOUND"
+      },
+      "pit_universe_manifest_ref": {
+        "ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+        "status": "BOUND"
+      },
+      "slippage_model_version": {
+        "status": "BOUND",
+        "value": "backtest_slippage_symmetric_v0"
+      },
+      "spread_model_version": {
+        "status": "BOUND",
+        "value": "research_conservative_bps_v1"
+      }
+    },
+    "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0",
+    "minimum_hold_semantics": {
+      "default_hold": "until_next_rebalance",
+      "risk_exit_override": true,
+      "safety_exit_override": true
+    },
+    "missing_bar_semantics": {
+      "carry_forward": false,
+      "missing_bar_policy": "exclude_non_selected_instrument_for_epoch",
+      "non_selected_missing": "exclude_for_epoch",
+      "selected_missing": "force_flat"
+    },
+    "numeric_bindings": {
+      "lookback_N": {
+        "status": "BOUND",
+        "value": 20
+      },
+      "max_bar_staleness_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "min_abs_score_strength": {
+        "status": "NOT_APPLICABLE"
+      },
+      "min_eligible_members_for_rank": {
+        "status": "BOUND",
+        "value": 5
+      },
+      "rebalance_interval_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "signal_lag_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "switch_entry_delay_epochs": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "vol_epsilon": {
+        "status": "BOUND",
+        "value": 1e-08
+      },
+      "vol_return_method": {
+        "status": "BOUND",
+        "value": "log_return"
+      },
+      "vol_window_V": {
+        "status": "BOUND",
+        "value": 20
+      }
+    },
+    "orchestrator": {
+      "owner": "cross_sectional_single_slot_research_orchestrator_v0",
+      "scope": "RESEARCH_ONLY"
+    },
+    "panel_semantics": {
+      "eligibility_mode": "per_instrument_eligibility_mask",
+      "insufficient_panel_action": "flat",
+      "minimum_eligible_member_count_required": true
+    },
+    "policy_classes": {
+      "cooldown_policy": "no_cooldown",
+      "direction_policy": "symmetric_top1_sign",
+      "minimum_hold_policy": "until_next_rebalance",
+      "missing_bar_policy": "exclude_non_selected_instrument_for_epoch",
+      "panel_completeness_policy": "per_instrument_eligibility_mask",
+      "rebalance_policy_class": "fixed_N_bar_cadence",
+      "score_family_policy": "volatility_normalized_fixed_lookback_return",
+      "signal_timing_policy": "finalized_bar_close_epoch",
+      "switch_policy": "flat_then_wait_one_epoch_then_enter",
+      "threshold_policy": "sign_boundary_only",
+      "tie_break_policy": "score_desc_then_instrument_id_asc"
+    },
+    "schema_version": "cross_sectional_ranking_semantics_binding.v0",
+    "switch_semantics": {
+      "atomic_side_switch": false,
+      "flat_then_wait_one_epoch_then_enter": true,
+      "opposite_side_requires_reconciled_flat": true,
+      "switch_policy": "flat_then_wait_one_epoch_then_enter"
+    },
+    "system_constraints": {
+      "bitcoin_direction_allowed": false,
+      "futures_only": true,
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false
+    },
+    "threshold_semantics": {
+      "numeric_strength_threshold_initial": false,
+      "threshold_policy": "sign_boundary_only"
+    },
+    "tie_break_semantics": {
+      "primary_order": "score_desc",
+      "score_representation": "unrounded_internal_score",
+      "secondary_order": "instrument_id_asc",
+      "tie_break_policy": "score_desc_then_instrument_id_asc"
+    },
+    "timing_semantics": {
+      "decision_input": "finalized_bars_only",
+      "finalized_bar_required": true,
+      "immutable_score_ledger": true,
+      "minimum_signal_lag_bars": 1,
+      "pit_universe_at_score_epoch": true,
+      "same_bar_execution": false,
+      "score_epoch": "finalized_bar_close"
+    }
+  },
+  "binding_digest": "84148813b30300eebb4ead67fdf680974181b417c89380ac4a6c368b6d61b70e",
+  "config_digest": "c479e952e93b1c1ad2e8de7cd7a17e342f490cef059db13e05f3ab656ac35771",
+  "cost_execution_binding": {
+    "binding_version": "v0",
+    "execution_model_binding": {
+      "effective_entry_cost_bps": 20.0,
+      "effective_exit_cost_bps": 20.0,
+      "execution_model_version": "backtest_execution_v0",
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "roundtrip_cost_bps": 40.0
+    },
+    "fee_model_binding": {
+      "fee_bps_per_side": 10.0,
+      "fee_model_version": "backtest_fee_taker_symmetric_v0"
+    },
+    "funding_model_binding": {
+      "bind": true,
+      "funding_model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "implicit_zero_cost_forbidden": true,
+    "maker_rebate_assumption_forbidden": true,
+    "slippage_model_binding": {
+      "slippage_bps_per_side": 5.0,
+      "slippage_model_version": "backtest_slippage_symmetric_v0"
+    },
+    "spread_model_binding": {
+      "conservative_half_spread_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    }
+  },
+  "data_contract_digest": "7e856baff0ad7bf4d1b8662d4d92cfe4abe0e76561637db0212d6debe0b42d37",
+  "economic_evaluation_executed": false,
+  "economic_policy_binding": {
+    "binding_version": "v1",
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "monte_carlo_policy_binding": {
+      "policy_version": "monte_carlo_v1",
+      "runs": 64,
+      "seed": 42
+    },
+    "parameter_sensitivity_policy_binding": {
+      "policy_version": "parameter_sensitivity_v1"
+    },
+    "policy_lowering_forbidden": true,
+    "promising_is_not_pass": true,
+    "stress_policy_binding": {
+      "policy_version": "stress_class_suite_v1"
+    },
+    "walk_forward_policy_binding": {
+      "policy_version": "walk_forward_v1"
+    }
+  },
+  "hypothesis_frozen": true,
+  "implementation_digest": "f9f9a6d59410ee42bff8b9125a6a7696f6e0119834e3294ba571e7c51795d0ea",
+  "instrument_binding": {
+    "binding_version": "v0",
+    "bitcoin_excluded": true,
+    "direction_policy": "symmetric_top1_sign",
+    "instrument_id_canonicalization_version": "instrument_id_canonicalization.v1",
+    "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+    "selection_mode": "single_top1_by_score_desc",
+    "spot_excluded": true,
+    "synthetic_spot_excluded": true,
+    "universe_lifecycle_registry_ref": "pit_futures_lifecycle_registry_v1:okx_production_lifecycle_v1"
+  },
+  "non_authorizing": true,
+  "orchestrator_owner": "cross_sectional_single_slot_research_orchestrator_v0",
+  "order_effect": "NONE",
+  "panel_dataset_binding": {
+    "bar_interval": "PT1H",
+    "binding_version": "v0",
+    "contract_lifecycle_semantics": "pit_lifecycle_registry_bound",
+    "credential_access_forbidden": true,
+    "data_provenance": "versioned_offline_panel_manifest_only",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+    "dataset_version": "v1",
+    "duplicate_bars_policy": "fail_closed",
+    "ingestion_contract_version": "okx_public_pt1h_panel_ingest.v1",
+    "instrument_key": "instrument_id",
+    "missing_bars_policy": "exclude_non_selected_for_epoch",
+    "network_access_forbidden": true,
+    "ohlcv_fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume"
+    ],
+    "out_of_order_bars_policy": "fail_closed",
+    "panel_ohlcv_dataset_manifest_ref": "pit_okx_pt1h_panel_ohlcv_dataset_v1:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:v1",
+    "panel_schema": "pit_okx_pt1h_panel_ohlcv_dataset_manifest_v1",
+    "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+    "price_usage": "close_for_score_computation",
+    "staleness_policy": "max_bar_staleness_bars_enforced",
+    "timestamp_key": "timestamp_utc",
+    "timezone": "UTC",
+    "warmup_bars": 21
+  },
+  "parameter_binding": {
+    "binding_version": "v0",
+    "operator_decision_digest": "82e4a28813d72f6b9f54db15cb5729763648bc148f6eac3b445be6dab6cc107a",
+    "parameter_search_forbidden": true,
+    "parameters": {
+      "lookback_N": 20,
+      "max_bar_staleness_bars": 1,
+      "min_eligible_members_for_rank": 5,
+      "rebalance_interval_bars": 1,
+      "signal_lag_bars": 1,
+      "switch_entry_delay_epochs": 1,
+      "vol_epsilon": 1e-08,
+      "vol_return_method": "log_return",
+      "vol_window_V": 20
+    },
+    "score_formula_expression": "score_i = log_return_N(i) / max(vol_V(i), vol_epsilon); log_return_N(i) = ln(close_i[t-lag] / close_i[t-lag-N]); vol_V(i) = sample_stdev(ln(close_i[j]/close_i[j-1]) for j in (t-lag-V+1..t-lag]); lag = signal_lag_bars",
+    "score_formula_version": "volatility_normalized_fixed_lookback_log_return_v0"
+  },
+  "period_binding": {
+    "binding_version": "v1",
+    "boundary_semantics": "utc_bar_close_inclusive_end",
+    "embargo_duration": "PT2H",
+    "holdout_isolation_enforced": true,
+    "no_overlap_enforced": true,
+    "out_of_sample_end": "2024-06-01T01:00:00Z",
+    "out_of_sample_start": "2024-05-31T18:00:00Z",
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1",
+    "periods_frozen_before_evaluation": true,
+    "purge_duration": "PT2H",
+    "split_policy_id": "pit_cross_sectional_research_chronological_holdout_v1",
+    "split_timezone": "UTC",
+    "training_end": "2024-05-31T08:00:00Z",
+    "training_start": "2024-05-30T20:00:00Z",
+    "validation_end": "2024-05-31T16:00:00Z",
+    "validation_start": "2024-05-31T10:00:00Z",
+    "warmup_end": "2024-05-30T19:00:00Z",
+    "warmup_start": "2024-05-25T00:00:00Z"
+  },
+  "pit_universe_binding": {
+    "binding_version": "v0",
+    "bitcoin_excluded": true,
+    "bitcoin_exclusion_rules": "fail_closed_btc_xbt_bitcoin_tokens",
+    "data_availability_required": true,
+    "delisting_handling": "exclude_at_score_epoch",
+    "duplicate_instrument_rejection": true,
+    "futures_only": true,
+    "inactive_instrument_handling": "exclude_at_score_epoch",
+    "instrument_identity_normalization": "instrument_id_canonicalization.v1",
+    "instrument_type": "LINEAR_PERPETUAL",
+    "listing_timestamp_required": true,
+    "minimum_eligible_member_count": 5,
+    "minimum_history_bars": 21,
+    "pit_eligibility_semantics": "per_score_epoch_finalized_bar_close",
+    "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+    "settlement_asset": "USDT",
+    "spot_excluded": true,
+    "stable_universe_digest_required": true,
+    "staleness_policy": "max_bar_staleness_bars_enforced",
+    "survivorship_bias_forbidden": true,
+    "synthetic_spot_excluded": true,
+    "universe_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe_v1",
+    "universe_lifecycle_registry_ref": "pit_futures_lifecycle_registry_v1:okx_production_lifecycle_v1",
+    "universe_policy_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe",
+    "universe_policy_version": "v1",
+    "venue": "OKX"
+  },
+  "ranking_semantics_binding_ref": "config/research/cross_sectional_relative_strength_non_bitcoin_perpetuals_v0_ranking_semantics_binding_v0.json",
+  "ranking_semantics_schema_version": "cross_sectional_ranking_semantics_binding.v0",
+  "research_binding_only": true,
+  "research_hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0",
+  "runtime_effect": "NONE",
+  "schema_version": "cross_sectional_relative_strength_v0_versioned_research_binding.v0",
+  "strategy_id": "cross_sectional_relative_strength",
+  "strategy_version": "v0",
+  "system_constraints": {
+    "bitcoin_direction_allowed": false,
+    "futures_only": true,
+    "spot_allowed": false,
+    "synthetic_spot_allowed": false
+  },
+  "validation_verdict": "ACCEPTED_COMPLETE"
+}

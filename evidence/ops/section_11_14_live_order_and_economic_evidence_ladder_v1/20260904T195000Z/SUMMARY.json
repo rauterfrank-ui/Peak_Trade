@@ -1,0 +1,881 @@
+{
+  "ACCOUNTING_EVIDENCE_USED_AS_RESTART_SUBSTITUTE": false,
+  "AMEND_USED": false,
+  "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+  "BOUND_IDENTITY_HITS_IN_DURABLE_STATE": [],
+  "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+  "BOUND_ORDID": "3893505043080286208",
+  "CANCEL_USED": false,
+  "CANONICAL_EVIDENCE_RUN_ID": "20260904T195000Z",
+  "CASE_ADJUDICATION": "CASE_LIVE_RESTART_RECONSTRUCTED_FAIL_CLOSED_MISSING_DURABLE_HANDOFF",
+  "CASE_B_NOT_PROVEN_CONTRACT_CLOSED": true,
+  "CREDENTIAL_USE": false,
+  "DURABLE_STATE_CODE_PATH_EXISTS": false,
+  "DURABLE_STATE_HISTORICAL_EXECUTION_PROVEN": false,
+  "DURABLE_STATE_TREE_COUNT": 9,
+  "EARLIEST_MISSING_FACT": "DURABLE_LIVE_PRE_RESTART_HANDOFF",
+  "ENDED_AT_UTC": "2026-09-04T20:04:47Z",
+  "FLATTEN_EXECUTE_USED": false,
+  "FUNDING_USED": false,
+  "FUTURE_MINIMUM_OPERATION": "PERSIST_IDENTITY_BOUND_PEAK_TRADE_DURABLE_PRE_RESTART_HANDOFF",
+  "FUTURE_OWNER_GO_REQUIRED": "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED",
+  "GET_PERFORMED": false,
+  "LIVE_ACCOUNTING_RECONSTRUCTED": true,
+  "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": false,
+  "LIVE_LADDER_PACK_COUNT": 14,
+  "LIVE_RESTART_RECONSTRUCTED": false,
+  "MANIFEST_VERIFY_RC": 0,
+  "ORIGIN_MAIN_SHA": "fec71a8f9cdd5fdb458ed361ebbf9f0117549c54",
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_MAXIMUM_SAFE_LEVERAGE_V1",
+  "POST_RESTART_RECONSTRUCTION_PROVEN": false,
+  "POST_USED": false,
+  "PRE_RESTART_HANDOFF_PROVEN": false,
+  "PRE_RESTART_HANDOFF_REQUIRED": true,
+  "PRIVATE_GET_USED": false,
+  "PUBLIC_GET_USED": false,
+  "RAW_EVIDENCE_MODIFIED": false,
+  "RESTART_EXECUTION": false,
+  "RESTART_PROOF_CONTRACT_STATUS": "BOUND_AND_EXHAUSTIVELY_CENSUSED",
+  "RESTART_SEMANTICS_STATUS": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+  "RETRY_USED": false,
+  "RUNTIME_CHANGE_REQUIRES_SEPARATE_OWNER_SCOPE": true,
+  "SECOND_SUBMIT_USED": false,
+  "SECRET_VALUES_INCLUDED": false,
+  "SECTION_11_14_AUTHORIZED": false,
+  "SECTION_11_14_COMPLETE": false,
+  "STARTED_AT_UTC": "2026-09-04T20:04:47Z",
+  "code_path_census": {
+    "CODE_PATH_EXISTS": false,
+    "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_CODE_PATH_CENSUS_V1",
+    "HISTORICAL_LIVE_EXECUTION_PROVEN": false,
+    "LIVE_CANARY_DURABLE_STATE_WRITER_EXISTS": false,
+    "LIVE_CANARY_DURABLE_STATE_WRITER_HITS": [],
+    "PRE_RESTART_HANDOFF_PROVEN": false,
+    "RUNTIME_CHANGE_REQUIRES_SEPARATE_OWNER_SCOPE": true,
+    "SECTION_11_14_DURABLE_STATE_WRITER_HITS": [],
+    "SECTION_11_14_LIVE_DURABLE_STATE_WRITER_EXISTS": false
+  },
+  "exhaustive_census": {
+    "ACCOUNTING_CLOSURE_IS_NOT_RESTART": true,
+    "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+    "BOUND_IDENTITY_HITS_IN_DURABLE_STATE": [],
+    "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+    "BOUND_ORDID": "3893505043080286208",
+    "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_EXHAUSTIVE_CENSUS_V1",
+    "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+    "DURABLE_STATE_TREES": [
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 1,
+        "files": [
+          "evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/durable_state/actual_start_durable_state_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/durable_state"
+      },
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 1,
+        "files": [
+          "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/durable_state/actual_start_durable_state_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/durable_state"
+      },
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 1,
+        "files": [
+          "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/durable_state/actual_start_durable_state_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/durable_state"
+      },
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 1,
+        "files": [
+          "evidence/ops/section_11_12_testnet_autonomous_recovery_proven_v1/20260810T233904Z/durable_state/operating_state_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_testnet_autonomous_recovery_proven_v1/20260810T233904Z/durable_state"
+      },
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 1,
+        "files": [
+          "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/durable_state/kill_switch_state_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/durable_state"
+      },
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 1,
+        "files": [
+          "evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/durable_state/actual_start_durable_state_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/durable_state"
+      },
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 1,
+        "files": [
+          "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223428Z/durable_state/restart_with_open_order_pre_restart_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223428Z/durable_state"
+      },
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD",
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 2,
+        "files": [
+          "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_order_pre_restart_v1.json",
+          "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_position_pre_restart_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state"
+      },
+      {
+        "artifact_roles": [
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD",
+          "TESTNET_DURABLE_STATE_NOT_THIS_FIELD"
+        ],
+        "bound_identity_hits": [],
+        "classification": "TESTNET_OR_DEMO_NOT_THIS_FIELD",
+        "file_count": 2,
+        "files": [
+          "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/durable_state/reconnect_after_unknown_submit_pre_query_unknown_v1.json",
+          "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/durable_state/unknown_submit_query_before_retry_pre_query_unknown_v1.json"
+        ],
+        "path": "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/durable_state"
+      }
+    ],
+    "DURABLE_STATE_TREE_COUNT": 9,
+    "EARLIEST_MISSING_FACT": "DURABLE_LIVE_PRE_RESTART_HANDOFF",
+    "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+    "KNOWN_PACK_CENSUS": {
+      "BOUND_ACCOUNTING_EVIDENCE_RUN_ID": "20260904T185000Z",
+      "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+      "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+      "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+      "BOUND_ORDID": "3893505043080286208",
+      "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+      "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+      "accounting_artifacts_are_not_restart_handoff": true,
+      "durable_handoff_paths": [],
+      "fill_raw_exists": true,
+      "fill_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/GET_FILLS.raw.json",
+      "fill_raw_sha256": "de429030b71b4db50923deb60731c8d12887300605e0bb194126465e2efe61ef",
+      "inspected_live_packs": [
+        {
+          "durable_handoff_markers": [],
+          "exists": true,
+          "names": [
+            "MANIFEST.sha256",
+            "SUBMIT_ACK_OBSERVED_ADJUDICATION.json",
+            "SUMMARY.json"
+          ],
+          "run_id": "20260904T160450Z"
+        },
+        {
+          "durable_handoff_markers": [],
+          "exists": true,
+          "names": [
+            "FILL_OBSERVED_ADJUDICATION.json",
+            "GET_FILLS.raw.json",
+            "GET_ORDER_STATUS.raw.json",
+            "MANIFEST.sha256",
+            "SUMMARY.json"
+          ],
+          "run_id": "20260904T165859Z"
+        },
+        {
+          "durable_handoff_markers": [],
+          "exists": true,
+          "names": [
+            "FEE_OBSERVED_ADJUDICATION.json",
+            "GET_FILLS.raw.json",
+            "GET_ORDER_STATUS.raw.json",
+            "MANIFEST.sha256",
+            "SUMMARY.json"
+          ],
+          "run_id": "20260904T173813Z"
+        },
+        {
+          "durable_handoff_markers": [],
+          "exists": true,
+          "names": [
+            "GET_POSITIONS.raw.json",
+            "MANIFEST.sha256",
+            "POSITION_RECONCILED_ADJUDICATION.json",
+            "SUMMARY.json"
+          ],
+          "run_id": "20260904T181817Z"
+        },
+        {
+          "durable_handoff_markers": [],
+          "exists": true,
+          "names": [
+            "ACCOUNTING_IDENTITY.json",
+            "ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json",
+            "MANIFEST.sha256",
+            "SOURCE_REFERENCES.json",
+            "SUMMARY.json"
+          ],
+          "run_id": "20260904T185000Z"
+        }
+      ],
+      "position_raw_exists": true,
+      "position_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/GET_POSITIONS.raw.json",
+      "position_raw_sha256": "a428f9f023f2b130301bfdf11b9d050cf377c4140f2354ead409c4be290c8959",
+      "testnet_durable_paths": [
+        "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_order_pre_restart_v1.json",
+        "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_position_pre_restart_v1.json"
+      ],
+      "testnet_restart_clOrdId": "",
+      "testnet_restart_environment": "DEMO",
+      "testnet_restart_instId": "BTC-USD_UM_XPERP-310328",
+      "testnet_restart_is_not_this_field": true,
+      "testnet_restart_proven_exists": true,
+      "testnet_restart_proven_relpath": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/"
+    },
+    "LIVE_CANARY_DURABLE_STATE_WRITER_EXISTS": false,
+    "LIVE_CANARY_DURABLE_STATE_WRITER_HITS": [],
+    "LIVE_LADDER_DURABLE_STATE_PRESENT": false,
+    "LIVE_LADDER_PACKS": [
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "ADJUDICATION.json",
+          "LADDER_STATE.json",
+          "LINEAGE.json",
+          "MANDATORY_LIVE_METRICS_SCHEMA.json",
+          "MANIFEST.sha256",
+          "MUTATION_BOUNDARY.json",
+          "REUSE_VS_FRESH.json",
+          "STATIC_FIELD_ADJUDICATION.json",
+          "SUMMARY.json",
+          "TRACEABILITY.json",
+          "claims.json"
+        ],
+        "run_id": "20260904T121000Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "ADJUDICATION.json",
+          "COMPONENT_CLASSIFICATION.json",
+          "LADDER_STATE.json",
+          "LINEAGE.json",
+          "MANDATORY_LIVE_METRICS_SCHEMA.json",
+          "MANIFEST.sha256",
+          "MUTATION_BOUNDARY.json",
+          "REUSE_VS_FRESH.json",
+          "STATIC_EXECUTION_GRAPH.json",
+          "STATIC_FIELD_ADJUDICATION.json",
+          "SUMMARY.json",
+          "TRACEABILITY.json",
+          "claims.json"
+        ],
+        "run_id": "20260904T123100Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "ADJUDICATION.json",
+          "AUTHORITY_BOUNDARY_MAP.json",
+          "COMPONENT_CLASSIFICATION.json",
+          "CONSTITUENT_MATRIX.json",
+          "LADDER_STATE.json",
+          "LINEAGE.json",
+          "MANDATORY_LIVE_METRICS_SCHEMA.json",
+          "MANIFEST.sha256",
+          "MUTATION_BOUNDARY.json",
+          "PATH_REACHABLE_ADJUDICATION.json",
+          "PRIVATE_GET.sanitized.json",
+          "PRIVATE_GET_BINDING.json",
+          "REUSE_VS_FRESH.json",
+          "RUNTIME_DEPENDENCY_GRAPH.json",
+          "RUNTIME_GATE_CLASSIFICATION.json",
+          "STATIC_EXECUTION_GRAPH.json",
+          "STATIC_FIELD_ADJUDICATION.json",
+          "STATIC_REACHABILITY_GRAPH.json",
+          "SUMMARY.json",
+          "TRACEABILITY.json",
+          "claims.json"
+        ],
+        "run_id": "20260904T130000Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "ADJUDICATION.json",
+          "AUTHORITY_BOUNDARY_MAP.json",
+          "COMPONENT_CLASSIFICATION.json",
+          "CONSTITUENT_MATRIX.json",
+          "LADDER_STATE.json",
+          "LATER_FIELD_CENSUS.json",
+          "LINEAGE.json",
+          "MANDATORY_LIVE_METRICS_SCHEMA.json",
+          "MANIFEST.sha256",
+          "MUTATION_BOUNDARY.json",
+          "PATH_REACHABLE_ADJUDICATION.json",
+          "PRIVATE_GET.sanitized.json",
+          "PRIVATE_GET_BINDING.json",
+          "PRIVATE_READ_ONLY_ADJUDICATION.json",
+          "PRIVATE_READ_ONLY_GET.sanitized.json",
+          "PRIVATE_READ_ONLY_GET_BINDING.json",
+          "REUSE_VS_FRESH.json",
+          "RUNTIME_DEPENDENCY_GRAPH.json",
+          "RUNTIME_GATE_CLASSIFICATION.json",
+          "STATIC_EXECUTION_GRAPH.json",
+          "STATIC_FIELD_ADJUDICATION.json",
+          "STATIC_REACHABILITY_GRAPH.json",
+          "SUMMARY.json",
+          "TRACEABILITY.json",
+          "claims.json"
+        ],
+        "run_id": "20260904T133200Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "ADJUDICATION.json",
+          "AUTHORITY_BOUNDARY_MAP.json",
+          "COMPONENT_CLASSIFICATION.json",
+          "CONSTITUENT_MATRIX.json",
+          "GATE_STATE.json",
+          "LADDER_STATE.json",
+          "LATER_FIELD_CENSUS.json",
+          "LINEAGE.json",
+          "MANDATORY_LIVE_METRICS_SCHEMA.json",
+          "MANIFEST.sha256",
+          "MUTATION_BOUNDARY.json",
+          "ORDER_PLAN.sanitized.json",
+          "ORDER_PLAN_OBSERVED_ADJUDICATION.json",
+          "PATH_REACHABLE_ADJUDICATION.json",
+          "PREFLIGHT.json",
+          "PRIVATE_GET.sanitized.json",
+          "PRIVATE_GET_BINDING.json",
+          "PRIVATE_READ_ONLY_ADJUDICATION.json",
+          "PRIVATE_READ_ONLY_GET.sanitized.json",
+          "PRIVATE_READ_ONLY_GET_BINDING.json",
+          "REUSE_VS_FRESH.json",
+          "RUNTIME_DEPENDENCY_GRAPH.json",
+          "RUNTIME_GATE_CLASSIFICATION.json",
+          "STATIC_EXECUTION_GRAPH.json",
+          "STATIC_FIELD_ADJUDICATION.json",
+          "STATIC_REACHABILITY_GRAPH.json",
+          "SUMMARY.json",
+          "TRACEABILITY.json",
+          "claims.json"
+        ],
+        "run_id": "20260904T140500Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "ADJUDICATION.json",
+          "AUTHORITY_BOUNDARY_MAP.json",
+          "COMPONENT_CLASSIFICATION.json",
+          "CONSTITUENT_MATRIX.json",
+          "EXACT_MUTATION_CONTRACT.json",
+          "GATE_STATE.json",
+          "LADDER_STATE.json",
+          "LATER_FIELD_CENSUS.json",
+          "LINEAGE.json",
+          "MANDATORY_LIVE_METRICS_SCHEMA.json",
+          "MANIFEST.sha256",
+          "MUTATION_BOUNDARY.json",
+          "ORDER_PLAN.sanitized.json",
+          "ORDER_PLAN_OBSERVED_ADJUDICATION.json",
+          "PATH_REACHABLE_ADJUDICATION.json",
+          "POST_SUBMIT_RECON.json",
+          "PREFLIGHT.json",
+          "PRIVATE_GET.sanitized.json",
+          "PRIVATE_GET_BINDING.json",
+          "PRIVATE_READ_ONLY_ADJUDICATION.json",
+          "PRIVATE_READ_ONLY_GET.sanitized.json",
+          "PRIVATE_READ_ONLY_GET_BINDING.json",
+          "REUSE_VS_FRESH.json",
+          "RUNTIME_DEPENDENCY_GRAPH.json",
+          "RUNTIME_GATE_CLASSIFICATION.json",
+          "STATIC_EXECUTION_GRAPH.json",
+          "STATIC_FIELD_ADJUDICATION.json",
+          "STATIC_REACHABILITY_GRAPH.json",
+          "SUBMIT_ACK_ADJUDICATION.json",
+          "SUBMIT_ACK_CONTRACT.json",
+          "SUBMIT_ACK_FAILURE_MATRIX.json",
+          "SUMMARY.json",
+          "TRACEABILITY.json",
+          "claims.json"
+        ],
+        "run_id": "20260904T144800Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "ADJUDICATION.json",
+          "AUTHORITY_BOUNDARY_MAP.json",
+          "COMPONENT_CLASSIFICATION.json",
+          "CONSTITUENT_MATRIX.json",
+          "EXACT_MUTATION_CONTRACT.json",
+          "GATE_STATE.json",
+          "LADDER_STATE.json",
+          "LATER_FIELD_CENSUS.json",
+          "LINEAGE.json",
+          "MANDATORY_LIVE_METRICS_SCHEMA.json",
+          "MANIFEST.sha256",
+          "MUTATION_BOUNDARY.json",
+          "ORDER_PLAN.sanitized.json",
+          "ORDER_PLAN_OBSERVED_ADJUDICATION.json",
+          "PATH_REACHABLE_ADJUDICATION.json",
+          "POST_SUBMIT_RECON.json",
+          "PREFLIGHT.json",
+          "PRIVATE_GET.sanitized.json",
+          "PRIVATE_GET_BINDING.json",
+          "PRIVATE_READ_ONLY_ADJUDICATION.json",
+          "PRIVATE_READ_ONLY_GET.sanitized.json",
+          "PRIVATE_READ_ONLY_GET_BINDING.json",
+          "REUSE_VS_FRESH.json",
+          "RUNTIME_DEPENDENCY_GRAPH.json",
+          "RUNTIME_GATE_CLASSIFICATION.json",
+          "STATIC_EXECUTION_GRAPH.json",
+          "STATIC_FIELD_ADJUDICATION.json",
+          "STATIC_REACHABILITY_GRAPH.json",
+          "SUBMIT_ACK_ADJUDICATION.json",
+          "SUBMIT_ACK_CONTRACT.json",
+          "SUBMIT_ACK_FAILURE_MATRIX.json",
+          "SUBMIT_ACK_OBSERVED_ADJUDICATION.json",
+          "SUBMIT_ACK_PROOF_CRITERION.json",
+          "SUMMARY.json",
+          "TRACEABILITY.json",
+          "claims.json"
+        ],
+        "run_id": "20260904T151500Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "MANIFEST.sha256",
+          "SUBMIT_ACK_OBSERVED_ADJUDICATION.json",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T160450Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "FILL_OBSERVED_ADJUDICATION.json",
+          "GET_FILLS.raw.json",
+          "GET_ORDER_STATUS.raw.json",
+          "MANIFEST.sha256",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T165859Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "FEE_OBSERVED_ADJUDICATION.json",
+          "GET_FILLS.raw.json",
+          "GET_ORDER_STATUS.raw.json",
+          "MANIFEST.sha256",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T173813Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "GET_POSITIONS.raw.json",
+          "MANIFEST.sha256",
+          "POSITION_RECONCILED_ADJUDICATION.json",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T181817Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "ACCOUNTING_IDENTITY.json",
+          "ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json",
+          "MANIFEST.sha256",
+          "SOURCE_REFERENCES.json",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T185000Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "MANIFEST.sha256",
+          "RESTART_HANDOFF_CENSUS.json",
+          "RESTART_RECONSTRUCTED_ADJUDICATION.json",
+          "SOURCE_REFERENCES.json",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T192000Z"
+      },
+      {
+        "durable_state_dir_exists": false,
+        "durable_state_files": [],
+        "names": [
+          "CODE_PATH_CENSUS.json",
+          "EXHAUSTIVE_CENSUS.json",
+          "FUTURE_OWNER_GO_CONTRACT.json",
+          "MANIFEST.sha256",
+          "RESTART_RECONSTRUCTED_ADJUDICATION.json",
+          "SUMMARY.json",
+          "VALIDATOR_MATRIX.json"
+        ],
+        "run_id": "20260904T195000Z"
+      }
+    ],
+    "LIVE_LADDER_PACK_COUNT": 14,
+    "SECTION_11_14_DURABLE_STATE_WRITER_HITS": [],
+    "SECTION_11_14_LIVE_DURABLE_STATE_WRITER_EXISTS": false,
+    "TESTNET_OR_FIXTURE_DURABLE_STATE_EXISTS": true,
+    "TESTNET_RESTART_IS_NOT_THIS_FIELD": true
+  },
+  "future_owner_go_contract": {
+    "ACCOUNTING_CLOSURE_IS_NOT_RESTART": true,
+    "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_FUTURE_OWNER_GO_CONTRACT_V1",
+    "DOCUMENT_ROLE": "DERIVED_NON_SSOT_FUTURE_GO_SPEC_ONLY",
+    "EARLIEST_MISSING_FACT": "DURABLE_LIVE_PRE_RESTART_HANDOFF",
+    "FRESH_PROCESS_RESTART_INSUFFICIENT_WITHOUT_HANDOFF": true,
+    "FRESH_PROCESS_RESTART_NOT_AUTHORIZED_HERE": true,
+    "FRESH_PROCESS_RESTART_REQUIRED_FOR_THIS_FIELD": false,
+    "FUTURE_LIVE_OR_RESTART_OWNER_GO_REQUIRED": true,
+    "FUTURE_MINIMUM_OPERATION": "PERSIST_IDENTITY_BOUND_PEAK_TRADE_DURABLE_PRE_RESTART_HANDOFF",
+    "FUTURE_MINIMUM_OPERATION_DETAIL": "Persist a Peak_Trade durable pre-restart handoff for the bound Live submit identity, distinct from venue-GET fill/fee/position artifacts, then adjudicate LIVE_RESTART_RECONSTRUCTED offline from that handoff using source_kind GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF.",
+    "FUTURE_OWNER_GO_REQUIRED": "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED",
+    "GET_NOT_REQUIRED_WHEN_HANDOFF_ALREADY_PERSISTED": true,
+    "HANDOFF_DOCUMENT_CLASS": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_V1",
+    "HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET_ACCOUNTING_PATH": true,
+    "HANDOFF_POS_MUST_BE_DECIMAL_PARSEABLE": true,
+    "HANDOFF_POS_MUST_BE_NONZERO_WHEN_FILL_SZ_NONZERO": true,
+    "HANDOFF_REQUIRED_FIELDS": [
+      "clOrdId",
+      "ordId",
+      "instId",
+      "posSide",
+      "pos"
+    ],
+    "LIVE_DURABLE_STATE_WRITER_ON_SECTION_11_14_CANARY_EXISTS": false,
+    "POST_NOT_REQUIRED": true,
+    "POST_RESTART_RECOVERY_EVIDENCE": "Offline reconstruction from the durable handoff is sufficient for this field when the bound criterion is met. LIVE_AUTONOMOUS_RECOVERY_OBSERVED remains a later field and is not satisfied by this persist.",
+    "RESTART_IDENTITY_EQUATION": "reconstructed_handoff.identity = {clOrdId, ordId, instId, posSide, pos} from durable pre-restart Peak_Trade state, without re-submit and without silent reinitialization, Decimal-equal to the bound Live submit/fill/position identity",
+    "RETRY_DEFAULT": false,
+    "RUNTIME_CHANGE_REQUIRED_IF_NO_EXISTING_WRITER": "A Peak_Trade Live durable_state writer on the bound Live identity path is absent. Adding that writer is productive runtime scope and is not authorized by this offline census.",
+    "RUNTIME_CHANGE_REQUIRES_SEPARATE_OWNER_SCOPE": true,
+    "SECOND_SUBMIT_DEFAULT": false,
+    "SECTION_11_17_LIVE_RESTART_PROVEN_IS_NOT_THIS_FIELD": true,
+    "SOURCE_KIND_REQUIRED": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF",
+    "TESTNET_RESTART_PROVEN_IS_NOT_THIS_FIELD": true,
+    "THIS_CENSUS_DOES_NOT_AUTHORIZE_THE_FUTURE_GO": true
+  },
+  "restart_adjudication": {
+    "ACCOUNTING_CLOSURE_IS_NOT_RESTART": true,
+    "AMEND_USED": false,
+    "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+    "BOUND_ACK_SOURCE_KIND": "GOVERNED_CURRENT_LIVE_POST",
+    "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+    "BOUND_FILL_SZ": "1",
+    "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+    "BOUND_ORDID": "3893505043080286208",
+    "BOUND_POS_SIDE": "net",
+    "CANCEL_USED": false,
+    "CAP_11_5_FIXTURE_IS_NOT_THIS_FIELD": true,
+    "CASE_ADJUDICATION": "CASE_LIVE_RESTART_RECONSTRUCTED_FAIL_CLOSED_MISSING_DURABLE_HANDOFF",
+    "CENSUS_SOURCE_KIND": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS",
+    "EARLIEST_MISSING_FACT": "DURABLE_LIVE_PRE_RESTART_HANDOFF",
+    "FLATTEN_EXECUTE_USED": false,
+    "GET_PERFORMED": false,
+    "LIVE_ACCOUNTING_RECONSTRUCTED": true,
+    "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": false,
+    "LIVE_END_TO_END_EVIDENCE_PROVEN": false,
+    "LIVE_RESTART_RECONSTRUCTED": false,
+    "LIVE_RESTART_RECONSTRUCTION_REASON": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+    "POST_USED": false,
+    "PRIVATE_GET_USED": false,
+    "RESTART_EVIDENCE_SOURCE": "PERSISTED_LIVE_RESTART_HANDOFF_CENSUS",
+    "RESTART_EXECUTION": false,
+    "RESTART_IDENTITY_EQUATION": "reconstructed_handoff.identity = {clOrdId, ordId, instId, posSide, pos} from durable pre-restart Peak_Trade state, without re-submit and without silent reinitialization, Decimal-equal to the bound Live submit/fill/position identity",
+    "RESTART_PRODUCER": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_adjudication_v1.py::adjudicate_live_restart_reconstructed_v1",
+    "RESTART_PROOF_CRITERION": "LIVE_RESTART_RECONSTRUCTED is the tenth \u00a711.14 Live proof-claim field. It is true iff LIVE_ACCOUNTING_RECONSTRUCTED is already true and persisted Live artifacts for the acknowledged Live submit contain a Peak_Trade durable pre-restart handoff state for that identity, distinct from the fill/fee/position venue-GET artifacts used for LIVE_ACCOUNTING_RECONSTRUCTED, from which an offline reconstruction using canonical restart semantics (reconstruct without re-submit and without silent reinitialization) yields a post-restart identity whose clOrdId, ordId, instId, posSide, and Decimal pos equal the bound Live submit/fill/position identity, and whose reconstructed pos is present, nonempty, Decimal-parseable, and is not zero when bound fillSz is nonzero. Accounting reconstruction, position reconciliation, fill/fee observation, ACK observation, Cap 11.5 and \u00a711.12.6 fixtures, \u00a711.12.9.14 TESTNET_RESTART_PROVEN, \u00a711.17 LIVE_RESTART_PROVEN, historical implementation capability, and fixture/testnet/simulated sources are each insufficient. Absence of a durable Live pre-restart handoff or of a reconstructable post-restart identity fails closed and is not replaced by accounting closure. True does not imply LIVE_AUTONOMOUS_RECOVERY_OBSERVED, LIVE_END_TO_END_EVIDENCE_PROVEN, LIVE_RESTART_PROVEN, or \u00a711.14 complete. A fresh process restart is not required when those persisted Live restart-handoff artifacts already exist; this field does not authorize restart execution.",
+    "RESTART_SEMANTICS_STATUS": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+    "RESTART_SOURCE_KIND": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS",
+    "SECTION_11_12_6_FIXTURE_IS_NOT_THIS_FIELD": true,
+    "SECTION_11_14_COMPLETE": false,
+    "SECTION_11_17_LIVE_RESTART_PROVEN_IS_NOT_THIS_FIELD": true,
+    "TESTNET_RESTART_IS_NOT_THIS_FIELD": true,
+    "UNRESOLVED_REASON": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+    "adjudicated_value": false,
+    "canonical_definition": "LIVE_RESTART_RECONSTRUCTED is the tenth \u00a711.14 Live proof-claim field. It is true iff LIVE_ACCOUNTING_RECONSTRUCTED is already true and persisted Live artifacts for the acknowledged Live submit contain a Peak_Trade durable pre-restart handoff state for that identity, distinct from the fill/fee/position venue-GET artifacts used for LIVE_ACCOUNTING_RECONSTRUCTED, from which an offline reconstruction using canonical restart semantics (reconstruct without re-submit and without silent reinitialization) yields a post-restart identity whose clOrdId, ordId, instId, posSide, and Decimal pos equal the bound Live submit/fill/position identity, and whose reconstructed pos is present, nonempty, Decimal-parseable, and is not zero when bound fillSz is nonzero. Accounting reconstruction, position reconciliation, fill/fee observation, ACK observation, Cap 11.5 and \u00a711.12.6 fixtures, \u00a711.12.9.14 TESTNET_RESTART_PROVEN, \u00a711.17 LIVE_RESTART_PROVEN, historical implementation capability, and fixture/testnet/simulated sources are each insufficient. Absence of a durable Live pre-restart handoff or of a reconstructable post-restart identity fails closed and is not replaced by accounting closure. True does not imply LIVE_AUTONOMOUS_RECOVERY_OBSERVED, LIVE_END_TO_END_EVIDENCE_PROVEN, LIVE_RESTART_PROVEN, or \u00a711.14 complete. A fresh process restart is not required when those persisted Live restart-handoff artifacts already exist; this field does not authorize restart execution.",
+    "claim_value": false,
+    "field_conjunction": {
+      "adjudication": "FALSE_FAIL_CLOSED_NO_PERSISTED_LIVE_RESTART_HANDOFF",
+      "admissible_live_source_kind": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF",
+      "canonical_definition": "LIVE_RESTART_RECONSTRUCTED is the tenth \u00a711.14 Live proof-claim field. It is true iff LIVE_ACCOUNTING_RECONSTRUCTED is already true and persisted Live artifacts for the acknowledged Live submit contain a Peak_Trade durable pre-restart handoff state for that identity, distinct from the fill/fee/position venue-GET artifacts used for LIVE_ACCOUNTING_RECONSTRUCTED, from which an offline reconstruction using canonical restart semantics (reconstruct without re-submit and without silent reinitialization) yields a post-restart identity whose clOrdId, ordId, instId, posSide, and Decimal pos equal the bound Live submit/fill/position identity, and whose reconstructed pos is present, nonempty, Decimal-parseable, and is not zero when bound fillSz is nonzero. Accounting reconstruction, position reconciliation, fill/fee observation, ACK observation, Cap 11.5 and \u00a711.12.6 fixtures, \u00a711.12.9.14 TESTNET_RESTART_PROVEN, \u00a711.17 LIVE_RESTART_PROVEN, historical implementation capability, and fixture/testnet/simulated sources are each insufficient. Absence of a durable Live pre-restart handoff or of a reconstructable post-restart identity fails closed and is not replaced by accounting closure. True does not imply LIVE_AUTONOMOUS_RECOVERY_OBSERVED, LIVE_END_TO_END_EVIDENCE_PROVEN, LIVE_RESTART_PROVEN, or \u00a711.14 complete. A fresh process restart is not required when those persisted Live restart-handoff artifacts already exist; this field does not authorize restart execution.",
+      "claim_value": false,
+      "false_required": [
+        "DURABLE_PRE_RESTART_HANDOFF_PRESENT",
+        "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH",
+        "POST_RESTART_IDENTITY_RECONSTRUCTABLE",
+        "IDENTITY_BOUND_HANDOFF_MATCHES_LIVE_SUBMIT",
+        "NO_SILENT_REINITIALIZATION",
+        "ADMISSIBLE_PERSISTED_LIVE_RESTART_HANDOFF_SOURCE"
+      ],
+      "producer": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_adjudication_v1.py::adjudicate_live_restart_reconstructed_v1",
+      "source_kind": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS"
+    },
+    "field_constituent_count": 10,
+    "field_constituent_values": {
+      "ACCOUNTING_CLOSURE_IS_NOT_RESTART": true,
+      "ADMISSIBLE_PERSISTED_LIVE_RESTART_HANDOFF_SOURCE": false,
+      "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+      "IDENTITY_BOUND_HANDOFF_MATCHES_LIVE_SUBMIT": false,
+      "LIVE_ACCOUNTING_RECONSTRUCTED": true,
+      "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+      "NO_RESUBMIT": true,
+      "NO_SILENT_REINITIALIZATION": false,
+      "POST_RESTART_IDENTITY_RECONSTRUCTABLE": false
+    },
+    "field_constituents": [
+      "LIVE_ACCOUNTING_RECONSTRUCTED",
+      "DURABLE_PRE_RESTART_HANDOFF_PRESENT",
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH",
+      "POST_RESTART_IDENTITY_RECONSTRUCTABLE",
+      "IDENTITY_BOUND_HANDOFF_MATCHES_LIVE_SUBMIT",
+      "NO_RESUBMIT",
+      "NO_SILENT_REINITIALIZATION",
+      "ADMISSIBLE_PERSISTED_LIVE_RESTART_HANDOFF_SOURCE",
+      "NOT_FIXTURE_TESTNET_OR_SIMULATED",
+      "ACCOUNTING_CLOSURE_IS_NOT_RESTART"
+    ],
+    "path_classification": {
+      "ACCOUNTING_CLOSURE_IS_NOT_RESTART": true,
+      "ACTUAL_RESTART_RECONSTRUCTED": false,
+      "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+      "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+      "BOUND_ORDID": "3893505043080286208",
+      "BOUND_POS_SIDE": "net",
+      "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+      "EPISTEMIC_CLASS": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+      "IDENTITY_BOUND_HANDOFF_MATCHES_LIVE_SUBMIT": false,
+      "MISSING_NOT_REPLACED_BY_ACCOUNTING": true,
+      "NO_SILENT_REINITIALIZATION": false,
+      "POST_RESTART_IDENTITY_RECONSTRUCTABLE": false,
+      "RESTART_IDENTITY_EQUATION": "reconstructed_handoff.identity = {clOrdId, ordId, instId, posSide, pos} from durable pre-restart Peak_Trade state, without re-submit and without silent reinitialization, Decimal-equal to the bound Live submit/fill/position identity",
+      "TESTNET_RESTART_IS_NOT_THIS_FIELD": true,
+      "TESTNET_RESTART_PROVEN_ENVIRONMENT": "DEMO",
+      "TESTNET_RESTART_PROVEN_INSTID": "BTC-USD_UM_XPERP-310328",
+      "census": {
+        "BOUND_ACCOUNTING_EVIDENCE_RUN_ID": "20260904T185000Z",
+        "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+        "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+        "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+        "BOUND_ORDID": "3893505043080286208",
+        "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+        "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+        "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+        "accounting_artifacts_are_not_restart_handoff": true,
+        "durable_handoff_paths": [],
+        "fill_raw_exists": true,
+        "fill_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/GET_FILLS.raw.json",
+        "fill_raw_sha256": "de429030b71b4db50923deb60731c8d12887300605e0bb194126465e2efe61ef",
+        "inspected_live_packs": [
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "MANIFEST.sha256",
+              "SUBMIT_ACK_OBSERVED_ADJUDICATION.json",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T160450Z"
+          },
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "FILL_OBSERVED_ADJUDICATION.json",
+              "GET_FILLS.raw.json",
+              "GET_ORDER_STATUS.raw.json",
+              "MANIFEST.sha256",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T165859Z"
+          },
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "FEE_OBSERVED_ADJUDICATION.json",
+              "GET_FILLS.raw.json",
+              "GET_ORDER_STATUS.raw.json",
+              "MANIFEST.sha256",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T173813Z"
+          },
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "GET_POSITIONS.raw.json",
+              "MANIFEST.sha256",
+              "POSITION_RECONCILED_ADJUDICATION.json",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T181817Z"
+          },
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "ACCOUNTING_IDENTITY.json",
+              "ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json",
+              "MANIFEST.sha256",
+              "SOURCE_REFERENCES.json",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T185000Z"
+          }
+        ],
+        "position_raw_exists": true,
+        "position_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/GET_POSITIONS.raw.json",
+        "position_raw_sha256": "a428f9f023f2b130301bfdf11b9d050cf377c4140f2354ead409c4be290c8959",
+        "testnet_durable_paths": [
+          "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_order_pre_restart_v1.json",
+          "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_position_pre_restart_v1.json"
+        ],
+        "testnet_restart_clOrdId": "",
+        "testnet_restart_environment": "DEMO",
+        "testnet_restart_instId": "BTC-USD_UM_XPERP-310328",
+        "testnet_restart_is_not_this_field": true,
+        "testnet_restart_proven_exists": true,
+        "testnet_restart_proven_relpath": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/"
+      },
+      "handoff": {}
+    },
+    "producer": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_adjudication_v1.py::adjudicate_live_restart_reconstructed_v1",
+    "proof_criterion_bound": true
+  },
+  "validator_matrix": {
+    "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_VALIDATOR_MATRIX_V1",
+    "accounting_only": {
+      "ACCOUNTING_ONLY": true,
+      "ADMISSIBLE_SOURCE": false,
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+      "REASON": "ACCOUNTING_ONLY_IS_NOT_RESTART",
+      "artifact_role": "ACCOUNTING_VENUE_GET_NOT_RESTART_HANDOFF",
+      "claim_value": false,
+      "completeness": {
+        "COMPLETE": false,
+        "CORRUPT_POS": false,
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_V1",
+        "MISSING_FIELDS": [
+          "ordId",
+          "instId",
+          "posSide"
+        ],
+        "POS_DECIMAL": "1",
+        "REASON": "MISSING_REQUIRED_HANDOFF_FIELDS"
+      },
+      "identity": {
+        "IDENTITY_BOUND": false,
+        "NONZERO_FILL_REQUIRES_NONZERO_POS": true,
+        "NO_SILENT_REINITIALIZATION": true,
+        "REASON": "IDENTITY_MISMATCH",
+        "STALE_OR_IDENTITY_MISMATCH": true
+      },
+      "temporal": {
+        "REASON": "NO_RESTART_TIMESTAMP_PRESENT",
+        "TEMPORAL_OK": true,
+        "captured_at_utc": "",
+        "restart_at_utc": ""
+      }
+    },
+    "happy_path_not_persisted_as_live_claim": true,
+    "missing_durable_state": {
+      "ACCOUNTING_ONLY": false,
+      "ADMISSIBLE_SOURCE": false,
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+      "REASON": "SOURCE_KIND_NOT_ADMISSIBLE_LIVE_HANDOFF",
+      "artifact_role": "NOT_A_RESTART_HANDOFF",
+      "claim_value": false,
+      "completeness": {
+        "COMPLETE": false,
+        "CORRUPT_POS": false,
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_V1",
+        "MISSING_FIELDS": [
+          "clOrdId",
+          "ordId",
+          "instId",
+          "posSide",
+          "pos"
+        ],
+        "POS_DECIMAL": null,
+        "REASON": "MISSING_REQUIRED_HANDOFF_FIELDS"
+      },
+      "identity": {
+        "IDENTITY_BOUND": false,
+        "NONZERO_FILL_REQUIRES_NONZERO_POS": true,
+        "NO_SILENT_REINITIALIZATION": false,
+        "REASON": "IDENTITY_MISMATCH",
+        "STALE_OR_IDENTITY_MISMATCH": false
+      },
+      "temporal": {
+        "REASON": "NO_RESTART_TIMESTAMP_PRESENT",
+        "TEMPORAL_OK": true,
+        "captured_at_utc": "",
+        "restart_at_utc": ""
+      }
+    }
+  }
+}

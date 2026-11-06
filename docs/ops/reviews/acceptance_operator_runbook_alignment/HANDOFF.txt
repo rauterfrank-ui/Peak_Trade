@@ -1,0 +1,26 @@
+PROJECT: Peak_Trade
+TOPIC: acceptance_operator_runbook_alignment
+STATUS: docs_draft_ready
+BRANCH: feat/acceptance-operator-runbook-alignment
+MODE: paper_stability_guard
+
+GOAL
+- create acceptance-oriented bounded run operator runbook aligned to ACCEPTANCE_EVIDENCE_STANDARD
+
+OUTPUT
+- docs/ops/runbooks/ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md
+
+ALIGNMENT
+- required inputs reference preflight checklist and Entry Contract
+- approved launch paths: local secret launcher (preferred), direct bounded pilot session
+- post-run evidence capture aligned to ACCEPTANCE_EVIDENCE_STANDARD required artifacts
+- required closeout fields match ACCEPTANCE_EVIDENCE_STANDARD
+
+REFERENCES
+- docs/ops/specs/ACCEPTANCE_EVIDENCE_STANDARD.md
+- docs/ops/runbooks/NEXT_BOUNDED_TRIAL_PREFLIGHT_CHECKLIST.md
+- docs/ops/runbooks/LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md
+
+NEXT SUGGESTED STEP
+- merge runbook to main
+- use runbook for future acceptance-oriented runs

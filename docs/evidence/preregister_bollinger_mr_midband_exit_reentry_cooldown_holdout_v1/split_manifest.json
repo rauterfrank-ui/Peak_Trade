@@ -1,0 +1,15 @@
+{
+  "method": "SEALED_HOLDOUT_SINGLE_FINAL_AUDIT_PANEL_V1",
+  "holdout_split_digest": "e29eeb4e9d264e1529a0c7419d707ce84df7919ee6ed95a833612fca46a7184d",
+  "split_intervals_sha256": "e29eeb4e9d264e1529a0c7419d707ce84df7919ee6ed95a833612fca46a7184d",
+  "period_start": "2023-08-16T05:55:00Z",
+  "period_end_exclusive": "2024-09-01T00:00:00Z",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+  "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "instrument_count_from_registry": 65,
+  "content_hash_from_registry": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+  "sealed_manifest_sha256_from_registry": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56",
+  "holdout_content_inspected": false,
+  "holdout_data_accessed": false,
+  "source": "opaque_registry_metadata_only"
+}

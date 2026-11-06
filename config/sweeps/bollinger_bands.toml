@@ -1,0 +1,34 @@
+# Peak_Trade – Parameter-Grid für Bollinger Bands Strategie (Phase 75 v1.1)
+# =========================================================================
+#
+# Grid für die Bollinger Bands Mean-Reversion-Strategie.
+# Verwendet mit: python scripts/run_strategy_sweep.py --strategy bollinger_bands --sweep-config config/sweeps/bollinger_bands.toml
+#
+# Die Bollinger Bands Strategie kauft bei Berührung der unteren Band
+# (überverkauft) und verkauft beim Erreichen der mittleren Band.
+
+[sweep]
+strategy = "bollinger_bands"
+symbol = "BTC/EUR"
+timeframe = "1h"
+
+[sweep.parameters]
+# Periode für Moving Average
+bb_period = [15, 20, 25, 30]
+
+# Standard-Abweichungen für Bands
+bb_std = [1.5, 2.0, 2.5]
+
+# Entry-Threshold (95% = knapp über unterer Band)
+entry_threshold = [0.90, 0.95, 1.0]
+
+[sweep.metrics]
+primary = "sharpe_ratio"
+secondary = ["total_return", "max_drawdown", "profit_factor"]
+
+[sweep.filters]
+min_trades = 15
+min_sharpe = 0.3
+
+# Beispiel-Berechnung:
+# 4 × 3 × 3 = 36 Kombinationen

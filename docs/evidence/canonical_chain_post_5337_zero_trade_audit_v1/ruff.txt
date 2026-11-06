@@ -1,0 +1,8 @@
+# RECOVERY PLACEHOLDER — NOT ORIGINAL BYTES
+ORIGINAL_BYTES_AVAILABLE=false
+MISSING_REASON=original_ruff_log_unavailable
+RECOVERED_AT=2026-07-18T23:23:10Z
+PATH=/Users/frnkhrz/Peak_Trade/docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/ruff.txt
+
+This artifact was listed in the pre-delete untracked inventory but could not be
+byte-recovered from transcripts/PRs/branches. Content is intentionally minimal.

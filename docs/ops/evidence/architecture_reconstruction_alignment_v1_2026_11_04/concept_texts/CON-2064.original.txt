@@ -1,0 +1,9 @@
+### CON-2064 — Ausgangspunkt und Reichweite
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Gesamtkonstrukt V1 mit 16 Bereichen/20 Beziehungen, die 13 Übergaben des Zusammenspiels und die späteren 23 Handoffs sind verschiedene analytische Ausschnitte. Der jetzige Abgleich berücksichtigt den gesamten ausgewählten lokalen Ergebnisbestand, einschließlich der früheren Untersuchungen. Keine dieser Zahlen bezeichnet die vollständige Architektur.
+
+**Grenze:** Eine fachlich geschlossene Gesamtkonfiguration und sämtliche unbekannten Nebenpfade bleiben unbewiesen. Dieser Lauf ist Dokumentationsabgleich, keine neue Whole-Repository-Prüfung.
+
+Quellen: EVI-2208, EVI-2247, EVI-2289, EVI-2225, EVI-2226.

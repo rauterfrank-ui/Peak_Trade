@@ -1,0 +1,16 @@
+PROJECT: Peak_Trade
+TOPIC: incident_state_read_model_ops_cockpit_implementation
+STATUS: implementation_in_progress
+BRANCH: feat/incident-state-read-model-ops-cockpit-implementation
+MODE: paper_stability_guard
+
+GOAL
+- expose the incident-state read-model fields in the ops cockpit
+
+OUTPUTS
+- src/webui/ops_cockpit.py
+- tests/webui/test_ops_cockpit.py
+- docs/ops/reviews/incident_state_read_model_ops_cockpit_implementation/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- incident_state_read_model_ops_cockpit_closeout

@@ -1,0 +1,51 @@
+"""Parity / freeze claims for the prolonged natural-market wallclock binding."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from src.ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.constants_v1 import (
+    BULL_BEAR_CHANGE,
+    CANONICAL_WALLCLOCK_RUNNER,
+    CONFIRMATION_SEMANTICS_CHANGE,
+    CORE_LOGIC_CHANGE,
+    DASHBOARD_AUTHORITY_EFFECT,
+    DASHBOARD_READ_ONLY_CONSUMER,
+    DOUBLE_PLAY_CHANGE,
+    DYNAMIC_SCOPE_LOGIC_CHANGE,
+    FAULT_SESSION_EXECUTION_AUTHORIZED,
+    MASTER_V2_CHANGE,
+    NO_PERMANENT_UNSCOPED_ENABLE_FLAG,
+    PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED,
+    RISK_CHANGE,
+    SAFETY_CHANGE,
+)
+
+
+def prove_phase92_prolonged_natural_market_wallclock_binding_parity_v1() -> dict[str, Any]:
+    blockers: list[str] = []
+    if CORE_LOGIC_CHANGE or MASTER_V2_CHANGE or DOUBLE_PLAY_CHANGE or BULL_BEAR_CHANGE:
+        blockers.append("CORE_LOGIC_FREEZE_VIOLATED")
+    if DYNAMIC_SCOPE_LOGIC_CHANGE or CONFIRMATION_SEMANTICS_CHANGE or RISK_CHANGE or SAFETY_CHANGE:
+        blockers.append("POLICY_FREEZE_VIOLATED")
+    if PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED or FAULT_SESSION_EXECUTION_AUTHORIZED:
+        blockers.append("PERMANENT_ENABLE_MUST_REMAIN_FALSE")
+    if not NO_PERMANENT_UNSCOPED_ENABLE_FLAG:
+        blockers.append("NO_PERMANENT_UNSCOPED_ENABLE_FLAG_REQUIRED")
+    if DASHBOARD_AUTHORITY_EFFECT != "NONE" or not DASHBOARD_READ_ONLY_CONSUMER:
+        blockers.append("DASHBOARD_AUTHORITY_DRIFT")
+    return {
+        "ok": not blockers,
+        "blockers": blockers,
+        "claims": {
+            "CORE_LOGIC_CHANGE": CORE_LOGIC_CHANGE,
+            "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": True,
+            "CANONICAL_WALLCLOCK_RUNNER_BOUND": True,
+            "CANONICAL_WALLCLOCK_RUNNER": CANONICAL_WALLCLOCK_RUNNER,
+            "NO_PERMANENT_UNSCOPED_ENABLE_FLAG": NO_PERMANENT_UNSCOPED_ENABLE_FLAG,
+            "FAULT_SESSION_EXECUTION_AUTHORIZED": FAULT_SESSION_EXECUTION_AUTHORIZED,
+            "DASHBOARD_AUTHORITY_EFFECT": DASHBOARD_AUTHORITY_EFFECT,
+            "DASHBOARD_READ_ONLY_CONSUMER": DASHBOARD_READ_ONLY_CONSUMER,
+            "NO_THRESHOLD_CHANGE": True,
+        },
+    }

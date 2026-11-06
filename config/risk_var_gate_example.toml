@@ -1,0 +1,93 @@
+# VaR Gate Configuration Examples
+# =================================
+#
+# The VaR Gate evaluates portfolio-level Value-at-Risk against thresholds.
+# This file provides example configurations for different risk profiles.
+
+# ==============================================================================
+# MODERATE PROFILE (Recommended Default)
+# ==============================================================================
+# Balanced risk/reward, suitable for most strategies
+
+[risk.var_gate]
+enabled = true
+method = "parametric"      # Fast, assumes normal distribution
+confidence = 0.95          # 95% confidence level
+horizon_days = 1           # 1-day risk horizon
+max_var_pct = 0.03         # Block if VaR >= 3%
+warn_var_pct = 0.02        # Warn if VaR >= 2%
+
+# ==============================================================================
+# CONSERVATIVE PROFILE
+# ==============================================================================
+# Lower risk tolerance, tighter limits
+
+# [risk.var_gate]
+# enabled = true
+# method = "parametric"
+# confidence = 0.99          # 99% confidence (more conservative)
+# horizon_days = 1
+# max_var_pct = 0.02         # Block if VaR >= 2%
+# warn_var_pct = 0.015       # Warn if VaR >= 1.5%
+
+# ==============================================================================
+# AGGRESSIVE PROFILE
+# ==============================================================================
+# Higher risk tolerance, uses historical VaR for fat tails
+
+# [risk.var_gate]
+# enabled = true
+# method = "historical"      # Non-parametric, captures actual tail behavior
+# confidence = 0.95
+# horizon_days = 1
+# max_var_pct = 0.05         # Block if VaR >= 5%
+# warn_var_pct = null        # No warning threshold
+
+# ==============================================================================
+# MULTI-DAY HORIZON
+# ==============================================================================
+# For strategies with longer holding periods
+
+# [risk.var_gate]
+# enabled = true
+# method = "parametric"
+# confidence = 0.95
+# horizon_days = 5           # 5-day horizon
+# max_var_pct = 0.10         # Block if VaR >= 10% (5-day)
+# warn_var_pct = 0.07        # Warn if VaR >= 7%
+
+# ==============================================================================
+# DISABLED (Testing/Development)
+# ==============================================================================
+# Disable VaR gate entirely
+
+# [risk.var_gate]
+# enabled = false
+
+# ==============================================================================
+# NOTES
+# ==============================================================================
+#
+# VaR Methods:
+# - "parametric": Fast, assumes normal distribution, good for short horizons
+# - "historical": Slower, no assumptions, better for fat tails, needs 100+ bars
+#
+# Confidence Levels:
+# - 0.90 (90%): Less conservative, lower VaR
+# - 0.95 (95%): Standard, balanced
+# - 0.99 (99%): More conservative, higher VaR
+#
+# Thresholds (crypto typical ranges):
+# - Conservative: 1-2% (1-day), 5-7% (5-day)
+# - Moderate: 2-3% (1-day), 7-10% (5-day)
+# - Aggressive: 3-5% (1-day), 10-15% (5-day)
+#
+# Warning Threshold:
+# - Set to null to disable warnings
+# - Typically 60-80% of block threshold
+# - Provides early alert before hard limit
+#
+# Safe Defaults:
+# - Missing data (returns_df, weights) → OK (not applicable)
+# - Calculation failure → OK (logged warning)
+# - Disabled → OK (always passes)

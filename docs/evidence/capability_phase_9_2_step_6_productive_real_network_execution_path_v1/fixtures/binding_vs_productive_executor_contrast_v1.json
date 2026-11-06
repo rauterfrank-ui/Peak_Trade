@@ -1,0 +1,35 @@
+{
+  "binding_executor": {
+    "capability_id": "PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BINDING_V1",
+    "network_session_may_start": false,
+    "network_session_started": false,
+    "productive_network_session_execution_authorized": false,
+    "real_network_forbidden": true,
+    "request_real_network_ok": false,
+    "role": "BINDING_EXECUTOR"
+  },
+  "blockers": [],
+  "capability_id": "PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1",
+  "claims": {
+    "BINDING_EXECUTOR_PRESERVED_FAIL_CLOSED": true,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CONFIRM_TOKEN_MINTED": false,
+    "NETWORK_SESSION_STARTED": false,
+    "ONLY_PRODUCTIVE_EXECUTOR_CAN_AUTHORIZE_MAY_START": true,
+    "PRODUCTIVE_EXECUTOR_REQUIRES_NETWORK_SESSION_GO": true
+  },
+  "notes": [
+    "BINDING_EXECUTOR=always forbids Real-Network side effects",
+    "PRODUCTIVE_REAL_NETWORK_EXECUTOR=may authorize may_start under ephemeral GO",
+    "ONLY_LATER_SEPARATE_OWNER_GO_SESSION_MAY_START_NETWORK=true"
+  ],
+  "ok": true,
+  "productive_real_network_executor": {
+    "capability_id": "PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1",
+    "network_session_may_start_under_full_go": true,
+    "network_session_may_start_without_network_session_go": false,
+    "network_session_started_in_this_capability": false,
+    "requires_separate_owner_go_session": true,
+    "role": "PRODUCTIVE_REAL_NETWORK_EXECUTOR"
+  }
+}

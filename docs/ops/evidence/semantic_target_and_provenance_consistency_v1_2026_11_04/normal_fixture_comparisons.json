@@ -1,0 +1,9 @@
+{
+  "same_current_dependencies": true,
+  "search_without_meta_complete_output_identical": true,
+  "normal_search_identity": "2446d9d4cb197f8bf556ec865c404778c22a3d7a3ddb49e81d0ced8dce309910",
+  "consistent_learning_record_complete_output_identical": true,
+  "consistent_learning_record_hash": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+  "consistent_gate_result_identical": true,
+  "limit": "Controlled synthetic fixture comparisons at exact old/current modules; not natural runtime or global historical replay."
+}

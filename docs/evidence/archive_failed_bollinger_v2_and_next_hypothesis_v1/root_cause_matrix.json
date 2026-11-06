@@ -1,0 +1,67 @@
+{
+  "schema_version": "root_cause_matrix.v1",
+  "source_evidence_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "measurement_bug_found": false,
+  "rows": [
+    {
+      "observation": "Profit factor = 0.0; win_rate = 0.0; all 303 exits are stop_loss",
+      "evidence": "summary.json exit_reasons.stop_loss=303; win_rate=0.0; profit_factor=0.0",
+      "confidence": "HIGH",
+      "open_question": "Whether stops are hit via immediate adverse ticks or slow adverse drift (partially answered by hold-time distribution)"
+    },
+    {
+      "observation": "Gross PnL already negative before fees/slippage; costs are secondary",
+      "evidence": "gross_pnl=-228.95; cost_drag=27.78; net_pnl=-256.73 (shared book)",
+      "confidence": "HIGH",
+      "open_question": "none"
+    },
+    {
+      "observation": "Extreme SHORT dominance (288 short / 15 long)",
+      "evidence": "summary.json long_trades=15 short_trades=288",
+      "confidence": "HIGH",
+      "open_question": "Whether Double-Play mapped signals preferentially emit shorts in this period (authority itself unchanged; entry_side_other=0)"
+    },
+    {
+      "observation": "0/4 chronological OOS folds positive; stress and Monte Carlo remain negative",
+      "evidence": "walk_forward_positive_folds=0; monte_carlo median/p05 net return negative; stress deepens losses",
+      "confidence": "HIGH",
+      "open_question": "none"
+    },
+    {
+      "observation": "Losses are broadly distributed; not a single-instrument artifact",
+      "evidence": "worst1 abs share≈0.045; worst5≈0.199",
+      "confidence": "HIGH",
+      "open_question": "none"
+    },
+    {
+      "observation": "Many stops occur relatively early; median hold ~25h; ~47.5% of trades exit within 24h",
+      "evidence": "checkpoint trade entry/exit times; hold_hours quantiles from sealed evidence",
+      "confidence": "MEDIUM",
+      "open_question": "Exact MAE/MFE path shape unknown — fields not recorded in trade ledger compact export"
+    },
+    {
+      "observation": "MFE/MAE and formal entry-to-stop distance distribution not available in sealed artifacts",
+      "evidence": "adverse_exit_stop_diagnostic.json notes sealed stop distance; trade compact lacks mfe/mae keys",
+      "confidence": "HIGH",
+      "open_question": "UNKNOWN: precise stop geometry contribution vs pure wrong-side entries"
+    },
+    {
+      "observation": "Canonical chain, costs, SHORT transport, and shared portfolio aggregation were valid",
+      "evidence": "economic_measurement_valid=true; cost_application=APPLIED; ledger/equity PASS; classic_bypass false",
+      "confidence": "HIGH",
+      "open_question": "none"
+    }
+  ],
+  "synthesis": {
+    "primary_failure_mode": "UNSUITABLE_UNFILTERED_MEAN_REVERSION_HYPOTHESIS",
+    "secondary_failure_mode": "STOP_GEOMETRY_ALWAYS_LOSS_UNDER_ADVERSE_CONTINUATION",
+    "rejected_as_primary": [
+      "COST_MODEL_BUG",
+      "SHORT_TRANSPORT_BUG",
+      "PORTFOLIO_AGGREGATION_BUG",
+      "SINGLE_INSTRUMENT_CONCENTRATION"
+    ],
+    "confidence": "MEDIUM",
+    "rationale": "Evidence supports that unfiltered band mean-reversion entered against continuing adverse moves and exited exclusively via stops. Regime blindness is the best-supported single class; stop geometry is a co-occurring secondary mode. Direction-authority bugs are not supported (entry_side remains NONE; chain bound)."
+  }
+}

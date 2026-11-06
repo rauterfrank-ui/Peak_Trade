@@ -1,0 +1,12 @@
+{
+  "dashboard_forbidden": [
+    "DASHBOARD_INPUT_FORBIDDEN"
+  ],
+  "duplicate_writer": [
+    "DUPLICATE_SELECTION_WRITER"
+  ],
+  "stale_ranking": [
+    "ALPHA_BLOCKED",
+    "RANKING_SNAPSHOT_STALE"
+  ]
+}

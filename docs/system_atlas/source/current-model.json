@@ -1,0 +1,2871 @@
+{
+  "schema": "peaktrade.current_frozen_atlas.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "source_tag": "freeze/visible-system-2026-11-06-v2",
+  "source_commit": "a8e1c0088e25651ad4bb29ebe02e10142a0a92b2",
+  "source_tree": "84788b7c88ec141a408b3496453813df4f18e6c1",
+  "source_scope": "Single fixed repository tree and its source interfaces",
+  "file_count": 23040,
+  "python_modules_parsed": 9959,
+  "python_parse_errors": [],
+  "named_definitions": 100867,
+  "lexical_imports": 175234,
+  "groups_are_navigation_not_new_runtime_authority": true,
+  "runtime_execution_inferred": false,
+  "domains": [
+    {
+      "id": "RANK",
+      "name": "Ranking-Universum",
+      "group": "Universen",
+      "purpose": "Instrumente zulassen, ökonomisch ordnen, auswählen und binden.",
+      "inputs": "Venue-Metadaten und zweckgebundene finale Mark-Preisreihen.",
+      "processing": "Universezulassung, B05-Merkmale, Cap22-Reihenfolge, Cap23-Auswahl, Cap24-Bindung.",
+      "outputs": "Ranking-Snapshot, genau eine Auswahl und BoundInstrument.",
+      "state": "Auswahl-/Bindungsbundle und Ersatz-Pendingzustand.",
+      "boundary": "Auswahl liefert keine Order; Ranking und Bindung besitzen getrennte Aufgaben.",
+      "layers": [
+        {
+          "name": "Universe / Cap21",
+          "source": "src/ops/governed_futures_universe_producer_v1/producer_v1.py",
+          "symbols": [
+            {
+              "name": "produce_governed_futures_universe_v1",
+              "line": 57,
+              "kind": "function"
+            },
+            {
+              "name": "run_governed_futures_universe_producer_v1",
+              "line": 192,
+              "kind": "function"
+            },
+            {
+              "name": "prove_restart_load_v1",
+              "line": 309,
+              "kind": "function"
+            },
+            {
+              "name": "build_universe_evidence_v1",
+              "line": 341,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "2219d3ad880d9c2797a24a00ce9ba134e42ac023b8a5731ca2a4f98126e55fd7"
+        },
+        {
+          "name": "Economic-MD / B05-Merkmale",
+          "source": "src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py",
+          "symbols": [
+            {
+              "name": "RankingFeatureProductionError",
+              "line": 83,
+              "kind": "class"
+            },
+            {
+              "name": "authority_block_v1",
+              "line": 92,
+              "kind": "function"
+            },
+            {
+              "name": "classify_peak_trade_ranking_feature_production_v1",
+              "line": 113,
+              "kind": "function"
+            },
+            {
+              "name": "compute_b03_ratified_raw_features_pure_v1",
+              "line": 179,
+              "kind": "function"
+            },
+            {
+              "name": "produce_raw_ranking_features_for_instrument_v1",
+              "line": 196,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "434e93f368aff873a1f90a0874b40da6f4aee9033c64bd826bebf537d95dc37c"
+        },
+        {
+          "name": "Ranking / Cap22",
+          "source": "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+          "symbols": [
+            {
+              "name": "produce_productive_futures_ranking_v1",
+              "line": 200,
+              "kind": "function"
+            },
+            {
+              "name": "produce_from_universe_state_root_v1",
+              "line": 432,
+              "kind": "function"
+            },
+            {
+              "name": "run_productive_futures_ranking_producer_v1",
+              "line": 484,
+              "kind": "function"
+            },
+            {
+              "name": "prove_restart_load_v1",
+              "line": 636,
+              "kind": "function"
+            },
+            {
+              "name": "build_ranking_evidence_v1",
+              "line": 669,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "1cdb79bc23b2e1d343fd5ae88729488c98d8d860416d6175b934f78e39d058b9"
+        },
+        {
+          "name": "Relative ökonomische Scorebildung",
+          "source": "src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py",
+          "symbols": [
+            {
+              "name": "FeatureNormalizationRowV1",
+              "line": 21,
+              "kind": "class"
+            },
+            {
+              "name": "CandidateEconomicScoreV1",
+              "line": 30,
+              "kind": "class"
+            },
+            {
+              "name": "midrank_higher_is_better_v1",
+              "line": 43,
+              "kind": "function"
+            },
+            {
+              "name": "percentile_from_midrank_v1",
+              "line": 63,
+              "kind": "function"
+            },
+            {
+              "name": "normalize_feature_cross_section_v1",
+              "line": 71,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "03acaa2d974f7e9cd64f4947f5ebb1ded9b62a2480d9a964eb7386c89f3ca27a"
+        },
+        {
+          "name": "Auswahl / Cap23",
+          "source": "src/ops/single_selected_future_policy_v1/selection_v1.py",
+          "symbols": [
+            {
+              "name": "produce_single_selected_future_v1",
+              "line": 275,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "059b877032955079a3d84d46cd55113cd510c1e7922cc24953fabd284245f5ad"
+        },
+        {
+          "name": "Membership und Rotation",
+          "source": "src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py",
+          "symbols": [
+            {
+              "name": "MfSelectorError",
+              "line": 72,
+              "kind": "class"
+            },
+            {
+              "name": "EligibleCandidateV1",
+              "line": 77,
+              "kind": "class"
+            },
+            {
+              "name": "MfSelectorResultV1",
+              "line": 83,
+              "kind": "class"
+            },
+            {
+              "name": "parse_eligible_cap22_top20",
+              "line": 96,
+              "kind": "function"
+            },
+            {
+              "name": "snapshot_identity_key",
+              "line": 129,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "976131456817f30d0c8c6df37b6a986644ca0ddadfe14aa11918eef9901f808c"
+        },
+        {
+          "name": "Bindung / Cap24",
+          "source": "src/ops/single_selected_future_runtime_binding_v1/models_v1.py",
+          "symbols": [
+            {
+              "name": "canonical_json_dumps",
+              "line": 35,
+              "kind": "function"
+            },
+            {
+              "name": "sha256_hex",
+              "line": 39,
+              "kind": "function"
+            },
+            {
+              "name": "BoundInstrumentV1",
+              "line": 46,
+              "kind": "class"
+            },
+            {
+              "name": "RuntimeBindingEvidenceV1",
+              "line": 80,
+              "kind": "class"
+            },
+            {
+              "name": "RuntimeBindingGateResultV1",
+              "line": 142,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "b5891ea04e6843a2493efb1ca870fa0193679e177aff4daa3d28832ec6136f58"
+        }
+      ]
+    },
+    {
+      "id": "CORE",
+      "name": "Master V2 und Double Play",
+      "group": "Universen",
+      "purpose": "Auf einem gebundenen Future Markt-/Scopezustand und Double-Play-Entscheidung berechnen.",
+      "inputs": "BoundInstrument, zulässiger Marktkontext, Volatilität, Cursor und Positions-/Reconciliationinput.",
+      "processing": "L1–L10, Direction/Confirmation, Survival, Suitability, Composition und Entry/Positionsmanagement/Exit.",
+      "outputs": "Decision-Evidence und fortgeschriebener Scope-/SideState-/Confirmationzustand.",
+      "state": "Regime, Initialisierungsbasis, laufende Referenz, Scope, SideState, Cursor und Exitbezug.",
+      "boundary": "Die Entscheidung erzeugt selbst weder Order noch finale Finanzmenge oder Fill.",
+      "layers": [
+        {
+          "name": "Instrument-/Daten-/Restoreadmission",
+          "source": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+          "symbols": [
+            {
+              "name": "CurrentProductiveMasterV2RuntimeCycleError",
+              "line": 297,
+              "kind": "class"
+            },
+            {
+              "name": "CurrentProductiveMasterV2CycleResultV1",
+              "line": 302,
+              "kind": "class"
+            },
+            {
+              "name": "extract_mark_and_index_from_payload_v1",
+              "line": 352,
+              "kind": "function"
+            },
+            {
+              "name": "extract_ticker_fields_v1",
+              "line": 369,
+              "kind": "function"
+            },
+            {
+              "name": "resolve_index_ticker_inst_id_v1",
+              "line": 384,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "e27fab1fb95999d8033e2c586fbc3c3a9deadf969fa53a5d582583728bf61e75"
+        },
+        {
+          "name": "GGE und Scopeanschluss",
+          "source": "src/trading/master_v2/golden_geometry_engine_v1.py",
+          "symbols": [
+            {
+              "name": "CanonicalGeometryInputV1",
+              "line": 34,
+              "kind": "class"
+            },
+            {
+              "name": "CanonicalBaseGeometryMagnitudeV1",
+              "line": 45,
+              "kind": "class"
+            },
+            {
+              "name": "GoldenGeometryEngineResultV1",
+              "line": 59,
+              "kind": "class"
+            },
+            {
+              "name": "compute_current_control_base_geometry_magnitude_v1",
+              "line": 90,
+              "kind": "function"
+            },
+            {
+              "name": "GoldenGeometryEngineV1",
+              "line": 104,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "30a4f2b9baf47cc8faa1c99d62f9021e51318b4dee7229ed87e8a6ff1db03ffc"
+        },
+        {
+          "name": "Zehn native mechanische Layer",
+          "source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+          "symbols": [
+            {
+              "name": "LayerIdV1",
+              "line": 13,
+              "kind": "class"
+            },
+            {
+              "name": "LayerCatalogEntryV1",
+              "line": 27,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396"
+        },
+        {
+          "name": "Richtung und Confirmation",
+          "source": "src/trading/master_v2/directional_assessment_confirmation_integration_v1.py",
+          "symbols": [
+            {
+              "name": "ParallelConfirmationAuthorityErrorV1",
+              "line": 90,
+              "kind": "class"
+            },
+            {
+              "name": "assert_c3_confirmation_authority_exclusive_v1",
+              "line": 94,
+              "kind": "function"
+            },
+            {
+              "name": "DirectionalConfirmationSideStateCarrierV1",
+              "line": 117,
+              "kind": "class"
+            },
+            {
+              "name": "DirectionalAssessmentConfirmationIntegrationInputV1",
+              "line": 184,
+              "kind": "class"
+            },
+            {
+              "name": "DirectionalAssessmentConfirmationIntegrationResultV1",
+              "line": 199,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "aefe4a2eb77fe5e122ab347bac09dcaf1748001fb7128b73f57b17f8564eef89"
+        },
+        {
+          "name": "Survival Suitability Composition",
+          "source": "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+          "symbols": [
+            {
+              "name": "PostC3DownstreamConfirmationAuthorityErrorV1",
+              "line": 118,
+              "kind": "class"
+            },
+            {
+              "name": "assert_post_c3_downstream_confirmation_non_authority_v1",
+              "line": 122,
+              "kind": "function"
+            },
+            {
+              "name": "assert_c4_c3_assessment_identity_binding_v1",
+              "line": 154,
+              "kind": "function"
+            },
+            {
+              "name": "assert_c4_single_lane_assessment_identity_binding_v1",
+              "line": 266,
+              "kind": "function"
+            },
+            {
+              "name": "collect_forbidden_downstream_confirmation_calls_v1",
+              "line": 334,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "6f5e4413da1eeb5417343f2af1a16c4be3d094e37a529a1d0670204f069e7d40"
+        },
+        {
+          "name": "Double Play Entry/Exit und Fortsetzung",
+          "source": "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+          "symbols": [
+            {
+              "name": "EntryExitDirectionState",
+              "line": 50,
+              "kind": "class"
+            },
+            {
+              "name": "PositionState",
+              "line": 58,
+              "kind": "class"
+            },
+            {
+              "name": "ReconciliationState",
+              "line": 68,
+              "kind": "class"
+            },
+            {
+              "name": "TradingGate",
+              "line": 74,
+              "kind": "class"
+            },
+            {
+              "name": "SafetyMode",
+              "line": 81,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "15fb8967ac153cdbc85ea1e4f3d09a9cf315f2fa97b2742e9d427df5938d1150"
+        }
+      ]
+    },
+    {
+      "id": "SL",
+      "name": "Selbstlern-Universum",
+      "group": "Universen",
+      "purpose": "Entscheidungen, Outcomes und getrennte Learninginputs typisiert aufnehmen und weiterverarbeiten.",
+      "inputs": "Originaler Decisionparent, zulässige Outcome-/Messartefakte und adressierte Returnevidence.",
+      "processing": "Capture, Pending/Retention, Bewertung, LearningState, Export sowie eigene Meta-/Repräsentationsadmission.",
+      "outputs": "LearningEvidence, ACKs, Meta-/Researchrecords und getrennte Stateupdates.",
+      "state": "DDO-Ledger, LearningState, Pendingjournal und jeweils eigener Learningrecordstore.",
+      "boundary": "Forecast-Triade, DDO-LearningState und numerischer Modellstore sind verschiedene Zustände; Learningmaterial erteilt keine Tradingrechte.",
+      "layers": [
+        {
+          "name": "Capture und exakter Decisionparent",
+          "source": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+          "symbols": [
+            {
+              "name": "SeamSpecV0",
+              "line": 287,
+              "kind": "class"
+            },
+            {
+              "name": "HostDecoratorBindingV0",
+              "line": 466,
+              "kind": "class"
+            },
+            {
+              "name": "DdoCaptureBindingV0",
+              "line": 564,
+              "kind": "class"
+            },
+            {
+              "name": "current_capture_binding_v0",
+              "line": 603,
+              "kind": "function"
+            },
+            {
+              "name": "ddo_replay_capture_disabled_isolation_reason_v0",
+              "line": 615,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1"
+        },
+        {
+          "name": "Retention und Pending",
+          "source": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/retention_v1.py",
+          "symbols": [
+            {
+              "name": "OutcomeRetentionError",
+              "line": 20,
+              "kind": "class"
+            },
+            {
+              "name": "canonical_bytes_v1",
+              "line": 24,
+              "kind": "function"
+            },
+            {
+              "name": "digest_v1",
+              "line": 30,
+              "kind": "function"
+            },
+            {
+              "name": "fsync_dir_v1",
+              "line": 34,
+              "kind": "function"
+            },
+            {
+              "name": "durable_bytes_v1",
+              "line": 42,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "ec49050d75d8f27720480eebeeb571a10b2e33ce9b277460630abbed4799bf2d"
+        },
+        {
+          "name": "Spätere Messung",
+          "source": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+          "symbols": [
+            {
+              "name": "NbarsSupplierMaterializationV1",
+              "line": 52,
+              "kind": "class"
+            },
+            {
+              "name": "validate_n_bars_measurement_evidence_v1",
+              "line": 69,
+              "kind": "function"
+            },
+            {
+              "name": "validate_n_bars_measurement_artifacts_v1",
+              "line": 101,
+              "kind": "function"
+            },
+            {
+              "name": "materialize_real_outcome_horizon_supplier_input_v1",
+              "line": 224,
+              "kind": "function"
+            },
+            {
+              "name": "run_offline_n_bars_horizon_pipeline_v1",
+              "line": 360,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "aed5dc58465fa862623f9b4183d47ad72cc31912ee41129bf9e8456e8444b35a"
+        },
+        {
+          "name": "Bewertung Attribution und LearningState",
+          "source": "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py",
+          "symbols": [
+            {
+              "name": "evaluate_offline_bundle_v0",
+              "line": 177,
+              "kind": "function"
+            },
+            {
+              "name": "persist_evaluation_bundle_v0",
+              "line": 452,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "83c9e61d025cda6b9a5151b5f8d274c7b40165605f8ba59e4995e74e6a315e4c"
+        },
+        {
+          "name": "Scope Pool und Export",
+          "source": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+          "symbols": [
+            {
+              "name": "derive_learning_evidence_record_id_v1",
+              "line": 31,
+              "kind": "function"
+            },
+            {
+              "name": "export_learning_evidence_from_state_v1",
+              "line": 40,
+              "kind": "function"
+            },
+            {
+              "name": "export_learning_evidence_from_state_or_fail_v1",
+              "line": 118,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "1507f008b47df920860b9c380d055cfac4ffe30c232429276568d9a9f5fdef5c"
+        },
+        {
+          "name": "Optimization-Return / M5-Eingang",
+          "source": "src/experiments/canonical_self_learning_optimization_return_input_v1.py",
+          "symbols": [
+            {
+              "name": "SelfLearningOptimizationReturnInputError",
+              "line": 47,
+              "kind": "class"
+            },
+            {
+              "name": "SelfLearningOptimizationReturnInputRequestV1",
+              "line": 52,
+              "kind": "class"
+            },
+            {
+              "name": "validate_self_learning_optimization_return_input_v1",
+              "line": 62,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "641f1fafa9e3dd74d8adee5cf9b7dba7e786d27f51ff469273aa13ffefc75657"
+        },
+        {
+          "name": "M6 und typisierte Metaroute",
+          "source": "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "symbols": [
+            {
+              "name": "MetaLearningIngestError",
+              "line": 69,
+              "kind": "class"
+            },
+            {
+              "name": "MetaLearningIngestRequestV1",
+              "line": 74,
+              "kind": "class"
+            },
+            {
+              "name": "ingest_meta_learning_evidence_from_return_input_v1",
+              "line": 88,
+              "kind": "function"
+            },
+            {
+              "name": "build_meta_learning_evidence_from_optimization_experiment_v1",
+              "line": 184,
+              "kind": "function"
+            },
+            {
+              "name": "FederatedMetaLearningIngestRequestV1",
+              "line": 291,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "08b28d4d8e46c8b532c9e0cc014338d2f19b2417ee26fc9d6113395ac62f4a75"
+        },
+        {
+          "name": "Learning-Repräsentation und Loop-C-Research",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+          "symbols": [
+            {
+              "name": "Phase24RepresentationFeedbackError",
+              "line": 47,
+              "kind": "class"
+            },
+            {
+              "name": "LoopCRepresentationFeedbackRequestV1",
+              "line": 52,
+              "kind": "class"
+            },
+            {
+              "name": "derive_loop_c_cycle_identity_v1",
+              "line": 59,
+              "kind": "function"
+            },
+            {
+              "name": "build_learning_representation_research_evidence_v1",
+              "line": 63,
+              "kind": "function"
+            },
+            {
+              "name": "run_loop_c_representation_feedback_closure_v1",
+              "line": 106,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1"
+        }
+      ]
+    },
+    {
+      "id": "OPT",
+      "name": "Optimierungs-Universum",
+      "group": "Universen",
+      "purpose": "Explizite Researchrequests in identifizierte Suche, Messung und auswertbare Resultate umsetzen.",
+      "inputs": "Learning-/MI-Evidence, Searchspace, Parameterregion, Hypothese und freigegebener Offlineprovider.",
+      "processing": "Preflight, Search, native oder Prepared-Messung, Experiment-/Failure-/Robustheitsverarbeitung und numerische Metaanalyse.",
+      "outputs": "ExperimentEvidence, Messpakete, Vergleichs-/Robustheitsresultate und typisierte Rückgaben.",
+      "state": "Experimentidentitäten, Researchmemory und Ergebnisarchive.",
+      "boundary": "Researchresultat und tatsächlich ausgeführter Versuch sind verschieden; Apply ist ein fremder kontrollierter Übergang.",
+      "layers": [
+        {
+          "name": "Identität Registry und Intake",
+          "source": "src/experiments/canonical_optimization_universe_v1.py",
+          "symbols": [
+            {
+              "name": "CanonicalOptimizationUniverseError",
+              "line": 163,
+              "kind": "class"
+            },
+            {
+              "name": "CanonicalOptimizationUniverseRequestV1",
+              "line": 168,
+              "kind": "class"
+            },
+            {
+              "name": "build_optimization_universe_capability_registry_v1",
+              "line": 182,
+              "kind": "function"
+            },
+            {
+              "name": "derive_optimization_universe_identity_v1",
+              "line": 203,
+              "kind": "function"
+            },
+            {
+              "name": "lookup_registered_optimization_capability_v1",
+              "line": 220,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "66be1ae22132572aceab89d013ec69af0c48a639384a2b9d44b427167180ea46"
+        },
+        {
+          "name": "Envelope und Preflight",
+          "source": "src/experiments/canonical_research_preflight_v1.py",
+          "symbols": [
+            {
+              "name": "research_preflight_v1",
+              "line": 14,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "6b29bedef24e486e76942f4f01e213c1f500dc9086108162a651b9ca8d2c6e57"
+        },
+        {
+          "name": "Search und Experimentidentity",
+          "source": "src/experiments/canonical_advanced_search_v1.py",
+          "symbols": [
+            {
+              "name": "AdvancedSearchValidationError",
+              "line": 242,
+              "kind": "class"
+            },
+            {
+              "name": "SearchAxisV1",
+              "line": 247,
+              "kind": "class"
+            },
+            {
+              "name": "SearchSpaceV1",
+              "line": 253,
+              "kind": "class"
+            },
+            {
+              "name": "SearchObjectiveV1",
+              "line": 259,
+              "kind": "class"
+            },
+            {
+              "name": "SearchConstraintV1",
+              "line": 267,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840"
+        },
+        {
+          "name": "Native Messung / Prepared",
+          "source": "src/experiments/canonical_native_research_measurements_v1.py",
+          "symbols": [
+            {
+              "name": "NativeResearchMeasurementError",
+              "line": 52,
+              "kind": "class"
+            },
+            {
+              "name": "NativeResearchMeasurementsV1",
+              "line": 57,
+              "kind": "class"
+            },
+            {
+              "name": "native_research_identity_sources_v1",
+              "line": 70,
+              "kind": "function"
+            },
+            {
+              "name": "native_research_input_hashes_v1",
+              "line": 181,
+              "kind": "function"
+            },
+            {
+              "name": "measure_native_research_candidate_v1",
+              "line": 197,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "dbefcd3ce569971bd15dce4a3acccefe8b26852a6adb719bb4c1d1ca0fd5cead"
+        },
+        {
+          "name": "Automatisierter wissenschaftlicher Offline-Loop",
+          "source": "src/experiments/canonical_automated_offline_research_loop_v1.py",
+          "symbols": [
+            {
+              "name": "AutomatedOfflineResearchLoopValidationError",
+              "line": 163,
+              "kind": "class"
+            },
+            {
+              "name": "ResearchHypothesisCandidateV1",
+              "line": 168,
+              "kind": "class"
+            },
+            {
+              "name": "OfflineExperimentObservationsV1",
+              "line": 180,
+              "kind": "class"
+            },
+            {
+              "name": "CanonicalAutomatedOfflineResearchLoopRequestV1",
+              "line": 190,
+              "kind": "class"
+            },
+            {
+              "name": "run_canonical_automated_offline_research_loop_v1",
+              "line": 216,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "48b3cccdc8034afbd9d6acd03f1225c3c2cc65b39365ff1ca42183bc68445524"
+        },
+        {
+          "name": "Numerischer Meta Analyzer",
+          "source": "src/experiments/canonical_meta_learning_v1.py",
+          "symbols": [
+            {
+              "name": "MetaLearningValidationError",
+              "line": 187,
+              "kind": "class"
+            },
+            {
+              "name": "MetaLearningLaterOutcomeV1",
+              "line": 192,
+              "kind": "class"
+            },
+            {
+              "name": "MetaLearningExperimentUnitV1",
+              "line": 200,
+              "kind": "class"
+            },
+            {
+              "name": "MetaLearningPolicyV1",
+              "line": 221,
+              "kind": "class"
+            },
+            {
+              "name": "CanonicalMetaLearningRequestV1",
+              "line": 230,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e"
+        },
+        {
+          "name": "M4 M5 M7 M8 und föderierte Übergaben",
+          "source": "src/experiments/canonical_m4_m8_evidence_return_loop_v1.py",
+          "symbols": [
+            {
+              "name": "M4M8EvidenceReturnLoopError",
+              "line": 108,
+              "kind": "class"
+            },
+            {
+              "name": "M4M8EvidenceReturnLoopRequestV1",
+              "line": 113,
+              "kind": "class"
+            },
+            {
+              "name": "run_m4_m8_evidence_return_loop_v1",
+              "line": 124,
+              "kind": "function"
+            },
+            {
+              "name": "derive_m4_m8_loop_identity_v1",
+              "line": 179,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "aa105fa2a0780f9c2f95d5eba00aae8ea4283aa7548ae5e392fc0f9c4b5c9a6e"
+        },
+        {
+          "name": "Proposal zur Governance",
+          "source": "src/governance/optimization_proposal_governance_ingress_v1.py",
+          "symbols": [
+            {
+              "name": "OptimizationProposalGovernanceIngressError",
+              "line": 110,
+              "kind": "class"
+            },
+            {
+              "name": "OptimizationProposalGovernanceAdmissionRequestV1",
+              "line": 115,
+              "kind": "class"
+            },
+            {
+              "name": "OptimizationProposalGovernanceAdmissionResultV1",
+              "line": 124,
+              "kind": "class"
+            },
+            {
+              "name": "build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1",
+              "line": 135,
+              "kind": "function"
+            },
+            {
+              "name": "validate_optimization_proposal_governance_ingress_v1",
+              "line": 261,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "2ae0bf6eae57ad8a9d3ffe50c05aa1cbd20f1c1a98aa098f41c9a1c7faa77481"
+        }
+      ]
+    },
+    {
+      "id": "INT",
+      "name": "Intelligenz-Universum",
+      "group": "Universen",
+      "purpose": "Marktkontext, Forecast, realisierten Horizont und Prognosefehler mit derselben Zielidentität verbinden.",
+      "inputs": "Zugelassene Point-in-time-Facts, Forecastmodell/-payload und spätere Mark-Preisbeobachtungen.",
+      "processing": "Kontextadmission, Forecastfreeze, Targetjoin, Calibration, Triadenstore und begrenzte numerische Modellinferenz.",
+      "outputs": "Forecast-/Calibration-/Research-Triade und berechneter Offline-Folgeforecast.",
+      "state": "MI-Originalstore, getrennte Providerreceipts und contentadressierte OLS-Modellartefakte.",
+      "boundary": "Modellinferenz, empirische Fehlerstreuung und wirtschaftliche Verbesserung werden getrennt ausgewiesen.",
+      "layers": [
+        {
+          "name": "Marktkontext und Familien",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+          "symbols": [
+            {
+              "name": "ContextFamilyPresence",
+              "line": 72,
+              "kind": "class"
+            },
+            {
+              "name": "MarketContextValidationError",
+              "line": 77,
+              "kind": "class"
+            },
+            {
+              "name": "derive_context_id_v1",
+              "line": 86,
+              "kind": "function"
+            },
+            {
+              "name": "derive_information_set_ref_v1",
+              "line": 91,
+              "kind": "function"
+            },
+            {
+              "name": "build_market_context_v1",
+              "line": 196,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "e6c74c71ae9f0ec1cb928e5f59077a4f13cc84b3d91655d8a825e2c8322850d4"
+        },
+        {
+          "name": "Forecast",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+          "symbols": [
+            {
+              "name": "ForecastEvidenceValidationError",
+              "line": 65,
+              "kind": "class"
+            },
+            {
+              "name": "derive_outcome_horizon_end_utc_v1",
+              "line": 74,
+              "kind": "function"
+            },
+            {
+              "name": "derive_forecast_evidence_id_v1",
+              "line": 86,
+              "kind": "function"
+            },
+            {
+              "name": "build_forecast_evidence_v1",
+              "line": 91,
+              "kind": "function"
+            },
+            {
+              "name": "optional_ref",
+              "line": 182,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "68a01235a03fb60e55eebf04a1e917c6e1d5725fc210623f467710627671d682"
+        },
+        {
+          "name": "Outcomejoin und Kalibrierung",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
+          "symbols": [
+            {
+              "name": "ForecastOutcomeJoinError",
+              "line": 29,
+              "kind": "class"
+            },
+            {
+              "name": "join_forecast_to_n_bars_outcome_v1",
+              "line": 33,
+              "kind": "function"
+            },
+            {
+              "name": "assert_n_bars_observation_unmodified_v1",
+              "line": 87,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "ca74b2f8361ae527d409ae3037452c845c580ce3ae12044f003cab5ee3e71d49"
+        },
+        {
+          "name": "Evidence Store und Export",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+          "symbols": [
+            {
+              "name": "route_learning_evidence_for_consumer_v1",
+              "line": 25,
+              "kind": "function"
+            },
+            {
+              "name": "export_mi_learning_evidence_onto_learning_path_v1",
+              "line": 55,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71"
+        },
+        {
+          "name": "B0–B5 Inkrementalzweig",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+          "symbols": [
+            {
+              "name": "ResearchDisposition",
+              "line": 86,
+              "kind": "class"
+            },
+            {
+              "name": "Phase22IncrementalResearchError",
+              "line": 97,
+              "kind": "class"
+            },
+            {
+              "name": "ResearchDatasetIdentityRequestV1",
+              "line": 102,
+              "kind": "class"
+            },
+            {
+              "name": "IncrementalStageResearchRequestV1",
+              "line": 116,
+              "kind": "class"
+            },
+            {
+              "name": "derive_research_dataset_id_v1",
+              "line": 130,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "c341395e10769b90a49a4191bda4027cf7b9b3333638dea32881f6cf92876b63"
+        },
+        {
+          "name": "Attribution und optionale Advisoryäste",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py",
+          "symbols": [
+            {
+              "name": "Phase25DpAttributionError",
+              "line": 81,
+              "kind": "class"
+            },
+            {
+              "name": "DpAttributionDisposition",
+              "line": 85,
+              "kind": "class"
+            },
+            {
+              "name": "DpAttributionEvidenceRequestV1",
+              "line": 92,
+              "kind": "class"
+            },
+            {
+              "name": "DpAttributionEvidenceResultV1",
+              "line": 101,
+              "kind": "class"
+            },
+            {
+              "name": "compute_attribution_evidence_digest_v1",
+              "line": 199,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "8b4f28d569e59f594fe638596b48eb176d2aa641c40c4e8721f21a0961e00046"
+        },
+        {
+          "name": "Unabhängige Marktmessung und Calibration-Readback",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/independent_market_forecast_measurement_v1.py",
+          "symbols": [
+            {
+              "name": "calibrate_frozen_market_forecast_v1",
+              "line": 98,
+              "kind": "function"
+            },
+            {
+              "name": "read_independent_market_calibration_v1",
+              "line": 164,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "2ffaa8ff1b174b0ccad12f5607dc9ff6b017268d2535873bf36f5614a467065e"
+        },
+        {
+          "name": "Numerischer OLS-Modellstore und berechneter Forecast",
+          "source": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py",
+          "symbols": [
+            {
+              "name": "MarketOlsFeatureV1",
+              "line": 72,
+              "kind": "class"
+            },
+            {
+              "name": "MarketOlsPolicyV1",
+              "line": 82,
+              "kind": "class"
+            },
+            {
+              "name": "read_market_ols_model_v1",
+              "line": 263,
+              "kind": "function"
+            },
+            {
+              "name": "train_market_ols_model_v1",
+              "line": 387,
+              "kind": "function"
+            },
+            {
+              "name": "forecast_from_market_ols_model_v1",
+              "line": 482,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "285467dbb06cbfce852cc3102083f27f7d73f54682a622810a3bd67ccb6df23e"
+        }
+      ]
+    },
+    {
+      "id": "FA",
+      "name": "Vollautonomie-Universum",
+      "group": "Universen",
+      "purpose": "Lane-/Slotzuordnung und vorhandene Fachaufrufe unter begrenzten Orchestrierungsverträgen verbinden.",
+      "inputs": "Lane-/Instrumentbindungen, isolierte Statewurzeln und injizierte Beobachtungen.",
+      "processing": "Topologie, Bound-Ingest, adressierte Core-/Governedcycle-Aufrufe und Completionprüfung.",
+      "outputs": "Lane-lokale Ergebnisse, Handoff-/Completionreceipts und Readinessresultate.",
+      "state": "Laneadressen, zuständige Originalcursor und begrenzte Sessionzustände.",
+      "boundary": "Vorbereitete Kardinalität 0..5 ist kein produktiv verbundener Fünf-Lane-Host; der benannte N1-Join hält HOST_JOIN=False.",
+      "layers": [
+        {
+          "name": "Membership und Topologie",
+          "source": "src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py",
+          "symbols": [
+            {
+              "name": "IsolatedLaneTopologyError",
+              "line": 78,
+              "kind": "class"
+            },
+            {
+              "name": "lane_state_root_for",
+              "line": 89,
+              "kind": "function"
+            },
+            {
+              "name": "IsolatedLaneSlotV1",
+              "line": 164,
+              "kind": "class"
+            },
+            {
+              "name": "IsolatedLaneTopologyV1",
+              "line": 186,
+              "kind": "class"
+            },
+            {
+              "name": "isolated_lane_topology_from_dict",
+              "line": 358,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "b99352662826880f02bcd6c6418aeba069289e8f38e17b7550a8b160ba66d41d"
+        },
+        {
+          "name": "Delegierte Auswahl und Bindung",
+          "source": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+          "symbols": [
+            {
+              "name": "ProductiveFullAutonomyN5RuntimeOrchestratorError",
+              "line": 115,
+              "kind": "class"
+            },
+            {
+              "name": "ProductiveFullAutonomyCap24BindContextV1",
+              "line": 123,
+              "kind": "class"
+            },
+            {
+              "name": "ProductiveFullAutonomyN5LaneRollupV1",
+              "line": 134,
+              "kind": "class"
+            },
+            {
+              "name": "ProductiveFullAutonomyN5RuntimeOrchestratorResultV1",
+              "line": 146,
+              "kind": "class"
+            },
+            {
+              "name": "run_productive_full_autonomy_n5_runtime_orchestrator_v1",
+              "line": 311,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "d09816ba7fc2ab06f05e9d0668cc090aff8d8c6b0f16d1589d28d108c765f56e"
+        },
+        {
+          "name": "Bound ingest und Coreadressierung",
+          "source": "src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/ingest_join_v1.py",
+          "symbols": [
+            {
+              "name": "FullAutonomyOccupiedLaneBoundIngestJoinError",
+              "line": 57,
+              "kind": "class"
+            },
+            {
+              "name": "admit_occupied_lane_bound_instruments_v1",
+              "line": 114,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "e91e352b860c1c8dd5b6448ff04b47c47e916933d808a2ff5ebd4d48bf84ef3a"
+        },
+        {
+          "name": "Governedcycle und Rollenübergabe",
+          "source": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+          "symbols": [
+            {
+              "name": "FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError",
+              "line": 170,
+              "kind": "class"
+            },
+            {
+              "name": "OccupiedLaneGovernedCycleN1ConsumerResultV1",
+              "line": 178,
+              "kind": "class"
+            },
+            {
+              "name": "non_v5_eg_dispatch_v1",
+              "line": 256,
+              "kind": "function"
+            },
+            {
+              "name": "invoke_occupied_lane_governed_cycle_n1_consumer_v1",
+              "line": 829,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "c9f741ae3db059fce4c60ce2da808b76e0212b0b4fef3d207b84cf2440fe3998"
+        },
+        {
+          "name": "Completion und Readiness",
+          "source": "src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py",
+          "symbols": [
+            {
+              "name": "FullAutonomyRuntimeN5CompletionError",
+              "line": 134,
+              "kind": "class"
+            },
+            {
+              "name": "OccupiedLaneN5JoinedHostV1",
+              "line": 142,
+              "kind": "class"
+            },
+            {
+              "name": "OccupiedLaneRuntimeN5CompletionResultV1",
+              "line": 172,
+              "kind": "class"
+            },
+            {
+              "name": "cardinality_joined_token_v1",
+              "line": 192,
+              "kind": "function"
+            },
+            {
+              "name": "lane_host_activation_root_v1",
+              "line": 198,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "559a8267bb4c57c198c3e3146b980b4208837bb4eb863d5c715be26e800437ea"
+        },
+        {
+          "name": "Bounded Session Stop und Recovery",
+          "source": "src/ops/bounded_peaktrade_system_composition_v1/session_v1.py",
+          "symbols": [
+            {
+              "name": "BoundedOfflineEpisodeSessionV1",
+              "line": 74,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "fd6896fe501a13532891ea9934caf25cb49fee28590b00d705b2b99a2f7a7cc9"
+        }
+      ]
+    },
+    {
+      "id": "TREASURY",
+      "name": "Treasury",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Kontobeobachtung und Kapitaladmission an explizite Konten-/Quellenidentitäten binden.",
+      "inputs": "Frische Venue-/Accountbeobachtungen mit Währung, Zeitbezug und eigener Quellrolle.",
+      "processing": "Read-only-Projektion, Treasuryreconciliation, CapitalAdmission und Account-Equity-Übergabe.",
+      "outputs": "Klassifizierte Kapital-/Depletionevidence und gebundener Equityinput.",
+      "state": "Treasurybeobachtung und Reconciliation-/Admissionrecord.",
+      "boundary": "Beobachtete Geldmenge, zulässiger Sizinginput und reserviertes Kapital sind verschiedene Verträge.",
+      "layers": [
+        {
+          "name": "Quell- und Kontorolle",
+          "source": "src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py",
+          "symbols": [
+            {
+              "name": "treasury_venue_observation_evidence_fingerprint_v1",
+              "line": 48,
+              "kind": "function"
+            },
+            {
+              "name": "map_funding_balance_to_treasury_venue_balance_raw_v1",
+              "line": 70,
+              "kind": "function"
+            },
+            {
+              "name": "resolve_balance_freshness_from_funding_v1",
+              "line": 83,
+              "kind": "function"
+            },
+            {
+              "name": "build_treasury_venue_observation_from_funding_balance_v1",
+              "line": 96,
+              "kind": "function"
+            },
+            {
+              "name": "produce_treasury_venue_observation_via_funding_balance_get_v1",
+              "line": 125,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "0448d0817cd3d46d8bb917b01570fd61ef664bf4df8ea5edf7dac3d5c1e2cbfb"
+        },
+        {
+          "name": "Treasuryreconciliation",
+          "source": "src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py",
+          "symbols": [
+            {
+              "name": "evaluate_treasury_read_only_reconciliation_v1",
+              "line": 51,
+              "kind": "function"
+            },
+            {
+              "name": "clear_treasury_reconciliation_idempotency_cache_v1",
+              "line": 268,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "e05822d9bca92c1e232e720c7f4a7f89ad075fb8fd73ae56081270cd5c2898cf"
+        },
+        {
+          "name": "CapitalAdmission und C08-Egress",
+          "source": "src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py",
+          "symbols": [
+            {
+              "name": "AccountEquityOrchestrationIngressV1",
+              "line": 14,
+              "kind": "class"
+            },
+            {
+              "name": "TreasuryAccountEquityOrchestrationJoinV1",
+              "line": 29,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "82b52cf0fa85757e2f099a25dcee07c3b76f74e06b108c0449f1f66f9352d0df"
+        },
+        {
+          "name": "Kapitalabnahme / Schutz",
+          "source": "src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/depletion_signal_v1.py",
+          "symbols": [
+            {
+              "name": "resolve_external_depletion_signal_for_decrease_context_v1",
+              "line": 32,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "156bc5fe850162375f6b9d71825b75cba25aa287f89e1eba319c821c201fdcc7"
+        }
+      ]
+    },
+    {
+      "id": "RISK",
+      "name": "Risk Sizing und Equityadmission",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Entscheidungsgebundene Finanzzulässigkeit und zulässige Menge bestimmen.",
+      "inputs": "Entscheidung, Account-Equity-Admissibility, Instrumentmetadaten, Preise und Risikoinputs.",
+      "processing": "Q0-Admissibility, Decision-bound Modelle, Pre-/Post-Sizing, kanonische Mengenrechnung und Reservationseam.",
+      "outputs": "Zugelassene oder blockierte Menge mit Bindungs-/Reason-Evidence.",
+      "state": "Risikowitness und konkrete Mengen-/Decisionbindung.",
+      "boundary": "USDC, Basismenge und native Kontrakte werden nicht gleichgesetzt; Close-only-Menge und Entry-Sizing bleiben getrennt.",
+      "layers": [
+        {
+          "name": "Q0 und Kapitaladmission",
+          "source": "src/ops/governed_productive_account_equity_authority_producer_v1",
+          "symbols": []
+        },
+        {
+          "name": "Decision-bound Risikomodelle",
+          "source": "src/risk/decision_bound_model_adapters_v1.py",
+          "symbols": [
+            {
+              "name": "encoded",
+              "line": 16,
+              "kind": "function"
+            },
+            {
+              "name": "number",
+              "line": 20,
+              "kind": "function"
+            },
+            {
+              "name": "text",
+              "line": 30,
+              "kind": "function"
+            },
+            {
+              "name": "instant",
+              "line": 35,
+              "kind": "function"
+            },
+            {
+              "name": "ReturnObservationV1",
+              "line": 41,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "4564dad05f1657f856e7d156af8b360a2b1ead1c47eb3681767edb17b880ee69"
+        },
+        {
+          "name": "Kanonisches CRS / Q1",
+          "source": "src/governance/capital_risk_sizing_v1.py",
+          "symbols": [
+            {
+              "name": "EnvelopeStatus",
+              "line": 100,
+              "kind": "class"
+            },
+            {
+              "name": "PreSizingRiskStatus",
+              "line": 106,
+              "kind": "class"
+            },
+            {
+              "name": "QuantityStatus",
+              "line": 112,
+              "kind": "class"
+            },
+            {
+              "name": "PostSizingRiskStatus",
+              "line": 118,
+              "kind": "class"
+            },
+            {
+              "name": "FinalQuantityStatus",
+              "line": 124,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "5beb463291672c5058724953b61c86d1ddbbbad8f2657f138bb0ffd2ac4ffce8"
+        },
+        {
+          "name": "Reservierungsseam und Close-only-Zweig",
+          "source": "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py",
+          "symbols": [
+            {
+              "name": "request_digest_v1",
+              "line": 63,
+              "kind": "function"
+            },
+            {
+              "name": "ReservationSizingBindingV1",
+              "line": 73,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "b80d33ad3b74064834ec27325921e22aec2a049ab6d228ec56fbfdc1ec4b3f28"
+        }
+      ]
+    },
+    {
+      "id": "BUDGET",
+      "name": "Portfolio und Reservierung",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Portfolioübergreifende Restkapital-/Reservierungszustände führen.",
+      "inputs": "Zugelassener Kapitalinput, Account-/Laneidentität und Reservierungs-/Ausführungsereignisse.",
+      "processing": "Start/Restore, Admission, Hold, Plan-/Submitbindung, Unknown-/Reconciliationbehandlung und Refresh.",
+      "outputs": "Reservation, Restbudget, Release- oder blockierter Übergang.",
+      "state": "Dauerhafter Budgetstore mit eigener Reservationstate-Maschine.",
+      "boundary": "Eine lokale Flat-Position ist noch keine bestätigte Freigabe einer fremden Reservation.",
+      "layers": [
+        {
+          "name": "Stabiler Start/Restore",
+          "source": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
+          "symbols": [
+            {
+              "name": "HostAccountObservationV1",
+              "line": 40,
+              "kind": "class"
+            },
+            {
+              "name": "collect_host_account_observation_v1",
+              "line": 47,
+              "kind": "function"
+            },
+            {
+              "name": "HostBudgetRecoveryContextV1",
+              "line": 144,
+              "kind": "class"
+            },
+            {
+              "name": "PortfolioBudgetHostV1",
+              "line": 189,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5"
+        },
+        {
+          "name": "Admission / Rest / Hold",
+          "source": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+          "symbols": [
+            {
+              "name": "PortfolioCapitalBudgetError",
+              "line": 95,
+              "kind": "class"
+            },
+            {
+              "name": "ReservationStateV1",
+              "line": 99,
+              "kind": "class"
+            },
+            {
+              "name": "ReserveDispositionV1",
+              "line": 108,
+              "kind": "class"
+            },
+            {
+              "name": "ReleaseReasonV1",
+              "line": 115,
+              "kind": "class"
+            },
+            {
+              "name": "SlotId",
+              "line": 134,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b"
+        },
+        {
+          "name": "Submit-/Unknownverknüpfung",
+          "source": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
+          "symbols": [
+            {
+              "name": "detached",
+              "line": 27,
+              "kind": "function"
+            },
+            {
+              "name": "validate_link_v1",
+              "line": 31,
+              "kind": "function"
+            },
+            {
+              "name": "bind_plan_locked_v1",
+              "line": 91,
+              "kind": "function"
+            },
+            {
+              "name": "mark_submit_locked_v1",
+              "line": 116,
+              "kind": "function"
+            },
+            {
+              "name": "reconcile_locked_v1",
+              "line": 132,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7"
+        },
+        {
+          "name": "Eigene Reconciliation / Refresh",
+          "source": "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py",
+          "symbols": [
+            {
+              "name": "capital_scope_v1",
+              "line": 24,
+              "kind": "function"
+            },
+            {
+              "name": "lane_bindings_v1",
+              "line": 43,
+              "kind": "function"
+            },
+            {
+              "name": "validate_stored_bindings_v1",
+              "line": 83,
+              "kind": "function"
+            },
+            {
+              "name": "verify_recovery_inputs_v1",
+              "line": 103,
+              "kind": "function"
+            },
+            {
+              "name": "reconcile_durable_budget_startup_v1",
+              "line": 152,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "b4aa7efa12ea78b488fda6c47bccbc6a3305207e275283e7f04443ce2fd2335e"
+        }
+      ]
+    },
+    {
+      "id": "ACCOUNTING",
+      "name": "Accounting Position und Reconciliation",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Positions-/Fill-/Accountingwahrheit und lokale Episodenfortsetzung getrennt nachvollziehen.",
+      "inputs": "Bestätigte oder ausdrücklich simulierte Accounting-/Venueevidence mit Identität und Menge.",
+      "processing": "Reconciliation, Contract-Metadata-Rechnung, Partialclose-/Flat-Prüfung und Episodenfortschreibung.",
+      "outputs": "PositionTruth, Accountingresultat, Close-/Flatwitness und fortgeschriebene Episode.",
+      "state": "Originaler Accounting-/Reconciliationzustand und Episodenidentität.",
+      "boundary": "Simulierte Accountingquellen des Offlinepfads werden nicht als echte Venue-Fills ausgegeben.",
+      "layers": [
+        {
+          "name": "Originale Truth-/Reconciliationadmission",
+          "source": "src/ops/productive_reconciliation_runtime_binding_v1/models_v1.py",
+          "symbols": [
+            {
+              "name": "canonical_json_dumps",
+              "line": 16,
+              "kind": "function"
+            },
+            {
+              "name": "sha256_hex",
+              "line": 20,
+              "kind": "function"
+            },
+            {
+              "name": "PositionTruthV1",
+              "line": 27,
+              "kind": "class"
+            },
+            {
+              "name": "PortfolioTruthSnapshotV1",
+              "line": 79,
+              "kind": "class"
+            },
+            {
+              "name": "MutationPlanStepV1",
+              "line": 110,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "bbe2c8cc36a4ba9b9911d8f3c5109386f1798cb19ad384e03df0b9c18d525627"
+        },
+        {
+          "name": "Lifecycle-/Fillbezug",
+          "source": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
+          "symbols": [
+            {
+              "name": "EvidenceLayer",
+              "line": 50,
+              "kind": "class"
+            },
+            {
+              "name": "LocalSubmitOutcome",
+              "line": 61,
+              "kind": "class"
+            },
+            {
+              "name": "FullCoreExchangeReconciliationIdentityV1",
+              "line": 87,
+              "kind": "class"
+            },
+            {
+              "name": "ExchangeEvidenceItemV1",
+              "line": 143,
+              "kind": "class"
+            },
+            {
+              "name": "FullCoreExchangeReconciliationSnapshotV1",
+              "line": 177,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "6d629b76c9aec8de1220a0e1748773ff47833578ce80ad552941e6f7bead5ab9"
+        },
+        {
+          "name": "Originalaccounting",
+          "source": "src/ops/productive_futures_accounting_runtime_binding_v1/accounting_engine_v1.py",
+          "symbols": [
+            {
+              "name": "AccountingEngineError",
+              "line": 41,
+              "kind": "class"
+            },
+            {
+              "name": "validate_contract_metadata_v1",
+              "line": 58,
+              "kind": "function"
+            },
+            {
+              "name": "ProductiveFuturesAccountingSessionV1",
+              "line": 111,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "5622a632cfcd28bb31a194d81efea55edd68a04df830d6cdcded3c51b3335283"
+        },
+        {
+          "name": "Episode Teilclose Flat und Egress",
+          "source": "src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py",
+          "symbols": [
+            {
+              "name": "verify_simulated_accounting_progress_v1",
+              "line": 52,
+              "kind": "function"
+            },
+            {
+              "name": "require_simulated_accounting_quantity_v1",
+              "line": 102,
+              "kind": "function"
+            },
+            {
+              "name": "advance_position_episode_from_simulated_accounting_v1",
+              "line": 124,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "853f2fb7fb2eede7b78673944e2118d82b4dadedf4bf0f93327ee9a850a8beed"
+        }
+      ]
+    },
+    {
+      "id": "GOV",
+      "name": "Governance Promotion und Applygrenze",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Vorschläge, Authorization und konkrete Applymaterialisierung getrennt prüfen.",
+      "inputs": "Typisierte Proposal-/Evidencepakete, Scope und ausdrückliche Authorizationinputs.",
+      "processing": "Intake, Lineage-/Zeitprüfung, explizite Freigabe und gesonderte Applyentscheidung.",
+      "outputs": "Admission-/Authorization-/Applyrecord oder begründeter Block.",
+      "state": "Versionierte Governance-/Materialisierungsrecords.",
+      "boundary": "Ein Proposal oder positives Researchergebnis verändert für sich keine produktive Konfiguration.",
+      "layers": [
+        {
+          "name": "Proposalintake / M10",
+          "source": "src/governance/optimization_proposal_governance_ingress_v1.py",
+          "symbols": [
+            {
+              "name": "OptimizationProposalGovernanceIngressError",
+              "line": 110,
+              "kind": "class"
+            },
+            {
+              "name": "OptimizationProposalGovernanceAdmissionRequestV1",
+              "line": 115,
+              "kind": "class"
+            },
+            {
+              "name": "OptimizationProposalGovernanceAdmissionResultV1",
+              "line": 124,
+              "kind": "class"
+            },
+            {
+              "name": "build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1",
+              "line": 135,
+              "kind": "function"
+            },
+            {
+              "name": "validate_optimization_proposal_governance_ingress_v1",
+              "line": 261,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "2ae0bf6eae57ad8a9d3ffe50c05aa1cbd20f1c1a98aa098f41c9a1c7faa77481"
+        },
+        {
+          "name": "Explizite Autorisierung",
+          "source": "src/governance/explicit_productive_authorization_v1.py",
+          "symbols": [
+            {
+              "name": "ExplicitProductiveAuthorizationError",
+              "line": 96,
+              "kind": "class"
+            },
+            {
+              "name": "OwnerExplicitProductiveAuthorizationInputV1",
+              "line": 101,
+              "kind": "class"
+            },
+            {
+              "name": "ExplicitProductiveAuthorizationEvaluateRequestV1",
+              "line": 115,
+              "kind": "class"
+            },
+            {
+              "name": "ExplicitProductiveAuthorizationResultV1",
+              "line": 123,
+              "kind": "class"
+            },
+            {
+              "name": "load_owner_boundary_v1",
+              "line": 148,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "4e13c8e263732d6fa49fb68dd0933680ec3431b33fdbc2c3e70b4bce1f7f0f22"
+        },
+        {
+          "name": "Getrennte Applyentscheidung",
+          "source": "src/governance/governed_productive_configuration_apply_authority_v1.py",
+          "symbols": [
+            {
+              "name": "ApplyAuthorityCallerClassV1",
+              "line": 103,
+              "kind": "class"
+            },
+            {
+              "name": "GovernedProductiveConfigurationApplyEvaluateRequestV1",
+              "line": 114,
+              "kind": "class"
+            },
+            {
+              "name": "GovernedProductiveConfigurationApplyEvaluateResultV1",
+              "line": 124,
+              "kind": "class"
+            },
+            {
+              "name": "evaluate_governed_productive_configuration_apply_v1",
+              "line": 301,
+              "kind": "function"
+            },
+            {
+              "name": "optimization_can_invoke_apply_authority_v1",
+              "line": 435,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "96232eccd42beece03a1bb718f1835fefb076caef7bcb4b941c26cb387bbd16c"
+        }
+      ]
+    },
+    {
+      "id": "SAFETY",
+      "name": "Safety und Sperrgrenzen",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Risk-/Safety-Veto und zulässige Positions-/Ausführungsgrenzen durchsetzen.",
+      "inputs": "Safety-/Riskstatus, Kill-/FILEGATE-Zustand und gebundene Fachkontexte.",
+      "processing": "Safetyadapter, Gateprüfung und Ausführungs-/Positionsadmission.",
+      "outputs": "Zulässigkeit, eingeschränkter Pfad oder Fail-closed-Grund.",
+      "state": "Zustand der jeweiligen Originalgate-/Kill-Switch-Owner.",
+      "boundary": "Ein anderer Bereich kann diese Veto-/Permitgrenzen nicht durch eine Grafik- oder Dokumentmarkierung ersetzen.",
+      "layers": [
+        {
+          "name": "Replay-Safety",
+          "source": "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
+          "symbols": [
+            {
+              "name": "SafetyKernelOfflineReplayContextV0",
+              "line": 68,
+              "kind": "class"
+            },
+            {
+              "name": "SafetyKernelOfflineReplayBoundaryV0",
+              "line": 81,
+              "kind": "class"
+            },
+            {
+              "name": "SafetyKernelOfflineReplayBindingResultV0",
+              "line": 106,
+              "kind": "class"
+            },
+            {
+              "name": "compute_safety_boundary_ref_v0",
+              "line": 156,
+              "kind": "function"
+            },
+            {
+              "name": "evaluate_offline_safety_kernel_boundary_v0",
+              "line": 162,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "0823b027347722aa2fa9e6a7f00e7f477b4dde374d1a3842ad835c373ffe1b07"
+        },
+        {
+          "name": "Durable Kill-/FILEGATE",
+          "source": "src/ops/gates/risk_gate.py",
+          "symbols": [
+            {
+              "name": "kill_switch_state_path_from_env",
+              "line": 23,
+              "kind": "function"
+            },
+            {
+              "name": "canonical_kill_switch_state_path",
+              "line": 32,
+              "kind": "function"
+            },
+            {
+              "name": "RiskDenyReason",
+              "line": 37,
+              "kind": "class"
+            },
+            {
+              "name": "RiskLimits",
+              "line": 49,
+              "kind": "class"
+            },
+            {
+              "name": "RiskContext",
+              "line": 60,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "e997037b6257661b92b6e08c7e2e1f44a0da8b97280dc717d4c1bb7b5d127d10"
+        },
+        {
+          "name": "Positions-/External-Effect-Schutz",
+          "source": "src/ops/full_core_live_path_composition_root_v1",
+          "symbols": []
+        }
+      ]
+    },
+    {
+      "id": "EVAL",
+      "name": "Evaluation GVEF und Qualitätsnachweise",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Baseline/Candidate, Corpus und erforderliche Domainresultate prüfbar zusammenführen.",
+      "inputs": "Gebundener Evaluationsplan, Originalmesspakete und explizite Constraints.",
+      "processing": "Domainbinding, Runner/Fanout, Ergebnissammlung und Receiptvalidierung.",
+      "outputs": "Evaluationsresultat, Registryeintrag und überprüfbarer Receipt.",
+      "state": "EvaluationReceiptArchive und identifizierte Ergebnisartefakte.",
+      "boundary": "Ein Evaluations-PASS ist keine Order-, Promotion- oder allgemeine Betriebsfreigabe.",
+      "layers": [
+        {
+          "name": "Plan Korpus Constraints",
+          "source": "src/evaluation/golden_vectors/integration/domain_result_binding_v1.py",
+          "symbols": [
+            {
+              "name": "EvaluationBindingError",
+              "line": 14,
+              "kind": "class"
+            },
+            {
+              "name": "exact_bytes_v1",
+              "line": 18,
+              "kind": "function"
+            },
+            {
+              "name": "binding_digest_v1",
+              "line": 24,
+              "kind": "function"
+            },
+            {
+              "name": "source_tree_digest_v1",
+              "line": 30,
+              "kind": "function"
+            },
+            {
+              "name": "DomainRequirementV1",
+              "line": 71,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "fd368f163cd7fb0a4e1a9f3af6cc74ad7c87ac1c53c8ae4bb1998399e0d0b447"
+        },
+        {
+          "name": "Domainrunner",
+          "source": "src/evaluation/golden_vectors/integration/bounded_required_domain_fanout_v1.py",
+          "symbols": [
+            {
+              "name": "BoundContextReplayV1",
+              "line": 78,
+              "kind": "class"
+            },
+            {
+              "name": "BoundDeltaBuilderV1",
+              "line": 88,
+              "kind": "class"
+            },
+            {
+              "name": "BoundContextEvidenceBuilderV1",
+              "line": 96,
+              "kind": "class"
+            },
+            {
+              "name": "DomainExecutionInputV1",
+              "line": 149,
+              "kind": "class"
+            },
+            {
+              "name": "dependency_binding_v1",
+              "line": 155,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "9936a96e98ed5b38b95f9f668c67164d061d0095ecf6e7dbf796ca69dc2191fa"
+        },
+        {
+          "name": "Ergebnis Registry und Receipt",
+          "source": "src/evaluation/golden_vectors/integration/evaluation_receipt_v1.py",
+          "symbols": [
+            {
+              "name": "EvaluationReceiptV1",
+              "line": 16,
+              "kind": "class"
+            },
+            {
+              "name": "evaluation_receipt_binding_v1",
+              "line": 25,
+              "kind": "function"
+            },
+            {
+              "name": "EvaluationReceiptArchiveV1",
+              "line": 41,
+              "kind": "class"
+            },
+            {
+              "name": "retain_native_research_packet_v1",
+              "line": 166,
+              "kind": "function"
+            },
+            {
+              "name": "validate_numeric_packet_v1",
+              "line": 189,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "db8e42e683bd4cdecc3230b64b0b99f45487e00066b2423d1d67d482bc2db852"
+        }
+      ]
+    },
+    {
+      "id": "DATA",
+      "name": "Datenebene und Quellenadmission",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Quellfacts mit Instrument-, Zeit-, Qualitäts- und Zweckbezug bereitstellen.",
+      "inputs": "Öffentliche Marktdaten und gesonderte private Account-State-Quellen.",
+      "processing": "Decoder, durable Factaufnahme, Replay, Freshness-/Purposeadmission und Consumeradapter.",
+      "outputs": "Kanonische Facts und zweckgebundene Inputpakete.",
+      "state": "Factstore, Replay-/Captureposition und jeweilige Quellenreceipts.",
+      "boundary": "Mark, Index, Last, Quell-/Kenntniszeit und synthetische Eingaben besitzen verschiedene Bedeutungen.",
+      "layers": [
+        {
+          "name": "Rohsource und Decoder",
+          "source": "src/ops/peak_trade_public_market_data_runtime_v1/canonical_fact_decoder_v1.py",
+          "symbols": [
+            {
+              "name": "capture_order_key_v1",
+              "line": 10,
+              "kind": "function"
+            },
+            {
+              "name": "fact_capture_timestamp_v1",
+              "line": 25,
+              "kind": "function"
+            },
+            {
+              "name": "fact_event_time_ms_v1",
+              "line": 39,
+              "kind": "function"
+            },
+            {
+              "name": "canonical_fact_source_v1",
+              "line": 55,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "5d4b4fddbaec1aa393cb4138ef76ed69ab32efaaf5a0f088d25455d042f93f71"
+        },
+        {
+          "name": "Store Replay und Recovery",
+          "source": "src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py",
+          "symbols": [
+            {
+              "name": "DurableStoreError",
+              "line": 18,
+              "kind": "class"
+            },
+            {
+              "name": "DurableStorePathsV1",
+              "line": 27,
+              "kind": "class"
+            },
+            {
+              "name": "default_store_paths_v1",
+              "line": 33,
+              "kind": "function"
+            },
+            {
+              "name": "append_fact_v1",
+              "line": 42,
+              "kind": "function"
+            },
+            {
+              "name": "load_all_facts_v1",
+              "line": 72,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "6e3f89ad9422340377db69af155e826b3f34d7021ab9877a9dfb47dadf480871"
+        },
+        {
+          "name": "Zweckgate und Consumeradapter",
+          "source": "src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py",
+          "symbols": [
+            {
+              "name": "PurposeBoundPublicFactSourceV1",
+              "line": 27,
+              "kind": "class"
+            },
+            {
+              "name": "purpose_profile_digest_v1",
+              "line": 279,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "8ad5860abea73b1977448c472a5d2b6dd6e012a513d755eedde66e820aa6b757"
+        },
+        {
+          "name": "Private Beobachtungskonvergenz",
+          "source": "src/ops/okx_eea_private_account_state_runtime_v1",
+          "symbols": []
+        }
+      ]
+    },
+    {
+      "id": "EXEC",
+      "name": "Intent Ausführungsgrenze und Lifecycle",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Entscheidung und Finanzmenge über Intent/Envelope an eine gesondert erlaubte Ausführungsgrenze übergeben.",
+      "inputs": "Gebundene Decision, zulässige Menge, Venueplan, Scope und Capability-/Permitinputs.",
+      "processing": "CanonicalIntent, Envelopeseal, gesonderte Send-/Consumeseams und Lifecycleübergaben.",
+      "outputs": "Intent/Envelope, Ausführungsdisposition und Lifecycle-/Ungewissheitsevidence.",
+      "state": "Envelope-/Permitverbrauch und jeweilige Lifecyclezustände.",
+      "boundary": "Ein vorhandener sendefähiger Adapter beweist keinen aufgerufenen oder autorisierten Venue-POST.",
+      "layers": [
+        {
+          "name": "CanonicalIntent",
+          "source": "src/governance/canonical_order_intent_v1.py",
+          "symbols": [
+            {
+              "name": "IntentAction",
+              "line": 129,
+              "kind": "class"
+            },
+            {
+              "name": "PositionEffect",
+              "line": 137,
+              "kind": "class"
+            },
+            {
+              "name": "IntentSide",
+              "line": 143,
+              "kind": "class"
+            },
+            {
+              "name": "ValidationStatus",
+              "line": 148,
+              "kind": "class"
+            },
+            {
+              "name": "CanonicalOrderIntentBuildOutcome",
+              "line": 153,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "d6cfa5bccc43c22d6f2271514047350a8f876de0eaf7f190c331606101f98c32"
+        },
+        {
+          "name": "Venueplan und Envelope",
+          "source": "src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py",
+          "symbols": [
+            {
+              "name": "FullCoreFinalOrderEnvelopeError",
+              "line": 25,
+              "kind": "class"
+            },
+            {
+              "name": "FinalOrderEnvelopeV1",
+              "line": 48,
+              "kind": "class"
+            },
+            {
+              "name": "compute_final_order_envelope_digest_v1",
+              "line": 103,
+              "kind": "function"
+            },
+            {
+              "name": "build_final_order_envelope_v1",
+              "line": 108,
+              "kind": "function"
+            },
+            {
+              "name": "bind_final_order_envelope_from_venue_plan_v1",
+              "line": 186,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "da1efba75a16de777a8f1e8a3f0ad505c5b21901431ef539eef778314b18a0b3"
+        },
+        {
+          "name": "Gesonderte Send-/Consumegrenze",
+          "source": "src/ops/full_core_live_path_composition_root_v1",
+          "symbols": []
+        },
+        {
+          "name": "Lifecycle-/Ungewissheitsübergabe",
+          "source": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
+          "symbols": [
+            {
+              "name": "detached",
+              "line": 27,
+              "kind": "function"
+            },
+            {
+              "name": "validate_link_v1",
+              "line": 31,
+              "kind": "function"
+            },
+            {
+              "name": "bind_plan_locked_v1",
+              "line": 91,
+              "kind": "function"
+            },
+            {
+              "name": "mark_submit_locked_v1",
+              "line": 116,
+              "kind": "function"
+            },
+            {
+              "name": "reconcile_locked_v1",
+              "line": 132,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7"
+        }
+      ]
+    },
+    {
+      "id": "CRED",
+      "name": "Credential und Capabilitygrenzen",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Berechtigungs- und Credentialreferenzen an konkrete Zwecke und Aufrufkontexte binden.",
+      "inputs": "Account-/Rollen-/Scopeidentität, Capabilityrequest und vorhandene Secret-/Keychainreferenz.",
+      "processing": "Capability-/Lease-/Revocationprüfung und gesicherte Übergabe.",
+      "outputs": "Gebundene Capability bzw. Fail-closed-Resultat.",
+      "state": "Lease-/Revocation-/Handoffrecords der zuständigen Owner.",
+      "boundary": "Secretbezug ist kein Finanz-, Auswahl- oder Handelsrecht; Mail-Keychain und Venuecredentials haben getrennte Zwecke.",
+      "layers": [
+        {
+          "name": "Capabilityrequest und Rollenprüfung",
+          "source": "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py",
+          "symbols": [
+            {
+              "name": "FullCoreGovernedCycleK1CredentialBindError",
+              "line": 85,
+              "kind": "class"
+            },
+            {
+              "name": "FullCoreGovernedCycleK1CredentialBindProofV1",
+              "line": 92,
+              "kind": "class"
+            },
+            {
+              "name": "bind_k1_credential_capability_for_governed_cycle_occupancy_v1",
+              "line": 199,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "bb667bb4c13e6c9399eba9336ba7cd137f237bda36a6630e6d91bb11232f69e6"
+        },
+        {
+          "name": "Getrennter Mail-Keychain-Adapter",
+          "source": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/email_keychain_v1.py",
+          "symbols": [
+            {
+              "name": "read_mail_keychain_password_v1",
+              "line": 19,
+              "kind": "function"
+            },
+            {
+              "name": "provision_mail_keychain_v1",
+              "line": 61,
+              "kind": "function"
+            },
+            {
+              "name": "main",
+              "line": 142,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "d96a7963e4e6b000f1de07eb87416405344c87bd82702087432d3bc11775c70f"
+        }
+      ]
+    },
+    {
+      "id": "HOST",
+      "name": "Host Session und Prozessbetrieb",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Begrenzte Sessions und vorhandene Fachowneraufrufe mit konkreten Statewurzeln ausführen.",
+      "inputs": "Manifest, effektive Config, Datenprofil, Ressourcen-/Versuchsgrenzen und Callbackinputs.",
+      "processing": "Readiness, Attempt, Handoff, Readback, Continuation und Stop-/Recoveryverarbeitung.",
+      "outputs": "Session-/Attempt-/Completionresultate und zuständige Journale.",
+      "state": "Sessioncursor, Attemptzustand und Handoffjournal.",
+      "boundary": "Fortgesetzte Sequenzierung und der fachliche Handelskreis sind verschiedene Dinge; der benannte S6-Pfad endet an PRE_EXTERNAL_EFFECT.",
+      "layers": [
+        {
+          "name": "Manifest effektive Config und Ressourcen",
+          "source": "src/ops/bounded_peaktrade_system_composition_v1/session_v1.py",
+          "symbols": [
+            {
+              "name": "BoundedOfflineEpisodeSessionV1",
+              "line": 74,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "fd6896fe501a13532891ea9934caf25cb49fee28590b00d705b2b99a2f7a7cc9"
+        },
+        {
+          "name": "Attempt und Originalaufruf",
+          "source": "src/ops/bounded_peaktrade_system_composition_v1/governed_attempt_v1.py",
+          "symbols": [
+            {
+              "name": "OfflineGovernedAttemptV1",
+              "line": 21,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "262f0a55fb4699351522ef595902cf62ff6a835ad859ae0be9f0f174c9dea435"
+        },
+        {
+          "name": "Handoff Readback und Stop",
+          "source": "src/ops/bounded_peaktrade_system_composition_v1/handoff_receipts_v1.py",
+          "symbols": [
+            {
+              "name": "HandoffRequestV1",
+              "line": 27,
+              "kind": "class"
+            },
+            {
+              "name": "OfflineHandoffJournalV1",
+              "line": 55,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "5c59eea515e8aba08a0e02fb3ed07b2affeff6cbff84ba70ad9c07d133f9ba98"
+        },
+        {
+          "name": "Gesonderte Runtime-Materialisierung",
+          "source": "src/governance/governed_runtime_apply_materialization_v1.py",
+          "symbols": [
+            {
+              "name": "RuntimeApplyMaterializationCallerClassV1",
+              "line": 47,
+              "kind": "class"
+            },
+            {
+              "name": "RuntimeApplyMaterializationIngressV1",
+              "line": 56,
+              "kind": "class"
+            },
+            {
+              "name": "RuntimeApplyMaterializationEvaluateRequestV1",
+              "line": 68,
+              "kind": "class"
+            },
+            {
+              "name": "RuntimeApplyMaterializationEvaluateResultV1",
+              "line": 77,
+              "kind": "class"
+            },
+            {
+              "name": "validate_runtime_apply_materialization_ingress_v1",
+              "line": 135,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "32830f8fbf84ab13a1962b180aea7bf55d3ce95d73ea1fbb2371f3b055ffe39e"
+        }
+      ]
+    },
+    {
+      "id": "STORE",
+      "name": "Persistenz Identität und Transportmechanik",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Integrität und technische Speicherung für getrennte Fachzustände bereitstellen.",
+      "inputs": "Validierte Records, Identitäten, Append-/Read-/Replayrequests und Storagepolicy.",
+      "processing": "Kanonisierung, Digest, fachlich zugeordneter Write/Append und verifizierter Readback.",
+      "outputs": "Gespeicherte Bytes oder expliziter Integritäts-/Durabilityfehler.",
+      "state": "Jeweilige Ledger-, WAL-, Journal- und Receiptdateien.",
+      "boundary": "Eine gemeinsame Dateisystemmechanik vereinigt keine Fachwriter; Prozess-, Host- und Stromausfalldauerhaftigkeit sind getrennte Behauptungen.",
+      "layers": [
+        {
+          "name": "Integrität und Identityhelper",
+          "source": "src/meta/learning_loop/contract_safety_v1.py",
+          "symbols": [
+            {
+              "name": "ValidationPhase",
+              "line": 97,
+              "kind": "class"
+            },
+            {
+              "name": "ContractValidationResult",
+              "line": 110,
+              "kind": "class"
+            },
+            {
+              "name": "ContractSafetyError",
+              "line": 118,
+              "kind": "class"
+            },
+            {
+              "name": "canonical_futures_scope_ref",
+              "line": 129,
+              "kind": "function"
+            },
+            {
+              "name": "canonical_trading_logic_immutability_ref",
+              "line": 138,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "dcdea356409630c13fa46f69712e34196585921e63ef4f5625da8b890a77b6e2"
+        },
+        {
+          "name": "Writer und dauerhafter Handoff",
+          "source": "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py",
+          "symbols": [
+            {
+              "name": "DurableBudgetStoreError",
+              "line": 18,
+              "kind": "class"
+            },
+            {
+              "name": "canonical",
+              "line": 22,
+              "kind": "function"
+            },
+            {
+              "name": "digest",
+              "line": 26,
+              "kind": "function"
+            },
+            {
+              "name": "DurableBudgetStoreV1",
+              "line": 30,
+              "kind": "class"
+            }
+          ],
+          "source_sha256": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3"
+        }
+      ]
+    },
+    {
+      "id": "VIEW",
+      "name": "Operator Anzeige Monitoring und Wissen",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Vorhandene Fachzustände als erklärende Operator-/Webansicht konsumieren.",
+      "inputs": "Readmodels, Futureprofile, Rankingsnapshots, Reasoncodes und beobachtete Betriebsdaten.",
+      "processing": "Projektion, Zustands-/Profilanzeige und Explainability.",
+      "outputs": "Operator-/Dashboarddarstellung und lesbarer Kontext.",
+      "state": "Darstellungszustand und eigene Readmodelartefakte.",
+      "boundary": "Anzeige erteilt weder Instrumentauswahl noch Trading-/Applyauthority.",
+      "layers": [
+        {
+          "name": "Readmodel und Projektion",
+          "source": "src/ops/future_profile_snapshot_v1/producer_v1.py",
+          "symbols": [
+            {
+              "name": "build_future_profile_snapshot_v1",
+              "line": 716,
+              "kind": "function"
+            },
+            {
+              "name": "get_future_profile_for_instrument_v1",
+              "line": 804,
+              "kind": "function"
+            },
+            {
+              "name": "get_selected_future_profile_v1",
+              "line": 815,
+              "kind": "function"
+            },
+            {
+              "name": "missing_optional_profile_field_v1",
+              "line": 827,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "530008dffdfcf5710651f374ae173779dbe84f874687980be90f156c8afeb92c"
+        },
+        {
+          "name": "Anzeige und erklärender Kontext",
+          "source": "src/webui",
+          "symbols": []
+        }
+      ]
+    },
+    {
+      "id": "ENG",
+      "name": "Entwicklung Tests CI und Auslieferung",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Versionierte Quellen mit gebundener Pythonumgebung bauen und gezielt prüfen.",
+      "inputs": "Quellbaum, pyproject/uv.lock, Konfigurationen und explizite Test-/CLIrequests.",
+      "processing": "scripts/pt-Runtimeprüfung, Tests, CI-/Docs-/Packagingwerkzeuge.",
+      "outputs": "Prüfergebnisse, gebundene Artefakte und Dokumentationsprojektionen.",
+      "state": "Git-Dateibestand und jeweilige Build-/Testartefakte.",
+      "boundary": "Ein gespeicherter Testbericht oder ein vorhandener Dateipfad beweist keine heutige Gesamtfunktion.",
+      "layers": [
+        {
+          "name": "Delivery-/Policygrenzen",
+          "source": "scripts/ci",
+          "symbols": []
+        }
+      ]
+    },
+    {
+      "id": "EIP",
+      "name": "Evidence Input Plane und G2-Querübergaben",
+      "group": "Äußere Fachbereiche",
+      "purpose": "Optimization-/Metaevidence prüfen und an einen erlaubten typisierten Inputseam binden.",
+      "inputs": "Adressierte M4/M5/M6/M8-/P5-Evidence mit Identität, Lineage und zulässiger Zielrolle.",
+      "processing": "Producerbridge, Adjudikation A, Inputcreator/Binder B und P4/L6-Seam.",
+      "outputs": "Adjudication-/Bind-/Seamresultat oder Block.",
+      "state": "Gebundene Evidence-/Materialisierungsrecords.",
+      "boundary": "Evidenceannahme, tatsächlicher Zahlenverbrauch und produktive Freigabe sind getrennte Übergänge.",
+      "layers": [
+        {
+          "name": "G2-Primärprojektion",
+          "source": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+          "symbols": [
+            {
+              "name": "GovernedRuntimeLearningInputBindingError",
+              "line": 86,
+              "kind": "class"
+            },
+            {
+              "name": "RuntimeLearningInputOptimizationBindingRequestV1",
+              "line": 91,
+              "kind": "class"
+            },
+            {
+              "name": "RuntimeLearningInputOptimizationBindingResultV1",
+              "line": 102,
+              "kind": "class"
+            },
+            {
+              "name": "load_field_mapping_ledger_v1",
+              "line": 113,
+              "kind": "function"
+            },
+            {
+              "name": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
+              "line": 296,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec"
+        },
+        {
+          "name": "P5-Producerbridges / A",
+          "source": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
+          "symbols": [
+            {
+              "name": "build_optimization_binding_context_v1",
+              "line": 24,
+              "kind": "function"
+            },
+            {
+              "name": "build_meta_learning_binding_context_v1",
+              "line": 39,
+              "kind": "function"
+            },
+            {
+              "name": "bridge_m5_to_optimization_envelope_evidence_v1",
+              "line": 54,
+              "kind": "function"
+            },
+            {
+              "name": "bridge_m6_to_meta_learning_routed_evidence_v1",
+              "line": 71,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "5c00cbd43296c8ef270bf8a6e03a876a7efa043dc2583940748ca1bcba7d49c3"
+        },
+        {
+          "name": "P3 Inputcreator/Binder",
+          "source": "src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py",
+          "symbols": [
+            {
+              "name": "bind_layer_input_from_adjudication_v1",
+              "line": 64,
+              "kind": "function"
+            },
+            {
+              "name": "run_component_b_runtime_v1",
+              "line": 285,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "33eacb29999b2d14daa02fd3e7a24a79360876a332b7e216a34aec1ca68c8846"
+        },
+        {
+          "name": "P4/L6-Seam",
+          "source": "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py",
+          "symbols": [
+            {
+              "name": "run_productive_l6_seam_from_prior_adjudication_v1",
+              "line": 179,
+              "kind": "function"
+            },
+            {
+              "name": "run_productive_l6_seam_binding_v1",
+              "line": 245,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "86957b9dcfff914f7387dc7cc0b373d3253e541bab8fdbfbfe2db48afd4b3779"
+        }
+      ]
+    },
+    {
+      "id": "GATES",
+      "name": "F1 M9 Schwellen und Laufzeitadmission",
+      "group": "Äußere Fachbereiche",
+      "purpose": "F1/M9-Schwellenwerte und ihre konkreten Consumerbindungen prüfen.",
+      "inputs": "Scoped Threshold-/Age-/Volatilityinputs, Lineage und Authoritywitness.",
+      "processing": "Owner-/Wertprüfung, Presence-/Transportprüfung und begrenztes Enforcement am MV2-Consumer.",
+      "outputs": "Threshold-/Enforcementresultat mit Block- oder Zulässigkeitsgründen.",
+      "state": "Scope-/Lineagegebundene Schwellen- und Admissionrecords.",
+      "boundary": "Presence und korrekt gebundener numerischer Wert sind verschiedene Prüfungen; Defaultwerte ersetzen keine Quelle.",
+      "layers": [
+        {
+          "name": "Scoped Owner-/Thresholdbindung",
+          "source": "src/governance/f1_m9_scoped_owner_threshold_value_authority_v1.py",
+          "symbols": [
+            {
+              "name": "ThresholdValueAdjudicationStatusV1",
+              "line": 87,
+              "kind": "class"
+            },
+            {
+              "name": "F1M9ScopedOwnerThresholdValueAdjudicationRequestV1",
+              "line": 94,
+              "kind": "class"
+            },
+            {
+              "name": "F1M9ScopedOwnerThresholdValueAdjudicationResultV1",
+              "line": 106,
+              "kind": "class"
+            },
+            {
+              "name": "transition_configuration_for_valid_threshold_v1",
+              "line": 321,
+              "kind": "function"
+            },
+            {
+              "name": "evaluate_f1_m9_scoped_owner_threshold_value_authority_v1",
+              "line": 358,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "18c897aa5c70c69c0b4ce6691b763b88e955f95dc31aa82823f4accf20f79114"
+        },
+        {
+          "name": "Transport und Presence",
+          "source": "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py",
+          "symbols": [
+            {
+              "name": "F1M9ProductiveRuntimeThresholdConsumerPathResultV1",
+              "line": 74,
+              "kind": "class"
+            },
+            {
+              "name": "load_consumer_wiring_decision_v1",
+              "line": 111,
+              "kind": "function"
+            },
+            {
+              "name": "consumer_wiring_authorized_v1",
+              "line": 120,
+              "kind": "function"
+            },
+            {
+              "name": "evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1",
+              "line": 160,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "109cbc001d92daf042409b052530338cfa3575d057e5c3932fa4f07e3bb49279"
+        },
+        {
+          "name": "Bounded Enforcement / Cycleadmission",
+          "source": "src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py",
+          "symbols": [
+            {
+              "name": "load_threshold_enforcement_closure_decision_v1",
+              "line": 41,
+              "kind": "function"
+            },
+            {
+              "name": "threshold_enforcement_authorized_v1",
+              "line": 52,
+              "kind": "function"
+            },
+            {
+              "name": "BoundedThresholdEnforcementResultV1",
+              "line": 62,
+              "kind": "class"
+            },
+            {
+              "name": "evaluate_bounded_threshold_enforcement_at_mv2_consumer_v1",
+              "line": 100,
+              "kind": "function"
+            },
+            {
+              "name": "apply_bounded_enforcement_to_double_play_alpha_v1",
+              "line": 204,
+              "kind": "function"
+            }
+          ],
+          "source_sha256": "311da4cbf657b0232d55ff796458913674b597126ff22247b4494bc4d7b04cbf"
+        }
+      ]
+    }
+  ],
+  "top_level_counts": {
+    ".BACKUP_DESTINATION_LOCKED": 1,
+    ".cursor": 21,
+    ".dockerignore": 1,
+    ".githooks": 1,
+    ".github": 80,
+    ".gitignore": 1,
+    ".local": 2,
+    ".pre-commit-config.yaml": 1,
+    "AGENTS.md": 1,
+    "DISASTER_RECOVERY_ENVIRONMENT.txt": 1,
+    "DISASTER_RECOVERY_GIT_STATUS.txt": 1,
+    "DISASTER_RECOVERY_MANIFEST.txt": 1,
+    "DISASTER_RECOVERY_RSYNC_LOG.txt": 1,
+    "DISASTER_RECOVERY_UNTRACKED_INVENTORY.txt": 1,
+    "DISASTER_RECOVERY_VERIFICATION.txt": 1,
+    "Makefile": 1,
+    "README.md": 1,
+    "RESTORE_INSTRUCTIONS.txt": 1,
+    "SECURITY_NOTES.md": 1,
+    "backups": 18,
+    "config": 798,
+    "config.toml": 1,
+    "data": 5,
+    "docker": 8,
+    "docs": 8062,
+    "evidence": 2936,
+    "forensics": 67,
+    "mypy.ini": 1,
+    "policy_packs": 3,
+    "pt": 1,
+    "pyproject.toml": 1,
+    "pyrightconfig.json": 1,
+    "pytest.ini": 1,
+    "requirements.txt": 1,
+    "runtime": 404,
+    "schemas": 3,
+    "scripts": 1473,
+    "sidebar_before.png": 1,
+    "src": 5126,
+    "static": 14,
+    "templates": 32,
+    "tests": 3963,
+    "uv.lock": 1
+  },
+  "files": {
+    "current-files.jsonl.gz": {
+      "sha256": "e3fa973f5e2dd9a08c85775bbdc3e4d6bf92c4bf13700dc5898511da1832b9db",
+      "bytes": 1867093
+    },
+    "current-symbols.jsonl.gz": {
+      "sha256": "2e5da680a30a1128bb81569463581703f65a7e061d07eea3276498ea1ed93ad7",
+      "bytes": 2585061
+    },
+    "current-imports.jsonl.gz": {
+      "sha256": "c72da6cf894ca7d9a0fa9cd4532357bde95777576668d289fb34fab49e276e45",
+      "bytes": 2011250
+    },
+    "current-policies.jsonl.gz": {
+      "sha256": "d3ce063bf1a3c3531095bf25a77cb3dfdeb173bc3cb450b1394425d6d5e93006",
+      "bytes": 255407
+    }
+  },
+  "constant_claims": [
+    {
+      "path": "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "name": "SELECTED_FUTURE_COUNT",
+      "value": 1
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "name": "MAX_POSITIONS_EFFECTIVE",
+      "value": 1
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "name": "DEFAULT_REFRESH_CADENCE_SECONDS",
+      "value": 300.0
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "name": "DEFAULT_MIN_HOLDING_PERIOD_SECONDS",
+      "value": 3600.0
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "name": "DEFAULT_HYSTERESIS_RANK_IMPROVEMENT",
+      "value": 1
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "name": "MULTI_FUTURE_RUNTIME_AUTHORIZED",
+      "value": false
+    },
+    {
+      "path": "src/ops/peak_trade_ranking_feature_production_v1/constants_v1.py",
+      "name": "MARK_COUNT",
+      "value": 61
+    },
+    {
+      "path": "src/ops/peak_trade_ranking_feature_production_v1/constants_v1.py",
+      "name": "LOG_RETURN_COUNT",
+      "value": 60
+    },
+    {
+      "path": "src/ops/peak_trade_ranking_matrix_policy_v1.py",
+      "name": "VOLATILITY_WEIGHT",
+      "value": 0.5
+    },
+    {
+      "path": "src/ops/peak_trade_ranking_matrix_policy_v1.py",
+      "name": "AMPLITUDE_WEIGHT",
+      "value": 0.5
+    },
+    {
+      "path": "src/trading/master_v2/double_play_futures_input.py",
+      "name": "FORBIDDEN_FUTURES_BASE_ASSETS",
+      "value": []
+    },
+    {
+      "path": "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+      "name": "BTC_EXCLUDED",
+      "value": true
+    },
+    {
+      "path": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py",
+      "name": "SOLE_PRICE_SWITCH_RULE",
+      "value": "CM_t>=D_t"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "name": "FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY",
+      "value": "BOUNDED_CONTINUOUS_SEQUENCING_TO_PRE_EXTERNAL_EFFECT_ONLY"
+    }
+  ],
+  "policy_files": 780
+}

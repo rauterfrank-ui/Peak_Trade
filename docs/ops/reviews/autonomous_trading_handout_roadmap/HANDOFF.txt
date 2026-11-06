@@ -1,0 +1,105 @@
+================================================================================
+PEAK_TRADE – Autonomous Trading Handout Roadmap – HANDOFF
+================================================================================
+
+Branch: feat/autonomous-trading-handout-roadmap
+Mode: paper_stability_guard (docs-only, no runtime/config mutation)
+Date: 2026-03-21
+Agent: cursor_multi_agent_orchestrator
+
+--------------------------------------------------------------------------------
+DELIVERABLES
+--------------------------------------------------------------------------------
+
+1. Text Handout (Markdown):
+   docs/ops/reviews/autonomous_trading_handout_roadmap/HANDOUT.md
+   Status: DONE
+
+2. PDF Export:
+   out/ops/autonomous_trading_handout_roadmap/Peak_Trade_Autonomous_Trading_Handout.pdf
+   Status: NOT GENERATED – pandoc was not found. Install pandoc (and optionally
+           xelatex) to run the export command in the PDF section below.
+
+3. Handoff File:
+   docs/ops/reviews/autonomous_trading_handout_roadmap/HANDOFF.txt
+   Status: DONE (this file)
+
+--------------------------------------------------------------------------------
+HANDOUT CONTENT SUMMARY
+--------------------------------------------------------------------------------
+
+The HANDOUT.md covers all 19 required sections:
+  1. Executive Summary
+  2. Current Peak_Trade State
+  3. Full System Map
+  4. AI Layer Map (L0–L6, Autonomy Matrix)
+  5. Model / Provider / Binding Map
+  6. Governance + Safety Gates
+  7. Research → Shadow → Testnet → Live Pipeline
+  8. Execution Layer
+  9. Risk Layer
+ 10. Observability + Operator Layer
+ 11. Evidence / Registry / Reproducibility Layer
+ 12. What Already Exists
+ 13. What Is Missing
+ 14. Gap Matrix
+ 15. Roadmap Phases (Current → Autonomous System)
+ 16. Hard Blockers / Non-Negotiables
+ 17. Recommended Sequencing
+ 18. What Must Remain Non-Autonomous Unless Explicitly Proven
+ 19. Appendix: Canonical Docs / Runbooks / Specs
+
+--------------------------------------------------------------------------------
+PDF EXPORT
+--------------------------------------------------------------------------------
+
+pandoc was NOT found on the system. The markdown handout is complete.
+To generate the PDF from HANDOUT.md:
+
+  pandoc docs/ops/reviews/autonomous_trading_handout_roadmap/HANDOUT.md \
+    -o out/ops/autonomous_trading_handout_roadmap/Peak_Trade_Autonomous_Trading_Handout.pdf \
+    --pdf-engine=xelatex \
+    -V geometry:margin=2.5cm \
+    -V fontsize=11pt
+
+If pandoc is unavailable or xelatex is missing:
+  - The markdown handout is complete and self-contained
+  - Install pandoc + TeX (e.g. MacTeX, TeX Live) for PDF generation
+  - Alternatively: use any markdown-to-PDF tool (e.g. vs code markdown-pdf,
+    grip + wkhtmltopdf, or browser print from rendered md)
+
+--------------------------------------------------------------------------------
+CONSTRAINTS OBSERVED
+--------------------------------------------------------------------------------
+
+- docs only: no runtime mutation, no config mutation
+- no paper/shadow/testnet/live behavior changes
+- no enabling of live trading
+- no secret handling, no exchange key work
+- no code changes (except export/build helpers if needed)
+- safety-first, governance-first posture
+- planning/architecture handout, not deployment authorization
+
+--------------------------------------------------------------------------------
+DISCOVERY SOURCES USED
+--------------------------------------------------------------------------------
+
+docs/, docs/ops/, docs/ops/reviews/, docs/ops/runbooks/, docs/ops/specs/,
+docs/governance/, docs/execution/, docs/risk/, src/, tests/, scripts/
+Key documents: AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md, GOVERNANCE_AND_SAFETY_OVERVIEW.md,
+PEAK_TRADE_LIVE_EXECUTION_ROADMAP, RISK_LAYER_V1_GUIDE, GATES_OVERVIEW,
+CRITIC_PROPOSER_BOUNDARY_SPEC_V1, PROVIDER_MODEL_BINDING_SPEC_V1,
+AI_LAYER_CANONICAL_SPEC_V1, PEAK_TRADE_PROJECT_SUMMARY_CURRENT,
+EVIDENCE_INDEX, OBSERVABILITY_AND_MONITORING_PLAN, PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS,
+FEHLENDE_FEATURES_PEAK_TRADE
+
+--------------------------------------------------------------------------------
+NEXT STEPS (FOR OPERATOR)
+--------------------------------------------------------------------------------
+
+1. Review HANDOUT.md for accuracy and completeness
+2. Run pandoc (if available) to produce PDF
+3. Commit to feat/autonomous-trading-handout-roadmap
+4. Optional: Create PR to main for review
+
+--------------------------------------------------------------------------------

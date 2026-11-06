@@ -1,0 +1,43 @@
+# Integrated Paper-Shadow Observation Session Capability v1
+#
+# Non-authorizing. No wallclock session. No Operator-GO. No network.
+# No orders. No Testnet/Live. Authority effect NONE.
+
+schema_version = "integrated_paper_shadow_observation_session.v1"
+producer_family = "ops.integrated_paper_shadow_observation_session_v1"
+capability_id = "INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1"
+authority_effect = "NONE"
+activation_effect = "NONE"
+economic_gate_effect = "NONE"
+runtime_effect = "NONE"
+order_effect = "NONE"
+
+mode_required = "observation"
+venue = "OKX"
+market_type = "FUTURES"
+instrument_allowlist = ["ETH-USD_UM_XPERP-310404"]
+btc_forbidden = true
+spot_forbidden = true
+
+orders_allowed = false
+broker_writes_allowed = false
+network_allowed = false
+credentials_allowed = false
+wallclock_session_execution_allowed = false
+operator_go_granted = false
+paper_shadow_observation_authorized = false
+testnet_authorized = false
+live_authorized = false
+economic_validity_pass = false
+integrated_economic_evidence_bundle_verified = false
+no_auto_promotion = true
+
+max_session_duration_seconds = 21600
+portfolio_economics_model_id = "ops.integrated_paper_shadow_observation_portfolio_economics_v1"
+portfolio_economics_model_version = "v1"
+market_data_policy_id = "ops.integrated_paper_shadow_observation_market_data_policy_v1"
+readiness_producer_id = "ops.integrated_paper_shadow_observation_readiness_producer_v1"
+bundle_verifier_id = "ops.integrated_paper_shadow_observation_bundle_verifier_v1"
+
+contract_doc = "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md"
+pipeline_owner = "ops.integrated_paper_shadow_economic_validity_pipeline_v1"

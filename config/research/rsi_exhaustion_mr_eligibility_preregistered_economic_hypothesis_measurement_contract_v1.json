@@ -1,0 +1,312 @@
+{
+  "artifact_kind": "preregistered_economic_hypothesis_measurement_contract",
+  "artifact_version": "v1",
+  "schema_version": "rsi_exhaustion_mr_eligibility_preregistered_economic_hypothesis_measurement_contract.v1",
+  "authority_effect": "NONE",
+  "runtime_effect": "NONE",
+  "status": "DEFINITION_ONLY_PREREGISTERED",
+  "verdict": "HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED",
+  "slice_class": "DEFINITION_ONLY",
+  "evaluation_authorized": false,
+  "backtest_authorized": false,
+  "implementation_authorized": false,
+  "hypothesis_count": 1,
+  "multiple_testing_budget": 1,
+  "evaluation_run_count_authorized": 1,
+  "development_evaluation_runs_allowed": 1,
+  "optimization_forbidden": true,
+  "variants_forbidden": true,
+  "parameter_sweeps_forbidden": true,
+  "post_hoc_threshold_adjustment_forbidden": true,
+  "repeat_after_result_inspection_forbidden": true,
+  "hypothesis_id": "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+  "hypothesis_statement": "A causally entry-effective, pre-entry-computed RSI-exhaustion eligibility filter can avoid economically weak mean-reversion entries under unchanged Master-V2 / Double-Play / execution semantics, improving net profit factor and drawdown properties versus the unfiltered control arm.",
+  "scientific_hypothesis": "Mean-reversion band entries that occur when RSI(14) is in the mid-range (no oversold or overbought exhaustion confirmation) are disproportionately weak after costs; excluding them before entry improves net PF, net return, and does not worsen net max drawdown versus the identical unfiltered control chain.",
+  "economic_hypothesis": "Relative to the immutable bollinger_bands/v2 canonical baseline on the sealed DEVELOPMENT_ONLY panel, applying the frozen pre-entry RSI(14) exhaustion eligibility filter yields jointly: net_profit_factor_treatment > control, net_return_treatment > control, and net_max_drawdown_treatment not worse than control, with cost drag fully included.",
+  "prior_failed_hypotheses": [
+    {
+      "hypothesis_id": "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+      "contract_id": "regime_gated_standaside_mr_preregistered_economic_hypothesis_measurement_contract.v1",
+      "result_class": "FAIL",
+      "finding": "identical_arms_gate_inactive_on_entries"
+    },
+    {
+      "hypothesis_id": "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+      "contract_id": "entry_effective_mr_eligibility_preregistered_economic_hypothesis_measurement_contract.v1",
+      "result_class": "FAIL",
+      "finding": "net_profit_factor_not_improved_despite_entry_eligibility_divergence"
+    }
+  ],
+  "distinction_from_prior_failed_hypotheses": [
+    "Does not reuse the three-feature absolute-threshold RANGE_BOUND / TREND_STRONG classifier from the regime-gated FAIL (identical_arms_gate_inactive_on_entries)",
+    "Does not reuse or rename the ATR(14) rolling-percentile mid-band (25,75) vol_regime_filter primitive from the entry-effective ATR FAIL (net_profit_factor_not_improved_despite_entry_eligibility_divergence)",
+    "Uses an orthogonal momentum-exhaustion mechanism (RSI(14) oversold/overbought confirmation) instead of a volatility-regime mechanism (ATR percentile mid-band) or an absolute-threshold multi-feature regime classifier",
+    "Frozen RSI parameters taken uniquely from repo SSOT config.toml defaults where [strategy.rsi_strategy] and [strategy.rsi_reversion_v1] agree (period=14, oversold/lower=30, overbought/upper=70), computed via the EWM-causal calculate_rsi SSOT, not the Wilder-smoothing strategy-class variant",
+    "Requires observed entry-eligibility divergence between treatment and control as a hard measurement condition, identical in kind to (but computed independently of) the entry-effective ATR contract's requirement"
+  ],
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "holdout_forbidden": true,
+  "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "sealed_holdout_content_inspection_authorized": false,
+  "acquisition_contract_id": "regime_gated_standaside_mr_independent_dev_panel_acquisition_contract.v1",
+  "acquisition_contract_ref": "config/research/regime_gated_standaside_mr_independent_dev_panel_acquisition_contract_v1.json",
+  "acquisition_contract_sha256": "93e60f33eb8d9a62d6f9d98854ae9e934e3caaf3e508dcd87d60e9d80e28a246",
+  "seal_registry_ref": "config/research/regime_gated_standaside_mr_independent_dev_panel_seal_registry_v1.json",
+  "allowed_data_sources": [
+    "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+    "finalized_public_okx_pt1h_ohlcv_bars_only"
+  ],
+  "forbidden_data_sources": [
+    "offline_economic_reevaluation_sealed_long_panel_v1",
+    "any_sealed_holdout_raw_or_derived_artifacts",
+    "live_or_authenticated_account_endpoints",
+    "non_development_only_datasets"
+  ],
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "baseline_config_ref": "config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json",
+  "baseline_immutable": true,
+  "treatment": {
+    "treatment_id": "rsi_exhaustion_mr_entry_eligibility_v1",
+    "treatment_type": "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER",
+    "treatment_count": 1,
+    "description": "Fail-closed pre-entry eligibility filter over the unchanged canonical mean-reversion chain. New entries are admitted only when the frozen RSI(14) exhaustion rule returns ELIGIBLE (RSI <= 30 or RSI >= 70); otherwise stand aside. No change to signal geometry, direction authority, entry side, exits, sizing, risk, execution, fees, slippage, stops, or ledger.",
+    "acts_before_entry_decision": true,
+    "reporting_or_attribution_only": false,
+    "no_new_direction_authority": true,
+    "no_new_switch_authority": true,
+    "no_new_risk_authority": true,
+    "no_new_sizing_authority": true,
+    "no_new_execution_authority": true,
+    "sole_direction_authority": "trading.master_v2.double_play_state.transition_state",
+    "master_v2_entry_side_expected": "NONE",
+    "bollinger_event_only": true,
+    "no_post_hoc_long_short_ratification": true,
+    "runtime_implementation_in_this_slice": false
+  },
+  "control_arm": {
+    "control_id": "unfiltered_canonical_bollinger_v2_baseline",
+    "description": "Identical Master-V2 / Double-Play / bollinger_bands/v2 / execution / cost / stop / ledger chain with no pre-entry eligibility filter.",
+    "eligibility_filter_applied": false
+  },
+  "shared_trading_semantics": {
+    "identical_for_treatment_and_control": true,
+    "signal_geometry_unchanged": true,
+    "direction_authority_unchanged": true,
+    "entry_side_unchanged": true,
+    "exit_semantics_unchanged": true,
+    "sizing_unchanged": true,
+    "risk_unchanged": true,
+    "execution_unchanged": true,
+    "fees_unchanged": true,
+    "slippage_unchanged": true,
+    "stops_unchanged": true,
+    "ledger_unchanged": true,
+    "master_v2_and_double_play_sole_authority": true
+  },
+  "eligibility_filter": {
+    "filter_id": "canonical_rsi_exhaustion_entry_eligibility_v1",
+    "derivation": "Uniquely taken from repo SSOT defaults where config/config.toml [strategy.rsi_strategy] and [strategy.rsi_reversion_v1] agree (period=14, oversold/lower=30, overbought/upper=70); not selected by trial-and-error.",
+    "source_refs": [
+      "config/config.toml#[strategy.rsi_strategy]",
+      "config/config.toml#[strategy.rsi_reversion_v1]",
+      "src/strategies/rsi.py::calculate_rsi"
+    ],
+    "primitive": "rsi_exhaustion_filter",
+    "mode": "filter",
+    "calculator_ssot": "src/strategies/rsi.py::calculate_rsi",
+    "calculator_method": "EWM_CAUSAL_SPAN_ADJUST_FALSE",
+    "wilder_smoothing_excluded": true,
+    "lookahead_forbidden": true,
+    "future_bars_forbidden": true,
+    "max_feature_lookback_hours": 14,
+    "frozen_parameters": {
+      "rsi_period": 14,
+      "oversold": 30,
+      "overbought": 70,
+      "use_wilder": false,
+      "calculator": "ewm_causal_span"
+    },
+    "features": [
+      {
+        "feature_id": "rsi_14h",
+        "lookback_hours": 14,
+        "causal": true,
+        "definition": "RSI(14) over trailing finalized PT1H close prices via EWM causal smoothing (span=14, adjust=False) per src/strategies/rsi.py::calculate_rsi; first 14 bars are warmup"
+      }
+    ],
+    "eligibility_rule": "At finalized bar t, before any new entry decision: compute RSI(14) via calculate_rsi. ELIGIBLE iff RSI is finite AND (RSI <= 30 OR RSI >= 70); otherwise STAND_ASIDE (block new entries only). First 14 bars of warmup are STAND_ASIDE.",
+    "control_eligibility": "Always ELIGIBLE whenever the unchanged baseline emits an entry intent (no filter).",
+    "treatment_eligibility": "ELIGIBLE only when eligibility_rule holds at the entry-candidate timestamp.",
+    "direction_or_side_effect": "NONE",
+    "threshold_adjustment_forbidden_after_preregistration": true,
+    "forbidden_prior_feature_ids": [
+      "atr_14h",
+      "atr_14h_rolling_percentile_rank_100h",
+      "realized_vol_168h",
+      "range_compression_72h",
+      "trend_strength_168h"
+    ]
+  },
+  "entry_eligibility_divergence_requirement": {
+    "required": true,
+    "measurement_condition": "On the decision segment, at least one baseline entry-candidate timestamp must have control_eligible != treatment_eligible (equivalently: treatment must block at least one control-admitted entry candidate).",
+    "if_absent_result_class": "FAIL",
+    "if_absent_reason_code": "identical_arms_no_entry_eligibility_divergence",
+    "reporting_only_gate_forbidden": true
+  },
+  "pit_and_leakage_rules": {
+    "finalized_bars_only": true,
+    "point_in_time_required": true,
+    "no_forward_fill": true,
+    "no_future_feature_values": true,
+    "no_holdout_leakage": true,
+    "no_performance_based_feature_selection": true,
+    "no_post_hoc_threshold_or_feature_adjustment": true,
+    "no_new_data_sources": true
+  },
+  "evaluation_unit": {
+    "unit_id": "shared_book_non_bitcoin_linear_usdt_perp_panel_portfolio",
+    "aggregation": "shared_portfolio_equity_path",
+    "identical_chain_for_baseline_and_treatment": true
+  },
+  "common_panel_bounds": {
+    "start": "2022-06-01T03:55:17Z",
+    "end_exclusive": "2023-08-16T05:55:00Z",
+    "frequency": "PT1H",
+    "source": "seal_registry_published_common_panel_bounds_only"
+  },
+  "splits": {
+    "method": "CHRONOLOGICAL_60_20_20_FLOOR_HOUR",
+    "train_definition_share": 0.6,
+    "validation_share": 0.2,
+    "final_development_confirmation_share": 0.2,
+    "overlap_forbidden": true,
+    "train_definition": {
+      "start": "2022-06-01T03:55:17Z",
+      "end_exclusive": "2023-02-20T19:00:00Z"
+    },
+    "validation": {
+      "start": "2023-02-20T19:00:00Z",
+      "end_exclusive": "2023-05-20T00:00:00Z"
+    },
+    "final_development_confirmation": {
+      "start": "2023-05-20T00:00:00Z",
+      "end_exclusive": "2023-08-16T05:55:00Z"
+    },
+    "split_intervals_sha256": "a35783bf0268c174dfe585c9839ba45cc6e3835021699786f4490a0d8c9b33db",
+    "max_feature_lookback_hours": 168,
+    "max_holding_horizon_hours": 48,
+    "embargo_hours": 168,
+    "purge_hours": 216,
+    "embargo_duration": "PT168H",
+    "purge_duration": "PT216H",
+    "validation_feature_eligible_from": "2023-02-27T19:00:00Z",
+    "validation_label_eligible_from": "2023-03-01T19:00:00Z",
+    "final_feature_eligible_from": "2023-05-27T00:00:00Z",
+    "final_label_eligible_from": "2023-05-29T00:00:00Z"
+  },
+  "seeds": {
+    "primary_seed": 20220601,
+    "bootstrap_seed": 20220601,
+    "seed_adjustment_forbidden": true
+  },
+  "cost_model": {
+    "fee_bps": 10.0,
+    "slippage_bps": 5.0,
+    "half_spread_bps": 5.0,
+    "roundtrip_reference_bps": 30.0,
+    "fixed": true,
+    "cost_drag_fully_included_in_net_metrics": true,
+    "adjustment_forbidden_after_preregistration": true
+  },
+  "stop_and_ledger_semantics": {
+    "unchanged_from_baseline_binding": true,
+    "stop_pct": 0.025,
+    "ledger_owner": "unchanged_mv2_research_wiring_closed_trade_and_shared_equity_path",
+    "mutation_forbidden": true
+  },
+  "metrics": {
+    "primary": [
+      "NET_RETURN_AFTER_FEES_AND_SLIPPAGE",
+      "PROFIT_FACTOR",
+      "MAX_DRAWDOWN",
+      "SHARPE",
+      "COST_DRAG",
+      "TURNOVER",
+      "TRADE_COUNT",
+      "ENTRY_ELIGIBILITY_DIVERGENCE"
+    ],
+    "comparison": {
+      "baseline": "unchanged_canonical_baseline_config",
+      "treatment_count": 1,
+      "identical_data_splits_costs_seeds_execution_chain": true
+    }
+  },
+  "decision_thresholds": {
+    "minimum_trade_count": 50,
+    "max_trade_count_reduction_fraction_vs_control": 0.5,
+    "materiality_epsilon_net_return_abs": 0.0,
+    "pass_requires_all": [
+      "entry_eligibility_divergence_observed == true",
+      "trade_count_treatment >= minimum_trade_count",
+      "trade_count_treatment >= trade_count_control * (1 - max_trade_count_reduction_fraction_vs_control)",
+      "net_profit_factor_treatment > net_profit_factor_control",
+      "net_max_drawdown_treatment >= net_max_drawdown_control",
+      "net_return_treatment > net_return_control",
+      "cost_drag_fully_included_in_net_metrics == true"
+    ],
+    "fail_if_any": [
+      "evaluable AND entry_eligibility_divergence_observed == false",
+      "evaluable AND net_profit_factor_treatment <= net_profit_factor_control",
+      "evaluable AND net_max_drawdown_treatment < net_max_drawdown_control",
+      "evaluable AND net_return_treatment <= net_return_control",
+      "evaluable AND trade_count_treatment < trade_count_control * (1 - max_trade_count_reduction_fraction_vs_control)",
+      "any_holdout_use_for_tuning_or_selection",
+      "any_post_hoc_threshold_or_feature_adjustment",
+      "any_second_or_repeated_evaluation_run",
+      "any_parameter_sweep_or_variant"
+    ],
+    "inconclusive_if_any": [
+      "trade_count_control < minimum_trade_count",
+      "technical_panel_hash_or_load_failure",
+      "feature_warmup_leaves_zero_evaluable_entry_candidates",
+      "contract_or_wiring_integrity_failure_preventing_measurement"
+    ],
+    "inconclusive_never_for_poor_economic_results": true,
+    "threshold_adjustment_forbidden_after_preregistration": true,
+    "decision_segment": "final_development_confirmation_only"
+  },
+  "promotion_and_holdout_policy": {
+    "promotion_eligible": false,
+    "promotion_claim_from_development_forbidden": true,
+    "economic_validity_offline_gate_pass": false,
+    "economic_validity_offline_gate_changed": false,
+    "holdout_use_requires_separate_operator_go": true,
+    "holdout_single_use_after_go_only": true,
+    "holdout_forbidden_in_this_slice": true
+  },
+  "runtime_policy": {
+    "runtime_activated": false,
+    "shadow_activated": false,
+    "testnet_activated": false,
+    "live_authorized": false,
+    "orders_allowed": false,
+    "scheduler_authorized": false
+  },
+  "explicit_non_actions": [
+    "NO_BACKTEST_IN_THIS_SLICE",
+    "NO_ECONOMIC_METRICS_COMPUTATION",
+    "NO_DEVELOPMENT_PANEL_RAW_ACCESS_IN_THIS_SLICE",
+    "NO_PARAMETER_TUNING",
+    "NO_VARIANT_SEARCH",
+    "NO_RANKING",
+    "NO_HOLDOUT_ACCESS",
+    "NO_POLICY_RUNTIME_IMPLEMENTATION",
+    "NO_PRODUCTIVE_TRADING_LOGIC_CHANGE",
+    "NO_PROMOTION_CLAIM",
+    "NO_REUSE_OR_RETUNE_OF_FAILED_REGIME_GATE",
+    "NO_REUSE_OR_RETUNE_OF_FAILED_ATR_PERCENTILE_MIDBAND_FILTER"
+  ],
+  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_PR_BEFORE_ANY_DEVELOPMENT_EVALUATION"
+}

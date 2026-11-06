@@ -1,0 +1,428 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_decisions_v1.schema.json",
+  "title": "Surface-B OKX public PT1M raw-bytes and exclusive-tip proof decisions v1",
+  "description": "Machine-readable STA authorized download / digest / numeric exclusive-tip proof under DEC_RAW_INPUT_PACK_MATERIALIZATION. Does not authorize pack materialization, campaign start, partition fill, or authority flips.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "decision_id",
+    "decision_status",
+    "owner_value",
+    "owner_go",
+    "owner_go_base_sha",
+    "authority_surface",
+    "scope",
+    "bar_interval",
+    "candle_event_time_semantics",
+    "mark_event_time_semantics",
+    "exclusive_tip_formula",
+    "download_or_network_fetch_policy",
+    "authorized_network_fetch",
+    "download_or_network_fetch",
+    "proof_contract_ready",
+    "sta_external_input_fields_ready",
+    "owner_partition_selection_ready",
+    "numeric_proofs_resolved",
+    "instrument_binding",
+    "authorized_source_classification",
+    "authorized_fetch",
+    "numeric_proof_slots",
+    "authorized_observation_window_candidate",
+    "rule_proofs",
+    "digest_provenance",
+    "unresolved_fields",
+    "authority_refs",
+    "non_effects",
+    "decisions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_decisions/v1"
+    },
+    "document_type": {
+      "const": "OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_DECISIONS_MANIFEST"
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF"
+    },
+    "status": {
+      "const": "OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_NUMERIC_TIP_DIGEST_PROOF_RESOLVED"
+    },
+    "decision_id": {
+      "const": "DEC_RAW_INPUT_PACK_MATERIALIZATION"
+    },
+    "decision_status": {
+      "const": "RATIFIED"
+    },
+    "owner_value": {
+      "const": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION"
+    },
+    "owner_go": {
+      "const": "OWNER_STA_SURFACE_B_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_V1"
+    },
+    "owner_go_base_sha": {
+      "const": "54642d8250bb59ba58d98da7ce7b6ab52558e43b"
+    },
+    "authority_surface": {
+      "const": "B"
+    },
+    "scope": {
+      "const": "STA_AUTHORIZED_DOWNLOAD_RAW_BYTES_DIGEST_AND_NUMERIC_PROOF_ONLY"
+    },
+    "bar_interval": {
+      "const": "PT1M"
+    },
+    "candle_event_time_semantics": {
+      "const": "PT1M_BUCKET_OPEN_EVENT_TIME"
+    },
+    "mark_event_time_semantics": {
+      "const": "PT1M_BUCKET_OPEN_EVENT_TIME"
+    },
+    "exclusive_tip_formula": {
+      "const": "last_finalized_common_bucket_open_event_time_epoch_s+60"
+    },
+    "download_or_network_fetch_policy": {
+      "const": "STA_EXPLICITLY_AUTHORIZED_ONLY"
+    },
+    "authorized_network_fetch": {
+      "const": true
+    },
+    "download_or_network_fetch": {
+      "const": true
+    },
+    "proof_contract_ready": {
+      "const": true
+    },
+    "sta_external_input_fields_ready": {
+      "const": true
+    },
+    "owner_partition_selection_ready": {
+      "const": false
+    },
+    "numeric_proofs_resolved": {
+      "const": true
+    },
+    "instrument_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "venue",
+        "canonical_instrument_id",
+        "venue_instrument_id",
+        "contract_type",
+        "market_type",
+        "quote_currency",
+        "settlement_currency"
+      ],
+      "properties": {
+        "venue": { "const": "okx" },
+        "canonical_instrument_id": { "const": "inst-eth-usdt-perp" },
+        "venue_instrument_id": { "const": "ETH-USDT-SWAP" },
+        "contract_type": { "const": "perpetual" },
+        "market_type": { "const": "futures" },
+        "quote_currency": { "const": "USDT" },
+        "settlement_currency": { "const": "USDT" }
+      }
+    },
+    "authorized_source_classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorized_source_classes",
+        "forbidden_source_classes",
+        "candle_authority_source_ref",
+        "mark_price_authority_source_ref"
+      ],
+      "properties": {
+        "authorized_source_classes": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "enum": [
+              "VENUE_NATIVE_OKX_PUBLIC_HISTORY_CANDLES_PT1M_CONFIRM_1",
+              "VENUE_NATIVE_OKX_PUBLIC_HISTORY_MARK_PRICE_CANDLES_PT1M_CONFIRM_1"
+            ]
+          }
+        },
+        "forbidden_source_classes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "candle_authority_source_ref": {
+          "const": "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1"
+        },
+        "mark_price_authority_source_ref": {
+          "const": "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1"
+        }
+      }
+    },
+    "authorized_fetch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candle_endpoint",
+        "mark_endpoint",
+        "request_parameters",
+        "page_limit",
+        "page_limit_source",
+        "request_window_source",
+        "pagination",
+        "retry_policy",
+        "wallclock_as_data_authority",
+        "require_confirm_1",
+        "require_response_status_2xx"
+      ],
+      "properties": {
+        "candle_endpoint": { "const": "/api/v5/market/history-candles" },
+        "mark_endpoint": { "const": "/api/v5/market/history-mark-price-candles" },
+        "request_parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["instId", "bar", "limit"],
+          "properties": {
+            "instId": { "const": "ETH-USDT-SWAP" },
+            "bar": { "const": "1m" },
+            "limit": { "const": "300" }
+          }
+        },
+        "page_limit": { "const": "300" },
+        "page_limit_source": { "type": "string", "minLength": 1 },
+        "request_window_source": {
+          "const": "CANONICAL_OKX_PUBLIC_INGEST_V1_PAGE_LIMIT_300_SINGLE_PAGE_MOST_RECENT_HISTORY_COMMON_FINALIZED_CONTIGUOUS_WINDOW"
+        },
+        "pagination": { "type": "string", "minLength": 1 },
+        "retry_policy": { "type": "string", "minLength": 1 },
+        "wallclock_as_data_authority": { "const": false },
+        "require_confirm_1": { "const": true },
+        "require_response_status_2xx": { "const": true }
+      }
+    },
+    "numeric_proof_slots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candle_raw_byte_count",
+        "mark_raw_byte_count",
+        "candle_raw_digest",
+        "mark_raw_digest",
+        "raw_source_digest",
+        "candle_row_count",
+        "mark_row_count",
+        "first_finalized_common_bucket_open_event_time_epoch_s",
+        "last_finalized_common_bucket_open_event_time_epoch_s",
+        "exclusive_tip_event_time_epoch_s",
+        "observation_pack_digest"
+      ],
+      "properties": {
+        "candle_raw_byte_count": { "const": 29172 },
+        "mark_raw_byte_count": { "const": 18436 },
+        "candle_raw_digest": {
+          "const": "e1da39436377d5c9eeae2470b7b21041e7894276e0fb32d9e96e2a60b826c739"
+        },
+        "mark_raw_digest": {
+          "const": "1a2a9d48dea7fe44663cc9b3f7a422a0ade9e9f19ca4ae6c0c5effab23aec610"
+        },
+        "raw_source_digest": {
+          "const": "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57"
+        },
+        "candle_row_count": { "const": 299 },
+        "mark_row_count": { "const": 299 },
+        "first_finalized_common_bucket_open_event_time_epoch_s": { "const": 1785916740 },
+        "last_finalized_common_bucket_open_event_time_epoch_s": { "const": 1785934620 },
+        "exclusive_tip_event_time_epoch_s": { "const": 1785934680 },
+        "observation_pack_digest": { "type": "null" }
+      }
+    },
+    "authorized_observation_window_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "first_finalized_common_bucket_open_event_time_epoch_s",
+        "last_finalized_common_bucket_open_event_time_epoch_s",
+        "exclusive_tip_event_time_epoch_s",
+        "bar_interval",
+        "row_count",
+        "semantics"
+      ],
+      "properties": {
+        "first_finalized_common_bucket_open_event_time_epoch_s": { "const": 1785916740 },
+        "last_finalized_common_bucket_open_event_time_epoch_s": { "const": 1785934620 },
+        "exclusive_tip_event_time_epoch_s": { "const": 1785934680 },
+        "bar_interval": { "const": "PT1M" },
+        "row_count": { "const": 299 },
+        "semantics": {
+          "const": "HALF_OPEN_EVENT_TIME_WINDOW_[first_open, exclusive_tip)"
+        }
+      }
+    },
+    "rule_proofs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "require_finalized_candles",
+        "require_finalized_marks",
+        "require_candle_mark_bucket_join",
+        "open_bucket_at_as_of_forbidden",
+        "bar_after_as_of_forbidden",
+        "derive_exclusive_tip",
+        "require_exclusive_tip_pt1m_alignment",
+        "require_raw_source_digest",
+        "require_candle_raw_digest",
+        "require_mark_raw_digest",
+        "require_digest_bound_row_counts",
+        "require_first_and_last_event_time_proof",
+        "require_contiguity_proof",
+        "require_duplicate_free_event_time_keys",
+        "require_monotonic_event_time",
+        "authorized_source_only",
+        "pt1m_alignment_proof",
+        "candle_mark_join_proof",
+        "contiguity_proof",
+        "duplicate_free_proof",
+        "monotonicity_proof",
+        "digest_bound_row_count_proof"
+      ],
+      "properties": {
+        "require_finalized_candles": { "const": true },
+        "require_finalized_marks": { "const": true },
+        "require_candle_mark_bucket_join": { "const": true },
+        "open_bucket_at_as_of_forbidden": { "const": true },
+        "bar_after_as_of_forbidden": { "const": true },
+        "derive_exclusive_tip": { "const": true },
+        "require_exclusive_tip_pt1m_alignment": { "const": true },
+        "require_raw_source_digest": { "const": true },
+        "require_candle_raw_digest": { "const": true },
+        "require_mark_raw_digest": { "const": true },
+        "require_digest_bound_row_counts": { "const": true },
+        "require_first_and_last_event_time_proof": { "const": true },
+        "require_contiguity_proof": { "const": true },
+        "require_duplicate_free_event_time_keys": { "const": true },
+        "require_monotonic_event_time": { "const": true },
+        "authorized_source_only": { "const": true },
+        "pt1m_alignment_proof": { "const": true },
+        "candle_mark_join_proof": { "const": true },
+        "contiguity_proof": { "const": true },
+        "duplicate_free_proof": { "const": true },
+        "monotonicity_proof": { "const": true },
+        "digest_bound_row_count_proof": { "const": true }
+      }
+    },
+    "digest_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "candle_raw_digest",
+        "mark_raw_digest",
+        "raw_source_digest",
+        "observation_pack_digest",
+        "candle_raw_artifact",
+        "mark_raw_artifact",
+        "raw_source_concat_artifact"
+      ],
+      "properties": {
+        "status": {
+          "const": "RESOLVED_FROM_AUTHORIZED_VENUE_NATIVE_RAW_HTTP_RESPONSE_BYTES"
+        },
+        "candle_raw_digest": {
+          "const": "e1da39436377d5c9eeae2470b7b21041e7894276e0fb32d9e96e2a60b826c739"
+        },
+        "mark_raw_digest": {
+          "const": "1a2a9d48dea7fe44663cc9b3f7a422a0ade9e9f19ca4ae6c0c5effab23aec610"
+        },
+        "raw_source_digest": {
+          "const": "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57"
+        },
+        "observation_pack_digest": { "type": "null" },
+        "candle_raw_artifact": { "type": "string", "minLength": 1 },
+        "mark_raw_artifact": { "type": "string", "minLength": 1 },
+        "raw_source_concat_artifact": { "type": "string", "minLength": 1 }
+      }
+    },
+    "unresolved_fields": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "enum": [
+          "observation_pack_digest",
+          "owner_partition_selection",
+          "partition_boundaries_event_time_epoch_s",
+          "campaign_id",
+          "dataset_id",
+          "scenario_id"
+        ]
+      }
+    },
+    "authority_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parent_observation_proof_contract",
+        "parent_observation_proof_manifest",
+        "parent_materialization_decision",
+        "parent_triad",
+        "canonical_page_limit_owner"
+      ],
+      "properties": {
+        "parent_observation_proof_contract": { "type": "string", "minLength": 1 },
+        "parent_observation_proof_manifest": { "type": "string", "minLength": 1 },
+        "parent_materialization_decision": { "type": "string", "minLength": 1 },
+        "parent_triad": { "type": "string", "minLength": 1 },
+        "canonical_page_limit_owner": { "type": "string", "minLength": 1 }
+      }
+    },
+    "non_effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pack_materialization",
+        "raw_input_pack_created",
+        "raw_input_pack_materialization_authorized",
+        "campaign_start",
+        "input_authority",
+        "runtime_implemented",
+        "regime_coverage_producer_available",
+        "productive_numeric_values_set",
+        "productive_thresholds_lookbacks",
+        "trading_logic_change",
+        "dashboard_authority_effect",
+        "orders_testnet_live",
+        "fill_partition_boundaries",
+        "owner_partition_selection",
+        "invented_values",
+        "silent_defaults",
+        "proposed_values"
+      ],
+      "properties": {
+        "pack_materialization": { "const": false },
+        "raw_input_pack_created": { "const": false },
+        "raw_input_pack_materialization_authorized": { "const": false },
+        "campaign_start": { "const": false },
+        "input_authority": { "const": false },
+        "runtime_implemented": { "const": false },
+        "regime_coverage_producer_available": { "const": false },
+        "productive_numeric_values_set": { "const": 0 },
+        "productive_thresholds_lookbacks": { "const": false },
+        "trading_logic_change": { "const": false },
+        "dashboard_authority_effect": { "const": "NONE" },
+        "orders_testnet_live": { "const": false },
+        "fill_partition_boundaries": { "const": false },
+        "owner_partition_selection": { "const": false },
+        "invented_values": { "const": false },
+        "silent_defaults": { "const": false },
+        "proposed_values": { "const": false }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

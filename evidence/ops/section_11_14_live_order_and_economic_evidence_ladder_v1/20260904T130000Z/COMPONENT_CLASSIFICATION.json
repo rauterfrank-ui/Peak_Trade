@@ -1,0 +1,92 @@
+{
+  "CLIENT_ORDER_ID": {
+    "classification": "INTEGRATED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "FAKE_TRANSPORT": {
+    "classification": "FIXTURE_ONLY",
+    "integrated": true,
+    "required_for_predicate": false
+  },
+  "FLATTEN_EXECUTE": {
+    "classification": "INTEGRATED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": false
+  },
+  "FLATTEN_GATED_SUBMIT": {
+    "classification": "INTEGRATED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": false
+  },
+  "FORENSIC_RECONCILIATION": {
+    "classification": "INTEGRATED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": false
+  },
+  "LIFECYCLE_KILL_SWITCH_CONTRACT": {
+    "classification": "IMPLEMENTED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": false
+  },
+  "RISK_LAYER_KILL_SWITCH": {
+    "classification": "IMPLEMENTED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": false
+  },
+  "SP01_ACK_EVIDENCE": {
+    "classification": "INTEGRATED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "SP01_HTTP_PORT": {
+    "classification": "CURRENT_PRODUCTIVE_PATH",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "SP01_REQUEST_EVIDENCE": {
+    "classification": "INTEGRATED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "SP01_URLLIB_TRANSPORT": {
+    "classification": "CURRENT_PRODUCTIVE_PATH",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "SP02_ORDER_PLAN": {
+    "classification": "CURRENT_PRODUCTIVE_PATH",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "SP02_SUBMIT_GATES_EVALUATE": {
+    "classification": "CURRENT_PRODUCTIVE_PATH",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "SP02_SUBMIT_GATES_REFUSE": {
+    "classification": "CURRENT_PRODUCTIVE_PATH",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "SP02_SUBMIT_TRANSPORT": {
+    "classification": "CURRENT_PRODUCTIVE_PATH",
+    "integrated": true,
+    "required_for_predicate": true
+  },
+  "SP04_TESTNET_PORT": {
+    "classification": "HISTORICAL_ONLY",
+    "integrated": true,
+    "required_for_predicate": false
+  },
+  "SP10_KRAKEN_LIVE": {
+    "classification": "HISTORICAL_ONLY",
+    "integrated": false,
+    "required_for_predicate": false
+  },
+  "VENUE_NATIVE_PAYLOAD": {
+    "classification": "INTEGRATED_COMPONENT",
+    "integrated": true,
+    "required_for_predicate": true
+  }
+}

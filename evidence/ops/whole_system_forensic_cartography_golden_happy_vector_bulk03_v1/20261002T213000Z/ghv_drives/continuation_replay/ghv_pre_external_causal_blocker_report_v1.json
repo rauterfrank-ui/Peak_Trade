@@ -1,0 +1,307 @@
+{
+  "CROSS_BRANCH_CONFLICTS": [],
+  "DEPENDENT_BLOCKERS": [
+    "VENUE_PLAN_BIND"
+  ],
+  "INDEPENDENT_BLOCKERS": [],
+  "LEGITIMATE_GATE_REJECTIONS": [],
+  "NOT_EVALUABLE": [
+    "PROTECTIVE_STOP_DERIVATION",
+    "FRESH_PRETRADE_CONTRACT",
+    "CREDENTIAL_HANDLE_BIND",
+    "AUTHENTICATED_PRIVATE_GET",
+    "LIVE_29P_CARRIER",
+    "EXECUTION_ELIGIBILITY",
+    "ADMISSION",
+    "PRE_EXTERNAL_TERMINAL"
+  ],
+  "NOT_EVALUATED": [
+    "NODE:GHV_FORENSIC_OBSERVABILITY",
+    "NODE:T2_JOIN",
+    "NODE:SAFETY_KS",
+    "NODE:SIZING_CAPITAL_SLOT",
+    "NODE:OCCUPANCY",
+    "NODE:PROTECTIVE_STOP",
+    "NODE:FRESH_PRETRADE",
+    "NODE:CREDENTIAL_PRIVATE_GET",
+    "NODE:AUTHENTICATED_PRIVATE_GET",
+    "NODE:LIVE_29P_29Q_CARRIER",
+    "NODE:EXECUTION_ELIGIBILITY",
+    "NODE:ADMISSION",
+    "NODE:PRE_EXTERNAL"
+  ],
+  "NO_FAIL_FAST_OBSERVATION": true,
+  "ROOT_BLOCKERS": [
+    "COMPOSE_CORE_LIVE_EXECUTION_INTENT"
+  ],
+  "ROOT_CAUSE_CANDIDATE": true,
+  "ROOT_CAUSE_PROVEN": false,
+  "STALE_STATE_DIVERGENCES": [],
+  "UNKNOWN_CURRENT": [],
+  "gate_predicates": [
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "reapply_forensic_synthetic_safety_reprojection_on_replay_v1",
+      "predicate_order": 1,
+      "reason": "EXECUTED",
+      "result": "PASS"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "COMPOSE_CORE_LIVE_EXECUTION_INTENT",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "compose_core_live_execution_intent_v1",
+      "predicate_order": 2,
+      "reason": "29P_DENY,SIZING_OUTCOME:BLOCKED",
+      "result": "FAIL"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "VENUE_PLAN_BIND",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "try_bind_current_productive_venue_plan_v1",
+      "predicate_order": 3,
+      "reason": "29P_DENY,SIZING_OUTCOME:BLOCKED",
+      "result": "FAIL"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "PROTECTIVE_STOP_DERIVATION",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "resolve_protective_stop_sizing_side_for_live_29p_join_v1",
+      "predicate_order": 4,
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "result": "SKIP"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "FRESH_PRETRADE_CONTRACT",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "fresh_pretrade_runtime_get_v1",
+      "predicate_order": 5,
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "result": "SKIP"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "CREDENTIAL_HANDLE_BIND",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "get_only_credential_transport_bind_v1",
+      "predicate_order": 6,
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "result": "SKIP"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "AUTHENTICATED_PRIVATE_GET",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "FullCoreProductiveReadOnlyGetTransportV1",
+      "predicate_order": 7,
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "result": "SKIP"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "LIVE_29P_CARRIER",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "join_current_productive_enter_live_29p_before_venue_plan_v1",
+      "predicate_order": 8,
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "result": "SKIP"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "EXECUTION_ELIGIBILITY",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "execution_eligibility_v1",
+      "predicate_order": 9,
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "result": "SKIP"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "ADMISSION",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "pre_external_admission_v1",
+      "predicate_order": 10,
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "result": "SKIP"
+    },
+    {
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "gate": "PRE_EXTERNAL_TERMINAL",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "input_values": {},
+      "predicate": "DISPOSITION_PRE_EXTERNAL_EFFECT",
+      "predicate_order": 11,
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "result": "SKIP"
+    }
+  ],
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "schema_version": "ghv_pre_external_causal_blocker_report.v1",
+  "stages": [
+    {
+      "classification": "PASS",
+      "depends_on": [],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "reapply_forensic_synthetic_safety_reprojection_on_replay_v1",
+      "reason": "EXECUTED",
+      "root_cause_candidate": false,
+      "stage": "PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION",
+      "status": "PASS"
+    },
+    {
+      "classification": "ROOT_BLOCKER",
+      "depends_on": [],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "compose_core_live_execution_intent_v1",
+      "reason": "29P_DENY,SIZING_OUTCOME:BLOCKED",
+      "root_cause_candidate": true,
+      "stage": "COMPOSE_CORE_LIVE_EXECUTION_INTENT",
+      "status": "FAIL"
+    },
+    {
+      "classification": "DEPENDENT_BLOCKER",
+      "depends_on": [
+        "COMPOSE_CORE_LIVE_EXECUTION_INTENT"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "try_bind_current_productive_venue_plan_v1",
+      "reason": "29P_DENY,SIZING_OUTCOME:BLOCKED",
+      "root_cause_candidate": false,
+      "stage": "VENUE_PLAN_BIND",
+      "status": "FAIL"
+    },
+    {
+      "classification": "NOT_EVALUABLE_DUE_TO_UPSTREAM",
+      "depends_on": [
+        "VENUE_PLAN_BIND"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "resolve_protective_stop_sizing_side_for_live_29p_join_v1",
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "root_cause_candidate": false,
+      "stage": "PROTECTIVE_STOP_DERIVATION",
+      "status": "SKIP"
+    },
+    {
+      "classification": "NOT_EVALUABLE_DUE_TO_UPSTREAM",
+      "depends_on": [
+        "VENUE_PLAN_BIND"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "fresh_pretrade_runtime_get_v1",
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "root_cause_candidate": false,
+      "stage": "FRESH_PRETRADE_CONTRACT",
+      "status": "SKIP"
+    },
+    {
+      "classification": "NOT_EVALUABLE_DUE_TO_UPSTREAM",
+      "depends_on": [
+        "VENUE_PLAN_BIND"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "get_only_credential_transport_bind_v1",
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "root_cause_candidate": false,
+      "stage": "CREDENTIAL_HANDLE_BIND",
+      "status": "SKIP"
+    },
+    {
+      "classification": "NOT_EVALUABLE_DUE_TO_UPSTREAM",
+      "depends_on": [
+        "VENUE_PLAN_BIND"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "FullCoreProductiveReadOnlyGetTransportV1",
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "root_cause_candidate": false,
+      "stage": "AUTHENTICATED_PRIVATE_GET",
+      "status": "SKIP"
+    },
+    {
+      "classification": "NOT_EVALUABLE_DUE_TO_UPSTREAM",
+      "depends_on": [
+        "VENUE_PLAN_BIND"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "join_current_productive_enter_live_29p_before_venue_plan_v1",
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "root_cause_candidate": false,
+      "stage": "LIVE_29P_CARRIER",
+      "status": "SKIP"
+    },
+    {
+      "classification": "NOT_EVALUABLE_DUE_TO_UPSTREAM",
+      "depends_on": [
+        "VENUE_PLAN_BIND"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "execution_eligibility_v1",
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "root_cause_candidate": false,
+      "stage": "EXECUTION_ELIGIBILITY",
+      "status": "SKIP"
+    },
+    {
+      "classification": "NOT_EVALUABLE_DUE_TO_UPSTREAM",
+      "depends_on": [
+        "VENUE_PLAN_BIND"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "pre_external_admission_v1",
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "root_cause_candidate": false,
+      "stage": "ADMISSION",
+      "status": "SKIP"
+    },
+    {
+      "classification": "NOT_EVALUABLE_DUE_TO_UPSTREAM",
+      "depends_on": [
+        "VENUE_PLAN_BIND"
+      ],
+      "input_generation_id": "gen_75a578a5706c6ca9ef5bdbc0",
+      "predicate": "DISPOSITION_PRE_EXTERNAL_EFFECT",
+      "reason": "UPSTREAM_VENUE_PLAN_OR_COMPOSE_FAIL",
+      "root_cause_candidate": false,
+      "stage": "PRE_EXTERNAL_TERMINAL",
+      "status": "SKIP"
+    }
+  ]
+}

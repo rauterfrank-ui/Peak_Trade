@@ -1,0 +1,12 @@
+{
+  "iterations": 500,
+  "median_max_drawdown": -0.025672678768930837,
+  "median_net_return": -0.025672678768930868,
+  "method": "trade_pnl_order_bootstrap_v1",
+  "n_trades": 303,
+  "note": "Resamples completed roundtrip net pnl with replacement; CRS-scales onto shared book; not a path-dependent re-simulation",
+  "p05_net_return": -0.025714908735120834,
+  "p95_max_drawdown": -0.025631612802534516,
+  "p95_net_return": -0.025631612802534558,
+  "seed": 42
+}

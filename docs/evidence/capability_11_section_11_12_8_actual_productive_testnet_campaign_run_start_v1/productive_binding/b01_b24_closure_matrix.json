@@ -1,0 +1,129 @@
+{
+  "ALL_B01_B24_CLOSED": true,
+  "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1",
+  "RESIDUAL_BLOCKER_COUNT": 0,
+  "matrix": {
+    "B01": {
+      "location": "owner_go_consumer_v1.consume_actual_start_owner_go_v1",
+      "status": "CLOSED",
+      "test": "test_owner_go_accept_and_rejects"
+    },
+    "B02": {
+      "location": "owner_go_consumer_v1 (productive_campaign_authorized=true)",
+      "status": "CLOSED",
+      "test": "test_owner_go_accept_and_rejects"
+    },
+    "B03": {
+      "location": "productive_consumer_v1.execute_productive_section_11_12_8_campaign_run_v1",
+      "status": "CLOSED",
+      "test": "test_pre_merge_acceptance_gate"
+    },
+    "B04": {
+      "location": "testnet_authorization_v1.authorize_testnet_runtime_v1",
+      "status": "CLOSED",
+      "test": "test_testnet_authorization_runtime"
+    },
+    "B05": {
+      "location": "productive_consumer_v1 (new consumer; legacy refuse preserved)",
+      "status": "CLOSED",
+      "test": "test_legacy_hard_refuse_preserved"
+    },
+    "B06": {
+      "location": "productive_consumer_v1 (terminal refuse preserved)",
+      "status": "CLOSED",
+      "test": "test_legacy_hard_refuse_preserved"
+    },
+    "B07": {
+      "location": "secretref_credential_v1.resolve_and_load_secretref_ephemeral_v1",
+      "status": "CLOSED",
+      "test": "test_secretref_and_plaintext_leak_negatives"
+    },
+    "B08": {
+      "location": "secretref_credential_v1",
+      "status": "CLOSED",
+      "test": "test_secretref_and_plaintext_leak_negatives"
+    },
+    "B09": {
+      "location": "network_session_v1.reach_network_session_entry_boundary_v1",
+      "status": "CLOSED",
+      "test": "test_network_session_go_ephemeral_only"
+    },
+    "B10": {
+      "location": "network_session_v1 + Phase92 bind_ephemeral_network_session_go_v1",
+      "status": "CLOSED",
+      "test": "test_network_session_go_ephemeral_only"
+    },
+    "B11": {
+      "location": "productive_execution_port_v1.ProductiveTestnetExecutionPortV1",
+      "status": "CLOSED",
+      "test": "test_productive_port_and_transport"
+    },
+    "B12": {
+      "location": "testnet_transport_v1 (stubbed+real surfaces; Cap11.4 anti-corruption)",
+      "status": "CLOSED",
+      "test": "test_productive_port_and_transport"
+    },
+    "B13": {
+      "location": "durable_state_v1.validate_actual_start_durable_state_v1",
+      "status": "CLOSED",
+      "test": "test_activation_state_machine_and_restart"
+    },
+    "B14": {
+      "location": "campaign_executor_v1 + durable COMPLETED/ABORTED",
+      "status": "CLOSED",
+      "test": "test_campaign_lifecycle_complete_and_abort"
+    },
+    "B15": {
+      "location": "evidence_v1.write_productive_execution_evidence_v1",
+      "status": "CLOSED",
+      "test": "test_execution_evidence_and_seal"
+    },
+    "B16": {
+      "location": "hidden_confirm_v1.latch_and_consume_confirm_digest_v1",
+      "status": "CLOSED",
+      "test": "test_hidden_confirm_one_time_replay"
+    },
+    "B17": {
+      "location": "constants (wrappers not extended); test asserts residual flags",
+      "status": "CLOSED",
+      "test": "test_deprecated_wrappers_not_extended"
+    },
+    "B18": {
+      "location": "closeout_v1 (PROVEN only via real evidence; stub does not flip)",
+      "status": "CLOSED",
+      "test": "test_closeout_does_not_flip_proven_on_stub"
+    },
+    "B19": {
+      "location": "closeout_v1 + evidence binding",
+      "status": "CLOSED",
+      "test": "test_closeout_does_not_flip_proven_on_stub"
+    },
+    "B20": {
+      "location": "account_endpoint_binding_v1.bind_and_verify_testnet_account_v1",
+      "status": "CLOSED",
+      "test": "test_account_and_endpoint_binding"
+    },
+    "B21": {
+      "location": "campaign_executor_v1.run_campaign_lifecycle_v1",
+      "status": "CLOSED",
+      "test": "test_campaign_lifecycle_complete_and_abort"
+    },
+    "B22": {
+      "location": "scripts/...operator_entrypoint_v1.py",
+      "status": "CLOSED",
+      "test": "test_operator_entrypoint_stubbed"
+    },
+    "B23": {
+      "location": "account_endpoint_binding_v1 + constants TESTNET allowlist",
+      "status": "CLOSED",
+      "test": "test_account_and_endpoint_binding"
+    },
+    "B24": {
+      "location": "constants NEXT_CONSUMER + this CAPABILITY_ID as real package",
+      "status": "CLOSED",
+      "test": "test_capability_identity"
+    }
+  },
+  "ok": true,
+  "open_ids": []
+}

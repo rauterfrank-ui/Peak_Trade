@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 9 items
+
+tests/governance/test_canonical_short_binding_miswiring_trace_v1.py .... [ 44%]
+.....                                                                    [100%]
+
+============================== 9 passed in 1.68s ===============================

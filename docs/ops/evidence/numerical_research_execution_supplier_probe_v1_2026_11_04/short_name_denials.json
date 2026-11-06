@@ -1,0 +1,18 @@
+[
+  {
+    "parameters": {
+      "fast": 10,
+      "slow": 50
+    },
+    "reason": "unknown_strategy_param:fast",
+    "status": "REJECTED"
+  },
+  {
+    "parameters": {
+      "fast": 10,
+      "slow": 100
+    },
+    "reason": "unknown_strategy_param:fast",
+    "status": "REJECTED"
+  }
+]

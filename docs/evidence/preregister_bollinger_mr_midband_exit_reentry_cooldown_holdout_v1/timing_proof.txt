@@ -1,0 +1,7 @@
+SLICE_CLASS=DEFINITION_ONLY
+EVALUATION_EXECUTED=false
+HOLDOUT_ACCESSED=false
+RUNNER_STARTED=false
+RUN_SLOT_CONSUMED=false
+WALLCLOCK_SECONDS=0
+NOTE=Definition-only holdout preregistration; no evaluation timing probe required or executed.

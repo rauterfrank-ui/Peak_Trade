@@ -1,0 +1,66 @@
+{
+  "schema": "peaktrade.clean_successor_disposition.v1",
+  "authority": "NONE",
+  "accepted_checkout_before_cleanup": "78014602eb55c47e39e003f22094691b62c77039",
+  "scope": "Current accepted checkout minus explicitly externalized historical payloads; no worktree integration",
+  "freeze_tag": "freeze/clean-system-2026-11-06-v1",
+  "required_git_references": [
+    {
+      "role": "CURRENT_CLEAN_SOURCE_BASELINE",
+      "reference": "refs/heads/main",
+      "older_commit_history_retained": false
+    },
+    {
+      "role": "ACTIVE_RUNTIME_INTEGRITY_COMPARISON_INPUT",
+      "reference": "refs/remotes/origin/main",
+      "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+      "older_commit_history_retained": false,
+      "reason": "Existing runtime integrity readers require the exact source reference and protected-surface Git comparisons; this is not a working-tree code import."
+    }
+  ],
+  "historical_worktrees": {
+    "count": 42,
+    "local_copies": 0,
+    "source": "Previously present .worktrees directory",
+    "disposition": "ARCHIVE_HISTORICAL_NO_IMPORT",
+    "code_imported": false,
+    "archive_base": "/Volumes/M2DATA/PeakTrade_Archiv_2026-11-06_031920/repo-complete/Peak_Trade/.worktrees",
+    "archive_delta": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-worktrees-delta",
+    "differences_record": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/worktree-base-differences.dry-run.log",
+    "verification_scope": "rsync successful transfer and size/mtime quick comparison; no whole-drive verification and no claim of a new full byte audit"
+  },
+  "historical_repo_files": {
+    "count": 82,
+    "bytes": 550912107,
+    "disposition": "EXTERNALIZED_WITH_VERIFIED_TRANSFER_DIGESTS",
+    "manifest": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien-manifest.json"
+  },
+  "historical_unversioned_files": {
+    "manifest": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-unversionierte-dateien.json",
+    "count": 21255,
+    "bytes": 11548631,
+    "disposition": "EXTERNALIZED_WITH_VERIFIED_TRANSFER_DIGESTS"
+  },
+  "operational_dependencies_retained": [
+    {
+      "path": ".venv",
+      "reason": "Canonical scripts/pt launcher and running auxiliary mail worker require the checkout-owned environment."
+    },
+    {
+      "path": "runtime/",
+      "reason": "Frozen original state, accounting, learning and recovery records are current inputs; none were replaced from historical worktrees."
+    }
+  ],
+  "source_code_imported_from_archives": false,
+  "trading_logic_changed": false,
+  "runtime_state_rewritten": false,
+  "historical_audit_promoted_to_current_pass": false,
+  "external_archive_root": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06",
+  "original_freeze_reference": {
+    "tag": "freeze/visible-system-2026-11-06-v2",
+    "commit": "a8e1c0088e25651ad4bb29ebe02e10142a0a92b2",
+    "disposition": "PRESERVED_UNCHANGED_IN_EXTERNAL_GIT_ARCHIVE"
+  },
+  "whole_repository_functional_approval": false,
+  "runtime_authorization_effect": "NONE"
+}

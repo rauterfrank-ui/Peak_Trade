@@ -1,0 +1,24 @@
+{
+  "bounded_reproof_complete": true,
+  "bounded_reproof_runtime_seconds": 660.85,
+  "bounded_reproof_scope": "CONTINUOUS_FROM_DATASET_START max_trading_epoch_exclusive=72000 stop=EPOCH_CAP",
+  "false_repeated_new_entry_eliminated": true,
+  "post_fix_net_pnl": "69.598971352526",
+  "post_fix_round_trips": 1,
+  "post_fix_round_trip_summary": [
+    {
+      "direction": "LONG",
+      "fill_count": 2,
+      "gross_pnl": "72.61946747",
+      "initial_quantity": "4.07",
+      "max_abs_quantity": "4.07",
+      "net_pnl": "69.598971352526",
+      "reduction_count": 0,
+      "round_trip_id": 1
+    }
+  ],
+  "stale_zero_crs_input_eliminated": true,
+  "state_truth_reconciliation_pass": true,
+  "unintended_exposure_amplification_eliminated": true,
+  "work_package": "CURRENT_OFFLINE_POSITION_STATE_TRUTH_REMEDIATION_V1"
+}

@@ -1,0 +1,18 @@
+{
+  "GATE_ORDER_STATUS": "PARTIAL_PROVEN_WITH_OPEN_POINTS",
+  "OPEN_GATE_ORDER_POINTS": [
+    "FRESH_PRE_SUBMIT_GET",
+    "ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND",
+    "RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER",
+    "DURABLE_CONSUME_SUCCESS_OBJECT"
+  ],
+  "PROVEN_CURRENT_EXECUTE_PATH": [
+    "flatten_authority_accepted",
+    "capture_ready_durable_unconsumed_retry_forbidden",
+    "session_armed_else_SESSION_NOT_ARMED",
+    "productive_bind_remains_NO_SEND",
+    "OWNER_NETWORK_SESSION_AUTHORITY_V1_issued_accepted",
+    "PRODUCTIVE_WIRE_SEND_NOT_IMPLEMENTED_IN_THIS_REPAIR"
+  ],
+  "epistemic": "FORENSIC_RAW_AND_OPEN_OR_CONTRADICTORY"
+}

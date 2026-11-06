@@ -1,0 +1,66 @@
+{
+  "result": "success",
+  "instruments": [
+    {
+      "symbol": "PF_XBTUSD",
+      "type": "flexible_futures",
+      "tradeable": true,
+      "base": "XBT",
+      "quote": "USD",
+      "tickSize": 0.5,
+      "contractSize": 1,
+      "impactMidSize": 0.01,
+      "retailMarginLevels": [
+        {"numNonContractUnits": 0.0, "initialMargin": 0.02, "maintenanceMargin": 0.01}
+      ],
+      "isExpired": false
+    },
+    {
+      "symbol": "PF_ETHUSD",
+      "type": "flexible_futures",
+      "tradeable": true,
+      "base": "ETH",
+      "quote": "USD",
+      "tickSize": 0.05,
+      "contractSize": 1,
+      "impactMidSize": 5.1,
+      "retailMarginLevels": [
+        {"numNonContractUnits": 0.0, "initialMargin": 0.01, "maintenanceMargin": 0.005}
+      ],
+      "isExpired": false
+    },
+    {
+      "symbol": "PF_ADAUSD",
+      "type": "flexible_futures",
+      "tradeable": true,
+      "base": "ADA",
+      "quote": "USD",
+      "tickSize": 0.0001,
+      "contractSize": 1,
+      "impactMidSize": 1000.0,
+      "retailMarginLevels": [
+        {"numNonContractUnits": 0.0, "initialMargin": 0.05, "maintenanceMargin": 0.025}
+      ],
+      "isExpired": false
+    },
+    {
+      "symbol": "BTC/USD",
+      "type": "spot",
+      "tradeable": false,
+      "base": "BTC",
+      "quote": "USD",
+      "isExpired": false
+    },
+    {
+      "symbol": "FI_LTCUSD_250131",
+      "type": "futures_inverse",
+      "tradeable": true,
+      "base": "LTC",
+      "quote": "USD",
+      "lastTradingTime": "2025-01-31T00:00:00Z",
+      "isExpired": true,
+      "tickSize": 0.01,
+      "contractSize": 1
+    }
+  ]
+}

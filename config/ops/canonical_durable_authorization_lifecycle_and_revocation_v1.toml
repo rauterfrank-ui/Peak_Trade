@@ -1,0 +1,37 @@
+# CANONICAL_DURABLE_AUTHORIZATION_LIFECYCLE_AND_REVOCATION_V1
+#
+# Durable authorization lifecycle + append-only revocation for wallclock
+# full-canonical capability. No Orders/Testnet/Live/Private API.
+# Merge does not authorize a session and does not consume authorizations.
+
+schema_version = "canonical_durable_authorization_lifecycle_and_revocation.v1"
+producer_family = "ops.canonical_durable_authorization_lifecycle_and_revocation_v1"
+capability_id = "CANONICAL_DURABLE_AUTHORIZATION_LIFECYCLE_AND_REVOCATION_V1"
+target_runtime_capability = "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1"
+
+authority_effect = "NONE"
+activation_effect = "NONE"
+runtime_effect = "NONE"
+order_effect = "NONE"
+economic_gate_effect = "NONE"
+
+authorization_schema = "authorization_artifact_v2"
+revocation_schema = "authorization_revocation_v1"
+
+revocation_check_before_consumption = true
+revocation_check_fail_closed = true
+consumption_atomic = true
+consumption_single_use = true
+consumption_replay_blocked = true
+toctou_between_revocation_check_and_consumption_blocked = true
+
+orders_authorized = false
+testnet_authorized = false
+live_authorized = false
+paper_execution_authorized = false
+credentials_authorized = false
+auto_promotion_authorized = false
+private_api = false
+order_routing_reachable = false
+
+contract_doc = "docs/ops/runbooks/CANONICAL_DURABLE_AUTHORIZATION_LIFECYCLE_AND_REVOCATION_V1.md"

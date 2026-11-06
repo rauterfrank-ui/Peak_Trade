@@ -1,0 +1,21 @@
+{
+  "AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX": 1,
+  "CASE_ADJUDICATION": "CASE_C_CANONICAL_SEMANTIC_GAP",
+  "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO": false,
+  "CASE_B_OFFLINE_IMPLEMENTATION_GAP": false,
+  "CASE_C_CANONICAL_SEMANTIC_GAP": true,
+  "CASE_D_RUNTIME_OR_VENUE_PRECONDITION_GAP": false,
+  "CASE_E_CONTRADICTION_REQUIRES_STOP": false,
+  "HARD_STOP": true,
+  "LIVE_ORDER_PLAN_OBSERVED": true,
+  "LIVE_SUBMIT_ACK_OBSERVED": false,
+  "POST_PERFORMED": false,
+  "RETRY_DEFAULT": false,
+  "SECOND_SUBMIT_DEFAULT": false,
+  "schema_version": "section_11_14_submit_ack_forensic_adjudication.v1",
+  "why_case_c": "LIVE_SUBMIT_ACK_OBSERVED is the fifth \u00a711.14 Live proof-claim field. The Master Runbook currently states only that canonical ACK requires POST of the observed plan. No \u00a711.14 proof criterion is bound for HTTP status, venue code, sCode, ordId, or clOrdId. The productive transport ok predicate and Cap 11.12.8 / flatten / lifecycle ACK handlers are not this field. No producer may set the field true under this forensic GO. True is not adjudicated. POST remains unauthorized.",
+  "why_not_case_a": "No bound \u00a711.14 proof criterion. Transport ok is not the field. No producer sets LIVE_SUBMIT_ACK_OBSERVED true.",
+  "why_not_case_b": "Single-submit locks already exist: DUPLICATE_ENTRY_SUBMIT_FORBIDDEN and UNKNOWN_SUBMIT_NO_BLIND_RETRY. Timeout cannot auto-POST.",
+  "why_not_case_d": "This GO is offline and does not re-observe venue preconditions. Standing Live gates remain false by design.",
+  "why_not_case_e": "Transport ok, flatten sCode, lifecycle ordId, and Cap 11.12.8 mapper are different non-SSOT layers. They are not two Master-Runbook statements in contradiction. The missing criterion is a semantic gap."
+}

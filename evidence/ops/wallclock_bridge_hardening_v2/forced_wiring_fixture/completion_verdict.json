@@ -1,0 +1,6 @@
+{
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+  "exclude_from_economic_metrics": true,
+  "mode": "forced_wiring_fixture",
+  "ok": true
+}

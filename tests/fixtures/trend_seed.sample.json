@@ -1,0 +1,32 @@
+{
+  "consumer": {
+    "commit_sha": "abc123def456",
+    "name": "trend_seed_consumer",
+    "version": "0.1.0"
+  },
+  "generated_at": "2026-01-11T12:00:00Z",
+  "normalized_report": {
+    "conclusion": "pass",
+    "counts": {
+      "checks_failed": 0,
+      "checks_passed": 2,
+      "checks_total": 2,
+      "policy_findings_total": 0
+    },
+    "determinism": {
+      "hash": "abc123def456789",
+      "is_deterministic": true
+    },
+    "report_id": "l4_critic_sample__pack-L1_sample_2026-01-11__schema-1.0.0",
+    "schema_version": "1.0.0"
+  },
+  "schema_version": "0.1.0",
+  "source": {
+    "head_sha": "abc123def456789",
+    "ref": "refs/heads/main",
+    "repo": "owner/repo",
+    "run_attempt": 1,
+    "run_id": "12345",
+    "workflow_name": "L4 Critic Replay Determinism"
+  }
+}

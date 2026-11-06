@@ -1,0 +1,11 @@
+{
+  "parallel_authorities_created": false,
+  "surfaces": [
+    "canonical_runtime_environment_contract_v1",
+    "canonical_local_launcher_and_process_supervision_v1",
+    "secure_confirm_token_family_and_hidden_input_handoff_v1",
+    "canonical_public_md_and_ohlcv_transport_reconciliation_v1",
+    "canonical_read_model_and_market_dashboard_rebuild_v1",
+    "runtime_health_recovery_and_failure_injection_closure_v1"
+  ]
+}

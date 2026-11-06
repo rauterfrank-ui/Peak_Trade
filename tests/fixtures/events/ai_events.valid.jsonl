@@ -1,0 +1,1 @@
+{"schema_version":"ai_event.v1","ts":1700000000.0,"event_type":"decision","run_id":"r-001","layer":"L2","component":"l2_runner","model":"local","decision":"hold","severity":"info","reason":"risk_gate","extra":{"confidence":0.72}}

@@ -1,0 +1,84 @@
+{
+  "BASE_SHA": "b2c19914475420e63d2fb20af4a132e53a921ce8",
+  "CURRENT_N1_ENDGAME_DONE_GATE": {
+    "ACCOUNT_RECON_REFRESH_CLOSED": true,
+    "ALL_REQUIRED_CI_GREEN": false,
+    "AUTONOMOUS_C1_G17_CLOSED": true,
+    "CI_ADMISSION_SNAPSHOT_RECORDED": true,
+    "CONTINUOUS_GOVERNED_N1_CLOSED": true,
+    "EXIT_PATH_VALID": true,
+    "EXTERNAL_EFFECT_AUTHORIZED": false,
+    "HOLD_PATH_VALID": true,
+    "INSTRUMENT_STATE_ISOLATION_CLOSED": true,
+    "MAX_POSITIONS": 1,
+    "MEMBERSHIP_AUTONOMY_CLOSED": true,
+    "NATURAL_LONG_REACHABLE_TO_PRE_EXTERNAL": true,
+    "NATURAL_SHORT_REACHABLE_TO_PRE_EXTERNAL": true,
+    "POSITION_CUSTODY_CLOSED": true,
+    "POST_ALLOWED": false,
+    "POST_COUNT": 0,
+    "PRE_EXTERNAL_TERMINAL": true,
+    "REAL_CAP22_CLOSED": true,
+    "REAL_FACT_SUPPLY_CLOSED": true,
+    "REAL_VENUE_POST_ALLOWED": false,
+    "RESTART_RECOVERY_CLOSED": true,
+    "RUNTIME_SUPERVISOR_CLOSED": true,
+    "SAFETY_CHAIN_CLOSED": true,
+    "SELF_REFRESHING": true,
+    "SELF_STARTING": true,
+    "mechanical_ok": true,
+    "ok": false
+  },
+  "ENDGAME_IMPLEMENTATION_COMPLETE": false,
+  "EXTERNAL_EFFECT_AUTHORIZED": false,
+  "MECHANICAL_ENDGAME_GATE_OK": true,
+  "POST_ALLOWED": false,
+  "POST_COUNT": 0,
+  "REAL_VENUE_POST_ALLOWED": false,
+  "TESTED_CODE_SHA": "f57177aaeac030e0aa69928c5a10a8f370f0f57c",
+  "WP04_DEFINITION_SOURCE": "Peak_Trade_CURRENT_REMAINING_ENDGAME_IMPLEMENTATION_BLUEPRINT_V1.md",
+  "WP04_ID": "CURRENT-WP-04",
+  "WP04_TITLE": "Standing PRE_EXTERNAL Admission and Endgame Done Gate",
+  "WP05_NOT_STARTED": true,
+  "admission_ok": true,
+  "artifact_kind": "CURRENT_WP04_CLOSURE_V1",
+  "authority_invariants_ok": true,
+  "changed_files": [
+    "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/",
+    "docs/ops/specs/CURRENT_WP04_STANDING_PRE_EXTERNAL_ADMISSION_ENDGAME_DONE_GATE_V1.md",
+    "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+    "scripts/ops/write_current_wp04_closure_evidence_v1.py"
+  ],
+  "contract_reachability_proof": {
+    "producer_consumer": "wp01_supervisor\u2192wp02_handoff\u2192wp03_golden\u2192wp04_admission",
+    "runtime_reachable": true
+  },
+  "fail_closed_proof": {
+    "post_count_zero": true,
+    "safety_pins_false": true
+  },
+  "known_residuals": [
+    "ALL_REQUIRED_CI_GREEN deferred to GitHub required checks on PR",
+    "live_venue_market_data_observation not claimed; scoped_readonly_inject only"
+  ],
+  "ok": true,
+  "requirement_adjudication": {
+    "adjudication": {
+      "BLK-10": "CLOSED_CURRENT\u2192via WP-03",
+      "BLK-11": "CLOSED_CURRENT\u2192via WP-03",
+      "EDG-034": "STILL_REQUIRED\u2192standing admission refresh with WP-03 scoped semantics",
+      "EDG-042": "STILL_REQUIRED\u2192CI admission snapshot at WP-04",
+      "PRE_EXTERNAL_AUTONOMY_ADMISSION": "PARTIAL_CURRENT\u2192#6983 inject; WP-04 runtime rebind",
+      "\u00a712_DONE_GATE": "STILL_REQUIRED\u2192mechanical gate + CI snapshot"
+    },
+    "source": "Peak_Trade_CURRENT_REMAINING_ENDGAME_IMPLEMENTATION_BLUEPRINT_V1.md"
+  },
+  "tests_executed": [
+    "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+    "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+    "tests/ops/test_current_wp02_default_productive_universe_handoff_v1.py",
+    "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py"
+  ],
+  "utc_timestamp": "2026-09-30T06:43:57Z",
+  "work_package_id": "current_wp04_standing_pre_external_admission_endgame_done_gate_v1"
+}

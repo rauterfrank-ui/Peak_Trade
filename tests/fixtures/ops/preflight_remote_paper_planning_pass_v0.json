@@ -1,0 +1,22 @@
+{
+  "schema_version": "peak_trade.remote_runtime_runner_preflight.v0",
+  "preflight_name": "preflight_remote_runtime_runner_v0",
+  "status": "blocked",
+  "reasons": ["planning_fixture_only"],
+  "dry_run": true,
+  "no_network": true,
+  "runtime_host": "remote",
+  "runtime_backend": "ec2",
+  "runtime_mode": "paper_only",
+  "lane_id": "paper",
+  "remote_run_id": "remote_paper_planning_run_20260526T120000Z",
+  "max_runtime_seconds": 3600,
+  "evidence_root_type": "remote_durable",
+  "evidence_transport": "local_only",
+  "preflight_blocked_lifted": false,
+  "ready_for_start": false,
+  "live_authority": false,
+  "testnet_authority": false,
+  "broker_credentials_present": false,
+  "exchange_credentials_present": false
+}

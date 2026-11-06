@@ -1,0 +1,28 @@
+# commands.log — POST_FIX_CANONICAL_CHAIN_REEVALUATION_V1
+DATE_UTC=2026-07-18T21:15:00Z
+REPO=/Users/frnkhrz/Peak_Trade
+BRANCH=audit/post-fix-canonical-chain-reevaluation-v1
+HEAD=00302a228e47d1cf74e43494a838123d2f803fb8
+ORIGIN_MAIN=00302a228e47d1cf74e43494a838123d2f803fb8
+
+## Phase A
+git fetch origin --prune
+git checkout -b audit/post-fix-canonical-chain-reevaluation-v1
+SHA_GATE=PASS (00302a228e47d1cf74e43494a838123d2f803fb8)
+
+## Phase C-E probe
+PYTHONPATH=src:src/trading:. python3 docs/evidence/post_fix_canonical_chain_reevaluation_v1/reevaluation_probe_v1.py
+PROBE_RC=0
+
+## Tests (146 passed)
+PYTHONPATH=src:src/trading:. python3 -m pytest -q \
+  tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py \
+  tests/trading/master_v2/test_adverse_exit_downscope_priority_v1.py \
+  tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py \
+  tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py \
+  tests/trading/master_v2/test_double_play_state.py \
+  tests/trading/master_v2/test_double_play_composition_matrix_v1.py \
+  tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py \
+  tests/research/test_entry_position_exit_policy_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py
+PYTEST_RC=0
+git diff --check → PASS

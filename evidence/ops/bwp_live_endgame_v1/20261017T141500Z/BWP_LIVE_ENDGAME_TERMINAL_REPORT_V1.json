@@ -1,0 +1,140 @@
+{
+  "schema_version": "bwp_live_endgame_terminal.v1",
+  "authority": "NONE",
+  "financial_guarantee": "NONE",
+  "BWP_LIVE_ENDGAME_STATUS": "A_AND_B",
+  "DECISION_CATEGORIES": [
+    "A=OFFLINE_INTEGRATION_COMPLETE_PRODUCTIVE_EVIDENCE_PENDING",
+    "B=OFFLINE_INTEGRATION_COMPLETE_OWNER_DECISIONS_PENDING"
+  ],
+  "NOT_ASSERTED": [
+    "C",
+    "D",
+    "LIVE_AUTHORIZED",
+    "POST_AUTHORIZED"
+  ],
+  "BASELINE_VALIDATION": "PASS_FOR_READ_ONLY_ORIGIN_MAIN_ANALYSIS",
+  "CURRENT_ORIGIN_MAIN_SHA": "769d13663badb8daed64b32a0e3047cd198da900",
+  "CURRENT_HEAD": "242b7974fc93f0bdb47706556101bd6f0c497414",
+  "LOCAL_HEAD_RELATION": "7 ahead, 48 behind origin/main; merge-base 3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
+  "WORKING_MODEL_DRIFT": "LOCAL_HEAD_IS_NOT_ORIGIN_MAIN",
+  "IMPLEMENTATION_HARD_STOP": "WORKING_MODEL_DRIFT blocks code edits on this checkout. No confirmed offline defect required a patch.",
+  "WORKTREE_STATUS": "PRIMARY_CHECKOUT_DIRTY_UNTRACKED_AND_3_TRACKED_MODIFICATIONS_PRESERVED; baseline worktree bwp_live_005 not modified",
+  "GHV_STATUS": "STALE_REFERENCE_ONLY",
+  "CURRENT_GRAPH_STATUS": "STALE_REFERENCE_ONLY",
+  "GRAPH_PROVENANCE": {
+    "snapshot_id": "4a8338cb292b89d566731abc647b0529",
+    "snapshot_base": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+    "nodes": 302,
+    "edges": 81,
+    "CURRENT_CAUSAL_GRAPH_VERIFIED": false,
+    "authority": "NONE",
+    "artifact": "evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_wp2a_causal/integrated_causal_graph.v1.json",
+    "commits_after_snapshot": [
+      "3de380c8c",
+      "3714620db",
+      "eef9d9cd3",
+      "769d13663"
+    ]
+  },
+  "FULL_CAUSAL_TRAVERSAL": "CURRENT code chain proven read-only. Stale graph contains Cap24 bind, Cap23 selection, Double Play, PRE_EXTERNAL terminal. Fresh-pretrade collector, LAB evaluator, and capital-guard join are absent as named graph nodes. Missing graph edge is not isolation.",
+  "ACTIVE_CHAIN_FROM_CURRENT": [
+    "Cap2.3 selection state",
+    "Cap2.4 BoundInstrumentV1 via acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1",
+    "collect_fresh_pretrade_runtime_get_v1",
+    "evaluate_live_account_bound_v1",
+    "produce_current_productive_29p_risk_capital_v1",
+    "owner caps in config/ops/current_full_core_capital_guard_v1.json",
+    "evaluate_full_core_capital_guard_entry_v1",
+    "PRE_EXTERNAL terminal; POST_ALLOWED false"
+  ],
+  "SLICE_01_BASELINE": "ORIGIN_MAIN_769d13663_IS_CURRENT. Local checkout drifted. Pins unchanged.",
+  "SLICE_02_CAP24": "C_NEW_PRODUCTIVE_SELECTION_REQUIRED. Null root raises CAP24_PRODUCTIVITY_ROOT_EXPLICIT_REQUIRED. Local productivity root at natural_evidence_accumulation denies current SHA with REPOSITORY_SHA_MISMATCH and current epoch with SELECTION_STALE_FOR_BINDING_EPOCH. In-window load at 2026-10-16T23:30:00Z against 6261c8f9 returned DNA-USDT-SWAP in memory only. That identity is not current productive.",
+  "SLICE_03_PRETRADE": "OFFLINE_CONTRACT_PRESENT. 11 items, 9 fetch groups, 5 signed, 4 public, one GET per group, retry 0. Productive collection not executed.",
+  "SLICE_04_LAB": "EVALUATOR_PRESENT. Synthetic TRUSTED_PRESENT is test-only. Productive LAB NOT_PROVEN. Balance artifact is not an input.",
+  "SLICE_05_29P": "PRODUCER_PRESENT_FACT_NOT_PRODUCED. Balance executor hardcodes live_account_bound_status MISSING. CY/common-epoch composer already calls evaluate_live_account_bound_v1. No artificial PASS. No integration patch.",
+  "SLICE_06_OWNER_CAPS": "owner_caps_ratified false. Numeric caps null. max_new_orders 1. max_new_positions 1. currency USDC. scale_in_forbidden true. automatic_retry_forbidden true. No numbers invented. No ratification.",
+  "SLICE_07_CAPITAL_GUARD": "full_core_guard_join_enabled false. Join disabled, unratified caps, and null numeric caps fail closed. Not enabled.",
+  "SLICE_08_PRE_EXTERNAL": "Runbook static path reaches PRE_EXTERNAL and forbids POST. Current missing facts block a new capital-admitted productive PRE_EXTERNAL witness. No Master V2 or Double Play edit. No POST.",
+  "SLICE_09_REGRESSION": {
+    "command": "baseline worktree scripts/pt pytest seam+LAB+cap24+instrument-scope",
+    "seam_pair": "35 passed, 7 failed",
+    "with_cap24_and_scope": "60 passed, 8 failed",
+    "cap24_handoff_tests": "20 passed",
+    "seven_failures": [
+      {
+        "test": "test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post",
+        "class": "PREEXISTING_EXPECTATION_DRIFT",
+        "safety": "DENY at COMPOSITION, wire_send_occurred false"
+      },
+      {
+        "test": "test_live_path_without_transport_denies_missing_get",
+        "class": "PREEXISTING_EXPECTATION_DRIFT",
+        "safety": "DENY before boundary, no wire"
+      },
+      {
+        "test": "test_empty_margin_mode_positions_are_trusted_flat_account",
+        "class": "PREEXISTING_DOCS_HEADING_DRIFT",
+        "safety": "collector assertion not reached; heading 11.2.1.L absent"
+      },
+      {
+        "test": "test_flags_and_standing_gates_remain_false",
+        "class": "PREEXISTING_CONSTANT_TEXT_DRIFT",
+        "safety": "constant still requires fresh trusted get"
+      },
+      {
+        "test": "test_malformed_uid_deny",
+        "class": "PREEXISTING_CONTRACT_TENSION",
+        "safety": "integer uid is stringified; result was MISMATCH not TRUSTED_PRESENT"
+      },
+      {
+        "test": "test_offline_injected_full_core_path_halts_before_wire_and_does_not_post",
+        "class": "PREEXISTING_EXPECTATION_DRIFT",
+        "safety": "DENY before boundary, no wire"
+      },
+      {
+        "test": "test_runbook_and_spec_bind_closeout_without_live_arming",
+        "class": "PREEXISTING_DOCS_HEADING_DRIFT",
+        "safety": "heading 11.2.1.M absent; POST pins remain false"
+      }
+    ],
+    "eighth_outside_named_pair": "test_ssot_docs_once_present atlas lacks 11.2.1.CY; navigation drift, atlas authority none"
+  },
+  "SLICE_10_READINESS": "NO_LIVE_RELEASE",
+  "CAP24_BOUND_INSTRUMENT": "ABSENT",
+  "PRODUCTIVE_PRETRADE_STATUS": "NOT_EXECUTED",
+  "PRODUCTIVE_LAB_STATUS": "NOT_PROVEN",
+  "29P_RISK_CAPITAL_STATUS": "NOT_PRODUCED",
+  "OWNER_CAPS_RATIFIED": false,
+  "CAPITAL_GUARD_JOIN_ENABLED": false,
+  "POST_ALLOWED": false,
+  "REAL_VENUE_POST_ALLOWED": false,
+  "REAL_KEYCHAIN_ACCESS_AUTHORIZED": false,
+  "AUTONOMOUS_POST_CONNECTED": false,
+  "CODE_CHANGED": false,
+  "FILES_CHANGED": [
+    "evidence/ops/bwp_live_endgame_v1/20261017T141500Z/BWP_LIVE_ENDGAME_TERMINAL_REPORT_V1.json"
+  ],
+  "PRODUCTIVE_NETWORK_CALLS": 0,
+  "KEYCHAIN_LOOKUPS": 0,
+  "POST_ATTEMPTS": 0,
+  "COMMIT_CREATED": false,
+  "PR_CREATED": false,
+  "MERGE_PERFORMED": false,
+  "CONFIRMED_REMAINING_BLOCKERS": [
+    "CURRENT_EPOCH_CAP24_BOUND_INSTRUMENT_ABSENT",
+    "PRODUCTIVE_FRESH_PRETRADE_COLLECTION_ABSENT",
+    "PRODUCTIVE_LIVE_ACCOUNT_BOUND_ABSENT",
+    "29P_RISK_CAPITAL_NOT_PRODUCED",
+    "OWNER_CAPS_UNRATIFIED_AND_NUMERIC_CAPS_NULL",
+    "CAPITAL_GUARD_JOIN_DISABLED"
+  ],
+  "NEXT_REQUIRED_OWNER_DECISIONS": [
+    "Authorize one current-SHA Cap-2.1 to Cap-2.4 selection publish. Do not adopt DNA-USDT-SWAP from the stale window.",
+    "Authorize one fresh pretrade collection of 9 GET groups after that instrument exists. Do not reuse the completed balance artifact.",
+    "Choose finite USDC cap numbers and whether owner_caps_ratified becomes true.",
+    "Separately decide whether full_core_guard_join_enabled becomes true after caps exist.",
+    "POST, real venue POST, and autonomous trading remain unauthorized."
+  ],
+  "NEXT_SAFE_ACTION": "STOP"
+}

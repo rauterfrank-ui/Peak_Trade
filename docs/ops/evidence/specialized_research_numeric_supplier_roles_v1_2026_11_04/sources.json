@@ -1,0 +1,85 @@
+{
+  "source_commit": "d511f5e4672e9b7d5f733368faabe463f3c6fd28",
+  "sources": [
+    {
+      "path": "src/research/cross_sectional_single_slot_research_orchestrator_v0.py",
+      "sha256": "62b4b838dff08cea9c9e5fc75819730b300248012a7ed6c0d16db8124f52601e",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/research/cross_sectional_single_slot_backtest_wiring_v0.py",
+      "sha256": "e442b59f15730272bc5fb35c44927e857f738b7ccdbebeceee137823d9e32f59",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/research/cross_sectional_panel_economic_evaluation_wiring_v0.py",
+      "sha256": "4e1ab644ec3c2be908ad5e656b064f1e70bd8873cf89c3a6c26330df666016bd",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/research/cross_sectional_trade_record_schema_v0.py",
+      "sha256": "740430da980805222c3a8861b86dc5ad55a3012a794b007e5e6c07357afa2276",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/research/cross_sectional_single_slot_accounting_reconciliation_v0.py",
+      "sha256": "5280925ee92b4ac4f690176707f84af235ee819539f3f7d2385645637b5cc0bb",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_execution_v0.py",
+      "sha256": "917035df5c5e5c53dd3e83f7fba78ae98e01c5e5144ceb4d246f20b7dcb95047",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/research/cross_sectional_relative_strength_v0_offline_economic_evaluation_execution_v0.py",
+      "sha256": "d5ed76c2c8a63c9ee46a90bfca0261568206fd5c19ee53ded2b05451f49f7f2a",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/backtest/stats.py",
+      "sha256": "db28d27f6ed42d6fae0aa46638c38198be08dba8ba7d40ad84457e63446bc12a",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py",
+      "sha256": "2b1fd1ea29d3bb61b22322313ff677a3c6f55cf37455a8d1534eabd6156cf9c0",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "src/experiments/canonical_robustness_suite_v1.py",
+      "sha256": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0.md",
+      "sha256": "82419001f95afb0e32514ae4a17a9a6b96e4e955238fc90a05ce7219f246b4b1",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md",
+      "sha256": "7aca7839fa85b888265921cc2cd3bb1d74d00e1792376d24854f611d248fc665",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0.md",
+      "sha256": "5cc27430ad77f774feac6718f0d088643fe8818cdd13f2bbb2c44c5600fdec80",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    },
+    {
+      "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0.md",
+      "sha256": "6ac522aa6f5c90bfeb697823a9f4ed385ad9856242f929fe7ef95e95d62a72cb",
+      "coverage": "relevant producer and consumer bodies and historical contract passages; no full semantic certification"
+    }
+  ],
+  "history": {
+    "execution_module_last_local_change": "2dba1355c9907c57fa330aed01a4072faeaf048f",
+    "documented_historical_merge": "1a04805112a26986f3a659262b30f80005952850",
+    "historical_merge_available_locally": true
+  },
+  "reported_bundle_lookup": {
+    "path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_bounded_offline_economic_evaluation_v0_20260705T014731Z",
+    "exists_at_exact_path": false,
+    "limits": "exact documented local path only; no global absence inference or new external-source search"
+  }
+}

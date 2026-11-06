@@ -1,0 +1,45 @@
+{
+  "boundaries": [
+    {
+      "description": "Gate evaluation plus authenticated read connectivity.",
+      "name": "PRE_SUBMIT_BOUNDARY",
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "description": "LIVE_ENABLED/ARMED/SUBMIT_UNLOCKED/CANARY_AUTHORIZED/execute permit.",
+      "name": "SUBMIT_AUTHORIZATION_BOUNDARY",
+      "role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION"
+    },
+    {
+      "description": "\u00a711.14 LIVE_SUBMIT_ACK_OBSERVED requires POST of the observed plan.",
+      "name": "ORDER_PLAN_OBSERVED_BOUNDARY",
+      "role": "REQUIRED_ONLY_FOR_LATER_LADDER_STAGE"
+    }
+  ],
+  "schema_version": "section_11_14_authority_boundary_map.v1",
+  "status": "BOUND",
+  "this_go_may": [
+    "BIND_ORDER_PLAN_OBSERVED_PREDICATE",
+    "SESSION_ARM_LIVE_ENABLED_LIVE_ARMED_LIVE_CANARY_AUTHORIZED",
+    "INVOKE_CANONICAL_CANARY_SUBMIT_PATH_OBSERVE_ORDER_PLAN_ONLY",
+    "CONDITIONAL_PUBLIC_AND_PRIVATE_GET_ON_GATED_PATH",
+    "PERSIST_SANITIZED_ORDER_PLAN_EVIDENCE",
+    "SET_LIVE_ORDER_PLAN_OBSERVED_IF_CONJUNCTION_PROVEN",
+    "CENSUS_LATER_LADDER_FIELDS"
+  ],
+  "this_go_must_not": [
+    "POST",
+    "ORDER_SUBMIT",
+    "CANCEL",
+    "AMEND",
+    "FLATTEN_EXECUTE",
+    "FUNDING",
+    "STANDING_LIVE_ENABLED_MUTATION",
+    "STANDING_LIVE_ARMED_MUTATION",
+    "STANDING_SUBMIT_UNLOCKED_MUTATION",
+    "STANDING_CANARY_AUTHORIZED_MUTATION",
+    "PROMOTE_LIVE_SUBMIT_ACK_OBSERVED",
+    "PROMOTE_LATER_LADDER_FIELDS",
+    "MARK_SECTION_11_14_COMPLETE"
+  ]
+}

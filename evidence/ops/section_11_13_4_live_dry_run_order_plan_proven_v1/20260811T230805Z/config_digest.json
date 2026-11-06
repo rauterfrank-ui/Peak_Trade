@@ -1,0 +1,17 @@
+{
+  "binding": {
+    "account_scope": "856964404452495999",
+    "cross_binding_demo_testnet_forbidden": true,
+    "demo_simulation_header_forbidden": true,
+    "entity": "OKX Europe Limited",
+    "environment": "LIVE",
+    "instrument_scope": "BTC-USDT-SWAP",
+    "order_capability": false,
+    "region": "EEA/DE",
+    "rest_base": "https://eea.okx.com",
+    "rest_host": "eea.okx.com",
+    "venue": "OKX"
+  },
+  "config_digest": "5fab141eae3d8c07011914e96c2217ca01312d4c9959ad8c52c602e73fc1ba02",
+  "predecessor_shadow_evidence_root": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/"
+}

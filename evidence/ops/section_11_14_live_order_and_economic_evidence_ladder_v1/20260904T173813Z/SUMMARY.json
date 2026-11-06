@@ -1,0 +1,364 @@
+{
+  "AMEND_USED": false,
+  "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+  "BOUND_ACK_SOURCE_KIND": "GOVERNED_CURRENT_LIVE_POST",
+  "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+  "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+  "BOUND_ORDID": "3893505043080286208",
+  "CANCEL_USED": false,
+  "CANONICAL_EVIDENCE_RUN_ID": "20260904T173813Z",
+  "CASE_ADJUDICATION": "CASE_LIVE_FEE_OBSERVED_POSITION_INELIGIBLE",
+  "CREDENTIAL_USE": true,
+  "ENDED_AT_UTC": "2026-09-04T17:38:14Z",
+  "FEE_INFERRED_FROM_PRICE_TIMES_QTY": false,
+  "FEE_INFERRED_FROM_RATE": false,
+  "FLATTEN_EXECUTE_USED": false,
+  "FUNDING_USED": false,
+  "GET_ERROR": null,
+  "GET_PERFORMED": true,
+  "GET_REQUEST_COUNT": 2,
+  "LIVE_FEE_ADJUDICATION_REASON": "IDENTITY_BOUND_ACTUAL_FEE_AND_FEE_CCY",
+  "LIVE_FEE_OBSERVED": true,
+  "LIVE_FILL_OBSERVED": true,
+  "LIVE_POSITION_RECONCILED": false,
+  "MANIFEST_VERIFY_RC": 0,
+  "ORIGIN_MAIN_SHA": "de053526a5066526a1fd1ebaf5f5c4045a3ad4d5",
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_FEE_OBSERVED_MAXIMUM_SAFE_LEVERAGE_V1",
+  "POST_USED": false,
+  "PRIVATE_GET_USED": true,
+  "PUBLIC_GET_USED": false,
+  "RAW_FEE_CCY_IF_OBSERVED": "USDC",
+  "RAW_FEE_IF_OBSERVED": "-0.000374",
+  "READ_ENDPOINTS_USED": [
+    "/api/v5/trade/order?instId=SUI-USD_UM_XPERP-310404&ordId=3893505043080286208",
+    "/api/v5/trade/fills?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404&ordId=3893505043080286208"
+  ],
+  "RETRY_USED": false,
+  "SECOND_SUBMIT_USED": false,
+  "SECRET_VALUES_INCLUDED": false,
+  "SECTION_11_14_AUTHORIZED": false,
+  "SECTION_11_14_COMPLETE": false,
+  "STARTED_AT_UTC": "2026-09-04T17:38:13Z",
+  "UNRESOLVED_REASON": null,
+  "fee_adjudication": {
+    "AMEND_USED": false,
+    "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+    "BOUND_ACK_SOURCE_KIND": "GOVERNED_CURRENT_LIVE_POST",
+    "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+    "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+    "BOUND_ORDID": "3893505043080286208",
+    "CANCEL_USED": false,
+    "CASE_ADJUDICATION": "CASE_LIVE_FEE_OBSERVED_POSITION_INELIGIBLE",
+    "FEE_EVIDENCE_SOURCE": "/api/v5/trade/fills",
+    "FEE_INFERRED_FROM_PRICE_TIMES_QTY": false,
+    "FEE_INFERRED_FROM_RATE": false,
+    "FEE_PRODUCER": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fee_observed_adjudication_v1.py::adjudicate_live_fee_observed_v1",
+    "FEE_PROOF_CONJUNCTION_STATUS": "TRUE_LIVE_FEE_OBSERVED",
+    "FEE_PROOF_CRITERION": "LIVE_FEE_OBSERVED is the seventh \u00a711.14 Live proof-claim field. It is true iff LIVE_FILL_OBSERVED is already true and a current governed private GET /api/v5/trade/fills on eea.okx.com, scoped to the exact acknowledged ordId, instId, and instType, returns HTTP 200, no redirect, top-level code=0, parseable JSON, and at least one data row whose ordId, clOrdId, and instId equal the bound Peak_Trade Live submit identity and whose venue-native fee field is present, nonempty, and Decimal-parseable and whose feeCcy is present and nonempty. That is an actual venue-reported fee bound to that identity. Fill quantity, fill price, fillPnl, order-state, ACK, position size, balance change, a static fee rate, fillPx times fillSz, historical fill evidence, fixture, testnet, and simulated sources are each insufficient. A missing, empty, unparseable, or schema-ambiguous fee fails closed and is not observed. True does not imply LIVE_POSITION_RECONCILED or \u00a711.14 complete.",
+    "FEE_SOURCE_KIND": "GOVERNED_CURRENT_PRIVATE_GET",
+    "FEE_SUM_COMPUTED": false,
+    "LIVE_FEE_ADJUDICATION_REASON": "IDENTITY_BOUND_ACTUAL_FEE_AND_FEE_CCY",
+    "LIVE_FEE_OBSERVED": true,
+    "LIVE_FILL_OBSERVED": true,
+    "LIVE_POSITION_RECONCILED": false,
+    "POST_USED": false,
+    "RAW_FEES_IF_OBSERVED": [
+      "-0.000374"
+    ],
+    "RAW_FEE_CCYS_IF_OBSERVED": [
+      "USDC"
+    ],
+    "RAW_FEE_CCY_IF_OBSERVED": "USDC",
+    "RAW_FEE_IF_OBSERVED": "-0.000374",
+    "RAW_FILL_ROW_COUNT": 1,
+    "SECTION_11_14_COMPLETE": false,
+    "UNRESOLVED_REASON": null,
+    "adjudicated_value": true,
+    "canonical_definition": "LIVE_FEE_OBSERVED is the seventh \u00a711.14 Live proof-claim field. It is true iff LIVE_FILL_OBSERVED is already true and a current governed private GET /api/v5/trade/fills on eea.okx.com, scoped to the exact acknowledged ordId, instId, and instType, returns HTTP 200, no redirect, top-level code=0, parseable JSON, and at least one data row whose ordId, clOrdId, and instId equal the bound Peak_Trade Live submit identity and whose venue-native fee field is present, nonempty, and Decimal-parseable and whose feeCcy is present and nonempty. That is an actual venue-reported fee bound to that identity. Fill quantity, fill price, fillPnl, order-state, ACK, position size, balance change, a static fee rate, fillPx times fillSz, historical fill evidence, fixture, testnet, and simulated sources are each insufficient. A missing, empty, unparseable, or schema-ambiguous fee fails closed and is not observed. True does not imply LIVE_POSITION_RECONCILED or \u00a711.14 complete.",
+    "claim_value": true,
+    "field_conjunction": {
+      "adjudication": "TRUE_LIVE_FEE_OBSERVED",
+      "admissible_live_source_kind": "GOVERNED_CURRENT_PRIVATE_GET",
+      "canonical_definition": "LIVE_FEE_OBSERVED is the seventh \u00a711.14 Live proof-claim field. It is true iff LIVE_FILL_OBSERVED is already true and a current governed private GET /api/v5/trade/fills on eea.okx.com, scoped to the exact acknowledged ordId, instId, and instType, returns HTTP 200, no redirect, top-level code=0, parseable JSON, and at least one data row whose ordId, clOrdId, and instId equal the bound Peak_Trade Live submit identity and whose venue-native fee field is present, nonempty, and Decimal-parseable and whose feeCcy is present and nonempty. That is an actual venue-reported fee bound to that identity. Fill quantity, fill price, fillPnl, order-state, ACK, position size, balance change, a static fee rate, fillPx times fillSz, historical fill evidence, fixture, testnet, and simulated sources are each insufficient. A missing, empty, unparseable, or schema-ambiguous fee fails closed and is not observed. True does not imply LIVE_POSITION_RECONCILED or \u00a711.14 complete.",
+      "claim_value": true,
+      "constituent_count": 10,
+      "false_required": [],
+      "source_kind": "GOVERNED_CURRENT_PRIVATE_GET"
+    },
+    "field_constituent_values": {
+      "ADMISSIBLE_PRIVATE_GET_SOURCE": true,
+      "AT_LEAST_ONE_IDENTITY_BOUND_FILL_ROW": true,
+      "CURRENT_GOVERNED_PRIVATE_FILLS_GET": true,
+      "FEE_CCY_PRESENT_NONEMPTY": true,
+      "FEE_NOT_INFERRED": true,
+      "FILLS_HTTP_CONJUNCTION_SATISFIED": true,
+      "IDENTITY_BOUND_ACTUAL_FEE_PRESENT_PARSEABLE": true,
+      "LIVE_FILL_OBSERVED": true,
+      "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+      "NO_FEE_SCHEMA_AMBIGUITY": true
+    },
+    "field_constituents": [
+      "LIVE_FILL_OBSERVED",
+      "CURRENT_GOVERNED_PRIVATE_FILLS_GET",
+      "FILLS_HTTP_CONJUNCTION_SATISFIED",
+      "AT_LEAST_ONE_IDENTITY_BOUND_FILL_ROW",
+      "IDENTITY_BOUND_ACTUAL_FEE_PRESENT_PARSEABLE",
+      "FEE_CCY_PRESENT_NONEMPTY",
+      "NO_FEE_SCHEMA_AMBIGUITY",
+      "ADMISSIBLE_PRIVATE_GET_SOURCE",
+      "NOT_FIXTURE_TESTNET_OR_SIMULATED",
+      "FEE_NOT_INFERRED"
+    ],
+    "fills_http_conjunction": {
+      "adjudication": "FILLS_HTTP_CONJUNCTION_SATISFIED",
+      "claim_value": true,
+      "constituent_count": 5,
+      "false_required": []
+    },
+    "fills_http_constituent_count": 5,
+    "fills_http_constituent_values": {
+      "HTTP_STATUS_200": true,
+      "JSON_PARSE_OK": true,
+      "METHOD_GET": true,
+      "NO_REDIRECT": true,
+      "TOP_LEVEL_CODE_0": true
+    },
+    "fills_http_constituents": [
+      "JSON_PARSE_OK",
+      "HTTP_STATUS_200",
+      "NO_REDIRECT",
+      "TOP_LEVEL_CODE_0",
+      "METHOD_GET"
+    ],
+    "producer": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fee_observed_adjudication_v1.py::adjudicate_live_fee_observed_v1",
+    "proof_criterion_bound": true,
+    "row_classification": {
+      "ACTUAL_FEE_OBSERVED": true,
+      "AT_LEAST_ONE_IDENTITY_BOUND_FILL_ROW": true,
+      "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+      "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+      "BOUND_ORDID": "3893505043080286208",
+      "FEE_CCY_MISSING_OR_EMPTY": false,
+      "FEE_CCY_PRESENT_NONEMPTY": true,
+      "FEE_FIELD_MISSING_OR_EMPTY": false,
+      "FEE_INFERRED_FROM_PRICE_TIMES_QTY": false,
+      "FEE_INFERRED_FROM_RATE": false,
+      "FEE_SUM_COMPUTED": false,
+      "FEE_UNPARSEABLE": false,
+      "IDENTITY_BOUND_ACTUAL_FEE_PRESENT_PARSEABLE": true,
+      "IDENTITY_BOUND_FILL_ROW_COUNT": 1,
+      "NO_FEE_SCHEMA_AMBIGUITY": true,
+      "ORDER_FEE_CCY_IF_PRESENT": "USDC",
+      "ORDER_FEE_CONFLICT": false,
+      "ORDER_FEE_IF_PRESENT": "-0.000374",
+      "RAW_FEES_IF_OBSERVED": [
+        "-0.000374"
+      ],
+      "RAW_FEE_CCYS_IF_OBSERVED": [
+        "USDC"
+      ],
+      "RAW_FEE_CCY_IF_OBSERVED": "USDC",
+      "RAW_FEE_IF_OBSERVED": "-0.000374",
+      "RAW_FILL_ROW_COUNT": 1,
+      "SCHEMA_AMBIGUITY_REASONS": [],
+      "UNMATCHED_ROW_COUNT": 0,
+      "matched_rows": [
+        {
+          "COMPETING_FEE_AMOUNT_FIELDS": {},
+          "COMPETING_FEE_CCY_FIELDS": {},
+          "FEE_CCY_PRESENT_NONEMPTY": true,
+          "FEE_FIELD_PRESENT_NONEMPTY": true,
+          "FEE_PARSEABLE": true,
+          "ROW_SCHEMA_AMBIGUOUS": false,
+          "clOrdId": "ptokxeprod1fec928b1fec928b00",
+          "fee": "-0.000374",
+          "feeCcy": "USDC",
+          "fillPx": "0.748",
+          "fillSz": "1",
+          "identity": {
+            "CLORDID_MATCH": true,
+            "INSTRUMENT_MATCH": true,
+            "ORDER_IDENTITY_MATCH": true,
+            "ORDID_MATCH": true
+          },
+          "instId": "SUI-USD_UM_XPERP-310404",
+          "ordId": "3893505043080286208",
+          "tradeId": "1055244"
+        }
+      ],
+      "unmatched_rows": []
+    }
+  },
+  "get_pack": {
+    "ENDPOINTS": [
+      "/api/v5/trade/order?instId=SUI-USD_UM_XPERP-310404&ordId=3893505043080286208",
+      "/api/v5/trade/fills?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404&ordId=3893505043080286208"
+    ],
+    "GET_ERROR": null,
+    "HOST": "eea.okx.com",
+    "OBSERVATIONS": [
+      {
+        "BODY_BYTE_LEN": 996,
+        "BODY_SHA256": "6ba982c388fdbcac8fcbfb51006cc1fafd2fa6db8a0ce63fb623f276b6389cdf",
+        "DATA_ROW_COUNT": 1,
+        "ELAPSED_SECONDS": 0.3075496670062421,
+        "ENDPOINT": "/api/v5/trade/order?instId=SUI-USD_UM_XPERP-310404&ordId=3893505043080286208",
+        "ENDPOINT_PATH": "/api/v5/trade/order",
+        "GET_ERROR": null,
+        "GET_ROLE": "ORDER_STATUS",
+        "HEADER_PRESENCE": {
+          "AUTH_KEY_HEADER_PRESENT": true,
+          "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+          "AUTH_SIGN_HEADER_PRESENT": true,
+          "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+          "SIGNED_METHOD": "GET",
+          "SIMULATION_HEADER_PRESENT": false,
+          "VALUES_INCLUDED": false
+        },
+        "HTTP_STATUS": 200,
+        "METHOD": "GET",
+        "OBJECT_ROWS": [
+          {
+            "accFillSz": "1",
+            "avgPx": "0.748",
+            "cTime": "1788537892511",
+            "clOrdId": "ptokxeprod1fec928b1fec928b00",
+            "fee": "-0.000374",
+            "feeCcy": "USDC",
+            "fillPx": "0.748",
+            "fillSz": "1",
+            "instId": "SUI-USD_UM_XPERP-310404",
+            "instType": "FUTURES",
+            "ordId": "3893505043080286208",
+            "ordType": "limit",
+            "posSide": "net",
+            "px": "0.7483",
+            "side": "buy",
+            "state": "filled",
+            "sz": "1",
+            "tdMode": "cross",
+            "uTime": "1788537892511"
+          }
+        ],
+        "OKX_CODE": "0",
+        "PARSED_OK": true,
+        "PARSE_ERROR": null,
+        "QUERY_PARAMETERS": {
+          "instId": "SUI-USD_UM_XPERP-310404",
+          "ordId": "3893505043080286208"
+        },
+        "REDIRECT_FOLLOWED": false,
+        "REQUEST_TIME_UTC": "2026-09-04T17:38:13Z",
+        "RESPONSE_TIME_UTC": "2026-09-04T17:38:14Z",
+        "SANITIZED_PAYLOAD": {
+          "ROW_FIELDS_REDACTED_TO_ALLOWLIST": true,
+          "code": "0",
+          "data": [
+            {
+              "accFillSz": "1",
+              "avgPx": "0.748",
+              "cTime": "1788537892511",
+              "clOrdId": "ptokxeprod1fec928b1fec928b00",
+              "fee": "-0.000374",
+              "feeCcy": "USDC",
+              "fillPx": "0.748",
+              "fillSz": "1",
+              "instId": "SUI-USD_UM_XPERP-310404",
+              "instType": "FUTURES",
+              "ordId": "3893505043080286208",
+              "ordType": "limit",
+              "posSide": "net",
+              "px": "0.7483",
+              "side": "buy",
+              "state": "filled",
+              "sz": "1",
+              "tdMode": "cross",
+              "uTime": "1788537892511"
+            }
+          ],
+          "msg": ""
+        },
+        "VALUES_INCLUDED": false
+      },
+      {
+        "BODY_BYTE_LEN": 527,
+        "BODY_SHA256": "d52f9ac64eedc0fca09f07bc8830e3a37674ccde9d0500e8d19b2e9be7873512",
+        "DATA_ROW_COUNT": 1,
+        "ELAPSED_SECONDS": 0.15796562501054723,
+        "ENDPOINT": "/api/v5/trade/fills?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404&ordId=3893505043080286208",
+        "ENDPOINT_PATH": "/api/v5/trade/fills",
+        "GET_ERROR": null,
+        "GET_ROLE": "FILLS",
+        "HEADER_PRESENCE": {
+          "AUTH_KEY_HEADER_PRESENT": true,
+          "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+          "AUTH_SIGN_HEADER_PRESENT": true,
+          "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+          "SIGNED_METHOD": "GET",
+          "SIMULATION_HEADER_PRESENT": false,
+          "VALUES_INCLUDED": false
+        },
+        "HTTP_STATUS": 200,
+        "METHOD": "GET",
+        "OBJECT_ROWS": [
+          {
+            "billId": "3893505043080286210",
+            "clOrdId": "ptokxeprod1fec928b1fec928b00",
+            "execType": "T",
+            "fee": "-0.000374",
+            "feeCcy": "USDC",
+            "fillPx": "0.748",
+            "fillSz": "1",
+            "fillTime": "1788537892511",
+            "instId": "SUI-USD_UM_XPERP-310404",
+            "instType": "FUTURES",
+            "ordId": "3893505043080286208",
+            "posSide": "net",
+            "side": "buy",
+            "subType": "1",
+            "tradeId": "1055244",
+            "ts": "1788537892511"
+          }
+        ],
+        "OKX_CODE": "0",
+        "PARSED_OK": true,
+        "PARSE_ERROR": null,
+        "QUERY_PARAMETERS": {
+          "instId": "SUI-USD_UM_XPERP-310404",
+          "instType": "FUTURES",
+          "ordId": "3893505043080286208"
+        },
+        "REDIRECT_FOLLOWED": false,
+        "REQUEST_TIME_UTC": "2026-09-04T17:38:14Z",
+        "RESPONSE_TIME_UTC": "2026-09-04T17:38:14Z",
+        "SANITIZED_PAYLOAD": {
+          "ROW_FIELDS_REDACTED_TO_ALLOWLIST": true,
+          "code": "0",
+          "data": [
+            {
+              "billId": "3893505043080286210",
+              "clOrdId": "ptokxeprod1fec928b1fec928b00",
+              "execType": "T",
+              "fee": "-0.000374",
+              "feeCcy": "USDC",
+              "fillPx": "0.748",
+              "fillSz": "1",
+              "fillTime": "1788537892511",
+              "instId": "SUI-USD_UM_XPERP-310404",
+              "instType": "FUTURES",
+              "ordId": "3893505043080286208",
+              "posSide": "net",
+              "side": "buy",
+              "subType": "1",
+              "tradeId": "1055244",
+              "ts": "1788537892511"
+            }
+          ],
+          "msg": ""
+        },
+        "VALUES_INCLUDED": false
+      }
+    ],
+    "VENUE_REQUESTS": 2
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "lb_rec_001_phase1_v1",
+  "id": "position_and_cash_fail",
+  "notes": "LB-REC-001 Phase 3: single POSITION FAIL (quantity drift) plus CASH FAIL (fixed external cash); two diffs deterministic order POSITION then CASH.",
+  "as_of_time": "2026-04-08T12:00:00+00:00",
+  "internal": {
+    "initial_cash": "100000.00",
+    "fill": {
+      "fill_id": "lbrec_fill_p3_pc",
+      "client_order_id": "lbrec_co_p3_pc",
+      "exchange_order_id": "lbrec_ex_p3_pc",
+      "symbol": "BTC/EUR",
+      "side": "BUY",
+      "quantity": "1.0",
+      "price": "50000.00",
+      "fee": "5.00"
+    }
+  },
+  "external": {
+    "positions": { "BTC/EUR": "0.5" },
+    "cash_balance": { "mode": "fixed", "value": "0" }
+  },
+  "expect": {
+    "diff_count": 2,
+    "min_fail": 2,
+    "first_diff_type": "POSITION",
+    "first_severity": "FAIL",
+    "all_diff_types": ["POSITION", "CASH"]
+  }
+}

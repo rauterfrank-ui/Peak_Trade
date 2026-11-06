@@ -1,0 +1,27 @@
+{
+  "backup_root": "/Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo",
+  "backup_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+  "comparisons": [
+    {
+      "relative_path": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_predicate_v1.py",
+      "local_sha256": "537f4fc4ed5978ea6b77247c57ef7e5d9938384fa5a4c8cfd596ee500e8e9b98",
+      "backup_sha256": "537f4fc4ed5978ea6b77247c57ef7e5d9938384fa5a4c8cfd596ee500e8e9b98",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "evidence/ops/full_core_live_equity_stock_today_initial_stock_kind_set_membership_wp1/2026-09-14T212500Z/today_initial_stock_kind_set_membership_v1.json",
+      "local_sha256": "bd54313e40c1eab87797dfd9c76581fe0621b609d136517f10029e75b94a570f",
+      "backup_sha256": "bd54313e40c1eab87797dfd9c76581fe0621b609d136517f10029e75b94a570f",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "evidence/ops/full_core_d6_path_b_package_1_observation_execution_v1/2026-09-13T182521Z/s4_account_bills_archive_observation_v1.json",
+      "local_sha256": "5b7e881c318ffa1121be35c4aa81d232b5856a686887f74a9991b0862ee95ed1",
+      "backup_sha256": "5b7e881c318ffa1121be35c4aa81d232b5856a686887f74a9991b0862ee95ed1",
+      "byte_identical": true
+    }
+  ],
+  "external_writes": false,
+  "recovery_code_targeted_filename_search": "No candidate path returned for accounting_reconstructed/classified_event_stream names; not a completeness claim",
+  "recovery_full_scan_or_repair": false
+}

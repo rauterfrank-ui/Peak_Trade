@@ -1,0 +1,130 @@
+{
+  "REQUIREMENTS": [
+    {
+      "EVIDENCE": "evidence/ops/section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1/20260811T133046Z/MACHINE_READABLE_EVALUATION.json",
+      "ID": "PRE_LIVE_CYBERSECURITY_GATE_PASS",
+      "NOTE": "Prerequisite of LIVE_CANARY; PRE_LIVE PASS does not carry forward as LIVE_CANARY PASS",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "git merge-base --is-ancestor b3dadd86d6821882c8184bd1f6f8e207cbc4af43 origin/main",
+      "ID": "PRODUCTIVE_CANARY_SURFACE_MERGED_TO_ORIGIN_MAIN",
+      "NOTE": "ORIGIN_MAIN=2c72dfd81d226fd04d7f4d4183041b54d1526f55 includes E1 persist squash-merge #5898",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z/MACHINE_READABLE_CLOSEOUT.json",
+      "ID": "READ_ATTESTATION_TRUE",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z/MACHINE_READABLE_CLOSEOUT.json",
+      "ID": "TRADE_ATTESTATION_TRUE",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z/MACHINE_READABLE_CLOSEOUT.json",
+      "ID": "WITHDRAW_ATTESTATION_REMAINS_FALSE",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "C redaction_check SECRET_VALUE_PERSISTED=false; E1 COOKIES/TOKENS/EMAIL_PERSISTED=false; SECRETS_CAPTURED=false",
+      "ID": "SECRET_PLAINTEXT_ABSENT",
+      "NOTE": "Field COOKIES_PERSISTED=false is not a cookie value",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py",
+      "ID": "FIXTURE_OR_CAP11_9_NOT_ACTIVATED",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py",
+      "ID": "CAP11_9_REMAINS_FIXTURE_ONLY",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z/ECONOMIC_BASELINE_AND_OKX_CLEARANCE_RESULT.json",
+      "ID": "LIVE_RECONCILIATION_PROVEN",
+      "NOTE": "Bound section 11.13.5.E sealed proof; this GO did not re-run private-read",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z",
+      "ID": "BLOCKS_NEW_ENTRY_FALSE",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z",
+      "ID": "UNRESOLVED_ECONOMIC_DIVERGENCE_FALSE",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "constants_v1.py + sealed section 11.13.5.C/E",
+      "ID": "NO_UNEXPECTED_LIVE_OR_CANARY_EXECUTED_CLAIM",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_exchange_truth_adoption_v1/20260812T151147Z/MACHINE_READABLE_CLOSEOUT.json",
+      "ID": "EXCHANGE_TRUTH_ADOPTION_ADOPTED_PROVEN",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z",
+      "ID": "CANARY_KEY_BINDING_PROVEN",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z",
+      "ID": "CANARY_SECRETREF_RESOLVED",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_okx_temp_security_clearance_evidence_collection_v1/20260815T190010Z/CLEARANCE_EVIDENCE_COLLECTION_RESULT.json",
+      "ID": "OKX_TEMP_SECURITY_CLEARANCE_EVIDENCE_PRESENT_PROVEN",
+      "NOTE": "Canonical E1 pack on origin/main after PR #5898; Aug-13 unbound packs not used",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z",
+      "ID": "CANARY_CREDENTIAL_ISOLATION_PROVEN",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/MACHINE_READABLE_EVALUATION.json",
+      "ID": "LIVE_TESTNET_ISOLATION_PROVEN",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/MACHINE_READABLE_EVALUATION.json",
+      "ID": "DEFAULT_BLOCK_FAIL_CLOSED_PROVEN",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_pre_canary_governance_cybersecurity_notion_audit_v1/20260812T121500Z/GOVERNANCE_STATE_MATRIX.json",
+      "ID": "ONE_SHOT_OWNER_GO_SEPARATION_PROVEN",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    },
+    {
+      "EVIDENCE": "evidence/ops/section_11_13_pre_canary_governance_cybersecurity_notion_audit_v1/20260812T121500Z/GOVERNANCE_STATE_MATRIX.json",
+      "ID": "CANARY_SUCCESS_DOES_NOT_GENERALIZE_TO_GENERAL_LIVE",
+      "NOTE": "",
+      "STATUS": "PROVEN"
+    }
+  ]
+}

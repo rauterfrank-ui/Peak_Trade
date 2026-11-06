@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "distinct_testcases": 798,
+  "new_market_model_cases": 11,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "source_test_config_files_bound": 11360,
+  "source_bytes_changed_during_final_run": [],
+  "whole_repository_claim": false
+}

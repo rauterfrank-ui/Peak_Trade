@@ -1,0 +1,36 @@
+{
+  "RESTART_EVIDENCE_DIGEST_MATCH": true,
+  "RESTART_FINAL_STATE_MATCH": true,
+  "accounting_reloaded": true,
+  "checkpoint_after_observation_index": 7,
+  "cycles_first_segment": 7,
+  "cycles_total_after_resume": 12,
+  "loaded_accounting_portfolio_digest": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+  "loaded_accounting_risk_digest": "aba33933b83f99d4afa02111c3daea20aaa7362f42d815496fbc8a3f6f28988d",
+  "ok": true,
+  "portfolio_reloaded": true,
+  "reconciliation_before_alpha_on_resume": true,
+  "restart_canonical_outcome_digest": "7b979fc52076e6d1171011035a95b1217aee0ead7cf895547f92dee82d7de47c",
+  "risk_reloaded": true,
+  "runtime_checkpoint_reloaded": true,
+  "selection_reloaded": true,
+  "shared_outcome_digest": "140044426850ce1b2bd8a1877b67ec2dd8aab74ba1e83ab9b5f9745caed35cc4",
+  "uninterrupted_canonical_outcome_digest": "f7a75387839ee053ade96e44c460660d2f93f57b88e8c3604e1f20aaf177b50f",
+  "verifier_result": {
+    "blockers": [],
+    "call_graph_complete": true,
+    "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+    "expected_equity": "100000.00000000",
+    "expected_fees": "0",
+    "notes": [
+      "RECONSTRUCTED_VIA_CANONICAL_FUTURES_ACCOUNTING",
+      "cycles=12",
+      "reconstructed_fills=0"
+    ],
+    "ok": true,
+    "reconstructed_equity": "100000.00000000",
+    "reconstructed_fees": "0",
+    "reconstructed_fill_count": 0,
+    "verifier_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1"
+  }
+}

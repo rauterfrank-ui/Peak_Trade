@@ -1,0 +1,2841 @@
+{
+  "COUNT": 57,
+  "NODES": [
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L00",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_NOT_APPLICABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L00",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "EEA_UNIVERSE_ACQUISITION_INGRESS",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "discovery_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "INGRESS",
+      "REMOVED_BY": null,
+      "ROLE": "INGRESS",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "discover_okx_eea_instruments_v1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "ELIGIBILITY_ONLY",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 1,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L01",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_PARTIAL",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L01",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "CAP21_STRUCTURAL_FILTERING",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "eligibility_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "REFINEMENT",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "futures_only+btc_exclusion+DQ",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "UNIVERSE_MEMBERSHIP",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 2,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L02",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L02",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "CAP21_GOVERNED_FUTURES_UNIVERSE",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.governed_futures_universe_producer_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "UNIVERSE_POPULATION",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "deterministic snapshot+persist",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "MD_INPUT_ONLY",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 3,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L03",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L03",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "ECONOMIC_MD_INPUT",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.economic_md_input_producer_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "FEATURE_INPUT",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "gate subset+MD",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 4,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L04",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L04",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "B05_FEATURE_PRODUCTION",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.peak_trade_ranking_feature_production_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "FEATURE_TRANSFORM",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "61 PT1M\u2192raw features; forbid rank/selection fields",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "RANKING_CONTEXT_MEMBERSHIP",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 5,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L05",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L05",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "S_STAR_ECONOMIC_SET",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.peak_trade_economic_ranking_runtime_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "UNIVERSE_SUBSET",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "exclude incomplete fail-closed",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "SCORE_ONLY",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 6,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L06",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L06",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "B03_ECONOMIC_SCORING",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "score_construction_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "SCORING",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "equal-weight midrank composite",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "RANKING_CONTEXT_ONLY",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 7,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L07",
+      "GVEF_RELATION": "GVEF_OBSERVATION_PLANE",
+      "GV_RELATION": "GV_REGISTERED",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L07",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "CAP22_FULL_RANK_ORDER",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.productive_futures_ranking_producer_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "RANKING",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "score DESC, venue_native_id ASC, canonical ASC + persist",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "RANKING_PROJECTION",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 8,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L08",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L08",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "TOP20_CANDIDATE_CONTEXT",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.productive_futures_ranking_producer_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "CANDIDATE_POPULATION",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "cardinality projection",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "EVALUATION_CONTINUITY_ONLY",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 9,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L09",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L09",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "TOP20_EVALUATION_RESIDENCY",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.top20_opportunity_evaluation_residency_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "EVALUATION_LIFECYCLE",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CONDITIONALLY_REACHABLE",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "admission/lifecycle; RANKING/SELECTION authority false",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "SELECTION_PREFILTER",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 10,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L10",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L10",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "CAP23_SELECTION_ELIGIBILITY",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.single_selected_future_policy_v1.policy_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "SELECTION_PREFILTER",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "eligibility; no rescore/rerank",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "SELECTION_OVERLAY_ON_UPSTREAM_RANK",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 11,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L11",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_PARTIAL",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L11",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "CAP23_ANTI_CHURN_OVERLAY",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "selection_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "SELECTION_POLICY",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "hysteresis+min_holding+replacement_pending",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "SOLE_PRODUCTIVE_SELECTION",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 12,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L12",
+      "GVEF_RELATION": "GVEF_OBSERVATION_PLANE",
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L12",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "CAP23_SINGLE_SELECTED_FUTURE",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.single_selected_future_policy_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "SELECTION_OBJECT",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "deterministic single selection+persist",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "VALIDATE_AND_BIND_ONLY",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 13,
+      "DOMAIN": "INTELLIGENT_UNIVERSE",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": null,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_ISOLATED",
+      "GLOBAL_NODE_ID": "IU.L13",
+      "GVEF_RELATION": "GVEF_OBSERVATION_PLANE",
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC",
+        "CAUSAL"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L13",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "CAP24_RUNTIME_BINDING",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.single_selected_future_runtime_binding_v1",
+      "PACKAGE": "IU",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "BINDING",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "validate+bind; no reselection",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/governed_futures_universe_producer_v1/discovery_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N00",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_NOT_APPLICABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L00",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N00",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.governed_futures_universe_producer_v1",
+      "PACKAGE": "ops.governed_futures_universe_producer_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "discover_okx_eea_instruments_v1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N01",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_PARTIAL",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L01",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N01",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.governed_futures_universe_producer_v1",
+      "PACKAGE": "ops.governed_futures_universe_producer_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "eligibility",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/governed_futures_universe_producer_v1/producer_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N02",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L02",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N02",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.governed_futures_universe_producer_v1",
+      "PACKAGE": "ops.governed_futures_universe_producer_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "produce_snapshot",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/economic_md_input_producer_v1/producer_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N03",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L03",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N03",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.economic_md_input_producer_v1",
+      "PACKAGE": "ops.economic_md_input_producer_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "produce_md",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N04",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L04",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N04",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.peak_trade_ranking_feature_production_v1",
+      "PACKAGE": "ops.peak_trade_ranking_feature_production_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "produce_features",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N05",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L05",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N05",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.peak_trade_economic_ranking_runtime_v1",
+      "PACKAGE": "ops.peak_trade_economic_ranking_runtime_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "classify_and_rank_economic_candidates_v1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N06",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L06",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N06",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.peak_trade_economic_ranking_runtime_v1",
+      "PACKAGE": "ops.peak_trade_economic_ranking_runtime_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "score",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N07",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_REGISTERED",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L07",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N07",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.productive_futures_ranking_producer_v1",
+      "PACKAGE": "ops.productive_futures_ranking_producer_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "produce_ranking",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N08",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L08",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N08",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.productive_futures_ranking_producer_v1",
+      "PACKAGE": "ops.productive_futures_ranking_producer_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "top_n",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/top20_opportunity_evaluation_residency_v1/residency_engine_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N09",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L09",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N09",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.top20_opportunity_evaluation_residency_v1",
+      "PACKAGE": "ops.top20_opportunity_evaluation_residency_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "residency",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/single_selected_future_policy_v1/policy_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N10",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L10",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N10",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.single_selected_future_policy_v1",
+      "PACKAGE": "ops.single_selected_future_policy_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "is_selection_eligible_v1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/single_selected_future_policy_v1/selection_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N11",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_PARTIAL",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L11",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N11",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.single_selected_future_policy_v1",
+      "PACKAGE": "ops.single_selected_future_policy_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "hysteresis/min_holding",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/single_selected_future_policy_v1/producer_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N12",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L12",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N12",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.single_selected_future_policy_v1",
+      "PACKAGE": "ops.single_selected_future_policy_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "produce_selection",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.N13",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "L13",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.N13",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "ops.single_selected_future_runtime_binding_v1",
+      "PACKAGE": "ops.single_selected_future_runtime_binding_v1",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "binding_gate",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.P.DDO",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_NOT_APPLICABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "PARALLEL",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.P.DDO",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "PACKAGE": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "DDO_Observe",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.P.GVEF_RU",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "PARALLEL",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.P.GVEF_RU",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
+      "PACKAGE": "src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "GVEF_RU",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.P.GVEF_OU",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "PARALLEL",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.P.GVEF_OU",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py",
+      "PACKAGE": "src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "GVEF_OU",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.P.GVEF_SL",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "PARALLEL",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.P.GVEF_SL",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "PACKAGE": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "GVEF_SL",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.P.GVEF_MI",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_CAPABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "PARALLEL",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.P.GVEF_MI",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "PACKAGE": "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "GVEF_MI",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": null,
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/ops/future_profile_snapshot_v1/producer_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "IU.P.PROFILE",
+      "GVEF_RELATION": null,
+      "GV_RELATION": "GV_NOT_APPLICABLE",
+      "INCLUSION_REASON": [
+        "SEMANTIC"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": "PARALLEL",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "IU.P.PROFILE",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "src/ops/future_profile_snapshot_v1/producer_v1.py",
+      "PACKAGE": "src/ops/future_profile_snapshot_v1/producer_v1.py",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": null,
+      "REMOVED_BY": null,
+      "ROLE": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/02_iu_node_registry_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "FutureProfile",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "config/evaluation/golden_vectors/fixture_corpus_v1/corpus_manifest.json",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.CORPUS.MANIFEST",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "CorpusManifest",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "CORPUS_MEMBERSHIP",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "CorpusManifestV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/corpus/registry_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.CORPUS.REGISTRY",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "VectorCorpusRegistryV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "REGISTRY_LOADER",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "VectorCorpusRegistryV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/corpus/gate_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.CORPUS.GATE",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "VectorCorpusIntegrityGateV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "INTEGRITY_GATE",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "VectorCorpusIntegrityGateV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/contracts/models.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.RUN.CONTEXT",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "DomainEvaluationContextV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "RUN_CONTEXT",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "DomainEvaluationContextV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.RUN.DEPS",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "GvefRunnerDependenciesV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "DI_BINDING",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "GvefRunnerDependenciesV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.RUN.GENERIC",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "GenericRunnerV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "RUN_LIFECYCLE",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "GenericRunnerV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.RU",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "RankingUniverseEvaluatorV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "DOMAIN_EVALUATOR",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "RankingUniverseEvaluatorV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.PTP",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "ProductiveTradingPathEvaluatorV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "DOMAIN_EVALUATOR",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "ProductiveTradingPathEvaluatorV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.OU",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "OptimizationUniverseEvaluatorV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "DOMAIN_EVALUATOR",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "OptimizationUniverseEvaluatorV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.SL",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "SelfLearningEvaluatorV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "DOMAIN_EVALUATOR",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "SelfLearningEvaluatorV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.MI",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "MarketIntelligenceEvaluatorV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "DOMAIN_EVALUATOR",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "MarketIntelligenceEvaluatorV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/digest/comparator_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.DIGEST.COMPARATOR",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "ProtectedSemanticComparatorV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "COMPARATOR",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "ProtectedSemanticComparatorV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/constraints/",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.CONSTRAINTS",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "ConstraintGates",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "CONSTRAINT_GATE",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "ConstraintMatrixPreGateV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/registry/evidence_registry_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.EVIDENCE.REGISTRY",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "GvefEvidenceRegistryV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "EVIDENCE_REGISTRY",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "GvefEvidenceRegistryV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "src/evaluation/golden_vectors/promotion/promotion_evidence_adapter_v1.py",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.PROMOTION.ADAPTER",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "FABRIC",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "PromotionEvidenceAdapterV1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "PROMOTION_ENVELOPE",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "PromotionEvidenceAdapterV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "config/evaluation/golden_vectors/fixture_corpus_v1/vectors/vec-gvef-ru-mechanism-001.json",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.GV.RU",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "REGISTERED",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "vec-gvef-ru-mechanism-001",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "REGISTERED_GV",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "VectorManifestV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 0,
+      "DOMAIN": "GVEF",
+      "EXTERNAL_TO_INITIAL_CORE": false,
+      "FILE": "config/evaluation/golden_vectors/fixture_corpus_v1/vectors/vec-gvef-ptp-mechanism-001.json",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "REFERENCE_ONLY_LATERAL",
+      "GLOBAL_NODE_ID": "GVEF.GV.PTP",
+      "GVEF_RELATION": "OWNED",
+      "GV_RELATION": "REGISTERED",
+      "INCLUSION_REASON": [
+        "EVIDENCE",
+        "OBSERVATION"
+      ],
+      "INITIAL_CORE": true,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "vec-gvef-ptp-mechanism-001",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "GVEF",
+      "PACKAGE": "src.evaluation.golden_vectors",
+      "PLANE": "P_GVEF",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "ROLE": "REGISTERED_GV",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "VectorManifestV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "PRODUCTIVE_BOUNDED",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 1,
+      "DOMAIN": "FULL_CORE",
+      "EXTERNAL_TO_INITIAL_CORE": true,
+      "FILE": "src/ops/full_core_live_path_composition_root_v1",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_REFERENCE_PLANE",
+      "GLOBAL_NODE_ID": "PROD.FULL_CORE",
+      "GVEF_RELATION": null,
+      "GV_RELATION": null,
+      "INCLUSION_REASON": [
+        "PRODUCTIVE_DOWNSTREAM"
+      ],
+      "INITIAL_CORE": false,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "Full-Core composition root",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "full_core_live_path_composition_root_v1",
+      "PACKAGE": "productive",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "PRODUCTIVE",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/19_iu_human_readable_depth_chain_v1.md"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "NE_CANONICAL_CLOSURE_20261007T010700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "full_core_live_path_composition_root_v1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "PRODUCTIVE_BOUNDED",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 2,
+      "DOMAIN": "FULL_CORE",
+      "EXTERNAL_TO_INITIAL_CORE": true,
+      "FILE": "src/trading/master_v2",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_REFERENCE_PLANE",
+      "GLOBAL_NODE_ID": "PROD.MV2_DP",
+      "GVEF_RELATION": null,
+      "GV_RELATION": null,
+      "INCLUSION_REASON": [
+        "PRODUCTIVE_DOWNSTREAM"
+      ],
+      "INITIAL_CORE": false,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "Master-V2 + Double Play",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "Master_V2_plus_Double_Play",
+      "PACKAGE": "productive",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "PRODUCTIVE",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/19_iu_human_readable_depth_chain_v1.md"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "NE_CANONICAL_CLOSURE_20261007T010700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "Master_V2_plus_Double_Play",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "PRODUCTIVE_BOUNDED",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 3,
+      "DOMAIN": "FULL_CORE",
+      "EXTERNAL_TO_INITIAL_CORE": true,
+      "FILE": "confirmation",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "GHV_REFERENCE_PLANE",
+      "GLOBAL_NODE_ID": "PROD.CONFIRMATION",
+      "GVEF_RELATION": null,
+      "GV_RELATION": null,
+      "INCLUSION_REASON": [
+        "PRODUCTIVE_DOWNSTREAM"
+      ],
+      "INITIAL_CORE": false,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "Confirmation / C1",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "CAPABILITY_6_1",
+      "PACKAGE": "productive",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "PRODUCTIVE",
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/19_iu_human_readable_depth_chain_v1.md"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "NE_CANONICAL_CLOSURE_20261007T010700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "CAPABILITY_6_1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "PRODUCTIVE_BOUNDED",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 4,
+      "DOMAIN": "FULL_CORE",
+      "EXTERNAL_TO_INITIAL_CORE": true,
+      "FILE": "productive path",
+      "FIRST_PROVEN_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "GHV_RELATION": "GHV_REFERENCE_PLANE",
+      "GLOBAL_NODE_ID": "PROD.NATURAL_ENTER",
+      "GVEF_RELATION": null,
+      "GV_RELATION": null,
+      "INCLUSION_REASON": [
+        "PRODUCTIVE_DOWNSTREAM"
+      ],
+      "INITIAL_CORE": false,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "Natural Enter disposition",
+      "OBSERVED_AT_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "OUTPUT": null,
+      "OWNER": "NATURAL_ENTER",
+      "PACKAGE": "productive",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "ROLE": "PRODUCTIVE",
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md",
+        "evidence/research/current_natural_enter_pre_external_canonical_closure_v1/20261007T010700Z/05_witness_final_summary_bound_copy_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "NE_CANONICAL_CLOSURE_20261007T010700Z",
+        "K1_WITNESS_20261007T004808Z"
+      ],
+      "SOURCE_SHAS": [
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "NATURAL_ENTER",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE_BEYOND",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 5,
+      "DOMAIN": "FULL_CORE",
+      "EXTERNAL_TO_INITIAL_CORE": true,
+      "FILE": "governed cycle",
+      "FIRST_PROVEN_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "GHV_RELATION": "GHV_REFERENCE_PLANE",
+      "GLOBAL_NODE_ID": "PROD.PRE_EXTERNAL",
+      "GVEF_RELATION": null,
+      "GV_RELATION": null,
+      "INCLUSION_REASON": [
+        "PRODUCTIVE_DOWNSTREAM"
+      ],
+      "INITIAL_CORE": false,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "PRE_EXTERNAL terminal",
+      "OBSERVED_AT_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "OUTPUT": null,
+      "OWNER": "PRE_EXTERNAL_TERMINAL_BOUNDARY",
+      "PACKAGE": "productive",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE_TERMINAL",
+      "REMOVED_BY": null,
+      "ROLE": "PRODUCTIVE_TERMINAL",
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md",
+        "evidence/research/current_natural_enter_pre_external_canonical_closure_v1/20261007T010700Z/05_witness_final_summary_bound_copy_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "NE_CANONICAL_CLOSURE_20261007T010700Z",
+        "K1_WITNESS_20261007T004808Z"
+      ],
+      "SOURCE_SHAS": [
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "PRE_EXTERNAL_TERMINAL_BOUNDARY",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "CONFIG": null,
+      "CONFIG_OWNER": null,
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DISTANCE_FROM_INITIAL_CORE": 6,
+      "DOMAIN": "POST",
+      "EXTERNAL_TO_INITIAL_CORE": true,
+      "FILE": "POST Owner-GO surface",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": null,
+      "GLOBAL_NODE_ID": "PROD.POST_BOUNDARY",
+      "GVEF_RELATION": null,
+      "GV_RELATION": null,
+      "INCLUSION_REASON": [
+        "GOVERNED_BOUNDARY"
+      ],
+      "INITIAL_CORE": false,
+      "INPUT": null,
+      "IU_LAYER": null,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LOCAL_NODE_IDS": [],
+      "NAME": "POST / external effect (NOT authorized)",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OUTPUT": null,
+      "OWNER": "OWNER_GO_REQUIRED",
+      "PACKAGE": "execution",
+      "PLANE": null,
+      "PRODUCTIVE_REACHABILITY": "NOT_AUTHORIZED",
+      "REMOVED_BY": null,
+      "ROLE": "HARD_STOP",
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md"
+      ],
+      "SOURCE_RUNS": [
+        "NE_CANONICAL_CLOSURE_20261007T010700Z",
+        "K1_WITNESS_20261007T004808Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "STATE": null,
+      "STATE_OWNER": null,
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "SYMBOL": "POST",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    }
+  ],
+  "TEMPORAL_NOTE": "Each node carries TEMPORAL_STATUS"
+}

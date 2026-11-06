@@ -1,0 +1,32 @@
+diff --git a/tests/experiments/test_canonical_research_result_to_meta_input_v1.py b/tests/experiments/test_canonical_research_result_to_meta_input_v1.py
+index 2c4fb0511..1646adf01 100644
+--- a/tests/experiments/test_canonical_research_result_to_meta_input_v1.py
++++ b/tests/experiments/test_canonical_research_result_to_meta_input_v1.py
+@@ -14,6 +14,7 @@ from src.experiments.canonical_automated_offline_research_loop_v1 import (
+     AutomatedOfflineResearchLoopValidationError,
+ )
+ from src.experiments.canonical_meta_learning_v1 import canonical_meta_learning_policy_v1
++from src.experiments.canonical_robustness_suite_v1 import canonical_robustness_policy_v1
+ from src.experiments.canonical_experiment_identity_v1 import build_canonical_experiment_identity_v1
+ from src.experiments.canonical_research_result_to_meta_input_v1 import (
+     ResearchResultMetaInputV1,
+@@ -38,7 +39,18 @@ def _stats(returns):
+         [1000.0, *list(1000.0 * (1.0 + pd.Series(returns)).cumprod())],
+         index=pd.date_range("2024-01-01", periods=len(returns) + 1, freq="h", tz="UTC"),
+     )
+-    return compute_backtest_stats(trades=[], equity_curve=equity)
++    # Target robustness policy owns a nonannualized mean/sample-std Sharpe.
++    # The source is hourly, but that does not authorize the stats default 8760.
++    return compute_backtest_stats(trades=[], equity_curve=equity, periods_per_year=1)
++
++
++def test_control_sharpe_matches_declared_nonannual_robustness_policy():
++    returns = [0.002, -0.001, 0.003, 0.001] * 8
++    assert canonical_robustness_policy_v1()["annualization"] == (
++        "MEAN_OVER_SAMPLE_STD_NO_ANNUALIZATION"
++    )
++    expected = pd.Series(returns).mean() / pd.Series(returns).std(ddof=1)
++    assert _stats(returns)["sharpe"] == pytest.approx(expected)
+ 
+ 
+ def _source(seed=12, *, fail_oos=True):

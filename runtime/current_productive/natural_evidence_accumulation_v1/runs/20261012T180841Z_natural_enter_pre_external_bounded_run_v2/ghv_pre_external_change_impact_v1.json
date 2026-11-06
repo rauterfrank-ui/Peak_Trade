@@ -1,0 +1,141 @@
+{
+  "ALL_CHANGE_EVENTS_FANOUT_TRAVERSED": true,
+  "GHV_ROOT_CHANGE_EVENT_ID": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "change_events": [
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_a3405b6d8bafe7dfeaef9c39"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_e93a96abdfd8da972fd1229c"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_cd234dca52846f7cbce5e1ca"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_2365a4be50b9fb5183af6354"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_c10090d2530f26e41819deb4"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_97ddcfcd55adabedb4754e3d"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_0c10eee98af24e802f7d661a"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_1965d76ba76a7d739ec5d9dc"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_efce548fa4f685acb40cec45"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_50b36295fca796c0826b3f9d"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_e266b5487aa340badb73cd6a"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_a72d09d09aa65d45295a7bf7"
+    }
+  ],
+  "ghv_explicit_root": true,
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "schema_version": "ghv_pre_external_change_impact.v1"
+}

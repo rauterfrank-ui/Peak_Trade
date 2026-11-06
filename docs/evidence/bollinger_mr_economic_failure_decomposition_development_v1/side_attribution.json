@@ -1,0 +1,20 @@
+{
+  "long": {
+    "fees": 0.0,
+    "gross_pnl": 0.0,
+    "gross_profit_factor": null,
+    "net_pnl": 0.0,
+    "net_profit_factor": null,
+    "slippage": 0.0,
+    "trade_count": 0
+  },
+  "short": {
+    "fees": 201.68019531001602,
+    "gross_pnl": 27.830299969132085,
+    "gross_profit_factor": 1.0119859537996807,
+    "net_pnl": -274.6899929958916,
+    "net_profit_factor": 0.8945131625090622,
+    "slippage": 100.84009765500801,
+    "trade_count": 51
+  }
+}

@@ -1,0 +1,5 @@
+definition_only_preregistration_v4
+evaluation_executed=false
+holdout_data_accessed=false
+panel_data_accessed=false
+economic_metrics_produced=false

@@ -1,0 +1,12 @@
+ALLOWED:
+  src/backtest/mv2_research_wiring_v1.py
+  src/backtest/backtest_engine_position_feedback_adapter_v1.py
+  tests/backtest/test_canonical_short_binding_miswiring_repair_v1.py
+  tests/backtest/test_offline_canonical_end_to_end_system_smoke_run_v1.py
+  tests/governance/test_canonical_short_binding_miswiring_trace_v1.py
+  docs/evidence/canonical_short_binding_miswiring_trace_v1/short_binding_miswiring_harness_v1.py
+  docs/evidence/canonical_short_binding_miswiring_repair_v1/
+FORBIDDEN:
+  risk/sizing/execution/orders/live/promotion policy mutation beyond binding
+  new direction authority
+  foreign untracked evidence dirs

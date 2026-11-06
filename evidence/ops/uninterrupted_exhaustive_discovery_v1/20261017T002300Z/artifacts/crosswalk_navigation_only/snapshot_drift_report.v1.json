@@ -1,0 +1,48 @@
+{
+  "census_baseline_is_ancestor_of_head": false,
+  "census_baseline_matches_head": false,
+  "census_source_baseline_head": "0578d813db4f2881082077338636e2a634e77869",
+  "classification_note": "Drift SHA mismatch does not alone prove semantic census/landscape incompatibility; validators assess schema integrity separately.",
+  "commits_since_census_baseline": [
+    {
+      "drift_class": "NON_CURRENT",
+      "sha": "242b7974fc93f0bdb47706556101bd6f0c497414",
+      "subject": "Governance: align impact adjudication head_sha with branch tip after order-conflict fix."
+    },
+    {
+      "drift_class": "NON_CURRENT",
+      "sha": "94475eb8c7725146dd1be1477d6afbc47f84418e",
+      "subject": "Governance: rebind impact adjudication for order-conflict remediation on PR #7093."
+    },
+    {
+      "drift_class": "CURRENT_RELEVANT",
+      "sha": "8a289bc054917729f2c13a5195a82e829fc30b00",
+      "subject": "Fix exchange reconciliation conflicting order rows fail-closed."
+    },
+    {
+      "drift_class": "NON_CURRENT",
+      "sha": "a19605ffbd66b7efa3975a5623b93a025efa9d86",
+      "subject": "Governance: rebind impact adjudication head_sha to branch tip."
+    },
+    {
+      "drift_class": "NON_CURRENT",
+      "sha": "25277f692b85863bfd678104f89a0280d7c01d7a",
+      "subject": "Governance: extend impact candidates and pin adjudication for GHV exchange reconciliation."
+    },
+    {
+      "drift_class": "NON_CURRENT",
+      "sha": "199f76e278e6f3c5798318083bdd3b16253b0c1b",
+      "subject": "Governance: pin CSIA and law impact adjudication for GHV exchange reconciliation PR."
+    },
+    {
+      "drift_class": "CURRENT_RELEVANT",
+      "sha": "99d390258e23f85d0a9e84aecd982d30dd6c03b5",
+      "subject": "Add GHV Full-Core offline exchange reconciliation integration."
+    }
+  ],
+  "git_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+  "landscape_baseline_matches_head": false,
+  "landscape_evidence_baseline_sha": "6422bfde79fd5aa45d2939a821980abf9aa4e3df",
+  "schema_version": "snapshot_drift_report.v1",
+  "snapshot_drift_root_cause": "NON_LINEAR_OR_UNKNOWN_HISTORY"
+}

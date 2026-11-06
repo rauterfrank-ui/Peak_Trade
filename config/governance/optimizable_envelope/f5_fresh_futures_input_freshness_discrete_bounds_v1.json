@@ -1,0 +1,9 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_DISCRETE_BOUNDS_V1",
+  "schema_version": "canonical_f5_fresh_futures_input_freshness_discrete_bounds/v1",
+  "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+  "owner_value_token": "OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS",
+  "freshness_max_age_seconds": [30, 45, 90, 180, 240, 450, 1200, 2400],
+  "combination_count": 8,
+  "search_join_authorized": false
+}

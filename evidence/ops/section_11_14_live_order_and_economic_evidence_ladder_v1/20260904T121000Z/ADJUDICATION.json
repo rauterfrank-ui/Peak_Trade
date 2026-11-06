@@ -1,0 +1,312 @@
+{
+  "AUTHORITY": "NONE",
+  "DOCUMENT_CLASS": "SECTION_11_14_OFFLINE_SURFACE_ADJUDICATION_V1",
+  "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_EXECUTION_CODE_EXISTS",
+  "EVIDENCE_RECORDS": [
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_EXECUTION_CODE_EXISTS",
+      "claim_value": false,
+      "content_hash": "a3ff70066b203b9683b4b2c8d6c3a2aaa0626d460cc7f94addd2528c5ebd378b",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_EXECUTION_CODE_EXISTS",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_EXECUTION_PATH_REACHABLE",
+      "claim_value": false,
+      "content_hash": "7aa83f872d5fe50023be40645a22f1e6e8d11865b8340abe264ed91f3a8b39cf",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_EXECUTION_PATH_REACHABLE",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_PRIVATE_READ_ONLY_PROVEN",
+      "claim_value": false,
+      "content_hash": "93cb1e9cd0e19168943424aff63879ed59cfa8710ce9e4a0b4a8462c3df22c0b",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_PRIVATE_READ_ONLY_PROVEN",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_ORDER_PLAN_OBSERVED",
+      "claim_value": false,
+      "content_hash": "ca4fb2a2b15eae845ba608f8205f8d4648efc4e7a80b6c046648462622184f9c",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_ORDER_PLAN_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_SUBMIT_ACK_OBSERVED",
+      "claim_value": false,
+      "content_hash": "cdb7b2ee3c2ab915e3f78cdbce7e78c27aaa887a3fa1eedc1b1c05361b077780",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_SUBMIT_ACK_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_FILL_OBSERVED",
+      "claim_value": false,
+      "content_hash": "1d9a4501b02bb0f7c31ad743e602122ac4f5992a5745ffdc5d41d42bf7106f36",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_FILL_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_FEE_OBSERVED",
+      "claim_value": false,
+      "content_hash": "b45d09b2f10b8715442f8c6899d9b72e0094fe5bf9428361a32b07c3dc54930c",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_FEE_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_POSITION_RECONCILED",
+      "claim_value": false,
+      "content_hash": "736fccb4399ace31bc070d1fc6a40771ad50ed3ed777bc62903be73d1fc75e1d",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_POSITION_RECONCILED",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_ACCOUNTING_RECONSTRUCTED",
+      "claim_value": false,
+      "content_hash": "85ef64410f951773ded2ebfacc46e09a98c9f07d57793e7713eb167f35c06f7b",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_ACCOUNTING_RECONSTRUCTED",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_RESTART_RECONSTRUCTED",
+      "claim_value": false,
+      "content_hash": "186402e6716ee7fb069e2de2cd05928ac3b7d3d87cca00786ebd16b760098663",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_RESTART_RECONSTRUCTED",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_AUTONOMOUS_RECOVERY_OBSERVED",
+      "claim_value": false,
+      "content_hash": "6056ba2424e7096f8893191ef3c8f675b08e49b0ac58b0da8c5ed2e22105b2ea",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_AUTONOMOUS_RECOVERY_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "claim_name": "LIVE_END_TO_END_EVIDENCE_PROVEN",
+      "claim_value": false,
+      "content_hash": "137e63dc28d5bce594fc14e2cd7c3012c719c9b4589993143cb55e2ea546571e",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "a558c108617d40c12bd1d8c480a6e5d797ccb308",
+      "ladder_stage": "LIVE_END_TO_END_EVIDENCE_PROVEN",
+      "observed_at": null,
+      "persisted_at": "20260904T121000Z",
+      "predecessor_claims": [
+        "11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    }
+  ],
+  "LADDER_VALUES": {
+    "LIVE_ACCOUNTING_RECONSTRUCTED": false,
+    "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": false,
+    "LIVE_END_TO_END_EVIDENCE_PROVEN": false,
+    "LIVE_EXECUTION_CODE_EXISTS": false,
+    "LIVE_EXECUTION_PATH_REACHABLE": false,
+    "LIVE_FEE_OBSERVED": false,
+    "LIVE_FILL_OBSERVED": false,
+    "LIVE_ORDER_PLAN_OBSERVED": false,
+    "LIVE_POSITION_RECONCILED": false,
+    "LIVE_PRIVATE_READ_ONLY_PROVEN": false,
+    "LIVE_RESTART_RECONSTRUCTED": false,
+    "LIVE_SUBMIT_ACK_OBSERVED": false
+  },
+  "NEXT_AUTHORITY_BOUNDARY": "SEPARATE_OWNER_GO_FOR_SECTION_11_14_STATIC_OR_RUNTIME_LADDER_ADVANCE",
+  "NEXT_OWNER_GO_REQUIRED": "SEPARATE_OWNER_GO_FOR_LIVE_EXECUTION_CODE_EXISTS_THEN_PATH_REACHABLE_THEN_OBSERVED_FIELDS",
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1",
+  "SECTION_11_14_AUTHORIZED": false,
+  "SECTION_11_14_COMPLETE": false,
+  "SECTION_11_14_OFFLINE_SURFACE_BOUND": true,
+  "STATIC_FIELDS": {
+    "LIVE_EXECUTION_CODE_EXISTS": {
+      "adjudicated_value": false,
+      "admissibility_rule": "This GO forbids binding the field true merely because code is present. Unresolved semantic mapping fails closed. Repository file presence is supporting context, not the Live proof claim.",
+      "canonical_definition": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md ## 11.14 Live order and economic evidence ladder lists LIVE_EXECUTION_CODE_EXISTS as the first Live proof-claim field. The runbook does not define a proof criterion beyond the field name. Cap 11.7-11.11 keep the same field false as a contracts-only overclaim guard.",
+      "contradiction_check": "NO_CONTRADICTION. Files exist and Cap/Section contracts still refuse the Live proof claim. CODE_PRESENCE_IS_NOT_LIVE_EXECUTION_CODE_EXISTS=true.",
+      "evidence_paths": [
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+        "src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/execute_v1.py",
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md \u00a74.9.4 SP-01",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "observed_repo_fact": "SP01_FILE_EXISTS=true;FLATTEN_EXECUTE_FILE_EXISTS=true;SUBMIT_TRANSPORT_FILE_EXISTS=true",
+      "reason": "FAIL_CLOSED_UNRESOLVED_SEMANTIC_MAPPING;CODE_PRESENCE_ALONE_INADMISSIBLE;LIVE_EXECUTION_CODE_EXISTS=false"
+    },
+    "LIVE_EXECUTION_CODE_EXISTS_VALUE": false,
+    "LIVE_EXECUTION_PATH_REACHABLE": {
+      "adjudicated_value": false,
+      "admissibility_rule": "Reachable as a \u00a711.14 Live proof claim cannot be proven if it entails a runtime gate, authorization state, credential state, venue condition, or any other fact not provable offline. CURRENTLY_REACHABLE is not proven semantically identical.",
+      "canonical_definition": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md ## 11.14 Live order and economic evidence ladder lists LIVE_EXECUTION_PATH_REACHABLE as the second Live proof-claim field. The runbook does not equate it with \u00a74.9 CURRENTLY_REACHABLE.",
+      "contradiction_check": "NO_CONTRADICTION. Constructible code plus fail-closed gates is exactly the distinction this field must preserve. CURRENTLY_REACHABLE_IS_NOT_LIVE_EXECUTION_PATH_REACHABLE=true.",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md \u00a74.9.4 SP-01",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py"
+      ],
+      "observed_repo_fact": "\u00a74.9 SP-01 CURRENTLY_REACHABLE=true means the Python surface is constructible. CAN_SUBMIT_ORDER_TODAY=false. Standing gates LIVE_ENABLED=false LIVE_ARMED=false SUBMIT_UNLOCKED=false LIVE_AUTHORIZED=false. Credential, venue, and runtime permit state are NOT_OBSERVED in this offline GO.",
+      "reason": "FAIL_CLOSED_RUNTIME_GATES_AUTHORIZATION_CREDENTIALS_VENUE_UNOBSERVED;NOT_EQUATED_WITH_SECTION_4_9_CURRENTLY_REACHABLE;LIVE_EXECUTION_PATH_REACHABLE=false"
+    },
+    "LIVE_EXECUTION_PATH_REACHABLE_VALUE": false
+  },
+  "THIS_SLICE": "11.14.OFFLINE_EVIDENCE_LADDER_SURFACE"
+}

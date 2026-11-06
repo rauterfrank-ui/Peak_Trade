@@ -1,0 +1,18 @@
+{
+  "ephemeral_first_ok": true,
+  "ephemeral_mode_first": "ephemeral_temporary_directory",
+  "ephemeral_mode_second": "ephemeral_temporary_directory",
+  "ephemeral_second_ok": true,
+  "ephemeral_tokens_differ": true,
+  "explicit_injected_first_ok": true,
+  "explicit_injected_second_ok": true,
+  "failure_injection_ok_first": true,
+  "failure_injection_ok_second": true,
+  "intra_run_fi_ok": true,
+  "intra_run_happy_ok": true,
+  "intra_run_reuse_blocked": true,
+  "manifest_digest_stable": true,
+  "roots_differ": true,
+  "shared_var_tmp_used_first": false,
+  "shared_var_tmp_used_second": false
+}

@@ -1,0 +1,134 @@
+<!-- templates/peak_trade_dashboard/r_and_d_summary.html -->
+<!-- Phase 76 Slice 6: Summary/Overview (read-only; Parität zu GET /api/r_and_d/summary + /api/r_and_d/stats) -->
+{% extends "base.html" %}
+
+{% block content %}
+<div
+  class="space-y-6 max-w-6xl mx-auto"
+  data-section="r-and-d-summary"
+  data-r-and-d-summary-total="{{ summary.total_experiments }}"
+>
+  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">R&D Dashboard v0</p>
+        <h1 class="text-2xl font-bold text-slate-100">Summary &amp; Übersicht</h1>
+        <p class="text-sm text-slate-400 mt-2 max-w-2xl">
+          Dieselben Kennzahlen wie <code class="text-xs bg-slate-800 px-1 rounded">GET /api/r_and_d/summary</code> und
+          <code class="text-xs bg-slate-800 px-1 rounded">GET /api/r_and_d/stats</code> — nur lesend, keine Writes.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/r_and_d/experiments" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 text-white hover:bg-sky-500">
+          ← Experimentenliste
+        </a>
+        <a href="/r_and_d/presets" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Presets
+        </a>
+        <a href="/r_and_d/strategies" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Strategies
+        </a>
+        <a href="/r_and_d/charts" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Charts
+        </a>
+        <a href="/r_and_d/today" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Today
+        </a>
+        <a href="/r_and_d/running" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Running
+        </a>
+        <a href="/r_and_d/categories" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300" title="Kategorien &amp; Run-Types (read-only)">
+          Categories
+        </a>
+        <a href="/r_and_d/comparison" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300" title="Multi-Run-Vergleich (Phase 78)">
+          Comparison
+        </a>
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Dashboard
+        </a>
+      </div>
+    </div>
+  </header>
+
+  {% if summary.total_experiments == 0 %}
+  <section
+    data-empty-state="r-and-d-summary-no-experiments"
+    aria-label="Leerer Zustand"
+    class="bg-slate-900/60 rounded-xl border border-slate-800 p-10 text-center"
+  >
+    <p class="text-sm font-medium text-slate-300 mb-2">Keine Experimentdateien</p>
+    <p class="text-sm text-slate-500 max-w-lg mx-auto">
+      Unter <code class="text-xs bg-slate-800 px-1 rounded">reports&#47;r_and_d_experiments&#47;</code> wurden keine JSON-Experimente gefunden.
+      Summary-Kennzahlen erscheinen, sobald lokale Runs vorliegen.
+    </p>
+  </section>
+  {% else %}
+  <section aria-label="Summary laut API" class="space-y-3">
+    <h2 class="text-sm font-medium text-slate-200">Summary (<code class="text-xs">/api/r_and_d/summary</code>)</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Experimente gesamt</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums" data-summary-field="total_experiments">{{ summary.total_experiments }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Mit Trades</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ summary.experiments_with_trades }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Dummy-Daten</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ summary.experiments_with_dummy_data }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Unique Presets</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ summary.unique_presets }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Unique Strategies</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ summary.unique_strategies }}</p>
+      </div>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500 mb-2">Status-Verteilung</p>
+      <div class="flex flex-wrap gap-2 text-sm">
+        {% for status, count in summary.by_status|dictsort %}
+        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800/80 text-slate-300 tabular-nums">
+          <span class="text-slate-500">{{ status }}</span>
+          <span>{{ count }}</span>
+        </span>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Globale Statistiken" class="space-y-3">
+    <h2 class="text-sm font-medium text-slate-200">Globale Statistiken (<code class="text-xs">/api/r_and_d/stats</code>)</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Unique Symbols</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ stats.unique_symbols }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Ø Sharpe</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.avg_sharpe) }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Median Sharpe</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.median_sharpe) }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Ø Return</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.avg_return) }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Median Return</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.median_return) }}</p>
+      </div>
+      <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+        <p class="text-xs text-slate-500">Ø MaxDD</p>
+        <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.avg_max_drawdown) }}</p>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "iu_exact_evaluation_implementation_evidence_v1",
+  "baseline_head": "4d312c37819fffbbd1684999e823656e45af6107",
+  "result": "PASS",
+  "exit_code": 0,
+  "tests": 40,
+  "data_class": "EXPLICIT_SYNTHETIC_OFFLINE",
+  "source_bindings": {
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/exact_intelligence_evaluation_v1.py": "d1077293a3609317c273bc284dec0935e6f6f9516f96070178282f759aa70c0b",
+    "tests/learning/test_exact_intelligence_evaluation_v1.py": "62c555f2ee249268841992f769a3d4aeef10e03d040a246eaa592c66f2fad5fc",
+    "docs/ops/specs/INTELLIGENCE_EXACT_MI_DOMAIN_EVALUATION_V1.md": "39cbe9914aeba21bfa2890c86abab46f590ec5c0b5e2b8b7ef0fde2e3ac9b685"
+  },
+  "pytest_sha256": "3a2d8d9612dcd2a16bfbda5289c7ed987f7060ccf0265eb9623a284dadb4d596",
+  "scoped_docs_token_and_targets": "PASS",
+  "preexisting_dirty_files_preserved": 135,
+  "original_equations_or_scope_changed": false,
+  "defined_slots": 5,
+  "native_model_inference_performed": false,
+  "natural_quality_proven": false,
+  "full_system_accepted": false,
+  "activation": false,
+  "remote_ci_run": false
+}

@@ -1,0 +1,70 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3005,
+      "sha256": "1fd0d4218cca37b240a6b24af8e239a582aefea6cf82801100fb7da6ea3267b9"
+    },
+    "baseline_metrics.json": {
+      "bytes": 900,
+      "sha256": "747424060ef63a579cc8df4613e7e65088fda809797fb10ee082744028de5902"
+    },
+    "ci_timing_proof.txt": {
+      "bytes": 447,
+      "sha256": "1c16e770584a1b85866e1003a05a18539d6c8fcad8d2435241d7610b5f28c2a4"
+    },
+    "code_config_hashes.json": {
+      "bytes": 493,
+      "sha256": "ab71d0259e97d89b104018832b75d202c360b3ca9fd06dbe0e678189f49b9372"
+    },
+    "comparison_decision.json": {
+      "bytes": 992,
+      "sha256": "9a33a0758257ba3fbde3b119183cd2f0d066faab3e7157488d6e68923068838f"
+    },
+    "config_snapshot.json": {
+      "bytes": 3164,
+      "sha256": "04c38cc1c325579235ccd6367b64c82e387fdaa427d1edca7049ed77e5b2db9f"
+    },
+    "determinism_repro.txt": {
+      "bytes": 1000,
+      "sha256": "e43693c2e6d74835a4c30940cfe49c7b8020511f857088cb746d2073f33ac6da"
+    },
+    "eligibility_attribution.json": {
+      "bytes": 5918,
+      "sha256": "1c384773ba2d4cdd44069183a60391b9937ad895d05bdc3bdcb85b7daf56e711"
+    },
+    "eligibility_filter_formula_freeze.json": {
+      "bytes": 1112,
+      "sha256": "bf69d74bfa3d78abd389bf6dc72c4819e9addc9f9e8dc72bc7be7587fea00070"
+    },
+    "instrument_attribution.json": {
+      "bytes": 57254,
+      "sha256": "3ca9582f27ed66fb26bf4646ca5fbeffaa39a794f8fee15f9a942cf9524c948c"
+    },
+    "portfolio_equity_baseline.csv": {
+      "bytes": 92769,
+      "sha256": "d34fed8c296502544a971eb844ee0420e0d48e2e7a6f7b1fa139747ec080f4f0"
+    },
+    "portfolio_equity_treatment.csv": {
+      "bytes": 92411,
+      "sha256": "a43bca1ab5e935848fcbe5df27abfebc05899a801a237fbd21b9e78d02a081c9"
+    },
+    "run_stdout.txt": {
+      "bytes": 11960,
+      "sha256": "d43eba802db2c18f35ce8828729823b419ba95c5d1670442ca0dbe0b7c9b2df4"
+    },
+    "safety_attestation.md": {
+      "bytes": 724,
+      "sha256": "a44ccd55012bf202c9f5399ba2b52abba5b5b4b14dc27b929fb249b81ebdca72"
+    },
+    "summary.json": {
+      "bytes": 12327,
+      "sha256": "b53cfaed0c3b4bcaeb5ff6fe703895ac84dfe34e54b20b0c355f70c5f8199f34"
+    },
+    "treatment_metrics.json": {
+      "bytes": 901,
+      "sha256": "d056a690df8b50f75c364ef20e37ad6f7604896dc61d9b46de2abf815c196b64"
+    }
+  },
+  "generated_at_utc": "2026-07-21T01:21:08Z",
+  "schema_version": "evaluate_adx_range_admission_mr_eligibility_development_run_manifest.v1"
+}

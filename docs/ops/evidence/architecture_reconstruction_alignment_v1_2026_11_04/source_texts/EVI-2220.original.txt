@@ -1,0 +1,219 @@
+PEAKTRADE – RANKING, N5, AUTONOMIE UND EXECUTION
+Stand: 02.11.2026
+HEAD: 242b7974fc93f0bdb47706556101bd6f0c497414 plus bestehende lokale Änderungen
+
+ERGEBNIS
+Eine pauschale Aussage „das komplette Ranking-Universe passt mit allen fünf Slots und allen Ausführungsarten vollständig zusammen“ ist aktuell nicht belegbar. Es gibt deutlich mehr als bloße Pläne: wirtschaftliches Ranking, Membership/Rotation, fünf isolierte N1-Lanes, Auswahl/Binding und Decision-Aufrufe sind implementiert; ausgewählte Teilketten wurden offline ausgeführt. Die Versorgung und der volle Handelslebenszyklus bleiben jedoch lückenhaft beziehungsweise unbelegt.
+
+FÜNF SLOTS – WAS GENAU FUNKTIONIERT
+Die Implementierung bildet fünf isolierte N1-Lanes, nicht einen neuen fünf Instrumente zugleich entscheidenden Double-Play-Owner. Die Cap23/Cap24-Verträge bleiben N1 je Lane. Membership bedeutet höchstens fünf; bei fehlenden geeigneten Kandidaten werden keine Platzhalter erzeugt. Top20-Kandidaten, Membership bis fünf, Evaluationsresidenz bis fünf und fünf Runtime-Lanes sind verschiedene Mengen.
+Im separaten Lauf five-lane-probe.json durchliefen SOL-, ETH-, ADA-, LINK- und APT-SWAP Auswahl, Binding, Ingest und den vorhandenen Master-V2-Aufruf. Es gab fünf unterschiedliche Native-IDs und Cursor-Wurzeln, außerdem getrennte Locks und Evidence-Verzeichnisse. Die Verarbeitung erfolgte sequentiell. Alle fünf Lane-Dispositions waren HOLD_CLOSED; Portfolio-Reservierungssumme 0; keine Orders. Der äußere Status PRE_EXTERNAL_EFFECT_ORCHESTRATION_ROLLUP bezeichnet hier nur das zulässige Orchestrierungsresultat und nicht fünf ausführbare Venue-Pläne.
+Die Control Plane erlaubt produktiv derzeit Kardinalität 1. Für 2–5 existiert ein expliziter Architektur-Harness. N_GT_1_ENABLED=false, MULTI_FUTURE_RUNTIME_AUTHORIZED=false und keine konkurrierende Execution. Auch 5_JOINED oder RUNTIME_N5_ARCHITECTURE_COMPLETE=true sind kein Laufbeweis vollständigen Fünf-Future-Handels.
+
+INNERE FUNKTIONEN UND ÜBERGABEN
+Die folgende Ordnung dient der Untersuchung; sie ist keine neue kanonische Layer-/Universe-Hierarchie.
+R01 Instrumentaufnahme und strukturelle Eignung
+Zuständigkeit: Cap 2.1
+Verarbeitung: Instrumenttyp, Status, Tick/Lot/Minimum/Kontraktwert, Währungen, Mark-Unterstützung, Zeitbezug und Duplikate → Universe-Snapshot. BTC wird in diesem Producer ausdrücklich ausgeschlossen; Spot ebenfalls.
+Beleggrenze: Statisch gelesen; kein aktueller Venue-Abruf.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+
+R02 Economic-MD und historische Fenster
+Zuständigkeit: Economic-MD / B05
+Verarbeitung: Je Instrument 61 zusammenhängende finalisierte PT1M-Markpreise als Grundlage für 60 Logreturns; Herkunft und Fenster getrennt vom aktuellen Decision-Mark und vom G17-Owner.
+Beleggrenze: Eingangs- und Feature-Verträge vorhanden; durchgängige reale Versorgung hier nicht beobachtet.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_ranking_feature_production_v1/marks_window_v1.py
+
+R03 Feature-Berechnung
+Zuständigkeit: B05
+Verarbeitung: Population-Standardabweichung der 60 Logreturns; relative Amplitude (Maximum−Minimum)/Mittelpunkt. Fehlende, unvollständige und ungültige Features sind getrennte Zustände.
+Beleggrenze: Statische Formeln plus bestehende Economic-Ranking-Tests.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_ranking_feature_production_v1/pure_compute_v1.py
+
+R04 Wirtschaftlicher Score und Rang
+Zuständigkeit: Cap 2.2 / B03-B06
+Verarbeitung: Zunächst sechs Struktur-Gates, dann Schnittmenge vollständiger Features S_STAR. Midrank-Perzentile und gewichteter balanced_movement_score; Gleichstand über Native-ID und Canonical-ID. Erst danach Top20-Kontext.
+Beleggrenze: 29 Tests für Economic-Rank und Ranking-Producer bestanden; kein Trading-Alpha-Beweis.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
+
+R05 Membership, Rotation und Anti-Churn
+Zuständigkeit: Isolierter MF-Selector
+Verarbeitung: Höchstens fünf Mitglieder, kein Auffüllen mit Platzhaltern. Fehlende/ungeeignete Mitglieder entfernen; freie Plätze nach Cap22-Reihenfolge füllen; Schutzdauer zwei Ranking-Beobachtungen und mindestens ein Rang Verbesserung für Austausch. Kein Neuranking in Execution.
+Beleggrenze: 13 Tests bestanden; ein kanonischer Replay-Test scheitert an unterschiedlichen Snapshot-Identitäten.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py
+
+R06 Top20-Evaluationsresidenz
+Zuständigkeit: Separater Lifecycle-/Scheduling-Owner
+Verarbeitung: Bis zu fünf aktive Evaluationsresidents plus Pending-Queue. Zustände für Aufnahme, Aktivität, Beobachtung, Abschluss, Ablauf und Invalidierung. Die fünf Evaluationsplätze sind nicht automatisch fünf Handelspositionen.
+Beleggrenze: Default deaktiviert. Defaultdauer 28.800 s ist Evaluationskonfiguration, kein allgemeiner Handels-/Anzeigehorizont; heutige globale Aktivierung nicht behauptet.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/top20_opportunity_evaluation_residency_v1/constants_v1.py
+
+R07 Dauerhafte Lane-Zuordnung und offene Positionen
+Zuständigkeit: Topology / Assignment / Custody
+Verarbeitung: Membership und Ranking-Provenienz → stabile LANE_1…LANE_5 mit eigenen Zustandswurzeln. Offene Positionen werden für Betreuung gepinnt; Rotation ist kein Schließen einer Position.
+Beleggrenze: Custody-Funktionen vorhanden; voller Fünf-Slot-Rotations-/Exit-/Restart-Zyklus nicht belegt.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/lifecycle_v1.py
+
+R08 Auswahl pro Lane
+Zuständigkeit: Cap 2.3
+Verarbeitung: Governed Pin je belegter Lane → bestehender N1-Selection-Producer; kein zweiter Selector im autonomen Bereich.
+Beleggrenze: Im Fünf-Future-Fixture tatsächlich durchlaufen.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+
+R09 Binding und Grenze zum autonomen Bereich
+Zuständigkeit: Cap 2.4 / BoundInstrumentV1
+Verarbeitung: Persistierte Auswahl plus Universe/Ranking/Reconciliation und Preis-Sidecar → je Lane gebundenes Instrument; danach Ingest und Paar aus Lane-Slot und BoundInstrument. Score ist kein Scope- oder Orderparameter.
+Beleggrenze: Im Fünf-Future-Fixture unterschiedliche Native-IDs erhalten.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py
+
+R10 Per-Lane Decision-Eingang und Zustand
+Zuständigkeit: Identity Closure / N1-Consumer / Master V2
+Verarbeitung: Je Lane Kerzen, Positionslage, Reconciliation, G17-Producer und Preisprovenienz; eigene Cursor-/Lock-/Evidence-Wurzeln. Gleiche Strategie bedeutet nicht gemeinsam veränderlichen Decision-Zustand.
+Beleggrenze: Fünf unterschiedliche Futures, fünf Cursor-Wurzeln, alle HOLD_CLOSED. Synthetischer Kerzenfallback tatsächlich bis Master V2 verfolgt.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+
+R11 Orchestrierung, gemeinsame Limits und Host-Join
+Zuständigkeit: Full-Autonomy N5 / Control Plane
+Verarbeitung: Lane-Reihenfolge sequentiell, gemeinsamer Portfolio-Budget-Owner; optionaler No-Order-Host-Completion-Join. Control Plane verweigert N>1 produktiv; expliziter Architektur-Harness kann bis fünf komponieren.
+Beleggrenze: Architektur-Fähigkeit vorhanden; keine unabhängige Handelsentscheidung, keine konkurrierende Execution, keine produktive N>1-Freigabe.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+
+R12 Intent, Venue-Plan und Envelope
+Zuständigkeit: 29P → 29Q → Full-Core → Venue-Boundary
+Verarbeitung: Kapital-/Risikoprüfung → kanonischer Intent → Core-Intent → Venue-Plan mit instId/side/sz/tdMode/reduceOnly → digestgebundenes Envelope. Danach gesonderte Admission und Einmalfreigabe für externe Wirkung.
+Beleggrenze: Sechs reine Marktorder-Übersetzungen bestanden. N5 führt an seinem Join nur ENTER zum Venue-Plan; andere Klassen HOLD.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
+
+R13 Rückweg der Execution
+Zuständigkeit: Execution Events / Accounting / Reconciliation
+Verarbeitung: Submit, ACK, Teilfüllung, Fill, Cancel, UNKNOWN, Accounting und Reconciliation sind getrennte Zustände. UNKNOWN erlaubt kein blindes Retry. Nur echte modusspezifische Ergebnisse dürfen reale Positionen/Kapital aktualisieren.
+Beleggrenze: Vertrags-/State-Machine-Tests bestanden; kein Fünf-Future-Fill-/Accounting-/Reconciliation-Gesamtlauf.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/capability_11_1_execution_domain_and_order_lifecycle_contracts_v1/order_lifecycle_state_machine_v1.py
+
+ORIGINAL, SPÄTERE VARIANTEN UND HEUTIGER STAND
+Die erhaltene historische Rekonstruktion unterscheidet Cap2.1–2.4 vom August (#5640–#5643) und den wirtschaftlichen Feature-/Ranking-Ausbau vom September (#6835/#6836). Das frühe Ranking verwendete sechs binäre Strukturkriterien; vollständig geeignete Kandidaten waren gleich bewertet. Heute sind diese Kriterien weiterhin Eignungs-Gates, aber die tatsächliche Ordnung stammt aus wirtschaftlichen Features und dem balanced_movement_score. Eine alte Beschreibung des strukturellen Rankings darf deshalb nicht als vollständige heutige Ranking-Formel übernommen werden.
+Die spätere Isolations-/Single-Egress-Dokumentation enthält datierte Zustände wie ungebundene Übergaben. Heutige konkrete N5-Joins müssen dagegen an ihrem Code geprüft werden. Umgekehrt ersetzt ein heutiges Konstantenlabel „COMPLETE“ keinen Wirkungsnachweis. Der lokale Git-Ausschnitt nennt unter anderem #6976 (29.09., Lane-Preisprovenienz) und #6990 (01.10., Instrument-Runtime-Identität); dies ist keine vollständige historische Rekonstruktion aller ursprünglichen N5-Entscheidungen.
+Historische Bezugsquelle:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/intelligent-universe-functional-origins/Intelligentes_Universum_Code_Urspruenge_und_Drei_Bereiche.md
+
+WAS DAS VOLLAUTONOME SYSTEM KANN UND DARF
+Der untersuchte Full-Autonomy-Orchestrator empfängt fertige Ranking-/Membership-Eingaben und ruft vorhandene Zuständigkeiten auf. Er darf nicht selbst neu ranken, eine zweite Membership-/Instrumentauswahl bilden oder Double Play ersetzen. Master V2/Double Play bleibt der Entscheidungs-Consumer. Kapital und Quantity gehören weiterhin Treasury/Risk-Sizing/Portfolio-Reservierung; Venue-Adapter übersetzen und erhalten dadurch keine eigene Alpha-, Risiko- oder Auswahlentscheidung.
+Die Orchestrierung verwaltet Lane-Zuordnung, Identität, Aufrufreihenfolge, getrennte Zustandswurzeln, Readiness und optionalen No-Order-Host-Join. Ein gemeinsamer Portfolio-Owner soll Kapitalreservierungen über Lanes begrenzen. Das ist keine Aussage, dass im geprüften HOLD-Lauf eine echte gemeinsame Kapitalbelastung demonstriert wurde.
+Offene Positionen benötigen fortgesetzte Betreuung unabhängig von ihrer aktuellen Ranking-Platzierung. Custody-Pins und Lifecycle-Zustände existieren; der vollständige Weg aus Rotation, offenem Trade, Reduce/Exit, Fill und Freigabe einer Lane ist hier nicht bewiesen.
+
+FUTURE, SHADOW, SIMULATION, PAPER, TESTNET, CANARY UND LIVE
+Future – Instrument, kein Execution-Modus
+Verarbeitung: Auswahl und Binding legen Identität sowie Kontrakttyp und Metadaten fest. Futures mit Fälligkeit und Perpetuals sind nicht einfach dasselbe Instrumentmodell.
+Grenze: Fünf Test-SWAPs beweisen nicht die vollständige Unterstützung des SUI-XPerp-Canary-Instruments oder aller Future-Arten.
+
+SHADOW – Beobachtung / Gegenrechnung
+Verarbeitung: Eigene Order-Environment-Kennung; R6-S4 hat eine gesonderte Evidence-Schicht ohne Submit oder produktiven Caller. Kein automatischer Stufenaufstieg.
+Grenze: Der untersuchte N5-ENTER-Join setzt LIVE fest. Ein vorhandenes SHADOW-Token ist kein universeller Shadow-Dispatcher.
+
+INTERNAL_SIMULATED_EXECUTION – Interne simulierte Ausführung
+Verarbeitung: No-Order-Port delegiert an simuliertes Accounting und kann interne Fills erzeugen, ohne Börsenorder.
+Grenze: Simulationsfill ist kein Venue-Fill. Vollständiger Anschluss aller N5-Lanes an dieses Accounting hier nicht belegt.
+
+PAPER_EXCHANGE – Eigenständige Papierausführung
+Verarbeitung: Eigene Environment-Kennung; vorhandene Paper-Pfade bleiben eigene Implementierungen.
+Grenze: Keine belegte beliebige Austauschbarkeit mit Shadow, No-Order-Port oder Testnet. Kein vollständiger N5-Paper-Betrieb nachgewiesen.
+
+TESTNET – Demo-/Testumgebung
+Verarbeitung: Eigene Lifecycle- und Adapter-Grenzen, Testnet-Kampagnen und Response-Mapper. Order-Body kann gemeinsam genutzt werden, ohne gleiche Autorität.
+Grenze: Cap11.1-Testnet-Port ist dort deklarativ und nicht konstruktibel. Spätere Testnet-Kampagnen sind separate Pfade. Kein automatischer N5→Testnet-Anschluss.
+
+Canary – Begrenzter Venue-Nachweis, kein generischer Pipeline-Modus
+Verarbeitung: Eigener CANARY_VENUE_PROOF_ONLY-Pfad; Defaults SUI-Instrument und BUY sowie Minimum-Exposure-Konzept.
+Grenze: Code lehnt diesen Nachweis ausdrücklich als Full-Core-E2E-Nachweis ab. Erfolgreicher Canary bestätigt nicht Ranking, N5, natürliche Double-Play-Auswahl oder vollständige Größenberechnung.
+
+LIVE – Produktiver Ausführungsmodus mit separater externer Freigabe
+Verarbeitung: Environment bleibt exakt LIVE. Standing Flags für enabled/armed/wire/submission können wahr sein; echte externe Wirkung benötigt weitere gebundene Voraussetzungen und Einmalfreigabe.
+Grenze: Standing EXTERNAL_EFFECT_AUTHORIZED und POST_ALLOWED bleiben falsch. Der aktuelle N5-Pfad erzeugt hier keine Orders. LIVE-Label am Plan bedeutet keinen freigegebenen Socket.
+
+Diese Begriffe sind keine einheitliche lineare Pipeline und keine automatische Beförderungsleiter. Ein Future ist der gehandelte Gegenstand; Shadow/Simulation/Paper/Testnet/Live betreffen Wirkung und Ausführungsumgebung; Canary ist eine gesonderte begrenzte Nachweisform.
+Die Order-Environment-Tokens sind exakt getrennt. Das allgemeine Execution-Event-Modell verwendet dagegen SIMULATED/TESTNET/LIVE. Ein verlustfreier gemeinsamer Modus- und Provenienzadapter für sämtliche Wege ist hier nicht nachgewiesen. Tokens allein erzeugen weder den richtigen Port noch den richtigen Account oder erlaubte externe Wirkung.
+
+KONKRETE BEFUNDE
+F01 Mehr-Lane-Fallback erzeugt eine künstliche Markthistorie
+Einordnung: Vor realer Versorgung zu klären
+Beobachtung: Wenn mehr als eine Lane vorliegt und candles_payload_by_lane fehlt, baut der Orchestrator pro Instrument acht Kerzen aus dem Cap24-Mark: M−3,5, M−3,0 … M. OHLC werden gleichgesetzt; Volumenfelder sind Konstanten. Diese Close-Werte erreichten im Offline-Trace tatsächlich Master V2.
+Grenze: Explizit gelieferte candles_payload_by_lane umgehen den Fallback. Kein Nachweis, dass eine reale Live-Session diesen Fallback verwendete. Nicht automatisch als Defekt der Double-Play-Logik einordnen.
+Für vollständige Passung erforderlich: Vor echtem Marktdatenbetrieb je Instrument echte zeitgebundene Kerzen liefern und Test-/synthetische Herkunft an der Consumer-Grenze eindeutig behandeln.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_mv2_candles_payload_compose_v1.py:37
+Artefakt: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-n5-execution-review-2026-11-02/five-lane-probe.json
+
+F02 N5-Join führt nur ENTER zum Venue-Plan
+Einordnung: Vollständiger Handelszyklus nicht geschlossen
+Beobachtung: _t2_from_s7 bindet den Venue-Plan nur bei decision_class == DECISION_ENTER. Alle anderen Klassen fallen in OBSERVE_HOLD mit first_real_blocker=HOLD. Ein allgemeiner Translator unterstützt REDUCE/EXIT, wird dadurch aber nicht für diese Klassen im N5-Join aufgerufen.
+Grenze: Statischer Beleg für diesen Join, keine Aussage, dass sämtliche Exit-Pfade im Repository fehlen. Kein realer offener Trade wurde untersucht.
+Für vollständige Passung erforderlich: Entry, Reduce, Exit und Positionsbetreuung pro Lane einschließlich Custody-/Budgetfreigabe bis zu den effektiven Consumern verfolgen.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py:510
+Artefakt: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-n5-execution-review-2026-11-02/execution-mapping-probe.json
+
+F03 N5-ENTER-Join setzt execution_mode=LIVE fest
+Einordnung: Modusanschluss begrenzt
+Beobachtung: Die allgemeine Venue-Plan-Autorität erhält SHADOW, INTERNAL_SIMULATED_EXECUTION, PAPER_EXCHANGE, TESTNET und LIVE unverändert. Der konkrete N5-Caller reicht hingegen LIVE als Literal weiter.
+Grenze: Ein LIVE-Plan ist keine Orderfreigabe. Die Trennung der Tokens funktioniert in Tests; die vollständige modusspezifische Ausführung aller fünf Lanes ist nicht bewiesen.
+Für vollständige Passung erforderlich: Je realem Einstieg den Modus, Port, Account, State-Root und erlaubten Effekt bestimmen; keinen automatischen Moduswechsel aus Namen ableiten.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py:553
+Artefakt: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-n5-execution-review-2026-11-02/execution-mapping-probe.json
+
+F04 Fünf Lanes funktionieren im begrenzten Aufbau; produktiv bleibt N>1 gesperrt
+Einordnung: N5 ist Fähigkeit, kein Betriebsnachweis
+Beobachtung: Fünf unterschiedliche Instrumente durchlaufen Auswahl, Binding, Ingest und Decision-Aufruf mit getrennten Wurzeln. Alle fünf endeten HOLD_CLOSED; die äußere Zusammenfassung heißt dennoch PRE_EXTERNAL_EFFECT_ORCHESTRATION_ROLLUP. Keine Reservierung und keine Order.
+Grenze: Kein natürlicher ENTER in diesem Lauf, kein laufender Fünf-Lane-Host, keine vollen Positions-/Fill-/Restart-Zyklen. MAX_POSITIONS_EFFECTIVE=1 und MULTI_FUTURE_RUNTIME_AUTHORIZED=false bleiben bestehen.
+Für vollständige Passung erforderlich: Einzelne Lane-Dispositions lesen; nicht aus Rollup-Namen, 5_JOINED oder TECHNICAL_WORK_REMAINING=NONE Vollbetrieb ableiten.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/staged_cardinality_v1.py:44
+Artefakt: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-n5-execution-review-2026-11-02/five-lane-probe.json
+
+F05 167 Prüfungen bestanden, 32 fehlgeschlagen
+Einordnung: Regressionsevidence nicht durchgehend aktuell
+Beobachtung: 199 ausgeführte Prüfungen in elf ausgewählten Modulen. Fünf N5-Completion-Fehler haben VENUE-HARNESS in allen Lane-Fixtures; ein Selector-Replay vergleicht alte und neue Snapshot-IDs; ein Modustest erwartet einen alten Runbook-Pin. 25 Full-Core-Tests scheitern, überwiegend weil Voraussetzungen no_action/HOLD statt erwarteter Entry-/Fehlerpfade liefern.
+Grenze: Das sind keine 32 bewiesenen Produktbugs. Die vollständige Ursache der 25 Full-Core-Fehler ist hier nicht abgeschlossen. Sie können aktuell keinen grünen Schnittstellenbeweis liefern. Ein Evidence-Schreibtest wurde abgewählt.
+Für vollständige Passung erforderlich: Fixture-/Revisionsfehler und echte Implementierungsfehler getrennt bereinigen, anschließend die betroffenen wirksamen Pfade erneut nachweisen.
+Code: /Users/frnkhrz/Peak_Trade/tests/ops/test_full_core_live_path_composition_root_v1.py:105
+Artefakt: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-n5-execution-review-2026-11-02/test-summary.json
+
+F06 LIMIT_ONLY wird im geprüften Translator ohne Preis verweigert
+Einordnung: Begrenzte Orderarten
+Beobachtung: MARKET_ONLY ließ sich für Enter Long/Short und Reduce/Exit beider Seiten korrekt in buy/sell und reduceOnly übersetzen. LIMIT_ONLY wird zwar auf limit gemappt, aber ohne px an den Body-Builder übergeben und deshalb vor Wire abgelehnt.
+Grenze: Kein Beleg einer aktuell beabsichtigten oder freigegebenen Limit-Order-Konfiguration. Korrekte Ablehnung statt unvollständiger Börsenorder. Reduktion wurde mit explizitem reduce_only=True als Input geprüft; dessen Erzeugung upstream nicht mitbewiesen.
+Für vollständige Passung erforderlich: Beabsichtigte Orderarten und Eingangsvertrag festlegen; wenn Limits gebraucht werden, Preisquelle und Weitergabe gesondert nachweisen.
+Code: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py:153
+Artefakt: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-n5-execution-review-2026-11-02/execution-mapping-probe.json
+
+EIN- UND AUSGÄNGE DER EXECUTION
+Die reine Venue-Übersetzung wurde separat geprüft:
+ENTER_LONG → buy; ENTER_SHORT → sell.
+REDUCE/EXIT einer Long-Position → sell; REDUCE/EXIT einer Short-Position → buy.
+Bei den vier Reduktions-/Exit-Probes wurde reduce_only=True ausdrücklich als Eingabe gesetzt; der erzeugte Body erhält reduceOnly=true. Instrument und Menge blieben erhalten. Das beweist die Übersetzung, nicht die upstream erzeugte richtige Reduktionsmenge, den tatsächlich angeschlossenen Exit oder die Annahme durch die Börse.
+Der aktuelle N5-Join bindet nur ENTER bis zum Venue-Plan und verwendet dabei execution_mode=LIVE. Für Nicht-ENTER folgt HOLD. Somit schließen die sechs erfolgreichen Übersetzungen diese N5-Lücke nicht.
+LIMIT_ONLY wird ohne px korrekt vor dem Wire gestoppt; ob Limit-Orders fachlich benötigt/gewählt werden, bleibt gesondert.
+Ein sendefähiger Port oder Standing Flags sind keine tatsächliche Orderfreigabe. Admission prüft zusätzlich Instrument, frische Pretrade-Quelle, gebundenen Account, Kapital-/29P-Zulässigkeit, Data-Safety, Kill-Gate und gebundene Owner-Freigabe. Im untersuchten Stand bleiben Standing POST_ALLOWED und EXTERNAL_EFFECT_AUTHORIZED falsch; eine spätere konkrete Einmalfreigabe ist ein eigener Mechanismus. In dieser Untersuchung wurden keine solchen Rechte verwendet.
+Der Response-Mapper trennt Wire, ACK, Reject und beobachtete Fills. Die Lifecycle-State-Machine unterscheidet auch Teilfüllung und UNKNOWN und verbietet blindes Retry. Dass die State-Machine selbst diese Zustände unterstützt, beweist noch keinen an alle fünf Lanes angeschlossenen Rückweg zu Accounting, Reconciliation und Kapital.
+
+PRÜFUNG UND FEHLEREINORDNUNG
+199 ausgeführte Prüfungen: 167 bestanden, 32 fehlgeschlagen; ein Evidence-erzeugender Test abgewählt. Auswahl und Einzelergebnisse stehen in test-summary.json und beiden JUnit-Dateien. Keine Abdeckungsquote aller Funktionen.
+- Economic-Ranking 8/8 und Producer 21/21.
+- Membership/Rotation 13/14. Der fehlgeschlagene Replay-Test hat als Vorzustand pfr_evidence_cap22_v1 und als aktuelle Quelle pfr_evidence_cap22_b06_economic_v1 mit anderem Digest. UNCHANGED_NEW_OBSERVATION ist bei anderer Snapshot-Identität nicht dasselbe wie ein Replay. Das ist kein Beleg fehlerhafter Anti-Churn-Logik.
+- N5-Orchestrator 8/8; Staged Control Plane 8/8.
+- N5-Completion 9/14. Fünf Fehler hängen daran, dass der bestehende Hilfskontext überall VENUE-HARNESS liefert, die Tests aber unterschiedliche VENUE-1…VENUE-5 erwarten. Der gesonderte Fünf-Future-Lauf benutzt unterschiedliche echte Instrumentkennungen, bleibt aber ein Fixture.
+- Multi-Future-Shadow-Evidence 9/9; Testnet-Adapter-Lifecycle 17/17.
+- Full-Core-Komposition 11/36. Überwiegend erwartete Entry-/Fehlerpfade werden wegen no_action/HOLD nicht erreicht; zusätzlich Dokumentationsannahmen. Die Ursache aller dieser 25 Fehler ist nicht abschließend geklärt. Nicht pauschal Produktbugs oder pauschal veraltete Tests behaupten.
+- Heutige Mode-/tdMode-Autorität 47/48. Ein Test erwartet einen alten Runbook-Header-Pin.
+- Cap11.1-Execution-Verträge 16/16.
+Zwei frühe Anläufe des Zusatzharness scheiterten an Import-/Schreibschutzmechanik; ein weiterer erst beim Start der anschließenden pytest-Phase wegen des externen Temp-Verzeichnisses. Das sind Harness-Probleme, keine zusätzlichen Produktfehler. Der Fünf-Lane-Trace und die reinen Übersetzungsprobes waren vor diesem letzten Harness-Abbruch abgeschlossen. Die nachfolgende separate Zusatzsuite lief regulär durch und meldete 63 PASS, 1 FAIL.
+
+ERHALT DER VORHANDENEN ARBEIT
+Ein bereits vorhandener kanonischer Selector-Test persistierte vor seinem Assertion-Fehler einen neuen Record und ergänzte MANIFEST.sha256. Der Testausstoß wurde nach test-generated-evidence gesichert; nur der neu erzeugte Record und seine Manifest-Zeile wurden zurückgenommen. HEAD, versionierter Diff und Git-Status entsprachen anschließend wieder exakt baseline.json. Die Auflösung ist in test-side-effect-resolution.json festgehalten; die vorübergehende Abweichung bleibt in test-verification.json sichtbar.
+Kein Produktfix, keine Wiederherstellung, keine Aktivierung, kein Live-/Testnet-Netzzugriff, keine Credentials und keine Orders. Der erste Testharness beobachtete keinen Socket-Verbindungsversuch; Zusatzprobes sperrten Netzwerkverbindungen. Bestehende lokale Arbeit blieb erhalten.
+
+WAS FÜR EIN POSITIVES GESAMTURTEIL NOCH FEHLT
+1. Echte je Instrument gebundene Kerzen und aktuelle Preise einschließlich Quellzeit bis zum endgültigen Decision-/Anzeige-Consumer; synthetischen Fallback eindeutig von Marktdaten trennen.
+2. Alle fünf Lanes über natürliche Entry-, Reduce-, Exit- und Betreuungszustände führen, mit korrektem gemeinsamen Kapitalbudget und isoliertem Zustand.
+3. Je tatsächlich vorgesehenem Ausführungsmodus den konkreten Dispatcher, Port, Account, Event-Rückweg und seine Autoritätsgrenzen belegen.
+4. Rotation und offene Positionen, Reentry/Restart, Wiederholungen, Teilfüllungen, Reject/UNKNOWN und Freigabe der Kapitalreservierung konsistent nachweisen.
+5. Fehlerhafte oder unpassende Testvoraussetzungen getrennt von echten Implementierungsfehlern klären; betroffene Schnittstellen erneut ausführen.
+6. Den tatsächlich betriebenen Einstieg feststellen. Vorhandene alternative Hosts und Module dürfen nicht zu einer vermeintlich einzigen produktiven Kette zusammengezogen werden.
+Das sind konkrete Prüfpunkte aus dem untersuchten Bestand. Sie sind weder eine pauschale Freigabe noch ein Auftrag, das System umzubauen. Vollständigkeit aller historischen Funktionen/Universen und Betriebsbereitschaft bleiben unbelegt.
+

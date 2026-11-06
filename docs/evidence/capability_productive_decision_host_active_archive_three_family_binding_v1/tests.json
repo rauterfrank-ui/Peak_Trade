@@ -1,0 +1,7 @@
+{
+  "failed": 0,
+  "focused_file": "tests/ops/test_productive_decision_host_active_archive_three_family_binding_v1.py",
+  "passed": 11,
+  "ruff_check": "PASS",
+  "ruff_format": "PASS"
+}

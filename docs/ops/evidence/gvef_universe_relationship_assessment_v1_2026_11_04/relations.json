@@ -1,0 +1,95 @@
+{
+  "source_commit": "3a01199438acfe9050e5f3a6a1eafd032b6abaa5",
+  "assessment_authority": "NONE",
+  "inclusion": "GVEF_EXPLICITLY_INCLUDED_IN_ARCHITECTURE_RECONSTRUCTION_EXISTING_OWNERS_REUSED",
+  "automatic_runtime_join_authorized": false,
+  "relations": [
+    {
+      "id": "R1",
+      "relation": "GVEF shared evaluation contracts",
+      "basis": "CURRENT_STATIC_AND_CONTROLLED_SYNTHETIC",
+      "meaning": "Five named domain evaluators consume the existing common context/replay/result/runner interfaces",
+      "producer_consumer": [
+        "src/evaluation/golden_vectors/contracts/enums.py",
+        "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+        "src/evaluation/golden_vectors/evaluators/"
+      ],
+      "limits": "One evaluator dependency per execute call; not an automatically composed five-domain proof or actual productive producer execution"
+    },
+    {
+      "id": "R2",
+      "relation": "Ranking selection binding to trading",
+      "basis": "CURRENT_STATIC",
+      "meaning": "Ranking context, sole Cap23 selection, Cap24 identity binding and BoundInstrument ingress remain distinct roles",
+      "producer_consumer": [
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+        "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md"
+      ],
+      "limits": "SSF handoff is not isolated MF egress; no rerank/reselection downstream; full lineage/economics not implied"
+    },
+    {
+      "id": "R3",
+      "relation": "N5 occupied slot bound-identity composition",
+      "basis": "CURRENT_STATIC_WITH_USER_TERM_CLARIFICATION",
+      "meaning": "Per-lane slot and BoundInstrument pair preserves native identity and lane state root",
+      "producer_consumer": [
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/handoff_join_v1.py"
+      ],
+      "limits": "Pair-map function stops before trading invocation; Full Core as all five slots is separate from autonomy workflow and actual active lane count"
+    },
+    {
+      "id": "R4",
+      "relation": "Ranking and simulated execution observation to DDO",
+      "basis": "CURRENT_STATIC_PLUS_HISTORICAL_PR",
+      "meaning": "selection.ranking and execution.simulated_outcome use existing observe_after_producer capture wrapper",
+      "producer_consumer": [
+        "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+        "src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py",
+        "src/learning/deterministic_decision_outcome_v0/capture_v0.py"
+      ],
+      "limits": "Binding/ledger conditions apply; original result returned; capture is not later observed outcome or learned numeric policy"
+    },
+    {
+      "id": "R5",
+      "relation": "MI offline evidence to learning and optimization intake",
+      "basis": "CURRENT_STATIC_PLUS_HISTORICAL_PR",
+      "meaning": "Explicit offline forecast/outcome/evidence composition and conditional MI enriched M4 intake calls exist",
+      "producer_consumer": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py"
+      ],
+      "limits": "MI not automatically historical IU; optional calls/ACK are not productive apply or model training proof"
+    },
+    {
+      "id": "R6",
+      "relation": "Semantic-diff across decision risk and intent boundaries",
+      "basis": "CURRENT_STATIC",
+      "meaning": "Existing Level3 owner packages baseline/candidate semantic, structural, config, trace, replay, boundary, risk and intent comparisons",
+      "producer_consumer": [
+        "src/meta/learning_loop/trading_logic_semantic_diff_evidence_v1.py"
+      ],
+      "limits": "Requires exact source attestations; field labels and hashes alone do not establish numerical behavior or all-lane semantics"
+    },
+    {
+      "id": "R7",
+      "relation": "IU scope-specific meaning versus broad layer grouping",
+      "basis": "HISTORICAL_ORIGINAL_REQUEST_AND_LATER_PROJECTION",
+      "meaning": "Oct1 scope calculation/handoff request excludes ranking/selection/trading authority; Oct7 projection groups a broader 14-layer instrument chain",
+      "producer_consumer": [
+        "historical_iu_scope_owner_request.txt",
+        "historical_iu_layer_projection.json"
+      ],
+      "limits": "No unique IU runtime owner inferred; scope implementation preserved, no formula or parameter change"
+    },
+    {
+      "id": "R8",
+      "relation": "N5 Full Core versus historical execution-autonomy path",
+      "basis": "CURRENT_USER_CLARIFICATION_AND_HISTORICAL_PDF_SNAPSHOT",
+      "meaning": "User meaning all five N5 slots is retained separately from historical workflow orchestration from already selected instrument to execution/reconciliation",
+      "producer_consumer": [
+        "historical_autonomy_source_excerpt.json",
+        "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_RUNTIME_N5_COMPLETION_CONTRACT_V1.md"
+      ],
+      "limits": "Historical snapshots do not establish current autonomous host or ratify a new universe topology"
+    }
+  ]
+}

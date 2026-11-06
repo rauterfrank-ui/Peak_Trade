@@ -1,0 +1,256 @@
+{
+  "FAILURE_INJECTION_TESTS_PASS": true,
+  "PHASE_9_2_STEP_6_STATUS": "OPEN",
+  "STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT": true,
+  "authorization_consumed": false,
+  "cases": [
+    {
+      "case": "default_path_proof_cannot_start_network",
+      "detail": {
+        "claims": {
+          "AUTHORIZATION_CONSUMED": false,
+          "BINDING_EXECUTOR_ROLE": "BINDING_EXECUTOR",
+          "CALL_GRAPH_AFTER": [
+            "BINDING_EXECUTOR preserved fail-closed (unchanged)",
+            "PRODUCTIVE_REAL_NETWORK_EXECUTOR package present",
+            "ephemeral NETWORK_SESSION_GO gate (parameter-only; default false)",
+            "reuse Step-6 governed stale-control + failure-injection contract",
+            "reuse Public-MD-only boundary (orders/credentials unreachable)",
+            "reuse canonical wallclock / productive runtime owner",
+            "Hidden-PTY confirm handoff bound for later session only (no mint here)",
+            "Step-6 verifier + evidence surfaces bound",
+            "network_session_may_start=true only under later separate Owner-GO session gates",
+            "THIS_CAPABILITY: NETWORK_SESSION_STARTED=false",
+            "PHASE_9_2_STEP_6_STATUS remains OPEN until later session verifier PASS"
+          ],
+          "CALL_GRAPH_BEFORE": [
+            "BINDING_EXECUTOR execute-governed-session",
+            "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY",
+            "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED=false",
+            "STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=true",
+            "HARD_STOP: no Owner-GO-capable productive Real-Network path"
+          ],
+          "CONFIRM_TOKEN_CONSUMED": false,
+          "CONFIRM_TOKEN_MINTED": false,
+          "CORE_LOGIC_CHANGED": false,
+          "CREDENTIAL_PATH_REACHABLE": false,
+          "EPHEMERAL_NETWORK_SESSION_GO_BOUND": true,
+          "EXCHANGE_CREDENTIAL_PATH_CHANGED": false,
+          "EXPLICIT_SESSION_OWNER_GO_REQUIRED": true,
+          "FAILURE_INJECTION_BOUND": true,
+          "GOVERNED_STALE_CONTROL_BOUND": true,
+          "HIDDEN_CONFIRM_HANDOFF_BOUND_FOR_LATER_SESSION": true,
+          "HIDDEN_CONFIRM_HANDOFF_USED": false,
+          "HIDDEN_PTY_CONFIRM_HANDOFF_OWNER": "ops.phase_9_2_step_6_governed_productive_real_network_session_executor_v1.hidden_pty_handoff_v1",
+          "MAX_NETWORK_SESSION_COUNT": 1,
+          "NETWORK_CALLS_DURING_THIS_CAPABILITY": 0,
+          "NETWORK_SESSION_COUNT": 0,
+          "NETWORK_SESSION_STARTED": false,
+          "ORDERS_DISABLED": true,
+          "ORDER_SIDE_EFFECT_REACHABLE": false,
+          "PHASE_9_2_STEP_6_STATUS": "OPEN",
+          "PHASE_9_2_STEP_7_STATUS": "OPEN",
+          "PREDECESSOR_NETWORK_SESSION_ALLOWED_UNCHANGED": true,
+          "PRIVATE_ENDPOINT_REACHABLE": false,
+          "PRODUCTIVE_EXECUTOR_REQUIRES_SEPARATE_OWNER_GO_SESSION": true,
+          "PRODUCTIVE_REAL_NETWORK_EXECUTOR_IMPLEMENTED": true,
+          "PRODUCTIVE_REAL_NETWORK_EXECUTOR_ROLE": "PRODUCTIVE_REAL_NETWORK_EXECUTOR",
+          "PUBLIC_MD_ONLY_ENFORCED": true,
+          "READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_SESSION": true,
+          "REAL_TTY_REQUIRED": true,
+          "SESSION_EXECUTED": false,
+          "STEP6_BINDING_ONLY_EXECUTOR_PRESERVED": true,
+          "STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT": false,
+          "STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT": true,
+          "STEP6_VERIFIER_BOUND": true,
+          "STEP6_VERIFIER_OWNER": "ops.phase_9_2_step_6_governed_productive_real_network_session_executor_v1.verifier_v1",
+          "STEP7_STARTED": false,
+          "STRUCTURAL_MAY_START_UNDER_FULL_GO": true,
+          "STRUCTURAL_MAY_START_WITHOUT_NETWORK_SESSION_GO": false,
+          "TARGET_SESSION_ID": "phase_9_2_public_md_adverse_stale_data_session_v1",
+          "TRADING_LOGIC_CHANGED": false,
+          "WALLCLOCK_OWNER_REUSED": true
+        },
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "binding_executor_remains_real_network_forbidden",
+      "detail": {
+        "binding_executor": {
+          "capability_id": "PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BINDING_V1",
+          "network_session_may_start": false,
+          "network_session_started": false,
+          "productive_network_session_execution_authorized": false,
+          "real_network_forbidden": true,
+          "request_real_network_ok": false,
+          "role": "BINDING_EXECUTOR"
+        },
+        "blockers": [],
+        "capability_id": "PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1",
+        "claims": {
+          "BINDING_EXECUTOR_PRESERVED_FAIL_CLOSED": true,
+          "CONFIRM_TOKEN_CONSUMED": false,
+          "CONFIRM_TOKEN_MINTED": false,
+          "NETWORK_SESSION_STARTED": false,
+          "ONLY_PRODUCTIVE_EXECUTOR_CAN_AUTHORIZE_MAY_START": true,
+          "PRODUCTIVE_EXECUTOR_REQUIRES_NETWORK_SESSION_GO": true
+        },
+        "notes": [
+          "BINDING_EXECUTOR=always forbids Real-Network side effects",
+          "PRODUCTIVE_REAL_NETWORK_EXECUTOR=may authorize may_start under ephemeral GO",
+          "ONLY_LATER_SEPARATE_OWNER_GO_SESSION_MAY_START_NETWORK=true"
+        ],
+        "ok": true,
+        "productive_real_network_executor": {
+          "capability_id": "PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1",
+          "network_session_may_start_under_full_go": true,
+          "network_session_may_start_without_network_session_go": false,
+          "network_session_started_in_this_capability": false,
+          "requires_separate_owner_go_session": true,
+          "role": "PRODUCTIVE_REAL_NETWORK_EXECUTOR"
+        }
+      },
+      "ok": true
+    },
+    {
+      "case": "only_productive_executor_authorizes_may_start_under_go",
+      "detail": {
+        "binding_may_start": false,
+        "productive_may_start": true
+      },
+      "ok": true
+    },
+    {
+      "case": "productive_executor_fails_without_network_session_go",
+      "detail": {
+        "blockers": [
+          "NETWORK_SESSION_GO_REQUIRED",
+          "NETWORK_SESSION_START_DEFERRED_TO_LATER_SESSION"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "case": "orders_credentials_unreachable_public_md_only_required",
+      "detail": {
+        "blockers": [
+          "PUBLIC_MD_ONLY_REQUIRED"
+        ],
+        "claims": {
+          "AUTHORIZATION_CONSUMED": false,
+          "BINDING_EXECUTOR_ROLE": "BINDING_EXECUTOR",
+          "CALL_GRAPH_AFTER": [
+            "BINDING_EXECUTOR preserved fail-closed (unchanged)",
+            "PRODUCTIVE_REAL_NETWORK_EXECUTOR package present",
+            "ephemeral NETWORK_SESSION_GO gate (parameter-only; default false)",
+            "reuse Step-6 governed stale-control + failure-injection contract",
+            "reuse Public-MD-only boundary (orders/credentials unreachable)",
+            "reuse canonical wallclock / productive runtime owner",
+            "Hidden-PTY confirm handoff bound for later session only (no mint here)",
+            "Step-6 verifier + evidence surfaces bound",
+            "network_session_may_start=true only under later separate Owner-GO session gates",
+            "THIS_CAPABILITY: NETWORK_SESSION_STARTED=false",
+            "PHASE_9_2_STEP_6_STATUS remains OPEN until later session verifier PASS"
+          ],
+          "CALL_GRAPH_BEFORE": [
+            "BINDING_EXECUTOR execute-governed-session",
+            "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY",
+            "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED=false",
+            "STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=true",
+            "HARD_STOP: no Owner-GO-capable productive Real-Network path"
+          ],
+          "CONFIRM_TOKEN_CONSUMED": false,
+          "CONFIRM_TOKEN_MINTED": false,
+          "CORE_LOGIC_CHANGED": false,
+          "CREDENTIAL_PATH_REACHABLE": false,
+          "EPHEMERAL_NETWORK_SESSION_GO_BOUND": true,
+          "EXCHANGE_CREDENTIAL_PATH_CHANGED": false,
+          "EXPLICIT_SESSION_OWNER_GO_REQUIRED": true,
+          "FAILURE_INJECTION_BOUND": true,
+          "GOVERNED_STALE_CONTROL_BOUND": true,
+          "HIDDEN_CONFIRM_HANDOFF_BOUND_FOR_LATER_SESSION": true,
+          "HIDDEN_CONFIRM_HANDOFF_USED": false,
+          "HIDDEN_PTY_CONFIRM_HANDOFF_OWNER": "ops.phase_9_2_step_6_governed_productive_real_network_session_executor_v1.hidden_pty_handoff_v1",
+          "MAX_NETWORK_SESSION_COUNT": 1,
+          "NETWORK_CALLS_DURING_THIS_CAPABILITY": 0,
+          "NETWORK_SESSION_COUNT": 0,
+          "NETWORK_SESSION_STARTED": false,
+          "ORDERS_DISABLED": true,
+          "ORDER_SIDE_EFFECT_REACHABLE": false,
+          "PHASE_9_2_STEP_6_STATUS": "OPEN",
+          "PHASE_9_2_STEP_7_STATUS": "OPEN",
+          "PREDECESSOR_NETWORK_SESSION_ALLOWED_UNCHANGED": true,
+          "PRIVATE_ENDPOINT_REACHABLE": false,
+          "PRODUCTIVE_EXECUTOR_REQUIRES_SEPARATE_OWNER_GO_SESSION": true,
+          "PRODUCTIVE_REAL_NETWORK_EXECUTOR_IMPLEMENTED": true,
+          "PRODUCTIVE_REAL_NETWORK_EXECUTOR_ROLE": "PRODUCTIVE_REAL_NETWORK_EXECUTOR",
+          "PUBLIC_MD_ONLY_ENFORCED": true,
+          "READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_SESSION": true,
+          "REAL_TTY_REQUIRED": true,
+          "SESSION_EXECUTED": false,
+          "STEP6_BINDING_ONLY_EXECUTOR_PRESERVED": true,
+          "STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT": false,
+          "STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT": true,
+          "STEP6_VERIFIER_BOUND": true,
+          "STEP6_VERIFIER_OWNER": "ops.phase_9_2_step_6_governed_productive_real_network_session_executor_v1.verifier_v1",
+          "STEP7_STARTED": false,
+          "STRUCTURAL_MAY_START_UNDER_FULL_GO": true,
+          "STRUCTURAL_MAY_START_WITHOUT_NETWORK_SESSION_GO": false,
+          "TARGET_SESSION_ID": "phase_9_2_public_md_adverse_stale_data_session_v1",
+          "TRADING_LOGIC_CHANGED": false,
+          "WALLCLOCK_OWNER_REUSED": true
+        }
+      },
+      "ok": true
+    },
+    {
+      "case": "no_confirm_token_mint_or_consume_in_this_capability",
+      "detail": {},
+      "ok": true
+    },
+    {
+      "case": "failure_injection_binding_preserved",
+      "detail": {
+        "stale_ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "step6_verifier_bound_and_step6_remains_open",
+      "detail": {},
+      "ok": true
+    },
+    {
+      "case": "permanent_network_flags_remain_false",
+      "detail": {
+        "NETWORK_SESSION_ALLOWED": false,
+        "PREDECESSOR_NETWORK_SESSION_ALLOWED": false
+      },
+      "ok": true
+    },
+    {
+      "case": "max_session_count_exactly_one",
+      "detail": {
+        "MAX_NETWORK_SESSION_COUNT": 1
+      },
+      "ok": true
+    },
+    {
+      "case": "implementation_capability_forbids_real_network_side_effects",
+      "detail": {
+        "blockers": [
+          "NETWORK_SESSION_START_DEFERRED_TO_LATER_SESSION",
+          "REAL_NETWORK_SIDE_EFFECTS_FORBIDDEN_IN_THIS_IMPLEMENTATION_CAPABILITY"
+        ]
+      },
+      "ok": true
+    }
+  ],
+  "confirm_token_consumed": false,
+  "confirm_token_minted": false,
+  "network_calls": 0,
+  "network_session_started": false,
+  "ok": true
+}

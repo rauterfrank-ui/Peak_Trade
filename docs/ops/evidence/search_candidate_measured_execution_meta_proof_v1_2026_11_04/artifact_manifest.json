@@ -1,0 +1,79 @@
+{
+  "files": [
+    {
+      "path": "artifacts/before_search.json",
+      "sha256": "0cc6331009fd522779e8df1e373d231d16c24325d16af86cd4160efe4964f51c",
+      "bytes": 18623
+    },
+    {
+      "path": "artifacts/executed_research.canonical.json",
+      "sha256": "4e5970b30662925e77fdc7e4912135943c1b29087241401b01202f6f35d7b2b2",
+      "bytes": 85682
+    },
+    {
+      "path": "artifacts/execution_packet.json",
+      "sha256": "fe39e7b2870104a23fa1f572b1da717ecd284d744308b08f357e0969dc6cc257",
+      "bytes": 113704
+    },
+    {
+      "path": "artifacts/gvef_packet_evaluation.json",
+      "sha256": "e51909b7ea4b6343beecfae9f9e3a08f102b2c3f42a68433928176dbdde335f5",
+      "bytes": 1811
+    },
+    {
+      "path": "artifacts/gvef_reference.json",
+      "sha256": "a4c3a2e6e24ae5a6fbb54febd48435c3fdf447a6f8f9387ef127d2641439e43d",
+      "bytes": 865
+    },
+    {
+      "path": "artifacts/holdout_equity.csv",
+      "sha256": "3bf1c824e9dcaf3f509b1befd8e45078ffa3763d66905d2538376906d894e770",
+      "bytes": 6829
+    },
+    {
+      "path": "artifacts/later_meta.json",
+      "sha256": "7fcb6ec36b3adc51cf5a52438fd34fdfbcb798a86e91f2bbbff2ff543945ceb7",
+      "bytes": 9841
+    },
+    {
+      "path": "artifacts/later_meta_after_gvef_reference_reload.json",
+      "sha256": "7fcb6ec36b3adc51cf5a52438fd34fdfbcb798a86e91f2bbbff2ff543945ceb7",
+      "bytes": 9841
+    },
+    {
+      "path": "artifacts/native_bars.csv",
+      "sha256": "54b86e631ee74cdf7037566d9cdc62a0fab3acc2339ccb04eeba3564890ee0bd",
+      "bytes": 186630
+    },
+    {
+      "path": "artifacts/native_cfg.json",
+      "sha256": "8b82bc76a862f199cffe0fa3896bb0bf122323199be598d35ff0aec9b4039f4f",
+      "bytes": 1066
+    },
+    {
+      "path": "artifacts/observed_splits.canonical.json",
+      "sha256": "137bff687be0a858a3fa41e237c125ee324d77a28842eca9eec97d28413f9912",
+      "bytes": 7973
+    },
+    {
+      "path": "artifacts/observed_splits.json",
+      "sha256": "59e99c912fc3ce7064bd3182f1f88909f05a3a7604ef9208ad16182a8001525b",
+      "bytes": 9673
+    },
+    {
+      "path": "artifacts/source_inputs.json",
+      "sha256": "d1f671d2578e282254fbacf35eab3ceb3ca5c5eccca085019f9cad14db28d901",
+      "bytes": 222623
+    },
+    {
+      "path": "artifacts/train_equity.csv",
+      "sha256": "be4f621dc153c91a1c1faeafbffa6ada2f7208339b04ad180bc4ae3d5b22a05b",
+      "bytes": 14843
+    },
+    {
+      "path": "artifacts/validation_equity.csv",
+      "sha256": "b2b97dbfef24361f633d089ded0b40a808b4e0060bb334ddaa3ec94e9a275d88",
+      "bytes": 6283
+    }
+  ]
+}

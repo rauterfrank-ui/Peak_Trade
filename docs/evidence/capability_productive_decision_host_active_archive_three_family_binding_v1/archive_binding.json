@@ -1,0 +1,9 @@
+{
+  "archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "canonical_decision_sibling_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/canonical_trading_decision_evidence.v1.json",
+  "double_play_sibling_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/double_play_dashboard_display.v1.json",
+  "dynamic_scope_sibling_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/dynamic_scope_state_v1.json",
+  "readmodels_dir": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels",
+  "resolution_precedence": "explicit_injection",
+  "writable": true
+}

@@ -1,0 +1,57 @@
+# Gesamtüberblick: offene Bestände, Historie und deklarierte Übergaben
+
+## Fortsetzung in der Breite
+
+Die bisherigen 799 unzugeordneten src-Module bleiben im Umfang. Sie sind jetzt als 238 physische Familien mit Beispielpfaden, Git-Blobs und Modulbeschreibungen navigierbar. Das macht den Restbestand sichtbar und prüfbar; es ist noch keine abgeschlossene fachliche Zuordnung.
+
+## Sichtbare Funktionskandidaten außerhalb der bisherigen Schwerpunkte
+
+- `src/meta/infostream` (6 bisher unzugeordnete Module): Modulbeschreibungen nennen TestHealth → IntelEvents → AI-Auswertung → Learning-Snippets. Tatsächliche Aufrufe, Modellanbindung und heutige Verwendung noch offen.
+- `src/ops/section_11_13_5_live_canary_minimum_exposure_v1` (55 bisher unzugeordnete Module): Großer Bestand an Pretrade-, Account-, Modus- und Beobachtungsverträgen. Der Paketname belegt keinen laufenden Canary.
+- `src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1` (20 bisher unzugeordnete Module): Beschriebene Offline-Komposition von Assembler, Boundary und Recording; keine daraus abgeleitete externe Wirkung.
+- `src/ops/full_decision_path_atomic_restart_closure_v1` (10 bisher unzugeordnete Module): Beschriebene Koordination von Restart-/Zustandsverträgen bei getrennten Ownern. Atomizität und tatsächliche Restore-Wirkung nicht geprüft.
+- `src/ops/canonical_r12_eg_i44_fund_dedicated_funding_accounting_v1` (8 bisher unzugeordnete Module): Beschriebener struktureller Funding-Accounting-Vertrag und forensischer Overlay; keine numerische Vollständigkeit oder Aktivierung daraus abgeleitet.
+- `src/ops/economic_md_input_producer_v1` (8 bisher unzugeordnete Module): Beschriebene persistierte Multi-Instrument-Economic-MD-Snapshots. Herkunft, Zeitbezug und tatsächliche Ranking-/Auswahl-Consumer offen.
+- `src/ops/top20_opportunity_evaluation_residency_v1` (10 bisher unzugeordnete Module): Beschriebene Evaluations-/Scheduling- und Membership-Verträge; Auswahl-, Residency- und Host-Wirkung getrennt offen.
+- `src/ops/exit_policy_producer_binding_v1` (10 bisher unzugeordnete Module): Exit-Policy-Producer und Autoritätsmatrix werden beschrieben. Kein pauschaler Nachweis ausgeführter Exits.
+
+## Historische Gegenstücke ohne vorweggenommenes Urteil
+
+Der bisherige historische Codekatalog enthält 461 am Vergleichspin fehlende src-Pfade: 405 Python-Dateien und 56 andere Dateien, darunter generierte Bestände. Sie sind in 186 historische Pfadfamilien gegliedert. Das sind Dateien, keine gezählten verlorenen Fähigkeiten. Alle 461 Pfad-Abwesenheiten wurden gegen das aktuelle Git-Inventar am Pin abgeglichen. Die Verfügbarkeit und historischen Hashprüfungen stammen aus dem vorherigen Quellenaudit.
+
+Bei 13 historischen Pfaden gibt es bytegleiche Inhalte an anderen versionierten Pfaden. Leere Initialisierungsdateien und Kopien können dazugehören. Das belegt technische Gleichheit, nicht automatisch Ersatz, Migration oder erhaltene Gesamtsemantik.
+
+Jeder historische Datensatz hält vier Bewertungen ausdrücklich offen: fachlicher Nutzen, systemweite Folgen eines Verzichts, Erhalt der Grundidee/Semantik und Gleichwertigkeit eines Ersatzes. Commit-Beschreibungen wie retire oder obsolete bleiben datierte Autorenangaben, keine von dieser Untersuchung übernommene Bewertung.
+
+Häufige historische Gruppen betreffen Oberflächen/Readmodels, Paper-/Shadow-Orchestrierung, lokale Launcher, Testnet-Verträge, Selektoren, Datenpfade und Kill-Switch-Trigger. Bei diesen Gruppen kann die Oberfläche entfallen sein, während ein Datenvertrag oder fachlicher Zweck weiterhin wichtig ist. Welche Fälle das tatsächlich sind, ist noch nicht pauschal bewiesen.
+
+## Deklarierte Verbindungen über Konfiguration und Artefakte
+
+789 versionierte JSON-/TOML-Dateien unter config, schemas, runtime und policy_packs wurden technisch gelesen. 787 sind mit striktem Parser lesbar. 2 JSON-Dateien haben im Parser Syntaxfehler; die Originale wurden nicht verändert. Ein konkreter Runtime-Ausfall wird daraus nicht abgeleitet.
+
+Es wurden 10738 deklarierte Referenzvorkommen mit JSON-Pointer/TOML-Schlüsselpfad erfasst; 5117 unterschiedliche Referenztexte. Die Auflösung gegen den Pin unterscheidet versionierte Pfade, bekannte Modulpräfixe, Muster und nicht versionierte Pfade. Das sind Quellenaussagen, keine ausgeführten Übergaben.
+
+1244 Referenzvorkommen zeigen nicht auf eine Datei im versionierten Bestand. Darunter können erwartete generierte Evidence, ignorierte Runtime-Dateien, externe Eingaben oder veraltete Verweise sein. Keine pauschale Kennzeichnung als kaputt oder verloren. YAML, berechnete Pfade, Konfigurationsschlüssel ohne Pfadtext und tatsächliche Consumer sind nicht vollständig abgedeckt.
+
+Die zwei strikten JSON-Parsefehler stehen mit Commit/Blob und Parsermeldung in config-artifact-source-inventory.json. In den gelesenen Fehlerfenstern sind nachgestellte Kommata sichtbar. Ob ein tatsächlicher Consumer tolerante Syntax akzeptiert oder diese Datei überhaupt lädt, ist hier offen.
+
+## Wie die Übersicht weiter vervollständigt wird
+
+Zuerst die Originalzwecke und Betriebs-/Datenrollen der offenen Familien zuordnen. Danach pro historischem Gegenstück festhalten, welcher Vertrag erhalten, ersetzt oder bewusst geändert wurde. Deklarierte Referenzen erst bei belegter Lade-/Schreib-/Consumer-Wirkung als wirksame Verbindung übernehmen. Für jedes negative Nutzenurteil die mittelbaren Systemfolgen und möglichen Ersatzwege dokumentieren. Die aktuelle Architektur bleibt prüfbarer Ist-Stand, nicht automatisch Endziel.
+
+## Dateien
+
+- `breadth-continuation.json`: alle Familien, Quellenbeispiele und getrennte Bewertungsachsen.
+- `historical-paths-with-open-assessments.jsonl`: 461 historische Pfade mit aktuellen Gleichheitskandidaten und offenen Nutzen-/Folgenbewertungen.
+- `declared-config-artifact-links.jsonl`: deklarierte Verweise samt Ursprung und Auflösungsstatus.
+- `config-artifact-source-inventory.json`: technische Lesbarkeit und Hashes der ausgewählten Quellen.
+- `declared-link-summary.json`: Grenzen und Zählungen der Verweissuche.
+
+Keine neue Tiefenrekonstruktion einzelner Handelslogik, keine Bewertung historischer Teile als pauschal sinnlos und keine Wiederherstellung/Aktivierung durchgeführt.
+
+
+## Konkretes Beispiel: alter Oberflächenpfad, erhaltene Inhalte
+
+Acht nicht leere Dateien aus `src/webui/workflow_dashboard_readmodel_v1/` haben bytegleiche Git-Blobs unter `src/ops/workflow_archive_readmodel_projections_v1/`. Dazu gehören unter anderem Typen, Builder, Upstream-Adapter und Selection-Producer. Die einzelnen Blob-/Pfadpaare stehen in same-content-observations.json.
+
+Damit ist für diese Dateien die Pfadentfernung von der Inhaltsverfügbarkeit unterscheidbar. Nicht nachgewiesen sind damit ihre tatsächliche Verwendung, korrekte Import-/Consumer-Anbindung, unveränderte Zuständigkeit oder der Erhalt der gesamten ursprünglichen Semantik. Eine pauschale Bewertung als verlorene Funktion oder als vollständig gleichwertig ersetzt wäre jeweils zu weitgehend.

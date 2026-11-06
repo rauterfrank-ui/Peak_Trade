@@ -1,0 +1,28 @@
+{
+  "activation_authorized": false,
+  "context": {
+    "scenario": "high_vol_no_trade",
+    "source": "fixture",
+    "stage": "research"
+  },
+  "decision": "NO_TRADE",
+  "features": {
+    "trend_7d": {
+      "BTC/USDT": 0.05,
+      "ETH/USDT": -0.02
+    },
+    "volatility_14d": {
+      "BTC/USDT": 0.92,
+      "ETH/USDT": 0.95
+    }
+  },
+  "live_authorized": false,
+  "reason": "Synthetic high-volatility no-trade runtime-spec contract fixture.",
+  "regime": "VOL_EXTREME",
+  "schema_version": "p4c.capsule.v0",
+  "scenario": "high_vol_no_trade",
+  "testnet_authorized": false,
+  "trade_allowed": false,
+  "universe": ["BTC/USDT", "ETH/USDT"],
+  "volatility_regime": "VOL_EXTREME"
+}

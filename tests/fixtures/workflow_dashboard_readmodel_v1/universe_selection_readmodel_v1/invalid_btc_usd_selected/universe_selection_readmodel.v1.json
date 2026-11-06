@@ -1,0 +1,34 @@
+{
+  "schema_name": "universe_selection_readmodel.v1",
+  "schema_version": 1,
+  "generated_at": "2026-06-08T12:00:00Z",
+  "source_run_id": "fixture_invalid_btc_usd_v1",
+  "source_stage": "paper",
+  "non_authorizing": true,
+  "fixture_marked": true,
+  "universe": [],
+  "ranking": [],
+  "selected_future": {
+    "row_id": "s-btc",
+    "symbol": "BTC/USD",
+    "rank": 1,
+    "truth_status": "PERSISTED",
+    "source_kind": "market_surface_dummy",
+    "notes": "invalid — must be rejected by schema"
+  },
+  "market_snapshot": {
+    "truth_status": "NOT_PERSISTED",
+    "source_kind": "NOT_PERSISTED"
+  },
+  "evidence": {
+    "producer_contract": "universe_selection_producer.v1",
+    "links": []
+  },
+  "missing_truth": {
+    "universe": "UNIVERSE_SOURCE_NOT_PERSISTED",
+    "ranking": "TOP20_RANKING_NOT_PERSISTED",
+    "selected_future": "PERSISTED",
+    "future_detail": "NOT_AVAILABLE",
+    "orders_fills_pnl": "NOT_PERSISTED"
+  }
+}

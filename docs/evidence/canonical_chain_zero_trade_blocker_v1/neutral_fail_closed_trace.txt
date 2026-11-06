@@ -1,0 +1,6 @@
+BOUNDARY neutral/flat
+  resolve_cycle = None
+  unbound_path = (3500.0, 3500.0)
+  decision_outcome = observe
+  canonical_order_intent = None
+  FAIL_CLOSED=true (no ENTER_*)

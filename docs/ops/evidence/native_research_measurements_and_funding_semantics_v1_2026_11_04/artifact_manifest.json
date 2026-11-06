@@ -1,0 +1,40 @@
+{
+  "files": [
+    {
+      "path": "artifacts/bars.csv",
+      "sha256": "54b86e631ee74cdf7037566d9cdc62a0fab3acc2339ccb04eeba3564890ee0bd"
+    },
+    {
+      "path": "artifacts/cfg.canonical.json",
+      "sha256": "b3e963573708c90474eaa3ca4184a564885d281f85ecf89acd2c006737fb4f87"
+    },
+    {
+      "path": "artifacts/execution.json",
+      "sha256": "e164df6cd29271df1a1f2d738b912f65c28b4965aadbb6220fb51ee9e804f1e9"
+    },
+    {
+      "path": "artifacts/funding_binding_effect_probe.json",
+      "sha256": "835284fe79ee113cccd3f0076b4c623f38a49933d4b16a019263acc9fa42f963"
+    },
+    {
+      "path": "artifacts/gvef_reference.json",
+      "sha256": "76cd3115fea5db5f1094b84d454990c2cfd1ced14d940afffb1161aae3579cd5"
+    },
+    {
+      "path": "artifacts/later_meta.json",
+      "sha256": "8612ede0753d59adc89c0d8aea6f693d7cf5bfabb7d3afe332463fab3d26a2d0"
+    },
+    {
+      "path": "artifacts/later_meta_after_reference_reload.json",
+      "sha256": "8612ede0753d59adc89c0d8aea6f693d7cf5bfabb7d3afe332463fab3d26a2d0"
+    },
+    {
+      "path": "artifacts/measured_execution.canonical.json",
+      "sha256": "dcaddcc60ba269b7268ee81e8aabb1479c1439af644df5561ea32dc0c8e778fa"
+    },
+    {
+      "path": "artifacts/measurement_receipt.json",
+      "sha256": "f5c7349cf8150d4d5af4afefb2df438c9ffa3ee89d6a049c14800cfa004d2441"
+    }
+  ]
+}

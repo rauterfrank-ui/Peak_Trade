@@ -1,0 +1,239 @@
+{
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "EXTERNAL_FORENSIC_WORKING_AUTHORITY": "NONE",
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "SECOND_SSOT": false,
+  "SEMANTIC_AUTHORITY": false,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "PERSISTENCE_IS_NOT_ADJUDICATION": true,
+  "PERSISTENCE_IS_NOT_CANONIZATION": true,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_CANONICAL_SSOT": true,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_DOMAIN_RELATION_INVENTED": false,
+  "NEW_RELATION_TYPE_CREATED": false,
+  "READJUDICATION_PERFORMED": false,
+  "SOURCE_IDENTITY_COLLAPSED": false,
+  "HISTORICAL_REWRITE_COUNT": 0,
+  "HISTORICAL_OBSERVATION_REWRITE_COUNT": 0,
+  "OPTION_C_REOPENED": false,
+  "OPTION_A_SELECTED": false,
+  "OPTION_B_SELECTED": false,
+  "R4_EXECUTED": false,
+  "R5_EXECUTED": false,
+  "SW_R_002_ONTOLOGY_CREATED": false,
+  "RISK007_REOPENED": false,
+  "COPY_OF_EXTERNAL_CORPUS_PERFORMED": false,
+  "EXTERNAL_FORENSIC_MUTATION_PERFORMED": false,
+  "NETWORK_GET_PERFORMED": false,
+  "LIVE_ACTION_PERFORMED": false,
+  "CANONICAL_MUTATION_PERFORMED": false,
+  "OWNER_GO": "PEAK_TRADE_EXISTING_EVIDENCE_FEDERATED_L0_L2_L4_RECONCILIATION_AND_BACKFILL_WORKPACKAGE_V1",
+  "observation_identity": "P6_EXISTING_EVIDENCE_FEDERATED_L0_L2_L4_RECONCILIATION_AND_BACKFILL_OBSERVATION_V1",
+  "observation_role": "ADDITIVE_RECONCILIATION_AND_MISSING_PROJECTION_BINDING_INVENTORY_ONLY",
+  "bound_origin_main_sha": "aba1e78a8ed260b53b8b0bca3233840ce12d7c57",
+  "FEDERATED_ENTRYPOINT_USED_AS_PRIMARY_DISCOVERY_PATH": true,
+  "BROAD_REDISCOVERY_PERFORMED": false,
+  "FEDERATED_ENTRYPOINT_INSUFFICIENT": false,
+  "MISSING_INFORMATION_TYPE": "",
+  "GLOBAL_SOURCE_UNIVERSE_EXHAUSTION_PROVEN": false,
+  "GLOBAL_PERSISTENCE_SCHEMA_COMPLETENESS_PROVEN": false,
+  "PERSISTENCE_SCHEMA_GAP_FOUND": false,
+  "PERSISTENCE_SCHEMA_GAP_SCOPE": "FEDERATED_INFORMATION_ARCHITECTURE_L0_L2_L4_V1",
+  "THIS_FILE_DOES_NOT_REWRITE_PRECEDING_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_PR6109": true,
+  "THIS_FILE_DOES_NOT_MUTATE_P6_5189_LEDGER": true,
+  "NARRATIVE_LABELS_NOT_PROMOTED": "MISSING_BINDING,MISSING_PROJECTION,ALREADY_REPRESENTED",
+  "count_semantics": {
+    "PRE_POST_PR6109_SYSTEM_FRONTIER_FILE_PERSISTENCE_ARTIFACT_COUNT": 52,
+    "PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT": 52,
+    "POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT": 53,
+    "COUNT_52_IS_POST_PR6109_SYSTEM_FRONTIER_NOT_COLLAPSED_ONTO_53": true,
+    "EVIDENCE_CLUSTER_COUNT_RECONCILED": 5,
+    "EVIDENCE_CLUSTER_COUNT_SEMANTIC": "A_canonical B_repo_persistence C_repo_raw_historical D_external_P5 E_navigation_indexing; not a universe census",
+    "EVIDENCE_ITEM_COUNT_RECONCILED": 22,
+    "EVIDENCE_ITEM_COUNT_SEMANTIC": "22 registered L2 information objects plus targeted already-known locators named below; not collapsed onto P5 file_count 44 or inventory observation count 33",
+    "ALREADY_FULLY_REPRESENTED_COUNT": 16,
+    "ALREADY_FULLY_REPRESENTED_COUNT_SEMANTIC": "L2 IOs that already had a dedicated L4 heading before this persist, plus P5 44-file inventory via A-PER-P5INV, plus P6_5189 observation chain via Base+ledger, plus Cap-2.1 alias chain; 16 here is not PROJECTED_SUBJECT_COUNT 16",
+    "MISSING_BINDING_FOUND_COUNT": 4,
+    "MISSING_PROJECTION_FOUND_COUNT": 6,
+    "MISSING_PERSISTENCE_REPRESENTATION_FOUND_COUNT": 0,
+    "BACKFILLED_BINDING_COUNT": 4,
+    "BACKFILLED_PROJECTION_COUNT": 6,
+    "BACKFILLED_PERSISTENCE_ITEM_COUNT": 1,
+    "GENUINELY_UNRESOLVED_COUNT": 3,
+    "PERSISTENCE_REPRESENTATION_GAP_COUNT": 0,
+    "P5_FILE_COUNT_44_NOT_COLLAPSED_ONTO_L2_ALIAS_COUNT": true,
+    "L4_DECLARED_PROJECTED_SUBJECT_COUNT_16_NOT_COLLAPSED": true
+  },
+  "clusters_reconciled": [
+    {
+      "CLUSTER_ID": "A_CANONICAL_AUTHORITY",
+      "SURFACES": ["SS-01", "A-CAN-MR", "A-CAP21-SPEC"],
+      "RESULT": "ALREADY_FULLY_REPRESENTED",
+      "BACKFILL": "NO-OP"
+    },
+    {
+      "CLUSTER_ID": "B_REPO_FORENSIC_PERSISTENCE",
+      "SURFACES": ["SS-03"],
+      "RESULT": "MISSING_BINDING",
+      "MISSING": "FEDERATED_ENTRYPOINT_MAINTENANCE_CONTRACT_V1.md had Base layout pointer and no L2 alias",
+      "BACKFILL": "A-PER-MAINT"
+    },
+    {
+      "CLUSTER_ID": "C_REPO_RAW_HISTORICAL_FORENSIC",
+      "SURFACES": ["SS-04", "SS-05", "SS-06", "SS-07", "SS-13"],
+      "RESULT": "MISSING_BINDING",
+      "MISSING": "SS-05 enumerated 4 markdown files; L2 aliased only A-FSS-NOTE and A-FSS-IMPL",
+      "BACKFILL": "A-FSS-DISP;A-FSS-ALIGN"
+    },
+    {
+      "CLUSTER_ID": "D_EXTERNAL_FORENSIC_WORKING_MATERIAL",
+      "SURFACES": ["SS-08", "SS-09", "A-PER-P5INV"],
+      "RESULT": "PARTIAL_ALREADY_REPRESENTED_PLUS_MISSING_BINDING",
+      "ALREADY_REPRESENTED": "44-file P5 inventory; A-EXT-WR; A-EXT-WR-SNAP; A-EXT-SIDECAR; A-EXT-T4; hashes re-verified identical",
+      "MISSING": "P5 SW_R_002 preservation locator existed as SHA note and FB-NC-07 but lacked a stable L2 alias of its own source identity",
+      "BACKFILL": "A-EXT-SWR-PRES",
+      "NOT_DONE": "no per-file L2 alias for remaining P5-only tools/derived blobs; L1 inventory remains owner"
+    },
+    {
+      "CLUSTER_ID": "E_NAVIGATION_INDEXING",
+      "SURFACES": ["SS-02", "L2", "L4"],
+      "RESULT": "MISSING_PROJECTION",
+      "MISSING": "L2 IOs IO-P2 IO-WR IO-R0R1R2 IO-R4 IO-R5 IO-XCORPUS lacked dedicated L4 SUBJECT_ID headings; TEST_2 already named IO-R4 and IO-R5",
+      "BACKFILL": "six dedicated L4 projections copied from existing L2 CURRENT_KNOWN_STATUS; not a re-adjudication"
+    }
+  ],
+  "backfilled_bindings": [
+    {
+      "ALIAS": "A-PER-MAINT",
+      "SOURCE_SURFACE_ID": "SS-03",
+      "LOCATOR": "docs/forensics/persistence/FEDERATED_ENTRYPOINT_MAINTENANCE_CONTRACT_V1.md",
+      "CLASS": "MISSING_BINDING",
+      "NEW_DOMAIN_SEMANTIC_REQUIRED": false
+    },
+    {
+      "ALIAS": "A-FSS-DISP",
+      "SOURCE_SURFACE_ID": "SS-05",
+      "LOCATOR": "docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_LAYER_V1.md",
+      "CLASS": "MISSING_BINDING",
+      "STATUS_PRESERVED": "DOCUMENT_AUTHORITY=NONE; SEMANTIC_BINDING_PERFORMED=false; SW_R_002_STATUS=OPEN not collapsed onto OPEN_NO_TYPE_ONTOLOGY"
+    },
+    {
+      "ALIAS": "A-FSS-ALIGN",
+      "SOURCE_SURFACE_ID": "SS-05",
+      "LOCATOR": "docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md",
+      "CLASS": "MISSING_BINDING",
+      "STATUS_PRESERVED": "OCCURRENCE_BINDING_PROVEN_COUNT=0; PROVEN_PARENTAGE_COUNT=0; a candidate is never proven"
+    },
+    {
+      "ALIAS": "A-EXT-SWR-PRES",
+      "SOURCE_SURFACE_ID": "SS-08",
+      "LOCATOR": "/Users/frnkhrz/Documents/Peak_Trade/forensics/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+      "SHA256": "f26f6ec751b35fe95da1414fd2e7ed78ad419efd707d540210e899e6dfe39b3f",
+      "CLASS": "MISSING_BINDING",
+      "SOURCE_IDENTITY_COLLAPSED": false,
+      "BYTE_IDENTICAL_TO": "A-SWR-PRES",
+      "BOTH_LOCATORS_KEPT": true
+    }
+  ],
+  "backfilled_projections": [
+    "IO-P2",
+    "IO-WR",
+    "IO-R0R1R2",
+    "IO-R4",
+    "IO-R5",
+    "IO-XCORPUS"
+  ],
+  "targeted_hash_reverification": {
+    "TARGETED_EXTERNAL_SOURCE_READ_COUNT": 4,
+    "READ_MODE": "existence_plus_sha256_plus_byte_count_only_no_body_copy",
+    "A-EXT-WR": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+    "A-EXT-SWR-PRES": "f26f6ec751b35fe95da1414fd2e7ed78ad419efd707d540210e899e6dfe39b3f",
+    "A-EXT-SIDECAR": "6f2928e67d45de2162df1589de77ea530061652181ba6efd9a0f528ca7e6ad6e",
+    "A-EXT-T4": "872e1e22fc3e46d8eb3b2975183ca6ce20d1c31fae9992ffd7b863b30db39113",
+    "HASH_MATCH_VS_P5_INVENTORY_AND_L2": true
+  },
+  "already_represented_no_op": [
+    "A-CAN-MR",
+    "A-NAV-MOT",
+    "Cap-2.1 alias chain CENSUS through A-OBS-PR6109",
+    "P1 inventory via A-PER-P1INV",
+    "P5 44 records via A-PER-P5INV without per-file L2 aliases",
+    "P6_5189 observation JSON chain via Persistence Base layout plus A-PER-LEDGER",
+    "IO-CAN-NEXT through IO-P6GRAPH except the six missing L4 headings",
+    "SS-10 P2 unresolved preserved"
+  ],
+  "genuinely_unresolved_preserved": [
+    {
+      "ID": "IO-P2",
+      "STATUS": "NOT_UNIQUELY_RESOLVED",
+      "NOT_CONVERTED_TO_EMPTY": true
+    },
+    {
+      "ID": "IO-WR.EXTRA_3121_LINE_DELTA_MEANING_UNKNOWN",
+      "STATUS": "UNKNOWN",
+      "NOT_PROMOTED": true
+    },
+    {
+      "ID": "IO-P6GRAPH.FRONTIER_SLICE_6_LEFT_UNRESOLVED",
+      "STATUS": "UNPROVEN",
+      "NOT_REOPENED_AS_FALSE": true
+    }
+  ],
+  "explicit_non_meanings": {
+    "GLOBAL_SOURCE_UNIVERSE_EXHAUSTION_PROVEN": false,
+    "GLOBAL_PERSISTENCE_SCHEMA_COMPLETENESS_PROVEN": false,
+    "P5_44_FILES_EACH_NOW_HAVE_L2_ALIASES": false,
+    "R3_PROMOTED_FROM_DESIGNED_ONLY": false,
+    "R4_OR_R5_EXECUTED": false,
+    "SW_R_002_OPEN_COLLAPSED_ONTO_OPEN_NO_TYPE_ONTOLOGY": false,
+    "live_GFU_census_promoted_to_23rd_information_object": false,
+    "THIS_FILE_IS_GAP_CLOSURE": false
+  },
+  "maintenance_contract": {
+    "SUBJECT_IMPACT_CHECK": "PERFORMED",
+    "IMPACTED_INFORMATION_OBJECT_IDS": [
+      "IO-P2",
+      "IO-WR",
+      "IO-R0R1R2",
+      "IO-R4",
+      "IO-R5",
+      "IO-XCORPUS",
+      "IO-FSS",
+      "IO-SWR002"
+    ],
+    "SUBJECT_SUPPLEMENTED": true,
+    "SUBJECT_SUPERSEDED": false,
+    "SUBJECT_NEWLY_ADJUDICATED": false,
+    "SUBJECT_NEW_EVIDENCE_ADDED": false,
+    "SUBJECT_RESIDUAL_STATUS_CHANGED": false,
+    "SUBJECT_OWNER_DECISION_STATUS_CHANGED": false,
+    "SUBJECT_NEW_ARTIFACT_LOCATOR_INTRODUCED": true,
+    "L0_UPDATE_REQUIRED": false,
+    "L2_UPDATE_REQUIRED": true,
+    "L4_UPDATE_REQUIRED": true,
+    "FEDERATED_ENTRYPOINT_UPDATE_NOT_REQUIRED": false,
+    "L0_NO_CHANGE_REASON": "no new source surface; SS-05 still the same four markdown files; A-EXT-SWR-PRES is SS-08 already registered",
+    "HISTORICAL_OBSERVATION_REWRITE_COUNT": 0
+  },
+  "adversarial_review": {
+    "HISTORICAL_EVIDENCE_MADE_CURRENT": false,
+    "RAW_EVIDENCE_ADJUDICATED": false,
+    "ADJUDICATED_EVIDENCE_OVERWRITTEN_BY_RAW": false,
+    "UNRESOLVED_MARKED_RESOLVED": false,
+    "SOURCE_IDENTITIES_COLLAPSED": false,
+    "LOCATOR_TREATED_AS_SOURCE_IDENTITY": false,
+    "SEMANTIC_CLASS_CHANGED": false,
+    "NEW_DOMAIN_RELATION_INVENTED": false,
+    "EXISTING_RELATION_STRENGTHENED_BEYOND_EVIDENCE": false,
+    "AUTHORITY_SUGGESTED": false,
+    "COUNT_SEMANTICS_COLLAPSED": false,
+    "MISSING_ENTRY_INFERRED_AS_NEGATIVE_FACT": false,
+    "SW_R_002_OPEN_EQUATED_TO_OPEN_NO_TYPE_ONTOLOGY": false
+  }
+}

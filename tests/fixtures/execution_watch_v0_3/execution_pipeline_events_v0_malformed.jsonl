@@ -1,0 +1,3 @@
+{"schema":"execution_event_v0","run_id":"run_badline","correlation_id":"c_bad","ts":"2026-01-01T00:00:00Z","event_type":"filled","order_id":"o1","idempotency_key":"k1","payload":{"n":1}}
+{"schema":
+{"schema":"execution_event_v0","run_id":"run_badline","correlation_id":"c_bad","ts":"2026-01-01T00:00:01Z","event_type":"filled","order_id":"o2","idempotency_key":"k2","payload":{"n":2}}

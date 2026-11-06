@@ -1,0 +1,390 @@
+# Peak_Trade — AVAILABLE_MARGIN Forensic Binding Implementation and Closure v1
+
+status: ACTIVE
+last_updated: 2026-08-30
+owner: Peak_Trade
+purpose: Bind Peak_Trade AVAILABLE_MARGIN to currency-scoped cross-margin free margin from the authenticated account-balance GET field details.availEq for ccy=USDC, wire the productive consumer, and persist one current production forensic observation. Not a second SSOT. Not restoration reopen. Not live or trading authority. Not INSTRUMENT_STATE or ACCOUNT_MODE closure. Not MAX_AVAILABLE. Not max-avail-size. Not availBal. Not account-level availEq. Not USD=USDC. Empty details are not zero. Not a TTL. Not an operative cache.
+docs_token: DOCS_TOKEN_PEAK_TRADE_AVAILABLE_MARGIN_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1
+
+```text
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+AUTHORITY_RELATION=SUBORDINATE_TO_MASTER_RUNBOOK_SECTION_5_3
+CANONICAL_AUTHORITY=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PARENT_CONTRACT=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1.md
+PRIOR_MARGIN_MODE_FORENSIC_BINDING=docs/ops/specs/PEAK_TRADE_MARGIN_MODE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md
+PRIOR_POS_MODE_FORENSIC_BINDING=docs/ops/specs/PEAK_TRADE_POS_MODE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md
+PRIOR_LEVERAGE_FORENSIC_BINDING=docs/ops/specs/PEAK_TRADE_LEVERAGE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md
+PRIOR_MAX_AVAILABLE_OWNER_POLICY=docs/ops/specs/PEAK_TRADE_MAX_AVAILABLE_OWNER_POLICY_ADJUDICATION_AND_CLOSURE_V1.md
+PRIOR_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md
+EVIDENCE_PACK=evidence/ops/available_margin_forensic_binding_implementation_and_closure_v1/20260830T004150Z
+PARALLEL_SSOT_CREATED=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CORE_RUNTIME_MUTATION=false
+CANARY_VENUE_CONSTRAINT_PLAN_RUNTIME_MUTATION=true
+NEW_SEMANTIC_POLICY=true
+NEW_RUNTIME_OWNER=false
+NEW_STAGE=false
+NEW_VENUE_PRETRADE_COMPONENT_REQUIRED=false
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+ORDERS_AUTHORIZED=false
+NO_TRADING=true
+NO_LIVE_AUTHORITY=true
+NO_EXECUTION_AUTHORITY=true
+CHANGED_RUNTIME_FILES=available_margin_observation_v1.py,available_margin_consumer_v1.py,order_plan_v1.py,submit_transport_v1.py,constants_v1.py
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+NETWORK_GET_AUTHORIZED=true
+NETWORK_GET_PERFORMED=true
+NETWORK_VENUE_GET_PERFORMED=true
+NETWORK_AUTHENTICATED_GET_PERFORMED=true
+NETWORK_POST_AUTHORIZED=false
+NETWORK_POST_PERFORMED=false
+TRADING_PERFORMED=false
+ACCOUNT_MODE_MUTATION_PERFORMED=false
+AUTH_REQUIRED=true
+AUTH_HEADER_SENT=true
+```
+
+This document is subordinate to the Master Runbook. Peak_Trade
+Required Edge `AVAILABLE_MARGIN` is `ACCOUNT_AVAILABLE_MARGIN` with
+role `MARGIN_SUFFICIENCY_BEFORE_POST`. It is not a global account
+scalar. First-Party OKX free margin for cross futures is
+`details[].availEq`. Account-level `availEq` is a different
+USD-denominated account-equity field applicable to Multi-currency /
+Portfolio. `availBal` is available balance, not cross-futures free
+margin. `GET &#47;api&#47;v5&#47;account&#47;max-avail-size` is
+instrument-scoped available balance/equity for order size and is not
+this edge. Bound `MAX_AVAILABLE` remains
+`GET &#47;api&#47;v5&#47;account&#47;max-size` `maxBuy`/`maxSell`
+`VENUE_CONTRACT_COUNT`.
+
+## 1) Epistemic class separation
+
+```text
+CANONICAL_AUTHORITY=MASTER_RUNBOOK_PLUS_THIS_SUBORDINATE_PERSIST
+RAW_OBSERVATION=EVIDENCE_PACK_THIS_SLICE
+VALIDATED_FACTS=THIS_DOCUMENT_SECTION_4
+ADJUDICATED_CONSUMER_CONTRACT=THIS_DOCUMENT_SECTION_5
+HISTORICAL_INTERMEDIATE=SECTION_11_13_4_DRY_RUN_AVAILEQ_AVAILBAL_CASHBAL_FALLBACK_NOT_AUTHORITY
+NAVIGATION_ONLY=MAP_OF_TRUTH
+HYPOTHESIS=NONE_USED_AS_CONCLUSION
+OPEN=INSTRUMENT_STATE_AND_ACCOUNT_MODE
+CONFLICTED=NONE
+ACCOUNT_AVAIL_EQ_ROLE=CONTEXTUAL_USD_DENOMINATED_ACCOUNT_AVAILABLE_EQUITY
+ACCOUNT_AVAIL_BAL_ROLE=NOT_CROSS_FUTURES_FREE_MARGIN
+DETAILS_AVAIL_EQ_ROLE=CROSS_MARGIN_FREE_MARGIN_CURRENCY_SCOPED
+DETAILS_AVAIL_BAL_ROLE=AVAILABLE_BALANCE_NOT_THIS_EDGE
+MAX_AVAILABLE_ROLE=VENUE_ACCOUNT_MAXIMUM_ORDER_QUANTITY_NOT_THIS_EDGE
+MAX_AVAIL_SIZE_ROLE=NOT_THIS_EDGE
+```
+
+Do not silently normalize:
+
+- `availEq` into `availBal`
+- account-level `availEq` into `details[].availEq`
+- `USD` into `USDC`
+- `USDC` into `USD`
+- `maxBuy`/`maxSell` into available margin
+- empty details into `0`
+
+## 2) Owner-GO and current instrument
+
+```text
+OWNER_GO_THIS_SLICE=PEAK_TRADE_AVAILABLE_MARGIN_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1
+BOUND_ORIGIN_MAIN_SHA=bb63f3ba07e7d441d7c92f387e195298a5181a2b
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+CURRENT_REST_HOST=eea.okx.com
+CURRENT_INST_TYPE=FUTURES
+CURRENT_INST_FAMILY=SUI-USD_UM_XPERP
+CURRENT_RULE_TYPE=xperp
+CANARY_ENTRY_ORDER_TYPE=LIMIT
+CANARY_ENTRY_SIDE=BUY
+SETTLEMENT_ACCOUNT_TRUTH=USDC
+PUBLIC_SETTLE_NOTE=USD_PUBLIC_VS_USDC_ACCOUNT_TRUTH
+INSTRUMENT_SETTLE_CCY=USD
+INST_FAMILY_PARSED_FROM_INSTID=false
+```
+
+The balance GET is unfiltered. Query grammar is none. Consumer
+applicability is the current SUI pretrade path. Other-currency detail
+rows are contextual and are not this edge's authority. `ccy=USDC` is
+selected from `details[]` after the GET. It is not a request-filter
+and is not a USD rewrite.
+
+## 3) Current operative binding
+
+```text
+AVAILABLE_MARGIN_CANONICAL_DEFINITION=CURRENCY_SCOPED_CROSS_MARGIN_FREE_MARGIN_DETAILS_AVAILEQ
+AVAILABLE_MARGIN_REQUIRED_EDGE_SEMANTICS=ACCOUNT_AVAILABLE_MARGIN
+AVAILABLE_MARGIN_EDGE_ROLE=MARGIN_SUFFICIENCY_BEFORE_POST
+AVAILABLE_MARGIN_BINDING_SCOPE=CURRENCY_SCOPED_SETTLEMENT_ACCOUNT_TRUTH
+AVAILABLE_MARGIN_SCOPE=CURRENCY_SCOPED_SETTLEMENT_ACCOUNT_TRUTH
+AVAILABLE_MARGIN_ENDPOINT=/api/v5/account/balance
+AVAILABLE_MARGIN_SOURCE_ENDPOINT=/api/v5/account/balance
+AVAILABLE_MARGIN_REQUEST_GRAMMAR=NONE
+AVAILABLE_MARGIN_RESPONSE_FIELD=details.availEq
+AVAILABLE_MARGIN_RAW_FIELD=details.availEq
+AVAILABLE_MARGIN_ACCOUNT_LEVEL_FIELD=availEq
+AVAILABLE_MARGIN_REQUIRED_CCY=USDC
+AVAILABLE_MARGIN_CURRENCY=USDC
+AVAILABLE_MARGIN_INSTRUMENT_SETTLE_CCY=USD
+AVAILABLE_MARGIN_UNIT=CURRENCY_NATIVE
+AVAILABLE_MARGIN_OUTPUT_DOMAIN=CURRENCY_SCOPED_AVAILABLE_EQUITY
+AVAILABLE_MARGIN_COMPARISON_DOMAIN=CURRENCY_SCOPED_AVAILABLE_EQUITY
+AVAILABLE_MARGIN_VENUE_SCOPE=CURRENCY_SCOPED_SETTLEMENT_ACCOUNT_TRUTH
+AVAILABLE_MARGIN_CONSUMER_SCOPE=CURRENT_SUI_PRETRADE_CONSUMER
+AVAILABLE_MARGIN_REQUIRED_ORDER_TD_MODE=cross
+AVAILABLE_MARGIN_TD_MODE=cross
+EXECUTION_TD_MODE=cross
+MAX_AVAILABLE_TD_MODE=cross
+AVAILABLE_MARGIN_EXECUTION_TD_MODE_CONSISTENT=true
+AVAILABLE_MARGIN_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+AVAILABLE_MARGIN_TS_AGE_BOUND=UNBOUND
+AVAILABLE_MARGIN_VENUE_U_TIME_FIELD=uTime
+AVAILABLE_MARGIN_AUTH_CLASS=AUTHENTICATED_PRIVATE_GET
+AVAILABLE_MARGIN_FIRST_PARTY_SEMANTICS_CONFIRMED=true
+AVAILABLE_MARGIN_NORMALIZATION_STATUS=NONE
+EMPTY_DATA_IS_NOT_ZERO=true
+ABSENT_OR_NOT_RETURNED_IS_NOT_ZERO=true
+USD_USDC_EQUIVALENCE_ASSUMED=false
+MAX_SIZE_USED_AS_AVAILABLE_MARGIN_AUTHORITY=false
+POS_MODE_USED_AS_AVAILABLE_MARGIN_AUTHORITY=false
+MARGIN_MODE_USED_AS_NUMERIC_AVAILABLE_MARGIN_AUTHORITY=false
+LEVERAGE_USED_AS_AVAILABLE_MARGIN_AUTHORITY=false
+EMPTY_RESPONSE_USED_AS_ZERO_AUTHORITY=false
+ACCOUNT_MODE=UNPROVEN
+ACCOUNT_MODE_PROOF_STATUS=UNPROVEN
+ZERO_NORMALIZATION_PERFORMED=false
+FUTURES_SWAP_SEPARATION_PRESERVED=true
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+ACCOUNT_MODE_MUTATION_PERFORMED=false
+```
+
+Owner answers:
+
+- Q1_SOURCE=`GET &#47;api&#47;v5&#47;account&#47;balance` unfiltered; authority
+  field `details[ccy=USDC].availEq`
+- Q2_DOMAIN=`CURRENCY_SCOPED_AVAILABLE_EQUITY`; unit `CURRENCY_NATIVE`;
+  semantic class `CURRENCY_SCOPED_CROSS_MARGIN_FREE_MARGIN_DETAILS_AVAILEQ`
+- Q3_SCOPE=`CURRENCY_SCOPED_SETTLEMENT_ACCOUNT_TRUTH`; required `ccy=USDC`;
+  instrument `settleCcy=USD` remains a different token
+- Q4_FRESHNESS=`FRESH_GET_PER_PRETRADE_DECISION`; venue `uTime` is
+  persisted; no invented TTL; LEVERAGE/PRICE_BAND/POS_MODE/MARGIN_MODE
+  freshness is reused only as the same policy name
+- Q5_REQUEST_GRAMMAR=`NONE`; query string is fail-closed; no POST;
+  `tdMode` is not a balance-query parameter; execution `tdMode=cross`
+  is required of the consumer
+
+First-Party: title "Get balance". Account-level `availEq` is
+"Account level available equity" applicable to Multi-currency /
+Portfolio. `details[].availEq` is "Available equity of currency"
+applicable to Futures mode / Multi-currency / Portfolio. Help Center
+cross-margin "Free margin" maps to `availEq` in the details array.
+`GET &#47;api&#47;v5&#47;account&#47;max-avail-size` is "Get maximum
+available balance/equity" for isolated/SPOT vs cross order size and is
+not rebound as this edge.
+
+Do not equate:
+
+- details `availEq` `USDC`
+- details `availBal` `USDC`
+- account-level `availEq` (USD-denominated)
+- instrument `settleCcy` `USD`
+- Peak_Trade `SETTLEMENT_ACCOUNT_TRUTH=USDC`
+- `maxBuy` / `maxSell`
+- `availBuy` / `availSell`
+
+Bound MARGIN_MODE remains current-future execution `tdMode=cross`.
+AVAILABLE_MARGIN queries that need `tdMode` semantics use that same
+execution-scoped `cross` contract. The balance endpoint itself has no
+`tdMode` query. Consumer fail-closes unless planned `tdMode=cross`.
+
+Bound MAX_SIZE remains public instruments `maxLmtSz`. Bound
+MAX_AVAILABLE remains authenticated `account&#47;max-size`. Neither is
+AVAILABLE_MARGIN authority.
+
+## 4) Raw observation (this slice GET)
+
+Filled after the authorized authenticated READ-ONLY GET. The pack is
+forensic evidence for this Owner-GO. Later pretrade decisions must
+perform their own GET. The pack is not an operative cache.
+
+```text
+AVAILABLE_MARGIN_OBSERVATION_PERFORMED=true
+AVAILABLE_MARGIN_GET_PERFORMED=true
+AVAILABLE_MARGIN_OBSERVATION_AUTHENTICATED=true
+AVAILABLE_MARGIN_OBSERVATION_ENVIRONMENT=OKX_EEA_PRODUCTION
+AVAILABLE_MARGIN_GET_TIMESTAMP_UTC=2026-08-30T00:41:50.244294Z
+AVAILABLE_MARGIN_GET_REQUEST_TIMESTAMP_UTC=2026-08-30T00:41:49.995604Z
+AVAILABLE_MARGIN_GET_HTTP_STATUS=200
+AVAILABLE_MARGIN_GET_VENUE_CODE=0
+AVAILABLE_MARGIN_GET_VENUE_MSG=
+AVAILABLE_MARGIN_GET_AUTH_CLASS=AUTHENTICATED_PRIVATE_GET
+AVAILABLE_MARGIN_ENDPOINT_OBSERVED=/api/v5/account/balance
+AVAILABLE_MARGIN_RAW_FIELD=details.availEq
+AVAILABLE_MARGIN_RAW_VALUE=NOT_OBSERVED
+AVAILABLE_MARGIN_SEMANTIC_VALUE=NOT_OBSERVED
+AVAILABLE_MARGIN_CURRENCY=USDC
+AVAILABLE_MARGIN_UNIT=CURRENCY_NATIVE
+AVAILABLE_MARGIN_OBSERVATION_CLASS=SUCCESS_NOT_OBSERVED
+ACCOUNT_AVAIL_EQ_RAW=""
+SELECTED_AVAIL_BAL_RAW=NOT_OBSERVED
+DETAIL_ROW_COUNT=0
+OTHER_DETAIL_CCYS=
+VENUE_U_TIME_RAW=1788050510282
+RESPONSE_BODY_SHA256=99c899d8441b633b767acd44214d01da8e2c89644304e7eac4492fbc65c7a97a
+PRETRADE_DECISION_ID=available-margin-forensic-binding-sui-20260830
+SECRET_SOURCE_REFERENCE=secretref://vault/peak-trade/live-canary-minimum-exposure/okx
+CREDENTIAL_CLASS=LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY
+SECRET_MATERIAL_PERSISTED=false
+AUTH_REQUIRED=true
+AUTH_HEADER_SENT=true
+GET_REQUEST_COUNT_PUBLIC=0
+GET_REQUEST_COUNT_AUTHENTICATED=1
+POST_COUNT=0
+ZERO_NORMALIZATION_PERFORMED=false
+USD_USDC_EQUIVALENCE_ASSUMED=false
+MAX_SIZE_USED_AS_AVAILABLE_MARGIN_AUTHORITY=false
+POS_MODE_USED_AS_AVAILABLE_MARGIN_AUTHORITY=false
+MARGIN_MODE_USED_AS_NUMERIC_AVAILABLE_MARGIN_AUTHORITY=false
+LEVERAGE_USED_AS_AVAILABLE_MARGIN_AUTHORITY=false
+EMPTY_RESPONSE_USED_AS_ZERO_AUTHORITY=false
+HISTORICAL_AVAILABLE_MARGIN_REUSED=false
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+HISTORICAL_REUSE_PATH_EXISTS=false
+ACCOUNT_MODE=UNPROVEN
+```
+
+This GET returned one account row with `details=[]`, account-level
+`availEq=""`, `totalEq=0`, and `isoEq=0`. First-Party lists only
+non-zero currency balances in `details`. Empty details is
+`NOT_OBSERVED`, not zero. Account-level `availEq=""`, `totalEq`, and
+`isoEq` are not this edge. No USD row was present and none was rewritten
+to USDC. Consumer fail-closes on this observation. Parser/consumer
+verdict remains scoped to
+`CURRENCY_SCOPED_CROSS_MARGIN_FREE_MARGIN_DETAILS_AVAILEQ`. Missing
+USDC `details.availEq`, empty string, USD substitution, account-level
+`availEq` as authority, `availBal` as authority, query string,
+max-size / max-avail-size substitution, historical BTC reuse, empty-as-zero,
+and USD/USDC equivalence fail closed.
+
+## 5) Consumer contract
+
+```text
+AVAILABLE_MARGIN_CONSUMER_IDENTIFIED=apply_fresh_available_margin_pretrade_gate_v1@order_plan_v1.build_minimum_valid_canary_order_plan_v1@submit_transport_v1
+AVAILABLE_MARGIN_CONSUMER_BOUND=true
+AVAILABLE_MARGIN_FAIL_CLOSED_BOUND=true
+FAIL_CLOSED_ON_MISSING_FRESH_OBSERVATION=true
+AVAILABLE_MARGIN_BINDING_STATUS=PROVEN
+MARGIN_MODE_BINDING_STATUS=PROVEN
+POS_MODE_BINDING_STATUS=PROVEN
+LEVERAGE_BINDING_STATUS=PROVEN
+PRICE_BAND_BINDING_STATUS=PROVEN
+MAX_SIZE_BINDING_STATUS=PROVEN
+MAX_AVAILABLE_BINDING_STATUS=PROVEN
+ORDER_PLAN_TYPED_DOMAIN_PRESERVED=true
+AVAILABLE_MARGIN_EXECUTION_TD_MODE_CONSISTENT=true
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+```
+
+`submit_transport_v1` performs one unfiltered authenticated GET of
+`&#47;api&#47;v5&#47;account&#47;balance` after the MARGIN_MODE positions GET
+and before order-plan construction. Failure of this GET or of the typed
+domain gate prevents downstream POST. Missing GET defaults fail-closed.
+Persisted evidence is not reread as an operative cache.
+
+Required IM / COVER_USDC numeric comparison is not this slice. This edge
+binds the available-margin operand. Independent pre-trade safety kernel
+`margin_snapshot.available_margin` remains quarantined and is not this
+edge's productive consumer. Historical §11.13.4 dry-run
+`availEq|availBal|cashBal` fallback remains historical compatibility and
+is not rebound.
+
+Read-only consumer-contract check after scoped USDC `details.availEq`
+was proven. No additional distinct surface was implemented.
+
+- Order planning: new AVAILABLE_MARGIN gate after MARGIN_MODE.
+- max-size: public instruments `maxLmtSz`; not this edge.
+- max-avail: authenticated `account&#47;max-size` with `tdMode=cross`;
+  not this edge.
+- Flatten planning: remains execution `tdMode=cross`; flatten does not
+  consume this monetary operand in this slice.
+- Live / Testnet / Canary authorization remain false.
+
+## 6) Required edge reassessment
+
+| EDGE_ID | CURRENT_STATUS | Reason |
+|---|---|---|
+| MAX_SIZE | PROVEN | unchanged |
+| MAX_MKT_SZ | NOT_REQUIRED | LIMIT-only canary entry; MARKET max-size gate still bound |
+| MAX_AVAILABLE | PROVEN | unchanged; not rebound as AVAILABLE_MARGIN |
+| PRICE_BAND | PROVEN | unchanged |
+| LEVERAGE | PROVEN | unchanged; not AVAILABLE_MARGIN authority |
+| POS_MODE | PROVEN | unchanged; `posMode` is not AVAILABLE_MARGIN |
+| MARGIN_MODE | PROVEN | unchanged; execution `tdMode=cross` is required of this consumer |
+| AVAILABLE_MARGIN | PROVEN | Owner-adjudicated currency-scoped `details[ccy=USDC].availEq`; account-level `availEq` and `availBal` not authority; USD not USDC; empty details not zero; freshness `FRESH_GET_PER_PRETRADE_DECISION` |
+| INSTRUMENT_STATE | PARTIALLY_BOUND | unchanged |
+
+```text
+REQUIRED_METADATA_EDGE_COUNT=8
+BOUND_METADATA_EDGE_COUNT=7
+PARTIAL_METADATA_EDGE_COUNT=1
+PARTIAL_EDGE_IDS=INSTRUMENT_STATE
+UNBOUND_METADATA_EDGE_COUNT=0
+UNBOUND_EDGE_IDS=
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=INSTRUMENT_STATE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=INSTRUMENT_STATE
+AVAILABLE_MARGIN_BINDING_STATUS=PROVEN
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+ADJUDICATION_RESULT=PARTIAL
+NEXT_DISTINCT_SURFACE=INSTRUMENT_STATE
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+## 7) Negative contract
+
+```text
+ACCOUNT_AVAIL_EQ_IS_NOT_AUTHORITY=true
+AVAIL_BAL_IS_NOT_AUTHORITY=true
+MAX_AVAILABLE_IS_NOT_AVAILABLE_MARGIN=true
+MAX_SIZE_IS_NOT_AVAILABLE_MARGIN=true
+MAX_AVAIL_SIZE_IS_NOT_AVAILABLE_MARGIN=true
+USD_USDC_EQUIVALENCE_ASSUMED=false
+EMPTY_DETAILS_ARE_NOT_ZERO=true
+EMPTY_RESPONSE_USED_AS_ZERO_AUTHORITY=false
+QUERY_STRING_IS_FORBIDDEN=true
+CCY_QUERY_FILTER_IS_FORBIDDEN=true
+POLICY_BIND_IS_NOT_TTL=true
+PERSISTED_PACK_IS_NOT_OPERATIVE_CACHE=true
+TS_AGE_BOUND_NOT_INVENTED=true
+ACCOUNT_MODE_IS_NOT_AVAILABLE_MARGIN=true
+POS_MODE_IS_NOT_AVAILABLE_MARGIN=true
+MARGIN_MODE_IS_NOT_NUMERIC_AVAILABLE_MARGIN=true
+LEVERAGE_IS_NOT_AVAILABLE_MARGIN_AUTHORITY=true
+INDEPENDENT_SAFETY_KERNEL_FIXTURE_IS_NOT_THIS_EDGE=true
+SECTION_11_13_4_FALLBACK_CHAIN_IS_NOT_AUTHORITY=true
+COVER_USDC_NUMERIC_COMPARISON_IS_NOT_THIS_SLICE=true
+NETWORK_POST_PERFORMED=false
+TRADING_PERFORMED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+KRAKEN_IS_NOT_CURRENT_CANONICAL_VENUE=true
+FLATTEN_IS_NOT_ENTRY_VENUE_PRETRADE_OWNER=true
+SEE_ALSO_MARGIN_MODE=docs/ops/specs/PEAK_TRADE_MARGIN_MODE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md
+SEE_ALSO_MAX_AVAILABLE=docs/ops/specs/PEAK_TRADE_MAX_AVAILABLE_OWNER_POLICY_ADJUDICATION_AND_CLOSURE_V1.md
+SEE_ALSO_METADATA_BINDING=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md
+```

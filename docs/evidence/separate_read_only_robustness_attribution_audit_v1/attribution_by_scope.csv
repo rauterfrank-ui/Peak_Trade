@@ -1,0 +1,2 @@
+dynamic_scope,bars,trades,gross_pnl,net_pnl,switches,note
+DATA_GAP,NOT_AVAILABLE,NOT_AVAILABLE,NOT_AVAILABLE,NOT_AVAILABLE,NOT_AVAILABLE,Sealed reference exports lack per-bar Dynamic Scope / Switch fields; no new classifier invented.

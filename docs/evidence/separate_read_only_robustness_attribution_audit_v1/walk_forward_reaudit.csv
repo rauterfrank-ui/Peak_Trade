@@ -1,0 +1,4 @@
+fold,train_period,test_period,trade_count,net_return,profit_factor,sharpe,max_drawdown,long_trades,short_trades,verdict,inconclusive_reason
+train,2024-05-01T00:00:00Z..2024-07-01T11:00:00Z,2024-05-01T00:00:00Z..2024-07-01T11:00:00Z,445,0.001914123577051,1.0958700579433918,0.23470243806069074,-0.0199658122474606,69,376,DIAGNOSTIC_IN_SAMPLE,train_window_not_holdout
+validation,n/a_for_hold_folds;train_is_first_window,2024-07-01T12:00:00Z..2024-08-01T05:00:00Z,508,-0.0150095845500384,0.4906515160629606,-4.555365080041154,-0.0255519193397591,6,502,INCONCLUSIVE_FAILING_HOLD,negative_or_sub_unity_PF_on_hold_segment
+oos,n/a_for_hold_folds;train_is_first_window,2024-08-01T06:00:00Z..2024-09-01T00:00:00Z,139,0.0040121777993387,1.59255466537888,1.2284899819754838,-0.006970962545596,31,108,INCONCLUSIVE_UNSTABLE_SIGN,hold_positive_but_adjacent_fold_negative_sign_instability

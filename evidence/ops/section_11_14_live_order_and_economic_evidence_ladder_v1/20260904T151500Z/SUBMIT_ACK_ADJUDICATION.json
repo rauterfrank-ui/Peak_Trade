@@ -1,0 +1,21 @@
+{
+  "AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX": 1,
+  "CASE_ADJUDICATION": "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO",
+  "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO": true,
+  "CASE_B_OFFLINE_IMPLEMENTATION_GAP": false,
+  "CASE_C_CANONICAL_SEMANTIC_GAP": false,
+  "CASE_D_RUNTIME_OR_VENUE_PRECONDITION_GAP": false,
+  "CASE_E_CONTRADICTION_REQUIRES_STOP": false,
+  "HARD_STOP": true,
+  "LIVE_ORDER_PLAN_OBSERVED": true,
+  "LIVE_SUBMIT_ACK_OBSERVED": false,
+  "POST_PERFORMED": false,
+  "RETRY_DEFAULT": false,
+  "SECOND_SUBMIT_DEFAULT": false,
+  "schema_version": "section_11_14_submit_ack_forensic_adjudication.v1",
+  "why_case_a": "The \u00a711.14 ACK producer and synchronous proof criterion are bound. Single-submit and UNKNOWN_SUBMIT_NO_BLIND_RETRY remain in force. The standing field is false because this GO forbids POST. Next GO is an exact single live submit POST, not this GO.",
+  "why_not_case_b": "Single-submit locks already exist: DUPLICATE_ENTRY_SUBMIT_FORBIDDEN and UNKNOWN_SUBMIT_NO_BLIND_RETRY. Timeout cannot auto-POST. The producer is an offline classifier; live POST wiring is the next Owner-GO.",
+  "why_not_case_c": "HTTP 200, top-level code=0, exactly one data row, sCode=0, nonempty ordId, and returned clOrdId equal to sent clOrdId are now bound.",
+  "why_not_case_d": "This GO is offline and does not re-observe venue preconditions. Standing Live gates remain false by design.",
+  "why_not_case_e": "Flatten, Cap 11.12.8, and lifecycle remain non-producers. This GO explicitly adopts selected conjuncts onto the productive HTTP evidence surface without treating those modules as \u00a711.14 SSOT."
+}

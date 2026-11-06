@@ -1,0 +1,17 @@
+{
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "execution_head": "1660a02faabf5dc3e7eb24ee652c192f55313f72",
+  "repository_tree_clean_before_evidence_creation": true,
+  "all_existing_frozen_files_unchanged": true,
+  "only_prior_additive_documentation_paths_in_diff": true,
+  "freeze_tag_unchanged": true,
+  "protected_ledger_unchanged": true,
+  "criteria_set_equals_specified_29": true,
+  "all_29_observation_files_present": true,
+  "baseline_exit_code": 0,
+  "initial_probes_exit_code": 1,
+  "initial_failures": "Three harness API/name mistakes; retained, corrected, and only affected probes rerun.",
+  "corrected_probes_exit_code": 0,
+  "offline_probe_network_guard": "socket connect/create_connection rejected during custom function-scoped probes; selected baseline fixtures use offline inputs",
+  "new_implementation": false
+}

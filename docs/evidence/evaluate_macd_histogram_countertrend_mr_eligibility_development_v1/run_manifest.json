@@ -1,0 +1,70 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3669,
+      "sha256": "e0270d0a466172dfd8a38d3a80c71b51a2bb7929b083ec2b121fd784db9ce548"
+    },
+    "baseline_metrics.json": {
+      "bytes": 860,
+      "sha256": "6461419fb2982c8a91167cb45b6dfac300fa0cdb575fefd3c6cdd90ca406317b"
+    },
+    "ci_timing_proof.txt": {
+      "bytes": 277,
+      "sha256": "a176bd6c5f3a491bcacc56b28e6194a3f31e653b965533fafbd54290da2fde97"
+    },
+    "code_config_hashes.json": {
+      "bytes": 501,
+      "sha256": "c496a3ffbf6bb2da70f37f74f63f7f141cffb4172e6b2e1880280e8ffae0c8a5"
+    },
+    "comparison_decision.json": {
+      "bytes": 991,
+      "sha256": "1a27ad801b2916f193728f30bcd3a63c204f7adc20690d64a37d96f9f18ebf08"
+    },
+    "config_snapshot.json": {
+      "bytes": 3187,
+      "sha256": "8777470154ecd12f74b4cd7d30b7cfce28da0f7af5eb0e6bedd5cb0629f70b9a"
+    },
+    "determinism_repro.txt": {
+      "bytes": 735,
+      "sha256": "7707ad64ae323efa0af9d50264b5f1364322174ac84e1f7e56b9077b629baaab"
+    },
+    "eligibility_attribution.json": {
+      "bytes": 5906,
+      "sha256": "b9c3a826ecdb4f634c89691a5136a35439280eb00c96030d29bdf25d08fa42ed"
+    },
+    "eligibility_filter_formula_freeze.json": {
+      "bytes": 1227,
+      "sha256": "55806d0c8538df35c98f1efdfb62da30d738549e72165ca9c57be14defd6cf4c"
+    },
+    "instrument_attribution.json": {
+      "bytes": 56469,
+      "sha256": "a046c8bc027c9ede17dd869388d20f53c59c242395c8d208c9787c91761a5a3b"
+    },
+    "portfolio_equity_baseline.csv": {
+      "bytes": 92823,
+      "sha256": "c46008012a29d8536869d933b6987b412a1a5b5db8debb296a0c80dd732862cc"
+    },
+    "portfolio_equity_treatment.csv": {
+      "bytes": 92363,
+      "sha256": "696bfa91ae7211cfaa20f62adc9ec0554b70211874902825bcdd3ddb2cd3adff"
+    },
+    "run_stdout.txt": {
+      "bytes": 11285,
+      "sha256": "e1d3723b9bf3fdfac75a336c78af15545a66af91f01cb521112bbd987e45bfcf"
+    },
+    "safety_attestation.md": {
+      "bytes": 1012,
+      "sha256": "1232e12a9f6a7c3d5bc82f56c2c2ee007b4be17784e825400717bff17a7a2342"
+    },
+    "summary.json": {
+      "bytes": 12307,
+      "sha256": "a46273874c3e3fddaa23455f2a86adf93c1945ba930ca88b9774a5a7b5326ce4"
+    },
+    "treatment_metrics.json": {
+      "bytes": 883,
+      "sha256": "1f705d94929d26be99aa14730652b883fcfaa34fc7a96ff3743b42ff169f2a1b"
+    }
+  },
+  "generated_at_utc": "2026-07-21T06:07:39Z",
+  "schema_version": "evaluate_macd_histogram_countertrend_mr_eligibility_development_run_manifest.v1"
+}

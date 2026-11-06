@@ -1,0 +1,81 @@
+{
+  "ACCOUNTING_PERSISTENCE_FAILURE": {
+    "ok": true
+  },
+  "AUTHORIZATION_ALREADY_CONSUMED": {
+    "error": "AUTHORIZATION_ALREADY_CONSUMED",
+    "ok": true
+  },
+  "CORRUPTED_PORTFOLIO_CHECKPOINT": {
+    "ok": true
+  },
+  "CORRUPTED_RISK_CHECKPOINT": {
+    "ok": true
+  },
+  "DUPLICATE_OBSERVATION": {
+    "duplicate_observation_count": 1,
+    "ok": true
+  },
+  "LIVE_ORDER_PATH_REACHABLE": {
+    "ok": true
+  },
+  "MISSING_MARK_PRICE": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "MARK_PRICE_MISSING"
+    ],
+    "ok": true
+  },
+  "MISSING_OBSERVATION": {
+    "missing_observation_count": 1,
+    "ok": true
+  },
+  "MISSING_TYPED_VOLATILITY": {
+    "ok": true,
+    "owner": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1"
+  },
+  "MULTI_FUTURE_ENABLED": {
+    "ok": true,
+    "value": false
+  },
+  "NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED": {
+    "ok": true
+  },
+  "PAPER_ORDER_PATH_REACHABLE": {
+    "ok": true
+  },
+  "PRIVATE_API_ATTEMPTED": {
+    "notes": "public MD client path allowlist rejects private endpoints",
+    "ok": true
+  },
+  "RUNTIME_ACTIVATION_ATTEMPTED": {
+    "ok": true,
+    "status": "READY_FOR_ACTIVATION"
+  },
+  "SELECTION_DIGEST_MISMATCH": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "CORRUPT_SELECTION",
+      "REPOSITORY_SHA_MISMATCH"
+    ],
+    "ok": true
+  },
+  "STALE_MARKET_DATA": {
+    "ok": true
+  },
+  "STALE_SELECTION": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "SELECTION_EXPIRED",
+      "SELECTION_STALE"
+    ],
+    "ok": true
+  },
+  "TESTNET_ORDER_PATH_REACHABLE": {
+    "ok": true
+  },
+  "VERIFIER_MISMATCH": {
+    "ok": true,
+    "owner": "trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0"
+  }
+}

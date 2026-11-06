@@ -1,0 +1,18 @@
+{
+  "schema_version": "acquire_and_seal_okx_independent_dev_panel_external_hashes.v1",
+  "archive_root": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/peak_trade_data_archive/dev_pre_holdout_panel_v1_20260720T2052Z",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "sha256": {
+    "sealed_lifecycle_manifest.json": "be953c559ac3dd797961bdda8cbc190076353c91d3299b9031ae1ee767d4b594",
+    "sealed_lifecycle_summary.json": "da452550bf13455389f054f4db9bc61ac71dc55cd8612fc0fa11ecf6e3654d07",
+    "bounded_long_panel_acquisition_summary.json": "4dc51037229b099f4ca622fce2cf77901f59d4936f53679ac5e3429587f56f42"
+  },
+  "sealed_lifecycle_content_hash": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "raw_ohlcv_pt1h_instrument_dir_count": 46,
+  "raw_ohlcv_pt1h_file_count": 4876,
+  "raw_partition_manifest_sha256": "e9375e90f4e9d8e67260fb7f2c7f48dceb408a7abbf78dd4e35a9565decad40e",
+  "root_manifest_sha256": "c91ec9da31e6dc838ff16a2a47d91db8d428445084bd4a2960c7fb664e0b0ffa",
+  "acquisition_contract_sha256": "93e60f33eb8d9a62d6f9d98854ae9e934e3caaf3e508dcd87d60e9d80e28a246",
+  "production_registry_digest": "ddcdec738ff5661f3e2f6bd3dcc97a1bcddbf0b9254faa344b318558f1dbe289",
+  "raw_data_tracked_in_git": false
+}

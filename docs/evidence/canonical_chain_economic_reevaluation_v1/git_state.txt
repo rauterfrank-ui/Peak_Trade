@@ -1,0 +1,30 @@
+=== GIT STATE ===
+ROOT=/Users/frnkhrz/Peak_Trade
+BRANCH=audit/canonical-chain-economic-reevaluation-v1
+HEAD=bf74d4e3b15daeb6b4d25411ebd016694c54370b
+ORIGIN_MAIN=bf74d4e3b15daeb6b4d25411ebd016694c54370b
+EXPECTED=bf74d4e3b15daeb6b4d25411ebd016694c54370b
+HEAD_EQ_ORIGIN_MAIN=true
+HEAD_EQ_EXPECTED=true
+STASH_BEFORE=9dee9fcdfc2800d5051d82fa85a329d19ae3d15e0e896220ac9cafabfcb30c30
+STASH_NOW=9dee9fcdfc2800d5051d82fa85a329d19ae3d15e0e896220ac9cafabfcb30c30
+STASHES_UNCHANGED=true
+FOREIGN_UNTRACKED_HASH_BEFORE=7b108d8f8e03a05375e645e4ae87e3c5b04d191b710353b80edd79f6e4d293ff
+FOREIGN_UNTRACKED_HASH_NOW=f33a72ded23f5041c90a2243d410e318b179d2e3fc7790f522cb3b9a6da230d8
+--- status ---
+?? docs/evidence/canonical_chain_economic_reevaluation_v1/
+?? docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+?? docs/evidence/scope_event_noop_root_cause_audit_v1/
+?? tests/research/test_canonical_chain_economic_reevaluation_audit_harness_v1.py
+--- stash ---
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework
+--- pr5341 ---
+{"mergeCommit":{"oid":"bf74d4e3b15daeb6b4d25411ebd016694c54370b"},"mergedAt":"2026-07-18T21:20:36Z","state":"MERGED","url":"https://github.com/rauterfrank-ui/Peak_Trade/pull/5341"}
+--- open repair prs ---
+[]

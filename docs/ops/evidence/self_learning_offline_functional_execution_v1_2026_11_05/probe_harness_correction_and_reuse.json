@@ -1,0 +1,12 @@
+{
+  "changed_functions": [
+    "test_GF_T06_measured_binding_rejections",
+    "test_NRC_T02_same_identity_new_time",
+    "test_NRC_T05_late_archive_failure_preserves_owner_records"
+  ],
+  "first_attempt_sha256": "b49cd6b2031f90987d3a895e4c4ecd0402b70d1dbf6dffa886832e39d97e1ca3",
+  "corrected_sha256": "061e287624bd426532a154fb5f01ce0d01389982f77a049e1d168ecc350efed4",
+  "unchanged_test_functions_reused": 26,
+  "product_source_unchanged": true,
+  "reason": "Correct actual existing test name, observer object receipt accessor, and actual ExperimentMemory list_metadata API; no product fix."
+}

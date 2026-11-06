@@ -1,0 +1,10 @@
+{
+  "CHAIN_OK": true,
+  "DIRECTION_OK": true,
+  "MIN_TRADES_FOR_ROBUSTNESS": 20,
+  "RATIONALE": "Repaired MV2 wiring transports LONG/SHORT/NONE end-to-end; fixture panel records 14 trades (1 long / 13 short). Sample remains below robustness threshold; economic gate stays closed.",
+  "RESULT_CLASS": "PASS_CHAIN_ONLY",
+  "RULE": "FAIL_CHAIN if technical chain/direction/short flags fail; TERMINAL_INCONCLUSIVE if chain ok but fixture trade_count==0; PASS_CHAIN_ONLY if chain ok and trades < 20 (no economic approval); ECONOMIC_FAIL if chain ok and trades>=20 with negative net/gross return",
+  "SHORT_FLAGS_OK": true,
+  "TRADE_COUNT_TOTAL": 14
+}

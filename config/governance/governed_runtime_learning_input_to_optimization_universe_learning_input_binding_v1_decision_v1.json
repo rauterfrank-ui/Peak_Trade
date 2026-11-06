@@ -1,0 +1,17 @@
+{
+  "workpackage_id": "GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1",
+  "owner_go": true,
+  "binding_authority": "NONE",
+  "primary_evidence_implies_productive_authorization": false,
+  "p5_evidence_intake_implies_runtime_apply": false,
+  "canonical_learning_input_implies_productive_activation": false,
+  "runtime_apply_started": false,
+  "real_runtime_materialization_performed": false,
+  "productive_activation_authorized": false,
+  "external_effect": false,
+  "ddo_fixture_required_for_real_path": false,
+  "real_runtime_g2_to_canonical_optimization_input_status": "PROVEN",
+  "fixture_only_m4_m8_status": "PROVEN_FIXTURE_PATH",
+  "field_mapping_ledger": "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_field_mapping_ledger_v1.json",
+  "normative_spec": "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md"
+}

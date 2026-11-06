@@ -1,0 +1,1546 @@
+"""MS01 authority persist, MS02 mapping, and MS03 cursor-floor fail-closed."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+from src.ops.current_productive_eea_universe_inventory_acquisition_v1.acquire_v1 import (
+    acquire_eea_universe_inventory_v1,
+)
+from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_v1 import (
+    UrllibEeaPublicUniverseGetTransportV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    EXTERNAL_EFFECT_AUTHORIZED,
+    POST_ALLOWED,
+    REAL_VENUE_POST_ALLOWED,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
+    FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY as EG_AUTHORITY_BOUNDARY,
+    JOIN_SEAM_ID as EG_JOIN_SEAM_ID,
+    OWNER_GO as EG_OWNER_GO,
+    REASON_DUPLICATE_C1,
+    REASON_LINEAGE_MISMATCH,
+    REASON_STALE_C1,
+    REASON_UNFINALIZED_C1,
+    REQUIRED_BAR,
+    CurrentProductiveC1ObservationV1,
+    bind_s4b_occupancy_gate_input_v1,
+    bind_s4d_s4c_disposition_go_consumption_persist_v1,
+    s4c_historical_pack_may_be_consumed_as_fresh_get_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_one_shot_c1_observation_source_v1 import (
+    AUTONOMY_CAN_CHANGE_TRADING_LOGIC,
+    AUTONOMY_CAN_MINT_PERMIT,
+    AUTONOMY_CAN_POST,
+    AUTONOMY_CAN_RESELECT_DOWNSTREAM,
+    BOUNDED_POLL_AUTHORIZED,
+    CADENCE_OWNER_AUTHORIZED,
+    CANONICAL_HISTORICAL_EVIDENCE_PACK,
+    CENSUS_A_REJECT_BOTH,
+    CENSUS_B_HISTORICAL_OBSERVATION_TO_EG,
+    CENSUS_C_ARCHITECTURE,
+    CONFIRM_FINALIZED,
+    CONTINUOUS_RUNTIME_AUTHORIZED,
+    CYCLE_HOST,
+    DAEMON_AUTHORIZED,
+    DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
+    DISPOSITION_EMITTED,
+    DISPOSITION_FAIL_CLOSED,
+    DISPOSITION_PRESENT,
+    EG_AUTHORITY_BOUNDARY_UNCHANGED,
+    EG_CALL_TOKEN,
+    EG_CALL_TOKEN_CLASS,
+    EG_DISPATCH_COUNT,
+    EG_TRIGGER_EXECUTED,
+    FRESH_C1_REQUIREMENT,
+    FRESH_GET_AUTHORIZED,
+    GET_COUNT_THIS_SLICE,
+    HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT,
+    HISTORICAL_MS04B_AS_EG_INPUT,
+    HISTORICAL_PACK_CLASS,
+    JOIN_SEAM_ID,
+    LIVE_GET_EXECUTED,
+    MS01_IMPLEMENTATION_STATUS,
+    MS02_AUTHORIZED,
+    MS02_HANDOFF,
+    MS03_AUTHORIZED,
+    MS03_HANDOFF,
+    MS04A_CONTRACT_BOUND,
+    MS04A_SLICE,
+    MS04_AUTHORIZED,
+    MS05_AUTHORIZED,
+    MS05_STARTED,
+    NETWORK_EXECUTION_AUTHORIZED,
+    OBSERVATION_SOURCE,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PARAM,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL,
+    OCCUPANCY_OWNER_GO,
+    OCCUPANCY_OWNER_GO_STATUS,
+    ORCHESTRATOR,
+    OWNER_GO,
+    OWNER_GO_SCOPE,
+    PATH_CARDINALITY,
+    PERFORM_GET_DEFAULT,
+    PRESENCE_ABSENT,
+    PRESENCE_PRESENT,
+    PRODUCER_AUTHORITY,
+    REASON_CURSOR_INVALID,
+    REASON_CURSOR_MISSING,
+    REASON_OWNER_GO_MISMATCH,
+    REASON_UNFINALIZED_OR_ABSENT,
+    RUNTIME_CYCLE_AUTHORIZED,
+    RUNTIME_CYCLE_COUNT,
+    RUNTIME_CYCLE_EXECUTED,
+    S1_OWNER_GO,
+    S1_OWNER_GO_SCOPE,
+    S1_OWNER_GO_STATUS,
+    S1_THIS_SLICE,
+    S2_S3_CALL_CONTRACT_BOUND,
+    S2_S3_OWNER_GO,
+    S2_S3_OWNER_GO_SCOPE,
+    S2_S3_OWNER_GO_STATUS,
+    S2_S3_THIS_SLICE,
+    S4_STARTED,
+    S4A_CANONICAL_EVIDENCE_PACK,
+    S4A_EG_RUNTIME_TRIGGER_OWNER_GO,
+    S4A_ENABLEMENT_BOUND,
+    S4A_EVIDENCE_ROOT_RELPATH,
+    S4A_FRESH_C1_GET_OWNER_GO,
+    S4A_LOCK_ROOT_RELPATH,
+    S4A_OWNER_GO,
+    S4A_PRODUCTIVE_ACQUISITION_PRODUCER,
+    S4A_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS,
+    S4A_RUNTIME_CONSUMED,
+    S4A_THIS_SLICE,
+    S4A_V5_EXECUTE_NETWORK,
+    S4B_CANONICAL_EVIDENCE_PACK,
+    S4B_OCCUPANCY_INPUT_BOUND,
+    S4B_OCCUPANCY_OWNER_GO_CONSUMED,
+    S4B_OWNER_GO,
+    S4B_THIS_SLICE,
+    S4B_V5_EXECUTE_NETWORK,
+    S4C_EVIDENCE_PACK,
+    S4C_MANIFEST_SHA256,
+    S4C_PACK_CLASSIFIER,
+    S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY,
+    S4C_PACK_FRESHNESS_POLICY,
+    S4C_PACK_OCCUPANCY_DISPOSITION,
+    S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER,
+    S4C_PRETRADE_DECISION_ID,
+    FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION,
+    S4D_CANONICAL_EVIDENCE_PACK,
+    S4D_OWNER_GO,
+    S4D_S4C_EVIDENCE_BOUND,
+    S4D_THIS_SLICE,
+    S4D_V5_EXECUTE_NETWORK,
+    SELECTED_RUNTIME_PATH,
+    T1_CLASS,
+    T1_CONSUMED,
+    T1_ONLY_WITHOUT_T2,
+    T1_OWNER_GO_STATUS,
+    T1_TRANSITION,
+    T2_CLASS,
+    T2_CONSUMED,
+    T2_OWNER_GO,
+    T2_OWNER_GO_STATUS,
+    THIS_SLICE,
+    V5_INVOKE_COUNT,
+    VENUE_OCCUPANCY_KNOWLEDGE,
+    bind_current_productive_canonical_single_runtime_path_call_contract_v1,
+    bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1,
+    bind_s4a_eg_runtime_trigger_authority_v1,
+    bind_s4a_fresh_c1_get_runtime_authority_v1,
+    bind_s4a_productive_acquisition_join_v1,
+    bind_s4a_runtime_enablement_envelope_v1,
+    evaluate_current_productive_c1_observation_against_cursor_floor_v1,
+    map_injected_candles_payload_to_current_productive_c1_observation_v1,
+    resolve_current_productive_c1_cursor_floor_v1,
+    GET_AUTH_REQUIRED,
+    GET_BAR,
+    GET_CONNECT_TIMEOUT_SECONDS,
+    GET_HOST,
+    GET_LIMIT,
+    GET_MAX_REQUEST_COUNT,
+    GET_METHOD,
+    GET_PATH,
+    GET_TIMEOUT_SECONDS,
+    GET_TRANSPORT_CAPABILITY,
+    GET_TRANSPORT_CLASS,
+    INST_ID_BINDING_SOURCE,
+    LIMIT_BINDING_SOURCE,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    CURSOR_FILENAME,
+    CURSOR_LINEAGE_ID,
+)
+from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
+    STEP_29Q_PLAN_ONLY,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED,
+    CURRENT_PRODUCTIVE_S4A_RUNTIME_ENABLEMENT_CREATED,
+    CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED,
+    CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED,
+    CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_CREATED,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
+    verify_manifest_sha256_v1,
+)
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+    MAX_POSITIONS_EFFECTIVE,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
+    V5_OWNER_GO,
+)
+from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
+    TRACKED_CURSOR,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+SPEC_PATH = (
+    REPO_ROOT
+    / "docs/ops/specs"
+    / "FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1.md"
+)
+ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
+OWNER_MODULE = (
+    REPO_ROOT
+    / "src/ops/full_core_live_path_composition_root_v1"
+    / "current_productive_scoped_one_shot_c1_observation_source_v1.py"
+)
+EG_MODULE = (
+    REPO_ROOT
+    / "src/ops/full_core_live_path_composition_root_v1"
+    / "current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py"
+)
+PROTECTED_ALGORITHM_FILES = (
+    "src/ops/single_selected_future_policy_v1/selection_v1.py",
+    "src/ops/single_selected_future_policy_v1/policy_v1.py",
+    "src/trading/master_v2/double_play_state.py",
+    "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+)
+EH_HEADING = "### 11.2.1.EH FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE"
+EH_MS04A_HEADING = (
+    "### 11.2.1.EH MS04A FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_LIVE_GET_CONTRACT"
+)
+EH_MS04D_HEADING = (
+    "### 11.2.1.EH MS04D FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_MS04B_HISTORICAL_EVIDENCE"
+)
+EH_S1_HEADING = "### 11.2.1.EH S1 POST_MS04D_T1_T2_AUTHORITY_SEPARATION"
+EH_S2_S3_HEADING = "### 11.2.1.EH S2+S3 CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND"
+EH_S4A_HEADING = "### 11.2.1.EH S4A RUNTIME_ENABLEMENT_OFFLINE_BIND"
+EH_S4B_HEADING = "### 11.2.1.EH S4B V5_OCCUPANCY_GATE_INPUT_BIND"
+EH_S4D_HEADING = "### 11.2.1.EH S4D S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST"
+S1_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T134900Z"
+)
+S2_S3_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T140800Z"
+)
+S4A_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T143500Z"
+)
+S4B_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T151200Z"
+)
+S4C_EVIDENCE_PACK_PATH = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_s4c_exactly_one_current_occupancy_reproof_v1"
+    / "20260917T154542Z"
+)
+S4D_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T154800Z"
+)
+MS04B_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T130821Z"
+)
+TRANSPORT_RAW_BODY_SHA256 = "d6e8cc85ea1fc9f6d3461cca09294d5791ad6133cafff8fe39ba4dd163704997"
+NATIVE_ID = "0G-USDT-SWAP"
+OLDER_FINALIZED_TS_S = 1_789_527_720.0
+NEWEST_FINALIZED_TS_S = 1_789_527_840.0
+CURSOR_C1_FLOOR = 1_789_527_780.0
+FORBIDDEN_SOURCE_SNIPPETS = (
+    "while True",
+    "time.sleep",
+    "_evaluate_c1_gate_v1",
+    "trigger_current_productive_next_c1_and_exactly_one_cycle_v1",
+    "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1",
+    "FullCoreProductiveReadOnlyGetTransportV1(",
+    "execute_network=True",
+    'execute_network": True',
+    "scheduler",
+    "PRODUCTIVE_CONTINUOUS_C1_OBSERVATION_SOURCE_OR_BOUNDED_POLL_OWNER_ABSENT",
+)
+
+
+def _candle_row(*, ts_s: float, confirm: str, close: str = "0.1880") -> list[str]:
+    ts_ms = str(int(ts_s * 1000))
+    return [ts_ms, close, close, close, close, "10", "100", "USDT", confirm]
+
+
+def _candles_payload(*rows: list[str]) -> dict[str, object]:
+    return {"code": "0", "msg": "", "data": list(rows)}
+
+
+def test_ms01_created_flag_pins_and_docs() -> None:
+    assert CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_CREATED is True
+    assert (
+        CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED
+        is True
+    )
+    assert OWNER_GO == ("OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1")
+    assert OWNER_GO_SCOPE == "MS01_AUTHORITY_PERSIST_AND_OWNER_PINS_ONLY"
+    assert PRODUCER_AUTHORITY == "ONE_SHOT_PUBLIC_1M_C1_OBSERVATION_ACQUISITION_ONLY"
+    assert EG_AUTHORITY_BOUNDARY_UNCHANGED == (
+        "NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY"
+    )
+    assert EG_AUTHORITY_BOUNDARY == EG_AUTHORITY_BOUNDARY_UNCHANGED
+    assert EG_JOIN_SEAM_ID == (
+        "CURRENT_PRODUCTIVE_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_SEAM_V1"
+    )
+    assert MS01_IMPLEMENTATION_STATUS == "AUTHORITY_SCAFFOLD_ONLY"
+    assert BOUNDED_POLL_AUTHORIZED is False
+    assert DAEMON_AUTHORIZED is False
+    assert CADENCE_OWNER_AUTHORIZED is False
+    assert CONTINUOUS_RUNTIME_AUTHORIZED is False
+    assert RUNTIME_CYCLE_AUTHORIZED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert LIVE_GET_EXECUTED is False
+    assert MS02_AUTHORIZED is False
+    assert MS03_AUTHORIZED is False
+    assert MS04A_CONTRACT_BOUND is True
+    assert MS04A_SLICE == "MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1"
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+    assert MS05_STARTED is False
+    assert T1_TRANSITION == "PRESENT_HISTORICAL_MS04B_EMITTED_OBSERVATION_TO_EG"
+    assert T1_OWNER_GO_STATUS == "OWNER_GO_ABSENT"
+    assert T1_CONSUMED is False
+    assert T2_OWNER_GO == V5_OWNER_GO
+    assert T2_OWNER_GO_STATUS == "DEFINED_NOT_CONSUMED"
+    assert T2_CONSUMED is False
+    assert T1_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED"
+    assert T1_OWNER_GO_STATUS != T2_OWNER_GO_STATUS
+    assert HISTORICAL_PACK_CLASS == "HISTORICAL_EVIDENCE_ONLY"
+    assert HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT is True
+    assert GET_COUNT_THIS_SLICE == 0
+    assert EG_DISPATCH_COUNT == 0
+    assert V5_INVOKE_COUNT == 0
+    assert RUNTIME_CYCLE_COUNT == 0
+    assert EG_TRIGGER_EXECUTED is False
+    assert RUNTIME_CYCLE_EXECUTED is False
+    assert S1_OWNER_GO == "OWNER_GO_POST_MS04D_T1_T2_AUTHORITY_SEPARATION_PERSIST_V1"
+    assert S1_OWNER_GO_SCOPE == "T1_T2_AUTHORITY_SEPARATION_PERSIST_ONLY"
+    assert S1_OWNER_GO_STATUS == "CONSUMED"
+    assert S1_THIS_SLICE == "11.2.1.EH.S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION"
+    assert S2_S3_OWNER_GO == (
+        "OWNER_GO_POST_MS04D_S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND_V1"
+    )
+    assert S2_S3_OWNER_GO_SCOPE == "OFFLINE_PATH_SELECTION_AND_CALL_CONTRACT_BIND_ONLY"
+    assert S2_S3_OWNER_GO_STATUS == "CONSUMED"
+    assert S2_S3_THIS_SLICE == "11.2.1.EH.S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND"
+    assert S2_S3_CALL_CONTRACT_BOUND is True
+    assert SELECTED_RUNTIME_PATH == ("EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST")
+    assert PATH_CARDINALITY == 1
+    assert DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT == "FORBIDDEN"
+    assert HISTORICAL_MS04B_AS_EG_INPUT == "FORBIDDEN"
+    assert T1_ONLY_WITHOUT_T2 == "FORBIDDEN"
+    assert FRESH_GET_AUTHORIZED is False
+    assert NETWORK_EXECUTION_AUTHORIZED is False
+    assert S4_STARTED is False
+    assert AUTONOMY_CAN_CHANGE_TRADING_LOGIC is False
+    assert AUTONOMY_CAN_RESELECT_DOWNSTREAM is False
+    assert AUTONOMY_CAN_MINT_PERMIT is False
+    assert AUTONOMY_CAN_POST is False
+    assert EXTERNAL_EFFECT_AUTHORIZED is False
+    assert POST_ALLOWED is False
+    assert REAL_VENUE_POST_ALLOWED is False
+    assert int(MAX_POSITIONS_EFFECTIVE) == 1
+    assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
+    assert JOIN_SEAM_ID == ("CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_SEAM_V1")
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    mot = MOT_PATH.read_text(encoding="utf-8")
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert EH_HEADING not in runbook
+    assert THIS_SLICE in source
+    assert MS04A_SLICE in spec
+    assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in spec
+    assert S1_THIS_SLICE in source
+    assert "S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND" in spec
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in spec
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
+    assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in spec
+    assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in spec
+    assert "RAW_HTTP_BYTES_PERSISTED=false" in spec
+    assert TRANSPORT_RAW_BODY_SHA256 in (MS04B_EVIDENCE_PACK / "claims.json").read_text(
+        encoding="utf-8"
+    )
+    assert "PRODUCTIVE_CONTINUOUS_C1_OBSERVATION_SOURCE_OR_BOUNDED_POLL_OWNER_ABSENT" not in runbook
+    assert "FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE" in spec
+    assert "docs_token:" in spec
+    assert (
+        "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
+    ) in spec
+    assert JOIN_SEAM_ID in atlas
+    assert "MS03_CURSOR_FLOOR=true" in atlas
+    assert "MS03_CURSOR_FLOOR_AND_ABSENCE_FAIL_CLOSED" in atlas
+    assert "MS04A_EH_LIVE_GET_CONTRACT" in atlas
+    assert "MS04A_CONTRACT_BOUND=true" in atlas
+    assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in atlas
+    assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in atlas
+    assert "S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND" in atlas
+    assert "SELECTED_RUNTIME_PATH=EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST" in atlas
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in atlas
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in atlas
+    assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in atlas
+    assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in atlas
+    for path in PROTECTED_ALGORITHM_FILES:
+        assert (REPO_ROOT / path).is_file()
+
+
+def test_ms01_source_guards_forbid_successor_and_runtime_surfaces() -> None:
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    for snippet in FORBIDDEN_SOURCE_SNIPPETS:
+        assert snippet not in source
+    remainder = source.replace(T2_OWNER_GO, "")
+    assert "1789527780" not in remainder
+    assert T2_OWNER_GO in source
+    assert "OWNER_GO_PRESENT_HISTORICAL_MS04B" not in source
+    assert "MS02 PAYLOAD-TO-OBSERVATION MAPPING" in source
+    assert "MS03 CURSOR-FLOOR AND ABSENCE FAIL-CLOSED" in source
+    assert "MS04A LIVE GET CONTRACT BINDING" in source
+    assert "extract_finalized_candle_closes_v1" in source
+    assert "def acquire_" not in source
+    assert "urllib" not in source
+    assert "http.client" not in source
+    assert "opener.open" not in source
+    assert "Request(" not in source
+    assert "transport.get" not in source
+    assert "build_opener" not in source
+    eg_source = EG_MODULE.read_text(encoding="utf-8")
+    assert "while True" not in eg_source
+    assert "time.sleep" not in eg_source
+    assert 'execute_network": True' not in eg_source
+    assert "execute_network = True" not in eg_source
+
+
+def test_ms02_newest_finalized_confirm_1_maps_exactly_once() -> None:
+    payload = _candles_payload(
+        _candle_row(ts_s=OLDER_FINALIZED_TS_S, confirm="1"),
+        _candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="1"),
+        _candle_row(ts_s=NEWEST_FINALIZED_TS_S + 60.0, confirm="0"),
+    )
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go=OWNER_GO,
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    assert result.disposition == DISPOSITION_EMITTED
+    assert result.get_count == 0
+    assert result.reason_code == ""
+    observation = result.observation
+    assert observation is not None
+    assert isinstance(observation, CurrentProductiveC1ObservationV1)
+    assert observation.venue_event_time == NEWEST_FINALIZED_TS_S
+    assert observation.confirm == CONFIRM_FINALIZED
+    assert observation.confirm == "1"
+    assert observation.native_id == NATIVE_ID
+    assert observation.bar == REQUIRED_BAR
+    assert observation.bar == "1m"
+    assert observation.payload is payload
+
+
+def test_ms02_multiple_finalized_bars_emit_only_newest() -> None:
+    payload = _candles_payload(
+        _candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="1"),
+        _candle_row(ts_s=OLDER_FINALIZED_TS_S, confirm="1"),
+        _candle_row(ts_s=OLDER_FINALIZED_TS_S - 60.0, confirm="1"),
+    )
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go=OWNER_GO,
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    assert result.disposition == DISPOSITION_EMITTED
+    assert result.get_count == 0
+    observation = result.observation
+    assert observation is not None
+    assert observation.venue_event_time == NEWEST_FINALIZED_TS_S
+    assert observation.confirm == "1"
+    assert observation.payload is payload
+
+
+def test_ms02_raw_payload_preserved_for_eg_c1_gate_payload() -> None:
+    payload = _candles_payload(_candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="1"))
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go=OWNER_GO,
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    observation = result.observation
+    assert observation is not None
+    assert observation.payload is payload
+    assert observation.payload == payload
+    bound = dict(observation.payload)
+    assert bound["code"] == "0"
+    assert bound["data"] is payload["data"]
+    assert result.get_count == 0
+
+
+def test_ms02_unfinalized_or_absent_fail_closed_does_not_synthesize() -> None:
+    payload = _candles_payload(
+        _candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="0"),
+        _candle_row(ts_s=OLDER_FINALIZED_TS_S, confirm="0"),
+    )
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go=OWNER_GO,
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.observation is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_UNFINALIZED_OR_ABSENT
+
+
+def test_ms02_owner_go_mismatch_fail_closed() -> None:
+    payload = _candles_payload(_candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="1"))
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go="OWNER_GO_WRONG",
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.observation is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_OWNER_GO_MISMATCH
+
+
+def test_ms02_mapping_does_not_get_or_trigger() -> None:
+    mapping_source = OWNER_MODULE.read_text(encoding="utf-8")
+    mapping_fn = "def map_injected_candles_payload_to_current_productive_c1_observation_v1"
+    mapping_start = mapping_source.index(mapping_fn)
+    mapping_end = mapping_source.index("class CurrentProductiveScopedOneShotC1CursorFloorResultV1")
+    mapping_body = mapping_source[mapping_start:mapping_end]
+    assert "cursor_last_accepted_c1_venue_event_time_v1" not in mapping_body
+    assert "resolve_current_productive_c1_cursor_floor_v1" not in mapping_body
+
+
+def _seed_cursor(tmp_path: Path, *, event_time: float = CURSOR_C1_FLOOR) -> Path:
+    payload = json.loads(TRACKED_CURSOR.read_text(encoding="utf-8"))
+    payload["lineage_id"] = CURSOR_LINEAGE_ID
+    payload["venue_native_id"] = NATIVE_ID
+    payload["schema_name"] = "current_productive_sidestate_confirmation_cursor.v1"
+    payload["cap61_confirmation_state"]["observation_acceptance_state"][
+        "last_accepted_observation_identity"
+    ]["venue_event_time"] = event_time
+    store = tmp_path / "cursor"
+    store.mkdir(parents=True, exist_ok=True)
+    (store / CURSOR_FILENAME).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return store
+
+
+def _observation(
+    *,
+    venue_event_time: float = NEWEST_FINALIZED_TS_S,
+    confirm: str = "1",
+    native_id: str = NATIVE_ID,
+    bar: str = "1m",
+) -> CurrentProductiveC1ObservationV1:
+    return CurrentProductiveC1ObservationV1(
+        venue_event_time=venue_event_time,
+        confirm=confirm,
+        native_id=native_id,
+        bar=bar,
+        payload=_candles_payload(_candle_row(ts_s=venue_event_time, confirm=confirm)),
+    )
+
+
+def test_ms03_present_floor_extracts_last_accepted_venue_event_time(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = resolve_current_productive_c1_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_PRESENT
+    assert result.presence == PRESENCE_PRESENT
+    assert result.floor_venue_event_time == CURSOR_C1_FLOOR
+    assert result.get_count == 0
+    assert result.reason_code == ""
+
+
+def test_ms03_missing_cursor_fail_closed_does_not_synthesize(tmp_path: Path) -> None:
+    empty = tmp_path / "empty-cursor"
+    empty.mkdir()
+    result = resolve_current_productive_c1_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=empty,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.presence == PRESENCE_ABSENT
+    assert result.floor_venue_event_time is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_CURSOR_MISSING
+
+
+def test_ms03_malformed_cursor_fail_closed(tmp_path: Path) -> None:
+    store = tmp_path / "bad-cursor"
+    store.mkdir()
+    (store / CURSOR_FILENAME).write_text("{not-json", encoding="utf-8")
+    result = resolve_current_productive_c1_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.presence == ""
+    assert result.floor_venue_event_time is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_CURSOR_INVALID
+
+
+def test_ms03_schema_mismatch_fail_closed(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    payload = json.loads((store / CURSOR_FILENAME).read_text(encoding="utf-8"))
+    payload["schema_name"] = "not-the-cursor-schema"
+    (store / CURSOR_FILENAME).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    result = resolve_current_productive_c1_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.floor_venue_event_time is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_CURSOR_INVALID
+
+
+def test_ms03_missing_last_accepted_identity_fail_closed(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    payload = json.loads((store / CURSOR_FILENAME).read_text(encoding="utf-8"))
+    del payload["cap61_confirmation_state"]["observation_acceptance_state"][
+        "last_accepted_observation_identity"
+    ]
+    (store / CURSOR_FILENAME).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    result = resolve_current_productive_c1_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.floor_venue_event_time is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_CURSOR_INVALID
+
+
+def test_ms03_owner_go_mismatch_fail_closed(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = resolve_current_productive_c1_cursor_floor_v1(
+        owner_go="OWNER_GO_WRONG",
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.floor_venue_event_time is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_OWNER_GO_MISMATCH
+
+
+def test_ms03_newer_observation_emits_without_trigger(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = evaluate_current_productive_c1_observation_against_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+        observation=_observation(venue_event_time=NEWEST_FINALIZED_TS_S),
+    )
+    assert result.disposition == DISPOSITION_EMITTED
+    assert result.presence == PRESENCE_PRESENT
+    assert result.floor_venue_event_time == CURSOR_C1_FLOOR
+    assert result.get_count == 0
+    assert result.reason_code == ""
+
+
+def test_ms03_duplicate_observation_fail_closed(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = evaluate_current_productive_c1_observation_against_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+        observation=_observation(venue_event_time=CURSOR_C1_FLOOR),
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.presence == PRESENCE_PRESENT
+    assert result.floor_venue_event_time == CURSOR_C1_FLOOR
+    assert result.get_count == 0
+    assert result.reason_code == REASON_DUPLICATE_C1
+
+
+def test_ms03_stale_observation_fail_closed(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = evaluate_current_productive_c1_observation_against_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+        observation=_observation(venue_event_time=OLDER_FINALIZED_TS_S),
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.presence == PRESENCE_PRESENT
+    assert result.floor_venue_event_time == CURSOR_C1_FLOOR
+    assert result.get_count == 0
+    assert result.reason_code == REASON_STALE_C1
+
+
+def test_ms03_lineage_mismatch_fail_closed(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = evaluate_current_productive_c1_observation_against_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+        observation=_observation(native_id="BTC-USDT-SWAP"),
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.get_count == 0
+    assert result.reason_code == REASON_LINEAGE_MISMATCH
+
+
+def test_ms03_unfinalized_observation_fail_closed(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = evaluate_current_productive_c1_observation_against_cursor_floor_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+        observation=_observation(confirm="0"),
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.get_count == 0
+    assert result.reason_code == REASON_UNFINALIZED_C1
+
+
+def test_ms03_does_not_start_ms04_get_or_ms05_trigger() -> None:
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "load_current_productive_c1_cursor_or_reason_v1" in source
+    assert "cursor_last_accepted_c1_venue_event_time_v1" in source
+    assert "load_current_productive_sidestate_confirmation_cursor_v1" not in source
+    assert "NO_NEW_C1" not in source
+    assert "STALE_OBSERVED" not in source
+    assert "perform_get" not in source
+    assert "injected_get_transport" not in source
+    assert "FullCoreFreshPretradeGetTransportV1" not in source
+    assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    remainder = source.replace(T2_OWNER_GO, "")
+    assert "1789527780" not in remainder
+    assert "_evaluate_c1_gate_v1" not in source
+    assert "execute_network" not in source
+    assert "def acquire_" not in source
+    assert MS03_AUTHORIZED is False
+    assert MS04A_CONTRACT_BOUND is True
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+
+
+def test_ms04a_binds_existing_public_candles_request_without_get(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_PRESENT
+    assert result.host == GET_HOST
+    assert result.host == "eea.okx.com"
+    assert result.method == GET_METHOD
+    assert result.method == "GET"
+    assert result.path == GET_PATH
+    assert result.path == "/api/v5/market/candles"
+    assert result.inst_id == NATIVE_ID
+    assert result.inst_id_binding_source == INST_ID_BINDING_SOURCE
+    assert result.inst_id_binding_source == "CURRENT_PRODUCTIVE_CURSOR_VENUE_NATIVE_ID"
+    assert result.bar == GET_BAR
+    assert result.bar == REQUIRED_BAR
+    assert result.bar == "1m"
+    assert result.limit == GET_LIMIT
+    assert result.limit == "101"  # 100 finalized candles plus a possible open candle
+    assert result.limit_binding_source == LIMIT_BINDING_SOURCE
+    assert result.limit_binding_source == "EXISTING_CURRENT_PRODUCTIVE_PUBLIC_1M_CANDLES_GET_QUERY"
+    assert result.auth_required is GET_AUTH_REQUIRED
+    assert result.auth_required is False
+    assert result.max_request_count == GET_MAX_REQUEST_COUNT
+    assert result.max_request_count == 1
+    assert result.timeout_seconds == GET_TIMEOUT_SECONDS
+    assert result.timeout_seconds == 20.0
+    assert result.connect_timeout_seconds == GET_CONNECT_TIMEOUT_SECONDS
+    assert result.connect_timeout_seconds == 10.0
+    assert result.endpoint == (f"{GET_PATH}?instId={NATIVE_ID}&bar={GET_BAR}&limit={GET_LIMIT}")
+    assert result.transport_capability == GET_TRANSPORT_CAPABILITY
+    assert result.transport_capability == "FullCoreProductiveReadOnlyGetTransportV1"
+    assert result.transport_class == GET_TRANSPORT_CLASS
+    assert result.get_count == 0
+    assert result.reason_code == ""
+    assert MS02_HANDOFF == ("map_injected_candles_payload_to_current_productive_c1_observation_v1")
+    assert MS03_HANDOFF == ("evaluate_current_productive_c1_observation_against_cursor_floor_v1")
+    assert MS04_AUTHORIZED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert LIVE_GET_EXECUTED is False
+
+
+def test_ms04a_missing_cursor_fail_closed_does_not_get(tmp_path: Path) -> None:
+    empty = tmp_path / "empty-cursor"
+    empty.mkdir()
+    result = bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=empty,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.inst_id == ""
+    assert result.endpoint == ""
+    assert result.get_count == 0
+    assert result.reason_code == REASON_CURSOR_MISSING
+
+
+def test_ms04a_owner_go_mismatch_fail_closed_does_not_get(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1(
+        owner_go="OWNER_GO_WRONG",
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.get_count == 0
+    assert result.reason_code == REASON_OWNER_GO_MISMATCH
+
+
+def test_ms04a_does_not_execute_get_or_eg_or_v5() -> None:
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert GET_TRANSPORT_CAPABILITY in source
+    assert "ENDPOINT_MARKET_CANDLES" in source
+    assert "bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1" in (
+        source
+    )
+    assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
+    assert "opener.open" not in source
+    assert "execute_network" not in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in (source)
+    )
+    assert "_evaluate_c1_gate_v1" not in source
+    assert "C1_GATE_NATIVE_ID" not in source
+    assert MS04_AUTHORIZED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert LIVE_GET_EXECUTED is False
+    assert MS05_AUTHORIZED is False
+
+
+def test_ms04d_historical_evidence_pack_is_not_standing_enablement() -> None:
+    assert MS04B_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=MS04B_EVIDENCE_PACK) == 0
+    claims = json.loads((MS04B_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    metadata = json.loads(
+        (MS04B_EVIDENCE_PACK / "request_metadata.json").read_text(encoding="utf-8")
+    )
+    mapped = json.loads((MS04B_EVIDENCE_PACK / "ms02_mapping.json").read_text(encoding="utf-8"))
+    floor = json.loads(
+        (MS04B_EVIDENCE_PACK / "ms03_floor_evaluation.json").read_text(encoding="utf-8")
+    )
+    assert claims["GET_COUNT"] == 1
+    assert claims["HTTP_STATUS"] == 200
+    assert claims["OBSERVATION_NATIVE_ID"] == NATIVE_ID
+    assert claims["OBSERVATION_BAR"] == "1m"
+    assert claims["OBSERVATION_FINALIZED"] == "1"
+    assert claims["OBSERVATION_VENUE_EVENT_TIME"] == 1_789_650_660.0
+    assert claims["CURSOR_FLOOR_VENUE_EVENT_TIME"] == 1_789_527_780.0
+    assert claims["MS02_MAPPING_RESULT"] == "EMITTED"
+    assert mapped["disposition"] == "EMITTED"
+    assert claims["MS03_FLOOR_COMPARISON"] == "NEWER_THAN_FLOOR"
+    assert floor["disposition"] == "EMITTED"
+    assert metadata["body_sha256"] == TRANSPORT_RAW_BODY_SHA256
+    assert claims["BODY_SHA256"] == TRANSPORT_RAW_BODY_SHA256
+    assert claims["LIVE_GET_EXECUTED"] is True
+    assert claims["LIVE_GET_EXECUTED_STANDING_PIN"] is False
+    assert claims["MS04_AUTHORIZED_STANDING"] is False
+    assert claims["PERFORM_GET_DEFAULT"] is False
+    assert not (MS04B_EVIDENCE_PACK / "raw_body.bin").exists()
+    assert not (MS04B_EVIDENCE_PACK / "raw_http.bin").exists()
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    ms04d = SPEC_PATH.read_text(encoding="utf-8")
+    assert LIVE_GET_EXECUTED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+    assert "LIVE_GET_EXECUTED = False" in source
+    assert "PERFORM_GET_DEFAULT = False" in source
+    assert "MS04_AUTHORIZED = False" in source
+    assert "THIS_SLICE_FRESH_GET_EXECUTED" not in ms04d
+    assert "THIS_SLICE_LIVE_GET_EXECUTED" not in ms04d
+    assert "CANONICAL_EVIDENCE_PACK=" in ms04d
+    assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in ms04d
+    assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+
+
+def test_s1_post_ms04d_t1_t2_authority_separation_is_not_runtime_enablement() -> None:
+    assert T1_TRANSITION == "PRESENT_HISTORICAL_MS04B_EMITTED_OBSERVATION_TO_EG"
+    assert T1_OWNER_GO_STATUS == "OWNER_GO_ABSENT"
+    assert T1_CONSUMED is False
+    assert T1_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED"
+    assert T2_OWNER_GO == V5_OWNER_GO
+    assert T2_OWNER_GO_STATUS == "DEFINED_NOT_CONSUMED"
+    assert T2_CONSUMED is False
+    assert HISTORICAL_PACK_CLASS == "HISTORICAL_EVIDENCE_ONLY"
+    assert HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT is True
+    assert CANONICAL_HISTORICAL_EVIDENCE_PACK.endswith("20260917T130821Z")
+    assert GET_COUNT_THIS_SLICE == 0
+    assert EG_DISPATCH_COUNT == 0
+    assert RUNTIME_CYCLE_COUNT == 0
+    assert EG_TRIGGER_EXECUTED is False
+    assert RUNTIME_CYCLE_AUTHORIZED is False
+    assert RUNTIME_CYCLE_EXECUTED is False
+    assert LIVE_GET_EXECUTED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+    assert MS05_STARTED is False
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    assert "OWNER_GO_PRESENT_HISTORICAL_MS04B" not in source
+    assert "execute_network=True" not in source
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s1 = SPEC_PATH.read_text(encoding="utf-8")
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in s1
+    assert "T1_CONSUMED=false" in s1
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s1
+    assert "T2_CONSUMED=false" in s1
+    assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in s1
+    s1_claims = json.loads((S1_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert s1_claims["CLAIMS_LIVE_GET_EXECUTED_IS_HISTORICAL_INVOCATION_FACT"] is True
+    assert "LIVE_GET_EXECUTED=false" in s1
+    assert "GET_COUNT_THIS_SLICE=0" in s1
+    assert "EG_DISPATCH_COUNT=0" in s1
+    assert "RUNTIME_CYCLE_COUNT=0" in s1
+    assert "MS05_STARTED=false" in s1
+    assert "S4_STARTED=false" in s1
+    assert "consume a T1 Owner-GO" in s1
+    assert "DEFINED_NOT_CONSUMED" in s1
+    historical = json.loads((MS04B_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert historical["LIVE_GET_EXECUTED"] is True
+    assert historical["LIVE_GET_EXECUTED_STANDING_PIN"] is False
+    assert LIVE_GET_EXECUTED is not historical["LIVE_GET_EXECUTED"]
+    assert S1_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S1_EVIDENCE_PACK) == 0
+    claims = json.loads((S1_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["T1_OWNER_GO_STATUS"] == "OWNER_GO_ABSENT"
+    assert claims["T1_CONSUMED"] is False
+    assert claims["T2_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["T2_CONSUMED"] is False
+    assert claims["HISTORICAL_PACK_CLASS"] == "HISTORICAL_EVIDENCE_ONLY"
+    assert claims["HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT"] is True
+    assert claims["CLAIMS_LIVE_GET_EXECUTED_IS_HISTORICAL_INVOCATION_FACT"] is True
+    assert claims["LIVE_GET_EXECUTED"] is False
+    assert claims["PERFORM_GET_DEFAULT"] is False
+    assert claims["MS04_AUTHORIZED"] is False
+    assert claims["MS05_AUTHORIZED"] is False
+    assert claims["MS05_STARTED"] is False
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["EG_TRIGGER_EXECUTED"] is False
+    assert claims["RUNTIME_CYCLE_AUTHORIZED"] is False
+    assert claims["RUNTIME_CYCLE_EXECUTED"] is False
+    assert claims["T1_OWNER_GO_DEFINED"] is False
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in spec
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
+    assert "consume a T1 Owner-GO" in spec
+    assert "does not consume T2" in spec
+
+
+def test_s2_s3_canonical_single_runtime_path_offline_bind_is_not_runtime_enablement() -> None:
+    result = bind_current_productive_canonical_single_runtime_path_call_contract_v1(
+        owner_go=S2_S3_OWNER_GO,
+    )
+    assert result.disposition == DISPOSITION_PRESENT
+    assert result.selected_runtime_path == SELECTED_RUNTIME_PATH
+    assert result.path_cardinality == 1
+    assert result.observation_source == OBSERVATION_SOURCE
+    assert result.orchestrator == ORCHESTRATOR
+    assert result.cycle_host == CYCLE_HOST
+    assert result.eg_call_token == EG_CALL_TOKEN
+    assert result.eg_call_token == EG_OWNER_GO
+    assert result.eg_call_token_class == EG_CALL_TOKEN_CLASS
+    assert result.t2_owner_go == T2_OWNER_GO
+    assert result.t2_owner_go == V5_OWNER_GO
+    assert result.t2_owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert result.t1_owner_go_status == "OWNER_GO_ABSENT"
+    assert result.direct_v5_as_current_productive_entrypoint == "FORBIDDEN"
+    assert result.historical_ms04b_as_eg_input == "FORBIDDEN"
+    assert result.t1_only_without_t2 == "FORBIDDEN"
+    assert result.network_execution_authorized is False
+    assert result.fresh_get_authorized is False
+    assert result.get_count == 0
+    assert result.eg_dispatch_count == 0
+    assert result.v5_invoke_count == 0
+    assert result.runtime_cycle_count == 0
+    assert result.reason_code == ""
+    assert CENSUS_A_REJECT_BOTH == "UNSELECTED_NOT_A_RUNTIME_PATH"
+    assert CENSUS_B_HISTORICAL_OBSERVATION_TO_EG == "FORBIDDEN"
+    assert CENSUS_C_ARCHITECTURE == "CARRIED_AS_EH_TO_EG_TO_V5_HOST_OFFLINE_BIND_ONLY"
+    assert T1_CLASS == "OWNER_GO_ABSENT_NOT_CALL_AUTHORITY"
+    assert T2_CLASS == "DEFINED_NOT_CONSUMED_RUNTIME_AUTHORITY_NOT_CONSUMED"
+    assert FRESH_C1_REQUIREMENT == (
+        "REQUIRED_FOR_EVENTUAL_RUNTIME_INPUT_THIS_SLICE_GET_UNAUTHORIZED"
+    )
+    assert T1_OWNER_GO_STATUS == "OWNER_GO_ABSENT"
+    assert T1_CONSUMED is False
+    assert T2_OWNER_GO_STATUS == "DEFINED_NOT_CONSUMED"
+    assert T2_CONSUMED is False
+    assert LIVE_GET_EXECUTED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+    assert MS05_STARTED is False
+    assert S4_STARTED is False
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "bind_current_productive_canonical_single_runtime_path_call_contract_v1" in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    assert "execute_network" not in source
+    assert "OWNER_GO_PRESENT_HISTORICAL_MS04B" not in source
+    mismatched = bind_current_productive_canonical_single_runtime_path_call_contract_v1(
+        owner_go=OWNER_GO,
+    )
+    assert mismatched.disposition == DISPOSITION_FAIL_CLOSED
+    assert mismatched.selected_runtime_path == ""
+    assert mismatched.path_cardinality == 0
+    assert mismatched.get_count == 0
+    assert mismatched.eg_dispatch_count == 0
+    assert mismatched.v5_invoke_count == 0
+    assert mismatched.runtime_cycle_count == 0
+    assert mismatched.reason_code == REASON_OWNER_GO_MISMATCH
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s2s3 = SPEC_PATH.read_text(encoding="utf-8")
+    assert "SELECTED_RUNTIME_PATH=EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST" in s2s3
+    assert "PATH_CARDINALITY=1" in s2s3
+    assert "DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN" in s2s3
+    assert "HISTORICAL_MS04B_AS_EG_INPUT=FORBIDDEN" in s2s3
+    assert "T1_ONLY_WITHOUT_T2=FORBIDDEN" in s2s3
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in s2s3
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s2s3
+    assert "T2_CONSUMED=false" in s2s3
+    assert "T1_CONSUMED=false" in s2s3
+    assert "S4A_V5_EXECUTE_NETWORK=false" in s2s3
+    assert "GET_COUNT_THIS_SLICE=0" in s2s3
+    assert "EG_DISPATCH_COUNT=0" in s2s3
+    assert "V5_INVOKE_COUNT=0" in s2s3
+    assert "RUNTIME_CYCLE_COUNT=0" in s2s3
+    assert "S4_STARTED=false" in s2s3
+    assert "does not GET, dispatch EG, invoke V5" in s2s3
+    assert S2_S3_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S2_S3_EVIDENCE_PACK) == 0
+    claims = json.loads((S2_S3_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["SELECTED_RUNTIME_PATH"] == SELECTED_RUNTIME_PATH
+    assert claims["PATH_CARDINALITY"] == 1
+    assert claims["DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT"] == "FORBIDDEN"
+    assert claims["HISTORICAL_MS04B_AS_EG_INPUT"] == "FORBIDDEN"
+    assert claims["T1_OWNER_GO_STATUS"] == "OWNER_GO_ABSENT"
+    assert claims["T1_CONSUMED"] is False
+    assert claims["T2_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["T2_CONSUMED"] is False
+    assert claims["NETWORK_EXECUTION_AUTHORIZED"] is False
+    assert claims["FRESH_GET_AUTHORIZED"] is False
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["V5_INVOKE_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["LIVE_GET_EXECUTED"] is False
+    assert claims["S4_STARTED"] is False
+    assert claims["BOUND_ORIGIN_MAIN_SHA"] == "18750d36bcb8cee4de934d73d2ed4626d81a2d97"
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "SELECTED_RUNTIME_PATH=EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST" in spec
+    assert "DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN" in spec
+    assert "HISTORICAL_MS04B_AS_EG_INPUT=FORBIDDEN" in spec
+    assert "does not consume T2" in spec
+    assert "20260917T140800Z" in str(S2_S3_EVIDENCE_PACK)
+    origin = (S2_S3_EVIDENCE_PACK / "ORIGIN_MAIN_SHA.txt").read_text(encoding="utf-8").strip()
+    assert origin == "18750d36bcb8cee4de934d73d2ed4626d81a2d97"
+
+
+def test_s4a_runtime_enablement_offline_bind_is_not_runtime_consume() -> None:
+    cursor_store = TRACKED_CURSOR.parent
+    envelope = bind_s4a_runtime_enablement_envelope_v1(
+        owner_go=S4A_OWNER_GO,
+        cursor_store_root=cursor_store,
+    )
+    assert CURRENT_PRODUCTIVE_S4A_RUNTIME_ENABLEMENT_CREATED is True
+    assert envelope.disposition == DISPOSITION_PRESENT
+    assert envelope.selected_runtime_path == SELECTED_RUNTIME_PATH
+    assert envelope.selected_runtime_path == (
+        "EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST"
+    )
+    assert envelope.fresh_c1_get_owner_go == S4A_FRESH_C1_GET_OWNER_GO
+    assert envelope.eg_runtime_trigger_owner_go == S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    assert envelope.t2_owner_go == T2_OWNER_GO
+    assert envelope.t2_owner_go == V5_OWNER_GO
+    assert envelope.t2_owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert envelope.persist_gos_are_runtime_licenses is False
+    assert envelope.fresh_c1_get_owner_go != envelope.eg_runtime_trigger_owner_go
+    assert envelope.fresh_c1_get_owner_go != envelope.t2_owner_go
+    assert envelope.eg_runtime_trigger_owner_go != envelope.t2_owner_go
+    assert envelope.fresh_c1_get_owner_go != OWNER_GO
+    assert envelope.eg_runtime_trigger_owner_go != EG_OWNER_GO
+    assert envelope.fresh_c1_get_owner_go != S4A_OWNER_GO
+    assert envelope.eg_runtime_trigger_owner_go != S4A_OWNER_GO
+    assert envelope.productive_acquisition_producer == S4A_PRODUCTIVE_ACQUISITION_PRODUCER
+    assert envelope.productive_acquisition_producer == acquire_eea_universe_inventory_v1.__name__
+    assert (
+        envelope.productive_acquisition_transport_class
+        == S4A_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS
+    )
+    assert (
+        envelope.productive_acquisition_transport_class
+        == UrllibEeaPublicUniverseGetTransportV1.__name__
+    )
+    assert envelope.v5_network_execution is False
+    assert S4A_V5_EXECUTE_NETWORK is False
+    assert envelope.direct_v5_as_current_productive_entrypoint == "FORBIDDEN"
+    assert envelope.lock_root_relpath == S4A_LOCK_ROOT_RELPATH
+    assert envelope.evidence_root_relpath == S4A_EVIDENCE_ROOT_RELPATH
+    assert envelope.lock_root_relpath.startswith(
+        "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
+    )
+    assert envelope.get_count == 0
+    assert envelope.eg_dispatch_count == 0
+    assert envelope.v5_invoke_count == 0
+    assert envelope.runtime_cycle_count == 0
+    assert envelope.s4_started is False
+    assert envelope.ms05_started is False
+    assert S4A_ENABLEMENT_BOUND is True
+    assert S4A_RUNTIME_CONSUMED is False
+    assert T2_CONSUMED is False
+    assert FRESH_GET_AUTHORIZED is False
+    assert LIVE_GET_EXECUTED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+    assert MS05_STARTED is False
+    get_auth = bind_s4a_fresh_c1_get_runtime_authority_v1(
+        owner_go=S4A_FRESH_C1_GET_OWNER_GO,
+        cursor_store_root=cursor_store,
+    )
+    assert get_auth.disposition == DISPOSITION_PRESENT
+    assert get_auth.owner_go_scope == "EXACTLY_ONE_PUBLIC_READONLY_1M_CANDLES_GET_ONLY"
+    assert get_auth.owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert get_auth.auth_required is False
+    assert get_auth.max_request_count == 1
+    assert get_auth.method == "GET"
+    assert get_auth.get_count == 0
+    assert get_auth.standing_fresh_get_authorized is False
+    persist_get = bind_s4a_fresh_c1_get_runtime_authority_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=cursor_store,
+    )
+    assert persist_get.disposition == DISPOSITION_FAIL_CLOSED
+    assert persist_get.get_count == 0
+    trigger_auth = bind_s4a_eg_runtime_trigger_authority_v1(
+        owner_go=S4A_EG_RUNTIME_TRIGGER_OWNER_GO,
+    )
+    assert trigger_auth.disposition == DISPOSITION_PRESENT
+    assert trigger_auth.owner_go_scope == "EXACTLY_ONE_EG_DISPATCH_ONLY"
+    assert trigger_auth.owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert trigger_auth.persist_go == EG_OWNER_GO
+    assert trigger_auth.persist_go_is_trigger_license is False
+    assert trigger_auth.dispatch_count == 0
+    persist_trigger = bind_s4a_eg_runtime_trigger_authority_v1(owner_go=EG_OWNER_GO)
+    assert persist_trigger.disposition == DISPOSITION_FAIL_CLOSED
+    assert persist_trigger.dispatch_count == 0
+    join = bind_s4a_productive_acquisition_join_v1(owner_go=S4A_OWNER_GO)
+    assert join.disposition == DISPOSITION_PRESENT
+    assert join.transport_constructed is False
+    assert join.v5_network_execution is False
+    assert join.get_count == 0
+    mismatched = bind_s4a_runtime_enablement_envelope_v1(
+        owner_go=S2_S3_OWNER_GO,
+        cursor_store_root=cursor_store,
+    )
+    assert mismatched.disposition == DISPOSITION_FAIL_CLOSED
+    assert mismatched.get_count == 0
+    assert mismatched.eg_dispatch_count == 0
+    assert mismatched.v5_invoke_count == 0
+    assert mismatched.runtime_cycle_count == 0
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "bind_s4a_runtime_enablement_envelope_v1" in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s4a = SPEC_PATH.read_text(encoding="utf-8")
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert S4A_THIS_SLICE in source
+    assert "S4A_FRESH_C1_GET_OWNER_GO=" + S4A_FRESH_C1_GET_OWNER_GO in s4a
+    assert "S4A_EG_RUNTIME_TRIGGER_OWNER_GO=" + S4A_EG_RUNTIME_TRIGGER_OWNER_GO in s4a
+    assert "S4A_FRESH_C1_GET_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4a
+    assert "S4A_EG_RUNTIME_TRIGGER_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4a
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4a
+    assert "T2_CONSUMED=false" in s4a
+    assert "GET_COUNT_THIS_SLICE=0" in s4a
+    assert "EG_DISPATCH_COUNT=0" in s4a
+    assert "V5_INVOKE_COUNT=0" in s4a
+    assert "RUNTIME_CYCLE_COUNT=0" in s4a
+    assert "S4_STARTED=false" in s4a
+    assert "MS05_STARTED=false" in s4a
+    assert "S4A_LOCK_ROOT_RELPATH=" + S4A_LOCK_ROOT_RELPATH in s4a
+    assert "S4A_EVIDENCE_ROOT_RELPATH=" + S4A_EVIDENCE_ROOT_RELPATH in s4a
+    assert "does not GET, dispatch EG, invoke V5" in s4a
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert S4A_FRESH_C1_GET_OWNER_GO in spec
+    assert S4A_EG_RUNTIME_TRIGGER_OWNER_GO in spec
+    assert "S4A_ENABLEMENT_BOUND=true" in spec
+    assert "20260917T143500Z" in str(S4A_EVIDENCE_PACK)
+    assert S4A_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S4A_EVIDENCE_PACK) == 0
+    claims = json.loads((S4A_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["THIS_SLICE"] == S4A_THIS_SLICE
+    assert claims["SELECTED_RUNTIME_PATH"] == SELECTED_RUNTIME_PATH
+    assert claims["S4A_FRESH_C1_GET_OWNER_GO"] == S4A_FRESH_C1_GET_OWNER_GO
+    assert claims["S4A_EG_RUNTIME_TRIGGER_OWNER_GO"] == S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    assert claims["T2_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["T2_CONSUMED"] is False
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["V5_INVOKE_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["S4_STARTED"] is False
+    assert claims["MS05_STARTED"] is False
+    assert claims["S4A_V5_EXECUTE_NETWORK"] is False
+    assert claims["DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT"] == "FORBIDDEN"
+    origin = (S4A_EVIDENCE_PACK / "ORIGIN_MAIN_SHA.txt").read_text(encoding="utf-8").strip()
+    assert origin == "7844c8136aeff49bfb295be05816d482cd700a84"
+    assert S4A_CANONICAL_EVIDENCE_PACK.endswith("20260917T143500Z")
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    assert S4A_THIS_SLICE in atlas or "S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND" in atlas
+
+
+class _SpyOccupancyTransportV1:
+    def __init__(self) -> None:
+        self.get_calls = 0
+
+    def get(self, **kwargs: object) -> object:
+        self.get_calls += 1
+        raise AssertionError("occupancy GET invoked during S4B offline bind")
+
+
+def test_s4b_occupancy_gate_input_bind_offline_is_not_runtime_consume() -> None:
+    spy = _SpyOccupancyTransportV1()
+    bound = bind_s4b_occupancy_gate_input_v1(owner_go=S4B_OWNER_GO)
+    injected = bind_s4b_occupancy_gate_input_v1(
+        owner_go=S4B_OWNER_GO,
+        occupancy_transport=spy,
+    )
+    assert CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED is True
+    assert bound.disposition == DISPOSITION_PRESENT
+    assert bound.get_count == 0
+    assert bound.eg_dispatch_count == 0
+    assert bound.v5_invoke_count == 0
+    assert bound.runtime_cycle_count == 0
+    assert bound.occupancy_transport_constructed is False
+    assert bound.occupancy_transport_invoked is False
+    assert bound.occupancy_transport_injected is False
+    assert bound.v5_execute_network is False
+    assert S4B_V5_EXECUTE_NETWORK is False
+    assert S4A_V5_EXECUTE_NETWORK is False
+    assert bound.venue_occupancy == "UNKNOWN"
+    assert bound.venue_occupancy == VENUE_OCCUPANCY_KNOWLEDGE
+    assert bound.occupancy_status_fabricated is False
+    assert bound.occupancy_owner_go == OCCUPANCY_OWNER_GO
+    assert bound.occupancy_owner_go == (
+        "SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF"
+    )
+    assert bound.occupancy_owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert bound.occupancy_owner_go_status == OCCUPANCY_OWNER_GO_STATUS
+    assert bound.occupancy_owner_go_consumed is False
+    assert S4B_OCCUPANCY_OWNER_GO_CONSUMED is False
+    assert bound.persist_go_is_runtime_license is False
+    assert bound.occupancy_fresh_get_transport_param == OCCUPANCY_FRESH_GET_TRANSPORT_PARAM
+    assert bound.occupancy_fresh_get_transport_param == "fresh_get_transport"
+    assert bound.occupancy_fresh_get_transport_protocol == OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL
+    assert bound.occupancy_fresh_get_transport_protocol == "FullCoreFreshPretradeGetTransportV1"
+    assert bound.acquisition_transport_class == S4A_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS
+    assert bound.acquisition_transport_semantically_separate is True
+    assert bound.occupancy_owner_go != S4A_FRESH_C1_GET_OWNER_GO
+    assert bound.occupancy_owner_go != S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    assert bound.occupancy_owner_go != T2_OWNER_GO
+    assert bound.occupancy_owner_go != S4B_OWNER_GO
+    assert bound.occupancy_owner_go != OWNER_GO
+    assert bound.occupancy_owner_go != EG_OWNER_GO
+    assert bound.occupancy_fresh_get_transport_param != "acquisition_transport"
+    assert bound.occupancy_fresh_get_transport_protocol != bound.acquisition_transport_class
+    assert injected.disposition == DISPOSITION_PRESENT
+    assert injected.occupancy_transport_injected is True
+    assert injected.occupancy_transport_invoked is False
+    assert injected.venue_occupancy == "UNKNOWN"
+    assert injected.occupancy_status_fabricated is False
+    assert spy.get_calls == 0
+    mismatched = bind_s4b_occupancy_gate_input_v1(owner_go=S4A_OWNER_GO)
+    assert mismatched.disposition == DISPOSITION_FAIL_CLOSED
+    assert mismatched.get_count == 0
+    occupancy_as_persist = bind_s4b_occupancy_gate_input_v1(owner_go=OCCUPANCY_OWNER_GO)
+    assert occupancy_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    assert occupancy_as_persist.occupancy_owner_go_consumed is False
+    get_go_as_persist = bind_s4b_occupancy_gate_input_v1(owner_go=S4A_FRESH_C1_GET_OWNER_GO)
+    assert get_go_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    eg_go_as_persist = bind_s4b_occupancy_gate_input_v1(owner_go=S4A_EG_RUNTIME_TRIGGER_OWNER_GO)
+    assert eg_go_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    t2_as_persist = bind_s4b_occupancy_gate_input_v1(owner_go=T2_OWNER_GO)
+    assert t2_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    for snippet in FORBIDDEN_SOURCE_SNIPPETS:
+        assert snippet not in source
+    assert S4B_OCCUPANCY_INPUT_BOUND is True
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s4b = SPEC_PATH.read_text(encoding="utf-8")
+    assert S4B_THIS_SLICE in EG_MODULE.read_text(encoding="utf-8")
+    assert "OCCUPANCY_OWNER_GO=" + OCCUPANCY_OWNER_GO in s4b
+    assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4b
+    assert "OCCUPANCY_OWNER_GO_CONSUMED=false" in s4b
+    assert "S4A_V5_EXECUTE_NETWORK=false" in s4b
+    assert "VENUE_OCCUPANCY=UNKNOWN" in s4b
+    assert "GET_COUNT_THIS_SLICE=0" in s4b
+    assert "EG_DISPATCH_COUNT=0" in s4b
+    assert "V5_INVOKE_COUNT=0" in s4b
+    assert "RUNTIME_CYCLE_COUNT=0" in s4b
+    assert "does not GET, dispatch EG, invoke V5" in s4b
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert OCCUPANCY_OWNER_GO in spec
+    assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
+    assert "VENUE_OCCUPANCY=UNKNOWN" in spec
+    assert "20260917T151200Z" in str(S4B_EVIDENCE_PACK)
+    assert S4B_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S4B_EVIDENCE_PACK) == 0
+    claims = json.loads((S4B_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["THIS_SLICE"] == S4B_THIS_SLICE
+    assert claims["OCCUPANCY_OWNER_GO"] == OCCUPANCY_OWNER_GO
+    assert claims["OCCUPANCY_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["OCCUPANCY_OWNER_GO_CONSUMED"] is False
+    assert claims["VENUE_OCCUPANCY"] == "UNKNOWN"
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["V5_INVOKE_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["S4A_V5_EXECUTE_NETWORK"] is False
+    assert claims["OCCUPANCY_STATUS_FABRICATED"] is False
+    origin = (S4B_EVIDENCE_PACK / "ORIGIN_MAIN_SHA.txt").read_text(encoding="utf-8").strip()
+    assert origin == "43d0dd45f36aee085ae98cf550d61302e1b17c83"
+    assert S4B_CANONICAL_EVIDENCE_PACK.endswith("20260917T151200Z")
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    assert S4B_THIS_SLICE in atlas or "S4B_V5_OCCUPANCY_GATE_INPUT_BIND" in atlas
+    for path in PROTECTED_ALGORITHM_FILES:
+        assert (REPO_ROOT / path).is_file()
+
+
+FORBIDDEN_SECRET_SNIPPETS = (
+    "OK-ACCESS-KEY",
+    "OK-ACCESS-SIGN",
+    "OK-ACCESS-PASSPHRASE",
+    "OK-ACCESS-TIMESTAMP",
+    "BEGIN PRIVATE",
+    "api_secret",
+    "API_SECRET",
+)
+
+
+def test_s4d_s4c_disposition_go_consumption_standing_persist_offline() -> None:
+    bound = bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=S4D_OWNER_GO)
+    assert CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED is True
+    assert S4D_S4C_EVIDENCE_BOUND is True
+    assert bound.disposition == DISPOSITION_PRESENT
+    assert bound.get_count == 0
+    assert bound.eg_dispatch_count == 0
+    assert bound.v5_invoke_count == 0
+    assert bound.runtime_cycle_count == 0
+    assert bound.v5_execute_network is False
+    assert S4D_V5_EXECUTE_NETWORK is False
+    assert S4B_V5_EXECUTE_NETWORK is False
+    assert S4A_V5_EXECUTE_NETWORK is False
+    assert bound.venue_occupancy == "UNKNOWN"
+    assert bound.venue_occupancy == VENUE_OCCUPANCY_KNOWLEDGE
+    assert bound.venue_occupancy != bound.s4c_pack_occupancy_disposition
+    assert bound.s4c_pack_occupancy_disposition == "OCCUPANCY_ABSENT"
+    assert bound.s4c_pack_occupancy_disposition == S4C_PACK_OCCUPANCY_DISPOSITION
+    assert bound.s4c_pack_claim_is_not_standing_venue_occupancy is True
+    assert S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY is True
+    assert bound.occupancy_owner_go == OCCUPANCY_OWNER_GO
+    assert bound.occupancy_owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert bound.occupancy_owner_go_consumed is False
+    assert bound.s4c_pack_occupancy_owner_go_status_after == (
+        "CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY"
+    )
+    assert bound.s4c_pack_occupancy_owner_go_status_after == (
+        S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER
+    )
+    assert bound.s4c_pretrade_decision_id == "dv-occupancy-reproof-after-c1-gate-v5"
+    assert bound.s4c_pretrade_decision_id == S4C_PRETRADE_DECISION_ID
+    assert bound.s4c_freshness_policy == "FRESH_GET_PER_PRETRADE_DECISION"
+    assert bound.s4c_freshness_policy == S4C_PACK_FRESHNESS_POLICY
+    assert bound.s4c_classifier == "_classify_occupancy_v1"
+    assert bound.s4c_classifier == S4C_PACK_CLASSIFIER
+    assert bound.s4c_evidence_pack == S4C_EVIDENCE_PACK
+    assert bound.s4c_manifest_sha256 == S4C_MANIFEST_SHA256
+    assert bound.s4c_manifest_sha256 == (
+        "8783db12b2f2f659439d9d32a891e3d4afbd802f811bddada6d9a60d26d7de25"
+    )
+    assert bound.historical_evidence_is_not_standing_enablement is True
+    assert bound.fresh_reproof_required_for_later_pretrade_decision is True
+    assert FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION is True
+    assert bound.persist_go_is_runtime_license is False
+    assert bound.occupancy_owner_go != S4A_FRESH_C1_GET_OWNER_GO
+    assert bound.occupancy_owner_go != S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    assert bound.occupancy_owner_go != T2_OWNER_GO
+    assert bound.occupancy_owner_go != S4B_OWNER_GO
+    assert bound.occupancy_owner_go != S4D_OWNER_GO
+    assert bound.occupancy_owner_go != OWNER_GO
+    assert bound.occupancy_owner_go != EG_OWNER_GO
+    assert S4D_OWNER_GO != S4A_FRESH_C1_GET_OWNER_GO
+    assert S4D_OWNER_GO != S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    assert S4D_OWNER_GO != T2_OWNER_GO
+    assert S4D_OWNER_GO != OCCUPANCY_OWNER_GO
+    mismatched = bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=S4A_OWNER_GO)
+    assert mismatched.disposition == DISPOSITION_FAIL_CLOSED
+    assert mismatched.get_count == 0
+    occupancy_as_persist = bind_s4d_s4c_disposition_go_consumption_persist_v1(
+        owner_go=OCCUPANCY_OWNER_GO
+    )
+    assert occupancy_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    assert occupancy_as_persist.occupancy_owner_go_consumed is False
+    get_go_as_persist = bind_s4d_s4c_disposition_go_consumption_persist_v1(
+        owner_go=S4A_FRESH_C1_GET_OWNER_GO
+    )
+    assert get_go_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    eg_go_as_persist = bind_s4d_s4c_disposition_go_consumption_persist_v1(
+        owner_go=S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    )
+    assert eg_go_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    t2_as_persist = bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=T2_OWNER_GO)
+    assert t2_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    assert (
+        s4c_historical_pack_may_be_consumed_as_fresh_get_v1(
+            pretrade_decision_id="dv-later-unrelated-pretrade-decision"
+        )
+        is False
+    )
+    assert (
+        s4c_historical_pack_may_be_consumed_as_fresh_get_v1(
+            pretrade_decision_id=S4C_PRETRADE_DECISION_ID
+        )
+        is False
+    )
+    occupancy = json.loads(
+        (S4C_EVIDENCE_PACK_PATH / "occupancy_v1.json").read_text(encoding="utf-8")
+    )
+    s4c_claims = json.loads((S4C_EVIDENCE_PACK_PATH / "claims.json").read_text(encoding="utf-8"))
+    assert occupancy["CLASSIFIER"] == "_classify_occupancy_v1"
+    assert occupancy["OCCUPANCY_STATUS"] == "OCCUPANCY_ABSENT"
+    assert occupancy["CLASSIFIER_INPUTS"]["POSITION_ROW_COUNT"] == "0"
+    assert occupancy["CLASSIFIER_INPUTS"]["PENDING_ROW_COUNT"] == "0"
+    assert occupancy["CLASSIFIER_INPUTS"]["POSITIONS_CODE"] == "0"
+    assert occupancy["CLASSIFIER_INPUTS"]["PENDING_CODE"] == "0"
+    assert occupancy["CLASSIFIER_INPUTS"]["CONFIG_CODE"] == "0"
+    assert s4c_claims["OCCUPANCY_DISPOSITION"] == occupancy["OCCUPANCY_STATUS"]
+    assert s4c_claims["CLASSIFIER"] == occupancy["CLASSIFIER"]
+    assert s4c_claims["OCCUPANCY_DISPOSITION"] != "UNKNOWN"
+    manifest_bytes = (S4C_EVIDENCE_PACK_PATH / "MANIFEST.sha256").read_bytes()
+    assert hashlib.sha256(manifest_bytes).hexdigest() == S4C_MANIFEST_SHA256
+    assert verify_manifest_sha256_v1(store_root=S4C_EVIDENCE_PACK_PATH) == 0
+    for path in S4C_EVIDENCE_PACK_PATH.iterdir():
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for snippet in FORBIDDEN_SECRET_SNIPPETS:
+            assert snippet not in text
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    for snippet in FORBIDDEN_SOURCE_SNIPPETS:
+        assert snippet not in source
+    eg_source = EG_MODULE.read_text(encoding="utf-8")
+    assert (
+        "urlopen"
+        not in eg_source.split("def bind_s4d_s4c_disposition_go_consumption_persist_v1")[1].split(
+            "def s4c_historical_pack_may_be_consumed_as_fresh_get_v1"
+        )[0]
+    )
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s4d = SPEC_PATH.read_text(encoding="utf-8")
+    assert S4D_THIS_SLICE in eg_source or S4D_THIS_SLICE in OWNER_MODULE.read_text(encoding="utf-8")
+    assert "VENUE_OCCUPANCY=UNKNOWN" in s4d
+    assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4d
+    assert "OCCUPANCY_OWNER_GO_CONSUMED=false" in s4d
+    assert "S4C_PACK_OCCUPANCY_DISPOSITION=OCCUPANCY_ABSENT" in s4d
+    assert "S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY=true" in s4d
+    assert "FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true" in s4d
+    assert "S4A_V5_EXECUTE_NETWORK=false" in s4d
+    assert "GET_COUNT_THIS_SLICE=0" in s4d
+    assert "EG_DISPATCH_COUNT=0" in s4d
+    assert "V5_INVOKE_COUNT=0" in s4d
+    assert "RUNTIME_CYCLE_COUNT=0" in s4d
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert S4D_OWNER_GO in spec
+    assert "FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true" in spec
+    assert "VENUE_OCCUPANCY=UNKNOWN" in spec
+    assert "20260917T154542Z" in spec
+    assert "20260917T154800Z" in str(S4D_EVIDENCE_PACK)
+    assert S4D_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S4D_EVIDENCE_PACK) == 0
+    claims = json.loads((S4D_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["THIS_SLICE"] == S4D_THIS_SLICE
+    assert claims["S4C_EVIDENCE_PACK"] == S4C_EVIDENCE_PACK
+    assert claims["S4C_MANIFEST_SHA256"] == S4C_MANIFEST_SHA256
+    assert claims["S4C_PACK_CLASSIFIER"] == "_classify_occupancy_v1"
+    assert claims["S4C_PACK_OCCUPANCY_DISPOSITION"] == "OCCUPANCY_ABSENT"
+    assert claims["VENUE_OCCUPANCY"] == "UNKNOWN"
+    assert claims["VENUE_OCCUPANCY"] != claims["S4C_PACK_OCCUPANCY_DISPOSITION"]
+    assert claims["OCCUPANCY_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["OCCUPANCY_OWNER_GO_CONSUMED"] is False
+    assert claims["S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER"] == (
+        "CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY"
+    )
+    assert claims["FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION"] is True
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["V5_INVOKE_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["S4A_V5_EXECUTE_NETWORK"] is False
+    assert claims["S4D_V5_EXECUTE_NETWORK"] is False
+    s4d_text = (S4D_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8")
+    for snippet in FORBIDDEN_SECRET_SNIPPETS:
+        assert snippet not in s4d_text
+    origin = (S4D_EVIDENCE_PACK / "ORIGIN_MAIN_SHA.txt").read_text(encoding="utf-8").strip()
+    assert origin == "e6831784cac84d2287a5e6aedb274fb933a377dc"
+    assert S4D_CANONICAL_EVIDENCE_PACK.endswith("20260917T154800Z")
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    assert S4D_THIS_SLICE in atlas or "S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST" in atlas
+    for path in PROTECTED_ALGORITHM_FILES:
+        assert (REPO_ROOT / path).is_file()

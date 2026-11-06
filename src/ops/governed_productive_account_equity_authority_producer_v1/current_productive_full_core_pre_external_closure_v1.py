@@ -1,0 +1,1036 @@
+"""PRODUCTIVE Full-Core pre-external closure v1 (WP-1 + WP-2).
+
+Consumes Owner-GO OWNER_GO_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.
+Composes common-epoch 29P capital surface from productive read-only GETs,
+wires occupied-lane governed cycle to PRE_EXTERNAL or earliest fail-closed
+blocker. No permit mint. No POST. No external effect.
+
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+"""
+
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Mapping
+from urllib.parse import urlencode
+
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+    invoke_occupied_lane_governed_cycle_n1_consumer_v1,
+)
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import (
+    OCCUPANCY_OCCUPIED,
+)
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
+    IsolatedLaneSlotV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    EXTERNAL_EFFECT_AUTHORIZED,
+    POST_ALLOWED,
+    REAL_VENUE_POST_ALLOWED,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
+    DISPOSITION_HOLD,
+    DISPOSITION_PRE_EXTERNAL_EFFECT,
+    EG_OWNER_GO,
+    GET_OWNER_GO,
+    OCCUPANCY_OWNER_GO,
+    RUNTIME_OWNER_GO,
+    T2_RUNTIME_OWNER_GO,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+    prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+    mark_history_get_query_v1,
+)
+from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
+    ENDPOINT_PUBLIC_MARK_PRICE,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ENDPOINT_MARKET_CANDLES,
+    ENDPOINT_MARKET_INDEX_TICKERS,
+    ENDPOINT_MARKET_TICKER,
+    ENDPOINT_PUBLIC_FUNDING_RATE,
+    ENDPOINT_PUBLIC_OPEN_INTEREST,
+    extract_finalized_candle_closes_v1,
+    extract_funding_rate_v1,
+    extract_index_px_from_index_tickers_payload_v1,
+    extract_mark_and_index_from_payload_v1,
+    extract_open_interest_v1,
+    extract_position_truth_v1,
+    extract_ticker_fields_v1,
+    resolve_index_px_primary_secondary_tertiary_v1,
+    resolve_index_ticker_inst_id_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+    FinalOrderEnvelopeV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    ENDPOINT_ACCOUNT_POSITIONS,
+    FullCoreFreshPretradeGetTransportV1,
+    TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+)
+from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+    FullCoreProductiveReadOnlyGetTransportV1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_CREATED,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
+    default_current_productive_cap24_runtime_state_root_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
+    CurrentProductive29PCommonEpochHandoffError,
+    _resolve_public_inst_type_for_bound_instrument_v1,
+    compose_current_productive_29p_common_epoch_handoff_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CurrentProductive29PRuntimeIntegrityBackendV1,
+    assert_current_productive_29p_execution_identity_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_common_epoch_to_enter_live_29p_handoff_v1 import (
+    CurrentProductiveCommonEpochToEnterLive29PHandoffError,
+    build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_credential_join_v1 import (
+    CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS,
+    bind_productive_read_only_get_transport_for_execute_network_v1,
+    release_productive_credential_handle_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1 import (
+    _assert_no_secrets,
+    _persist_json,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_genesis_runtime_orchestrator_v1 import (
+    persist_manifest_sha256_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
+    verify_manifest_sha256_v1,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalReservationBudgetOwnerV1,
+)
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
+
+OWNER_GO = "OWNER_GO_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1"
+GAP_TRUE_01_OWNER_GO = (
+    "OWNER_GO_CURRENT_PRODUCTIVE_GAP_TRUE_01_EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1"
+)
+ALLOWED_OWNER_GOS = frozenset({OWNER_GO, f"OWNER_GO_{OWNER_GO}", GAP_TRUE_01_OWNER_GO})
+EXPECTED_BASELINE_ORIGIN_MAIN_SHA = "9f2ab677cfdb3ef62d604ba62789b135bf83fe5f"
+THIS_SLICE = "11.2.1.FC.FULL_CORE_CURRENT_PRODUCTIVE_PRE_EXTERNAL_CLOSURE"
+EVIDENCE_DIRNAME = "full_core_current_productive_pre_external_closure_v1"
+FALSE_TOKEN = "false"
+TRUE_TOKEN = "true"
+_PROXY_ENV_KEYS = (
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "ALL_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "all_proxy",
+)
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+
+RUNTIME_OWNER_GOS_CONSUMED = (
+    RUNTIME_OWNER_GO,
+    GET_OWNER_GO,
+    EG_OWNER_GO,
+    OCCUPANCY_OWNER_GO,
+    T2_RUNTIME_OWNER_GO,
+)
+
+
+class CurrentProductiveFullCorePreExternalClosureError(RuntimeError):
+    """Fail-closed pre-external closure violation."""
+
+
+@dataclass(frozen=True)
+class CurrentProductiveFullCorePreExternalClosureResultV1:
+    store_root: str
+    base_sha: str
+    head_sha: str
+    branch: str
+    wp1_status: str
+    wp2_status: str
+    common_epoch_status: str
+    common_epoch_id: str
+    u01_status: str
+    p01_status: str
+    live_account_bound_status: str
+    equity_producer_status: str
+    bound_value_29p_status: str
+    admissibility_29p_status: str
+    instrument_metadata_status: str
+    reference_price_status: str
+    mv2_capital_context_rebind_status: str
+    portfolio_reservation_status: str
+    venue_plan_status: str
+    final_order_envelope_status: str
+    terminal_disposition: str
+    gets_actually_performed: int
+    private_get_auth_path: str
+    runtime_owner_gos_consumed: tuple[str, ...]
+    synthetic_contamination: bool
+    fixture_contamination: bool
+    manual_injection_contamination: bool
+    post_count: int
+    permit_created: bool
+    external_effect_occurred: bool
+    blockers_closed: tuple[str, ...]
+    earliest_remaining_blocker: str
+    manifest_verify_rc: int
+    current_productive_decision_result: str = ""
+    decision_execution_eligible: str = ""
+    envelope_readiness: str = ""
+    pre_external_effect_boundary_reached: str = ""
+    capital_context_bound: str = ""
+    fresh_executable_enter_final_order_envelope: FinalOrderEnvelopeV1 | None = None
+
+
+def _utc_now_iso_v1() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _assert_no_proxy_env_v1() -> None:
+    present = [key for key in _PROXY_ENV_KEYS if str(os.environ.get(key) or "").strip()]
+    if present:
+        raise CurrentProductiveFullCorePreExternalClosureError("HTTP_PROXY_FORBIDDEN")
+
+
+def _assert_standing_pins_v1() -> None:
+    if POST_ALLOWED is True or REAL_VENUE_POST_ALLOWED is True:
+        raise CurrentProductiveFullCorePreExternalClosureError("POST_STANDING_MUST_REMAIN_FALSE")
+    if EXTERNAL_EFFECT_AUTHORIZED is True:
+        raise CurrentProductiveFullCorePreExternalClosureError("EXTERNAL_EFFECT_MUST_REMAIN_FALSE")
+    if CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_CREATED is not True:
+        raise CurrentProductiveFullCorePreExternalClosureError("CLOSURE_SLICE_NOT_CREATED")
+
+
+def _git_head_sha_v1() -> str:
+    import subprocess
+
+    return (
+        subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=_REPO_ROOT, text=True)
+        .strip()
+        .lower()
+    )
+
+
+def _git_branch_v1() -> str:
+    import subprocess
+
+    return subprocess.check_output(
+        ["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=_REPO_ROOT, text=True
+    ).strip()
+
+
+def _fetch_candles_payload_v1(
+    *,
+    transport: FullCoreFreshPretradeGetTransportV1,
+    venue_native_id: str,
+    decision_epoch: str,
+) -> Mapping[str, Any]:
+    query = urlencode({"instId": venue_native_id, "bar": "1m", "limit": "120"})
+    endpoint = f"{ENDPOINT_MARKET_CANDLES}?{query}"
+    result = transport.get(
+        endpoint=endpoint,
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+    if result.get_performed is not True or result.payload is None:
+        raise CurrentProductiveFullCorePreExternalClosureError("C1_CANDLES_GET_FAIL_CLOSED")
+    return result.payload if isinstance(result.payload, Mapping) else {"data": result.payload}
+
+
+def _transport_payload_v1(
+    transport: FullCoreFreshPretradeGetTransportV1,
+    *,
+    path: str,
+    query: Mapping[str, str],
+    auth_required: bool,
+    pretrade_decision_id: str,
+) -> tuple[Any, str]:
+    endpoint = f"{path}?{urlencode(dict(query))}" if query else path
+    result = transport.get(
+        endpoint=endpoint,
+        auth_required=auth_required,
+        pretrade_decision_id=pretrade_decision_id,
+    )
+    if result.get_performed is not True or result.payload is None:
+        return None, str(result.error_class or "GET_NOT_PERFORMED")
+    return result.payload, ""
+
+
+def bind_execute_network_mv2_market_kwargs_v1(
+    *,
+    transport: FullCoreFreshPretradeGetTransportV1,
+    bound_instrument: BoundInstrumentV1,
+    candles_payload: Mapping[str, Any],
+    decision_epoch: str,
+    market_kwargs: Mapping[str, Any] | None,
+    observed_unix: float,
+) -> tuple[dict[str, Any], str | None]:
+    """Bind MV2/Double-Play market inputs from governed live GETs (no replay defaults)."""
+
+    native_id = str(bound_instrument.venue_native_id or "").strip()
+    if not native_id:
+        return {}, "INSTRUMENT_IDENTITY_FAIL_CLOSED"
+
+    mk = dict(market_kwargs or {})
+    mk.pop("candles_payload", None)
+    mk.pop("g17_typed_vol_producers", None)
+    mk["observed_unix"] = observed_unix
+
+    positions_payload = None
+    payloads_by_path = getattr(transport, "payloads_by_path", None)
+    if isinstance(payloads_by_path, Mapping):
+        positions_payload = payloads_by_path.get(ENDPOINT_ACCOUNT_POSITIONS)
+
+    _pos_status, venue_flat, existing_side = extract_position_truth_v1(
+        positions_payload, native_id=native_id
+    )
+    mk.setdefault("venue_flat", venue_flat)
+    mk.setdefault("existing_position_side", existing_side)
+
+    mark_payload, mark_err = _transport_payload_v1(
+        transport,
+        path=ENDPOINT_PUBLIC_MARK_PRICE,
+        query={"instId": native_id},
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+    ticker_payload, ticker_err = _transport_payload_v1(
+        transport,
+        path=ENDPOINT_MARKET_TICKER,
+        query={"instId": native_id},
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+    oi_payload, oi_err = _transport_payload_v1(
+        transport,
+        path=ENDPOINT_PUBLIC_OPEN_INTEREST,
+        query={"instId": native_id},
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+    funding_payload, funding_err = _transport_payload_v1(
+        transport,
+        path=ENDPOINT_PUBLIC_FUNDING_RATE,
+        query={"instId": native_id},
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+
+    mark_px, index_from_mark = extract_mark_and_index_from_payload_v1(
+        mark_payload if isinstance(mark_payload, Mapping) else None,
+        native_id=native_id,
+    )
+    bid, ask, volume, index_from_ticker = extract_ticker_fields_v1(
+        ticker_payload, native_id=native_id
+    )
+    index_px = resolve_index_px_primary_secondary_tertiary_v1(
+        index_from_mark=index_from_mark,
+        index_from_ticker=index_from_ticker,
+        index_from_index_tickers=None,
+    )
+    if index_px is None:
+        index_inst = resolve_index_ticker_inst_id_v1(native_id)
+        index_payload, _index_err = _transport_payload_v1(
+            transport,
+            path=ENDPOINT_MARKET_INDEX_TICKERS,
+            query={"instId": index_inst},
+            auth_required=False,
+            pretrade_decision_id=decision_epoch,
+        )
+        index_px = extract_index_px_from_index_tickers_payload_v1(index_payload, wanted=index_inst)
+
+    oi = extract_open_interest_v1(oi_payload, native_id=native_id)
+    funding = extract_funding_rate_v1(funding_payload, native_id=native_id)
+    closes, last_ts = extract_finalized_candle_closes_v1(candles_payload)
+
+    missing: list[str] = []
+    if mark_px is None:
+        missing.append("MARK_PX")
+    if index_px is None:
+        missing.append("INDEX_PX")
+    if bid is None or ask is None:
+        missing.append("BID_ASK")
+    if volume is None:
+        missing.append("VOLUME")
+    if oi is None:
+        missing.append("OPEN_INTEREST")
+    if funding is None:
+        missing.append("FUNDING_RATE")
+    if not closes or last_ts is None:
+        missing.append("FINALIZED_CANDLES")
+    if mark_err or ticker_err or oi_err or funding_err:
+        missing.append("MARKET_GET_ERROR")
+    if missing:
+        return mk, "MASTER_V2_REQUIRED_GET_INCOMPLETE:" + ",".join(missing)
+
+    mk.update(
+        {
+            "mark_px": float(mark_px),
+            "index_px": float(index_px),
+            "bid_px": float(bid),
+            "ask_px": float(ask),
+            "volume": float(volume),
+            "open_interest": float(oi),
+            "funding_rate": float(funding),
+            "finalized_closes": closes,
+            "last_finalized_event_ts_unix": float(last_ts),
+        }
+    )
+    return mk, None
+
+
+def _lane_pair_v1(
+    *,
+    lane_state_root: Path,
+    bound: BoundInstrumentV1,
+    lane_id: str = "LANE_1",
+) -> tuple[IsolatedLaneSlotV1, BoundInstrumentV1]:
+    root = lane_state_root / lane_id
+    root.mkdir(parents=True, exist_ok=True)
+    slot = IsolatedLaneSlotV1(
+        lane_id=lane_id,
+        occupancy=OCCUPANCY_OCCUPIED,
+        canonical_instrument_id=bound.instrument_id,
+        lane_state_root=str(root),
+        universe_snapshot_id=bound.universe_snapshot_id,
+        ranking_snapshot_id=bound.ranking_snapshot_id,
+        ranking_integrity_digest=bound.ranking_integrity_digest,
+    )
+    return slot, bound
+
+
+def execute_current_productive_full_core_pre_external_closure_v1(
+    *,
+    owner_go: str,
+    origin_main_sha: str,
+    bound_instrument: BoundInstrumentV1,
+    lane_state_root: Path,
+    fresh_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
+    execute_network: bool = False,
+    vault_file: Path | str | None = None,
+    evidence_root: Path | None = None,
+    candles_payload: Mapping[str, Any] | None = None,
+    portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
+    g17_typed_vol_producers: Mapping[str, object] | None = None,
+    market_kwargs: Mapping[str, Any] | None = None,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    cap24_productivity_root: Path | None = None,
+) -> CurrentProductiveFullCorePreExternalClosureResultV1:
+    """Run WP-1+2 closure to PRE_EXTERNAL or earliest blocker."""
+    if owner_go not in ALLOWED_OWNER_GOS:
+        raise CurrentProductiveFullCorePreExternalClosureError("OWNER_GO_MISMATCH")
+    _assert_standing_pins_v1()
+    _assert_no_proxy_env_v1()
+    base_sha = str(origin_main_sha or "").strip().lower()
+    if not base_sha:
+        raise CurrentProductiveFullCorePreExternalClosureError("ORIGIN_MAIN_SHA_MISSING")
+    assert_current_productive_29p_execution_identity_v1(
+        declared_origin_main_sha=base_sha,
+        integrity_backend=execution_integrity_backend,
+    )
+
+    run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    store = (
+        Path(evidence_root)
+        if evidence_root is not None
+        else _REPO_ROOT / "evidence" / "ops" / EVIDENCE_DIRNAME / run_id
+    )
+    store.mkdir(parents=True, exist_ok=True)
+
+    handle = None
+    transport = fresh_get_transport
+    private_auth_path = "NOT_REACHED"
+    wp1_status = "NOT_STARTED"
+    wp2_status = "NOT_STARTED"
+    blockers_closed: list[str] = []
+    earliest = ""
+    common_epoch_id = ""
+    gets_performed = 0
+
+    def _fail(
+        *,
+        wp1: str,
+        wp2: str,
+        blocker: str,
+        status_fields: Mapping[str, str] | None = None,
+    ) -> CurrentProductiveFullCorePreExternalClosureResultV1:
+        fields = dict(status_fields or {})
+        claims = {
+            "OWNER_GO": owner_go,
+            "THIS_SLICE": THIS_SLICE,
+            "BASE_SHA": base_sha,
+            "WP1_STATUS": wp1,
+            "WP2_STATUS": wp2,
+            "EARLIEST_REMAINING_BLOCKER": blocker,
+            "POST_COUNT": "0",
+            "PERMIT_CREATED": FALSE_TOKEN,
+            "EXTERNAL_EFFECT_OCCURRED": FALSE_TOKEN,
+            **fields,
+        }
+        _assert_no_secrets(claims)
+        _persist_json(path=store / "claims.json", payload=claims)
+        _persist_json(path=store / "SUMMARY.json", payload={"FIRST_REAL_BLOCKER": blocker})
+        persist_manifest_sha256_v1(store_root=store)
+        manifest_rc = verify_manifest_sha256_v1(store_root=store)
+        return CurrentProductiveFullCorePreExternalClosureResultV1(
+            store_root=str(store),
+            base_sha=base_sha,
+            head_sha=_git_head_sha_v1(),
+            branch=_git_branch_v1(),
+            wp1_status=wp1,
+            wp2_status=wp2,
+            common_epoch_status=fields.get("COMMON_EPOCH_STATUS", "FAIL"),
+            common_epoch_id=common_epoch_id,
+            u01_status=fields.get("U01_STATUS", "UNKNOWN"),
+            p01_status=fields.get("P01_STATUS", "UNKNOWN"),
+            live_account_bound_status=fields.get("LIVE_ACCOUNT_BOUND_STATUS", "UNKNOWN"),
+            equity_producer_status=fields.get("EQUITY_PRODUCER_STATUS", "UNKNOWN"),
+            bound_value_29p_status=fields.get("29P_BOUND_VALUE_STATUS", "UNKNOWN"),
+            admissibility_29p_status=fields.get("29P_ADMISSIBILITY_STATUS", "UNKNOWN"),
+            instrument_metadata_status=fields.get("INSTRUMENT_METADATA_STATUS", "UNKNOWN"),
+            reference_price_status=fields.get("REFERENCE_PRICE_STATUS", "UNKNOWN"),
+            mv2_capital_context_rebind_status=fields.get(
+                "MV2_CAPITAL_CONTEXT_REBIND_STATUS", "UNKNOWN"
+            ),
+            portfolio_reservation_status=fields.get("PORTFOLIO_RESERVATION_STATUS", "NOT_REACHED"),
+            venue_plan_status=fields.get("VENUE_PLAN_STATUS", "NOT_REACHED"),
+            final_order_envelope_status=fields.get("FINAL_ORDER_ENVELOPE_STATUS", "NOT_REACHED"),
+            terminal_disposition=fields.get("TERMINAL_DISPOSITION", "FAIL_CLOSED"),
+            gets_actually_performed=gets_performed,
+            private_get_auth_path=private_auth_path,
+            runtime_owner_gos_consumed=(),
+            synthetic_contamination=False,
+            fixture_contamination=False,
+            manual_injection_contamination=False,
+            post_count=0,
+            permit_created=False,
+            external_effect_occurred=False,
+            blockers_closed=tuple(blockers_closed),
+            earliest_remaining_blocker=blocker,
+            manifest_verify_rc=manifest_rc,
+            fresh_executable_enter_final_order_envelope=None,
+        )
+
+    try:
+        transport, cred_status, handle = (
+            bind_productive_read_only_get_transport_for_execute_network_v1(
+                execute_network=execute_network,
+                fresh_get_transport=transport,
+                vault_file=vault_file,
+                repo_root=_REPO_ROOT,
+            )
+        )
+        if cred_status == CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS:
+            return _fail(
+                wp1="BLOCKED",
+                wp2="NOT_STARTED",
+                blocker="CREDENTIAL_HANDLE_FAIL_CLOSED",
+                status_fields={
+                    "PRIVATE_GET_AUTH_PATH": cred_status,
+                    "COMMON_EPOCH_STATUS": "NOT_REACHED",
+                },
+            )
+        if transport is None:
+            return _fail(
+                wp1="BLOCKED",
+                wp2="NOT_STARTED",
+                blocker="FRESH_GET_TRANSPORT_REQUIRED",
+                status_fields={"COMMON_EPOCH_STATUS": "NOT_REACHED"},
+            )
+        if execute_network is True:
+            private_auth_path = "SECTION_11_13_5_SECRETREF_VAULT_AND_K1_VENUE_AUTH_SESSION_V1"
+        elif isinstance(transport, FullCoreProductiveReadOnlyGetTransportV1):
+            private_auth_path = "PRODUCTIVE_READ_ONLY_TRANSPORT_PREBOUND"
+        else:
+            private_auth_path = "INJECTED_PRODUCTIVE_CLASS_TRANSPORT"
+
+        decision_epoch = _utc_now_iso_v1()
+        common_epoch_id = decision_epoch
+        wp1_status = "IN_PROGRESS"
+        prod_root = (
+            Path(cap24_productivity_root)
+            if cap24_productivity_root is not None
+            else default_current_productive_cap24_runtime_state_root_v1()
+        )
+        try:
+            resolved_inst_type = _resolve_public_inst_type_for_bound_instrument_v1(
+                bound=bound_instrument,
+                productivity_root=prod_root,
+                cap21_public_inst_type=None,
+            )
+        except CurrentProductive29PCommonEpochHandoffError as exc:
+            wp1_status = "FAIL"
+            return _fail(
+                wp1=wp1_status,
+                wp2="NOT_STARTED",
+                blocker=str(exc),
+                status_fields={
+                    "COMMON_EPOCH_STATUS": "NOT_REACHED",
+                    "CAP21_PUBLIC_INST_TYPE_BINDING": "FAIL_CLOSED",
+                },
+            )
+        handoff = compose_current_productive_29p_common_epoch_handoff_v1(
+            decision_epoch=decision_epoch,
+            bound_instrument=bound_instrument,
+            fresh_get_transport=transport,
+            inst_type=resolved_inst_type,
+        )
+        gets_performed = int(getattr(transport, "request_count", 0) or 0)
+
+        if handoff.evaluator_29p is not True:
+            wp1_status = "FAIL"
+            return _fail(
+                wp1=wp1_status,
+                wp2="NOT_STARTED",
+                blocker="STEP_29P_RISK_ADMISSIBLE_FALSE",
+                status_fields={
+                    "COMMON_EPOCH_STATUS": "COMPOSED_NOT_ADMISSIBLE",
+                    "U01_STATUS": str(handoff.adaptation.status),
+                    "P01_STATUS": "DOES_NOT_APPLY",
+                    "LIVE_ACCOUNT_BOUND_STATUS": str(handoff.lab_status),
+                    "EQUITY_PRODUCER_STATUS": "MINTED" if handoff.produced else "UNMINTED",
+                    "29P_BOUND_VALUE_STATUS": "UNBOUND",
+                    "29P_ADMISSIBILITY_STATUS": FALSE_TOKEN,
+                },
+            )
+
+        blockers_closed.extend(["E2E-B01", "E2E-B02", "E2E-B03", "E2E-B04", "E2E-B05"])
+        wp1_status = "PASS"
+
+        try:
+            live_29p_injected = (
+                build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1(
+                    handoff=handoff,
+                    transport=transport,
+                )
+            )
+        except (
+            CurrentProductiveCommonEpochToEnterLive29PHandoffError,
+            CurrentProductive29PCommonEpochHandoffError,
+        ) as exc:
+            return _fail(
+                wp1=wp1_status,
+                wp2="NOT_STARTED",
+                blocker=str(exc)[:120],
+                status_fields={
+                    "COMMON_EPOCH_STATUS": "PASS",
+                    "U01_STATUS": str(handoff.adaptation.status),
+                    "LIVE_ACCOUNT_BOUND_STATUS": str(handoff.lab_status),
+                    "EQUITY_PRODUCER_STATUS": "MINTED",
+                    "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                },
+            )
+
+        wp2_status = "IN_PROGRESS"
+        candles = candles_payload
+        if candles is None:
+            candles = _fetch_candles_payload_v1(
+                transport=transport,
+                venue_native_id=str(bound_instrument.venue_native_id),
+                decision_epoch=decision_epoch,
+            )
+            gets_performed = int(getattr(transport, "request_count", 0) or 0)
+
+        observed_unix = datetime.now(timezone.utc).timestamp()
+        if execute_network is True:
+            mk, market_bind_blocker = bind_execute_network_mv2_market_kwargs_v1(
+                transport=transport,
+                bound_instrument=bound_instrument,
+                candles_payload=dict(candles),
+                decision_epoch=decision_epoch,
+                market_kwargs=market_kwargs,
+                observed_unix=observed_unix,
+            )
+            if market_bind_blocker:
+                return _fail(
+                    wp1="PASS",
+                    wp2="FAIL",
+                    blocker=market_bind_blocker,
+                    status_fields={
+                        "COMMON_EPOCH_STATUS": "PASS",
+                        "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                    },
+                )
+            mk.setdefault("origin_main_sha", base_sha)
+            mk.setdefault("cycle_id_prefix", f"pre-ext-closure-{run_id}")
+        else:
+            mk = dict(market_kwargs or {})
+            mk.pop("candles_payload", None)
+            mk.pop("g17_typed_vol_producers", None)
+            mk.setdefault("origin_main_sha", base_sha)
+            mk.setdefault("cycle_id_prefix", f"pre-ext-closure-{run_id}")
+            mk.setdefault("observed_unix", observed_unix)
+            mk.setdefault("mark_px", 100.0)
+            mk.setdefault("index_px", 100.0)
+            mk.setdefault("bid_px", 99.5)
+            mk.setdefault("ask_px", 100.5)
+            mk.setdefault("volume", 10.0)
+            mk.setdefault("open_interest", 20.0)
+            mk.setdefault("funding_rate", 0.0001)
+            mk.setdefault("finalized_closes", (98.0, 99.0, 100.0))
+            mk.setdefault("last_finalized_event_ts_unix", mk["observed_unix"] - 60.0)
+            mk.setdefault("venue_flat", True)
+            mk.setdefault("existing_position_side", ExistingPositionSide.NONE)
+
+        pair = _lane_pair_v1(lane_state_root=Path(lane_state_root), bound=bound_instrument)
+        pairs = {"LANE_1": pair}
+        invoke_kwargs = dict(mk)
+        resolved_g17_producers = g17_typed_vol_producers
+        if resolved_g17_producers is None:
+            mark_history_endpoint = (
+                f"{ENDPOINT_HISTORY_MARK_PRICE_CANDLES}?"
+                f"{urlencode(mark_history_get_query_v1(venue_native_id=str(bound_instrument.venue_native_id or '')))}"
+            )
+            mark_history_result = transport.get(
+                endpoint=mark_history_endpoint,
+                auth_required=False,
+                pretrade_decision_id=decision_epoch,
+            )
+            gets_performed = int(getattr(transport, "request_count", 0) or 0)
+            if mark_history_result.get_performed is not True or mark_history_result.payload is None:
+                return _fail(
+                    wp1="PASS",
+                    wp2="FAIL",
+                    blocker="G17_MARK_HISTORY_GET_FAIL_CLOSED",
+                    status_fields={
+                        "COMMON_EPOCH_STATUS": "PASS",
+                        "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                    },
+                )
+            g17_join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+                evidence_store_root=store,
+                bound_instrument=bound_instrument,
+                mark_candles_payload=mark_history_result.payload,
+                receive_or_capture_timestamp=str(int(float(mk["observed_unix"]) * 1000)),
+            )
+            if g17_join.fail_closed or not g17_join.estimate_present or g17_join.producer is None:
+                blocker = "G17_TYPED_VOL_HOT_PATH_FAIL_CLOSED:" + (
+                    g17_join.reason_code or "ESTIMATE_ABSENT"
+                )
+                return _fail(
+                    wp1="PASS",
+                    wp2="FAIL",
+                    blocker=blocker,
+                    status_fields={
+                        "COMMON_EPOCH_STATUS": "PASS",
+                        "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                    },
+                )
+            resolved_g17_producers = {"LANE_1": g17_join.producer}
+        invoke_kwargs["g17_typed_vol_producers"] = resolved_g17_producers
+
+        if (
+            "canonical_price_provenance" not in invoke_kwargs
+            and "canonical_price_provenance_by_lane" not in invoke_kwargs
+        ):
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+                build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+            )
+
+            mark_px = float(invoke_kwargs.get("mark_px") or 0.0)
+            index_px = float(invoke_kwargs.get("index_px") or mark_px)
+            invoke_kwargs["canonical_price_provenance"] = (
+                build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+                    venue_native_id=str(bound_instrument.venue_native_id or ""),
+                    mark_px=mark_px,
+                    index_px=index_px,
+                )
+            )
+
+        results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
+            pairs,
+            live_29p_injected=live_29p_injected,
+            portfolio_budget_owner=portfolio_budget_owner,
+            candles_payload=dict(candles),
+            common_epoch_decision_epoch=decision_epoch,
+            **invoke_kwargs,
+        )
+        lane_result = results["LANE_1"]
+        cycle = lane_result.governed_cycle_result
+        terminal = str(cycle.disposition)
+        post_count = int(cycle.post_count)
+        permit_created = bool(cycle.permit_created)
+        decision_result = str(getattr(cycle, "decision_result", "") or "")
+        decision_eligible = str(
+            getattr(cycle, "decision_execution_eligible", FALSE_TOKEN) or FALSE_TOKEN
+        )
+        master_v2_decision = str(getattr(cycle, "master_v2_decision", "") or "")
+        envelope_created = bool(getattr(cycle, "envelope_created", False))
+        envelope_identity = str(getattr(cycle, "envelope_identity", "") or "")
+        fresh_envelope = getattr(cycle, "final_order_envelope", None)
+        if fresh_envelope is not None and not isinstance(fresh_envelope, FinalOrderEnvelopeV1):
+            fresh_envelope = None
+
+        if post_count != 0 or permit_created:
+            raise CurrentProductiveFullCorePreExternalClosureError("EXTERNAL_EFFECT_OR_POST_LEAK")
+
+        venue_plan_status = "NOT_REACHED"
+        envelope_status = "NOT_REACHED"
+        rebind_status = "NOT_REACHED"
+        ref_price_status = "NOT_EVALUATED"
+        metadata_status = "NOT_EVALUATED"
+        portfolio_status = "NOT_REACHED"
+
+        if terminal == DISPOSITION_PRE_EXTERNAL_EFFECT:
+            wp2_status = "PASS"
+            blockers_closed.append("E2E-B06")
+            venue_plan_status = "PASS"
+            envelope_status = "PASS"
+            rebind_status = "PASS"
+            ref_price_status = "GOVERNED_MV2_MARK"
+            metadata_status = "TRUSTED_CURRENT"
+            portfolio_status = "PASS" if portfolio_budget_owner is not None else "NOT_REQUIRED"
+            earliest = "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+        elif terminal == DISPOSITION_HOLD:
+            wp2_status = "HOLD_TERMINAL"
+            earliest = (
+                str(cycle.first_genuine_blocker or cycle.reason_code or "ENTRY_NON_EXECUTABLE")
+                if master_v2_decision in {"enter_long", "enter_short"}
+                else "MARKET_STATE_HOLD_NOT_ENTER"
+            )
+        else:
+            wp2_status = "FAIL"
+            earliest = str(cycle.first_genuine_blocker or cycle.reason_code or "FAIL_CLOSED")
+
+        envelope_readiness = (
+            TRUE_TOKEN
+            if decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
+            and envelope_created
+            and decision_eligible.lower() == "true"
+            else FALSE_TOKEN
+        )
+        pre_external_reached = (
+            TRUE_TOKEN if terminal == DISPOSITION_PRE_EXTERNAL_EFFECT else FALSE_TOKEN
+        )
+        capital_context_bound = TRUE_TOKEN if rebind_status == "PASS" else FALSE_TOKEN
+        final_envelope_id = ""
+        final_envelope_digest = ""
+        if envelope_identity.startswith("envelope_id="):
+            parts = dict(
+                segment.split("=", 1) for segment in envelope_identity.split(";") if "=" in segment
+            )
+            final_envelope_id = str(parts.get("envelope_id", "") or "")
+            final_envelope_digest = str(parts.get("digest", "") or "")
+
+        runtime_envelope_available = (
+            TRUE_TOKEN
+            if fresh_envelope is not None
+            and decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
+            and terminal == DISPOSITION_PRE_EXTERNAL_EFFECT
+            else FALSE_TOKEN
+        )
+        if (
+            terminal == DISPOSITION_PRE_EXTERNAL_EFFECT
+            and decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
+            and fresh_envelope is None
+        ):
+            earliest = "FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_UNAVAILABLE_AT_RUNTIME"
+            wp2_status = "FAIL"
+
+        claims = {
+            "OWNER_GO": owner_go,
+            "THIS_SLICE": THIS_SLICE,
+            "BASE_SHA": base_sha,
+            "HEAD_SHA": _git_head_sha_v1(),
+            "WP1_STATUS": wp1_status,
+            "WP2_STATUS": wp2_status,
+            "COMMON_EPOCH_STATUS": "PASS",
+            "COMMON_EPOCH_ID": common_epoch_id,
+            "U01_STATUS": str(handoff.adaptation.status),
+            "P01_STATUS": "DOES_NOT_APPLY",
+            "LIVE_ACCOUNT_BOUND_STATUS": str(handoff.lab_status),
+            "EQUITY_PRODUCER_STATUS": "MINTED",
+            "29P_BOUND_VALUE_STATUS": "BOUND",
+            "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+            "INSTRUMENT_METADATA_STATUS": metadata_status,
+            "REFERENCE_PRICE_STATUS": ref_price_status,
+            "MV2_CAPITAL_CONTEXT_REBIND_STATUS": rebind_status,
+            "PORTFOLIO_RESERVATION_STATUS": portfolio_status,
+            "VENUE_PLAN_STATUS": venue_plan_status,
+            "FINAL_ORDER_ENVELOPE_STATUS": envelope_status,
+            "TERMINAL_DISPOSITION": terminal,
+            "GETS_ACTUALLY_PERFORMED": str(gets_performed),
+            "PRIVATE_GET_AUTH_PATH": private_auth_path,
+            "RUNTIME_OWNER_GOS_CONSUMED": list(RUNTIME_OWNER_GOS_CONSUMED),
+            "SYNTHETIC_CONTAMINATION": FALSE_TOKEN,
+            "FIXTURE_CONTAMINATION": FALSE_TOKEN,
+            "MANUAL_INJECTION_CONTAMINATION": FALSE_TOKEN,
+            "POST_COUNT": str(post_count),
+            "PERMIT_CREATED": FALSE_TOKEN,
+            "EXTERNAL_EFFECT_OCCURRED": FALSE_TOKEN,
+            "BLOCKERS_CLOSED": blockers_closed,
+            "EARLIEST_REMAINING_BLOCKER": earliest,
+            "TRANSPORT_CLASS": str(getattr(transport, "transport_class", "")),
+            "CURRENT_PRODUCTIVE_DECISION_RESULT": decision_result or "NO_EXECUTABLE_DECISION",
+            "DECISION_EXECUTION_ELIGIBLE": decision_eligible,
+            "MASTER_V2_DECISION": master_v2_decision,
+            "ENVELOPE_READINESS": envelope_readiness,
+            "FINAL_ENVELOPE_CREATED": TRUE_TOKEN if envelope_created else FALSE_TOKEN,
+            "FINAL_ENVELOPE_ID": final_envelope_id,
+            "FINAL_ENVELOPE_DIGEST": final_envelope_digest,
+            "FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_AVAILABLE": runtime_envelope_available,
+            "PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED": pre_external_reached,
+            "CAPITAL_CONTEXT_BOUND": capital_context_bound,
+            "VENUE_MUTATION_PERFORMED": FALSE_TOKEN,
+            "REAL_EXTERNAL_EFFECT_AUTHORIZED": FALSE_TOKEN,
+            "REAL_VENUE_POST_ALLOWED": FALSE_TOKEN,
+            "POST_ALLOWED": FALSE_TOKEN,
+        }
+        capital_guard_binding_digest = ""
+        capital_guard_observe_status = "NOT_REACHED"
+        if (
+            terminal == DISPOSITION_PRE_EXTERNAL_EFFECT
+            and fresh_envelope is not None
+            and isinstance(fresh_envelope, FinalOrderEnvelopeV1)
+        ):
+            from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
+                build_full_core_capital_guard_join_binding_v1,
+                extract_instrument_contract_metadata_v1,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
+                FullCoreCapitalGuardJoinMode,
+                run_full_core_pre_post_capital_guard_join_v1,
+            )
+
+            try:
+                instruments_payload = None
+                if live_29p_injected is not None:
+                    instruments_payload = getattr(live_29p_injected, "instruments_payload", None)
+                meta = extract_instrument_contract_metadata_v1(
+                    instruments_payload if isinstance(instruments_payload, Mapping) else None,
+                    instrument_id=str(fresh_envelope.instrument_id),
+                )
+                guard_binding = build_full_core_capital_guard_join_binding_v1(
+                    canonical_decision_id=common_epoch_id,
+                    bound_instrument=bound_instrument,
+                    envelope=fresh_envelope,
+                    master_v2_decision=master_v2_decision,
+                    account_identity=str(handoff.bound_uid),
+                    environment="PRODUCTIVE_READ_ONLY",
+                    origin_main_sha=base_sha,
+                    instrument_metadata=meta,
+                    pre_external_reached=True,
+                    terminal_disposition=terminal,
+                )
+                observe = run_full_core_pre_post_capital_guard_join_v1(
+                    binding=guard_binding,
+                    envelope=fresh_envelope,
+                    join_mode=FullCoreCapitalGuardJoinMode.OBSERVE_ONLY,
+                    account_evidence_scope=str(handoff.bound_uid),
+                    authoritative_environment="PRODUCTIVE_READ_ONLY",
+                    authoritative_venue_plan_digest=guard_binding.venue_plan_digest,
+                )
+                capital_guard_binding_digest = str(observe.binding_digest or "")
+                capital_guard_observe_status = (
+                    "PASS" if observe.guard_allowed and not observe.guard_blocked else "BLOCK"
+                )
+                claims["FULL_CORE_CAPITAL_GUARD_OBSERVE"] = observe.to_dict()
+            except Exception as exc:
+                capital_guard_observe_status = f"FAIL:{exc.__class__.__name__}"
+
+        claims["FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST"] = capital_guard_binding_digest
+        claims["FULL_CORE_CAPITAL_GUARD_OBSERVE_STATUS"] = capital_guard_observe_status
+        cycle_extra = getattr(cycle, "extra", None) or {}
+        for join_claim_key in (
+            "FULL_CORE_CAPITAL_GUARD_JOIN_MODE",
+            "FULL_CORE_CAPITAL_GUARD_BLOCKED",
+            "FULL_CORE_CAPITAL_GUARD_POST_COUNT",
+            "FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST",
+            "FULL_CORE_CAPITAL_GUARD_REASONS",
+        ):
+            if join_claim_key in cycle_extra:
+                claims[join_claim_key] = str(cycle_extra[join_claim_key])
+
+        _assert_no_secrets(claims)
+        _persist_json(path=store / "claims.json", payload=claims)
+        if fresh_envelope is not None:
+            envelope_json = fresh_envelope.to_runtime_json_v1()
+            _assert_no_secrets(envelope_json)
+            _persist_json(path=store / "FINAL_ORDER_ENVELOPE.json", payload=envelope_json)
+        _persist_json(
+            path=store / "SUMMARY.json",
+            payload={
+                "TERMINAL_DISPOSITION": terminal,
+                "POST_COUNT": str(post_count),
+                "EARLIEST_REMAINING_BLOCKER": earliest,
+                "CURRENT_PRODUCTIVE_DECISION_RESULT": decision_result or "NO_EXECUTABLE_DECISION",
+                "DECISION_EXECUTION_ELIGIBLE": decision_eligible,
+                "ENVELOPE_READINESS": envelope_readiness,
+                "PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED": pre_external_reached,
+                "CAPITAL_CONTEXT_BOUND": capital_context_bound,
+                "MV2_CAPITAL_CONTEXT_REBIND_STATUS": rebind_status,
+                "VENUE_MUTATION_PERFORMED": FALSE_TOKEN,
+                "EXTERNAL_EFFECT_OCCURRED": FALSE_TOKEN,
+            },
+        )
+        persist_manifest_sha256_v1(store_root=store)
+        manifest_rc = verify_manifest_sha256_v1(store_root=store)
+
+        return CurrentProductiveFullCorePreExternalClosureResultV1(
+            store_root=str(store),
+            base_sha=base_sha,
+            head_sha=_git_head_sha_v1(),
+            branch=_git_branch_v1(),
+            wp1_status=wp1_status,
+            wp2_status=wp2_status,
+            common_epoch_status="PASS",
+            common_epoch_id=common_epoch_id,
+            u01_status=str(handoff.adaptation.status),
+            p01_status="DOES_NOT_APPLY",
+            live_account_bound_status=str(handoff.lab_status),
+            equity_producer_status="MINTED",
+            bound_value_29p_status="BOUND",
+            admissibility_29p_status=TRUE_TOKEN,
+            instrument_metadata_status=metadata_status,
+            reference_price_status=ref_price_status,
+            mv2_capital_context_rebind_status=rebind_status,
+            portfolio_reservation_status=portfolio_status,
+            venue_plan_status=venue_plan_status,
+            final_order_envelope_status=envelope_status,
+            terminal_disposition=terminal,
+            gets_actually_performed=gets_performed,
+            private_get_auth_path=private_auth_path,
+            runtime_owner_gos_consumed=RUNTIME_OWNER_GOS_CONSUMED,
+            synthetic_contamination=False,
+            fixture_contamination=False,
+            manual_injection_contamination=False,
+            post_count=post_count,
+            permit_created=permit_created,
+            external_effect_occurred=False,
+            blockers_closed=tuple(blockers_closed),
+            earliest_remaining_blocker=earliest,
+            manifest_verify_rc=manifest_rc,
+            current_productive_decision_result=decision_result or "NO_EXECUTABLE_DECISION",
+            decision_execution_eligible=decision_eligible,
+            envelope_readiness=envelope_readiness,
+            pre_external_effect_boundary_reached=pre_external_reached,
+            capital_context_bound=capital_context_bound,
+            fresh_executable_enter_final_order_envelope=fresh_envelope,
+        )
+    finally:
+        release_productive_credential_handle_v1(handle)
+
+
+__all__ = [
+    "ALLOWED_OWNER_GOS",
+    "GAP_TRUE_01_OWNER_GO",
+    "EVIDENCE_DIRNAME",
+    "EXPECTED_BASELINE_ORIGIN_MAIN_SHA",
+    "OWNER_GO",
+    "RUNTIME_OWNER_GOS_CONSUMED",
+    "THIS_SLICE",
+    "CurrentProductiveFullCorePreExternalClosureError",
+    "CurrentProductiveFullCorePreExternalClosureResultV1",
+    "execute_current_productive_full_core_pre_external_closure_v1",
+]

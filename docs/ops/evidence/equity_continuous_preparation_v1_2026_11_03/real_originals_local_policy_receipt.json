@@ -1,0 +1,36 @@
+{
+  "status": "LOCAL_VERIFICATION_PASS_RUNTIME_BLOCKED",
+  "source_status": "OBSERVED_WINDOW_EXPLAINED_WITH_EXPLICIT_PRESENTATION_RESIDUALS",
+  "source_reconciliation_sha256": "1ebacbce7afccaba7146785549be7e05d76cbff998c51f4f333eb0ea8e52c928",
+  "report_sha256": "99d9506ef142e12f376aefb6204b86b69e03c6fafc8a3994082f856106212e28",
+  "observed_at": "2026-11-03T22:02:21.217568+00:00",
+  "trading_window_posting_count": 11,
+  "funding_window_posting_count": 5,
+  "internal_transfer_counterparts": 3,
+  "funding_bilateral_reconstruction_exact": true,
+  "exact_snapshot_equality": false,
+  "exact_source_blockers": [
+    "VENUE_NUMERIC_REPRESENTATION_CONTRACT_UNPROVEN"
+  ],
+  "credential_access_or_network_in_replay": false,
+  "orders_or_transfers": 0,
+  "capital_admitted": false,
+  "internal_assessment": {
+    "schema": "peaktrade.equity_internal_assessment.v1",
+    "policy_digest": "753f69cb3713a7208d8d3742db2e803cd2a996618d854372112add70378267ad",
+    "source_result_digest": "02b7bd21e21e8056db8a175a8dcbf30f8ae5938ac808de96c6f296c3f0358a07",
+    "status": "LOCAL_VERIFICATION_PASS_RUNTIME_BLOCKED",
+    "comparison_count": 6,
+    "blockers": [],
+    "native_ledger_modified": false,
+    "venue_numeric_contract_assumed": false,
+    "real_continuous_observation_proven": false,
+    "runtime_activation_authorized": false,
+    "capital_admitted": false
+  },
+  "exit_code": 0,
+  "k1_open_calls": 0,
+  "socket_connect_calls": 0,
+  "new_real_gets": 0,
+  "private_report_path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/equity-reconciliation-2026-11-03/reconciliation_internal_policy_v1.json"
+}

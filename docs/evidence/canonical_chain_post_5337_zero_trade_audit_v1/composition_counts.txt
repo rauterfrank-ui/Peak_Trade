@@ -1,0 +1,30 @@
+COMPOSITION_SELECTED_SIDE (8-member probe, all hooked bars)
+  long = 1356
+  short = 210
+  none = 21578
+
+DECISION_OUTCOME (same population)
+  enter_long = 231
+  hold = 18587
+  observe = 2976
+  reduce = 1140
+  no_action = 210
+  None = 480
+
+ENTRY-BAR FIRST_FAILED_STAGE (strategy raw +1 only, 10 bars)
+  composition = 6
+  entry_exit = 4
+
+LONG_COMPOSITION_COUNT=1356
+SHORT_COMPOSITION_COUNT=210
+FAIL_CLOSED_COUNT=21578  # composition selected_side=none
+
+1INCH BLOCK REASONS (full instrument)
+  entry_long_eligible=11
+  existing_long_hold=2669
+  selected_opposite_short=128
+  observe_only=75
+  no_action=10
+  reversal_preparation=128
+  warmup_required=60
+  CANONICAL_DECISION_NOT_ACTIONABLE=128

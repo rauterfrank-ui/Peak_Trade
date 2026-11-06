@@ -1,0 +1,204 @@
+{
+  "schema_version": "governed_runtime_primary_to_offline_observation_projection_field_mapping_ledger_v1",
+  "workpackage_id": "GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1",
+  "cross_mode_normalization_status": "PARTIAL_CURRENT",
+  "modes": {
+    "PAPER": {
+      "source_execution_mode": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "literal PAPER",
+        "transform": "constant_source_mode_token"
+      },
+      "source_run_session_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/run_id"
+      },
+      "source_archive_root_ref": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "caller-supplied durable archive root path (resolved, outside /tmp)"
+      },
+      "primary_evidence_manifest_digest": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "MANIFEST.sha256",
+        "transform": "sha256(MANIFEST.sha256 file bytes)"
+      },
+      "runtime_out_evidence_manifest_digest": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "runtime_out/evidence_manifest.json",
+        "transform": "sha256(file bytes); distinct from MANIFEST.sha256"
+      },
+      "wrapper_evidence_manifest_digest": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      },
+      "observation_time_utc": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/observation_time_utc"
+      },
+      "instrument_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/instrument"
+      },
+      "venue_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/venue"
+      },
+      "trading_epoch": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/trading_epoch"
+      },
+      "strategy_config_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/strategy_version"
+      },
+      "repository_code_provenance": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/repo_head_sha_prefix"
+      },
+      "review_metrics": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "review/REVIEW_RESULT.json/metrics"
+      },
+      "offline_observations.robustness_results": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      },
+      "offline_observations.regime_results": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      }
+    },
+    "SHADOW": {
+      "source_execution_mode": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "literal SHADOW",
+        "transform": "constant_source_mode_token"
+      },
+      "source_run_session_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/run_id"
+      },
+      "source_archive_root_ref": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "caller-supplied durable archive root path (resolved, outside /tmp)"
+      },
+      "primary_evidence_manifest_digest": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "MANIFEST.sha256",
+        "transform": "sha256(MANIFEST.sha256 file bytes)"
+      },
+      "runtime_out_evidence_manifest_digest": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      },
+      "wrapper_evidence_manifest_digest": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "wrapper_evidence/manifest.json",
+        "transform": "sha256(file bytes)"
+      },
+      "observation_time_utc": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "WALLCLOCK_EVIDENCE.json/end_wall_clock_iso",
+        "transform": "wallclock end timestamp when valid"
+      },
+      "instrument_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/instrument"
+      },
+      "venue_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/venue"
+      },
+      "trading_epoch": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/trading_epoch"
+      },
+      "strategy_config_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/strategy_version"
+      },
+      "repository_code_provenance": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/repo_head_sha_prefix"
+      },
+      "review_metrics": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "review/REVIEW_RESULT.json/metrics"
+      },
+      "offline_observations.robustness_results": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      },
+      "offline_observations.regime_results": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      }
+    },
+    "TESTNET": {
+      "source_execution_mode": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "literal TESTNET",
+        "transform": "constant_source_mode_token"
+      },
+      "source_run_session_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/run_id"
+      },
+      "source_archive_root_ref": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "caller-supplied durable archive root path (resolved, outside /tmp)"
+      },
+      "primary_evidence_manifest_digest": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "MANIFEST.sha256",
+        "transform": "sha256(MANIFEST.sha256 file bytes)"
+      },
+      "runtime_out_evidence_manifest_digest": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      },
+      "wrapper_evidence_manifest_digest": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "wrapper_evidence/manifest.json",
+        "transform": "sha256(file bytes)"
+      },
+      "observation_time_utc": {
+        "adjudication": "MECHANICAL_TRANSFORM",
+        "source": "WALLCLOCK_EVIDENCE.json/end_wall_clock_iso",
+        "transform": "wallclock end timestamp when valid"
+      },
+      "instrument_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/instrument"
+      },
+      "venue_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/venue"
+      },
+      "trading_epoch": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/trading_epoch"
+      },
+      "strategy_config_identity": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/strategy_version"
+      },
+      "repository_code_provenance": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "RUN_METADATA.json/repo_head_sha_prefix"
+      },
+      "review_metrics": {
+        "adjudication": "DIRECT_SOURCE",
+        "source": "review/REVIEW_RESULT.json/metrics"
+      },
+      "offline_observations.robustness_results": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      },
+      "offline_observations.regime_results": {
+        "adjudication": "NOT_APPLICABLE",
+        "source": null
+      }
+    }
+  }
+}

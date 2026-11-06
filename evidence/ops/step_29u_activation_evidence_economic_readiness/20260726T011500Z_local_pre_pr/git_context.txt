@@ -1,0 +1,6 @@
+REPO_ROOT=/Users/frnkhrz/.peak_trade_worktrees/step-29u-activation-evidence-economic-readiness-v0
+BRANCH=ops/step-29u-activation-evidence-economic-readiness-v0
+HEAD=4d0b98820e3918a06e705aa793d86ca72bd6260c
+ORIGIN_MAIN=4d0b98820e3918a06e705aa793d86ca72bd6260c
+PRIMARY_CHECKOUT_BRANCH=docs/okx-governed-futures-producer-charter-v1
+PRIMARY_CHECKOUT_HEAD=b876e2c1cafff70801bbad4be8997386785a6f59

@@ -1,0 +1,21 @@
+# commands — canonical_short_binding_miswiring_trace_v1
+
+git fetch origin --prune
+git checkout -B audit/canonical-short-binding-miswiring-trace-v1 origin/main
+
+PYTHONPATH=src:. python3 docs/evidence/canonical_short_binding_miswiring_trace_v1/short_binding_miswiring_harness_v1.py
+
+python3 -m pytest -q tests/governance/test_canonical_short_binding_miswiring_trace_v1.py
+python3 -m pytest -q tests/governance/test_canonical_fill_roundtrip_ledger_boundary_trace_v1.py
+python3 -m pytest -q tests/governance/test_canonical_fill_conversion_ledger_long_panel_audit_harness_v1.py
+python3 -m pytest -q \
+  tests/backtest/test_engine_legacy_gross_pnl_trade_record_emission_v0.py \
+  tests/backtest/test_backtest_engine_position_feedback_v1.py \
+  tests/backtest/test_canonical_trade_ledger_equity_curve_and_decision_funnel_persistence_v0_contract.py
+
+git diff --check
+.venv/bin/ruff format --check docs/evidence/canonical_short_binding_miswiring_trace_v1/short_binding_miswiring_harness_v1.py tests/governance/test_canonical_short_binding_miswiring_trace_v1.py
+.venv/bin/ruff check docs/evidence/canonical_short_binding_miswiring_trace_v1/short_binding_miswiring_harness_v1.py tests/governance/test_canonical_short_binding_miswiring_trace_v1.py
+bash scripts/ops/preflight_docs_token_policy_changed.sh
+bash scripts/ops/verify_docs_reference_targets.sh --changed
+python3 scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py --base origin/main

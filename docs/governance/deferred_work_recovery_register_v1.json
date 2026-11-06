@@ -1,0 +1,216 @@
+{
+  "schema_version": "deferred_work_recovery_register.v1",
+  "register_id": "PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1",
+  "capability_recovery_id": "CAPABILITY_0_4_DEFERRED_WORK_RECOVERY_REGISTER_ROTATION_POLICY_RESUBMISSION_V1",
+  "document_class": "CURRENT_RUNTIME_TRUTH",
+  "authority_owner": "ops.deferred_work_recovery_register_contract_v1",
+  "canonical_register_path": "docs/governance/deferred_work_recovery_register_v1.json",
+  "human_readable_companion": "docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md",
+  "capability_spec": "docs/ops/specs/DEFERRED_WORK_RECOVERY_REGISTER_ROTATION_POLICY_RESUBMISSION_V1.md",
+  "parallel_register_forbidden": true,
+  "implementation_authorized": false,
+  "activation_authorized": false,
+  "core_logic_change_allowed": false,
+  "current_runtime_changed": false,
+  "repository_sha_at_registration": "8155bd448c5acb0b2cc3ff485d63eaef9f6f074d",
+  "last_verified_at": "2026-08-02T03:33:53Z",
+  "semantic_guards": {
+    "TOP20_IS_CONTEXT_ONLY": true,
+    "SINGLE_SELECTED_FUTURE_IS_CURRENT_AUTHORITY": true,
+    "TOP_N_ACTIVE_SET_IS_DEFERRED": true,
+    "TOP5_PRODUCTIVE": false,
+    "TOP5_REGRESSED": false,
+    "MULTI_FUTURE_IMPLEMENTED": false,
+    "MULTI_FUTURE_AUTHORIZED": false,
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+    "MAX_POSITIONS_EFFECTIVE": 1,
+    "PHASE_1_SELECTION": "SINGLE_SELECTED_FUTURE",
+    "PHASE_1_MAX_POSITIONS": 1,
+    "ROTATION_POLICY_RATIFIED": false,
+    "ROTATION_IMPLEMENTATION_STARTED": false,
+    "CURRENT_RUNTIME_CHANGED": false,
+    "DASHBOARD_RANKING_IS_RUNTIME_AUTHORITY": false
+  },
+  "forbidden_claims": [
+    "Top-5 Rotation exists productively",
+    "Top-5 Rotation was lost or regressed",
+    "Active Set is already authoritative",
+    "Multi-Future is ready",
+    "Multi-Future is activated",
+    "Ranking currently authorizes multiple instruments",
+    "Dashboard ranking is Runtime Authority"
+  ],
+  "artifact_classification": [
+    {
+      "path": "docs/governance/deferred_work_recovery_register_v1.json",
+      "classification": "CURRENT_RUNTIME_TRUTH",
+      "notes": "Canonical Deferred-Work Recovery Register (machine-readable SSOT)."
+    },
+    {
+      "path": "docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md",
+      "classification": "CURRENT_RUNTIME_TRUTH",
+      "notes": "Human-readable companion to the canonical register."
+    },
+    {
+      "path": "docs/ops/specs/DEFERRED_WORK_RECOVERY_REGISTER_ROTATION_POLICY_RESUBMISSION_V1.md",
+      "classification": "CURRENT_RUNTIME_TRUTH",
+      "notes": "Capability 0.4 recovery/resubmission contract."
+    },
+    {
+      "path": "docs/planning/deferred/MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER.md",
+      "classification": "REMINDER_ONLY",
+      "notes": "Historical reminder surface; superseded as authority by this register. Remains discoverable, non-authorizing."
+    },
+    {
+      "path": "docs/governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md",
+      "classification": "CURRENT_RUNTIME_TRUTH",
+      "notes": "Working capability closure runbook; Phase 6 target for rotation policy ratification."
+    },
+    {
+      "path": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+      "classification": "CURRENT_RUNTIME_TRUTH",
+      "notes": "Current runtime truth map; points to deferred rotation as non-productive."
+    },
+    {
+      "path": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md",
+      "classification": "TARGET_ARCHITECTURE",
+      "notes": "Target autonomy SSOT; Phase-1 bounds remain currently binding."
+    },
+    {
+      "path": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md",
+      "classification": "TARGET_ARCHITECTURE",
+      "notes": "Multi-future target model clarification; not current runtime authority."
+    },
+    {
+      "path": "docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md",
+      "classification": "TARGET_ARCHITECTURE",
+      "notes": "Unified trading system target architecture."
+    },
+    {
+      "path": "docs/PHASE_42_TOPN_PROMOTION.md",
+      "classification": "HISTORICAL",
+      "notes": "Historical Top-N promotion pipeline docs; not productive Top-5 runtime."
+    },
+    {
+      "path": "docs/ops/specs/CONFIG_TRUTH_ALIGNMENT_V1.md",
+      "classification": "CURRENT_RUNTIME_TRUTH",
+      "notes": "Phase-1 max_open_positions=1 truth alignment; MULTI_FUTURE_RUNTIME_AUTHORIZED=false."
+    }
+  ],
+  "entries": [
+    {
+      "CAPABILITY_ID": "MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0",
+      "TITLE": "Multi-Future Active-Set Rotation / Replacement Policy v0",
+      "CLASSIFICATION": "DEFERRED_REQUIRED_CAPABILITY",
+      "OWNER_REQUIREMENT": "Provide a later-ratifiable portfolio active-set rotation/replacement policy for a dynamically evaluated futures universe, using ranking as context only, with controlled promotion and demotion, replacement hysteresis, state retention for open positions (no hard removal of an instrument with an open position), global risk/capital allocation, per-instrument state isolation, restart/recovery semantics, and a Top-N-capable technical target architecture. A later first ratified configuration may use N=5; Top-5 is currently neither productive nor activated.",
+      "TRADING_PATH_VALUE": "Universe → Ranking → spätere Active-Set Selection → per-instrument Market State → Master V2 → Double Play → Global Risk → Global Safety → Intent Arbitration → Execution. This Capability 0.4 registration only prevents the required later work from being forgotten again; it does not alter the current trading path.",
+      "CURRENT_STATE": "POLICY_NOT_RATIFIED_IMPLEMENTATION_NOT_AUTHORIZED",
+      "TARGET_STATE": "ROTATION_POLICY_RATIFIED_READY_FOR_SEPARATE_IMPLEMENTATION_GO",
+      "DEFERRED_REASON": "Safety and Phase-1 single-future runtime closures must complete before any Multi-Future rotation policy ratification or implementation. Prior surface was reminder-only without a machine-readable deferred register entry.",
+      "BLOCKING_DEPENDENCIES": [
+        "Productive Reconciliation Runtime Closure",
+        "Governed Futures Universe Authority",
+        "Productive Ranking Authority",
+        "Single Selected Future Persistence",
+        "Single Selected Future Restart Recovery",
+        "Futures Accounting Runtime Closure",
+        "Per-Instrument State Isolation Design",
+        "Global Portfolio Risk Design",
+        "Global Safety Arbitration",
+        "Single Global Execution Writer",
+        "Canonical Runtime Pre-Activation Closure"
+      ],
+      "DEPENDENCY_STATUS": "ALL_BLOCKING_DEPENDENCIES_OPEN_OR_NOT_YET_CLOSED",
+      "AUTHORITY_OWNER": "ops.deferred_work_recovery_register_contract_v1",
+      "TARGET_PHASE": "PHASE_6",
+      "REVIEW_TRIGGER": {
+        "trigger_id": "MULTI_FUTURE_ROTATION_POLICY_V0_POST_CLOSURE_REVIEW",
+        "event_based": true,
+        "reminder_only": false,
+        "description": "Review immediately after successful closure and merge of: (1) Productive Reconciliation, (2) Single Selected Future Authority and Runtime Binding, (3) Futures Accounting Runtime Wiring, (4) Canonical Runtime Pre-Activation Closure.",
+        "required_closures": [
+          "Productive Reconciliation",
+          "Single Selected Future Authority and Runtime Binding",
+          "Futures Accounting Runtime Wiring",
+          "Canonical Runtime Pre-Activation Closure"
+        ]
+      },
+      "REVIEW_DATE_OR_EVENT": "EVENT:POST_CLOSURE_AND_MERGE_OF_REQUIRED_CLOSURES_LISTED_IN_REVIEW_TRIGGER",
+      "EXPIRY_OR_REASSESSMENT_RULE": "Reassess at REVIEW_TRIGGER event; if any required closure reopens or fails verification, keep DEFERRED_REQUIRED_CAPABILITY and block Phase-6 ratification until closures re-pass.",
+      "IMPLEMENTATION_AUTHORIZED": false,
+      "ACTIVATION_AUTHORIZED": false,
+      "CORE_LOGIC_CHANGE_ALLOWED": false,
+      "CURRENT_RUNTIME_EFFECT": "NONE",
+      "EXPECTED_FUTURE_RUNTIME_EFFECT": "After separate Phase-6 ratification and a later explicit implementation GO: governed Top-N active-set rotation/replacement may be designed; first ratified configuration may use N=5. No current runtime effect.",
+      "SAFETY_INVARIANTS": [
+        "TOP20_IS_CONTEXT_ONLY=true",
+        "SINGLE_SELECTED_FUTURE_IS_CURRENT_AUTHORITY=true",
+        "TOP_N_ACTIVE_SET_IS_DEFERRED=true",
+        "TOP5_PRODUCTIVE=false",
+        "TOP5_REGRESSED=false",
+        "MULTI_FUTURE_IMPLEMENTED=false",
+        "MULTI_FUTURE_AUTHORIZED=false",
+        "MULTI_FUTURE_RUNTIME_AUTHORIZED=false",
+        "MAX_POSITIONS_EFFECTIVE=1",
+        "PHASE_1_SELECTION=SINGLE_SELECTED_FUTURE",
+        "PHASE_1_MAX_POSITIONS=1",
+        "ROTATION_POLICY_RATIFIED=false",
+        "ROTATION_IMPLEMENTATION_STARTED=false",
+        "CURRENT_RUNTIME_EFFECT=NONE",
+        "No hard removal of instrument with open position",
+        "Ranking is context only until separately ratified",
+        "Dashboard ranking is not runtime authority"
+      ],
+      "SOURCE_REFERENCES": [
+        "docs/planning/deferred/MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER.md",
+        "docs/governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md",
+        "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+        "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md",
+        "docs/ops/specs/CONFIG_TRUTH_ALIGNMENT_V1.md",
+        "docs/PHASE_42_TOPN_PROMOTION.md"
+      ],
+      "REPOSITORY_SHA": "8155bd448c5acb0b2cc3ff485d63eaef9f6f074d",
+      "LAST_VERIFIED_AT": "2026-08-02T03:33:53Z",
+      "CURRENT_STATUS": "REGISTERED_DEFERRED_REQUIRED_CAPABILITY_AWAITING_DEPENDENCY_CLOSURES",
+      "NEXT_REQUIRED_DECISION": "After REVIEW_TRIGGER closures merge: open Phase-6 policy ratification for MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0 under a separate explicit GO; do not start implementation from this registration alone.",
+      "CLOSURE_CRITERIA": "Phase-6 policy ratified with all open policy decisions resolved; IMPLEMENTATION_AUTHORIZED remains false until a separate implementation GO; ACTIVATION_AUTHORIZED remains false until a separate activation GO; semantic guards remain true until then.",
+      "PHASE_1_SELECTION": "SINGLE_SELECTED_FUTURE",
+      "PHASE_1_MAX_POSITIONS": 1,
+      "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+      "OPEN_POLICY_DECISIONS_FOR_LATER_RATIFICATION": [
+        "active_set_size",
+        "candidate_set_size",
+        "ranking refresh cadence",
+        "promotion threshold",
+        "demotion threshold",
+        "replacement margin",
+        "distinct-observation confirmation",
+        "hysteresis",
+        "cooldown",
+        "minimum active duration",
+        "minimum candidate duration",
+        "data-quality disqualification",
+        "stale-data behavior",
+        "invalid-instrument behavior",
+        "open-position demotion semantics",
+        "ACTIVE_ALPHA",
+        "ACTIVE_POSITION_ONLY",
+        "DEMOTION_PENDING",
+        "EXIT_ONLY",
+        "RETIRED",
+        "capital allocation",
+        "correlation budget",
+        "concentration limits",
+        "gross exposure",
+        "net directional exposure",
+        "maximum concurrent positions",
+        "liquidity-adjusted sizing",
+        "state persistence",
+        "restart reconstruction",
+        "per-instrument reconciliation",
+        "deterministic replay",
+        "evidence and verifier requirements"
+      ]
+    }
+  ]
+}

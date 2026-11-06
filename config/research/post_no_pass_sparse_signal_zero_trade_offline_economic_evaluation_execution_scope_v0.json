@@ -1,0 +1,30 @@
+{
+  "authority_effect": "NONE",
+  "binding_class": "SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0",
+  "binding_completion_digest": "5bce4b1d05016ce8667f281ee0ae0874d0c4a640eddb72ee957a04ee86907913",
+  "binding_completion_ref": "config/research/post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_v0.json",
+  "binding_ready": true,
+  "evidence_class_id": "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "execution_go_token": "GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "fleet_candidates": [
+    "trend_following",
+    "bollinger_bands",
+    "momentum_1h"
+  ],
+  "futures_only": true,
+  "non_authorizing": true,
+  "offline_only": true,
+  "order_effect": "NONE",
+  "parent_binding_ratification_digest": "5bce4b1d05016ce8667f281ee0ae0874d0c4a640eddb72ee957a04ee86907913",
+  "previous_completion_digest": "5bce4b1d05016ce8667f281ee0ae0874d0c4a640eddb72ee957a04ee86907913",
+  "retry_unchanged_binding_allowed": false,
+  "runtime_effect": "NONE",
+  "schema_version": "post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_scope.v0",
+  "scope_classification": "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "scope_definition_ref": "config/research/post_no_pass_robustness_failure_next_research_scope_definition_v0.json",
+  "scope_digest": "e59fe72d99ce58401fa510e7c852857d35ffbf74e49197094a92d33d058f522f",
+  "scope_id": "post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_scope_v0",
+  "scope_ratification_ref": "config/research/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_scope_ratification_v0.json",
+  "semantic_digest": "6618669ed8ccebdb64f85a96f74a29c9b8aca3f88f83f96b37859c9cc7c6ba29",
+  "strategy_version": "v2"
+}

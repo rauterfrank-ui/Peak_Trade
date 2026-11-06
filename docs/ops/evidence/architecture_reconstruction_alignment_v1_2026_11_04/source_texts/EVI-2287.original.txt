@@ -1,0 +1,162 @@
+# Self-Learning: Bedeutung und Wirkung an Datenübergängen
+
+Stand 02.11.2026. Quellengebundene Untersuchung, keine neue operative SSOT und keine Definition einer kanonischen Ebenenzahl.
+
+## Ergebnis
+
+Die ursprünglichen August-Module unterscheiden tatsächlich Experimentbeobachtung, erwartungsbezogene Abweichung, Regimebezug, Portfolioeignung, Muster über Forschungsserien und Forschungspriorität. Diese Bezeichnungen sind unser analytisches Raster, keine nachträglich erfundene ursprüngliche Layerliste.
+
+Alle sechs hier untersuchten Hauptmodule stimmen am Vergleichspin bytegenau mit ihren Einführungsständen überein. Das beweist Verbleib dieses Codes; geänderte Caller, Abhängigkeiten und reale Verwendung sind damit nicht geprüft.
+
+## SEM-01: Experimentbezogene Beobachtung
+
+**Eingang:** Vom Aufrufer übergebene metrics, robustness_results und regime_results.
+
+**Bedeutung:** Ergebnis eines bestimmten Experiments unter gebundener Identität; zunächst keine Aussage über alle Experimente.
+
+**Transformation:** Memory bindet Identität, referenzierte Eingaben und Herkunft; serialisiert und integriert die gelieferten Ergebnisfelder.
+
+**Codierte Wirkung beim Consumer:** Erzeugt validierten, eingefrorenen Experiment-Memory-Record. Erhebt oder bewertet die Metriken hier nicht selbst.
+
+**Zeit und Identität:** experiment_id aus identity_digest; created_at und Dataset-/Kosten-/Risiko-/Portfolio-Referenzen. created_at allein ist kein vollständiger Messzeitraum.
+
+**Einheiten/Aussagekraft:** Generische Mappings; der untersuchte Builder setzt keinen einheitlichen, feldweisen Einheitenvertrag für sämtliche Metriken durch.
+
+**Grenze:** Ursprünglicher Messwertlieferant und vollständige Einheiten-/Zeitraumkonvention beim Producer offen.
+
+**Quellenanker:** SL02:181–259, SL02:492–505. Beleggrad: Code gelesen, statisch; kein neuer Laufzeitversuch.
+
+## SEM-02: Erwartungsabweichung statt bloßem Ergebnis
+
+**Eingang:** Je Dimension expected, observed, threshold, unit; Forschungs- und Beobachtungsoberfläche.
+
+**Bedeutung:** Wie stark eine Beobachtung von einer erwarteten Größe abweicht. Das ist eine andere Aussage als der beobachtete Wert selbst.
+
+**Transformation:** delta=observed-expected; abs_delta=abs(delta); Grenzüberschreitung nur bei abs_delta>threshold; eine überschrittene Dimension führt zu REJECTED_REALITY_GAP.
+
+**Codierte Wirkung beim Consumer:** Erzeugt Forschungs-Gap-Record mit disposition/failed_gate; keine automatische Runtime-Sperre oder Failure-Memory-Persistenz hier belegt.
+
+**Zeit und Identität:** An Phase-1-Identität und experiment_id gebunden; fee/slippage/funding erhalten passenden Modelldigest.
+
+**Einheiten/Aussagekraft:** unit wird als Token gespeichert; keine Umrechnung zwischen Einheiten und kein separater expected-/observed-Einheitenvergleich in _evaluate_dimensions.
+
+**Grenze:** Messwerte müssen bereits semantisch vergleichbar geliefert werden; nachgewiesene Producer-Konvention noch offen.
+
+**Quellenanker:** SL07:151–253, SL07:384–431. Beleggrad: Code gelesen, statisch; kein neuer Laufzeitversuch.
+
+## SEM-03: Marktzustand in Forschung und Runtime
+
+**Eingang:** Regime-Slices plus Research-/Runtime-Taxonomien und expliziter Mapping-Vertrag.
+
+**Bedeutung:** Ein Research-Regime ist nicht automatisch derselbe Begriff wie ein gleich benanntes Runtime-Regime.
+
+**Transformation:** EXPLICIT_MAPPING mit Zuordnungsregeln oder DOCUMENTED_SEPARATION mit Begründung; Research-Labels müssen bei Mapping abgedeckt sein.
+
+**Codierte Wirkung beim Consumer:** Regime-Auswertung prüft Mapping und Zeitbezug, statt Labels stillschweigend gleichzusetzen.
+
+**Zeit und Identität:** label_as_of darf decision_as_of nicht überschreiten; Experimentidentität bleibt separat gebunden.
+
+**Einheiten/Aussagekraft:** Slice-Metriken werden typisiert/auf Endlichkeit geprüft; keine vollständige Rekonstruktion der vorgelagerten Feature-/Messdefinitionen.
+
+**Grenze:** Konkreter historischer Mapping-Inhalt und tatsächlicher Runtime-Label-Lieferant offen.
+
+**Quellenanker:** SL08:527–642, SL08:832–844. Beleggrad: Code gelesen, statisch; kein neuer Laufzeitversuch.
+
+## SEM-04: Einzelstrategie und Portfolioeignung
+
+**Eingang:** Strategiebezogene Member-Werte plus Paarbeobachtungen und aggregierte Portfoliometriken.
+
+**Bedeutung:** Eine Strategie kann isoliert beurteilt werden und trotzdem aufgrund gemeinsamer Risiken nicht portfoliofähig sein.
+
+**Transformation:** Vergleichbarkeit prüfen; Portfolio-Gates auf Korrelation, Gewicht/Konzentration, Diversifikation, Drawdown, Turnover, Kapazität, Stabilität und Risikobeitrag anwenden.
+
+**Codierte Wirkung beim Consumer:** Eigene portfolio_component_status-/disposition-Aussage; strategy_layer bleibt als gesonderter Bezug erhalten. applied_allocation=False.
+
+**Zeit und Identität:** Mehrere gebundene Experimentidentitäten; Aggregation ist keine Einzel-Experiment-Aussage.
+
+**Einheiten/Aussagekraft:** Portfoliowerte sind explizite Eingaben; ihre ökonomische Messdefinition beim Erzeuger bleibt separat zu prüfen.
+
+**Grenze:** Strategy/Portfolio sind ausdrücklich codierte Unterscheidungen, beweisen aber nicht die gesamte ursprüngliche Ebenenhierarchie.
+
+**Quellenanker:** SL09:184–258, SL09:609–670. Beleggrad: Code gelesen, statisch; kein neuer Laufzeitversuch.
+
+## SEM-05: Muster über Forschungsserien und Aussagekraft
+
+**Eingang:** MetaLearningExperimentUnitV1-Serien, Failure- und Reality-Gap-Records; optional spätere Outcomes.
+
+**Bedeutung:** Beschreibende oder assoziative Aussage über mehrere vergleichbare Forschungsversuche; keine bewiesene Ursache und keine neue historische Messwahrheit.
+
+**Transformation:** Einheiten binden, paarweise Vergleichbarkeit prüfen, Kohorten bilden, Fragen auswerten und Stichproben-/Evidenzschwellen anwenden.
+
+**Codierte Wirkung beim Consumer:** Findings und Forschungsproposals. Unzureichende Evidenz/Stichprobe bleibt ausdrücklich möglich; assoziative Claims werden als WEAK gekennzeichnet.
+
+**Zeit und Identität:** evidence_created_at<=Analysezeit; späteres Outcome zwischen Evidence-Erstellung und Analysezeit; Inputs über experiment_id verknüpft.
+
+**Einheiten/Aussagekraft:** Metrik-Assoziationsfrage vergleicht bei gleichem metric_name im gelesenen Collector nur Vorzeichen; kein Nachweis von Kalibrierung oder Prognosegüte.
+
+**Grenze:** Kein automatischer vollständiger Memory→Meta-Datenloader bewiesen. Meta-Einheiten werden als Request übergeben.
+
+**Quellenanker:** SL11:250–367, SL11:476–555, SL11:606–670, SL11:871–915, SL11:1143–1228. Beleggrad: Code gelesen, statisch; kein neuer Laufzeitversuch.
+
+## SEM-06: Abweichungsrichtung wird Forschungsbefund
+
+**Eingang:** Kostenbezogene Reality-Gap-Dimensionen desselben Experiments.
+
+**Bedeutung:** Häufigkeit beobachteter Kostenunterschätzung je Dimension/Modelldigest, nicht identisch mit Grenzüberschreitung im Reality-Gap-Gate.
+
+**Transformation:** Meta-Learning zählt observed>expected als underestimation. Dabei wird hier nicht der Gap-Status EXCEEDS_THRESHOLD zur Bedingung gemacht.
+
+**Codierte Wirkung beim Consumer:** Bei ausreichender Evidenz kann ein INVESTIGATE-Proposal mit target_kind=cost_model und dem Modelldigest entstehen.
+
+**Zeit und Identität:** Gap-Records werden nach experiment_id zugeordnet; Kostenmodelldigest strukturiert den Befund.
+
+**Einheiten/Aussagekraft:** Richtung und Häufigkeit statt absolutem Abstand/Schwellenstatus. Kein Beleg einer einheitlichen Größeninterpretation aller Cost-Producers.
+
+**Grenze:** Zwei legitimerweise unterschiedliche Fragen; nicht vorschnell als Widerspruch oder ein und dieselbe Bewertung behandeln.
+
+**Quellenanker:** SL11:918–962, SL11:1334–1345, SL07:384–431. Beleggrad: Code gelesen, statisch; kein neuer Laufzeitversuch.
+
+## SEM-07: Forschungsaussage wird Suchpriorität
+
+**Eingang:** Meta-Learning-Proposals als übergebene meta_learning_signals mit meta_learning_identity.
+
+**Bedeutung:** Eine Empfehlung für Forschung, keine Handelsentscheidung und kein automatischer Strategiegewinner.
+
+**Transformation:** Search projiziert ein Teilschema des Proposals; passt Targets auf Strategiefamilie/Suchraum/Hypothesentyp/Parameterregion an und verändert search_priority_score.
+
+**Codierte Wirkung beim Consumer:** Der Score ordnet geeignete Kandidaten für das begrenzte Forschungsbudget; ausgeschlossene Kandidaten verlieren ihre Offline-Anfrage. Keine Ausführung des Experiments.
+
+**Zeit und Identität:** proposal_id und übergebene meta_learning_identity bleiben Referenzen; vollständige Ausgangsbefunde werden hier nicht erneut berechnet.
+
+**Einheiten/Aussagekraft:** Diskreter Suchprioritätsscore ist weder Rendite noch statistische Effektgröße. claim_type/findings werden im gelesenen Signal-Teilschema nicht mitgeführt.
+
+**Grenze:** Nicht jeder erzeugte Proposal-Target-Typ hat einen eigenen Consumer-Zweig: cost_model aus SEM-06 hat in _signal_applies keinen Cost-Digest-Vergleich. Ein generischer Fallback vergleicht nur Zieltext mit Family/Space/Kind. Tatsächliche Wirkung dieses Proposal-Typs ist damit nicht belegt.
+
+**Quellenanker:** SL11:1409–1439, SL12:1121–1179, SL12:1225–1280, SL12:787–797. Beleggrad: Code gelesen, statisch; kein neuer Laufzeitversuch.
+
+## Architekturfolgerung
+
+Semantik ändert sich an Verarbeitungsgrenzen. Eine Schwellenverletzung, eine gerichtete Kostenunterschätzung und eine Suchpriorität sind unterschiedliche Aussagen, auch wenn sie auf denselben ursprünglichen Beobachtungen beruhen. Ihr Zusammenhang ist nur dann vollständig, wenn der konkrete Consumer die jeweilige Aussage auch verwendet. Ein gespeichertes Signal oder eine gemeinsame Referenz beweist diesen Effekt nicht.
+
+Die historische Frage lautet daher nicht nur „welche Daten kommen an?“, sondern auch „welcher Teil ihrer Bedeutung wird erhalten, umgedeutet, verdichtet oder nicht weiterverwendet?“. Auch COMPLETE, INSUFFICIENT_EVIDENCE und RESEARCH_ONLY beantworten unterschiedliche Fragen: Record-/Verarbeitungsstatus, wissenschaftliche Aussagekraft und Autorität.
+
+## Noch offen
+
+- Ursprünglichen Producer der Messwerte auffinden; Einheiten, Zeitfenster und Kosten-/Outcome-Definitionen prüfen.
+- Je Proposal- und Target-Typ tatsächlichen Consumer und Verwendung separat verfolgen.
+- Zuordnung fachlicher Bedeutungswechsel zu ursprünglichen Ebenen erst bei belastbarem Hierarchie-Beleg.
+
+Die Suche nach dem ursprünglichen übergreifenden Master-Runbook bleibt offen. Der vorbereitete Offline-Probeversuch wurde nicht ausgeführt. Keine Recovery, Produktänderung, Session oder Handelsaktivierung.
+
+## Revisionsgebundene Quellen
+
+- **SL02** [src/experiments/canonical_experiment_memory_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/commit/e10f32f56fad0576cd250958401d13f044c5920d) · `e10f32f56fad0576cd250958401d13f044c5920d` · [Original-Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL02-canonical_experiment_memory_v1.source.py) · SHA256 `c9e938747965d22e9886132656dab1b8aaa2e16f7805848e2d9644237627f7cf` · gleicher Blob am Pin: `True`.
+- **SL07** [src/experiments/canonical_reality_gap_store_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/commit/defa59f12813b961d6edce11c7ead91c6e369950) · `defa59f12813b961d6edce11c7ead91c6e369950` · [Original-Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL07-canonical_reality_gap_store_v1.source.py) · SHA256 `5dd07e13ed772321bed2043dde78d3076da522905a82afd4ad7ab4c6c9c30660` · gleicher Blob am Pin: `True`.
+- **SL08** [src/experiments/canonical_regime_aware_evaluation_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/commit/4fa4086ba6a96b0cec18d8171da70b1d1d8099d9) · `4fa4086ba6a96b0cec18d8171da70b1d1d8099d9` · [Original-Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL08-canonical_regime_aware_evaluation_v1.source.py) · SHA256 `b56a4845eecc8966fd9cb29cde722bad27a58762e8ebad98ef58cac9a0ae89e9` · gleicher Blob am Pin: `True`.
+- **SL09** [src/experiments/canonical_portfolio_learning_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/commit/562345af2153fa0c659ca261a71a9191b4b7210e) · `562345af2153fa0c659ca261a71a9191b4b7210e` · [Original-Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL09-canonical_portfolio_learning_v1.source.py) · SHA256 `a70e3854f5f7d9497c55b68a773cf126f73426fd4bbd158932f4b684464b973b` · gleicher Blob am Pin: `True`.
+- **SL11** [src/experiments/canonical_meta_learning_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/commit/fc059d1285be55e433a9ca59e89ce187e7a4b363) · `fc059d1285be55e433a9ca59e89ce187e7a4b363` · [Original-Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL11-canonical_meta_learning_v1.source.py) · SHA256 `b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331` · gleicher Blob am Pin: `True`.
+- **SL12** [src/experiments/canonical_advanced_search_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/commit/899e154d1bb095227c13690943e13284fb936972) · `899e154d1bb095227c13690943e13284fb936972` · [Original-Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL12-canonical_advanced_search_v1.source.py) · SHA256 `861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad` · gleicher Blob am Pin: `True`.
+
+## Präzisierte Rekonstruktionsmethode
+
+Eine historische Ebenenliste ist keine Voraussetzung. Verarbeitungsschichten dürfen aus den belegten Datenwegen rekonstruiert und als analytisches Modell geführt werden. Maßgeblich sind tatsächliche Datenankunft, Verarbeitung und spätere Rückkopplung; die Codierchronologie ergänzt diese Sicht. Details und erste belegte Teilstrecke: [Verarbeitungsfolge](Verarbeitungsfolge_und_rekonstruierte_Ebenen.md).

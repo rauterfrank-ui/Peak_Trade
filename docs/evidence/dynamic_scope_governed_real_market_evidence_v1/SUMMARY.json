@@ -1,0 +1,23 @@
+{
+  "DATASET_DIGEST": "4f955ffb9f7690b59e17fb00ee4acf94e5d8ea3aa1722982c51d1d31b7283dd3",
+  "DATASET_ID": "surface_b_eth_usdt_swap_pt1m_okx_public_tip1785934680_v1",
+  "END": "2026-08-05T12:57:00+00:00",
+  "EVIDENCE_DIGEST": "5681994cf946bc59a1b42cb289d145d8606d8005a6a264d1308a2961cd674317",
+  "INSTRUMENT": "inst-eth-usdt-perp",
+  "OBSERVATION_COUNT": 299,
+  "PRICE_FIELD": "mark_price",
+  "RUNTIME_AUTHORITY": "NONE",
+  "SAMPLING_SPEC": "PT1M_contiguous_finalized_mark_price_venue_native_okx_public",
+  "SOURCE": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_v1/observation_pack.json",
+  "START": "2026-08-05T07:59:00+00:00",
+  "VENUE": "okx",
+  "VOLATILITY_DEFINITION": "ROLLING_STD_LOG_RETURN_MARK_PRICE_60B",
+  "VOLATILITY_VALID_OBSERVATIONS": 239,
+  "labels": {
+    "candidate_parameters": "RESEARCH_CANDIDATE",
+    "factual_comparison": "DERIVED",
+    "interpretation_block": "INTERPRETATION_NON_AUTHORITY",
+    "market_data": "OBSERVED",
+    "metrics": "DERIVED"
+  }
+}

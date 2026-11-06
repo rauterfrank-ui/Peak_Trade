@@ -1,0 +1,18 @@
+{
+  "activation": "not_activated",
+  "cap_11_4_adapter": "not_activated",
+  "cap_11_4_order_serialization_contract": "reused_fixture_only",
+  "network_effect": "NONE",
+  "network_writes": "unauthorized",
+  "next_consumer": "CAPABILITY_11_SECTION_11_12_3_SINGLE_CONTROLLED_ORDER_LIFECYCLE_V1",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_1_ProductivePrivateReadonlyApiAndAccountIdentity",
+    "Cap11_Section_11_12_2_OrderSerializationDryRun",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled",
+  "path_class": "ORDER_SERIALIZATION_DRY_RUN",
+  "section_11_12_2": "productive_order_serialization_dry_run_bound",
+  "section_11_12_3": "not_started"
+}

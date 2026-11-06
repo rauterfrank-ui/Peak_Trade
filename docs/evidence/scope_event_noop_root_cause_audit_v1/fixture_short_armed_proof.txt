@@ -1,0 +1,21 @@
+# Static code/test evidence (no productive mutation)
+
+BEAR_FIXTURES_CAN_REACH_SHORT_ARMED=true
+
+CODE_PROOF
+  src/trading/master_v2/double_play_state.py:391-392
+    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.NEUTRAL_OBSERVE:
+        return SideState.SHORT_ARMED, st, TransitionDecision(True, "NEUTRAL_TO_SHORT_ARMED")
+
+GENERATOR_FIXTURE
+  tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py::test_long_downscope_candidate
+    ETH-scale current_price≈3440 with up_distance=50 emits DOWNSCOPE_CANDIDATE
+
+STATE_FIXTURE
+  tests/trading/master_v2/test_double_play_state.py / pure-stack contracts
+    DOWNSCOPE_CONFIRMED from NEUTRAL_OBSERVE reaches SHORT_ARMED
+
+SECONDARY_NOTE (not root of exclusive noop)
+  LONG_ARMED + DOWNSCOPE_CONFIRMED is not a SHORT_ARMED transition (falls through to NO_TRANSITION).
+  Research seed starts LONG_ARMED; after distances are fixed, a separate STATE_TRANSITION audit may be needed.
+  Exclusive noop on research bars is already fully explained by UNIT_MISMATCH thresholds.

@@ -1,0 +1,22 @@
+{
+  "budget_consumed": true,
+  "config_digest": "e97275d219dd0e69b0f0f98bdc2806810727c52117303173c3a57a0086a681c4",
+  "dataset_digest": "NOT_RESOLVED_PANEL_LOAD_FAILED",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "evaluation_executed": false,
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_cross_sectional_relative_strength_momentum_development_v1",
+  "evidence_ref": "docs/evidence/evaluate_cross_sectional_relative_strength_momentum_development_v1/",
+  "holdout_accessed": false,
+  "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1",
+  "process_exit_code": 2,
+  "reason": "UNEXPECTED:ValueError:ALIGNMENT_GAP:okx:linear_perpetual:1INCH:USDT:USDT:perp",
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "runner_started": true,
+  "schema_version": "evaluate_cross_sectional_relative_strength_momentum_registry.v1",
+  "strategy_identity": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1",
+  "strategy_params_digest": "685164cb33367062c0ecf709ef30a172565ad89b79347eb198b9827da8e8438a",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_PANEL_LOAD_ALIGNMENT_GAP"
+}

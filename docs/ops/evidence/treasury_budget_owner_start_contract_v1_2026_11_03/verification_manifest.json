@@ -1,0 +1,87 @@
+{
+  "schema": "treasury_budget_owner_start_contract_verification.v1",
+  "base_commit": "c17ffa3f9cf812f5422a35ca3c2eb20cde54cb57",
+  "scope": "Account-bound shared durable-owner startup only; not complete Treasury integration",
+  "tests": {
+    "entry_baseline_diagnostic_tests.xml.gz": {
+      "tests": 22,
+      "errors": 0,
+      "failures": 18,
+      "skipped": 0,
+      "sha256": "672f905860f56eaa076af13ecbd310e8b372fa0c414585a5cd5c7e7936b3158b"
+    },
+    "launcher_controller_tests.xml": {
+      "tests": 13,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "sha256": "98e08b14d211c582d9d1d8e3a060b3bbb6cdfc31032d4ae4c910b6cc4e92696e"
+    },
+    "recovery_capital_tests.xml": {
+      "tests": 131,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "sha256": "cb975dbc3202470618ed95982012aa7a56921334857233afaa1d3e3087cbf3a6"
+    },
+    "start_host_tests.xml": {
+      "tests": 84,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "sha256": "416ac7dbf54ce0db509884352b8a300771fcf66a9a303ccf1fab46ce495f1ad9"
+    }
+  },
+  "ruff": "PASS: all 10 changed Python files",
+  "docs_token_policy": {
+    "files_scanned": 10,
+    "violations": []
+  },
+  "atlas_validation": "PASS",
+  "atlas_generated_drift": [],
+  "unchanged_diagnostic_test_files": {
+    "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py": "d87c7eb3a1f4ae2cd8aed2e3161e047679f24e0fa048f70da01626a167ba0fb2",
+    "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py": "3ca62fc01d72176f56910fe4835fea3e600ca1edcf21e9188f378bc833dd4144"
+  },
+  "unchanged_historical_learning_ledger_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "desktop_blueprint_sha256": "c5b71bbc8736139b9aba41198a6ab578c96f144e471f1c4add42fa48c762088e",
+  "source_and_document_sha256": {
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md": "f0159f9f837ba49def6ded1135fad8b9c74d90116ceeb99135553979dd1ac4b3",
+    "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md": "34ed29a3dc0e7cfbf95457f8601ee98691aff2f76871dbf6e1ffc04b3f06c41d",
+    "docs/ops/evidence/TREASURY_BUDGET_OWNER_START_CONTRACT_2026_11_03.md": "0431fe8292f1316fc4beb6c5798046c53d0f744c688afeb06d7d51c7c0a5dfbc",
+    "docs/ops/evidence/treasury_budget_owner_start_contract_v1_2026_11_03/entry_baseline_diagnostic_tests.xml.gz": "672f905860f56eaa076af13ecbd310e8b372fa0c414585a5cd5c7e7936b3158b",
+    "docs/ops/evidence/treasury_budget_owner_start_contract_v1_2026_11_03/launcher_controller_tests.xml": "98e08b14d211c582d9d1d8e3a060b3bbb6cdfc31032d4ae4c910b6cc4e92696e",
+    "docs/ops/evidence/treasury_budget_owner_start_contract_v1_2026_11_03/recovery_capital_tests.xml": "cb975dbc3202470618ed95982012aa7a56921334857233afaa1d3e3087cbf3a6",
+    "docs/ops/evidence/treasury_budget_owner_start_contract_v1_2026_11_03/start_host_tests.xml": "416ac7dbf54ce0db509884352b8a300771fcf66a9a303ccf1fab46ce495f1ad9",
+    "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md": "5d18933aab79e0cb72bfbff8a665a1c9471f9e300da4776554d722e7713b9b09",
+    "docs/ops/specs/TREASURY_BUDGET_OWNER_START_CONTRACT_V1.md": "19533df0a38d109c8b632d6ede72d2b48f57b607e8f6e7eebd72bc9767d9d027",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md": "37c98307ea69fac0c8f661cffbb936e927c7f162b25eee5fca655514e63d6a27",
+    "docs/system_atlas/entities/catalog.yaml": "d7ea8b2d0afff85f9ada4942b641fa04ff7cfc2b6e6dd91f5cc11622a99dc190",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md": "56cb117168a390914bb80df7a6603df26338961b1f79bce5b0ee8e9f7eea69c7",
+    "docs/system_atlas/generated/FULL_DEPENDENCY_GRAPH.md": "6048f9a2cbcfec682248866b73484da91d83ec2ee8eefdc9561ff89c5592bd2d",
+    "docs/system_atlas/generated/RUNTIME_GRAPH.md": "dc0eba8ebf47f1ecd11735ede07f407981252b2930cedf87039d10c7de061d9c",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md": "5c4ea524d3c4987f5a09b644db2ce609ed5f8b73348105eff7470634a14c032b",
+    "docs/system_atlas/relations/runtime.yaml": "afe6aa66b723c7ab1d77de51d045b53518eac98658db590647b958b66b8efd99",
+    "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
+    "tests/ops/_host_private_rest_fixture_v1.py": "bdb912cb9ba4a12a1d5e4a02ff2f1db0eb426bd3a17a16d91be7bb65f0a93570",
+    "tests/ops/_n1_standing_supervisor_offline_inject_harness_v1.py": "1ba2a6ff0fbf14704e3ea2f7be20497df82fa26c7d37c1f9bb7b3ea235ab5c85",
+    "tests/ops/test_current_productive_runtime_liveness_v1.py": "0d9c2014b1a52cafde4d66e41870432f976b6acfd4571cdd2b76dd870d47c6f0",
+    "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py": "e5413bec76a85eab72f5f2963bef254343003cf100a5d7ba9d46328521a4ae78",
+    "tests/ops/test_portfolio_budget_host_v1.py": "5182cd388cfa0e251377f057de12309e0c21f516285548f4ecf1982e5d4b8e00",
+    "tests/ops/test_portfolio_execution_recovery_v1.py": "67f8bbd5f5d139b4d33dd730c98e71abd177fb6152b7ef6be01c0dfe4b162a9a",
+    "tests/ops/test_treasury_budget_owner_start_contract_v1.py": "f64d8780088b62fc1f057be2167dc8f35ed7e7811ec5f9d5de998a48877bc4b4",
+    "tests/ops/test_unattended_n1_host_v1.py": "3e857f51b9b43a362351025458d5815bce229faebfbc9dbd3aa254bba1ba8e94"
+  },
+  "limits": [
+    "No live private GET, credentials, orders, service activation, capital movement or push",
+    "Entry diagnostic: 18 failures remain; not whole-repository green",
+    "U04 accounting attribution, seven older Cap24 callers, real bootstrap/roots and full equity-close loop remain open"
+  ],
+  "docs_reference_targets": {
+    "result": "PASS",
+    "changed_md_files": 10,
+    "references": 671,
+    "base": "c17ffa3f9cf812f5422a35ca3c2eb20cde54cb57"
+  }
+}

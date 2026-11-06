@@ -1,0 +1,95 @@
+{
+  "BASELINE_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+  "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": "false",
+  "CYCLE_COUNT": 10,
+  "DPO": {
+    "cycle_id": "persistent-natural-enter-live-c1:s5:LANE_1:LANE_1:cycle:11",
+    "decision_event_ref": "ddo.dec:b0f9c61dac4d8c8d432e7792",
+    "decision_outcome": "enter_long",
+    "dpo_ref": "ddo.dpo:c83f0aa00b3e54ced2f78f95",
+    "execution_eligible": "",
+    "s5_cycle_index": "10",
+    "selected_side": "long",
+    "trading_epoch": "11"
+  },
+  "EFFECTIVE_MAX_CYCLES": 12,
+  "EFFECTIVE_MAX_RUN_DURATION_SECONDS": 900.0,
+  "ENTER_SIDE": "LONG",
+  "EVIDENCE_ROOT": "/Users/frnkhrz/Peak_Trade/evidence/research/k1_bounded_get_only_natural_enter_witness_v1/20261007T004808Z_witness_v1/bounded_run",
+  "EXECUTION_HEAD_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+  "EXTERNAL_EFFECT_COUNT": 0,
+  "FIRST_GENUINE_BLOCKER": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+  "GET_REQUEST_COUNT": 217,
+  "LIVE_PUBLIC_C1_GET_EXECUTED": "true",
+  "NATIVE_ID": "NMR-USDT-SWAP",
+  "NATURAL_ENTER_OBSERVED": "true",
+  "NATURAL_PRE_EXTERNAL_REACHED": "true",
+  "OWNER_GO_FRESH_C1_GET_CONSUMPTION_COUNT": 103,
+  "PENDING_OUTCOME_CREATED": "true",
+  "PENDING_OUTCOME_CREATION_REASON": "CREATED",
+  "PENDING_OUTCOME_ID": "neo.pending.055c0a1ebc224ca84d3234e93f21210d",
+  "PERMIT_CREATED": "false",
+  "POST_COUNT": 0,
+  "PRE_EXTERNAL_REACHED": "true",
+  "REPORTING_S5_CYCLE_INDEX": "10",
+  "REPORTING_S5_DISPOSITION": "PRE_EXTERNAL_EFFECT",
+  "REQUESTED_MAX_CYCLES": 12,
+  "REQUESTED_MAX_RUN_DURATION_SECONDS": 900.0,
+  "RUN_ID": "b570567d1550f9da",
+  "S5_CYCLE_SUMMARIES": [
+    {
+      "c1_venue_event_time": 1791334320.0,
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334380.0,
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334440.0,
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334500.0,
+      "cycle_index": 4,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334560.0,
+      "cycle_index": 5,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334620.0,
+      "cycle_index": 6,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334680.0,
+      "cycle_index": 7,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334740.0,
+      "cycle_index": 8,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334800.0,
+      "cycle_index": 9,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791334860.0,
+      "cycle_index": 10,
+      "s5_disposition": "PRE_EXTERNAL_EFFECT"
+    }
+  ],
+  "S5_TERMINAL_CLASS": "PRE_EXTERNAL_EFFECT",
+  "SYNTHETIC_ENTER_COUNT": 0,
+  "SYNTHETIC_ENTER_OBSERVED": "false",
+  "TERMINAL_DISPOSITION": "PRE_EXTERNAL_EFFECT"
+}

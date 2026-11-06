@@ -1,0 +1,82 @@
+{
+  "auth_headers_presence": [
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    },
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    }
+  ],
+  "counters": {
+    "AMEND_REQUEST_COUNT": 0,
+    "CANCEL_REQUEST_COUNT": 0,
+    "GET_REQUEST_COUNT": 2,
+    "ORDER_REQUEST_COUNT": 0,
+    "REQUEST_COUNT": 2,
+    "TRANSFER_REQUEST_COUNT": 0,
+    "WITHDRAW_REQUEST_COUNT": 0,
+    "WRITE_REQUEST_COUNT": 0,
+    "endpoints_used": [
+      "/api/v5/account/config",
+      "/api/v5/account/balance"
+    ],
+    "http_result_classes": [
+      "HTTP_200_OK",
+      "HTTP_200_OK"
+    ],
+    "methods_used": [
+      "GET",
+      "GET"
+    ]
+  },
+  "permission_attestation": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false
+  },
+  "redacted_sample": {
+    "uid": "85***99"
+  },
+  "successes": [
+    {
+      "account_identity_hash": "2444af6ea59bad87ee2aa709df3aa6888607cb3ba31f1946729f3f4f4697fb2c",
+      "account_identity_redacted": "85***99",
+      "account_scope_match": true,
+      "authenticated_read_success": true,
+      "fixture_or_demo_or_testnet": false,
+      "http_status": 200,
+      "okx_code": "0",
+      "response_digest": "5e497460021a25fe11c5d42c3f7cc06d0ee549f0edbf687f438fff54c20a815b",
+      "response_type": "application/json",
+      "transport_class": "LIVE_PRODUCTIVE_HTTP",
+      "venue_live_contact": true
+    },
+    {
+      "account_identity_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "account_identity_redacted": "<ABSENT>",
+      "account_scope_match": true,
+      "authenticated_read_success": true,
+      "fixture_or_demo_or_testnet": false,
+      "http_status": 200,
+      "okx_code": "0",
+      "response_digest": "6a5fd053c9e84e006ae8704adda9f38b505b60c824abac63da88207cd722af05",
+      "response_type": "application/json",
+      "transport_class": "LIVE_PRODUCTIVE_HTTP",
+      "venue_live_contact": true
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+[
+  {
+    "path": "docs/ops/evidence/iu_sl_opt_concrete_origin_trace_2026_11_05/originals/mi_original_durable_triad.json",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "29e854eafcb23a8a0e6a0af151d8e0ea374c4f0e",
+    "sha256": "28a6f47f618280c7b471afe0e659ab7a5cbb6a38281303cc3cbcc292f37f59db",
+    "bytes": 6885
+  },
+  {
+    "path": "docs/ops/evidence/iu_sl_opt_concrete_origin_trace_2026_11_05/originals/mi_original_measurement.json",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "eaa878a5bae9d2f9b4f189962c938f28776b5eae",
+    "sha256": "ed209dcb25977d012863385b6968f72e7cb4bbb5420e42a5cbc71525d5489995",
+    "bytes": 6873
+  },
+  {
+    "path": "docs/ops/specs/DDO_REAL_OUTCOME_EVALUATION_HORIZON_NORMATIVE_SEMANTICS_V1.md",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "ff1a07c41904fad384105f857d25f9dcf51747a4",
+    "sha256": "989d7dff335063bc21431c1670354d9be30000122e7435edc4b1a48836e41563",
+    "bytes": 11637
+  },
+  {
+    "path": "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "455684f4dac0169f03782ac440d357718d7ae5e8",
+    "sha256": "ebfb93845ef3582c227cc11a899f7adf9db7ad6deb8f2ad731c26f785c85f314",
+    "bytes": 1482
+  },
+  {
+    "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "b271517570ac83dab1eca79027bd8367efa75e21",
+    "sha256": "ea4aea9fce10c424490796db307d2d1382f5b4ee71839bdeeaca3314df702b8e",
+    "bytes": 550109
+  },
+  {
+    "path": "src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "3cc65b1420b591b907493abf1b72ccfc6c68dab2",
+    "sha256": "dac0c4b2deaba2691ebda5567a881e53ed50265daf43233d0ee42e919f704942",
+    "bytes": 7394
+  },
+  {
+    "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "d1349e9ba260a032b714c0f1d40b5058fbd99968",
+    "sha256": "886607ce405fd19f7233fb83d2b68cac524b6cba9d77f763a59838cfe0872b21",
+    "bytes": 17368
+  },
+  {
+    "path": "src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "1de5c54f0c93d1b6fd948932295281f39928b67c",
+    "sha256": "9125459a08aee2a37ea278d8c4f6a8f19258bb758a5175195df01bc84e13d549",
+    "bytes": 13762
+  },
+  {
+    "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "0c8668ef2afe39117ed31a868cc1e853b073feaf",
+    "sha256": "bfd79144f85eefefada451758b9e8ff7a489c1b569de78fded3eeb95f4b31867",
+    "bytes": 3887
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "7c5845710592963f34b5e84453043662ed906fc1",
+    "sha256": "94fae7b7516630a99f18f33f253b9301bfeaf46f3d93fe845fe98f6f70359b74",
+    "bytes": 10848
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "e908dccfc1c271fe4164c732e743e9f7a7f9801a",
+    "sha256": "500f8ac9794dce0d44513bb8b5da09200c226a54deae5bf16a19ace5eb189ec4",
+    "bytes": 17676
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "7f2f357af5b8cff3d31748c2c0b3b167eaa08dde",
+    "sha256": "68a01235a03fb60e55eebf04a1e917c6e1d5725fc210623f467710627671d682",
+    "bytes": 10770
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "f7a5792d7fd022a8ed53479296338800e4daa065",
+    "sha256": "bcfc10d0aa2aa4aba6f87e053ff0d2bbcf41a54b718af0382031a1c30336618c",
+    "bytes": 18682
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "ec5e5f306f468ac115a650a2dd59a90009072dae",
+    "sha256": "ca74b2f8361ae527d409ae3037452c845c580ce3ae12044f003cab5ee3e71d49",
+    "bytes": 3971
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "e593871d188f73722ba16cb9ad1692525e92f7e9",
+    "sha256": "d5643610897776253cfd158c98cc218dc7b52ebb1122bc2b2b614807af545695",
+    "bytes": 4441
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "fcafb80088bd74a6589e160f64af3b60a5ab4b2e",
+    "sha256": "19dcf5c7d58c5bad0ad76a46371c62fc6546e93682dacff4c89b328dbd4bac85",
+    "bytes": 26993
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "b194ac4cc1efcaee7a2ffac56e3ef52bf159c487",
+    "sha256": "e6c74c71ae9f0ec1cb928e5f59077a4f13cc84b3d91655d8a825e2c8322850d4",
+    "bytes": 14902
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "7cff8d8c631958cb847203720a6ab68221529cd5",
+    "sha256": "f737a856de745400d7c4392ca68f596b9fbf91f7bf31fa2250f8a090ad858fee",
+    "bytes": 8939
+  },
+  {
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "536633c44ac90452b2877d45aa5e85e111a3e84f",
+    "sha256": "90c0c3c58b613b67fd696182a930c0ab2e1d4c1ff266894044b7a4e07861d2f0",
+    "bytes": 24076
+  },
+  {
+    "path": "src/ops/peak_trade_public_market_data_runtime_v1/o4_pt1h_bar_fact_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "30e8a65d95ad78fba7e2be341b7753e8974c61e3",
+    "sha256": "10f3c3321eea4110b6bc9c3b5065042e312620ec60635483d9f08c3fb653b050",
+    "bytes": 4993
+  },
+  {
+    "path": "src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "39e75b884bb40b46f62d18141cd469e4ba6f1c86",
+    "sha256": "dbafa0b916fecf7b396c4b33fc0e9e8fb432dfe38f6eba4a3ac2cbf3359bf1e8",
+    "bytes": 24799
+  },
+  {
+    "path": "src/research/offline_n_bars_semantic_repair_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "f5f5a1489a66aaf1bb0010ad65351aefa0b51b9b",
+    "sha256": "a737c5f2f24cba0f79ce953f35cd9fcf9b03ba7a5a0cbe248580949b17cc26a6",
+    "bytes": 17572
+  },
+  {
+    "path": "src/research/offline_recorded_mark_horizon_source_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "8acce2c20d28b9b6e8805651e701c124e749a53f",
+    "sha256": "a15b17f3f53f75d51c567e5cc6bf35560a2a8cdf473904c534abf9e7ed2773b9",
+    "bytes": 9165
+  },
+  {
+    "path": "tests/learning/test_intelligence_context_admission_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "80ec8b666236e96f50f3e99c9c668fb997d0ad53",
+    "sha256": "5ecb6af7704a97f0c42b98747b959c15e5c4ac12b1ae7bdb5144f525e17be516",
+    "bytes": 11828
+  },
+  {
+    "path": "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+    "revision": "907afde6cb63c9690c504f46f23d7f6207e830b2",
+    "git_blob": "f53b507ba989f7ddd9e20490a87c504362d23629",
+    "sha256": "53cbe19ee140702fdce31fddda66b95a216520c8ce7bb047ca809c74655e0767",
+    "bytes": 18482
+  }
+]

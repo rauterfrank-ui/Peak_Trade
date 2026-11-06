@@ -1,0 +1,33 @@
+{
+  "wp_id": "PHASE_V_MANIFEST_COHERENCE_D4_REGEN_AND_ACCEPTANCE_RECOVERY_V1",
+  "atlas_authority": "NONE",
+  "dashboard_authority": "NONE",
+  "canonical_base_sha": "5dee5b6794d87087573e274d9811c0805ab01167",
+  "root_cause_class": "READMODEL_MANIFEST_INTEGRITY_AFTER_PRESENTATION_SIBLING_WRITES",
+  "manifest_coherence_owner": "scripts/ops/primary_evidence_retention_v0.py:write_manifest_sha256",
+  "verify_before_trust_preserved": true,
+  "ssr_poll_fallback_added": false,
+  "active_archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "archive_regeneration_performed": true,
+  "manifest_finalization": "write_manifest_sha256 + verify_manifest_sha256 on readmodels/",
+  "productive_host_smoke": {
+    "runtime_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_phase_v_recovery_5dee5b6",
+    "session_id": "phase-v-recovery-5dee5b6",
+    "cycles_committed": 8,
+    "safety_sibling": "readmodels/safety_authority_fields.v1.json",
+    "execution_sibling": "readmodels/execution_reconciliation.v1.json",
+    "economic_sibling": "ABSENT_EXPLICIT_BUNDLE_REQUIRED"
+  },
+  "phase_v_witness_1440x900": {
+    "market_identity": "AVAILABLE",
+    "instrument_id": "SATS-USDT-SWAP",
+    "universe_ranking": "FULL",
+    "ssr_chart_bound": true,
+    "client_chart_bar_count": "100",
+    "client_chart_geometry": "nonzero",
+    "page_horizontal_overflow": false
+  },
+  "bounded_test_witness": {
+    "test_module": "tests/webui/test_readmodels_manifest_coherence_v1.py"
+  }
+}

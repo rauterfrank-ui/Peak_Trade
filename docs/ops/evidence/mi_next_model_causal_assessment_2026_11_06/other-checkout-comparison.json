@@ -1,0 +1,31 @@
+{
+  "path": "/Users/frnkhrz/Peak_Trade_M1_5_CURRENT",
+  "head": "fffb95ef41f7e78c145f022144947911cce27279",
+  "role": "targeted four-file comparison only; other local work preserved",
+  "files": [
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_store_v1.py",
+      "sha256_current": "c756be8eb78d3022e8dda4c67c325ea9ccd7077cb308f396eb6090c2e3e5b783",
+      "sha256_other": "c756be8eb78d3022e8dda4c67c325ea9ccd7077cb308f396eb6090c2e3e5b783",
+      "same_bytes": true
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+      "sha256_current": "19abf38618000e12a8d81a3b9c5db2ccd78f4c490a6b36fd80f49aac379099bb",
+      "sha256_other": "19abf38618000e12a8d81a3b9c5db2ccd78f4c490a6b36fd80f49aac379099bb",
+      "same_bytes": true
+    },
+    {
+      "path": "src/research/linear_evidence/fitters.py",
+      "sha256_current": "2b617607987cf949e52303529625cb69cac50d09526af2d5ec97eb3a9c17c245",
+      "sha256_other": "2b617607987cf949e52303529625cb69cac50d09526af2d5ec97eb3a9c17c245",
+      "same_bytes": true
+    },
+    {
+      "path": "src/research/ml/meta/meta_labeling.py",
+      "sha256_current": "0b285709ed482effdc3c726489b49273f8437db9c319b1e671211143b046b5c6",
+      "sha256_other": "0b285709ed482effdc3c726489b49273f8437db9c319b1e671211143b046b5c6",
+      "same_bytes": true
+    }
+  ]
+}

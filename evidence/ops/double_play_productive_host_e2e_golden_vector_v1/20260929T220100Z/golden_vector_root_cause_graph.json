@@ -1,0 +1,45 @@
+{
+  "nodes": [
+    {
+      "id": "ROOT_WIRING_01",
+      "label": "LiveFreshC1 poll omits mark_price_payload",
+      "adjudication": "ROOT_WIRING_DIVERGENCE"
+    },
+    {
+      "id": "EFFECT_01",
+      "label": "Cold bootstrap fail-closed",
+      "adjudication": "DERIVED_DOWNSTREAM_DIVERGENCE"
+    },
+    {
+      "id": "EFFECT_02",
+      "label": "No productive S5/MV2 cycles",
+      "adjudication": "DERIVED_DOWNSTREAM_DIVERGENCE"
+    },
+    {
+      "id": "EFFECT_03",
+      "label": "Natural ENTER unreachable in Level B",
+      "adjudication": "DERIVED_DOWNSTREAM_DIVERGENCE"
+    },
+    {
+      "id": "ROOT_STRUCT_01",
+      "label": "G17 module policy string vs WP3 effective bind",
+      "adjudication": "ROOT_BEHAVIORAL_DIVERGENCE",
+      "note": "Derived at integrated replay; productive bind WP3_COMPAT when flag on"
+    }
+  ],
+  "edges": [
+    {
+      "from": "ROOT_WIRING_01",
+      "to": "EFFECT_01"
+    },
+    {
+      "from": "EFFECT_01",
+      "to": "EFFECT_02"
+    },
+    {
+      "from": "EFFECT_02",
+      "to": "EFFECT_03"
+    }
+  ],
+  "forensic_continuation_note": "After counterfactual mark wiring (fixture path), CURRENT productive host reaches enter_long in harness \u2014 no additional ROOT wiring defect proven before PRE_EXTERNAL in this vector run."
+}

@@ -1,0 +1,8 @@
+{
+  "contract_version": "wave5.bridge.v1",
+  "source": "new_listings",
+  "listings": [
+    {"symbol": "ABCUSDT", "score": 0.81, "volatility": 0.22, "liquidity_score": 0.74},
+    {"symbol": "XYZUSDT", "score": 0.64, "volatility": 0.11, "liquidity_score": 0.91}
+  ]
+}

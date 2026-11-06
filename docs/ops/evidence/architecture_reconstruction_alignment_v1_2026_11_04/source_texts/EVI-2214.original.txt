@@ -1,0 +1,174 @@
+MASTER V2 — HISTORISCHE KONSTRUKTION, VORHANDENER CODE UND OBSIDIAN
+Lesender Abgleich vom 02.11.2026. Kein neuer Vault-Run und keine Zielkonfiguration.
+
+ERGEBNIS
+Die Erinnerung an A/B ist historisch und im Code belegt. Die komplette Double-Play-Konstruktion wurde anhand der 14 bisherigen analytischen Untersuchungsbereiche gegenübergestellt. Das ist keine neue Layerdefinition und keine Abnahme aller 136 Dateien. Weitere konkrete Zusammenhänge sind nachgewiesen; ein Gesamtfunktionsnachweis liegt weiterhin nicht vor.
+
+AKTUELLE OWNER-KLARSTELLUNG
+Simulationskapital im produktiven Pfad wird nicht als gewünschtes Ziel übernommen. Historisch wurde dieselbe Entfernung bereits mit #7146 umgesetzt. Isolierte Simulation kann weiterhin eine Testaufgabe erfüllen; sie rechtfertigt keinen Ersatz produktiver Kapitalwahrheit. Keine Wiederaufnahme, Reparatur, Cherry-Pick oder Aktivierung in dieser Untersuchung.
+
+UNTERSUCHTE STÄNDE
+Hauptcheckout: /Users/frnkhrz/Peak_Trade, HEAD 242b7974fc93f0bdb47706556101bd6f0c497414, vorhandene lokale Änderungen.
+Zweiter Checkout: /Users/frnkhrz/Peak_Trade_M1_5_CURRENT, HEAD fffb95ef41f7e78c145f022144947911cce27279, ebenfalls vorhandene lokale Änderungen.
+Obsidian-Pin: 5d1c838c15369507c5247834db4dd0df25592169; lokaler Ref, kein Fetch. Kein Stand allein durch seinen Namen autorisiert.
+251 Pythondateien im Vergleich; 136 im Master-V2-Verzeichnis, 58 in Evidence-Plane-Unterpaketen, übrige betroffene Adapter/Hosts. 251 per AST strukturell erfasst, 1879 Funktionsdefinitionen; das ist keine vollständige semantische Einzelprüfung.
+Alle sechs Register anhand thematischer Zeilen ausgewertet; 603 passende Zeilen samt Fundort separat erfasst. Relevante Original-RUN-Berichte und Codekörper gezielt gelesen. 85 zuvor dokumentierte Quellhashes unverändert; frühere 21 A/B-Tests und 32 Preisproben deshalb nicht redundant wiederholt. Historische Capture-/Dashboard-Proben bleiben begrenzte Belege ihres jeweiligen Pfades.
+
+F01 — Unterschiedliche Arbeitsstände statt eines einzigen heutigen Systems
+Hauptcheckout HEAD 242b7974 (13.10.), zweiter Checkout fffb95ef (24.10.), Vault-Pin 5d1c838c (24.10.). HEAD und Vault-Pin sind nicht Vorfahren voneinander. Alle 136 erfassten Master-V2-Pythondateien und alle 58 erfassten Evidence-Plane-Pythondateien sind bytegleich. 9 der insgesamt 251 Vergleichsdateien weichen zwischen Hauptarbeitskopie und Pin ab. Der zweite Checkout stimmt bei allen 251 mit dem Pin überein.
+Belegart: Datei-/Revisionsbeweis, kein Funktionsbeweis
+
+F02 — Simulationskapitalpfad historisch bereits abgelehnt und entfernt
+Die automatische Wire wurde am 03.10. mit Commit 3c3d3030 eingeführt. Nutzerübergebene Cursor-Anweisung vom 19.10. verlangt ausdrücklich Entfernung der simulierten 100000 aus dem produktiven Master-V2-Cycle. Commit b68252bd / PR #7146 entfernt Funktion und Cycle-Aufruf und erhält die Simulation nur in einem lokalen Offline-Adapter. Dieser Commit liegt im Vault-Pin und fehlt im älteren Hauptcheckout. In dessen wirklicher Wire-Funktion bestätigen Offline-Proben 100000 Equity, Exposure 0, offene Positionen 0, Maximum 10 und RECONCILED. Dies sind Simulationsannahmen, keine aktuelle Kontowahrheit. Keine ausreichende Begründung zur Wiederaufnahme im produktiven Ziel; Frank lehnt dies im aktuellen Gespräch ebenfalls ab.
+Belegart: Historische Entscheidung plus Git-Diff plus begrenzte Offline-Wirkung
+
+F03 — A/B-Zulassung ist keine numerische Scope-Berechnung
+Zwei zugelassene unterschiedliche Payload-Digests ergeben bei gleichem mechanischem D_t exakt denselben L6-Wert 0.015. Änderung des separat übergebenen D_t auf 0.030 ändert die Ausgabe auf 0.030. Ohne mechanischen D_t ist SEAM_BOUND mit L6_ADMIT möglich, aber ohne Generator-Ausgabe. Das ist ein enger Nachweis der Zulassungs-/Bindungssemantik; kein Nachweis, dass externe Intelligence numerisch die Scope-Geometrie bestimmt.
+Belegart: 4 neue Proben an echten Funktionen mit künstlichen Eingaben
+
+F04 — Initialisierung und laufender Preis haben verschiedene Quellenrollen
+P5.10 erzeugt Initialbeobachtungen aus finalisierten gewöhnlichen Kerzenschlusskursen. Der Initializer beendet die Suche bei der ersten eindeutigen Richtung. Späterer mechanischer M_t kommt aus CMC-Mark. Die L5-Initialbasis bleibt dabei 102 bzw. 98, auch wenn der mechanische Mark 200 ist. Nicht mit der vom Owner geforderten aktuellen Preislinie gleichsetzen; eine tatsächliche UI-Nutzung dieses L5-Feldes ist hier nicht bewiesen.
+Belegart: Statische Verbindung und 2 begrenzte Offline-Folgen
+
+F05 — Zustandsabhängige Auswahl zweier Scope-/Zustandspfade
+Ohne Scope-Träger/Store bleibt die P5.10-Kwargs-Auswahl leer. Mit beidem fordert sie Bind an. Beim gültigen Seal unterdrückt der Replay ältere Schreiber; im Delegationskontext entstehen zunächst NOOP-/unveränderte SideState-Träger. Der spätere P5.10B-Handoff ist eine getrennte Station. Gleiche Datei bedeutet nicht gleiche aktive Konfiguration.
+Belegart: 4 neue Auswahlproben plus statische Consumer-Verfolgung
+
+F06 — Vorhandene Altersprüfung ist nicht automatisch wirksame Frischesperre
+Typed-Volatility-Presence und Frische des aktuellen Marks sind unterschiedliche Verträge. Der Volatilitäts-Max-Age-Consumer setzt voraus, dass enforcement_applied false ist; Alpha-Zulässigkeit wird dort durch Age-Evidence nicht verändert. Ein vorhandener autorisierter Parameter-Seam oder ein Telemetriebericht beweist deshalb keine durchgehende Frischegarantie.
+Belegart: Direkter Codebefund; keine neue Laufzeitmessung
+
+F07 — Obsidian ist ein begrenzter Erkenntnisstand, kein vollständiger Codeplan
+603 thematisch passende Registerzeilen ausgewählt. RUN-0060/CON-1999 trennt GGE und L6 korrekt, ließ ihre Brücke aber offen. Der heutige P5.10-Host belegt diese Brücke statisch. Die spezifischen A/B-Namen sowie die Simulated-Equity-Entfernung sind in den Registeraussagen nicht erschlossen. Historische no-implementation-/not-observed-Sätze gelten für ihre damalige Quelle, nicht als allgemeiner Abwesenheitsbeweis. README nennt RUN-0076, der INDEX-Kopf noch RUN-0075.
+Belegart: Quellenabgleich; Vault unverändert
+
+GEGENÜBERSTELLUNG DER BISHERIGEN 14 BEREICHE
+
+DP01 — Ausgewählter Future / Eingangsprüfung
+Historischer Kern: Instrument, Metadaten, Herkunft, Frische und vorab berechnete Marktprofile; Readiness getrennt für Scope, Capital, Suitability und Survival.
+Heutiger Befund: Getrennte Readiness für Scope, Capital, Suitability und Survival implementiert. Producer und Offline-/Display-Consumer vorhanden. Nicht als identisch mit dem erinnerten Vor-Natural-Enter-Qualifizierer belegt.
+Obsidian: LYR-0012; DOM-0004; EVI-0049
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_futures_input.py
+Beleggrenze: Statische Implementierung; produktiver Anschluss offen
+
+DP02 — Marktpreis / Nulllinie
+Historischer Kern: Aktueller Preis des ausgewählten Futures, richtungsneutral; getrennt von Initialbasis und Trailing-Referenz.
+Heutiger Befund: CMC-Mark, initiale L5-NullLine und laufendes R_t sind getrennt. Die L5-NullLine ist ausdrücklich unveränderliche Initialbasis; ihr Name belegt keine aktuelle Marktpreisanzeige. 2 neue Proben belegen bei Mark 200 erhaltene Initialbasen 102 bzw. 98.
+Obsidian: LYR-0004; GAP-0168; CON-1999
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py
+Beleggrenze: Offline begrenzt nachgewiesen; Anzeigezuordnung offen
+
+DP03 — Initialrichtung / Neutralstart
+Historischer Kern: Beobachtung, erste eindeutige Richtung und erste Zustandsübernahme unterscheiden sich vom späteren Gegenseitenwechsel.
+Heutiger Befund: Der L1–L5-Initializer nimmt die erste eindeutige Richtung der übergebenen Beobachtungsfolge. Der P5.10-Host bildet diese Folge aus gewöhnlichen finalisierten Closes. Erst der mechanische Folgeschritt bekommt CMC-Mark.
+Obsidian: CON-0003; LYR-0329; CON-2025
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py
+Beleggrenze: Statisch und an 2 künstlichen Folgen geprüft
+
+DP04 — Volatilität / GGE / Scope-Größe
+Historischer Kern: Vorab definierte Größen und Einheiten; keine Formel allein aus einem historischen Beispiel oder der heutigen Implementierung zum Soll erklären.
+Heutiger Befund: GGE: Volatilität × Markpreis. P5.10 transportiert dies als expliziten D_t-Vorschlag. L6 validiert/reicht durch; A/B ist nicht der GGE-Rechner. Historische Kalibrierungsvarianten bleiben getrennt.
+Obsidian: CON-1999; CON-2000; EVI-2137
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/golden_geometry_engine_v1.py
+Beleggrenze: Statische Verbindung; fachliche Zielkalibrierung offen
+
+DP05 — Scope / Gegenbewegung
+Historischer Kern: Günstigen Trend weiterlaufen lassen; Gegenbewegung relativ zur relevanten laufenden Grenze bewerten; Initialreferenz, Marktpreis und R_t trennen.
+Heutiger Befund: L8 aktualisiert R_t, L9 berechnet Gegenbewegung, L10 vergleicht mit D_t. Alter RuntimeScopeState und späterer Naked-Durable-State sind verschiedene Varianten und keine austauschbaren Objekte.
+Obsidian: LYR-0004; CON-2029; LYR-0329
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py
+Beleggrenze: Code und begrenzte Offline-Mechanik; keine Gesamtparität
+
+DP06 — Bestätigung / Anti-Pingpong
+Historischer Kern: Candidate ist keine Bestätigung; Hysterese, Bestätigungsfenster, Cooldown und Switch-Zähler erfüllen unterschiedliche Aufgaben.
+Heutiger Befund: C1/C2/C3 samt nachgelagerter Confirmation-Autoritätsgrenze vorhanden. Historische Confirmation, Scope-Cooldown, Auswahl-Residency und erinnerter B5-Rechenhold nicht gleichsetzen. Kein fester Zweistunden-Horizont abgeleitet.
+Obsidian: CON-0003; CON-2034; EVI-2172
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+Beleggrenze: Statische Bindungen; genauer B5-Rechenhold weiterhin offen
+
+DP07 — Bull/Bear State-Switch
+Historischer Kern: Ein Future je Instanz, höchstens eine aktive Seite; vorige Seite blockieren, Wechsel vorbereiten, Gegenseite erst bei Voraussetzungen aktivieren.
+Heutiger Befund: Ohne gültiges Delegationsergebnis ruft der integrierte Replay transition_state. Mit gültigem Seal überspringt er die älteren Scope-/Transition-Schreiber; P5.10B folgt nach dem Replay als eigener Handoff. Ein einzelner alter Sole-Owner-Satz beschreibt nicht beide Hostvarianten.
+Obsidian: CON-0001; CON-2025; CON-2029
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py
+Beleggrenze: Bedingte statische Pfade; zeitübergreifende Parität offen
+
+DP08 — Arithmetic / Sequence Survival
+Historischer Kern: Kontraktgröße, Funding, Gebühren, Margin, Rundung und Reihenfolge von Verlusten/Wechseln vorab prüfen; gemeinsame Long/Short-Paarüberlebensfähigkeit.
+Heutiger Befund: Aktueller Survival-Consumer prüft Kosten und bereitgestellte Ratio-Metriken. Er berechnet nicht automatisch eine vollständige historische Verlust-/Wechselsequenz selbst. Der frühere pure Survival-Envelope ist ein anderer Vertrag.
+Obsidian: DOM-0001; LYR-0329; CON-0003
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/survival_assessment_v1.py
+Beleggrenze: Berechnung und Consumer vorhanden; Eingangswahrheit offen
+
+DP09 — Suitability / Composition
+Historischer Kern: Eignung liefert Vorbedingungen/Evidence; bestätigte Zulässigkeit und ausgewählte Seite haben eigene Consumer und Zuständigkeiten.
+Heutiger Befund: Ausgewählte C3-Assessment-Identität wird für Survival/Suitability/Composition gebunden. Aufrufreihenfolge nach C3 bedeutet nicht, dass jeder Eingang bereits CONFIRMED ist. Keine Rückleitung an G17 belegt.
+Obsidian: LYR-0329; CON-1997; CON-2035
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py
+Beleggrenze: Statische Verbindung
+
+DP10 — Entry / Hold / Exit / Reduce / Reversal
+Historischer Kern: Erststart, Halten, Abbau, Schutz und Gegenseitenwechsel getrennt; ein Switch ist weder Kill-All noch automatisch ausgeführte Gegenorder.
+Heutiger Befund: Entry/Exit/Reduce/Hold/Reversal-Präparation sind getrennt. Policy-Outcomes sind keine Größenberechnung, Order oder ausgeführter Flip. Vorheriger N5-Join-Befund ENTER-only ist dadurch nicht geschlossen.
+Obsidian: LYR-0315; CON-2035; STA-0010; STA-0016
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_entry_exit_policy_v0.py
+Beleggrenze: Policy implementiert; alle Execution-Ausgänge nicht vollständig belegt
+
+DP11 — Gemeinsamer Kapital-Slot
+Historischer Kern: Long und Short derselben Instanz teilen einen Slot; realisierte/abgerechnete Basis, kein stilles Reserve-Top-up; Release wählt keinen neuen Future.
+Heutiger Befund: Pure Ratchet/Release nutzt realisierte oder abgerechnete Slot-Basis, keinen Reserve-Top-up. Offline-, Display- und bounded-Testnet-Consumer gefunden; kein Beleg, dass dieses reine Modell die produktive Kapitalwahrheit liefert. Simulated-Equity-Wire wurde historisch mit #7146 entfernt.
+Obsidian: GAP-0002; LYR-0318; LYR-0320
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_capital_slot.py
+Beleggrenze: Modell vorhanden; produktive Kapitalquelle separat offen
+
+DP12 — Risk / Safety / Kill-All
+Historischer Kern: Normale Richtungswechsel von systemischer Unsicherheit trennen. Günstige große Bewegung allein ist kein Not-Aus. Ungültige Voraussetzungen sperren neue riskante Aktivität.
+Heutiger Befund: Typed-Volatility-Presence kann neue Alpha-Exponierung sperren. Numeric-Max-Age wird in dieser Funktion ausdrücklich nicht zur Durchsetzung verwendet. Das ist außerdem nicht der Provider-Zeitstempel des aktuellen Marks. Frühere Preisfrische-/Anzeige-Gegenbeispiele bleiben bestehen.
+Obsidian: GAP-0168; LYR-0311; LYR-0312; CON-2031
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py
+Beleggrenze: Statische Gates und getrennte Frischeverträge
+
+DP13 — Kontinuität / Persistenz / Restart
+Historischer Kern: SCOPE(t+1) als nächsten Eingang verwenden; Confirmation/Cooldown/Pending erhalten; Instrumentwechsel und Reset explizit behandeln.
+Heutiger Befund: Cursor mit vorhandenem Scope und Store aktiviert P5.10-Bind; erster Zyklus ohne Scope bleibt auf älterem Pfad. Restore zweier verschiedener Zustandsmodelle und deren Übergang sind eine eigene Nachweispflicht.
+Obsidian: GAP-0001; LYR-0321; LYR-0329
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py
+Beleggrenze: 4 neue Offline-Aufrufauswahlproben; Gesamt-Restart offen
+
+DP14 — Zuständigkeiten / äußere Systeme
+Historischer Kern: Strategien, KI, Learning, Optimization, Dashboard und Execution dürfen keine konkurrierende SideState-/Switch-/Trading-Decision-Wahrheit schaffen.
+Heutiger Befund: Externe Intelligence darf keine Trading-Decision-/Switch-Autorität übernehmen. Ops-evaluate_double_play bleibt diagnostische Projektion. A/B-Rollen passen dazu; kein globaler Bypass-Ausschluss allein aus Namen, Flags oder engem Scanner.
+Obsidian: CPT-0007; CON-0001; CON-2002
+Code: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_sole_authority_quarantine_v1.py
+Beleggrenze: Begrenzte Schutzverträge; gesamte Abschirmung unbewiesen
+
+WICHTIGE VERBINDUNGEN UND GRENZEN
+A/B: registrierter Producer -> A-Adjudikation -> B-Binding -> L6-Admit -> optional L6-Passthrough mit getrenntem mechanischem D_t. Dokumentiert und begrenzt ausführbar. Kein Beweis allgemeiner numerischer Evidence-Verwertung oder globaler Abschirmung.
+Preis/Geometrie: ausgewählter Future -> öffentlicher Mark-GET -> Provenienz/CMC -> G17-Typed-Vol-Bind -> GGE -> D_t-Vorschlag -> P4-Explicit-Dt-Transport -> L6. Gewöhnliche Candle-Features, G17-Mark-History und Ranking-Movement bleiben verschiedene Eingänge. Die Evidence-Plane-P4/P5-Pakete und die gleichnamigen mechanischen P4/P5-Pakete sind unterschiedliche Implementierungen.
+Nach GGE: Layer-C leitet 1.0/0.4/0.6-Distanzen ab. Der Delegationszweig nutzt zusätzlich RuntimeScopeState.current_hysteresis_band, während das Seal ein eigenes d_t führt. Ihre Gleichheit wird aus den hier gelesenen Zeilen nicht bewiesen; explizite Pfadparitätsprüfung bleibt nötig.
+A/B kann über Governance-Continuation bis zu einem Materialization-Record verfolgt werden. Dessen Consumer stoppt ausdrücklich vor configuration_applied / produktiver Aktivierung. Das ist kein Nachweis, dass die aktuelle Scope-Formel diese Evidence numerisch verwendet.
+Kapital: Pure Ratchet-/Release-Modell, aktuelle CRS-/Sizing-Bindung, echte Kontoequity und Offline-Simulation sind getrennte Verträge. Am neueren Pin fehlt die beanstandete automatische Simulationswire bereits. Echte produktive Kapitalversorgung und alle Schutz-Exit-Übergänge sind dadurch nicht automatisch bewiesen.
+Ranking/N5/Execution: Vorherige Befunde zu Top20-Rotation, Auswahl-Residency, nicht identifiziertem B5-Rechenhold, fünf isolierten N1-Lanes und ENTER-only-Join bleiben offen bzw. begrenzt. Dieser Master-V2-Abgleich erzeugt keinen neuen Beweis aller fünf produktiven Slots oder aller Shadow/Testnet/Canary/LIVE-Ausgänge.
+Historische Originale aus Recovery und Classic werden als zuvor verifizierte Quellen übernommen. Kein neuer vollständiger Classic-Download, kein vollständiger Chat-Export vorhanden, keine neue externe Recovery-Suche. 58 Recovery-Inhalte sind eine begrenzte historische Sammlung, nicht sämtliche Entwürfe.
+
+OFFLINE-PRÜFUNG UND FEHLERBEHANDLUNG
+12 neue begrenzte Proben mit echten Funktionen und künstlichen Inputs: 4 A/B-/D_t-Fälle, 4 Pfadauswahlfälle, 2 Initialisierungsfolgen, 1 Simulationsbuilder und 1 tatsächliche Wire-Helper-Übernahme. Alle abschließenden Assertions bestanden. Kein produktiver Zyklus, keine Persistenz-/Transportfunktion und keine Orderfunktion aufgerufen.
+Der erste Importversuch P5.10 vor Composition-Root scheiterte an einem zirkulären Paketimport. Laden des vorhandenen Composition-Root vor dem Child-Paket erlaubt die Proben. Kein sys.path-/PYTHONPATH-Eingriff und keine Codekorrektur. Diese Importreihenfolge-Abhängigkeit ist eine zusätzliche technische Grenze, kein Gesamtstartbeweis.
+
+KONKRET VERBLEIBENDER NACHWEIS
+Für jeden freizugebenden Pfad braucht es eine explizite Bindung von Code-Revision, Host, Quelle, Instrument, Provider-/Empfangs-/Entscheidungszeit, Zustand vor/nach Restore, D_t/R_t/Scope-Consumer und echter Kapitalquelle. Danach kann ein isolierter Gesamt-Replay dieselben Beobachtungen durch beide relevanten Zustandsphasen verfolgen. Vorherige Preisfrische-/Anzeige-Gegenbeispiele, die Scope-/State-Übergänge, Kapital- und Exit-Intent-Versorgung dürfen nicht durch SEAM_BOUND/PASS-Labels geschlossen werden.
+Nicht erforderlich ist, den gesamten alten Arbeitscheckout blind wiederherzustellen oder den bereits entfernten Simulationspfad neu einzubauen.
+
+BELEGDATEIEN
+mechanism-comparison.json: 14 Bereiche mit Codepfad und Obsidian-IDs.
+new-findings.json: 7 neue bzw. präzisierte Schlussfolgerungen mit Belegart.
+revision-comparison.json / secondary-checkout-comparison.json: vollständige 251-Datei-Hashvergleiche.
+simulation-capital-historical-messages.json: 19 relevante historische Nachrichten mit Originalpfad, JSONL-Zeile und Quellhash. Historische Befehle sind Belege, keine neuen Aufträge.
+simulation-capital-commit-containment.json: Einführungs-/Entfernungscommit pro Revisionslinie.
+working-cycle-vs-vault-pin.diff: tatsächlicher Diff; die Simulationswire ist bereits im Haupt-HEAD enthalten, nicht erst durch dessen aktuelle uncommittete DDO-Änderungen entstanden.
+offline-probe-results.json / offline_semantic_probe.py: reproduzierbare begrenzte Proben.
+prior-source-revalidation.json: 85 erneut geprüfte bestehende Quellhashes.
+source-manifest.json / baseline.json / verification.json: Herkunft und Unverändertheitskontrollen.
+
+GRENZE
+Kein belegter historischer oder heutiger funktionierender Gesamtstand. Keine allgemeine Bugfreiheit, Betriebsbereitschaft, Frischegarantie oder Vollständigkeit behauptet. Die fundierte Einordnung verhindert gerade, einen alten oder simulierten Pfad versehentlich als heutiges fachliches Ziel zu behandeln.

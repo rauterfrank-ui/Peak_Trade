@@ -1,0 +1,22 @@
+{
+  "budget_consumed": true,
+  "config_digest": "84464b5d5beb82a911ac1b20f90685447d1db5d890bb4873cb887c7e35ae10dd",
+  "dataset_digest": "NOT_RESOLVED_UNPAIRABLE_ENTRY_NO_EXIT",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "evaluation_executed": false,
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_volatility_decay_breakout_with_explicit_decay_exit_development_v1",
+  "evidence_ref": "docs/evidence/evaluate_volatility_decay_breakout_with_explicit_decay_exit_development_v1/",
+  "holdout_accessed": false,
+  "hypothesis_id": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_NON_BITCOIN_PERPETUALS_V1",
+  "process_exit_code": 2,
+  "reason": "UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:AGLD:USDT:USDT:perp:10575",
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "runner_started": true,
+  "schema_version": "evaluate_volatility_decay_breakout_with_explicit_decay_exit_registry.v1",
+  "strategy_identity": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
+  "strategy_params_digest": "6267ddf1e25d92b0206661dffbdc0ad32504274c3cb1975c9815b8a0100925a0",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
+}

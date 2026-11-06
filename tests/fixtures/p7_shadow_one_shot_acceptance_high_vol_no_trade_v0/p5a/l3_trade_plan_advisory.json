@@ -1,0 +1,42 @@
+{
+  "allocations": {
+    "decision": "NO_TRADE",
+    "reason": "high volatility no-trade fixture",
+    "regime": "VOL_EXTREME",
+    "scenario": "high_vol_no_trade",
+    "trade_allowed": false
+  },
+  "asof_utc": "2026-02-11T11:02:19Z",
+  "constraints": {
+    "decision": "NO_TRADE",
+    "max_gross_exposure": 1,
+    "max_leverage": 1,
+    "reason": "high volatility no-trade fixture",
+    "regime": "VOL_EXTREME",
+    "scenario": "high_vol_no_trade",
+    "trade_allowed": false
+  },
+  "decision": "NO_TRADE",
+  "evidence": {
+    "decision": "NO_TRADE",
+    "reason": "high volatility no-trade fixture",
+    "regime": "VOL_EXTREME",
+    "scenario": "high_vol_no_trade",
+    "trade_allowed": false
+  },
+  "no_trade": false,
+  "no_trade_reasons": [],
+  "rationale": [
+    "p5a_v0_stub"
+  ],
+  "reason": "high volatility no-trade fixture",
+  "regime": "VOL_EXTREME",
+  "scenario": "high_vol_no_trade",
+  "schema_version": "p5a.trade_plan_advisory.v0",
+  "stance": "HOLD",
+  "trade_allowed": false,
+  "universe": [
+    "BTC/USDT",
+    "ETH/USDT"
+  ]
+}

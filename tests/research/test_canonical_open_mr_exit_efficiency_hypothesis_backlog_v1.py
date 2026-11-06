@@ -1,0 +1,390 @@
+"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (lane closed)."""
+
+from __future__ import annotations
+
+import copy
+import json
+from pathlib import Path
+
+import pytest
+
+from src.research.canonical_open_mr_exit_efficiency_hypothesis_backlog_v1 import (
+    BACKLOG_REL_PATH,
+    GOVERNANCE_REL_PATH,
+    REQUIRED_FALSY_ZERO_HYGIENE_SURFACE,
+    REQUIRED_HYPOTHESIS_ID,
+    REQUIRED_OBSERVABILITY_SURFACE,
+    REQUIRED_V2_HYPOTHESIS_ID,
+    REQUIRED_V3_HYPOTHESIS_ID,
+    REQUIRED_V4_HYPOTHESIS_ID,
+    REQUIRED_V5_HYPOTHESIS_ID,
+    REQUIRED_V6_HYPOTHESIS_ID,
+    REQUIRED_V6_MECHANISM_ID,
+    REQUIRED_V7_HYPOTHESIS_ID,
+    REQUIRED_V8_HYPOTHESIS_ID,
+    BacklogValidationError,
+    assert_exactly_one_exit_efficiency_backlog_ssot,
+    load_and_validate_repo_backlog,
+    validate_backlog_contract,
+)
+
+REPO = Path(__file__).resolve().parents[2]
+BACKLOG_PATH = REPO / BACKLOG_REL_PATH
+GOVERNANCE_PATH = REPO / GOVERNANCE_REL_PATH
+
+
+def _load(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
+    assert_exactly_one_exit_efficiency_backlog_ssot(REPO)
+    assert BACKLOG_PATH.is_file()
+    assert GOVERNANCE_PATH.is_file()
+
+
+def test_repo_backlog_lane_closed_after_holdout_terminal_empty_inventory() -> None:
+    report = load_and_validate_repo_backlog(REPO)
+    assert report["valid"] is True
+    assert report["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert report["explicit_waiting_decision"] is False
+    assert report["explicit_closeout_decision"] is True
+    assert report["lane_auto_closed"] is False
+    assert report["operator_decision"] == "CLOSE_LANE_NO_FURTHER_RESEARCH"
+    assert report["next_canonical_step"] == "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
+    assert report["lifecycle_contract_id"] == (
+        "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1"
+    )
+    assert report["lifecycle_authority"] == (
+        "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
+    )
+    assert report["preregistered_count"] == 0
+    assert report["terminal_count"] == 8
+    assert report["open_unpreregistered_count"] == 0
+    assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
+    assert report["preregistered_hypothesis_id"] is None
+    assert report["development_run_count"] == 8
+    assert report["evaluation_authorized"] is False
+    assert report["v7_evaluation_run_count"] == 1
+    assert report["v7_result_class"] == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert report["v8_evaluation_run_count"] == 1
+    assert report["v8_result_class"] == "PASS"
+    assert report["holdout_forbidden"] is True
+    assert report.get("holdout_candidate_preregistered", True) is False
+    assert report["rerun_allowed"] is False
+    assert report["runtime_locked"] is True
+    assert report["v2_evaluation_run_count"] == 1
+    assert report["v2_is_rerun_of_v1"] is False
+    assert report["v3_evaluation_run_count"] == 1
+    assert report["v3_result_class"] == "FAIL"
+    assert report["v3_is_rerun_of_v2"] is False
+    assert report["v4_evaluation_run_count"] == 1
+    assert report["v4_result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert report["v4_is_rerun_of_v3"] is False
+    assert report["observability_surface"] == REQUIRED_OBSERVABILITY_SURFACE
+    assert report["falsy_zero_hygiene_surface"] == REQUIRED_FALSY_ZERO_HYGIENE_SURFACE
+    assert set(report["terminal_hypothesis_ids"]) == {
+        REQUIRED_HYPOTHESIS_ID,
+        REQUIRED_V2_HYPOTHESIS_ID,
+        REQUIRED_V3_HYPOTHESIS_ID,
+        REQUIRED_V4_HYPOTHESIS_ID,
+        REQUIRED_V5_HYPOTHESIS_ID,
+        REQUIRED_V6_HYPOTHESIS_ID,
+        REQUIRED_V7_HYPOTHESIS_ID,
+        REQUIRED_V8_HYPOTHESIS_ID,
+    }
+    assert report["v5_evaluation_run_count"] == 1
+    assert report["v5_result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert report["v5_is_rerun_of_v4"] is False
+
+
+def test_empty_preregistered_after_holdout_terminal_and_v7_v8_shape() -> None:
+    backlog = _load(BACKLOG_PATH)
+    assert len(backlog["preregistered_hypotheses"]) == 0
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert backlog["open_unpreregistered_candidates"] == []
+    assert backlog["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert backlog["lifecycle_authority"] == (
+        "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
+    )
+    assert backlog["explicit_closeout_decision"] is True
+    assert backlog["explicit_waiting_decision"] is False
+    assert backlog["lane_auto_closed"] is False
+    assert backlog["entry_eligibility_lane_status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert "CLOSED_NO_OPEN_CANDIDATES" not in json.dumps(backlog)
+    assert backlog["development_run_count"] == 8
+    assert len(backlog["terminal_hypotheses"]) == 8
+    by_id = {e["hypothesis_id"]: e for e in backlog["terminal_hypotheses"]}
+    v1 = by_id[REQUIRED_HYPOTHESIS_ID]
+    assert v1["status"] == "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert v1["evaluation_run_count"] == 1
+    v2 = by_id[REQUIRED_V2_HYPOTHESIS_ID]
+    assert v2["status"] == "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert v2["evaluation_run_count"] == 1
+    v3 = by_id[REQUIRED_V3_HYPOTHESIS_ID]
+    assert v3["status"] == "TERMINAL_FAIL"
+    assert v3["evaluation_run_count"] == 1
+    assert v3["result_class"] == "FAIL"
+    assert v3["economic_verdict"] == "FAIL"
+    assert v3["decision_reason"] == "identical_arms_no_exit_divergence"
+    assert v3["acceptance_criteria_met"] is False
+    assert v3["fail"] is True
+    assert v3["pass"] is False
+    assert v3["rerun_allowed"] is False
+    assert v3["falsy_zero_hygiene_surface"] == REQUIRED_FALSY_ZERO_HYGIENE_SURFACE
+    assert v3["observability_surface"] == REQUIRED_OBSERVABILITY_SURFACE
+    v4 = by_id[REQUIRED_V4_HYPOTHESIS_ID]
+    assert v4["status"] == "TERMINAL_INFRASTRUCTURE_FAILURE"
+    assert v4["evaluation_run_count"] == 1
+    assert v4["result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert v4["economic_verdict"] == "NOT_EVALUATED"
+    assert v4["evaluation_completed"] is False
+    assert v4["rerun_allowed"] is False
+    assert "NO_V3_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_AFTER_FAIL" in backlog["explicit_non_actions"]
+    assert "NO_RETUNING_AFTER_FAIL" in backlog["explicit_non_actions"]
+    assert "NO_V4_RERUN" in backlog["explicit_non_actions"]
+    v5 = by_id[REQUIRED_V5_HYPOTHESIS_ID]
+    assert v5["status"] == "TERMINAL_INFRASTRUCTURE_FAILURE"
+    assert v5["evaluation_run_count"] == 1
+    assert v5["result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert v5["economic_verdict"] == "NOT_EVALUATED"
+    assert v5["evaluation_completed"] is False
+    assert v5["rerun_allowed"] is False
+    assert v5["baseline_members_completed"] == "3/46"
+    assert v5["treatment_members_completed"] == "0/46"
+    assert "NO_V5_RERUN" in backlog["explicit_non_actions"]
+    v6 = by_id[REQUIRED_V6_HYPOTHESIS_ID]
+    assert v6["status"] == "TERMINAL_FAIL"
+    assert v6["evaluation_run_count"] == 1
+    assert v6["result_class"] == "FAIL"
+    assert v6["economic_verdict"] == "FAIL"
+    assert v6["decision_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert v6["acceptance_criteria_met"] is False
+    assert v6["fail"] is True
+    assert v6["pass"] is False
+    assert v6["rerun_allowed"] is False
+    assert v6["mechanism_id"] == REQUIRED_V6_MECHANISM_ID
+    assert v6["identical_exit_mechanism_to_development_v5"] is False
+    assert v6["economic_change_vs_development_v5"] is True
+    assert v6["baseline_members_completed"] == "46/46"
+    assert v6["treatment_members_completed"] == "46/46"
+    assert "NO_V6_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_V6_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
+    assert "NO_V7_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
+    assert "NO_V7_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_V7_REOPEN" in backlog["explicit_non_actions"]
+    assert "NO_V8_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
+    assert "NO_V8_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_V8_REOPEN" in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_AFTER_PASS" not in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_OF_V8_DEVELOPMENT_IDENTITY" in backlog["explicit_non_actions"]
+    assert "NO_RUNTIME_PROMOTION_FROM_DEVELOPMENT_PASS" in backlog["explicit_non_actions"]
+    assert "NO_V9_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_V8_AUTO_CREATE" in backlog["explicit_non_actions"]
+    v7 = by_id[REQUIRED_V7_HYPOTHESIS_ID]
+    assert v7["status"] == "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert v7["evaluation_run_count"] == 1
+    assert v7["result_class"] == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert v7["economic_verdict"] == "NOT_EVALUATED"
+    assert v7["panel_backtest_executed"] is False
+    assert v7["rerun_allowed"] is False
+    assert v7.get("failure_class") == "FROZEN_EXIT_PARAMETERS_MISMATCH"
+    assert v7.get("failure_timing") == "BEFORE_PANEL_ACCESS"
+    assert v7.get("v7_reopen_allowed") is False
+    assert v7.get("strategy_fail") is False
+    assert v7.get("economic_fail") is False
+    assert v7.get("measurement_pass") is False
+    v8 = by_id[REQUIRED_V8_HYPOTHESIS_ID]
+    assert v8["status"] == "TERMINAL_PASS"
+    assert v8["evaluation_run_count"] == 1
+    assert v8["result_class"] == "PASS"
+    assert v8["economic_verdict"] == "PASS"
+    assert v8["decision_reason"] == "ALL_PASS_REQUIRES_MET"
+    assert v8["acceptance_criteria_met"] is True
+    assert v8["pass"] is True
+    assert v8["fail"] is False
+    assert v8["panel_backtest_executed"] is True
+    assert v8["run_slot_consumed"] is True
+    assert v8["rerun_allowed"] is False
+    assert v8["v8_reopen_allowed"] is False
+    assert v8["baseline_members_completed"] == "46/46"
+    assert v8["treatment_members_completed"] == "46/46"
+    assert backlog["next_canonical_step"] == "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
+    assert backlog["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert backlog["preregistered_hypotheses"] == []
+    assert backlog["open_unpreregistered_candidates"] == []
+    assert "NO_IMPLICIT_SUCCESSOR_AFTER_CLOSE" in backlog["explicit_non_actions"]
+    assert "NO_SUCCESSOR_SYNTHESIS_FROM_ATTRIBUTION_CANDIDATES" in backlog["explicit_non_actions"]
+    assert "NO_RETRY_AFTER_HOLDOUT_FAIL" in backlog["explicit_non_actions"]
+    assert v8["holdout_executed"] is True
+    assert v8["holdout_run_count"] == 1
+    assert v8["holdout_run_limit"] == 1
+    assert v8["holdout_result_class"] == "FAIL"
+    assert v8["holdout_terminal_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert v8["development_preregistration_digest"] == (
+        "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c"
+    )
+    assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
+    assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
+    assert "NO_V3_ECONOMIC_RESULT_IMPORT" in backlog["explicit_non_actions"]
+    assert "NO_V4_AUTO_CREATE" not in backlog["explicit_non_actions"]
+
+
+def test_governance_doc_mentions_v8_prereg_and_v7_terminal() -> None:
+    text = (
+        REPO / "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
+    ).read_text(encoding="utf-8")
+    assert "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1" in text
+    assert "OPEN_BACKLOG` is invalid" in text or "OPEN_BACKLOG is invalid" in text
+    assert "CLOSED_NO_OPEN_CANDIDATES" in text  # mentioned as removed/non-canonical
+    assert "V6" in text
+    assert "TERMINAL_FAIL" in text or "FAIL" in text
+    assert "NET_PROFIT_FACTOR_NOT_IMPROVED" in text
+    assert "V7" in text
+    assert "preregistered_count_exact=0" in text
+    assert "V8" in text
+    assert "TERMINAL_PASS" in text
+    assert "ALL_PASS_REQUIRES_MET" in text
+    assert "FROZEN_EXIT_PARAMETERS_MISMATCH" in text
+    assert "BEFORE_PANEL_ACCESS" in text
+    assert "LANE_CLOSED_NO_FURTHER_RESEARCH" in text
+    assert "CLOSE_LANE_NO_FURTHER_RESEARCH" in text
+    assert "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO" in text
+    assert "REOPEN_CLOSED_LANE_WITH_NEW_HYPOTHESIS_IDENTITY" in text
+    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" in text  # historical holding state
+    assert "Evaluation closeout was not itself" in text or "not itself" in text.lower()
+    assert "No V9 auto-create" in text or "No V9" in text
+    assert (
+        "eligible independent successor" in text.lower().replace("\n", " ")
+        or "no eligible successor" in text.lower()
+    )
+    assert "Awaiting/create-successor" in text or "create-successor" in text
+    assert "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c" in text
+    assert "V5" in text or "v5" in text.lower()
+    assert "V4" in text
+    assert "INFRASTRUCTURE_FAILURE" in text or "Infrastructure" in text
+    assert "NO_V8" in text or "No V8" in text or "No V8 auto-create" in text
+
+
+def test_rejects_open_backlog_with_empty_inventory() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["status"] = "OPEN_BACKLOG"
+    bad["preregistered_hypotheses"] = []
+    bad["governance_rules"] = dict(bad["governance_rules"])
+    bad["governance_rules"]["preregistered_count_exact"] = 0
+    bad["holdout_candidate_preregistered"] = False
+    with pytest.raises(
+        BacklogValidationError,
+        match="STATUS_NOT_LANE_CLOSED|LIFECYCLE_CONTRACT_REJECTED|OPEN_LANE_EMPTY",
+    ):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_missing_shared_lifecycle_authority() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["lifecycle_authority"] = "LANE_LOCAL_STATUS_AUTHORITY"
+    with pytest.raises(BacklogValidationError, match="LIFECYCLE_AUTHORITY_MISMATCH"):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_auto_close_flag() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["lane_auto_closed"] = True
+    with pytest.raises(BacklogValidationError, match="LANE_AUTO_CLOSED_FORBIDDEN"):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_noncanonical_entry_eligibility_status_label() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["entry_eligibility_lane_status"] = "CLOSED_NO_OPEN_CANDIDATES"
+    with pytest.raises(BacklogValidationError, match="ENTRY_ELIGIBILITY_LANE_STATUS_NOT_CANONICAL"):
+        validate_backlog_contract(bad)
+
+
+def test_lane_closed_invariants_and_v8_digest_immutable() -> None:
+    backlog = _load(BACKLOG_PATH)
+    assert backlog["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert backlog["explicit_waiting_decision"] is False
+    assert backlog["explicit_closeout_decision"] is True
+    assert backlog["lane_auto_closed"] is False
+    assert backlog["open_unpreregistered_candidates"] == []
+    assert len(backlog["preregistered_hypotheses"]) == 0
+    assert backlog["runtime_policy"]["runtime_activated"] is False
+    assert backlog["runtime_policy"]["orders_allowed"] is False
+    assert backlog["holdout_forbidden"] is True
+    assert backlog["promotion_and_economic_gate_policy"]["promotion_eligible"] is False
+    assert backlog["promotion_and_economic_gate_policy"]["economic_gate_open"] is False
+    by_id = {e["hypothesis_id"]: e for e in backlog["terminal_hypotheses"]}
+    v8 = by_id[REQUIRED_V8_HYPOTHESIS_ID]
+    assert v8["status"] == "TERMINAL_PASS"
+    assert v8["development_preregistration_digest"] == (
+        "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c"
+    )
+    assert v8["holdout_result_class"] == "FAIL"
+    assert v8["holdout_terminal_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert int(v8["holdout_run_count"]) == 1
+    assert int(v8["holdout_run_limit"]) == 1
+    assert "NO_V9_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_AFTER_PASS" not in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_OF_V8_DEVELOPMENT_IDENTITY" in backlog["explicit_non_actions"]
+    assert "NO_IMPLICIT_SUCCESSOR_AFTER_CLOSE" in backlog["explicit_non_actions"]
+
+
+def test_rejects_waiting_decision_while_closed() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["explicit_waiting_decision"] = True
+    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_FORBIDDEN"):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_missing_explicit_closeout_while_claiming_closed() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["explicit_closeout_decision"] = False
+    with pytest.raises(
+        BacklogValidationError,
+        match="CLOSEOUT_DECISION_REQUIRED|CLOSED_WITHOUT_EXPLICIT|LIFECYCLE_CONTRACT_REJECTED",
+    ):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_synthesized_successor_inventory_while_closed() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["preregistered_hypotheses"] = [
+        {
+            "hypothesis_id": "SYNTHESIZED_EXIT_EFFICIENCY_SUCCESSOR_FORBIDDEN",
+            "status": "DEFINITION_ONLY_PREREGISTERED",
+            "treatment_type": "POST_ENTRY_EXIT_EFFICIENCY_MECHANISM",
+        }
+    ]
+    bad["governance_rules"] = dict(bad["governance_rules"])
+    bad["governance_rules"]["preregistered_count_exact"] = 1
+    with pytest.raises(
+        BacklogValidationError,
+        match=(
+            "PREREGISTERED_MUST_BE_EMPTY|PREREGISTERED_COUNT_RULE|"
+            "LIFECYCLE_INVENTORY|LIFECYCLE_CONTRACT_REJECTED"
+        ),
+    ):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_post_terminal_holding_state_after_closeout() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["status"] = "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    bad["explicit_closeout_decision"] = False
+    bad["next_canonical_step"] = "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY"
+    with pytest.raises(
+        BacklogValidationError,
+        match="STATUS_NOT_LANE_CLOSED|CLOSEOUT_DECISION_REQUIRED|NEXT_CANONICAL_STEP",
+    ):
+        validate_backlog_contract(bad)

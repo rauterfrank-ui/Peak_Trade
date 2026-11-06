@@ -1,0 +1,18 @@
+{
+  "AMEND": false,
+  "CANCEL": false,
+  "COLLECTOR_ACTIVATED": false,
+  "CREDENTIAL_USE": true,
+  "EARLIEST_MUTATION_BOUNDARY": "LIVE_ORDER_PLAN_OBSERVED",
+  "FLATTEN_EXECUTE": false,
+  "FUNDING": false,
+  "GATE_MUTATION": false,
+  "LIVE_ORDER_PLAN_OBSERVED": false,
+  "LIVE_PRIVATE_READ_ONLY_PROVEN": true,
+  "ORDER_SUBMIT": false,
+  "POST": false,
+  "PRIVATE_GET": true,
+  "PUBLIC_GET": false,
+  "SECTION_11_14_RUNTIME_EXECUTION": false,
+  "VENUE_REQUESTS": 2
+}

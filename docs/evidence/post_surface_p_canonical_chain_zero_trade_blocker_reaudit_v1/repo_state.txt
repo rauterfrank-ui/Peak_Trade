@@ -1,0 +1,30 @@
+PRE_FLIGHT_TIMESTAMP_UTC=2026-07-18T18:04:30Z
+POST_AUDIT_TIMESTAMP_UTC=PLACEHOLDER
+REPO_ROOT=/Users/frnkhrz/Peak_Trade
+BRANCH=main
+HEAD=43558204d4f7bcab30ce9e8357d2513a9a5f0970
+ORIGIN_MAIN=43558204d4f7bcab30ce9e8357d2513a9a5f0970
+EXPECTED_BASELINE=43558204d4f7bcab30ce9e8357d2513a9a5f0970
+HEAD_MATCHES_BASELINE=true
+ORIGIN_MAIN_MATCHES_BASELINE=true
+WORKTREE_CLEAN_BEFORE=true
+# Note: porcelain was empty before any evidence writes; after mkdir evidence dir is untracked only.
+GIT_STATUS_SB_BEFORE=## main...origin/main
+RECENT_COMMITS:
+43558204 test(master-v2): align Surface-P smoke composition fixture
+660da90f test(master-v2): align Surface-P contract with offline CRS binding
+0cf20d6a fix(master-v2): fail-closed scenario injection + tick provenance (#5326)
+4185af60 feat(master-v2): bind CHOP as canonical scope policy event (#5325)
+ddef47d5 fix(master_v2): quarantine competing Double Play authority paths (#5324)
+PR_5327=MERGED mergeCommit=660da90f03081b5f93e072c2da23b9cb0ea94e01 mergedAt=2026-07-18T17:46:54Z
+PR_5328=MERGED mergeCommit=43558204d4f7bcab30ce9e8357d2513a9a5f0970 mergedAt=2026-07-18T17:59:36Z
+STASHES_BEFORE:
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework
+STASHES_AFTER: identical (STASHES_UNCHANGED=true)
+LIVE_AUTHORIZED=false
+ORDERS_ENABLED=false
+PRE_FLIGHT_VERDICT=PASS
+PRODUCTIVE_FILES_CHANGED=false
+EVIDENCE_ONLY_UNTRACKED=docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/

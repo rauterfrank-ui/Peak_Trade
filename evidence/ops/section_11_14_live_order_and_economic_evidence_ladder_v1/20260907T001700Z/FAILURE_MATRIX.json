@@ -1,0 +1,185 @@
+{
+  "CASE_COUNT": 22,
+  "DOCUMENT_CLASS": "SECTION_11_14_COMPLETE_CAPTURE_SEAM_FAILURE_MATRIX_V1",
+  "FAILURE_MATRIX_STATUS": "BOUND_CURRENT_PATH_ABSENT_REQUIRED_FAIL_CLOSED",
+  "HEURISTIC_RECOVERY_FORBIDDEN": true,
+  "VENUE_GET_COPY_IS_NOT_CONTEMPORANEOUS_HANDOFF": true,
+  "rows": [
+    {
+      "CASE_ID": "producer_unavailable",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "S05 producer unimplemented",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed. Emit nothing. Do not substitute venue GET, fillSz, submitted sz, accounting, A1 WAL, evidence pack, or retroactive synthesis."
+    },
+    {
+      "CASE_ID": "qty_unavailable",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "No S05 qty source",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed. Emit nothing. Do not substitute venue GET, fillSz, submitted sz, accounting, A1 WAL, evidence pack, or retroactive synthesis."
+    },
+    {
+      "CASE_ID": "qty_malformed",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Writer validation unbound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Reject non-Decimal or empty pos. Do not write."
+    },
+    {
+      "CASE_ID": "wrong_unit",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Unit guard unimplemented",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Reject any unit other than VENUE_CONTRACT_COUNT_NUMBER_OF_CONTRACTS."
+    },
+    {
+      "CASE_ID": "wrong_instrument",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Instrument guard unimplemented",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Reject instId != SUI-USD_UM_XPERP-310404."
+    },
+    {
+      "CASE_ID": "capture_interrupted",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "No atomic writer",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "No partial visible handoff. Fail closed."
+    },
+    {
+      "CASE_ID": "serialization_failure",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "No serializer bound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed. Do not acknowledge durable success."
+    },
+    {
+      "CASE_ID": "write_failure",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "No writer",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed. Mutation success must not be claimed."
+    },
+    {
+      "CASE_ID": "partial_write",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Atomicity unbound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Torn write must be invisible or fail closed on read."
+    },
+    {
+      "CASE_ID": "fsync_durability_uncertainty",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "No durability ack bound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Do not claim durable success without proven write acknowledgement. Host-crash remains separately UNPROVEN and is not required for this field."
+    },
+    {
+      "CASE_ID": "stale_previous_record",
+      "CURRENT_BEHAVIOR": "No record exists.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Reader unbound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Reject stale or wrong-attempt identity. No heuristic recovery."
+    },
+    {
+      "CASE_ID": "corrupt_record",
+      "CURRENT_BEHAVIOR": "No record exists.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Reader unbound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed. No heuristic repair."
+    },
+    {
+      "CASE_ID": "missing_record",
+      "CURRENT_BEHAVIOR": "adjudicate_live_restart_reconstructed_v1 fail-closed: DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "NONE_FOR_MISSING_HANDOFF_ADMISSION",
+      "PROVEN_OR_UNPROVEN": "PROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed. No retroactive synthesis."
+    },
+    {
+      "CASE_ID": "schema_mismatch",
+      "CURRENT_BEHAVIOR": "No productively bound schema.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Schema named not productively bound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed on schema/version mismatch."
+    },
+    {
+      "CASE_ID": "provenance_mismatch",
+      "CURRENT_BEHAVIOR": "No handoff provenance exists.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Provenance validator unbound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Reject RETROACTIVE_SYNTHESIS, VENUE_GET_COPY, TIMESTAMP_BACKFILL."
+    },
+    {
+      "CASE_ID": "timestamp_invalid",
+      "CURRENT_BEHAVIOR": "No capture timestamp exists. Backfill forbidden.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Optional temporal fields not implemented",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "If a timestamp is written, it must be contemporaneous. No backfill."
+    },
+    {
+      "CASE_ID": "duplicate_capture",
+      "CURRENT_BEHAVIOR": "No writer. Duplicates cannot occur.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Idempotency unbound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Idempotent reject or exact same record. No second identity."
+    },
+    {
+      "CASE_ID": "restart_between_mutation_and_capture",
+      "CURRENT_BEHAVIOR": "No capture exists, so any restart after fill loses Peak_Trade control-state pos. Retroactive synthesis is forbidden.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Capture must occur before restart; currently absent",
+      "PROVEN_OR_UNPROVEN": "PROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed. Do not synthesize a pre-restart handoff after restart from venue/API/logs/old snapshots."
+    },
+    {
+      "CASE_ID": "restart_during_capture",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Atomic writer absent",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Partial write invisible. Fail closed. No torn-record recovery."
+    },
+    {
+      "CASE_ID": "restart_after_capture_before_acknowledgement",
+      "CURRENT_BEHAVIOR": "No productive capture path exists. Restart read fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "Ack boundary unbound",
+      "PROVEN_OR_UNPROVEN": "UNPROVEN",
+      "REQUIRED_BEHAVIOR": "Without durability ack, treat as missing/unproven handoff. Fail closed."
+    },
+    {
+      "CASE_ID": "reader_failure",
+      "CURRENT_BEHAVIOR": "Named read seam fail-closed on missing handoff.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "NONE_FOR_CURRENT_MISSING_HANDOFF_READER",
+      "PROVEN_OR_UNPROVEN": "PROVEN",
+      "REQUIRED_BEHAVIOR": "Fail closed. Do not skip to venue GET."
+    },
+    {
+      "CASE_ID": "consumer_failure",
+      "CURRENT_BEHAVIOR": "LIVE_RESTART_RECONSTRUCTED remains false.",
+      "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+      "IMPLEMENTATION_GAP": "NONE_FOR_CURRENT_FALSE_FIELD",
+      "PROVEN_OR_UNPROVEN": "PROVEN",
+      "REQUIRED_BEHAVIOR": "Do not promote restart reconstruction. No silent reinitialization."
+    }
+  ]
+}

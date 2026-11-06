@@ -1,0 +1,7 @@
+{
+  "CONTEMPORANEOUS_CAPTURE_CAN_BE_ISOLATED_FROM_LIVE_EXECUTION": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_CAPTURE_ISOLATION_ADJUDICATION_V1",
+  "MINIMAL_FUTURE_AUTHORIZED_ENTRYPOINT": "NONE_CAPTURE_ONLY",
+  "REASON": "A legitimate contemporaneous productive capture record requires LIVE_IDENTITY_BOUND_VENUE_FILL already proven for the same lifecycle. That bound fill is an identity-bound venue fill of a submitted order. TEST_FIXTURE capture is not productive provenance. Historical BOUND_* identity is not contemporaneous. Isolation from live submit/wire/order/position mutation is therefore false.",
+  "UNAVOIDABLE_PRODUCTIVE_PREDECESSOR": "LIVE_IDENTITY_BOUND_VENUE_FILL after identity-bound venue fill of a previously submitted order; historical BOUND_* identity and TEST_FIXTURE are not valid productive contemporaneous provenance"
+}

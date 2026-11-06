@@ -1,0 +1,9 @@
+### CON-2073 — Ranking vor Auswahl und Binding
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Cap21 prüft Instrumente, Cap22 rankt, Cap23 wählt, Cap24 bindet. Die sechs Strukturkriterien des August-Rankings sind im späteren Economic-Ranking Eignungs-Gates; die Ordnung kommt aus vollständigen Features, Midrank-Perzentilen und balanced_movement_score. Instrumentwissen, relativer Score, ausgewählte Identität und Handelsrichtung sind unterschiedliche Ausgaben.
+
+**Grenze:** Double Play liefert die Richtungs-/Handelsentscheidung auf dem gebundenen Instrument; es wird nicht als zweiter Instrument-Selector dokumentiert. Reale durchgängige MD-Versorgung bleibt gesondert.
+
+Quellen: EVI-2213, EVI-2246, EVI-2245, EVI-2238, EVI-2220.

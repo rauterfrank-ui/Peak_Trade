@@ -1,0 +1,12 @@
+{
+  "artifact_digest": "6438d3657c7f1cdc390c11d1871b0199ff5084c4210feb4d0255c1a8927ee257",
+  "authorization_digest": "c0ab3fd675718d3692a5ea52f7e263e8c5a82c0ddcd4e9495c6b9c994bccfa07",
+  "authorization_status": "AUTHORIZED_FOR_PRODUCTIVE_CONFIGURATION_BOUNDARY",
+  "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+  "evidence_bundle_digest": "b0367c0a5ee4633d4d9f4a961e32f87dccc3ecfa0e68ed73e1ab3eef0ef3bd2b",
+  "ingress_digest": "e0c73f9b0cd5cdb224ca172b78726c5b6b5e8a464efa91d0b8c94bfd90870f1c",
+  "owner_authorization_record_digest": "eb979b88736d6a89f8ae8631935de45cceeabd53320320de0bf7dc1660d0a23f",
+  "runtime_authorization_id": "F1_M9_POST_6800_REAL_RUN_20260924T224821Z",
+  "schema_version": "f1_m9_post_real_campaign_productive_handoff_bounded_completion/v1",
+  "workpackage_id": "F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1"
+}

@@ -1,0 +1,31 @@
+{
+  "cost_application": "APPLIED",
+  "fee_bps_config": 10.0,
+  "slippage_bps_config": 5.0,
+  "costs_configured_in_runtime_evaluation_config": true,
+  "fill_prices_include_slippage": false,
+  "slippage_model": "cash_drag_on_notional_via_compute_effective_entry_exit_cost_bps",
+  "fee_model": "cash_drag_on_notional_taker_fee_bps",
+  "double_application": false,
+  "first_cost_loss_boundary_prior": "src/backtest/engine.py::_emit_legacy_trade_accounting_fields_v0 gated by LEGACY_PATH_COST_APPLICATION=False via adapter _close_current_trade",
+  "repair_owner": "src/backtest/backtest_engine_position_feedback_adapter_v1.py::_close_current_trade(legacy_path_cost_application=True)",
+  "cost_model_owner": "src/backtest/cost_config_v0.py + src/backtest/engine.py::_compute_roundtrip_fee_slippage_components_v0",
+  "legacy_path_cost_application_global_default": false,
+  "legacy_path_cost_application_mv2_bar_path": true,
+  "fees_total_shared_book": 15.25295478732169,
+  "slippage_total_shared_book": 7.626477393660845,
+  "fees_total_sleeve_sum_forensic": 1799.8486649039594,
+  "slippage_total_sleeve_sum_forensic": 899.9243324519797,
+  "cost_drag_shared_book": 22.87943218098253,
+  "gross_pnl_shared_book": 46.13329289862826,
+  "net_pnl_shared_book": 23.253860717645743,
+  "identity_check": "gross_pnl - fees_total - slippage_total = net_pnl",
+  "identity_residual": 0.0,
+  "ledger_reconciliation": "PASS",
+  "economic_interpretation_allowed": false,
+  "notes": [
+    "Global LEGACY_PATH_COST_APPLICATION remains False for non-MV2 legacy callers.",
+    "MV2 research bar path now applies bound fee+slippage cash drag once; fills stay at bar/stop prices.",
+    "Shared-book totals use CRS scale shared_initial/(N*sleeve_initial)."
+  ]
+}

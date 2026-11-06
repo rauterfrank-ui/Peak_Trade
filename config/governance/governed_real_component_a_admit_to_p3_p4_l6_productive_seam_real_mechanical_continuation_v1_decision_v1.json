@@ -1,0 +1,18 @@
+{
+  "workpackage_id": "GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1",
+  "owner_go": true,
+  "continuation_authority": "NONE",
+  "evidence_admit_implies_productive_activation": false,
+  "runtime_apply_started": false,
+  "productive_configuration_produced": false,
+  "productive_activation_authorized": false,
+  "external_effect": false,
+  "component_b_activated": false,
+  "real_upstream_source_used": true,
+  "ddo_fixture_state_used_on_real_path": false,
+  "p3_input_creator_binder_real_bind_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "p4_l6_productive_seam_real_bind_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "p2_a_runtime_implementation_authorized_unchanged": false,
+  "p3_b_runtime_implementation_authorized_unchanged": false,
+  "normative_spec": "docs/ops/specs/GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1.md"
+}

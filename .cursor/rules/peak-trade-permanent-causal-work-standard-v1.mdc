@@ -1,0 +1,87 @@
+---
+description: Permanent causal work standard — CURRENT first, GHV fixpoint, no silent scope reduction
+alwaysApply: true
+---
+
+# PEAK_TRADE_PERMANENT_CAUSAL_WORK_STANDARD_V1
+
+Complements `peak-trade-governance.mdc` and **requires** `capital-safety-evidence-integrity-v1.mdc` for all PROVEN/PASS claims. AUTHORITY=NONE for this rule.
+
+## Activation gate (cost-minimal default)
+
+**LIGHTWEIGHT** only when ALL hold:
+
+- Single-file/local change in **non-critical** paths (e.g. docs-only, isolated test with no trading/execution/governance/risk imports)
+- No paths under `src/trading/**`, `src/execution/**`, `src/governance/**`, `src/risk/**`, `src/ingress/**`, or safety/kill-switch/capital/sizing surfaces
+- No touch of archive/readmodels, `config/governance/**`, CI/workflows, or cross-package imports
+- No safety-, capital-, or architecture-relevant PROVEN claims in the task
+
+If path or task classification is uncertain → **CAUSAL_MODE** (fail-closed), not LIGHTWEIGHT.
+
+**CAUSAL_MODE (mandatory)** when ANY holds:
+
+- Owner prompt: forensic, audit, integration, safety, whole-system, GHV, causal, isolation, dashboard/archive/readmodel, config seam, cross-package debugging
+- Surfaces: `src/trading/**`, `src/execution/**`, `src/governance/**`, `src/risk/**`, multi-module `src/ops/**`, `config/governance/**`, `scripts/ops/ghv_*`, presentation/archive/exporter/materializer paths
+- Ambiguity, drift suspicion, or scope would shrink without Owner OK
+
+**NO SILENT SCOPE REDUCTION** — narrowing requires explicit reason and Owner approval.
+
+## 1. CURRENT FIRST
+
+- Canonical state: `origin/main` (fetch/prune before substantive work).
+- Record `CURRENT_ORIGIN_MAIN_SHA`, local HEAD, `WORKING_MODEL_DRIFT`.
+- Code, config, tests, and bound evidence beat chat, stale docs, or stale graphs.
+
+## 2. GHV whole-system graph (reuse only — no new graph systems)
+
+Mandatory in CAUSAL_MODE for cross-cutting work:
+
+- WP1: `scripts/ops/ghv_forensic_whole_system_crosswalk_v1` → `composed_forensic_graph.v1.json`
+- WP2-A: `scripts/ops/ghv_forensic_whole_system_causal_integration_v1` → `integrated_causal_graph.v1.json` (+ overlay/manifest)
+- Adapter: `scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1`
+- Inputs: `config/governance/current_system_census_graph_v1/source_v1.json`, `current_system_interaction_authority_map_v1/source_v1.json`, Map of Truth
+
+Use latest durable `evidence/ops/**/composed_forensic_graph.v1.json` only after drift check vs HEAD. Missing graph edge ≠ proof of isolation. Do not treat retired/historical components as active CURRENT architecture.
+
+## 3. Causal fixpoint
+
+Per relevant start component: **FORWARD** (effects/writes), **REVERSE** (consumers), **TRANSITIVE** (shared config, archive, libs, processes) until last provable effect or honest stop.
+
+Reachability: `ACTIVE_REACHABLE` | `CONDITIONAL_REACHABLE` | `DORMANT` | `RETIRED` | `NOT_PROVEN`.
+
+## 4. Protected trading logic
+
+No unapproved changes to Master V2, Double Play, Entry/Exit/Scale-In, GGE, risk/sizing, safety invariants. Forensic read-only unless explicit Owner GO in the current prompt.
+
+## 5. Defects
+
+Confirmed unwanted effect: **STOP → ROOT CAUSE → minimal fix plan → reproof** — no improvised workarounds.
+
+## 6. Owner authority
+
+No commits, PRs, merge, runtime activation, orders, or process/server starts unless explicitly authorized in the current prompt.
+
+## CAUSAL_COMPLETION_CONTRACT (end of CAUSAL_MODE tasks)
+
+Also satisfy `EVIDENCE_INTEGRITY_V1` from capital-safety rule for any PROVEN claims.
+
+```text
+CAUSAL_MODE=
+CURRENT_ORIGIN_MAIN_SHA=
+LOCAL_HEAD=
+WORKING_MODEL_DRIFT=
+GHV_ARTIFACT_PATH=
+GHV_SNAPSHOT_ID=
+GHV_GRAPH_STATUS=VERIFIED|STALE|NOT_MATERIALIZED|NOT_PROVEN
+NODES_EDGES_EXAMINED=
+COVERAGE=
+FIXPOINT_STATUS=CLOSED|OPEN|NOT_PROVEN
+CONFIRMED_EFFECTS=
+CONDITIONAL_EFFECTS=
+OPEN_EVIDENCE_GAPS=
+ISOLATION=A:PROVEN|FAILED|NOT_PROVEN
+STOP_TRIGGERS=
+NEXT_SAFE_ACTION=
+```
+
+If not in CAUSAL_MODE, omit this block (delivery-contract completion still applies for code changes).

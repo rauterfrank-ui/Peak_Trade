@@ -1,0 +1,5 @@
+{
+  "LIVE_RESTART_RECONSTRUCTED": false,
+  "RESTART_CONSUMER_BOUND": true,
+  "RESTART_CONSUMER_SELECTED": "adjudicate_live_restart_reconstructed_v1::consume_validated_handoff_for_restart_reconstruction_v1"
+}

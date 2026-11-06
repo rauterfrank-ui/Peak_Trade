@@ -1,0 +1,28 @@
+B5/B05 – HOLD FÜR DATENSAMMLUNG ODER BERECHNUNGSSTABILITÄT
+02.11.2026 – zusätzliche Owner-Erinnerung im laufenden Rekonstruktionsauftrag
+
+OWNER-ANGABE
+Im heutigen System sei ein Mechanismus eingebaut worden, der bei rotierender Vorauswahl einen Kontext kurz hält/anhält, damit Volatilität und Amplitude berechnet werden können. Diese Angabe wird ausdrücklich als zusätzlicher Untersuchungsgegenstand geführt. Die Bezeichnung B5 wird nicht ohne Prüfung mit dem bekannten B05-Feature-Produzenten gleichgesetzt.
+
+STATUS
+OWNER_REPORTED_IMPLEMENTED; genaue Implementierung und Consumer-Wirkung noch nicht zugeordnet. Keine Aussage „Mechanismus fehlt“. Keine automatische Gleichsetzung mit Top20-Residenz, MF-Anti-Churn, Cap23 Selection Hold, Lane-Retention, Positions-Custody oder Core-Confirmation.
+
+GEZIELT GELESENE AKTUELLE CODEBELEGE
+src/ops/economic_md_input_producer_v1/producer_v1.py: produce_economic_md_input_snapshot_v1 bestimmt aus dem übergebenen Universe-Snapshot ein eligible-Set und sammelt dessen Instrumentdaten in einem Collection-Zyklus. Dies bindet einen Berechnungsauftrag an einen Snapshot. Eine eigene zeitliche Halte-/Rotationssteuerung ist dadurch nicht bewiesen.
+src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py: produce_ranking_feature_production_snapshot_v1 verarbeitet den gelieferten Economic-MD-Snapshot und prüft seinen Digest. Das ist eine stabile Berechnungseingabe, noch kein belegter Hold-Controller.
+src/ops/peak_trade_ranking_feature_production_v1/marks_window_v1.py: unvollständiges Fenster ergibt INSUFFICIENT_PT1M_MARK_WARMUP; gültiges Fenster wird separat zur Berechnung extrahiert. Die Prüfung fehlender Historie wartet selbst nicht aktiv und beweist keine Kandidatenbindung bis zur Vervollständigung.
+
+HISTORISCHE SUCHSPUR
+Cursor-Originalnachricht Dokument15150, 02.10.2026 17:03, Chat0da031c6-976d-49b8-a545-950b36b1816b, JSONL-Zeile81: Entwurfsauftrag für eine eigene „B05 → Ranking-Universe Opportunity Qualification Hold Instance“. Er beschreibt Stabilität NACH damaliger angenommener Opportunity-Vorauswahl und ist selbst kein Implementierungsnachweis.
+Die spätere Nachricht15159 um17:10 stellt gerade infrage, ob B05 überhaupt wirtschaftlich vorauswählt oder nur Features berechnet. Die spätere Platzierungsentwicklung ist im vorhandenen Residenz-Dossier separat erhalten. Diese Entwurfsfolge beweist weder Identität noch Nichtidentität mit dem jetzt erinnerten Berechnungs-Hold.
+
+ZUORDNUNGSKRITERIEN FÜR DIESEN SUCHPUNKT
+1. Tatsächlicher Producer, Controller, Zustand und Consumer; Namen reichen nicht.
+2. Was wird gehalten: Instrumentmenge, Instrumentidentität, Rohdatenfenster, Snapshot-/Epoch-Referenz, Berechnungsauftrag oder Weitergabe?
+3. Wer darf währenddessen weiter rotieren beziehungsweise neue Daten liefern?
+4. Beginn und Freigabe: Zeit, genügend gültige Daten, fertige Berechnung, Timeout, Invalidierung oder Abbruch?
+5. Welche Daten/Zeiten/Einheiten und Versionen müssen zusammenpassen?
+6. Welche Wirkung erreicht den Ranking-Consumer tatsächlich; wie werden Wiederholung, Reentry und Restart behandelt?
+7. Hat der Mechanismus nur Kontinuitäts-/Berechnungsbefugnis oder zusätzlich Vorschlags-/Filterrechte? Keine Rechte aus dem Begriff Hold ableiten.
+
+Keine neue Hold-Funktion definiert, kein Parameter festgelegt und keine Aktivierung vorgenommen. Die heutigen Codefunde bleiben mögliche Teilmechanismen, nicht die vorschnelle Auflösung der Owner-Erinnerung.

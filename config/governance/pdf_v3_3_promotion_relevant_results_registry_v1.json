@@ -1,0 +1,31 @@
+{
+    "artifact_class": "PDF_V3_3_PROMOTION_RELEVANT_RESULTS_REGISTRY_V1",
+    "schema_version": "pdf_v3_3_promotion_relevant_results_registry_v1",
+    "workpackage_id": "META_LEARNING_OPTIMIZATION_UNIVERSE_PDF_V3_3_FINAL_COMPLETION_V1",
+    "closure_semantics": "FINITE_CURRENT_SET_ONLY",
+    "promotion_relevant_result_count": 1,
+    "results": [
+        {
+            "result_id": "f1_m9_real_campaign_governed_candidate_selection_v1",
+            "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+            "result_kind": "GOVERNED_CANDIDATE_SELECTION_PROPOSAL",
+            "promotion_relevant": true,
+            "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+            "evidence_root_rel": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+            "handoff_decision_ref": "config/governance/f1_m9_post_real_campaign_productive_handoff_v1_decision_v1.json",
+            "verification_module": "src/governance/f1_m9_prospective_real_campaign_durable_evidence_verification_v1.py",
+            "verification_symbol": "verify_f1_m9_prospective_real_campaign_durable_evidence_v1",
+            "replay_path_module": "src/governance/f1_m9_prospective_real_campaign_durable_evidence_verification_v1.py"
+        }
+    ],
+    "explicitly_not_promotion_relevant": [
+        {
+            "surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+            "reason": "AUTHORIZED_RESEARCH_ONLY_ZERO_PRODUCTIVE_TARGETS"
+        },
+        {
+            "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+            "reason": "AUTHORIZED_SHADOW_ONLY"
+        }
+    ]
+}

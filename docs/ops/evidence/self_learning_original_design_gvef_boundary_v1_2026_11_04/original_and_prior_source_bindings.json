@@ -1,0 +1,38 @@
+{
+  "current_master_priority": "Canonical repo Master Runbook remains primary; recovered historical masters establish intent/variants, not automatic new authority.",
+  "files": [
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/self-learning-master-original.md",
+      "sha256": "119e27952c8174c9e800f772402d6b325d0ed823d062811d2dcaaea11ba35d94"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/self-learning-master-core-logic-bound.md",
+      "sha256": "77eb523b165d3f534c10da86e55f105c10c3f91629d0a19795f2a5eeb02b6219"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/original-master-recovery.json",
+      "sha256": "67037bffc47c4b9fd69255569a8c3229b6970903e8506f6787859ac1283301be"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/sl-prior.md",
+      "sha256": "2df52e02a5f131f03093e7a3e7818a119d02bd7ede1b8264be006568d1d365a8"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/sl-source-inventory.md",
+      "sha256": "2c37492ec73213796aba272b4d68d4c91b67ec9e443463a081622ef805f88c20"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/area-architecture-dossiers/SELF_LEARNING.md",
+      "sha256": "58f4eba183f76cdbd639f43dea73f9f9360796e4b0b905de9702ff9ca8dc490d"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/semantic-transitions/Self_Learning_Semantik_an_Datenuebergaengen.md",
+      "sha256": "4d6e7657428ef4c29a7faf3adcc75f10a87d016ce7d6ad58b2de019f5787445a"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/learning-optimization-history/Optimierungsuniversum_Ursprung_Entwicklung_und_Learning_Uebergaben.md",
+      "sha256": "64d952f877816a0c6ba511f49065f1a374819c1d30329ddcc5be2072a5dc577c"
+    }
+  ],
+  "stale_statement": "sl-prior says original master not recovered; original-master-recovery and both exact bytes supersede this availability claim. Historical prior files unchanged."
+}

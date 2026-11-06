@@ -1,0 +1,136 @@
+<!-- templates/peak_trade_dashboard/base.html -->
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>{% block title %}Peak_Trade Operator WebUI{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Phase 1B: self-hosted design tokens + layout + purged utilities (no Tailwind CDN) -->
+    <link
+      rel="stylesheet"
+      href="/static/css/peak_trade_dashboard_design_tokens_v1.css"
+      data-market-design-token-owner-v1="true"
+      data-canonical-design-token-owner="true"
+    />
+    <link rel="stylesheet" href="/static/css/peak_trade_dashboard_layout_v1.css" />
+    <link
+      rel="stylesheet"
+      href="/static/css/peak_trade_dashboard_utilities_v1.css"
+      data-market-utilities-css-v1="true"
+    />
+    <meta name="peak-trade-browser-network-allowlist" content="self-only" />
+    <style>
+      /* Custom animation for running indicator */
+      @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+      .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+    </style>
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body class="bg-slate-950 text-slate-100 {% block body_class %}{% endblock %}">
+    <div class="min-h-screen">
+      {% block app_chrome %}
+      <header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur sticky top-0 z-50" data-pt-app-chrome-default-v1="true">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <a href="/market" class="text-xl font-semibold tracking-tight hover:text-slate-200 transition-colors">
+              Peak_Trade Operator WebUI
+            </a>
+            <!-- Version Badge -->
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+              v1.2 · Read-Only
+            </span>
+            <!-- System Health Badge -->
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              System OK
+            </span>
+            <!-- Live-Mode Lock Badge -->
+            <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700/50 text-slate-400 border border-slate-600/50 flex items-center gap-1">
+              🔒 LIVE LOCKED
+            </span>
+          </div>
+          <!-- Navigation -->
+          <nav class="flex items-center gap-4">
+            <a href="/market" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Market Landscape
+            </a>
+            <a
+              href="/ops"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Read-only Ops Cockpit (navigation only; same Operator WebUI process as this dashboard)."
+            >
+              Ops Cockpit
+            </a>
+            <a
+              href="/ops/stage1"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Read-only Stage1 ops view (navigation only; no new capability)."
+            >
+              Stage1
+            </a>
+            <a
+              href="/ops/workflows"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Read-only ops workflows hub (navigation only; no new capability)."
+            >
+              Workflows
+            </a>
+            <a
+              href="/ops/ci-health"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Read-only CI health dashboard (navigation only; same Operator WebUI process; no new capability beyond the existing page)."
+            >
+              CI Health
+            </a>
+            <a href="/execution_watch" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Execution Watch
+            </a>
+            <a href="/live/alerts" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              🔔 Alerts
+            </a>
+            <a
+              href="/observability"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Read-only Observability-Hub (Links zu GET-Flächen; keine neue Autorität)."
+            >
+              Observability
+            </a>
+            <a href="/r_and_d/experiments" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              R&D Experiments
+            </a>
+            <a href="/live/telemetry" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              📊 Telemetry
+            </a>
+            <a
+              href="http://127.0.0.1:8010/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Separate Run-monitoring UI (companion). Default http://127.0.0.1:8010/ when using scripts/ops/run_live_webui.sh per README — different process than this dashboard."
+            >
+              Run UI (companion)
+            </a>
+            <span class="text-slate-600">|</span>
+            <span class="text-xs text-slate-500">
+              {{ status.version }} · {{ status.snapshot_commit }}
+            </span>
+          </nav>
+        </div>
+      </header>
+      {% endblock %}
+
+      <main class="{% block main_class %}max-w-6xl mx-auto px-4 py-6{% endblock %}">
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer class="border-t border-slate-800/50 bg-slate-900/30 mt-8">
+        <div class="max-w-6xl mx-auto px-4 py-3 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <span>Peak_Trade Operator WebUI · Read-Only · Shadow/Testnet Mode · R&D (Phase 76)
+            · Companion Run UI default <code class="text-slate-400">127.0.0.1:8010</code> (local;
+            README)</span>
+          <span>🔒 Live-Execution ist deaktiviert</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "ECONOMIC_VALIDITY_OFFLINE_GATE_CHANGED": false,
+  "PROMOTION_ELIGIBLE": false,
+  "base_sha": "31ef4529aeaf4cc1e1d70df6193712e5f1294e5a",
+  "dataset_content_hash": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+  "evidence_file_hashes": {
+    "README.md": {
+      "bytes": 1325,
+      "sha256": "e6d20da2eba5a0efd38ad551958732a488ce78322f33b68c1bd1f51ce7cf973f"
+    },
+    "archival_decision.json": {
+      "bytes": 1160,
+      "sha256": "c54509256bc5cd54182bf0c5a2adaab6da749b1b9f65474e6948b29f75a874f1"
+    },
+    "dataset_split_policy.json": {
+      "bytes": 1461,
+      "sha256": "48bb4a1ab88b9ad98e5c47116a421022b1fcdabd390cf6ee2cddd7e26656c7dc"
+    },
+    "new_hypothesis_spec.json": {
+      "bytes": 5776,
+      "sha256": "5f2e4ce09614b46567acfbf9a221c264aab1ababc466e197239eacc0db36769d"
+    },
+    "root_cause_matrix.json": {
+      "bytes": 3376,
+      "sha256": "f441826f90d0dc0268d9d2ce32e1fd6c7f8a4b48d2143598043baecbfd3ad8fb"
+    },
+    "safety_attestation.md": {
+      "bytes": 429,
+      "sha256": "c91659b8f2e0478345e0f9f2eaac1b2c524a23395a1bbcde37c162303ac58307"
+    },
+    "summary.json": {
+      "bytes": 1922,
+      "sha256": "985a99197333dd2d051e4c6dc8f27e486411d08b6e94b097014b12d9eae30c2d"
+    }
+  },
+  "failed_config_hash_at_evaluation": "c38f1d25f3c2f84eed9b5bbb2d07e08df197fe2d6805d301a57a25599928af08",
+  "failed_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "new_hypothesis_id": "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+  "schema_version": "archive_failed_bollinger_v2_and_next_hypothesis_manifest.v1",
+  "source_evidence_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "source_merge_sha": "31ef4529aeaf4cc1e1d70df6193712e5f1294e5a"
+}

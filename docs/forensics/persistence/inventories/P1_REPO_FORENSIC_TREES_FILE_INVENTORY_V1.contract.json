@@ -1,0 +1,28 @@
+{
+  "AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "artifact_role": "representation_contract_binding",
+  "bound_inventory": "P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.json",
+  "inventory_semantics": "historical_discovery_pass_snapshot",
+  "inventory_record_count": 129,
+  "docs_forensics_file_count_at_discovery": 5,
+  "counts_are_live_census": false,
+  "inventory_records_include_docs_forensics_persistence_tree": false,
+  "persistence_tree_must_not_be_inserted_into_historical_snapshot": true,
+  "structuring_is_canonization": false,
+  "persistence_is_adjudication": false,
+  "persistence_is_canonization": false,
+  "persistence_implies_gap_closure": false,
+  "OWNER_GO": "PERSIST_P1_INVENTORY_SNAPSHOT_MEMBERSHIP_CONTRACT_SIDECAR_ONLY",
+  "evidence_registry": "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+  "evidence_persist_sha": "0ead85cf17a557d9907451f23faf10b5d531385c",
+  "evidence_persist_pr": 6071,
+  "evidence_tokens": {
+    "P1_HASHED_INVENTORY_IS_DISCOVERY_PASS_SNAPSHOT": true,
+    "P1_INVENTORY_RECORDS_DO_NOT_INCLUDE_DOCS_FORENSICS_PERSISTENCE_TREE": true,
+    "P1_COUNT_IS_DISCOVERY_SNAPSHOT_NOT_LIVE_TREE_CENSUS": true,
+    "HASHED_P1_FORENSIC_TREE_FILE_COUNT": 129,
+    "P1_INVENTORY_DOCS_FORENSICS_FILE_COUNT_AT_DISCOVERY": 5
+  }
+}

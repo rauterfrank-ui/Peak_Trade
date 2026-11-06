@@ -1,0 +1,12 @@
+{
+  "baseline_origin_main_sha": "f87032845fd21c0deb6aee0bddb553be9a43691f",
+  "binding_digest": "e0ac0f0955d15a0b",
+  "consumed": true,
+  "consumed_at_utc": "2026-10-12T19:08:00.902159Z",
+  "external_effect_authorized": false,
+  "module_pin_status_after": "DEFINED_NOT_CONSUMED",
+  "owner_go_decision_baseline_origin_main_sha": "8da476238040545d2c1e5c1bf2e950d4388dba68",
+  "owner_go_token": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1",
+  "post_allowed": false,
+  "run_id": "e0ac0f0955d15a0b"
+}

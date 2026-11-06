@@ -1,0 +1,46 @@
+{
+  "schema_version": "ghv_current_full_core_binding_forensic_report.v1",
+  "work_package": "GHV_CURRENT_FULL_CORE_BINDING_AND_PRE_EXTERNAL_CONVERGENCE_V1",
+  "baseline_origin_main_sha": "38d607a43aa38683cb21158aa96703866fb0a2ac",
+  "feature_branch": "feat/full-core-pre-external-capital-guard-join-v1",
+  "ghv_authority": "NONE",
+  "current_authority": true,
+  "first_causal_divergence": {
+    "classification": "PRE_EXISTING_BASELINE_DEFECT",
+    "fact": "execute_current_productive_full_core_pre_external_closure_v1 invoked occupied_lane consumer without canonical_price_provenance when market_kwargs omitted it",
+    "failure_surface": "FULL_AUTONOMY_GOVERNED_CYCLE_N1_CONSUMER_AUTHORITY_CLAIM_FORBIDDEN:canonical_price_provenance",
+    "join_introduced": false,
+    "remediation": "Inject build_provenance_from_governed_synthetic_close_mark_and_index_v1 into invoke_kwargs before invoke when provenance absent"
+  },
+  "second_divergence_resolved": {
+    "classification": "MISSING_PRODUCER",
+    "fact": "FullCorePrePostCapitalGuardJoinBindingV1 was not produced from productive PRE_EXTERNAL closure evidence",
+    "remediation": "full_core_pre_post_capital_guard_binding_v1.py + closure OBSERVE_ONLY join + invoke_join handoff context"
+  },
+  "binding_matrix_summary": {
+    "canonical_decision_id": {"source": "common_epoch_id / handoff context", "status": "DIRECT"},
+    "envelope_digest": {"source": "FinalOrderEnvelopeV1.envelope_digest", "status": "DIRECT"},
+    "venue_plan_digest": {"source": "compute_full_core_venue_plan_digest_from_envelope_v1", "status": "CANONICALLY_DERIVED"},
+    "instrument_metadata": {"source": "live_29p_injected.instruments_payload", "status": "DIRECT"},
+    "account_identity": {"source": "handoff.bound_uid / expected_account_identity", "status": "DIRECT"},
+    "owner_go": {"source": "OWNER_GO_CURRENT_FULL_CORE_PRE_POST_CAPITAL_GUARD_JOIN_V1", "status": "DIRECT"},
+    "clordid": {"source": "envelope.client_order_id", "status": "DIRECT"}
+  },
+  "forward_join_status": "PASS",
+  "reverse_join_status": "PASS",
+  "natural_enter_reference": "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py layered long PRE_EXTERNAL",
+  "price_provenance_classification": "PRE_EXISTING_BASELINE_DEFECT",
+  "productive_post_boundary": {"post_count": 0, "live_post_authorized": false},
+  "offline_tests": [
+    "tests/ops/test_full_core_pre_post_capital_guard_join_v1.py",
+    "tests/ops/test_full_core_pre_post_capital_guard_binding_v1.py",
+    "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py",
+    "tests/ops/test_current_live_canary_capital_guard_v1.py",
+    "tests/ops/test_current_live_canary_atomic_one_shot_v1.py"
+  ],
+  "unresolved_blockers": [
+    "Owner capital ratification still false in config",
+    "Explicit env required for orchestrator OFFLINE_STUB guard proofs",
+    "Productive OBSERVE join in closure only; orchestrator remains DISABLED unless env set"
+  ]
+}

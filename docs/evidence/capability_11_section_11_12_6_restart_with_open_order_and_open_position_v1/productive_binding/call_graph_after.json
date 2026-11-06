@@ -1,0 +1,24 @@
+{
+  "activation": "not_activated",
+  "cap_11_5_adapter": "not_activated",
+  "cap_11_5_restart_with_open_order_position_contract": "reused_fixture_only",
+  "network_effect": "NONE",
+  "network_writes": "unauthorized",
+  "next_consumer": "CAPABILITY_11_SECTION_11_12_7_KILL_SWITCH_AND_EMERGENCY_CONTROL_PROOF_V1",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_5_UnknownSubmitAndReconnectRecovery",
+    "Cap11_Section_11_12_6_RestartWithOpenOrderAndOpenPosition",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled",
+  "path_class": "RESTART_WITH_OPEN_ORDER_AND_OPEN_POSITION",
+  "paths_bound": [
+    "restart_with_open_order",
+    "restart_with_open_position"
+  ],
+  "reconciliation_before_alpha": "required",
+  "section_11_12_6": "productive_restart_with_open_order_and_open_position_bound",
+  "section_11_12_7": "not_started",
+  "silent_reinitialization": "forbidden"
+}

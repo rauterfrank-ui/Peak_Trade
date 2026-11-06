@@ -1,0 +1,30 @@
+{
+  "canonical_dashboard_path": "src/webui/app.py",
+  "canonical_health_model": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1",
+  "canonical_ohlcv_path": "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1",
+  "canonical_operator_entrypoint": "scripts/ops/peak_trade_runtime.py",
+  "canonical_read_model": "canonical_market_dashboard_read_model.v1",
+  "canonical_subcommands_after": [
+    "preflight",
+    "start",
+    "status",
+    "health",
+    "logs",
+    "stop",
+    "restart",
+    "recover",
+    "verify"
+  ],
+  "canonical_subcommands_before": [
+    "preflight",
+    "start",
+    "status",
+    "health",
+    "stop",
+    "restart",
+    "recover"
+  ],
+  "canonical_supervisor": "src/ops/canonical_local_launcher_and_process_supervision_v1",
+  "logs_subcommand_implemented": true,
+  "verify_subcommand_implemented": true
+}

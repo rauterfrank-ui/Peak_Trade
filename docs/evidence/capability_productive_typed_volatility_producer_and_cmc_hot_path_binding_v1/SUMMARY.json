@@ -1,0 +1,31 @@
+{
+  "CORE_LOGIC_CHANGE": false,
+  "NETWORK_USED": false,
+  "PRODUCTIVE_OFFLINE_PROBE_RUN": true,
+  "ROOT_CAUSE_CALL_GRAPH_EDGE": "run_hardened_wallclock_bridge_observation_cycle_v2->run_hardened_bridge_cycle_v2(missing finalized_pt1m_*)->apply_to_market_context_v1(ingest_sample=False)->on_runtime_cycle_without_sample_v1->producer_outcome=WARMUP permanent",
+  "VOLATILITY_NUMERIC_MAX_AGE_ENFORCING": false,
+  "capability_id": "PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1",
+  "claims": {
+    "CMC_TYPED_ESTIMATE_PRESENT_AFTER_WARMUP": true,
+    "CORE_LOGIC_CHANGE": false,
+    "DECISION_GRAPH_PROGRESS_AFTER_VOL_STAGE": true,
+    "EXCHANGE_CREDENTIAL_PATH_CHANGED": false,
+    "LEGACY_PROXY_PROMOTED": false,
+    "LIVE_PATH_CHANGED": false,
+    "NETWORK_USED": false,
+    "NO_PROXY_PROMOTION": true,
+    "NUMERIC_MAX_AGE_ENFORCEMENT_CHANGED": false,
+    "ORDER_PATH_CHANGED": false,
+    "PRODUCTIVE_AUTHORITY_AFTER_WARMUP": true,
+    "SILENT_DEFAULT_ADDED": false,
+    "TESTNET_PATH_CHANGED": false,
+    "TYPED_ESTIMATE_PRESENT_AFTER_WARMUP": true,
+    "TYPED_VOL_MISSING_AFTER_WARMUP_COUNT": 0,
+    "TYPED_VOL_MISSING_DURING_VALID_WARMUP": true,
+    "VOLATILITY_NUMERIC_MAX_AGE_ENFORCING": false
+  },
+  "config_digest": "838747de815f279bff8da64f156ab89f9adbacd3229124d218476042563e4b91",
+  "manifest_sha256": "00846bba146eff85113faf8f2d80dad02ce822250de6efc4dd4387f5aa1899c7",
+  "ok": true,
+  "repository_sha": "672801e8b7084d06d914ca0be660042fe9c866a1"
+}

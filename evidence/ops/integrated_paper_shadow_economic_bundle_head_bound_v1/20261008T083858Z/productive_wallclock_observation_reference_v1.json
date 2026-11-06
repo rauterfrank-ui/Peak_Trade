@@ -1,0 +1,20 @@
+{
+  "authority_effect": "NONE",
+  "binding_mode": "PRODUCTIVE_WALLCLOCK_REFERENCE",
+  "capability_id": "INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1",
+  "economic_validity_pass": false,
+  "evidence_manifest_sha256": "e58053bf0407a0be04fbca7bca406ade932cd326d3e4d6cb2a7ffc609ff7b364",
+  "evidence_relpath": "evidence/ops/current_6h_paper_shadow_soak_v1/20261007T185400Z",
+  "execution_class": "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION",
+  "heartbeat_count": 3041,
+  "integrity_manifest_sha256": "bd276b9cd0017be8bd719d6968629ddb058577d1014072e3729f5f98974eb930",
+  "observation_cycle_count": 8870,
+  "orders_submitted": 0,
+  "paper_execution": false,
+  "repository_sha": "14323f12b9bdd64723f84daba3f04355f69e7756",
+  "schema_id": "ops.productive_wallclock_observation_reference.v1",
+  "schema_version": "v1",
+  "terminal_verdict_sha256": "78fb0ec0a0b9b94b5e067b57faf3aa0b43888ad5212dbd34cec5524c51863670",
+  "wallclock_evidence_schema_id": "ops.integrated_paper_shadow_observation_wallclock_evidence_v1",
+  "wallclock_verifier_id": "ops.paper_shadow_wallclock_evidence_verifier_v1"
+}

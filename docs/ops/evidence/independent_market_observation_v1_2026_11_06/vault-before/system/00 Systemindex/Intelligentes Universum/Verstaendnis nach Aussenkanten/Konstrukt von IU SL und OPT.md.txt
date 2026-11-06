@@ -1,0 +1,61 @@
+---
+title: "Konstrukt von IU SL und OPT"
+stand: "2026-11-05"
+rolle: "Quellgebundener Konstrukt und Consumerabgleich"
+autoritaet: "NONE"
+---
+
+# Konstrukt von IU SL und OPT
+
+> [!info] Aktueller Abgleich vom 06.11.2026
+> [[00 Systemindex/Repoabgleich/Standabgleich mit dem Repository|Repo- und Obsidianstand mit den beiden vollständigen Commits, inneren Anschlussverträgen und Kausalitätskorrektur]]. Die darunter beschriebene Quellenbasis bleibt ein datierter Prüfstand; sie wird nicht pauschal neu zertifiziert.
+
+Die neu bestimmten Außenkanten ordnen die Verantwortung. Das fachliche Gesamtkonstrukt umfasst außerdem, was innerhalb dieser Grenzen verarbeitet wird, welche Zustände daraus entstehen und wie ein Ergebnis einen späteren Versuch tatsächlich beeinflusst. Dieser Abgleich führt diese Sicht für IU beziehungsweise Market Intelligence, SL und OPT zusammen.
+
+**Der ursprüngliche Nutzen ist breiter als der bisherige Integrationskandidat:** Marktverhalten verstehen, Prognosen an späteren Beobachtungen messen, aus Fehlschlägen und Forschungsversuchen lernen und daraus bessere begrenzte Forschung ableiten. Die vorhandenen Verträge setzen davon unterschiedliche Ausschnitte um. Drei lokale Commits schließen zusätzliche Bindungs- und Speicherwege; sie erzeugen noch keinen natürlich versorgten, lernenden Prognosekreislauf.
+
+## Das zusammenhaengende Konstrukt
+
+1. **Facts und Kontext:** Originalquellen liefern Markt- und gegebenenfalls Systembeobachtungen. MI komponiert daraus einen zeitgebundenen Kontext. Ein Instrumentprofil, ein Kontextrecord und ein Forecast sind verschiedene Produkte.
+2. **Vorhersage und spaetere Beobachtung:** Ein Forecast beschreibt ein ausdrücklich definiertes zukünftiges Marktverhalten. Erst später eintreffende, endgültige Beobachtungen erlauben den Vergleich. Hier liegen der Modellverbrauch und die Vorhersagefrage; ein Forecastrecord allein beantwortet sie nicht.
+3. **Eigenes Lernen:** SL nimmt zulässige Markt-, Forecast-, Entscheidungs- und Systemergebnisse in getrennten Verträgen auf. Das bestehende DDO-Label, MI-Learningevidence und Repräsentationsresearch sind unterschiedliche Zustände. Sie werden nicht in einen gemeinsamen Reducer umgedeutet.
+4. **Begrenzte Forschung:** OPT untersucht Hypothesen und Kandidaten. Identität, Vergleichbarkeit, Robustheit, Originalmemory und Fehlschläge bestimmen, welche Aussagen aus einem Versuch folgen. Auswahl eines Experiments ist eine andere Handlung als Auswahl eines gehandelten Instruments.
+5. **Rueckkopplung:** Eine numerische Metaanalyse kann die nächste Forschung beeinflussen. Der typisierte M6-Rückweg und die SL-interne Repräsentationsschleife sind zusätzliche eigene Verträge. Weder ein Meta-Label noch eine neue Evidence-ID belegt schon einen weiteren Lernschritt.
+6. **Pruefung und getrennte Wirkung:** GVEF prüft einen konkreten Claim und dessen gebundene Population. Eine spätere produktive Relevanz braucht zusätzlich den passenden Governanceempfänger, eine gesonderte Freigabe und den tatsächlichen Parameterconsumer.
+
+## Lesefolge
+
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/01 Ursprung Varianten und innere Aufgaben|Ursprung, historische Varianten und die inneren wissenschaftlichen Aufgaben]]
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/02 Verarbeitung Zustaende und Rueckkopplungen|Konkrete Verarbeitungsketten mit Zuständen, Writern und Rückwegen]]
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/03 Bedeutung der Daten und Messungen|Bedeutung, Identität, Informationszeit und tatsächliche Rechnungen]]
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/04 Abgleich der drei Integrationscommits|Was die drei Integrationscommits leisten und wo sie den Umfang verengen]]
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/05 Geklaerte Zusammenhaenge und offene Verstaendnisfragen|Geklärte Zusammenhänge und die verbleibenden Verständnisfragen]]
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/06 Marktbeobachtung und historische Messvertraege|Vertiefung: eigenständige Marktbeobachtung und historische Messverträge]]
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/07 Lernzustand und tatsaechliche Folgeconsumer|Vertiefung: tatsächlicher DDO-Folgeconsumer und Bedeutung des Lernzustands]]
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/08 Numerische Lernverfahren und ihre Anschlussgrenzen|Vertiefung: vorhandene numerische Lernverfahren und ihre Anschlussgrenzen]]
+
+## Die tragenden Ergebnisse
+
+Markt-/Forecastlernen braucht eine eindeutige Marktidentität und Informationszeit. Eine tatsächlich vorhandene Handelsentscheidung muss bei Attribution gebunden werden; sie ist nach dem ursprünglichen D03-Auftrag keine allgemeine Existenzvoraussetzung jedes Forecasts. Der neue Kandidat erzwingt sie jedoch schon an der Kontextidentität. Auch der wiederverwendete Outcome-Supplier ist tatsächlich entscheidungsgebunden. Deshalb wäre bloßes Optionalmachen eines DTO-Feldes keine geklärte Gesamtlösung.
+
+Der neue Returnpfad schreibt MI- und SL-Evidence, ruft aber nicht die vorhandene Phase20/21-Verarbeitung für kontextbezogenes Verhalten und Lernen auf. Deren Composeinput besitzt wiederum keinen realisierten Return-Skalar. Bei einem auswertbaren Return-Forecast endet ihre aktuelle Aufrufkette deshalb statisch an `REALIZED_SCALAR_REQUIRED`. Die genaue Kette steht im Commitabgleich.
+
+Numerische Phase11-Meta, M6-Evidenceprojektion und LoopC sind keine austauschbaren Stufen eines einzigen Modells. Im konkret verfolgten numerischen Pfad bleiben Archiv, Analyzer, Search und nächste Messung bei OPT. Die typisierte LoopC-Repräsentationsverarbeitung bleibt dagegen innerhalb SL. Diese Architekturzuordnung folgt den neu geprüften Außenkanten; das historische Funktionsziel „Lernen über Versuche“ bleibt davon unterscheidbar.
+
+## Stand und Reichweite
+
+Quellenbasis ist der lokale HEAD `10d899b16356974bdd1f3c90f13681825cc09afe` mit der vorgefundenen lokalen Arbeit. Die Quellenbindung unterscheidet für jede gelesene Datei HEAD-Bytes und Arbeitskopie. Historische Absicht, aktuelle statische Verbindung und bereits vorhandene Ausführungsbelege sind getrennt. Vier Original-PDFs und acht ursprüngliche Requestbezüge wurden erneut an ihre erhaltenen Bytes gebunden. Die 139 unterschiedlichen Testfall-IDs der drei Commitbelege sind historische synthetische Mechanismusbelege, kein neuer Lauf.
+
+Der Untersuchungsumfang ist der zusammenhängende Lern-/Forschungskorridor und seine direkten Nachbarn. Sämtliche dynamischen oder externen Caller und jede ursprüngliche wirtschaftliche Wirkung sind damit nicht vollständig belegt. Offene Stellen werden als fehlender Vertrag, fehlende Verbindung, ungeklärte Semantik oder fehlender Ausführungsnachweis unterschieden. Es folgt daraus keine Implementierung.
+
+[[00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT|Architektonische Außenkanten]] · [[00 Systemindex/Intelligentes Universum/Integration/10 Implementierungsstand|Vorhandene lokale Prüfkandidaten]] · [Quellen und Revisionen](</Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/quellen.json>) · [Gezielte Prüfung](</Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/pruefung.json>)
+
+## Fortsetzung nach dem Dokumentationscommit
+
+Der Checkpoint `489270f65` sichert den vorherigen Stand. Die anschließende Vertiefung am unveränderten Produktbaum zeigt: Der DDO-Lernzustand hat einen konkreten Rückweg zur nächsten Outcome-Erfassung, dessen Inhalt bleibt ein opakes Label. Ein anderer vorhandener Researchpfad bildet entscheidungsfreie Returntargets und passt tatsächlich OLS-Koeffizienten an. Dessen Diagnostikconsumer, die MI-Records und ein im nächsten Forecast verwendeter Modellzustand bleiben unterschiedliche Verarbeitungen. Der neue Quellenabgleich macht diese Unterschiede enger prüfbar; er behauptet keine vollständige natürliche Lernschleife.
+
+[Quellen der Fortsetzung](</Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-marktmessung-lernzustand-2026-11-05/quellen.json>) · [Statische Prüfung und unveränderter Repositorybestand](</Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-marktmessung-lernzustand-2026-11-05/pruefung.json>). Die oben genannte frühere Quellenbasis bleibt datiert; sie wird nicht auf den neuen HEAD umgeschrieben.
+
+## Punkt 1 bis zum historischen Ursprung verfolgt
+
+[[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/11 Historischer Ursprung der eigenstaendigen Marktbeobachtung|Originale Git-/PR-Entstehung, vier getrennte Identitäten, acht Consumerproben und konkrete Anschlussfrage]]. Die Forecast-/Basiskontextseite ist bereits entscheidungsfrei. Der kanonische Messrecord trägt keine Decisionreferenz; seine bisherige Erzeugung und DDO-Auswertung bleiben daran gebunden. Die Ursache ist präzisiert, der unabhängige Gesamtkorridor noch nicht implementiert. Historische Quellen und die bisherigen sieben Lücken bleiben als datierte Stände erhalten.

@@ -1,0 +1,51 @@
+{
+  "schema_version": "phase_9_2_restart_recovery_session_contract.v1",
+  "capability_id": "PHASE_9_2_RESTART_RECOVERY_SESSION_CONTRACT_AND_PRODUCTIVE_HARNESS_V1",
+  "session_id": "phase_9_2_public_md_restart_recovery_session_v1",
+  "session_ladder_step": "RESTART_RECOVERY_SESSION",
+  "restart_campaign_id": "phase_9_2_restart_recovery_campaign_v1",
+  "durable_state_lineage_id": "phase_9_2_restart_durable_state_lineage_v1",
+  "confirmation_session_id": "phase_9_2_restart_confirmation_session_v1",
+  "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+  "minimum_pre_restart_distinct_observations": 30,
+  "required_reconciliation_before_alpha": true,
+  "controlled_restart_exit_code": 82,
+  "controlled_restart_reason": "CONTROLLED_PRE_RESTART_SEGMENT_COMPLETE",
+  "segment_roles": [
+    "PRE_RESTART",
+    "POST_RESTART"
+  ],
+  "new_authorization_per_segment_required": true,
+  "same_session_resume_allowed": false,
+  "orphan_lock_takeover_allowed": false,
+  "network_session_authorized": false,
+  "authorization_issuance_authorized": false,
+  "authorization_consumption_authorized": false,
+  "runtime_start_authorized": false,
+  "no_order_boundary_assertions": [
+    "NO_LIVE_ORDERS",
+    "NO_TESTNET_ORDERS",
+    "NO_PAPER_EXCHANGE_ORDERS",
+    "NO_EXCHANGE_CREDENTIAL_USE",
+    "NO_REAL_CAPITAL_MOVEMENT",
+    "NO_PRIVATE_ENDPOINT_ACCESS",
+    "NO_AUTH_HEADER_TRANSMISSION"
+  ],
+  "state_root_owners": {
+    "confirmation": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+    "dynamic_scope": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+    "atomic_decision_path": "CAPABILITY_6_4_FULL_DECISION_PATH_ATOMIC_RESTART_CLOSURE_V1",
+    "portfolio_accounting_activation": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1"
+  },
+  "entrypoint_scripts": {
+    "contract": "scripts/ops/run_phase_9_2_restart_recovery_contract_v1.py",
+    "pre_restart": "scripts/ops/run_phase_9_2_restart_recovery_pre_restart_segment_v1.py",
+    "post_restart": "scripts/ops/run_phase_9_2_restart_recovery_post_restart_segment_v1.py",
+    "bundle_verify": "scripts/ops/run_phase_9_2_restart_recovery_bundle_verify_v1.py"
+  },
+  "later_real_session_requires": [
+    "SEPARATE_OWNER_GO",
+    "NEW_SINGLE_USE_AUTHORIZATION_PER_SEGMENT",
+    "NETWORK_SESSION_ALLOWED_TRUE_ONLY_IN_SESSION_GO"
+  ]
+}

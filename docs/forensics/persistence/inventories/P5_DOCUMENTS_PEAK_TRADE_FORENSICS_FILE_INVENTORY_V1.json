@@ -1,0 +1,459 @@
+{
+  "ASSIGNED_AS_P2_OWNER_NAMED_PEAK_TRADE_FORENSIK": false,
+  "AUTHORITY": "NONE",
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_FILE_IDENTITY_INVENTORY",
+  "P2_CONTENT_INVENTORY_STATUS": "NOT_PERFORMABLE_WITHOUT_RESOLVED_CORPUS",
+  "P2_STATUS": "NOT_UNIQUELY_RESOLVED",
+  "THIS_FILE_IS_NOT_A_P2_INVENTORY": true,
+  "SECOND_SSOT": false,
+  "SOURCE_CLASS": "LOCAL_EXTERNAL_FORENSIC_SOURCE",
+  "SOURCE_CORPUS": "DOCUMENTS_PEAK_TRADE_FORENSICS_EVIDENCE_BOUND_P5_NOT_OWNER_NAMED_FORENSIK_FOLDER",
+  "TARGET_AUTHORITY": "NONE",
+  "P5_ONLY_FILE_LOCATOR_COUNT": 28,
+  "P5_ONLY_UNIQUE_SHA_COUNT": 27,
+  "byte_sum": 360050066,
+  "file_count": 44,
+  "records": [
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787742728,
+      "name": "PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+      "rel": "PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+      "sha256": "f26f6ec751b35fe95da1414fd2e7ed78ad419efd707d540210e899e6dfe39b3f",
+      "size": 140959
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787500874,
+      "name": "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "rel": "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "sha256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+      "size": 8639369
+    },
+    {
+      "ext": ".structure-v1.json",
+      "is_symlink": false,
+      "mtime_epoch": 1787658529,
+      "name": "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.structure-v1.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.structure-v1.json",
+      "rel": "derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.structure-v1.json",
+      "sha256": "6f2928e67d45de2162df1589de77ea530061652181ba6efd9a0f528ca7e6ad6e",
+      "size": 38249919
+    },
+    {
+      "ext": ".t4-unprojected-relation-loss-register-v1.jsonl",
+      "is_symlink": false,
+      "mtime_epoch": 1787733797,
+      "name": "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.t4-unprojected-relation-loss-register-v1.jsonl",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.t4-unprojected-relation-loss-register-v1.jsonl",
+      "rel": "derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.t4-unprojected-relation-loss-register-v1.jsonl",
+      "sha256": "872e1e22fc3e46d8eb3b2975183ca6ce20d1c31fae9992ffd7b863b30db39113",
+      "size": 9254096
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787684553,
+      "name": "t4_overlay_records.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/blobs/t4_overlay_records.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/blobs/t4_overlay_records.json",
+      "sha256": "53773007b39c3997ce55eae312e54e3fece80dbe9cb594316a7dbab3e3134ec1",
+      "size": 14239646
+    },
+    {
+      "ext": ".txt",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "AUTHORITY_NONE.txt",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/AUTHORITY_NONE.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/AUTHORITY_NONE.txt",
+      "sha256": "1704fcb4c9daab46b0b00ebd2d28cef4d7b88bb4c84ea903c6f58de7c422d83b",
+      "size": 417
+    },
+    {
+      "ext": ".txt",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "MANIFEST_SHA256.txt",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/MANIFEST_SHA256.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/MANIFEST_SHA256.txt",
+      "sha256": "9b3080d4104288752233392df958923e22c4d4d1d0c1ec19f2fd807ae79d9f1b",
+      "size": 101
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "contract_test_report.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/contract_test_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/contract_test_report.json",
+      "sha256": "7082f6a719b835bca2138c6dfb0a4fd21e8a830ed878d1be824cf2d88e1adad9",
+      "size": 1589
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "dataset_catalog.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/dataset_catalog.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/dataset_catalog.json",
+      "sha256": "110cbe25d7df42d7cc20130ed2f17b6800bc52bb9a54f70be8bb2c89fa4b4bcd",
+      "size": 3337
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "execution_report.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/execution_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/execution_report.json",
+      "sha256": "926cc083c92b4d43f9130bd1c2f9055a08aba132c7d5dd2b835893d64503ed43",
+      "size": 1219
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "invariant_report.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/invariant_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/invariant_report.json",
+      "sha256": "143070510fb2b547faae2c16b43642aa1a1fff4770d77c930569553ad12bda5b",
+      "size": 1605
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "losslessness_audit.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/losslessness_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/losslessness_audit.json",
+      "sha256": "60d4f75295ad62a752670c95e01d6f2b1fe70bcf4ce2753a0f2ebc3a58811f07",
+      "size": 2036
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "navigation_views.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/navigation_views.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/navigation_views.json",
+      "sha256": "1b155495ef0d5ced888a3e3d685107e64c01e5fc9caa83fa196a0c16bc9ea0c1",
+      "size": 106816
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "non_inference_audit.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/non_inference_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/non_inference_audit.json",
+      "sha256": "fff87fc9bfa6f0546ab7d6ecece2f842e17777d4706c4679f8a2104bbd014d8e",
+      "size": 897
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "reconstruction_report.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/reconstruction_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/reconstruction_report.json",
+      "sha256": "34bd53c5e402e7d998b5efeb386f9cadfe94bead368fea1bede4fc953a0ca3b9",
+      "size": 728
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "residual_register.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/residual_register.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/residual_register.json",
+      "sha256": "06994daf65acd510cc18db21adba0798c053a9c8a315e9ccd9c05945eadf3a0f",
+      "size": 3118
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "source_canary_report.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/source_canary_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/source_canary_report.json",
+      "sha256": "6a185a3fba7c07280ce4a4ca79551b5c851690ce8adf2e45ff1d4837b65c87ac",
+      "size": 771
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "traceability_report.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/traceability_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/traceability_report.json",
+      "sha256": "9d338d00a38022220d1b34b76f12fc54710479a64cc60df5d7bd9f0d0557084a",
+      "size": 439
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "transformation_manifest.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/transformation_manifest.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/transformation_manifest.json",
+      "sha256": "4a925ccaed655511a84f86283c767bbe6f5077ffdde7687fbbfe31b3b3060a79",
+      "size": 4885
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675906,
+      "name": "dataset_header.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/dataset_header.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/dataset_header.json",
+      "sha256": "de44cbe5576267f42a811f7a56e5715d42633306bcd23c02a2071ae89544e17f",
+      "size": 561
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675907,
+      "name": "layer1_occurrences.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/layer1_occurrences.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/layer1_occurrences.json",
+      "sha256": "805fdc7956389b40c3ad1adc4261a395bcc88761a5172e443dce4ddb28c7ce6c",
+      "size": 33719130
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675907,
+      "name": "navigation_views.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/navigation_views.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/navigation_views.json",
+      "sha256": "1b155495ef0d5ced888a3e3d685107e64c01e5fc9caa83fa196a0c16bc9ea0c1",
+      "size": 106816
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675907,
+      "name": "overlay_index.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/overlay_index.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/overlay_index.json",
+      "sha256": "f5fe7522db2fcd22151caa628d8a43b44382eac752043e230f3c93355e9a40f5",
+      "size": 13203859
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675907,
+      "name": "provenance_registry.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/provenance_registry.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/provenance_registry.json",
+      "sha256": "58874358bc805cb6bffccf451a0f09f7aac907cfe07cef5b330c4e0b9042a17c",
+      "size": 10028708
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675907,
+      "name": "relation_envelopes.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/relation_envelopes.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/relation_envelopes.json",
+      "sha256": "93a346fd77b11776ba352ce2f3bd7251a347e911de0a0f916e0cc840f8debb16",
+      "size": 172805
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675907,
+      "name": "semantic_envelopes.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/semantic_envelopes.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/semantic_envelopes.json",
+      "sha256": "98cd914ed164e224c66a29d02ffa466186537414a3abbdf024d449d7809522e5",
+      "size": 85188412
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787675908,
+      "name": "traceability_records.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/traceability_records.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/traceability_records.json",
+      "sha256": "f30b3e8a9913e15b86b48f881882c798fafdfd0db3f00f4b61ab94b0931eddc6",
+      "size": 39258948
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787502341,
+      "name": "manifest.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/manifest.json",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/manifest.json",
+      "sha256": "01b809f92c3b2bf15b73f836e2b02d2b1b1366a82ef81b3fa6b0f1e14eed9ba7",
+      "size": 1928
+    },
+    {
+      "ext": ".jsonl",
+      "is_symlink": false,
+      "mtime_epoch": 1787502341,
+      "name": "quarantine.jsonl",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/quarantine.jsonl",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/quarantine.jsonl",
+      "sha256": "d554068fa19c46e32a7b54419bae26d735ca1a19168df86c561de1edf0fa3755",
+      "size": 7175315
+    },
+    {
+      "ext": ".jsonl",
+      "is_symlink": false,
+      "mtime_epoch": 1787502341,
+      "name": "records.jsonl",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/records.jsonl",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/records.jsonl",
+      "sha256": "c24739ea71138210a1810a7aa601170399c38a2249f831673f6ec98ccb4ecada",
+      "size": 12308840
+    },
+    {
+      "ext": ".snapshot.md",
+      "is_symlink": false,
+      "mtime_epoch": 1787502127,
+      "name": "source.snapshot.md",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/source.snapshot.md",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/source.snapshot.md",
+      "sha256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+      "size": 8639369
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787502341,
+      "name": "validation_report.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/validation_report.json",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/validation_report.json",
+      "sha256": "b8d6463d7df5b4f455b2101525c1bd672ff21d6d45dc4f2bec12c25542365d39",
+      "size": 5515
+    },
+    {
+      "ext": ".txt",
+      "is_symlink": false,
+      "mtime_epoch": 1787502341,
+      "name": "validation_report.txt",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/validation_report.txt",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/validation_report.txt",
+      "sha256": "95ae411c3347eca9fa8cd37956bfded6473794183d313e0a30c67386c0ed62a7",
+      "size": 2584
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787652342,
+      "name": "README.md",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/README.md",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/README.md",
+      "sha256": "ef5782faff31cb82f39d4ccc25c35a5d3a48c8e38c48b8df15526a3dc5e8f58a",
+      "size": 1955
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787652342,
+      "name": "index.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/index.json",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/index.json",
+      "sha256": "63f7fc50f64d55be54583e87e9925f4c22233a2a8c97a77ba5088788f4f6003b",
+      "size": 5550
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787652342,
+      "name": "manifest.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/manifest.json",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/manifest.json",
+      "sha256": "ce53cbec9b546fcd824e382caaa288457aaf3c14c92f422e61a4878c9c3f7eb0",
+      "size": 2949
+    },
+    {
+      "ext": ".jsonl",
+      "is_symlink": false,
+      "mtime_epoch": 1787652341,
+      "name": "records.jsonl",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/records.jsonl",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/records.jsonl",
+      "sha256": "b85b438cddc81aa9405f09632346c0b2f5a731ca69a96d21180b8d3f59285743",
+      "size": 78065664
+    },
+    {
+      "ext": ".jsonl",
+      "is_symlink": false,
+      "mtime_epoch": 1787652341,
+      "name": "relations.jsonl",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/relations.jsonl",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/relations.jsonl",
+      "sha256": "ae0a5cf26ab65d5db47b26ff7ed6c72c43ffbf8322e948b9e24add08ab33d514",
+      "size": 466506
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787652342,
+      "name": "run_report.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/run_report.json",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/run_report.json",
+      "sha256": "67d1b38637e9fa1e47c9845101263380f6716e8ef9b0a0cc07773f4f07cb97f9",
+      "size": 1331
+    },
+    {
+      "ext": ".jsonl",
+      "is_symlink": false,
+      "mtime_epoch": 1787652341,
+      "name": "structural_ranges.jsonl",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/structural_ranges.jsonl",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/structural_ranges.jsonl",
+      "sha256": "b13ff2b21b32fae8035cfdc38fd7560dcccd1121b23687fe2aa225c8f0445a10",
+      "size": 943666
+    },
+    {
+      "ext": ".json",
+      "is_symlink": false,
+      "mtime_epoch": 1787652342,
+      "name": "validation.json",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/validation.json",
+      "rel": "derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/validation.json",
+      "sha256": "9e1a75d3d8581820bd60ed5f467623beef3a406fcdaf92279c821a18bbb0df9e",
+      "size": 4483
+    },
+    {
+      "ext": ".py",
+      "is_symlink": false,
+      "mtime_epoch": 1787731196,
+      "name": "probe_fence_counts_v1.py",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/tools/probe_fence_counts_v1.py",
+      "rel": "tools/probe_fence_counts_v1.py",
+      "sha256": "96fe63e5bc7d5ec91af1558495c8f7d6c2ddad3de4e80c1f57f8337c3dee357b",
+      "size": 5115
+    },
+    {
+      "ext": ".py",
+      "is_symlink": false,
+      "mtime_epoch": 1787731197,
+      "name": "pt_forensic_lossless_struct_v1.py",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/tools/pt_forensic_lossless_struct_v1.py",
+      "rel": "tools/pt_forensic_lossless_struct_v1.py",
+      "sha256": "e7393cadab733b73ae33aad6c6c9d8063911d87c559d4fe5f554a7d95f84ce16",
+      "size": 54460
+    },
+    {
+      "ext": ".py",
+      "is_symlink": false,
+      "mtime_epoch": 1787731197,
+      "name": "pt_forensic_structural_sidecar_v1.py",
+      "path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/tools/pt_forensic_structural_sidecar_v1.py",
+      "rel": "tools/pt_forensic_structural_sidecar_v1.py",
+      "sha256": "de52dec219e5a5f9db7465b4e5d46b359cc4c56609d5889bb16e8f79d5327a67",
+      "size": 33650
+    }
+  ],
+  "root": "/Users/frnkhrz/Documents/Peak_Trade/forensics"
+}

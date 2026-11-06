@@ -1,0 +1,23 @@
+{
+  "session_id": "session_bbb",
+  "run_id": "run_old",
+  "run_type": "live_session_shadow",
+  "mode": "shadow",
+  "env_name": "kraken_testnet",
+  "symbol": "ETH/USDT",
+  "status": "started",
+  "started_at": "2026-01-01T00:07:00+00:00",
+  "finished_at": null,
+  "config": {
+    "strategy_name": "demo"
+  },
+  "metrics": {
+    "realized_pnl": 0.0,
+    "max_drawdown": 0.0,
+    "num_orders": 0
+  },
+  "cli_args": [],
+  "error": null,
+  "created_at": "2026-01-01T00:07:01+00:00",
+  "strategy_tier": "core"
+}

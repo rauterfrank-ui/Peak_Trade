@@ -1,0 +1,48 @@
+{
+  "base_sha_expected": "bf74d4e3b15daeb6b4d25411ebd016694c54370b",
+  "binding_ref": "config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json",
+  "canonical_chain_bound": true,
+  "chain_binding_proof": {
+    "authority_effect": "NONE",
+    "canonical_engine_signal_source": "mv2_decision_replay_series",
+    "harness_forces_configured_strategy_bypass": false,
+    "harness_id": "CANONICAL_FILL_CONVERSION_LEDGER_LONG_PANEL_V1",
+    "ledger_owner": "src/backtest/engine.py::BacktestEngine.run_realistic",
+    "map_owner": "src/backtest/mv2_research_wiring_v1.py::map_decision_evidence_to_position_signal_v1",
+    "non_authoritative_marker": true,
+    "runtime_effect": "NONE",
+    "uses_map_decision_evidence_to_position_signal_v1": true,
+    "uses_run_mv2_research_backtest_wiring_v1": true,
+    "wiring_calls_replay": true
+  },
+  "class_counts": {
+    "CONVERTED": 63,
+    "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE": 52,
+    "NO_ENTRY_INTENT": 3
+  },
+  "classic_engine_bypass_found": false,
+  "errors": [],
+  "harness_id": "CANONICAL_FILL_CONVERSION_LEDGER_LONG_PANEL_V1",
+  "live_authorized": false,
+  "mechanical_defects": [],
+  "ok": true,
+  "orders": false,
+  "panel_member_count": 118,
+  "runtime_bridge_status": "BOUND_NOT_ACTIVATED",
+  "source_fixture": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z",
+  "totals": {
+    "bars": 348454,
+    "engine_nonzero_bars": 4226,
+    "enter_long": 69,
+    "enter_short": 4157,
+    "entry_intents": 4226,
+    "exit_or_reduce": 240230,
+    "instruments": 118,
+    "instruments_ledger_zero_with_enter": 52,
+    "instruments_with_enter": 115,
+    "instruments_with_trades": 63,
+    "mapped_nonzero_bars": 4226,
+    "mechanical_defect_instruments": 0,
+    "total_trades": 69
+  }
+}

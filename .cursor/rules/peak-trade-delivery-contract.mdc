@@ -1,0 +1,32 @@
+---
+description: Enforce Peak_Trade delivery contract (plan->diffs->tests->verification)
+globs:
+  - "src/**"
+  - "tests/**"
+  - "docs/**"
+  - ".cursor/**"
+  - "evals/**"
+---
+
+# Delivery Contract
+
+## Workflow
+1) State a short plan (max 8 bullets)
+2) Implement minimal diffs
+3) Run targeted tests (then broader tests if risk increases)
+4) Update docs if behavior changes
+
+## Completion block (mandatory)
+At end provide:
+
+### Changed files
+- ...
+
+### Tests executed
+- ...
+
+### Verification note
+- ...
+
+### Risk note
+- ...

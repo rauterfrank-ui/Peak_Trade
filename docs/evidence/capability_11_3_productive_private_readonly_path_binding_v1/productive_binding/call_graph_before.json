@@ -1,0 +1,10 @@
+{
+  "cap_11_4": "contracts_only_not_started",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_2_ProductiveCredentialLoadPathBinding",
+    "Cap11_3_PrivateReadonlyContracts",
+    "SimulatedExecutionPort"
+  ],
+  "private_readonly_fetch": "forbidden_contracts_only"
+}

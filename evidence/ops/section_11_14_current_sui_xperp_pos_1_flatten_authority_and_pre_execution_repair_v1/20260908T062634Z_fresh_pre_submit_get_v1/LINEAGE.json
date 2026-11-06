@@ -1,0 +1,9 @@
+{
+  "frozen_envelope_id": "76f0ad245070206d7fe8807fca8d130dbdedbdc3969e7ba42f23ca88901c164a",
+  "frozen_origin_main_sha": "565cee16783ba0a3f1aea606626bf6418bad21e8",
+  "historical_reuse": false,
+  "origin_main_sha": "74bd47f7e4d33760eb7c8830d6e318c1113e2729",
+  "owner_go": "FRESH_PRE_SUBMIT_GET",
+  "predecessor_slice": "11.14.FLATTEN_PRE_SEND_RECEIPT_AUTHORITY_AND_BINDING",
+  "this_slice": "11.14.FRESH_PRE_SUBMIT_GET_AND_FRESHNESS_ADJUDICATION"
+}

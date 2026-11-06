@@ -1,0 +1,153 @@
+{
+  "id": "SL09",
+  "phase": 9,
+  "title": "Getrenntes Portfolio-Learning",
+  "introduction_commit": "562345af2153fa0c659ca261a71a9191b4b7210e",
+  "introduction_date": "2026-08-18T12:37:25Z",
+  "commit_subject": "research: add canonical portfolio learning v1 (#5937)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/562345af2153fa0c659ca261a71a9191b4b7210e",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_portfolio_learning_v1.py",
+  "code_blob": "f2295b883439749ea2316f0054e8d6fef48bc54d",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "a70e3854f5f7d9497c55b68a773cf126f73426fd4bbd158932f4b684464b973b",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL09-canonical_portfolio_learning_v1.source.py",
+  "source_lines": 826,
+  "module_docstring": "Phase 9 Canonical Portfolio Learning v1 (research evidence only).\n\nEvaluates a research portfolio separately from isolated strategy quality.\nComparability is delegated to Phase 5 Comparison SSOT. A strong single\nstrategy is never an automatic portfolio component. This layer does not\napply allocations, mutate runtime, write config, promote, fund, or submit\norders.",
+  "public_functions": [
+    {
+      "name": "build_canonical_portfolio_learning_v1",
+      "line": 184
+    },
+    {
+      "name": "derive_portfolio_learning_identity_v1",
+      "line": 317
+    },
+    {
+      "name": "validate_canonical_portfolio_learning_v1",
+      "line": 327
+    },
+    {
+      "name": "canonical_record_payload_v1",
+      "line": 448
+    }
+  ],
+  "classes": [
+    {
+      "name": "PortfolioLearningValidationError",
+      "line": 122
+    },
+    {
+      "name": "StrategyLayerObservationV1",
+      "line": 127
+    },
+    {
+      "name": "PortfolioMemberV1",
+      "line": 135
+    },
+    {
+      "name": "PairwiseObservationV1",
+      "line": 146
+    },
+    {
+      "name": "PortfolioPolicyV1",
+      "line": 154
+    },
+    {
+      "name": "CanonicalPortfolioLearningRequestV1",
+      "line": 167
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 684,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 579,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "canonical_record_payload",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 679,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 580,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "build_canonical_comparison_result_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 581,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "CanonicalComparisonRequestV1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_PORTFOLIO_LEARNING_V1.md",
+      "status": "added",
+      "sha": "c34e5a5a05fd8d28b047fb987217173f4e7f3034",
+      "additions": 181,
+      "deletions": 0,
+      "changes": 181
+    },
+    {
+      "filename": "src/experiments/canonical_portfolio_learning_v1.py",
+      "status": "added",
+      "sha": "f2295b883439749ea2316f0054e8d6fef48bc54d",
+      "additions": 826,
+      "deletions": 0,
+      "changes": 826
+    },
+    {
+      "filename": "tests/experiments/test_canonical_portfolio_learning_v1.py",
+      "status": "added",
+      "sha": "5bf0bbf7879e0f06b846bb5ae5a0c67fc8e6c605",
+      "additions": 418,
+      "deletions": 0,
+      "changes": 418
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_portfolio_learning_v1.py",
+      "status": "added",
+      "sha": "5bf0bbf7879e0f06b846bb5ae5a0c67fc8e6c605",
+      "additions": 418,
+      "deletions": 0,
+      "changes": 418
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_portfolio_learning_v1.py",
+      "status": "added",
+      "sha": "f2295b883439749ea2316f0054e8d6fef48bc54d",
+      "additions": 826,
+      "deletions": 0,
+      "changes": 826
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "562345af2153fa0c659ca261a71a9191b4b7210e",
+      "date": "2026-08-18T12:37:25Z",
+      "subject": "research: add canonical portfolio learning v1 (#5937)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/562345af2153fa0c659ca261a71a9191b4b7210e",
+      "parents": [
+        "41e79ec6cab6584f597fdfac1ab4d7e8ac9be42c"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

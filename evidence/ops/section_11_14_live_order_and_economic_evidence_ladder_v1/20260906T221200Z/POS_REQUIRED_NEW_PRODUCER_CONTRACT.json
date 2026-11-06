@@ -1,0 +1,38 @@
+{
+  "ACK_ALLOWLIST": [
+    "sCode",
+    "sMsg",
+    "ordId",
+    "clOrdId",
+    "tag"
+  ],
+  "ACK_OMITS_INST_ID": true,
+  "ACK_OMITS_POS": true,
+  "ACK_OMITS_POS_SIDE": true,
+  "ACK_OMITS_SZ": true,
+  "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+  "DOCUMENT_CLASS": "SECTION_11_14_REQUIRED_NEW_POS_PRODUCER_CONTRACT_V1",
+  "IMPLEMENTATION_AUTHORIZED": false,
+  "REQUIRED_NEW_PRODUCER_FORBIDDEN_DERIVATIONS": [
+    "A_submitted_sz",
+    "B_signed_submitted_sz",
+    "C_acknowledged_sz",
+    "D_cumulative_fill",
+    "E_fresh_venue_GET",
+    "F_accounting_position",
+    "G_reconciliation_result",
+    "H_order_lifecycle_state",
+    "I_preexisting_position_plus_fills",
+    "J_canary_ACK_return_payload_field",
+    "FILEGATE",
+    "offline_codec_placeholder",
+    "historical_P08_captured_pos",
+    "owner_bind_fillSz_placeholder"
+  ],
+  "REQUIRED_NEW_PRODUCER_INPUTS": "UNPROVEN until POS_CANONICAL_MEANING/POS_UNIT/POS_SIGN_SEMANTICS are Owner-bound. Forbidden inputs remain venue GET pos, accounting, fillSz, submitted sz, ACK payload, codec placeholders, FILEGATE, historical P08, and fillSz-copied placeholders.",
+  "REQUIRED_NEW_PRODUCER_OUTPUT": "required nonempty Decimal-parseable pos string; must Decimal-equal bound Live identity once produced; instId must equal BOUND_INSTID",
+  "REQUIRED_NEW_PRODUCER_PROVENANCE": "Peak_Trade-owned contemporaneous capture with attempt/session identity and bound instId; no timestamp backfill; no synthetic pre-restart provenance",
+  "REQUIRED_NEW_PRODUCER_RESPONSIBILITY": "Emit the required Peak_Trade-owned contemporaneous pre-restart handoff pos string for the bound Live identity after Owner binds unique meaning, unit, and sign. Contract only; no implementation.",
+  "REQUIRED_NEW_PRODUCER_TIMING": "PRE_RESTART_CONTEMPORANEOUS; exact moment UNPROVEN while meaning UNPROVEN",
+  "REQUIRED_NEW_PRODUCER_UNIT": "UNPROVEN; must be explicit when Owner-bound"
+}

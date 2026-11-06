@@ -1,0 +1,96 @@
+{
+  "capability_id": "CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1",
+  "failure_injection_results": {
+    "FAILURE_INJECTION_PROVEN": true,
+    "config_digest_mismatch_fail_closed": true,
+    "corrupt_exit_state_fail_closed": true,
+    "missing_exit_state_fail_closed": true,
+    "writer_conflict_fail_closed": true
+  },
+  "gate_flags": {
+    "CORE_LOGIC_UNCHANGED": true,
+    "DETERMINISTIC_REPLAY_PROVEN": true,
+    "DUPLICATE_OBSERVATION_DOES_NOT_TRIGGER_NEW_EXIT": true,
+    "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": true,
+    "EVIDENCE_VERIFIED": true,
+    "EXIT_END_TO_END_EVIDENCE_PROVEN": false,
+    "EXIT_FILL_OBSERVED": false,
+    "EXIT_INDEPENDENCE_PROVEN": true,
+    "EXIT_INTENT_OBSERVED_IN_GOVERNED_FIXTURE": true,
+    "EXIT_PATH_RUNTIME_REACHABLE": true,
+    "EXIT_POLICY_PRODUCERS_BOUND": true,
+    "EXIT_POLICY_STATE_RESTART_PROVEN": true,
+    "EXIT_PRECEDENCE_EXACT": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "EXIT_RISK_SAFETY_STATE_PRESERVED": true,
+    "FAILURE_INJECTION_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "HARD_RISK_REDUCE_PRECEDES_ALPHA": true,
+    "MANDATORY_EXIT_PRECEDES_NEW_ENTRY": true,
+    "NO_DUPLICATE_EXIT_FILL": true,
+    "NO_DUPLICATE_EXIT_INTENT": true,
+    "NO_LOST_EXIT_TRIGGER": true,
+    "PLACEHOLDER_FALSE_SIGNAL_USED_AS_UNBOUND_STUB": false,
+    "POSITION_FLIP_ALLOWED": false,
+    "RECONCILIATION_PRECEDES_ALPHA": true,
+    "RUNTIME_NOT_ACTIVATED": true,
+    "RUNTIME_RESTART_DOES_NOT_RESET_EXIT_STATE": true,
+    "SAFETY_EXIT_PRECEDES_ALPHA": true
+  },
+  "ok": true,
+  "parity_results": {
+    "BULL_BEAR_PARITY_PROVEN": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CORE_LOGIC_CHANGE": false,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DOUBLE_PLAY_PARITY_PROVEN": true,
+    "DYNAMIC_SCOPE_RULE_PARITY_PROVEN": true,
+    "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": true,
+    "EXIT_PRECEDENCE_EXACT": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "MASTER_V2_PARITY_PROVEN": true,
+    "RISK_PARITY_PROVEN": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "canonical_exit_precedence": [
+      "safety_authority",
+      "hard_risk",
+      "reconciliation",
+      "mandatory_exit",
+      "existing_position",
+      "reversal",
+      "new_entry",
+      "observe",
+      "no_action"
+    ],
+    "frozen_thresholds": {
+      "adverse_exit_distance": 80.0,
+      "confirmation_epochs": 2,
+      "entry_exit_policy_version": "double_play_entry_exit_policy_v0",
+      "profit_protection_distance_reuses_up_distance": 200.0,
+      "reversal_distance": 120.0,
+      "up_distance": 200.0
+    },
+    "inserted_wiring_edges_only": [
+      "exit_policy_producer_evaluation",
+      "exit_policy_state_commit"
+    ],
+    "mandatory_exit_priority": [
+      "adverse_scope_exit",
+      "profit_protection_exit",
+      "time_exit",
+      "strategy_invalidation_exit"
+    ]
+  },
+  "restart_results": {
+    "DUPLICATE_OBSERVATION_DOES_NOT_TRIGGER_NEW_EXIT": true,
+    "EXIT_POLICY_STATE_RESTART_PROVEN": true,
+    "NO_DUPLICATE_EXIT_FILL": true,
+    "NO_DUPLICATE_EXIT_INTENT": true,
+    "NO_LOST_EXIT_TRIGGER": true,
+    "RUNTIME_RESTART_DOES_NOT_RESET_EXIT_STATE": true,
+    "manifest_verify_rc": 0
+  }
+}

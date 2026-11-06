@@ -1,0 +1,28 @@
+{
+  "schema_name": "futures_producer_packet_fixture.v1",
+  "schema_version": 1,
+  "source_kind": "fixture",
+  "producer_id": "futures_producer_packet_fixture_source_v1",
+  "generated_at": "2026-06-08T17:04:00Z",
+  "source_run_id": "fixture_u2a_missing_empty",
+  "source_stage": "paper",
+  "fixture_only": true,
+  "observability_truth_allowed": false,
+  "non_authorizing": true,
+  "selected_candidate_id": null,
+  "universe": {
+    "conceptual_size": 50,
+    "eligible_packet_count": 0,
+    "notes": "empty upstream — Missing Truth expected, no dummy rows"
+  },
+  "ranking": {
+    "selected_top_n": 20,
+    "notes": "empty ranking expected"
+  },
+  "selected_future": {
+    "candidate_id": null,
+    "symbol": null,
+    "notes": "NOT_PERSISTED expected via U1 mapping"
+  },
+  "packets": []
+}

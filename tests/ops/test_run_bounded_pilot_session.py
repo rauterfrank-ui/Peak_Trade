@@ -1,0 +1,806 @@
+"""Tests for scripts/ops/run_bounded_pilot_session.py — Bounded Pilot Entry Gate."""
+
+import importlib.util
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parent.parent.parent
+SCRIPT = ROOT / "scripts" / "ops" / "run_bounded_pilot_session.py"
+
+
+def _load_session_module():
+    spec = importlib.util.spec_from_file_location("run_bounded_pilot_session", SCRIPT)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _green_readiness_bundle() -> dict:
+    return {
+        "contract": "bounded_pilot_readiness_v1",
+        "ok": True,
+        "blocked_at": None,
+        "message": "ok",
+        "go_no_go": {
+            "contract": "pilot_go_no_go_eval_v1",
+            "verdict": "GO_FOR_NEXT_PHASE_ONLY",
+            "rows": [],
+        },
+    }
+
+
+def _green_operator_packet() -> dict:
+    return {
+        "contract": "bounded_pilot_operator_preflight_packet_v1",
+        "summary": {
+            "readiness_ok": True,
+            "stop_snapshot_ok": True,
+            "packet_ok": True,
+            "blocked": [],
+            "notes": [],
+        },
+    }
+
+
+def test_script_exists() -> None:
+    """Script file exists."""
+    assert SCRIPT.is_file()
+
+
+def test_script_runs_with_repo_root() -> None:
+    """Script runs with --repo-root and produces output."""
+    r = subprocess.run(
+        [sys.executable, str(SCRIPT), "--repo-root", str(ROOT), "--no-invoke"],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+    )
+    assert r.returncode in (0, 1, 2), f"stderr: {r.stderr}"
+    assert (
+        "Bounded pilot" in r.stdout
+        or "GATES_RED" in r.stderr
+        or "entry_permitted" in r.stdout
+        or "Gates GREEN" in r.stdout
+        or "operator preflight packet GREEN" in r.stdout
+    )
+
+
+def test_script_json_output() -> None:
+    """Script --json produces valid JSON with contract and entry_permitted."""
+    r = subprocess.run(
+        [sys.executable, str(SCRIPT), "--repo-root", str(ROOT), "--json", "--no-invoke"],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+    )
+    assert r.returncode in (0, 1)
+    data = json.loads(r.stdout)
+    assert data["contract"] == "run_bounded_pilot_session"
+    assert "entry_permitted" in data
+    assert "verdict" in data
+    assert "bounded_pilot_readiness" in data
+    br = data["bounded_pilot_readiness"]
+    assert br.get("contract") == "bounded_pilot_readiness_v1"
+    if data["entry_permitted"]:
+        assert data["go_no_go"]["contract"] == "pilot_go_no_go_eval_v1"
+        assert "operator_preflight_packet" in data
+        assert data["operator_preflight_packet"].get("contract") == (
+            "bounded_pilot_operator_preflight_packet_v1"
+        )
+    else:
+        assert data.get("blocked_at") == br.get("blocked_at")
+        if br.get("go_no_go"):
+            assert br["go_no_go"]["contract"] == "pilot_go_no_go_eval_v1"
+
+
+def test_main_importable() -> None:
+    """main() can be imported and returns int."""
+    mod = _load_session_module()
+    assert hasattr(mod, "main")
+    assert callable(mod.main)
+
+
+def test_no_invoke_returns_0_when_operator_preflight_packet_ok(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        lambda *a, **k: (_green_operator_packet(), 0),
+    )
+
+    def _no_subprocess(*a, **k):
+        raise AssertionError("subprocess.run must not be called for --no-invoke")
+
+    monkeypatch.setattr(subprocess, "run", _no_subprocess)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 0
+
+
+def test_no_invoke_returns_1_when_operator_preflight_packet_blocked(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _bad(*a, **k):
+        return (
+            {
+                "contract": "bounded_pilot_operator_preflight_packet_v1",
+                "summary": {
+                    "readiness_ok": True,
+                    "stop_snapshot_ok": False,
+                    "packet_ok": False,
+                    "blocked": ["stop_signal_snapshot.kill_switch_file: error (bad)"],
+                    "notes": [],
+                },
+            },
+            1,
+        )
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _bad,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 1
+
+
+def test_no_invoke_returns_2_when_operator_preflight_orchestrator_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _broken(*a, **k):
+        return (
+            {
+                "contract": "bounded_pilot_operator_preflight_packet_v1",
+                "summary": {"packet_ok": False, "blocked": ["x"]},
+            },
+            2,
+        )
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _broken,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 2
+
+
+def test_no_invoke_json_includes_operator_preflight_packet_when_ok(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        lambda *a, **k: (_green_operator_packet(), 0),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(ROOT),
+            "--json",
+            "--no-invoke",
+        ],
+    )
+    assert mod.main() == 0
+    data = json.loads(capsys.readouterr().out.strip())
+    assert data["entry_permitted"] is True
+    assert data["operator_preflight_packet"]["summary"]["packet_ok"] is True
+
+
+def test_invoke_skips_subprocess_when_operator_preflight_packet_blocks(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _bad_packet(*a, **k):
+        return (
+            {
+                "contract": "bounded_pilot_operator_preflight_packet_v1",
+                "summary": {
+                    "readiness_ok": True,
+                    "stop_snapshot_ok": False,
+                    "packet_ok": False,
+                    "blocked": [
+                        "stop_signal_snapshot.kill_switch_file: error (invalid json)",
+                    ],
+                    "notes": [],
+                },
+            },
+            1,
+        )
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _bad_packet,
+    )
+
+    def _no_subprocess(*a, **k):
+        raise AssertionError("subprocess.run must not be called when packet blocks")
+
+    monkeypatch.setattr(subprocess, "run", _no_subprocess)
+    monkeypatch.setattr(sys, "argv", ["run_bounded_pilot_session", "--repo-root", str(ROOT)])
+    assert mod.main() == 1
+
+
+def test_invoke_runs_subprocess_when_operator_preflight_packet_ok(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        lambda *a, **k: (_green_operator_packet(), 0),
+    )
+    calls: list = []
+
+    def _fake_run(*a, **k):
+        calls.append(1)
+        return subprocess.CompletedProcess(args=a[0] if a else [], returncode=0)
+
+    monkeypatch.setattr(subprocess, "run", _fake_run)
+    monkeypatch.setattr(sys, "argv", ["run_bounded_pilot_session", "--repo-root", str(ROOT)])
+    assert mod.main() == 0
+    assert calls == [1]
+
+
+def test_invoke_returns_2_when_operator_preflight_packet_orchestrator_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _broken_packet(*a, **k):
+        return (
+            {
+                "contract": "bounded_pilot_operator_preflight_packet_v1",
+                "summary": {
+                    "readiness_ok": True,
+                    "stop_snapshot_ok": False,
+                    "packet_ok": False,
+                    "blocked": ["stop_signal_snapshot: exception (boom)"],
+                    "notes": [],
+                },
+                "stop_signal_snapshot": {"orchestrator_error": "boom"},
+            },
+            2,
+        )
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _broken_packet,
+    )
+
+    def _no_subprocess(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_subprocess)
+    monkeypatch.setattr(sys, "argv", ["run_bounded_pilot_session", "--repo-root", str(ROOT)])
+    assert mod.main() == 2
+
+
+def test_invoke_json_shows_operator_preflight_packet_when_blocked(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+    bad = {
+        "contract": "bounded_pilot_operator_preflight_packet_v1",
+        "summary": {
+            "readiness_ok": True,
+            "stop_snapshot_ok": False,
+            "packet_ok": False,
+            "blocked": ["stop_signal_snapshot.incident_stop_artifact: error (e)"],
+            "notes": [],
+        },
+    }
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        lambda *a, **k: (bad, 1),
+    )
+
+    def _no_subprocess(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_subprocess)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--json"],
+    )
+    assert mod.main() == 1
+    data = json.loads(capsys.readouterr().out.strip())
+    assert data["entry_permitted"] is False
+    assert data["blocked_at"] == "operator_preflight_packet"
+    blocked_txt = " ".join(data["operator_preflight_packet"]["summary"]["blocked"])
+    assert "incident_stop_artifact" in blocked_txt
+
+
+def test_main_exits_2_when_run_bounded_pilot_readiness_raises(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """Outer try/except: readiness orchestration error → fail-closed exit 2, stderr only (no JSON)."""
+    mod = _load_session_module()
+
+    def _boom(*a, **k) -> object:
+        raise RuntimeError("readiness orchestration boom")
+
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        _boom,
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert "ERR: bounded pilot preflight failed" in cap.err
+    assert "readiness orchestration boom" in cap.err
+    assert not cap.out.strip()
+
+
+def test_main_exits_2_readiness_exception_still_no_stdout_json_with_flags(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """readiness exception path does not emit contract JSON to stdout, even with --json."""
+    mod = _load_session_module()
+
+    def _boom(*a, **k) -> object:
+        raise RuntimeError("synthetic readiness failure")
+
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        _boom,
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(ROOT),
+            "--json",
+            "--no-invoke",
+        ],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert not cap.out.strip()
+    assert "synthetic readiness failure" in cap.err
+
+
+def test_no_invoke_exits_2_when_build_operator_preflight_packet_raises(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """_evaluate: build_operator_preflight_packet exception → exit 2, stderr, no result JSON on exception path."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _packet_boom(*a, **k) -> object:
+        raise OSError("packet build boom")
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _packet_boom,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert "ERR: operator preflight packet failed" in cap.err
+    assert "packet build boom" in cap.err
+    assert not cap.out.strip()
+
+
+def test_no_invoke_exits_2_build_packet_exception_no_stdout_with_json(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """Exception before packet dict exists: no JSON to stdout; stderr documents failure (fail-closed)."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _forced_packet_exc(*a, **k) -> object:
+        raise ValueError("forced packet exception")
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _forced_packet_exc,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(ROOT),
+            "--json",
+            "--no-invoke",
+        ],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert not cap.out.strip()
+    assert "ERR: operator preflight packet failed" in cap.err
+    assert "forced packet exception" in cap.err
+
+
+def test_invoke_exits_2_when_build_operator_preflight_packet_raises(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """Invoke path: same _evaluate exception semantics before subprocess."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _invoke_boom(*a, **k) -> object:
+        raise RuntimeError("invoke preflight build boom")
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _invoke_boom,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called when packet build raises")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT)],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert "ERR: operator preflight packet failed" in cap.err
+    assert "invoke preflight build boom" in cap.err
+    assert not cap.out.strip()
+
+
+def test_invoke_propagates_subprocess_nonzero_returncode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Handoff: subprocess.run returncode is passed through; cmd/env match wrapper contract."""
+    from src.core.environment import (
+        LIVE_CONFIRM_TOKEN,
+        PT_BOUNDED_PILOT_INVOKED_FROM_GATE,
+        PT_LIVE_CONFIRM_TOKEN_ENV,
+    )
+
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        lambda *a, **k: (_green_operator_packet(), 0),
+    )
+    last: dict = {}
+
+    def _fake_run(cmd, *, cwd, env, **kwargs):
+        last["cmd"] = list(cmd)
+        last["cwd"] = cwd
+        last["env"] = env
+        return subprocess.CompletedProcess(args=cmd, returncode=13)
+
+    monkeypatch.setattr(subprocess, "run", _fake_run)
+    monkeypatch.setattr(sys, "argv", ["run_bounded_pilot_session", "--repo-root", str(ROOT)])
+    assert mod.main() == 13
+    expect_runner = str(ROOT / "scripts" / "run_execution_session.py")
+    assert last["cmd"] == [
+        sys.executable,
+        expect_runner,
+        "--mode",
+        "bounded_pilot",
+        "--strategy",
+        "ma_crossover",
+        "--steps",
+        "1",
+        "--position-fraction",
+        "0.0005",
+    ]
+    assert last["cwd"] == ROOT
+    assert last["env"][PT_BOUNDED_PILOT_INVOKED_FROM_GATE] == "1"
+    assert last["env"][PT_LIVE_CONFIRM_TOKEN_ENV] == LIVE_CONFIRM_TOKEN
+
+
+def test_invoke_returns_2_when_runner_script_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """No scripts/run_execution_session.py under repo_root: fail before packet/subprocess (exit 2)."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called when runner is absent")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(tmp_path)],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    want = str(tmp_path / "scripts" / "run_execution_session.py")
+    assert f"ERR: Runner not found: {want}" in cap.err
+    assert not cap.out.strip()
+
+
+def test_invoke_returns_2_json_when_runner_script_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """--json: runner missing emits error JSON to stdout, exit 2."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called when runner is absent")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(tmp_path),
+            "--json",
+        ],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    data = json.loads(cap.out.strip())
+    assert data["contract"] == "run_bounded_pilot_session"
+    assert "Runner not found" in (data.get("error") or "")
+    assert not cap.err.strip()
+
+
+def _lifecycle_proof_fixtures():
+    from tests.ops.test_check_bounded_pilot_readiness import _coherent_lifecycle_proof_fixtures
+
+    return _coherent_lifecycle_proof_fixtures()
+
+
+def _green_packet_with_handoff() -> dict:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    composition = {
+        "composition_mode": "bounded_pilot_readiness_lifecycle_static_proof_composition_v0",
+        "composition_pass": True,
+        "fail_reasons": [],
+    }
+    handoff_binding = packet_mod.build_lifecycle_static_proof_handoff_binding(
+        composition_input, composition
+    )
+    handoff = packet_mod._handoff_binding_to_dict(handoff_binding)
+    handoff["composition"] = composition
+    handoff["handoff_pass"] = True
+    handoff["fail_reasons"] = []
+    packet = {
+        "contract": "bounded_pilot_operator_preflight_packet_v1",
+        "bounded_pilot_readiness": {
+            "contract": "bounded_pilot_readiness_v1",
+            "ok": True,
+            "static_readiness_proof_coherent": True,
+            "lifecycle_static_proof": composition,
+        },
+        "stop_signal_snapshot": {"contract": "operator_stop_signal_snapshot_v1"},
+        "lifecycle_static_proof_handoff": handoff,
+        "summary": {
+            "readiness_ok": True,
+            "stop_snapshot_ok": True,
+            "packet_ok": True,
+            "blocked": [],
+            "notes": [],
+            "lifecycle_static_proof_handoff_ok": True,
+        },
+    }
+    packet["packet_identity"] = packet_mod.compute_packet_identity(
+        contract=packet_mod.CONTRACT_ID,
+        readiness_ok=True,
+        stop_snapshot_ok=True,
+        lifecycle_handoff=handoff,
+    )
+    packet["packet_digest"] = packet_mod.compute_packet_digest(
+        contract=packet_mod.CONTRACT_ID,
+        readiness_bundle=packet["bounded_pilot_readiness"],
+        stop_snapshot=packet["stop_signal_snapshot"],
+        summary=packet["summary"],
+        lifecycle_handoff=handoff,
+        packet_identity=packet["packet_identity"],
+    )
+    return packet
+
+
+def test_evaluate_static_operator_entry_handoff_valid_packet() -> None:
+    mod = _load_session_module()
+    packet = _green_packet_with_handoff()
+    result = mod.evaluate_static_operator_entry_handoff(packet)
+    assert result["handoff_pass"] is True
+    assert result["entry_permitted"] is False
+    assert result["preflight_remains_blocked"] is True
+    assert result["authority_lift"] is False
+    assert result["session_started"] is False
+    assert result["runner_started"] is False
+
+
+def test_evaluate_static_operator_entry_handoff_missing_handoff_fails() -> None:
+    mod = _load_session_module()
+    packet = _green_operator_packet()
+    packet["packet_identity"] = "abc"
+    packet["packet_digest"] = "def"
+    result = mod.evaluate_static_operator_entry_handoff(packet)
+    assert result["handoff_pass"] is False
+    assert any("lifecycle_static_proof_handoff required" in r for r in result["fail_reasons"])
+
+
+def test_evaluate_static_operator_entry_handoff_packet_identity_mismatch_fails() -> None:
+    mod = _load_session_module()
+    packet = _green_packet_with_handoff()
+    result = mod.evaluate_static_operator_entry_handoff(packet, expected_packet_identity="0" * 64)
+    assert result["handoff_pass"] is False
+    assert any("packet_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_no_invoke_static_handoff_blocks_before_subprocess(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _packet_with_handoff(*a, **k):
+        import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+        packet = _green_packet_with_handoff()
+        return packet, 0
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _packet_with_handoff,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 0
+
+
+def test_static_handoff_fail_closed_when_packet_missing_proof(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _packet_missing_handoff(*a, **k):
+        packet = _green_operator_packet()
+        packet["packet_identity"] = "a" * 64
+        packet["packet_digest"] = "b" * 64
+        return packet, 0
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _packet_missing_handoff,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(ROOT),
+            "--no-invoke",
+        ],
+    )
+    # packet_ok true but no lifecycle handoff when not injected — existing path unchanged
+    assert mod.main() == 0

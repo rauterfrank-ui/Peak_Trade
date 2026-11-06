@@ -1,0 +1,57 @@
+{
+  "cases": {
+    "auth_reuse": {
+      "first_ok": true,
+      "ok": true,
+      "second_blockers": [
+        "authorization_reuse_forbidden"
+      ]
+    },
+    "confirmation_mutation": {
+      "blockers": [
+        "confirmation_session_id_mutation"
+      ],
+      "ok": true
+    },
+    "corrupt_checkpoint": {
+      "blockers": [
+        "corrupt_checkpoint"
+      ],
+      "ok": true
+    },
+    "digest_mismatch": {
+      "blockers": [
+        "digest_mismatch"
+      ],
+      "ok": true
+    },
+    "missing_post": {
+      "blockers": [
+        "missing_post_restart_segment",
+        "missing_post_restart_telemetry"
+      ],
+      "ok": true
+    },
+    "missing_pre": {
+      "blockers": [
+        "missing_pre_restart_segment",
+        "missing_post_restart_segment",
+        "missing_pre_restart_telemetry"
+      ],
+      "ok": true
+    },
+    "orphan_lock": {
+      "error": "ORPHAN_OR_DUPLICATE_LOCK_FAIL_CLOSED",
+      "lock_still_present": true,
+      "ok": true
+    },
+    "partial_evidence_idempotent": {
+      "cursor": {
+        "evidence_cursor": "7189242de5155c78a1b72a1342bbe3e828c349ebde3e3d15b5921617dc588ab1",
+        "materialized": true
+      },
+      "ok": true
+    }
+  },
+  "ok": true
+}

@@ -1,0 +1,11 @@
+{
+  "authority_effect": "NONE",
+  "fold_binding_digest_sha256": "3b32289f2535599f821a6b638f81b524f651f4c423ec0618b9491fa28000d811",
+  "fold_count": 1,
+  "in_sample_net_pnl": "147.487436402526",
+  "out_of_sample_net_pnl": "147.487436402526",
+  "productive_offline_economic_semantics_v1": true,
+  "schema_id": "ops.integrated_offline_economic_walk_forward_domain.v1",
+  "schema_version": "v1",
+  "walk_forward_pass": true
+}

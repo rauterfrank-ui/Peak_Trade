@@ -1,0 +1,53 @@
+{
+  "IMPLEMENTATION_SOURCE_SHA": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "authority": "NONE",
+  "crosswalk_cli_ok": true,
+  "interpretation": {
+    "CLI_RESULT_OK_IS_NOT_PROOF_ELIGIBILITY": true,
+    "NAVIGATION_ONLY_PASS_IS_NOT_CURRENT_PROOF": true,
+    "SOURCE_VALIDATION_PASS_COMPOSED_FIELD_IS_NOT_SNAPSHOT_BINDING": true,
+    "composed_source_validation_pass_literal_true_is_ambiguous_without_CURRENT_GRAPH_VERIFIED": true
+  },
+  "p05_adjudication": {
+    "CURRENT_GRAPH_VERIFIED": false,
+    "composed_graph_literal_source_validation_pass": true,
+    "coverage_SOURCE_VALIDATION_PASS": true,
+    "eligible_current_proof_requires": [
+      "CURRENT_GRAPH_VERIFIED=true",
+      "SNAPSHOT_BINDING_VERIFIED=true",
+      "SOURCE_VALIDATION_PASS reported true under STRICT_CURRENT",
+      "not NAVIGATION_ONLY"
+    ],
+    "finding": "P05_SOURCE_VALIDATION_PASS_SEMANTICS",
+    "ghv_core_changed": false
+  },
+  "record": {
+    "ACTUAL_SOURCE_SHA": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+    "CURRENT_GRAPH_VERIFIED": false,
+    "DECLARED_CURRENT_SHA": "UNKNOWN",
+    "GHV_SOURCE_SHA": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+    "GLOBAL_CAUSAL_CLOSURE_PROVEN": false,
+    "GLOBAL_NON_INTERFERENCE_PROVEN": false,
+    "PROOF_ELIGIBILITY": false,
+    "PROOF_ELIGIBILITY_REASONS": [
+      "MISSING_PROVENANCE",
+      "NAVIGATION_ONLY",
+      "SOURCE_VALIDATION_PASS_SEMANTICS",
+      "SNAPSHOT_BINDING_UNVERIFIED"
+    ],
+    "RUNTIME_CORRELATION_PROVEN": false,
+    "SNAPSHOT_BINDING_VERIFIED": false,
+    "SNAPSHOT_ID": "4a8338cb292b89d566731abc647b0529",
+    "SOURCE_DIRTY_STATUS": "CLEAN",
+    "SOURCE_PROVENANCE": "UNKNOWN",
+    "SOURCE_REPOSITORY_PATH": "/private/tmp/peak_trade_ued_origin_main_6261c8f",
+    "SOURCE_TREE_IDENTITY": "e603457d9e3d13cf",
+    "SOURCE_VALIDATION_MODE": "NAVIGATION_ONLY",
+    "SOURCE_VALIDATION_PASS_COMPOSED_FIELD": true,
+    "SOURCE_VALIDATION_PASS_REPORTED": true,
+    "TEST_EXECUTION_CLASS": "EXECUTED_LOCAL_WIP",
+    "TEST_EXECUTION_SHA": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+    "schema_version": "forensic_source_provenance.v1"
+  },
+  "schema_version": "forensic_source_provenance_report.v1"
+}

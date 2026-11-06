@@ -1,0 +1,1 @@
+{"schema_version":"execution_event.v1","ts":1700000000.0,"event_type":"order_submitted","run_id":"r-001","component":"execution_pipeline","order_id":"o-1","idempotency_key":"k-1","symbol":"BTC/EUR","side":"buy","qty":0.01,"price":null,"status":"submitted","extra":{"is_testnet":true}}

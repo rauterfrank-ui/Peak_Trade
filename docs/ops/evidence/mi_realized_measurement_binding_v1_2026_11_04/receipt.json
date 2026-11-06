@@ -1,0 +1,40 @@
+{
+  "source_commit": "614a00f8df64cf8391e3901ecae6718b3e907a87",
+  "source_paths_sha256": {
+    "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py": "886607ce405fd19f7233fb83d2b68cac524b6cba9d77f763a59838cfe0872b21",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py": "75a948d76dfda320bfc8952bb8943b1ad2c3dfdacb709f2b4e30c82434c3c4d6",
+    "tests/learning/test_mi_realized_measurement_binding_v1.py": "ff458a971b62101523d409a23068d7abdbb28f19cc2c99647ac54c101b7fea2d",
+    "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec",
+    "src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py": "0d010118a10f5170f7fb146874be8edb63d5e865792d2efcc6e958c6e476ce45"
+  },
+  "tests": {
+    "before": "9 FAIL",
+    "after": "49 PASS",
+    "downstream": "17 PASS",
+    "positive_output": "Full Realized-Behavior output/digest IDENTICAL"
+  },
+  "boundaries": [
+    "External authenticity, all O4 close-path values and forecast numeric label provenance not certified",
+    "G2 missing provenance rejection unchanged; old nine failures not rerun",
+    "U04/GAP-0370 deferred; no live operation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/mi_realized_measurement_binding_v1_2026_11_04/README.md",
+      "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 183,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

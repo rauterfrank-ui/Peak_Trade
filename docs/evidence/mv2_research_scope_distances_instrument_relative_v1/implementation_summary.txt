@@ -1,0 +1,19 @@
+CHANGED_PRODUCTIVE_FILE=src/backtest/mv2_research_wiring_v1.py
+CHANGED_TESTS=tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py
+
+ADDED:
+  MV2ResearchScopeDistancesAbsoluteV1
+  compute_mv2_research_scope_distances_absolute_from_mark_v1
+  named BPS/ratio constants
+
+MODIFIED:
+  _build_replay_input uses helper for up/adverse/reversal distances
+
+UNCHANGED:
+  deterministic_scope_event_generator_v1
+  double_play_state.transition_state
+  double_play_composition_matrix_v1
+  runtime bridge / orders / live
+  strategy signal owners / entry_side=NONE
+  confirmation_epochs=2
+  pre-existing LONG_ARMED research seed

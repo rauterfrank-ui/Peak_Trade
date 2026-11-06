@@ -1,0 +1,24 @@
+Timestamp: 20260208-105951Z
+HEAD: 0ea4eb4e (main)
+Tags: 251:ingress-A-v1,252:ingress-A-v1.1
+
+Recent commits:
+0ea4eb4e tests: add deterministic e2e smoke from ingress to L3 dry-run (#1232)
+bb10255f governance: expose envelope tooling allowlist from capability scopes (files-only enforced) (#1231)
+da33e860 ai: wire L3 into MultiModelRunner dry-run dispatch (pointer-only) (#1230)
+78ceb4bb docs: register L3 runner entrypoint in runner index and runbook (#1229)
+b6a252c1 ai: add L3 runner scaffold with pointer-only contract enforcement (#1228)
+b8845608 ai: add L3 trade-plan advisory pointer-only + tools contract tests (#1227)
+0e6400d4 governance: make policy critic report canonical and deterministic (#1226)
+ed718d63 governance: enforce evidence pack header + artifact tracking determinism (#1225)
+a31da1b5 ops: add deterministic drift verification test for runner index curation (#1224)
+38c1685c ops: add deterministic verification tests for test health runner profiles (#1223)
+25931a60 ops: add deterministic verification tests for parameter schema and environment safety (#1222)
+67b439a4 ops: add deterministic verification tests for escalation manager and … (#1221)
+
+Pytest checkpoints (expected: all green):
+  ingress: 17 passed
+  l3/runner/dispatch: 22 passed
+  e2e ingress->l3: 2 passed
+  governance: 209 passed
+  ops selected: 57 passed

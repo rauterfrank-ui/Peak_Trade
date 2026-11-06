@@ -1,0 +1,22 @@
+{
+  "artifact_class": "GOVERNED_F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_RATIFICATION_WP_OWNER_DECISION_V1",
+  "workpackage_id": "GOVERNED_F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_RATIFICATION_REAL_MECHANICAL_CONTINUATION_V1",
+  "authorized_baseline_sha": "d9f33a62f43f036932ed7c8bca648c71997dd162",
+  "owner_decision": "RATIFY_F1_M9_THRESHOLD_NUMERIC_MAX_AGE_SECONDS",
+  "owner_threshold_value_ratification_authorized": true,
+  "authorizer_identity": "OWNER_GO_F1_M9_THRESHOLD_VALUE_RATIFICATION_600_SECONDS",
+  "optimization_surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+  "productive_target_id": "peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds/v1",
+  "threshold_numeric_max_age_seconds": 600,
+  "threshold_unit": "SECONDS",
+  "candidate_id": "CANDIDATE_600_S",
+  "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+  "discrete_bounds_config": "config/governance/optimizable_envelope/volatility_numeric_max_age_discrete_bounds_v1.json",
+  "discrete_domain_digest": "da7218b1dc3df3311ebe00a90e18ddc8f093f612da3afa237dccba87a5701dc4",
+  "real_p4_to_f1_m9_join_established": false,
+  "productive_activation_authorized": false,
+  "external_effect_authorized": false,
+  "normative_spec": "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_RATIFICATION_REAL_MECHANICAL_CONTINUATION_V1.md",
+  "continuation_module": "src/governance/governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1.py",
+  "threshold_record_module": "src/governance/f1_m9_owner_threshold_value_record_materialization_v1.py"
+}

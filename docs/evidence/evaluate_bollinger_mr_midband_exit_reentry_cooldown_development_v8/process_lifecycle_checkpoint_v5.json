@@ -1,0 +1,26 @@
+{
+  "auto_rerun_allowed": false,
+  "auto_resume_allowed": false,
+  "checkpoint_authorizes_rerun": false,
+  "checkpoint_can_reclaim_run_slot": false,
+  "diagnostics": {
+    "result_class": "PASS"
+  },
+  "evaluation_run_count_mutation": false,
+  "partial_metrics_authoritative": false,
+  "progress": {
+    "checkpoint_sequence": 283,
+    "completed_member_count": 92,
+    "current_member_index": 46,
+    "last_completed_member_id": "YGG-USDT-SWAP",
+    "last_heartbeat_at": "2026-07-21T23:26:49Z",
+    "lifecycle_state": "TERMINAL_COMMITTED",
+    "process_id": 22900,
+    "run_id": "evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8",
+    "started_at": "2026-07-21T23:22:59Z",
+    "total_member_count": 46
+  },
+  "run_slot_claim_mutation": false,
+  "schema_version": "bollinger_mr_midband_exit_efficiency_process_lifecycle_checkpoint.v5",
+  "surface_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PROCESS_LIFECYCLE_CHECKPOINT_V5"
+}

@@ -1,0 +1,14 @@
+{
+  "DISCOVERY_QUEUE_MODE": "EXHAUSTIVE",
+  "processed_graphs": [
+    "origin_main_crosswalk_nav",
+    "origin_main_wp2a_causal"
+  ],
+  "initial_seeds": 302,
+  "execution_seeds": 27,
+  "forward_closure_size": 27,
+  "reverse_closure_size": 56,
+  "transitive_execution_neighborhood": 56,
+  "queue_empty": true,
+  "dedupe": "native_id_set"
+}

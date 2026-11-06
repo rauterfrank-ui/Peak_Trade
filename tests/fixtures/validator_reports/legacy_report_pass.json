@@ -1,0 +1,18 @@
+{
+  "validator": {
+    "name": "l4_critic_determinism_contract_validator",
+    "version": "1.0.0"
+  },
+  "contract_version": "1.0.0",
+  "inputs": {
+    "baseline": "tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0/critic_report.json",
+    "candidate": ".tmp/l4_critic_out/critic_report.json"
+  },
+  "result": {
+    "equal": true,
+    "baseline_hash": "7a3f8e92b1c456d789e012f345a6b789c012d345e678f901a234b567c890d123",
+    "candidate_hash": "7a3f8e92b1c456d789e012f345a6b789c012d345e678f901a234b567c890d123",
+    "diff_summary": "Reports are identical (0 diffs)",
+    "first_mismatch_path": null
+  }
+}

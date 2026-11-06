@@ -1,0 +1,25 @@
+{
+  "by_scenario": {
+    "A": {
+      "AUDIT:INST:A": 1
+    },
+    "B": {
+      "AUDIT:INST:B": 0
+    },
+    "C": {},
+    "D": {},
+    "E": {},
+    "F": {},
+    "G": {},
+    "H": {},
+    "I": {},
+    "J": {},
+    "K": {
+      "AUDIT:INST:A": 1,
+      "AUDIT:INST:B": 1,
+      "cross_instrument_id_overlap": false
+    },
+    "L": {}
+  },
+  "harness_id": "CANONICAL_FILL_ROUNDTRIP_LEDGER_BOUNDARY_TRACE_V1"
+}

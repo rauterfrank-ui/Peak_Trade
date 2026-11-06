@@ -1,0 +1,34 @@
+{
+  "wp_id": "D4_2_EXECUTION_RECONCILIATION_ARCHIVE_SIBLING_EXPORT_AND_PRESENTATION_WITNESS_V1",
+  "atlas_authority": "NONE",
+  "dashboard_authority": "NONE",
+  "canonical_base_sha": "d1b1ac898d901191c317aaa035db46bad76826a3",
+  "invocation_path": "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py:export_families_after_runtime_commit_v1",
+  "domain_authority": "src.governance.canonical_order_intent_v1",
+  "domain_source_primary": "CanonicalTradingDecisionEvidenceV1.order_intent_effect and order_intent_ref at cycle commit",
+  "domain_source_cross_check": "IntegratedOfflineReplayIntermediateV1.canonical_order_intent when order_intent_effect=BOUND_OFFLINE",
+  "reconciliation_status_export": "OMITTED_UNLESS_CANONICAL_SOURCE_FIELD_PRESENT",
+  "bounded_test_witness": {
+    "test_module": "tests/ops/test_execution_reconciliation_archive_sibling_exporter_v1.py",
+    "scenario": "offline_scenario_enter_long_order_intent_bound",
+    "sibling_path": "readmodels/execution_reconciliation.v1.json",
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "bind_market_universe_slots_availability": "AVAILABLE",
+    "execution_status": "BOUND_OFFLINE",
+    "source_digest": "131f8bfb405dbfe076f259b1c2c1118fb84f09fda400f861ca168b226061b376",
+    "presentation_path": "readmodels/execution_reconciliation_presentation_projection.v1.json",
+    "presentation_timestamp_class": "MATERIALIZATION_WALLCLOCK_NOT_DOMAIN_PRODUCER"
+  },
+  "trading_effects": false,
+  "execution_effects": false,
+  "orders": false,
+  "evidence_chain": [
+    "decision_evidence.order_intent_effect",
+    "readmodels/execution_reconciliation.v1.json",
+    "materialize_execution_reconciliation_presentation_projection_v1",
+    "try_load_execution_reconciliation_presentation_projection_v1",
+    "bind_market_universe_slots.execution_reconciliation"
+  ]
+}

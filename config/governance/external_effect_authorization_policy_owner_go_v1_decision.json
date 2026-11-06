@@ -1,0 +1,18 @@
+{
+  "workpackage_id": "EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1",
+  "owner_go": true,
+  "owner_go_token": "EXTERNAL_EFFECT_POLICY_OWNER_GO",
+  "baseline_origin_main_sha": "b5e0fd94bbf7ba5f1742c98086e548d450ab4d2b",
+  "external_effect_authorization_policy_owner_go": true,
+  "external_effect_authorization_policy_authorized": true,
+  "standing_external_effect_authorized": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "permit_mint_authorized": false,
+  "credential_access_performed": false,
+  "runtime_authorization_effect": "EXTERNAL_EFFECT_POLICY_ADMISSION_ONLY",
+  "policy_record_config": "config/governance/external_effect_authorization_policy_v1_record.json",
+  "normative_spec": "docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md",
+  "earliest_unclosed_boundary": "STANDING_EXTERNAL_EFFECT_LIFT",
+  "next_genuine_blocker": "EXTERNAL_EFFECT_STANDING_LIFT_OWNER_GO"
+}

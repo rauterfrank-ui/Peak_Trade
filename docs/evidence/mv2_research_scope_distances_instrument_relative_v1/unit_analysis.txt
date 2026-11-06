@@ -1,0 +1,17 @@
+UNIT_BOUNDARY
+
+Generator (unchanged) expects absolute price distances.
+Research wiring previously supplied absolute constants sized for ~ETH marks.
+Economic research instruments use marks orders of magnitude smaller → UNIT_MISMATCH.
+
+Fix strategy:
+  Store relative BPS at the research binding boundary.
+  Convert once to absolute price distance for the generator input contract.
+  Naming encodes unit (_BPS, _RATIO) to prevent silent reintroduction of absolute magic numbers.
+
+Symmetry:
+  Same absolute distances feed direction-mirrored threshold math in the generator.
+  No bull/bear asymmetry introduced in the wiring helper.
+
+Invalid mark:
+  ValueError mv2_research_scope_distance_mark_* — fail-closed, no LONG default.

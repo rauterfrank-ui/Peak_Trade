@@ -1,0 +1,4 @@
+# Provenance-bound minimal OKX Historical Funding Archive fixtures.
+# Source: okx_historical_funding_archive_probe_v0_20260703T160811Z (read-only)
+# Inline CSV payloads live in tests/research/test_okx_historical_funding_archive_ingest_v0.py
+# (ETH_CSV_MINIMAL, SOL_CSV_MINIMAL) because repo-wide *.csv is gitignored.

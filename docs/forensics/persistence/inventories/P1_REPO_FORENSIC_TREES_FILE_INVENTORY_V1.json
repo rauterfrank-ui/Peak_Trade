@@ -1,0 +1,1347 @@
+{
+  "AUTHORITY": "NONE",
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_FILE_IDENTITY_INVENTORY",
+  "SECOND_SSOT": false,
+  "SOURCE_CLASS": "REPO_INTERNAL",
+  "SOURCE_CORPUS": "PEAK_TRADE_GIT_WORKTREE_FORENSIC_TREES",
+  "TARGET_AUTHORITY": "NONE",
+  "additional_p1_trees_not_hashed_this_pass": [
+    {
+      "file_count_glob": 16,
+      "tree": "tests/forensic_structure_schema_v1"
+    },
+    {
+      "file_count_glob": 48,
+      "tree": "scripts/ops/forensic_structure_schema_v1"
+    }
+  ],
+  "byte_sum": 22518881,
+  "file_count": 129,
+  "records": [
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787743574,
+      "name": "PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+      "rel": "preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+      "sha256": "f26f6ec751b35fe95da1414fd2e7ed78ad419efd707d540210e899e6dfe39b3f",
+      "size": 140959,
+      "tree": "docs/forensics"
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787743574,
+      "name": "PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION_BINDING.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION_BINDING.md",
+      "rel": "preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION_BINDING.md",
+      "sha256": "31355ca63201a976498946cfc2692db6ef53ee861a165a247e10631d61e0317f",
+      "size": 2131,
+      "tree": "docs/forensics"
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787751688,
+      "name": "PEAK_TRADE_SW_R_002_POST_HANDOFF_READ_ONLY_ANALYSIS_PRESERVATION_DELTA.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensics/preservation/PEAK_TRADE_SW_R_002_POST_HANDOFF_READ_ONLY_ANALYSIS_PRESERVATION_DELTA.md",
+      "rel": "preservation/PEAK_TRADE_SW_R_002_POST_HANDOFF_READ_ONLY_ANALYSIS_PRESERVATION_DELTA.md",
+      "sha256": "3121bf903796df819860d1e38ecdd320373af2419b6b08b889f6a128c974d4a3",
+      "size": 57921,
+      "tree": "docs/forensics"
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787751688,
+      "name": "PEAK_TRADE_SW_R_002_POST_HANDOFF_READ_ONLY_ANALYSIS_PRESERVATION_DELTA_BINDING.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensics/preservation/PEAK_TRADE_SW_R_002_POST_HANDOFF_READ_ONLY_ANALYSIS_PRESERVATION_DELTA_BINDING.md",
+      "rel": "preservation/PEAK_TRADE_SW_R_002_POST_HANDOFF_READ_ONLY_ANALYSIS_PRESERVATION_DELTA_BINDING.md",
+      "sha256": "7d2a61e5576df8d42743dc682a2b8b6c3b5bf341fad63556495fff8c6bade5cd",
+      "size": 2437,
+      "tree": "docs/forensics"
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787762560,
+      "name": "PEAK_TRADE_SW_R_002_WORKING_STATE.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensics/working_state/PEAK_TRADE_SW_R_002_WORKING_STATE.md",
+      "rel": "working_state/PEAK_TRADE_SW_R_002_WORKING_STATE.md",
+      "sha256": "603ccd8cf001a15b3ef8eb22bc83141113238cab1668aab1681c2aec196f10fb",
+      "size": 44955,
+      "tree": "docs/forensics"
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787688562,
+      "name": "FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1.md",
+      "rel": "FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1.md",
+      "sha256": "ccd2d172706f1b2ae1558339cfddd53617f7a6f934c7c0b5e889c394a9914639",
+      "size": 3384,
+      "tree": "docs/forensic"
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787685683,
+      "name": "FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md",
+      "rel": "FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md",
+      "sha256": "8a400e372690184f415895375d87e13c66436a707928ee5fd1b842801f8bd6c3",
+      "size": 2178,
+      "tree": "docs/forensic"
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787682593,
+      "name": "FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_LAYER_V1.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_LAYER_V1.md",
+      "rel": "FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_LAYER_V1.md",
+      "sha256": "7026875056e6955694f5942db414aa768aa5f70216830b2bc89e22f323f84adf",
+      "size": 2969,
+      "tree": "docs/forensic"
+    },
+    {
+      "ext": ".md",
+      "is_symlink": false,
+      "mtime_epoch": 1787676798,
+      "name": "FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION_V1.md",
+      "path": "/Users/frnkhrz/Peak_Trade/docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION_V1.md",
+      "rel": "FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION_V1.md",
+      "sha256": "af816aa43d5b1f888784a267e6615219950bd4ac19474ddef20f753d05b95a6a",
+      "size": 3712,
+      "tree": "docs/forensic"
+    },
+    {
+      "ext": ".txt",
+      "mtime_epoch": 1787688562,
+      "name": "AUTHORITY_NONE.txt",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/AUTHORITY_NONE.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/AUTHORITY_NONE.txt",
+      "sha256": "1d958be1680cebadcafbdac85c0fde2baaf3f6ef55003dc2ec122878fe2d1249",
+      "size": 578,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".txt",
+      "mtime_epoch": 1787688562,
+      "name": "MANIFEST_SHA256.txt",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/MANIFEST_SHA256.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/MANIFEST_SHA256.txt",
+      "sha256": "4dc802f69a571af2b31f213b1a1d3b080a2efbdaac251f3af1695ed61b62a59e",
+      "size": 242,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787688562,
+      "name": "README.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/README.md",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/README.md",
+      "sha256": "48b492e1581172eef50ea177b185270e0956f04d09c47c5bbe652741575a6d2e",
+      "size": 1011,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "adjudication_audit.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/adjudication_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/adjudication_audit.json",
+      "sha256": "d844fb0d28c81c4f4170a4c28251ce9a27bfae0c375694cad25bcf863d591c8d",
+      "size": 187,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "adjudication_contract_header.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/adjudication_contract_header.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/adjudication_contract_header.json",
+      "sha256": "ec685558cfc79fee1122e7bd65574fdba9215bd58023672f85e2f0367fbad58e",
+      "size": 1720,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "adjudication_decision_records.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/adjudication_decision_records.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/adjudication_decision_records.json",
+      "sha256": "8d4575aed90a0afa87f180a2eeca10cf1b97817f68efc700c3b9cb89cf66df9a",
+      "size": 4429358,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "adversarial_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/adversarial_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/adversarial_report.json",
+      "sha256": "aef8f87d0aaaee407a290a83ad597442d05b65614804951de9d0c7ca050abd3a",
+      "size": 434,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "candidate_adjudication_results.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/candidate_adjudication_results.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/candidate_adjudication_results.json",
+      "sha256": "0ad484444b5fab9fbd81cc81ea9018eb432570e05038fd9d47977d73c9626842",
+      "size": 155442,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "competing_set_graph.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/competing_set_graph.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/competing_set_graph.json",
+      "sha256": "22890e44388530e1bb325f39b6db83882b9bb8378aa2966f8ae3ce3a52df3869",
+      "size": 7343,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "counts.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/counts.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/counts.json",
+      "sha256": "6cdd8a60fd07465c611d5f2c81808fbf7381a0bf9b5df504ed6e26d8b9a0dfc5",
+      "size": 526,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "dataset_catalog.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/dataset_catalog.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/dataset_catalog.json",
+      "sha256": "2699fec101a5e398a77743e996ffbfa0ff25d8f9ec75a68ad51cdd4cc3d72011",
+      "size": 1955,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "determinism_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/determinism_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/determinism_report.json",
+      "sha256": "d987415714f43e130a95e4f96c162e77b989eac0042372d88647f3cf6f70d1c0",
+      "size": 253,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "dimension_model.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/dimension_model.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/dimension_model.json",
+      "sha256": "1cd16df3477a5c8ece38e590c0ec57cf3c7f96f57f0428d77e941c256d6a8c4e",
+      "size": 3092,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "evidence_index.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/evidence_index.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/evidence_index.json",
+      "sha256": "621469b4e69839b7058c3e4b5ae94229a095bba25d67ab051f79e58d8288baa4",
+      "size": 5527767,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "execution_boundaries.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/execution_boundaries.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/execution_boundaries.json",
+      "sha256": "585c7bab425fc1cf95c4fb0212adafeebb0fd17b8e7a571cb8431a60f22959a6",
+      "size": 4445,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "family_inventory.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/family_inventory.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/family_inventory.json",
+      "sha256": "b935e27c8c50aa3c659b4e5175b88ae178a8827ad3c70e9b3862bbb4c47b52f1",
+      "size": 921,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "generation_contract.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/generation_contract.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/generation_contract.json",
+      "sha256": "82c56a3abaaa43ed506cd8796dc1c277a18181306a78317cf8afece11c59923c",
+      "size": 697,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "idempotence_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/idempotence_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/idempotence_report.json",
+      "sha256": "921291d3ec631a197349a09b4a9504c953abe7b0a082d9baf05f40c0245e234d",
+      "size": 47,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "immutability_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/immutability_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/immutability_report.json",
+      "sha256": "22606f5fd1cdb02a985253e8adcf68063105e422ab20fb909fdc91d59631dad2",
+      "size": 441,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "non_inference_audit.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/non_inference_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/non_inference_audit.json",
+      "sha256": "1001381a497841fa52e9cf0ac10caaabf4a20b54a7dcb4ba36fb7b2947d1f57b",
+      "size": 763,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "residual_status.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/residual_status.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/residual_status.json",
+      "sha256": "d2259de6bfc4ad0b2ee62fe9c486f9eecd8dacf351ebf4eafa562bed6695dfd7",
+      "size": 157,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "schema.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/schema.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/schema.json",
+      "sha256": "6b138039e4651b743a894db87482a47a9a69dcf3a4d86b162076dbe0b2f44617",
+      "size": 410,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787688562,
+      "name": "transformation_manifest.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/transformation_manifest.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1/transformation_manifest.json",
+      "sha256": "97f2c71a135ccafa6745bff3eee428af65be682b8bcf0bc3d13f32fa068eee62",
+      "size": 5234,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".txt",
+      "mtime_epoch": 1787685683,
+      "name": "AUTHORITY_NONE.txt",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/AUTHORITY_NONE.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/AUTHORITY_NONE.txt",
+      "sha256": "546ea1c75e21f4b97e70d7959ddfad010b912563d35fee8c56e7b50e45ac97a8",
+      "size": 577,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".txt",
+      "mtime_epoch": 1787685683,
+      "name": "MANIFEST_SHA256.txt",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/MANIFEST_SHA256.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/MANIFEST_SHA256.txt",
+      "sha256": "3e8f42d1ecfeaeb709ca5c31531f20bca16f27a15c421e010cef1e22fc44a1c2",
+      "size": 239,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787685683,
+      "name": "README.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/README.md",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/README.md",
+      "sha256": "9754e5f275ddf1b3af24580f71d488de08b90c20dfa2e12d977799770245324c",
+      "size": 1046,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "adversarial_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/adversarial_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/adversarial_report.json",
+      "sha256": "5759fa32306e3275be4cb8045ae79b4a65b85b629762881e3c6ff7dcc6351aa7",
+      "size": 1069,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "alignment_audit.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/alignment_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/alignment_audit.json",
+      "sha256": "9079d77ad2786ec69f996c6646e7b256f57437870035ba05ebeaa8db54710b8a",
+      "size": 181,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "alignment_index_header.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/alignment_index_header.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/alignment_index_header.json",
+      "sha256": "be1add150af638f19671a88c5b2c4e59a6ff5281a67351584bc0e4e67d59a7b9",
+      "size": 1541,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "counts.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/counts.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/counts.json",
+      "sha256": "fd7a432dd551e8f7a3049752c98e7e40e52b04d91156fa00703e2e4b723541ab",
+      "size": 609,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "cross_residual_evidence_edges.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/cross_residual_evidence_edges.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/cross_residual_evidence_edges.json",
+      "sha256": "99954c00c9ce5f7e647178b5ffaa82d73d586c140477c90609c4a9bfeb37770d",
+      "size": 19067,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "dataset_catalog.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/dataset_catalog.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/dataset_catalog.json",
+      "sha256": "299dd9599836374e882ebdf0dfa6d1e67a6913c384603b4a7019537785f4a484",
+      "size": 2071,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "determinism_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/determinism_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/determinism_report.json",
+      "sha256": "d987415714f43e130a95e4f96c162e77b989eac0042372d88647f3cf6f70d1c0",
+      "size": 253,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "endpoint_binding_candidate_records.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/endpoint_binding_candidate_records.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/endpoint_binding_candidate_records.json",
+      "sha256": "9eaded3909af1c5e89148b93650b08448a5b51eda359d2c51b8ea86f798c075e",
+      "size": 371982,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "evidence_edge_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/evidence_edge_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/evidence_edge_report.json",
+      "sha256": "8aa8e8a4000a303aab64d2373f4fba0112fcc70d94ddc8c0267609600aba79e3",
+      "size": 148,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "generation_contract.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/generation_contract.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/generation_contract.json",
+      "sha256": "f041a6b2bbf60e9bc144b7bab5c934a0ea3426609d60ef09848d034051802fae",
+      "size": 550,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "idempotence_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/idempotence_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/idempotence_report.json",
+      "sha256": "921291d3ec631a197349a09b4a9504c953abe7b0a082d9baf05f40c0245e234d",
+      "size": 47,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "immutability_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/immutability_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/immutability_report.json",
+      "sha256": "ab574d25978f3774a0dd761a0111cb75c6e7ed102aedfe756abc427175985df2",
+      "size": 4990,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "layer3_relation_records.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/layer3_relation_records.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/layer3_relation_records.json",
+      "sha256": "db743a296d8e5bfbe9efbbc1325982ef5c18f5d2a554d187ead37220de4993ab",
+      "size": 206359,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "non_identity_audit.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/non_identity_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/non_identity_audit.json",
+      "sha256": "369819fdaebcbb2df2989c8ac3c7bddbc9e1bd6f064d0652cf09d078ca815210",
+      "size": 665,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "non_identity_records.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/non_identity_records.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/non_identity_records.json",
+      "sha256": "6210919dda0a7a3c990dc6638efb77008705b198711be913d3700799f136bef8",
+      "size": 10435,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "non_inference_audit.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/non_inference_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/non_inference_audit.json",
+      "sha256": "425289850312591e1751712805ee07a9eaa46c47d5c2fe294d8bb9192c3cf6b8",
+      "size": 596,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "residual_status.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/residual_status.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/residual_status.json",
+      "sha256": "d2259de6bfc4ad0b2ee62fe9c486f9eecd8dacf351ebf4eafa562bed6695dfd7",
+      "size": 157,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "schema.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/schema.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/schema.json",
+      "sha256": "94ffa8461c182678480ccb75ade60118ccdc0c911ce4b75002ddd399309329e4",
+      "size": 404,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "transformation_manifest.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/transformation_manifest.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/transformation_manifest.json",
+      "sha256": "53bc5ad6465245acc5a1a800b33709f1c1970ba87570cd7c21245c634cc8d1d2",
+      "size": 7729,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787685683,
+      "name": "view_records.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/view_records.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/view_records.json",
+      "sha256": "1d63028bb30e4f4f63d1fc79b49cb9226f3a6a9f55073419780cc5a9ba7c3517",
+      "size": 9848,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".txt",
+      "mtime_epoch": 1787682593,
+      "name": "AUTHORITY_NONE.txt",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/AUTHORITY_NONE.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/AUTHORITY_NONE.txt",
+      "sha256": "e0f927020ddf2dcd4a6ba0025a29b11e601f4b9baf4f5040bab33759ed474cf7",
+      "size": 411,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".txt",
+      "mtime_epoch": 1787682593,
+      "name": "MANIFEST_SHA256.txt",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/MANIFEST_SHA256.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/MANIFEST_SHA256.txt",
+      "sha256": "14964a4c46ce36f10d0901dc8125784442e368b263304066bf3e5488caa2f1c7",
+      "size": 159,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787682593,
+      "name": "README.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/README.md",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/README.md",
+      "sha256": "79d84b544c8d69ca64a77a828a1472c223dcf46aa48514e91745ecb8b551b736",
+      "size": 767,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "counts.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/counts.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/counts.json",
+      "sha256": "c9f1b69d85f923e6739a825bd3d0b0fb6e4f13b9b93263845d488fa3d6803bc5",
+      "size": 357,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "disposition_layer.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/disposition_layer.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/disposition_layer.json",
+      "sha256": "dd5de1ddbe4711065681162fded9d49b0b3fc2d9aca5c9762bd462827238b408",
+      "size": 901011,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "endpoint_dispositions.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/endpoint_dispositions.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/endpoint_dispositions.json",
+      "sha256": "92f0a2a353be1c295e503074ec1586d4a1cbda22331fb15b468092d0987a4bfc",
+      "size": 506225,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "guard_gap_closure.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/guard_gap_closure.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/guard_gap_closure.json",
+      "sha256": "92cc3f4fce0bb67fff94a21f11c4d393379303e2bf7a87faa3c4cd726d68f186",
+      "size": 951,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "guard_inventory.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/guard_inventory.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/guard_inventory.json",
+      "sha256": "7801c08c2d26a26427a5c6a9f8b690408783117b18ec17d69b5d11c082c56a73",
+      "size": 1668,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "orientation.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/orientation.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/orientation.json",
+      "sha256": "d4672a5fb013cd625efe9a1727ce9cade14a86fc44cb3de7060e418ab5e88e03",
+      "size": 307,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "relation_dispositions.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/relation_dispositions.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/relation_dispositions.json",
+      "sha256": "8c7c6a255c4c8211d5e199d6471af88d06a704114a48380e2c7d34df0bedfa9e",
+      "size": 367490,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "residual_status.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/residual_status.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/residual_status.json",
+      "sha256": "d2259de6bfc4ad0b2ee62fe9c486f9eecd8dacf351ebf4eafa562bed6695dfd7",
+      "size": 157,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "transformation_manifest.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/transformation_manifest.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/transformation_manifest.json",
+      "sha256": "fec48d9c0f26d4bd7b9a471113817b6fc358915e63cc8fa3609a7fa85eeb676e",
+      "size": 2687,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787682593,
+      "name": "view_parent_dispositions.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/view_parent_dispositions.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_V1/view_parent_dispositions.json",
+      "sha256": "d5194a601277769a03e28ae308b022bbb1a4c3137888e2769ac44928965ca430",
+      "size": 23152,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".txt",
+      "mtime_epoch": 1787676798,
+      "name": "AUTHORITY_NONE.txt",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/AUTHORITY_NONE.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/AUTHORITY_NONE.txt",
+      "sha256": "1704fcb4c9daab46b0b00ebd2d28cef4d7b88bb4c84ea903c6f58de7c422d83b",
+      "size": 417,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".txt",
+      "mtime_epoch": 1787676798,
+      "name": "MANIFEST_SHA256.txt",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/MANIFEST_SHA256.txt",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/MANIFEST_SHA256.txt",
+      "sha256": "9b3080d4104288752233392df958923e22c4d4d1d0c1ec19f2fd807ae79d9f1b",
+      "size": 101,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787676798,
+      "name": "README.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/README.md",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/README.md",
+      "sha256": "315119c40f0a64fbaba47f62a24832351d87637e97559f662192129a13fbba73",
+      "size": 1607,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787675908,
+      "name": "contract_test_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/contract_test_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/contract_test_report.json",
+      "sha256": "7082f6a719b835bca2138c6dfb0a4fd21e8a830ed878d1be824cf2d88e1adad9",
+      "size": 1589,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787676798,
+      "name": "dataset_catalog.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/dataset_catalog.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/dataset_catalog.json",
+      "sha256": "110cbe25d7df42d7cc20130ed2f17b6800bc52bb9a54f70be8bb2c89fa4b4bcd",
+      "size": 3337,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787675908,
+      "name": "execution_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/execution_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/execution_report.json",
+      "sha256": "926cc083c92b4d43f9130bd1c2f9055a08aba132c7d5dd2b835893d64503ed43",
+      "size": 1219,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787675908,
+      "name": "invariant_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/invariant_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/invariant_report.json",
+      "sha256": "143070510fb2b547faae2c16b43642aa1a1fff4770d77c930569553ad12bda5b",
+      "size": 1605,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787676798,
+      "name": "losslessness_audit.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/losslessness_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/losslessness_audit.json",
+      "sha256": "60d4f75295ad62a752670c95e01d6f2b1fe70bcf4ce2753a0f2ebc3a58811f07",
+      "size": 2036,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787676798,
+      "name": "navigation_views.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/navigation_views.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/navigation_views.json",
+      "sha256": "1b155495ef0d5ced888a3e3d685107e64c01e5fc9caa83fa196a0c16bc9ea0c1",
+      "size": 106816,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787675908,
+      "name": "non_inference_audit.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/non_inference_audit.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/non_inference_audit.json",
+      "sha256": "fff87fc9bfa6f0546ab7d6ecece2f842e17777d4706c4679f8a2104bbd014d8e",
+      "size": 897,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787676798,
+      "name": "reconstruction_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/reconstruction_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/reconstruction_report.json",
+      "sha256": "34bd53c5e402e7d998b5efeb386f9cadfe94bead368fea1bede4fc953a0ca3b9",
+      "size": 728,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787675908,
+      "name": "residual_register.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/residual_register.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/residual_register.json",
+      "sha256": "06994daf65acd510cc18db21adba0798c053a9c8a315e9ccd9c05945eadf3a0f",
+      "size": 3118,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787676798,
+      "name": "source_canary_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/source_canary_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/source_canary_report.json",
+      "sha256": "6a185a3fba7c07280ce4a4ca79551b5c851690ce8adf2e45ff1d4837b65c87ac",
+      "size": 771,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787675908,
+      "name": "traceability_report.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/traceability_report.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/traceability_report.json",
+      "sha256": "9d338d00a38022220d1b34b76f12fc54710479a64cc60df5d7bd9f0d0557084a",
+      "size": 439,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787676798,
+      "name": "transformation_manifest.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/transformation_manifest.json",
+      "rel": "derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/transformation_manifest.json",
+      "sha256": "4a925ccaed655511a84f86283c767bbe6f5077ffdde7687fbbfe31b3b3060a79",
+      "size": 4885,
+      "tree": "forensics"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787467040,
+      "name": "00_READ_ME_FIRST.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_structural_projection_v2_v2_1_pack_v1/00_READ_ME_FIRST.md",
+      "rel": "lossless_structural_projection_v2_v2_1_pack_v1/00_READ_ME_FIRST.md",
+      "sha256": "7c0d4fc1e588a681266624c4a03b20f9451b62cac43742d058e8010d3958a7c2",
+      "size": 3850,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".1.md",
+      "mtime_epoch": 1787466832,
+      "name": "PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.1.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.1.md",
+      "rel": "lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.1.md",
+      "sha256": "6813cf564632dc4ee15cbe3fb0c9866c30f455aaf1c06dd6f599f682342e015c",
+      "size": 3555,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787466832,
+      "name": "PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.md",
+      "rel": "lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.md",
+      "sha256": "d240175046f1d6ece5345d172c35171959b270a464fbf98157484c658c4f0e11",
+      "size": 11707,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787466832,
+      "name": "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "rel": "lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "sha256": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+      "size": 8499032,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".py",
+      "mtime_epoch": 1787466832,
+      "name": "peak_trade_v21_gen.py",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/peak_trade_v21_gen.py",
+      "rel": "lossless_structural_projection_v2_v2_1_pack_v1/generator/peak_trade_v21_gen.py",
+      "sha256": "754f52158f78cb87d8b16eaa1d9564417c2e5ea4b28c8ef3ce517fcf777b7f08",
+      "size": 89877,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787467040,
+      "name": "final_decision_reconciliation_v1.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_structural_projection_v2_v2_1_pack_v1/manifests/final_decision_reconciliation_v1.md",
+      "rel": "lossless_structural_projection_v2_v2_1_pack_v1/manifests/final_decision_reconciliation_v1.md",
+      "sha256": "855fc11b175e60a1b34d52a02565dc8fc7b8908a0c114c6ce96ed7a0e93c717e",
+      "size": 42566,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787467040,
+      "name": "pack_manifest_v1.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_structural_projection_v2_v2_1_pack_v1/manifests/pack_manifest_v1.json",
+      "rel": "lossless_structural_projection_v2_v2_1_pack_v1/manifests/pack_manifest_v1.json",
+      "sha256": "9c72e038231c37ab8da78094444abb690daccd4ca83df4682c77f1105af84205",
+      "size": 11672,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787475725,
+      "name": "TRANSFORMATION_SUMMARY.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_working_runbook_structure_identity_method_v1/TRANSFORMATION_SUMMARY.json",
+      "rel": "lossless_working_runbook_structure_identity_method_v1/TRANSFORMATION_SUMMARY.json",
+      "sha256": "2d77a18657b702b8c27a8e29035639f58384e0502b3fc74b7216a03f4baca2ad",
+      "size": 3567,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".py",
+      "mtime_epoch": 1787475725,
+      "name": "build_lossless_structure.py",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py",
+      "rel": "lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py",
+      "sha256": "22c265511f7e95f4e037238ee39380c2bac4e7161c447fa5ef6c26279c7c4a2b",
+      "size": 35303,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787475725,
+      "name": "classification_vocabulary.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_working_runbook_structure_identity_method_v1/classification_vocabulary.json",
+      "rel": "lossless_working_runbook_structure_identity_method_v1/classification_vocabulary.json",
+      "sha256": "d6291e9b8a0a3cba30019300dae8b73e5ab9c06ba1986ffafddc54abc47e0528",
+      "size": 1689,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787475725,
+      "name": "counts.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_working_runbook_structure_identity_method_v1/counts.json",
+      "rel": "lossless_working_runbook_structure_identity_method_v1/counts.json",
+      "sha256": "f60908e33908852d2ecdb5bb087a0a963a8fd65e298139f679561f5c3ea429f1",
+      "size": 1197,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787475725,
+      "name": "source_identity.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/lossless_working_runbook_structure_identity_method_v1/source_identity.json",
+      "rel": "lossless_working_runbook_structure_identity_method_v1/source_identity.json",
+      "sha256": "18484b2b3bb8b03313569846ee50f7ace613988add37667db208a8e24c2d6844",
+      "size": 1142,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "00_READ_ME_FIRST.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/00_READ_ME_FIRST.md",
+      "rel": "post_step32_knowledge_integration_v0/00_READ_ME_FIRST.md",
+      "sha256": "210bc7fd143db356f43fb08278e9dcaae44092c0ba1903bbbaa87361e397ee26",
+      "size": 3600,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "01_authority_and_epistemic_legend.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/01_authority_and_epistemic_legend.md",
+      "rel": "post_step32_knowledge_integration_v0/01_authority_and_epistemic_legend.md",
+      "sha256": "b4db454a7e3b850e76498c1173732283608fa9c55d757080ff0518055f70f8c7",
+      "size": 2190,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "02_provenance_source_registry.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/02_provenance_source_registry.md",
+      "rel": "post_step32_knowledge_integration_v0/02_provenance_source_registry.md",
+      "sha256": "a3137da2322d5171e78d2e3080ba1f9c116a735c2a6dc543dd76c39ab6f83a0b",
+      "size": 4201,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "03_chronology.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/03_chronology.md",
+      "rel": "post_step32_knowledge_integration_v0/03_chronology.md",
+      "sha256": "e4552cd9663b67d7e10e588196f7d62e48f1f6909a792c37a36e7d3412374892",
+      "size": 2099,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "04_information_inventory.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/04_information_inventory.md",
+      "rel": "post_step32_knowledge_integration_v0/04_information_inventory.md",
+      "sha256": "1cc414180d7c9099dbda143266bbd403b9c5f7e5e1828d90392900073d38b28b",
+      "size": 2111,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "05_adjudicated_findings.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md",
+      "rel": "post_step32_knowledge_integration_v0/05_adjudicated_findings.md",
+      "sha256": "5cb1b8de3669b10b13976b469862f00b9ecfc14a5b1cf7a31ac8044e7c0e4ff5",
+      "size": 5296,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "06_historical_intermediate_states.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/06_historical_intermediate_states.md",
+      "rel": "post_step32_knowledge_integration_v0/06_historical_intermediate_states.md",
+      "sha256": "0002805c30ede5471347d3025c93303bed8dc4f70ed3ae39c32ba7f3a1a0deb1",
+      "size": 1475,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "07_unresolved_open_issues.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/07_unresolved_open_issues.md",
+      "rel": "post_step32_knowledge_integration_v0/07_unresolved_open_issues.md",
+      "sha256": "b26f1972b45c201e61510bf7baebb9cc8b945a6b8fa670ed9fbbab8a11b32612",
+      "size": 2411,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "08_relationships.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/08_relationships.md",
+      "rel": "post_step32_knowledge_integration_v0/08_relationships.md",
+      "sha256": "b0dbe145283b17a9c591750a2d36954689348444f5a1d91bfda6a6dac6a85cb5",
+      "size": 2200,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "09_m06_preservation_recovery_contract.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/09_m06_preservation_recovery_contract.md",
+      "rel": "post_step32_knowledge_integration_v0/09_m06_preservation_recovery_contract.md",
+      "sha256": "f324494c053157b06cedffa6213b3aeb6c9aab5be7726d0aba1e8b3c8c6d5dab",
+      "size": 3077,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "10_step15_forbid_index.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/10_step15_forbid_index.md",
+      "rel": "post_step32_knowledge_integration_v0/10_step15_forbid_index.md",
+      "sha256": "b7408f80a5a1bcc34f1b0ab10c88006c3f534df545f12d3a919330304c14c040",
+      "size": 961,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "11_adversarial_completeness_audit.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/11_adversarial_completeness_audit.md",
+      "rel": "post_step32_knowledge_integration_v0/11_adversarial_completeness_audit.md",
+      "sha256": "89099db084fce97e640480bdc9b62f665232b4528620862393d4fb48374751f9",
+      "size": 3121,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "12_what_this_collection_does_not_prove.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/12_what_this_collection_does_not_prove.md",
+      "rel": "post_step32_knowledge_integration_v0/12_what_this_collection_does_not_prove.md",
+      "sha256": "df4e3cb7c91dd5f601e91c11d9bff67c40323eb43e3a6db4dee89d1a10a36b9b",
+      "size": 1061,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "README.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/README.md",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/README.md",
+      "sha256": "cc1efad84dd625b2a1918d0d44f05fc42fe075601fb3b535a864d28b06d4893f",
+      "size": 881,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".md",
+      "mtime_epoch": 1787408484,
+      "name": "PEAK_TRADE_FORENSIC_STEP15_NON_AUTHORITATIVE_TRANSFORMATION_INVARIANT_CONTRACT.md",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_FORENSIC_STEP15_NON_AUTHORITATIVE_TRANSFORMATION_INVARIANT_CONTRACT.md",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_FORENSIC_STEP15_NON_AUTHORITATIVE_TRANSFORMATION_INVARIANT_CONTRACT.md",
+      "sha256": "63829882310eac46f0eb45c1a95f959dc001b37aaff6a83bdb016117f7b47b83",
+      "size": 35647,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".jsonl",
+      "mtime_epoch": 1787408484,
+      "name": "CASE_A_REVALIDATION_AND_COLLECTION_78a67012-205d-497c-8edc-52194140291e.jsonl",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/CASE_A_REVALIDATION_AND_COLLECTION_78a67012-205d-497c-8edc-52194140291e.jsonl",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/CASE_A_REVALIDATION_AND_COLLECTION_78a67012-205d-497c-8edc-52194140291e.jsonl",
+      "sha256": "2b13587abcb828e388d73012289bdbc613c7c0591f375327aa3ffd2843312d87",
+      "size": 106714,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".jsonl",
+      "mtime_epoch": 1787408484,
+      "name": "DISCOVERY_CASE_2_e17bf1e1-99eb-45f7-b547-54c6e1f5d386.jsonl",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/DISCOVERY_CASE_2_e17bf1e1-99eb-45f7-b547-54c6e1f5d386.jsonl",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/DISCOVERY_CASE_2_e17bf1e1-99eb-45f7-b547-54c6e1f5d386.jsonl",
+      "sha256": "09634aa84a684bdfe2f8e04d943a77d144869c28d9897e98cf303a365f5110f2",
+      "size": 115580,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".jsonl",
+      "mtime_epoch": 1787408484,
+      "name": "POST32_READINESS_95209de2-8442-49b1-9bcf-0613dbf6c93f.jsonl",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/POST32_READINESS_95209de2-8442-49b1-9bcf-0613dbf6c93f.jsonl",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/POST32_READINESS_95209de2-8442-49b1-9bcf-0613dbf6c93f.jsonl",
+      "sha256": "61d04bb80c212ba8765e2e52f9a9538c1651bd4d7ffcb9ed2e5238237229894b",
+      "size": 48558,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".jsonl",
+      "mtime_epoch": 1787408484,
+      "name": "PRIOR_PREWRITE_9516c97d-8ec4-4b0a-bcb7-f2a83425ee34.jsonl",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/PRIOR_PREWRITE_9516c97d-8ec4-4b0a-bcb7-f2a83425ee34.jsonl",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/PRIOR_PREWRITE_9516c97d-8ec4-4b0a-bcb7-f2a83425ee34.jsonl",
+      "sha256": "d12a68d0b587c53acbaf4e28adc3e4667c4bdcf52dd50163c40e37a3cf029af7",
+      "size": 103433,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".jsonl",
+      "mtime_epoch": 1787408484,
+      "name": "STEP30_98277650-c7c1-43ac-b544-4087f96aef0c.jsonl",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP30_98277650-c7c1-43ac-b544-4087f96aef0c.jsonl",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP30_98277650-c7c1-43ac-b544-4087f96aef0c.jsonl",
+      "sha256": "98deeee7dd1a9b1bc1543403163499164dd94014d1713d9620f1e6d3969d68d9",
+      "size": 134056,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".jsonl",
+      "mtime_epoch": 1787408484,
+      "name": "STEP31_bbaf1005-725a-427a-a7b0-993d9893ebe8.jsonl",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP31_bbaf1005-725a-427a-a7b0-993d9893ebe8.jsonl",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP31_bbaf1005-725a-427a-a7b0-993d9893ebe8.jsonl",
+      "sha256": "3d3445289cb20a001101fe5e6ed5c58d039e061b4ea9b3c2160b44a68312eed2",
+      "size": 97751,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".jsonl",
+      "mtime_epoch": 1787408484,
+      "name": "STEP32_2d0440a7-49c3-4b17-8e61-db6fe670ea6b.jsonl",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP32_2d0440a7-49c3-4b17-8e61-db6fe670ea6b.jsonl",
+      "rel": "post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP32_2d0440a7-49c3-4b17-8e61-db6fe670ea6b.jsonl",
+      "sha256": "4f9e21e6dd0c6d6591a8ede29375896679ec1fddb2dbf4d9e3fb49f928a0c393",
+      "size": 75575,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "adjudicated_findings.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/adjudicated_findings.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/adjudicated_findings.json",
+      "sha256": "f9f7c609d52e519b71506065fb8103bb61f1b05fedc5ce1aa70a2032e9e4232a",
+      "size": 10978,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "dependency_map.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/dependency_map.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/dependency_map.json",
+      "sha256": "e594c65dc17a3c1537c13fb1512304b79a77a47fa9c59e91adcba33d39e84a0e",
+      "size": 2149,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "finding_to_evidence_map.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/finding_to_evidence_map.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/finding_to_evidence_map.json",
+      "sha256": "c46111b40223c71ef6e18e04c734ed095ccf39b257cf809c72536c36ab8d54d0",
+      "size": 2443,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "historical_state_inventory.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/historical_state_inventory.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/historical_state_inventory.json",
+      "sha256": "0ec93833f57f9972c512fe7426724d1a1b3f8abbfd96560e55b946a0ed60f592",
+      "size": 3040,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "information_class_inventory.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/information_class_inventory.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/information_class_inventory.json",
+      "sha256": "dfb509e7acb25f394c7a1e1f32c79e8525ffe5cdd03d7cf6455eece85a4ce0b4",
+      "size": 1566,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "information_inventory.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/information_inventory.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/information_inventory.json",
+      "sha256": "08a9704123fe8abf9ae79a04abc6ec0a456f8f3188f107685ba69405ad7ae247",
+      "size": 9336,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "open_point_inventory.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/open_point_inventory.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/open_point_inventory.json",
+      "sha256": "1ab0d99b7122d66745979f7ff2a0b809658ed56122a689a57b13985b2ac740e3",
+      "size": 6117,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "raw_evidence_preservation_map.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/raw_evidence_preservation_map.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/raw_evidence_preservation_map.json",
+      "sha256": "13aac44bdad7e278d09310620fa2d2f05d06e5caacf939825d434958c8601eba",
+      "size": 18309,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "source_identities.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/source_identities.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/source_identities.json",
+      "sha256": "0a7a595569097f16f34dfc08d75b72e8d06df39b79ef802d9b1f1af9bf437dd8",
+      "size": 10878,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "source_to_finding_map.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/source_to_finding_map.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/source_to_finding_map.json",
+      "sha256": "c7590af7a86071461e28699a8d15e1a55709c5b6e9c2439ffb5ec4b79c575d80",
+      "size": 3435,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "step15_forbid_index.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/step15_forbid_index.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/step15_forbid_index.json",
+      "sha256": "7be2b815e47c670dd64caffce1b54e6a7f8dba4aff11c1be205cf8ec7ffb65a9",
+      "size": 4352,
+      "tree": "forensic"
+    },
+    {
+      "ext": ".json",
+      "mtime_epoch": 1787408484,
+      "name": "worktree_file_manifest.json",
+      "path": "/Users/frnkhrz/Peak_Trade/forensic/post_step32_knowledge_integration_v0/manifests/worktree_file_manifest.json",
+      "rel": "post_step32_knowledge_integration_v0/manifests/worktree_file_manifest.json",
+      "sha256": "7f61c60ab766f32bc2c53d3bc5417912d63220b53205591e879bb8fee969a12c",
+      "size": 9984,
+      "tree": "forensic"
+    }
+  ],
+  "trees_summary": {
+    "P1_docs_forensic": {
+      "byte_sum": 12243,
+      "exists": true,
+      "file_count": 4,
+      "root": "/Users/frnkhrz/Peak_Trade/docs/forensic"
+    },
+    "P1_docs_forensics": {
+      "byte_sum": 248403,
+      "exists": true,
+      "file_count": 5,
+      "root": "/Users/frnkhrz/Peak_Trade/docs/forensics"
+    },
+    "P1_forensic": {
+      "byte_sum": 9539742,
+      "exists": true,
+      "file_count": 46,
+      "root": "/Users/frnkhrz/Peak_Trade/forensic"
+    },
+    "P1_forensics": {
+      "byte_sum": 12718493,
+      "exists": true,
+      "file_count": 74,
+      "root": "/Users/frnkhrz/Peak_Trade/forensics"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "source_commit": "449901986c9362cc6ac6a05a514ca036234350ac",
+  "source_paths_sha256": {
+    "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py": "a37b433e9b73c1dc192dc8059844227fad5757aae8fa87f6a57c8d3ebeba4188",
+    "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py": "4f77e457cba472f5ddef71cae176253e1af76cce27f40e560b8974815d6c7b6e",
+    "tests/experiments/test_representation_adaptation_decision_integrity_v1.py": "41e4cafb1248be57a4cd9b967033828be896bcb23602aa9f6769fbd8b2f809fb",
+    "tests/experiments/test_canonical_learning_representation_research_adaptation_plan_v1.py": "a1073b17ae6b764cef4a1ff35fab4d0fd1bad6ae77726910a31948c75bca974b",
+    "tests/experiments/test_canonical_learning_representation_offline_evaluation_v1.py": "371972b0e96edaf62383d160d4a6dff80aabb5d6fc766259f58ff23b9d2c4b3e",
+    "tests/experiments/test_representation_plan_required_context_v1.py": "ebeae82e7fe92455fe8f821c640c4c748a71256c9089c5c3e4436a44f0ab813c"
+  },
+  "tests": {
+    "before": "10 FAIL",
+    "after": "65 PASS",
+    "resealed_context": "2 additional PASS",
+    "distinct": "67 PASS",
+    "positive_output": "Three full valid owner plans/digests IDENTICAL"
+  },
+  "boundaries": [
+    "Self-consistent caller source truth is not cryptographic origin proof",
+    "Actual numeric representation evaluation and useful next adaptation remain open",
+    "U04/GAP-0370 deferred; no activation, original-ledger mutation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/representation_adaptation_decision_integrity_v1_2026_11_04/README.md",
+      "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 204,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

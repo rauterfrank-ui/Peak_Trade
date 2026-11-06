@@ -1,0 +1,20 @@
+{
+  "STALE_CURRENT_MISMATCH_FOUND": false,
+  "rows": [
+    {
+      "STATE": "O5 read model",
+      "STALE_MARKER": "stale/disconnected cannot render HEALTHY",
+      "PROOF": "test_missing_source_and_stale_disconnected_cannot_render_healthy"
+    },
+    {
+      "STATE": "Landscape OHLCV",
+      "STALE_MARKER": "decouple identity stale from OHLCV connection",
+      "PROOF": "test_market_landscape_v2_ssr_ohlcv decouple suite"
+    },
+    {
+      "STATE": "DP observability",
+      "STALE_MARKER": "stale preserves producer facts",
+      "PROOF": "test_stale_preserves_producer_facts"
+    }
+  ]
+}

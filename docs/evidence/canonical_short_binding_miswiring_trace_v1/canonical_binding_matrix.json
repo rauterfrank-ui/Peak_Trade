@@ -1,0 +1,246 @@
+{
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "stages": [
+    {
+      "authority": false,
+      "bound_consumer": "mv2_research_wiring / suitability adapter",
+      "capabilities": {
+        "produces_raw_signal": true
+      },
+      "direction_domain": [
+        "LONG",
+        "SHORT",
+        "FLAT",
+        "NONE"
+      ],
+      "fail_closed": "empty/unknown strategy",
+      "intended_consumer": "same",
+      "legacy_compat": true,
+      "module": "src/backtest/strategy_signal_binding_v1.py",
+      "potential_miswiring": false,
+      "stage": "strategy_signal_producer",
+      "symbol": "execute_configured_strategy_signal_series_v1",
+      "symmetry_actual": false,
+      "symmetry_claimed": false
+    },
+    {
+      "authority": true,
+      "bound_consumer": "integrated_offline_trading_logic_replay_v1",
+      "capabilities": {
+        "market_eligibility": true
+      },
+      "direction_domain": [
+        "n/a"
+      ],
+      "fail_closed": "untrusted/unfinalized CMC",
+      "intended_consumer": "same",
+      "legacy_compat": false,
+      "module": "src/trading/master_v2/canonical_market_context_v1.py",
+      "potential_miswiring": false,
+      "stage": "canonical_market_context",
+      "symbol": "bind_canonical_market_context_event",
+      "symmetry_actual": true,
+      "symmetry_claimed": true
+    },
+    {
+      "authority": true,
+      "bound_consumer": "composition / entry_exit_policy",
+      "capabilities": {
+        "side_authority": true
+      },
+      "direction_domain": [
+        "LONG",
+        "SHORT",
+        "NEUTRAL"
+      ],
+      "fail_closed": "blocked/observe",
+      "intended_consumer": "same",
+      "legacy_compat": false,
+      "module": "src/trading/master_v2/double_play_state.py",
+      "potential_miswiring": false,
+      "stage": "master_v2_state_transition",
+      "symbol": "transition_state",
+      "symmetry_actual": true,
+      "symmetry_claimed": true
+    },
+    {
+      "authority": true,
+      "bound_consumer": "entry_exit_policy",
+      "capabilities": {
+        "composition_authority": true
+      },
+      "direction_domain": [
+        "LONG",
+        "SHORT"
+      ],
+      "fail_closed": "no selection",
+      "intended_consumer": "same",
+      "legacy_compat": false,
+      "module": "src/trading/master_v2/double_play_composition_matrix_v1.py",
+      "potential_miswiring": false,
+      "stage": "double_play_composition",
+      "symbol": "evaluate_double_play_composition_matrix_v1",
+      "symmetry_actual": true,
+      "symmetry_claimed": true
+    },
+    {
+      "authority": true,
+      "bound_consumer": "map_decision_evidence_to_position_signal_v1",
+      "capabilities": {
+        "decision_evidence": true,
+        "short_decision": true
+      },
+      "direction_domain": [
+        "enter_long",
+        "enter_short",
+        "exit",
+        "reduce",
+        "observe"
+      ],
+      "fail_closed": "blocked outcomes",
+      "intended_consumer": "same",
+      "legacy_compat": false,
+      "module": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "potential_miswiring": false,
+      "stage": "integrated_offline_orchestrator",
+      "symbol": "run_integrated_offline_trading_logic_replay_v1",
+      "symmetry_actual": true,
+      "symmetry_claimed": true
+    },
+    {
+      "authority": false,
+      "bound_consumer": "legacy_BacktestEngine",
+      "capabilities": {
+        "encodes_short_entry_as_minus_one": true
+      },
+      "direction_domain": [
+        "LONG=+1",
+        "SHORT=-1",
+        "else=0"
+      ],
+      "fail_closed": "unknown outcomes \u2192 0",
+      "input_contract": "CanonicalTradingDecisionEvidenceV1.decision_outcome",
+      "intended_consumer_if_short_supported": "pipeline_BacktestEngine",
+      "legacy_compat": true,
+      "lines": "953-962",
+      "miswiring_notes": "Adapter SHORT encoding collides with legacy EXIT semantics",
+      "module": "src/backtest/mv2_research_wiring_v1.py",
+      "output_contract": "int signal {+1,-1,0}",
+      "potential_miswiring": true,
+      "stage": "signal_adapter",
+      "symbol": "map_decision_evidence_to_position_signal_v1",
+      "symmetry_actual": false,
+      "symmetry_claimed": true
+    },
+    {
+      "authority": false,
+      "bound_consumer": "none",
+      "capabilities": {
+        "activation": false
+      },
+      "direction_domain": [
+        "n/a"
+      ],
+      "fail_closed": "not activated",
+      "intended_consumer": "none",
+      "legacy_compat": false,
+      "module": "policy / governance",
+      "potential_miswiring": false,
+      "stage": "runtime_integration_bridge",
+      "symbol": "BOUND_NOT_ACTIVATED",
+      "symmetry_actual": false,
+      "symmetry_claimed": false
+    },
+    {
+      "authority": false,
+      "bound_consumer": "self",
+      "capabilities": {
+        "long_close": true,
+        "long_open": true,
+        "short_close": false,
+        "short_open": false
+      },
+      "direction_domain": [
+        "LONG_OPEN",
+        "LONG_EXIT",
+        "NOOP_ON_MINUS_ONE_FLAT"
+      ],
+      "fail_closed": "sizing reject / -1 flat no-op",
+      "intended_consumer_on_mv2_path": "hard-wired by wiring",
+      "legacy_compat": true,
+      "module": "src/backtest/engine.py",
+      "potential_miswiring": true,
+      "stage": "classic_backtest_engine_legacy",
+      "symbol": "BacktestEngine.run_realistic (use_execution_pipeline=False)",
+      "symmetry_actual": false,
+      "symmetry_claimed": false
+    },
+    {
+      "authority": false,
+      "binding_status": "exists_but_not_selected_by_mv2_wiring",
+      "bound_consumer": "UNBOUND on MV2 research path",
+      "capabilities": {
+        "long_close": true,
+        "long_open": true,
+        "short_close": true,
+        "short_open": true
+      },
+      "direction_domain": [
+        "LONG",
+        "SHORT"
+      ],
+      "fail_closed": "pipeline risk/order rules",
+      "intended_consumer": "available short-capable consumer",
+      "legacy_compat": false,
+      "module": "src/backtest/engine.py + src/execution/pipeline.py",
+      "potential_miswiring": true,
+      "stage": "pipeline_backtest_engine",
+      "symbol": "BacktestEngine._run_with_execution_pipeline",
+      "symmetry_actual": true,
+      "symmetry_claimed": true
+    },
+    {
+      "authority": false,
+      "bound_consumer": "report",
+      "capabilities": {
+        "materialize_completed_trades": true
+      },
+      "direction_domain": [
+        "long/short from size"
+      ],
+      "fail_closed": "SOURCE_MISSING fields",
+      "intended_consumer": "same",
+      "legacy_compat": true,
+      "module": "src/backtest/trade_ledger_equity_curve_persistence_v0.py",
+      "potential_miswiring": false,
+      "stage": "fill_trade_roundtrip_ledger",
+      "symbol": "materialize_trade_ledger_rows_v0",
+      "symmetry_actual": true,
+      "symmetry_claimed": true
+    },
+    {
+      "authority": false,
+      "bound_consumer": "self",
+      "capabilities": {
+        "render": true
+      },
+      "direction_domain": [
+        "n/a"
+      ],
+      "fail_closed": "reconciliation",
+      "intended_consumer": "same",
+      "legacy_compat": false,
+      "module": "src/backtest/economic_observability_report_consumer_v1.py",
+      "potential_miswiring": false,
+      "stage": "report_consumer",
+      "symbol": "render_canonical_economic_report_v1",
+      "symmetry_actual": false,
+      "symmetry_claimed": false
+    }
+  ],
+  "static_proof": {
+    "capability_gate_present": false,
+    "wiring_legacy_false_binds": 2,
+    "wiring_pipeline_true_binds": 0
+  }
+}

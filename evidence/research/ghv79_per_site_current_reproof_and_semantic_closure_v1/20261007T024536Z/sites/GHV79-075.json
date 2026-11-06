@@ -1,0 +1,121 @@
+{
+  "ADJUDICATION": {
+    "CONFIDENCE": "HIGH",
+    "EVIDENCE": [
+      "CURRENT_AST_REPROOF",
+      "INTEGRATED_57_61_FIXPOINT",
+      "HISTORICAL_GHV79_SEED",
+      "EXACT_LINE_RECEIVER_SELECTOR"
+    ],
+    "OPEN_QUESTION": null,
+    "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE"
+  },
+  "AUTHORITY": {
+    "BINDING_AUTHORITY": "NONE",
+    "CAN_AFFECT_BINDING_RECOMPUTED": false,
+    "CAN_AFFECT_POST_RECOMPUTED": false,
+    "CAN_AFFECT_SELECTION_RECOMPUTED": false,
+    "DECISION_AUTHORITY": "NONE",
+    "EXECUTION_AUTHORITY": "NONE",
+    "GHV_AUTHORITY": "NONE",
+    "HISTORICAL_CAN_AFFECT_BINDING": false,
+    "HISTORICAL_CAN_AFFECT_POST": false,
+    "HISTORICAL_CAN_AFFECT_SELECTION": false,
+    "POST_AUTHORITY": "NONE",
+    "SELECTION_AUTHORITY": "NONE"
+  },
+  "CURRENT_SYSTEM_PLACEMENT": {
+    "CONTROL_FLOW_REACHABILITY": "STATIC_PRESENT",
+    "CURRENT_EDGE_IF_ALREADY_PROVEN": null,
+    "CURRENT_LAYER_OR_PLANE": "PRODUCTIVE_SUPPORT",
+    "CURRENT_NODE_NAME": null,
+    "CURRENT_NODE_OWNER": null,
+    "DATA_FLOW_REACHABILITY": "LOCAL_DYNAMIC_FIELD_OR_IMPORT",
+    "DOWNSTREAM_CURRENT_NODE": null,
+    "MAPPING_PROVENANCE": "NO_DIRECT_CURRENT_NODE_PATH_MATCH",
+    "PRODUCTIVE_REACHABILITY": "PRODUCTIVE_SUPPORT",
+    "UPSTREAM_CURRENT_NODE": null
+  },
+  "DISPATCH": {
+    "DISPATCH_KIND": "importlib",
+    "ERROR_BEHAVIOR": "PROPAGATE_IMPORTERROR",
+    "FALLBACK_BEHAVIOR": "IMPORT_ERROR_IF_MISSING_MODULE",
+    "GETATTR_EXPRESSION": "",
+    "IMPORT_MODULE_EXPRESSION": "importlib.import_module(module_path)",
+    "RECEIVER_EXPRESSION": "importlib",
+    "SELECTOR_EXPRESSION": "module_path"
+  },
+  "GHV_COMPARISON": {
+    "CURRENT_PROVEN_PLACEMENT": "PRODUCTIVE_SUPPORT",
+    "GHV_EXPECTED_PLACEMENT": "GHV_LATERAL",
+    "GHV_RELATION_HISTORICAL": "LATERAL",
+    "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL"
+  },
+  "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+  "IDENTITY": {
+    "CURRENT_AST_FINGERPRINT": "09c06549095ecd84",
+    "CURRENT_FILE": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py",
+    "CURRENT_LINE_OR_AST_LOCATOR": 89,
+    "CURRENT_SYMBOL": "import_module@89",
+    "HISTORICAL_FILE": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py",
+    "HISTORICAL_LINE": 89,
+    "HISTORICAL_SYMBOL": "import_module@89",
+    "SITE_ID": "GHV79-075"
+  },
+  "RESOLUTION": {
+    "POSSIBLE_TARGET_SET": [
+      "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD",
+      "MODULE_CANDIDATE:src.ops.companion_shadow_live_fraction_to_units_input_binding_v1.conversion_algebra_v1",
+      "MODULE_CANDIDATE:src.ops.companion_shadow_live_fraction_to_units_input_binding_v1.conversion_algebra_v1.",
+      "MODULE_CANDIDATE:src.ops.companion_shadow_live_fraction_to_units_input_binding_v1.read_binding_v1",
+      "MODULE_CANDIDATE:src.ops.companion_shadow_live_fraction_to_units_input_binding_v1.read_binding_v1.",
+      "MODULE_CANDIDATE:src.ops.governed_productive_account_equity_authority_producer_v1.",
+      "MODULE_CANDIDATE:src.ops.governed_productive_instrument_metadata_authority_producer_v1.",
+      "MODULE_CANDIDATE:src.ops.governed_productive_reference_price_authority_producer_v1."
+    ],
+    "PROVEN_TARGET_SET": [
+      "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+    ],
+    "RECEIVER_RESOLUTION": "importlib.import_module",
+    "RESOLUTION_CHAIN": [
+      "SITE:src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py:89",
+      "KIND:importlib",
+      "RECV:importlib",
+      "SEL:module_path",
+      "DYNAMIC_MODULE_PATH_EXPRESSION",
+      "MULTI_CANDIDATE_COUNT=7",
+      "PROVEN_AS_DYNAMIC_REGISTRY_LOAD_PATTERN_WITH_CANDIDATE_SET"
+    ],
+    "SELECTOR_RESOLUTION": "DYNAMIC_MULTI_CANDIDATE_BOUNDED",
+    "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+    "UNRESOLVED_TARGET_SET": []
+  },
+  "SEMANTICS": {
+    "CALLEE_ROLE": [
+      "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+    ],
+    "CALLER_ROLE": "REGISTRY_WITNESS_OR_DYNAMIC_ADAPTER",
+    "CONFIG_READS": [
+      "module_path_registry"
+    ],
+    "EXTERNAL_EFFECT_REACHABILITY": "NONE",
+    "INPUT_SEMANTICS": "CURRENT_BOUND_CONTEXT_OR_REGISTRY_HANDLE",
+    "OUTPUT_SEMANTICS": "TRANSFORMED_CONTEXT_OR_WITNESS_RECORD",
+    "SIDE_EFFECT_CLASS": "READ_ONLY_DISPATCH",
+    "STATE_READS": [],
+    "STATE_WRITES": []
+  },
+  "SOURCE_PROVENANCE": {
+    "CURRENT_AUTHORITY_SHA": "620cd9da6f925fc29c69be3311e0c3288ab674a4",
+    "INTEGRATED_DOSSIER": "/Users/frnkhrz/Peak_Trade/evidence/research/current_proven_system_evidence_integration_and_transitive_closure_dossier_v1/20261007T021703Z",
+    "SEED_INVENTORY": "/Users/frnkhrz/Peak_Trade/evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1/61_ghv79_site_inventory_v1.json",
+    "SEED_PLACEMENT_REGISTRY": "/Users/frnkhrz/Peak_Trade/evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1/62_ghv79_placement_registry_v1.jsonl"
+  },
+  "TEMPORAL": {
+    "CURRENTNESS_PROOF": "EXACT_LINE_RECEIVER_SELECTOR",
+    "CURRENT_STATUS": "PROVEN_CURRENT",
+    "HISTORICAL_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+    "HISTORICAL_STATUS": "OBSERVED_AT_R4_SHA",
+    "SURVIVAL_CLASS": "SURVIVING"
+  }
+}

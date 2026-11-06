@@ -1,0 +1,30 @@
+{
+  "authority_id": "2c2c228866e6cbfe5aa23ecafe4eec7c747cba230b95057ee2206c2a52bf8041",
+  "canonical_owner": "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/constants_v1.py:AUTHORITY_ID_FIELDS",
+  "excluded_from_id": [
+    "issued",
+    "issued_at",
+    "consumed",
+    "confirm_token",
+    "authority_source"
+  ],
+  "field_order_independent": true,
+  "fields": [
+    "schema_version",
+    "authority_type",
+    "section",
+    "purpose",
+    "action",
+    "origin_main_sha",
+    "exact_envelope_id",
+    "instrument_id",
+    "expected_signed_position",
+    "order_side",
+    "order_qty",
+    "order_qty_unit",
+    "reduce_only",
+    "single_use"
+  ],
+  "hash": "sha256(json.dumps(fields, sort_keys=True, separators=(',', ':'), ensure_ascii=True))",
+  "recomputed": "2c2c228866e6cbfe5aa23ecafe4eec7c747cba230b95057ee2206c2a52bf8041"
+}

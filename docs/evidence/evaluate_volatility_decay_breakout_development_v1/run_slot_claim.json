@@ -1,0 +1,14 @@
+{
+  "config_digest": "6b7f870624ac13519f932c05ae7d889e8c74082539c2300ec681ba0325d1b00f",
+  "dataset_digest": "NOT_RESOLVED_PRODUCTIVE_PNL_OVERFLOW",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_volatility_decay_breakout_development_v1",
+  "holdout_accessed": false,
+  "hypothesis_id": "VOLATILITY_DECAY_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "schema_version": "evaluate_volatility_decay_breakout_run_slot_claim.v1",
+  "strategy_identity": "VOLATILITY_DECAY_BREAKOUT_V1",
+  "strategy_params_digest": "d6d4722020acdd4bbd45eb9df8decbad62cb86cba98bca1d137a77418a329426"
+}

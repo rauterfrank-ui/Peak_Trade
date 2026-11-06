@@ -1,0 +1,12 @@
+{
+  "prior_invalid": {
+    "CAPITAL_DOUBLE_COUNTING": true,
+    "COST_APPLICATION": "NOT_APPLIED",
+    "COST_DRAG": 0.0,
+    "ECONOMIC_MEASUREMENT_VALID": false,
+    "NET_RETURN": 0.5066899689424893,
+    "SHARPE": 0.040885256927793066
+  },
+  "replacement_baseline": "baseline_metrics.json",
+  "superseded": true
+}

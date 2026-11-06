@@ -1,0 +1,78 @@
+"""CURRENT MF N=5 occupied-lane N=1 host-join readiness.
+
+Consumes the N1 governed-cycle consumer and addresses its lane-local
+results onto the existing Full-Autonomy host seam without invoking host
+join, minting permits, or raising productive cardinality.
+"""
+
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.constants_v1 import (
+    ADDRESS_SYMBOL,
+    ATLAS_AUTHORITY,
+    AUTHORITY_EFFECT,
+    CANONICAL_HOST_JOIN_OWNER,
+    CANONICAL_HOST_JOIN_SYMBOL,
+    COMPOSE_SYMBOL,
+    CONTRACT_ID,
+    CURSOR_OWNER,
+    EXECUTION_CONCURRENCY_AUTHORIZED,
+    EXTERNAL_EFFECT_AUTHORIZED,
+    FIRST_TRUE_OWNER_BOUNDARY,
+    HOST_JOIN,
+    HOST_JOIN_ADDRESSED,
+    HOST_JOIN_INVOKED,
+    JOIN_IMPLEMENTED,
+    JOIN_SYMBOL,
+    MAX_POSITIONS_EFFECTIVE,
+    MAY_INVOKE_HOST_JOIN,
+    MF_PRODUCTIVE_JOIN,
+    MULTI_FUTURE_RUNTIME_AUTHORIZED,
+    N1_CONSUMER_JOIN_READY,
+    OWNER,
+    OWNER_GO_THIS_SLICE,
+    PRODUCTIVE_RUNTIME_CARDINALITY,
+    RUNTIME_AUTHORIZATION_EFFECT,
+    SLICE_ID,
+)
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.readiness_join_v1 import (
+    FullAutonomyOccupiedLaneN1HostJoinReadinessError,
+    OccupiedLaneN1HostJoinReadinessProjectionV1,
+    address_occupied_lane_n1_consumer_to_host_join_seam_v1,
+    assert_readiness_stops_before_owner_boundary_v1,
+    compose_occupied_lane_n1_host_join_readiness_v1,
+    occupied_lane_n1_host_join_readiness_census_v1,
+)
+
+__all__ = [
+    "ADDRESS_SYMBOL",
+    "ATLAS_AUTHORITY",
+    "AUTHORITY_EFFECT",
+    "CANONICAL_HOST_JOIN_OWNER",
+    "CANONICAL_HOST_JOIN_SYMBOL",
+    "COMPOSE_SYMBOL",
+    "CONTRACT_ID",
+    "CURSOR_OWNER",
+    "EXECUTION_CONCURRENCY_AUTHORIZED",
+    "EXTERNAL_EFFECT_AUTHORIZED",
+    "FIRST_TRUE_OWNER_BOUNDARY",
+    "HOST_JOIN",
+    "HOST_JOIN_ADDRESSED",
+    "HOST_JOIN_INVOKED",
+    "JOIN_IMPLEMENTED",
+    "JOIN_SYMBOL",
+    "MAX_POSITIONS_EFFECTIVE",
+    "MAY_INVOKE_HOST_JOIN",
+    "MF_PRODUCTIVE_JOIN",
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED",
+    "N1_CONSUMER_JOIN_READY",
+    "OWNER",
+    "OWNER_GO_THIS_SLICE",
+    "PRODUCTIVE_RUNTIME_CARDINALITY",
+    "RUNTIME_AUTHORIZATION_EFFECT",
+    "SLICE_ID",
+    "FullAutonomyOccupiedLaneN1HostJoinReadinessError",
+    "OccupiedLaneN1HostJoinReadinessProjectionV1",
+    "address_occupied_lane_n1_consumer_to_host_join_seam_v1",
+    "assert_readiness_stops_before_owner_boundary_v1",
+    "compose_occupied_lane_n1_host_join_readiness_v1",
+    "occupied_lane_n1_host_join_readiness_census_v1",
+]

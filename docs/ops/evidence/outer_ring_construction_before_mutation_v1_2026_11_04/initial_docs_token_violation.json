@@ -1,0 +1,15 @@
+{
+  "file": "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+  "total_tokens": 24,
+  "violations": [
+    {
+      "file": "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "line": 1818,
+      "token": "Documents/ChatGPT/Peak Trade/review-candidates/outer_cycle_learning_source_binding_v1_2026_11_04",
+      "token_type": "ILLUSTRATIVE",
+      "message": "Illustrative path token must use &#47; encoding",
+      "fix_suggestion": "Replace `Documents/ChatGPT/Peak Trade/review-candidates/outer_cycle_learning_source_binding_v1_2026_11_04` with `Documents&#47;ChatGPT&#47;Peak Trade&#47;review-candidates&#47;outer_cycle_learning_source_binding_v1_2026_11_04`"
+    }
+  ],
+  "passed": false
+}

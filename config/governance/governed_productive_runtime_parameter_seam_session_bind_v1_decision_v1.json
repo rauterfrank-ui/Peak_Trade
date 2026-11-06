@@ -1,0 +1,12 @@
+{
+  "artifact_class": "GOVERNED_PRODUCTIVE_RUNTIME_PARAMETER_SEAM_SESSION_BIND_DECISION_V1",
+  "workpackage_id": "GOVERNED_PRODUCTIVE_RUNTIME_SEAM_SESSION_BIND_TO_NEXT_REAL_BLOCKER_V1",
+  "bound_origin_main_sha": "93946e99db00daece97bc05cdd2bd3d2a4d97aa0",
+  "session_bind_owner_module": "src/governance/governed_productive_runtime_parameter_seam_session_bind_v1.py",
+  "runtime_transport_join_module": "src/governance/governed_productive_runtime_parameter_seam_join_v1.py",
+  "session_state_owner_field": "HardenedBridgeSessionStateV2.governed_authorized_productive_parameter_seam_record",
+  "bind_implies_enforcement": false,
+  "bind_implies_trading_decision_authority": false,
+  "bind_implies_external_effect": false,
+  "optimization_direct_session_bind": false
+}

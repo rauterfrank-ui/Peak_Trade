@@ -1,0 +1,153 @@
+{
+  "id": "SL07",
+  "phase": 7,
+  "title": "Erwartung gegen beobachtete Realität",
+  "introduction_commit": "defa59f12813b961d6edce11c7ead91c6e369950",
+  "introduction_date": "2026-08-17T20:35:14Z",
+  "commit_subject": "research: add canonical reality-gap store v1 (#5934)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/defa59f12813b961d6edce11c7ead91c6e369950",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_reality_gap_store_v1.py",
+  "code_blob": "d84ef66ae8abd8953502ef71395ad2b14ec44f30",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "5dd07e13ed772321bed2043dde78d3076da522905a82afd4ad7ab4c6c9c30660",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL07-canonical_reality_gap_store_v1.source.py",
+  "source_lines": 638,
+  "module_docstring": "Phase 7 Canonical Reality Gap Store v1 (research evidence only).\n\nAppend-only historical memory of expected-versus-observed research gaps.\nThis layer reuses Phase 1 Canonical Experiment Identity, Phase 2\n``experiment_id`` / ``REJECTED_REALITY_GAP``, and the Phase 3\n``REALITY_GAP_GATE`` mapping. It has no runtime, order, live, funding,\ncanary, promotion, or config-write authority.\n\nObserved-surface labels are not execution authorization. Missing fee,\nslippage, funding, or other gap values are never defaulted to zero.",
+  "public_functions": [
+    {
+      "name": "build_canonical_reality_gap_record_v1",
+      "line": 172
+    },
+    {
+      "name": "derive_reality_gap_record_id_v1",
+      "line": 256
+    },
+    {
+      "name": "validate_canonical_reality_gap_record_v1",
+      "line": 266
+    },
+    {
+      "name": "canonical_record_payload",
+      "line": 375
+    },
+    {
+      "name": "freeze_canonical_reality_gap_record_v1",
+      "line": 379
+    }
+  ],
+  "classes": [
+    {
+      "name": "RealityGapValidationError",
+      "line": 142
+    },
+    {
+      "name": "RealityGapRecordConflictError",
+      "line": 146
+    },
+    {
+      "name": "RealityGapDimensionV1",
+      "line": 151
+    },
+    {
+      "name": "CanonicalRealityGapRecordRequestV1",
+      "line": 160
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 176,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 325,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 470,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_REALITY_GAP_STORE_V1.md",
+      "status": "added",
+      "sha": "c4854722c705d30e7bb1220ba21d33667e8e1915",
+      "additions": 131,
+      "deletions": 0,
+      "changes": 131
+    },
+    {
+      "filename": "src/experiments/canonical_reality_gap_store_persist_v1.py",
+      "status": "added",
+      "sha": "a022394c04d9222ce3f22045e086c2d5bba6e541",
+      "additions": 205,
+      "deletions": 0,
+      "changes": 205
+    },
+    {
+      "filename": "src/experiments/canonical_reality_gap_store_v1.py",
+      "status": "added",
+      "sha": "d84ef66ae8abd8953502ef71395ad2b14ec44f30",
+      "additions": 638,
+      "deletions": 0,
+      "changes": 638
+    },
+    {
+      "filename": "tests/experiments/test_canonical_reality_gap_store_v1.py",
+      "status": "added",
+      "sha": "19387a834151e77354c1940cd5db6eba7eddb300",
+      "additions": 397,
+      "deletions": 0,
+      "changes": 397
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_reality_gap_store_v1.py",
+      "status": "added",
+      "sha": "19387a834151e77354c1940cd5db6eba7eddb300",
+      "additions": 397,
+      "deletions": 0,
+      "changes": 397
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_reality_gap_store_persist_v1.py",
+      "status": "added",
+      "sha": "a022394c04d9222ce3f22045e086c2d5bba6e541",
+      "additions": 205,
+      "deletions": 0,
+      "changes": 205
+    },
+    {
+      "filename": "src/experiments/canonical_reality_gap_store_v1.py",
+      "status": "added",
+      "sha": "d84ef66ae8abd8953502ef71395ad2b14ec44f30",
+      "additions": 638,
+      "deletions": 0,
+      "changes": 638
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "defa59f12813b961d6edce11c7ead91c6e369950",
+      "date": "2026-08-17T20:35:14Z",
+      "subject": "research: add canonical reality-gap store v1 (#5934)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/defa59f12813b961d6edce11c7ead91c6e369950",
+      "parents": [
+        "bc97d43f715305c8b70eb84ddd12fd718f8460a6"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

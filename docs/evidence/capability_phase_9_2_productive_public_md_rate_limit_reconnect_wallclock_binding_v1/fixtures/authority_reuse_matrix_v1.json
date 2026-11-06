@@ -1,0 +1,25 @@
+{
+  "canonical_wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+  "notes": [
+    "REUSES_WALLCLOCK_RUNNER",
+    "REUSES_PACING_POLICY",
+    "REUSES_EEA_TRANSPORT_429_BACKOFF",
+    "REUSES_SESSION_RUNTIME_RECONNECT",
+    "REUSES_STALENESS_TRACKER",
+    "REUSES_RATE_LIMIT_METRIC_CLASSIFICATION",
+    "NO_IMPROVISED_HARNESS",
+    "NO_SECOND_WALLCLOCK_RUNNER"
+  ],
+  "ok": true,
+  "parallel_productive_authority_detected": false,
+  "productive_entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RATE_LIMIT_RECONNECT_WALLCLOCK_BINDING_V1",
+  "productive_entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.py",
+  "reuses": {
+    "bundle_verifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1",
+    "eea_transport": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1",
+    "pacing_policy": "research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+    "rate_limit_metric": "ops.phase_9_2_public_md_session_preflight_v1.rate_limit_metric_v1",
+    "session_runtime": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1",
+    "staleness": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1"
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "admissible_parameter_space": {
+    "age_reference_clock": "MARKET_EVENT_TIME",
+    "age_unit": "SECONDS",
+    "baseline_candidate_id": "UNRESOLVED_MAX_AGE_NON_ENFORCING",
+    "bind_allowed_policy_domain_config": "config/governance/optimizable_envelope/volatility_numeric_max_age_allowed_policy_domain_v1.json",
+    "bind_discrete_bounds_config": "config/governance/optimizable_envelope/volatility_numeric_max_age_discrete_bounds_v1.json",
+    "bind_risk_constraints_config": "config/governance/optimizable_envelope/volatility_numeric_max_age_risk_constraints_v1.json",
+    "bound_semantics": "DISCRETE_CANDIDATE_SET_ONLY",
+    "boundary_handling": "OUT_OF_DOMAIN_ARGUMENTS_REJECTED_FAIL_CLOSED",
+    "candidate_max_age_seconds": [
+      60,
+      120,
+      300,
+      600,
+      900,
+      1800,
+      3600,
+      7200
+    ],
+    "continuous_range_allowed": false,
+    "extension_allowed": false,
+    "implicit_defaults_allowed": false,
+    "interpolation_allowed": false,
+    "productive_policy_literal_allowed": false
+  },
+  "artifact_class": "F1_M9_PRODUCTIVE_CANDIDATE_SELECTION_POLICY_V1",
+  "bound_origin_main_sha": "16fdb6a6b1f87d8e68874c9a35c296f285d9d2f8",
+  "candidate_selection_authority": "F1_M9_SCOPED_RESEARCH_TO_PROPOSAL_SELECTION_ONLY",
+  "direct_productive_write_authority": "NONE",
+  "economic_requirement": {
+    "cost_ignoring_selection_forbidden": true,
+    "drawdown_ignoring_selection_forbidden": true,
+    "economic_failure_triggers_no_selection": true,
+    "require_net_pnl_after_costs_non_degraded_vs_baseline_on_holdout": true
+  },
+  "evidence_requirements": {
+    "contamination_rules": {
+      "historical_counterfactual_campaign_decision_forbidden": true,
+      "historical_counterfactual_campaign_id": "cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f",
+      "historical_preregistration_digest": "59769afb0da30b4f00282dcb13c0c8f7cd45c9c65a944b7bc1b42b4565f80b75",
+      "lineage_mismatch_behavior": "NO_SELECTION",
+      "pre_preregistration_evidence_decision_forbidden": true,
+      "stale_or_incomplete_campaign_behavior": "NO_SELECTION"
+    },
+    "minimum_evidence_count": 8,
+    "minimum_real_evidence": true,
+    "minimum_regime_count": 2,
+    "minimum_session_count": 2,
+    "missing_evidence_behavior": "NO_SELECTION",
+    "preregistered_robustness_requirements": [
+      "MULTI_SESSION_COVERAGE",
+      "MULTI_REGIME_COVERAGE",
+      "CADENCE_VS_STALENESS_IDENTIFIABILITY",
+      "OFFLINE_RUNTIME_EVENT_TIME_EQUIVALENCE",
+      "EXIT_INTERFERENCE_NEAR_ZERO",
+      "DETERMINISTIC_COUNTERFACTUAL_REPLAY",
+      "NO_ALPHA_ENFORCEMENT_DURING_RESEARCH"
+    ],
+    "require_economic_metrics_on_decision_records": true,
+    "require_failure_evidence_on_rejection": true,
+    "require_final_holdout_fraction": 0.2,
+    "require_regime_coverage": true,
+    "require_session_coverage": true,
+    "require_walk_forward_folds": 3,
+    "research_execution_evaluator_module": "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.evaluator_v1",
+    "research_execution_spec": "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_EXECUTION_V1.md",
+    "synthetic_or_fixture_decision_evidence_forbidden": true
+  },
+  "failure_evidence_requirement": {
+    "insufficient_power_triggers_no_selection": true,
+    "rejection_matrix_required": true,
+    "rejection_reasons_required_on_fail": true
+  },
+  "forbidden_authorities": [
+    "TRADING_DECISION_AUTHORITY",
+    "PROMOTION_AUTHORITY",
+    "PRODUCTIVE_APPLY_AUTHORITY",
+    "DIRECT_PRODUCTIVE_WRITE_AUTHORITY"
+  ],
+  "historical_evidence_classification": {
+    "counterfactual_campaign_id": "cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f",
+    "counterfactual_only": true,
+    "decision_making_use_forbidden": true,
+    "permitted_use": "RESEARCH_CONTEXT_ONLY"
+  },
+  "no_selection_rule": {
+    "default_outcome": "NO_SELECTION",
+    "fail_closed_conditions": [
+      "INSUFFICIENT_EVIDENCE",
+      "OOS_HOLDOUT_FAILURE",
+      "ROBUSTNESS_FAILURE",
+      "ECONOMIC_FAILURE",
+      "RISK_CONSTRAINT_VIOLATION",
+      "CONTAMINATION",
+      "UNRESOLVED_TIE",
+      "MISSING_REQUIRED_REGIME_OR_SESSION",
+      "STALE_OR_INCOMPLETE_CAMPAIGN",
+      "LINEAGE_OR_PREREGISTRATION_MISMATCH",
+      "RESEARCH_CONCLUSION_NOT_REGION_PENDING"
+    ],
+    "no_selection_rule_id": "F1_M9_FAIL_CLOSED_NO_SELECTION_V1"
+  },
+  "objective_semantics": {
+    "alternative_hypothesis_h1": "Mindestens ein zusammenh\u00e4ngender Candidate-Bereich zeigt gegen\u00fcber der unresolved/non-enforcing Baseline einen reproduzierbaren und robusten Nettonutzen, ohne die preregistrierten Rejection Criteria zu verletzen.",
+    "decision_objective_class": "MV2_DOUBLE_PLAY_STALE_EXPOSURE_ROBUSTNESS_AND_DECISION_QUALITY",
+    "forbidden_objectives": [
+      "BEST_SHARPE_ALONE",
+      "BEST_PNL_ALONE",
+      "BEST_TRADE_COUNT_ALONE",
+      "SINGLE_METRIC_MAXIMIZATION"
+    ],
+    "interpretation": "Select at most one grid point only if prospective evidence demonstrates robust stale-exposure reduction and non-degraded decision quality versus the unresolved baseline under preregistered multi-session, multi-regime, OOS, robustness, economic, and failure-evidence gates.",
+    "null_hypothesis_h0": "Innerhalb des preregistrierten Candidate-Domains existiert kein robuster numerischer Maximum-Age-Bereich, der gegen\u00fcber der unresolved/non-enforcing Baseline \u00fcber Walk-Forward-, Holdout-, Regime- und Stress-Auswertungen hinweg einen stabilen Nettonutzen zeigt.",
+    "preregistered_rejection_criteria": [
+      "SINGLE_METRIC_SHARPE_MAXIMIZATION",
+      "SINGLE_METRIC_PNL_MAXIMIZATION",
+      "SINGLE_METRIC_TRADE_COUNT_MAXIMIZATION",
+      "SINGLE_BEST_CONFIGURATION_WITHOUT_REGION",
+      "IN_SAMPLE_ONLY_SELECTION",
+      "HOLDOUT_TUNING_OR_HOLDOUT_LEAKAGE",
+      "COST_IGNORING_SELECTION",
+      "DRAWDOWN_IGNORING_SELECTION",
+      "INSUFFICIENT_MULTI_SESSION_COVERAGE",
+      "INSUFFICIENT_MULTI_REGIME_COVERAGE",
+      "PARAMETER_REGION_UNSTABLE",
+      "EXIT_INTERFERENCE_ABOVE_NEAR_ZERO",
+      "ENFORCEMENT_OR_ALPHA_MUTATION_ATTEMPT"
+    ],
+    "preregistered_selection_criteria": [
+      "ROBUST_THRESHOLD_REGION_NOT_POINT",
+      "NET_PNL_AFTER_COSTS_NON_DEGRADED",
+      "MAX_DRAWDOWN_BOUNDED",
+      "PARAMETER_REGION_STABILITY_REQUIRED",
+      "MULTI_SESSION_AGREEMENT_REQUIRED",
+      "MULTI_REGIME_AGREEMENT_REQUIRED",
+      "FINAL_HOLDOUT_CONFIRMATION_REQUIRED",
+      "EXIT_INTERFERENCE_NEAR_ZERO_REQUIRED",
+      "NO_BEST_SHARPE_POINT_SELECTION",
+      "NO_MAX_PNL_POINT_SELECTION",
+      "NO_MAX_TRADE_COUNT_POINT_SELECTION",
+      "OPERATOR_AUTHORIZED_SELECTION_ONLY_AFTER_RESEARCH"
+    ],
+    "research_question": "Welcher, falls \u00fcberhaupt ein solcher existiert, robuste Bereich f\u00fcr die maximal zul\u00e4ssige Event-Time-Alterung eines kanonischen VolatilityEstimate reduziert stale-estimate exposure, ohne belastbare Entscheidungsqualit\u00e4t, Coverage oder Regime-Robustheit unvertretbar zu verschlechtern?"
+  },
+  "oos_requirement": {
+    "holdout_degradation_triggers_no_selection": true,
+    "holdout_fraction": 0.2,
+    "in_sample_only_selection_forbidden": true,
+    "walk_forward_folds": 3
+  },
+  "optimization_promotion_authority": "NONE",
+  "optimization_trading_decision_authority": "NONE",
+  "owner_selection_policy_digest": "2bab88a8289fb0322ea2e9d1f0133d05543f9a899d2ba7602a4509c4a184d2a1",
+  "owner_selection_policy_id": "f1_m9_volatility_numeric_max_age_productive_candidate_selection_policy_v1",
+  "parameter_ids": {
+    "source_candidate_parameter": "max_age_seconds",
+    "target_policy_parameter": "numeric_max_age_seconds"
+  },
+  "productive_apply_authority": "NONE",
+  "robustness_requirement": {
+    "max_coverage_reduction_vs_baseline": 0.5,
+    "max_neighborhood_sensitivity": 0.35,
+    "max_stale_rejection_rate": 0.85,
+    "max_walk_forward_instability": 0.4,
+    "robustness_failure_triggers_no_selection": true
+  },
+  "schema_version": "f1_m9_productive_candidate_selection_policy/v1",
+  "selection_rule": {
+    "algorithm_steps": [
+      "REQUIRE research_conclusion == ROBUST_CANDIDATE_REGION_IDENTIFIED_PENDING_OWNER_RATIFICATION",
+      "BUILD survivors = grid points with apply_rejection_criteria_v1.rejected == false",
+      "INTERSECT survivors with longest_contiguous_robust_region from conclusion",
+      "IF intersection cardinality == 1 THEN SELECTED else NO_SELECTION"
+    ],
+    "deterministic": true,
+    "forbidden_shortcuts": [
+      "ARRAY_ORDER",
+      "CANDIDATE_ID_LEXICOGRAPHIC",
+      "MIN_THRESHOLD",
+      "MAX_THRESHOLD",
+      "SHARPE_MAX",
+      "PNL_MAX"
+    ],
+    "inputs": [
+      "prospective_campaign_research_conclusion",
+      "rejection_matrix",
+      "longest_contiguous_robust_region_seconds"
+    ],
+    "outcome_classes": [
+      "SELECTED_GOVERNED_CANDIDATE_PROPOSAL_ONLY",
+      "NO_SELECTION"
+    ],
+    "selected_outcome_is_proposal_only": true,
+    "selection_rule_id": "F1_M9_ROBUST_REGION_UNIQUE_SURVIVOR_POINT_V1"
+  },
+  "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+  "target_consumer_module": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+  "tie_rule": {
+    "silent_tie_break_forbidden": true,
+    "tie_definition": "intersection_cardinality_not_equal_to_one",
+    "tie_rule_id": "F1_M9_NO_SELECTION_ON_NON_UNIQUE_SURVIVOR_V1",
+    "unresolved_tie_behavior": "NO_SELECTION"
+  },
+  "trading_decision_authority": "NONE",
+  "workpackage_id": "F1_M9_PRODUCTIVE_CANDIDATE_SELECTION_POLICY_AND_PROSPECTIVE_CAMPAIGN_V1"
+}

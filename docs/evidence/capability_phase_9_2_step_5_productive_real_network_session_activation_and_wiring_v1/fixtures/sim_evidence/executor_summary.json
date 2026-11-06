@@ -1,0 +1,29 @@
+{
+  "minimum_successful_wallclock_seconds": 2,
+  "pacing_digest": "ee549a964333322cba43095c563f1aa565739b765b146f8b1497a24fbb7b336f",
+  "planned_session_duration_seconds": 2,
+  "session_id": "phase_9_2_public_md_prolonged_natural_market_session_v1",
+  "telemetry": {
+    "auth_header_transmitted": false,
+    "backoff_count": 0,
+    "credential_access_occurred": false,
+    "distinct_observation_count": 1,
+    "duplicate_observation_count": 0,
+    "evidence_bytes": 59,
+    "heartbeat_count": 0,
+    "http_429_count": 0,
+    "min_observed_interval_seconds": null,
+    "network_session_started": true,
+    "order_side_effect_occurred": false,
+    "private_endpoint_access_occurred": false,
+    "reconnect_attempt_count": 0,
+    "reconnect_success_count": 0,
+    "recovery_count": 0,
+    "request_count": 1,
+    "restart_count": 0,
+    "retry_count": 0,
+    "session_monotonic_wallclock_seconds": 3.0,
+    "stale_observation_count": 0
+  },
+  "terminal_class": "PASS"
+}

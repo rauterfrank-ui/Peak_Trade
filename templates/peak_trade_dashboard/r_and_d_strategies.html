@@ -1,0 +1,111 @@
+<!-- templates/peak_trade_dashboard/r_and_d_strategies.html -->
+<!-- Phase 76 Slice 3: Strategy-Aggregation (read-only, gleiche Semantik wie GET /api/r_and_d/strategies) -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6 max-w-6xl mx-auto">
+  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">R&D Dashboard v0</p>
+        <h1 class="text-2xl font-bold text-slate-100">Aggregation nach Strategy</h1>
+        <p class="text-sm text-slate-400 mt-2 max-w-2xl">
+          Nur-Lese-Ansicht aus lokalen R&D-Experiment-JSONs. Keine Jobs, keine Writes.
+          Kennzahlen entsprechen <code class="text-xs bg-slate-800 px-1 rounded">GET /api/r_and_d/strategies</code>.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/r_and_d/experiments" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 text-white hover:bg-sky-500">
+          ← Experimentenliste
+        </a>
+        <a href="/r_and_d/summary" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Summary
+        </a>
+        <a href="/r_and_d/presets" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          ← Nach Preset
+        </a>
+        <a href="/r_and_d/charts" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Charts
+        </a>
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Dashboard
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section aria-label="Globale Kennzahlen" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Experimente gesamt</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ total_experiments }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Unique Strategies</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ stats.unique_strategies }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Ø Sharpe (global)</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.avg_sharpe) }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Median Return</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.median_return) }}</p>
+    </div>
+  </section>
+
+  <section
+    data-section="r-and-d-strategy-aggregation"
+    aria-label="Strategy-Aggregationstabelle"
+    class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden"
+  >
+    <div class="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+      <h2 class="text-sm font-medium text-slate-200">Strategies</h2>
+      {% if strategy_rows|length > 0 %}
+      <span class="text-xs text-slate-500">{{ strategy_rows|length }} Gruppe(n)</span>
+      {% endif %}
+    </div>
+    {% if strategy_rows|length == 0 %}
+    <div class="p-8 text-center text-slate-500 text-sm">
+      <p class="font-medium text-slate-400 mb-1">Keine Strategy-Gruppen</p>
+      <p>Es liegen keine Experimente mit gesetztem <code class="text-xs bg-slate-800 px-1 rounded">strategy</code> vor, oder das Verzeichnis ist leer.</p>
+    </div>
+    {% else %}
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="bg-slate-900/80 text-left text-xs text-slate-400 uppercase tracking-wide">
+            <th class="px-4 py-3 border-b border-slate-800">Strategy</th>
+            <th class="px-4 py-3 border-b border-slate-800 tabular-nums">Runs</th>
+            <th class="px-4 py-3 border-b border-slate-800 tabular-nums">Mit Trades</th>
+            <th class="px-4 py-3 border-b border-slate-800 tabular-nums">Ø Return</th>
+            <th class="px-4 py-3 border-b border-slate-800 tabular-nums">Ø Sharpe</th>
+            <th class="px-4 py-3 border-b border-slate-800 tabular-nums">Ø MaxDD</th>
+            <th class="px-4 py-3 border-b border-slate-800 tabular-nums">Σ Trades</th>
+            <th class="px-4 py-3 border-b border-slate-800">Liste</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/80">
+          {% for row in strategy_rows %}
+          <tr class="hover:bg-slate-800/40">
+            <td class="px-4 py-2.5 font-mono text-xs text-emerald-300">{{ row.strategy }}</td>
+            <td class="px-4 py-2.5 tabular-nums text-slate-200">{{ row.experiment_count }}</td>
+            <td class="px-4 py-2.5 tabular-nums text-slate-300">{{ row.experiments_with_trades }}</td>
+            <td class="px-4 py-2.5 tabular-nums text-slate-300">{{ "%.4f"|format(row.avg_return) }}</td>
+            <td class="px-4 py-2.5 tabular-nums text-slate-300">{{ "%.4f"|format(row.avg_sharpe) }}</td>
+            <td class="px-4 py-2.5 tabular-nums text-slate-300">{{ "%.4f"|format(row.avg_max_drawdown) }}</td>
+            <td class="px-4 py-2.5 tabular-nums text-slate-300">{{ row.total_trades }}</td>
+            <td class="px-4 py-2.5">
+              <a
+                class="text-xs text-sky-400 hover:text-sky-300 underline"
+                href="/r_and_d/experiments?strategy={{ row.strategy }}"
+              >Filtern</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

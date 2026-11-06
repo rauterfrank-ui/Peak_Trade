@@ -1,0 +1,8 @@
+{
+  "authority_id": "2c2c228866e6cbfe5aa23ecafe4eec7c747cba230b95057ee2206c2a52bf8041",
+  "consume_binds_authority_id": true,
+  "durable_consumed": false,
+  "resubmit_allowed": false,
+  "retry_allowed": false,
+  "second_submit_allowed": false
+}

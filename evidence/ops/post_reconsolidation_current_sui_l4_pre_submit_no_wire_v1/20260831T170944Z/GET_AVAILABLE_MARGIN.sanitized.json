@@ -1,0 +1,60 @@
+{
+  "AUTH_HEADER_PERSISTED": false,
+  "BODY_SHA256": "09d337254c3675e7db91d1ce03c47226ad53af324cad2e2d6adaad122fdb5dbd",
+  "EDGE_ID": "AVAILABLE_MARGIN",
+  "ENDPOINT": "/api/v5/account/balance",
+  "HTTP_STATUS": 200,
+  "OKX_CODE": "0",
+  "OKX_MSG": "",
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_ROW": {
+    "adjEq": "",
+    "availEq": "",
+    "borrowFroz": "",
+    "delta": "",
+    "deltaLever": "",
+    "deltaNeutralStatus": "",
+    "details": [],
+    "imr": "",
+    "isoEq": "0",
+    "mgnRatio": "",
+    "mmr": "",
+    "notionalUsd": "",
+    "notionalUsdForBorrow": "",
+    "notionalUsdForFutures": "",
+    "notionalUsdForOption": "",
+    "notionalUsdForSwap": "",
+    "ordFroz": "",
+    "totalEq": "0",
+    "uTime": "1788196185516",
+    "upl": ""
+  },
+  "payload": {
+    "code": "0",
+    "data": [
+      {
+        "adjEq": "",
+        "availEq": "",
+        "borrowFroz": "",
+        "delta": "",
+        "deltaLever": "",
+        "deltaNeutralStatus": "",
+        "details": [],
+        "imr": "",
+        "isoEq": "0",
+        "mgnRatio": "",
+        "mmr": "",
+        "notionalUsd": "",
+        "notionalUsdForBorrow": "",
+        "notionalUsdForFutures": "",
+        "notionalUsdForOption": "",
+        "notionalUsdForSwap": "",
+        "ordFroz": "",
+        "totalEq": "0",
+        "uTime": "1788196185516",
+        "upl": ""
+      }
+    ],
+    "msg": ""
+  }
+}

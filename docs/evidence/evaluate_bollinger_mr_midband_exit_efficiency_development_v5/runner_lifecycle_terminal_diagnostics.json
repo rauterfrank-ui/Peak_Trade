@@ -1,0 +1,12 @@
+{
+  "auto_rerun_allowed": false,
+  "auto_resume_allowed": false,
+  "closeout_source": "operator_recovery_inspection_v5",
+  "completed": false,
+  "death_class": "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL",
+  "pid": 76068,
+  "result_class": "INFRASTRUCTURE_FAILURE",
+  "run_id": "evaluate_bollinger_mr_midband_exit_efficiency_development_v5",
+  "schema_version": "evaluation_runner_lifecycle_observability.v1",
+  "updated_at_utc": "2026-07-21T17:19:39Z"
+}

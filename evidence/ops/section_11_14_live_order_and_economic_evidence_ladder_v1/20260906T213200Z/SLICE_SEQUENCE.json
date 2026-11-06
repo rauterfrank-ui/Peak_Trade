@@ -1,0 +1,45 @@
+{
+  "ALLOWED_PATHS_OR_SURFACES": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.14; docs/ops/specs/; src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/; tests/ops/test_section_11_14_*",
+  "CLAIMS_NOT_GRANTED": "FIRST_OWNER_PRODUCTIVELY_BOUND; WRITER_BOUND; READER_BOUND; CAPTURE_SEAM_BOUND; POS_SEMANTICS!=UNPROVEN unless that later GO uniquely binds it; ADMISSION_TRUE; LIVE_RESTART_RECONSTRUCTED; OWNER_MERGE_GO",
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_HANDOFF_ARCHITECTURE_SLICE_SEQUENCE_V1",
+  "FAIL_CLOSED_CRITERIA": "Any promotion of rejected derivations A-I; any BOUND_POS invented from fillSz or venue GET; any writer join; any capture-seam invention.",
+  "FORBIDDEN_SURFACES": "src/execution/**; credentials; Live/Testnet transport; supervisor; admission; A1 WAL reuse; DDO reuse; productive host binding; canary submit_transport join; Full-Core 29P runtime; Master V2; Double Play",
+  "IMPLEMENTATION_AUTHORIZED": false,
+  "PRECONDITIONS": "Architecture adjudication consumed; POS_SEMANTICS remains UNPROVEN; no rejected derivation A-I reused; no venue GET/fillSz/sz substitution; no writer/reader/storage mint; no Live/Testnet/wire.",
+  "PROPOSED_NEXT_SLICE": "SECTION_11_14_LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING_V1",
+  "SEQUENCE_AUTO_EXECUTED": false,
+  "SUCCESS_CRITERIA": "POS_SEMANTICS uniquely bound from remaining non-rejected authority, or explicit fail-closed that no remaining definition exists without a new Peak_Trade contemporaneous producer. POS_ACCEPTABLE_PRODUCER_COUNT may remain 0. LIVE_RESTART_RECONSTRUCTED remains false.",
+  "WHY_THIS_IS_EARLIEST": "No acceptable pos producer exists and authority does not uniquely define handoff pos. A complete capture seam cannot be proven until pos meaning is uniquely bound. Owner mint, writer, reader, and restart admission all fail closed while POS_SEMANTICS=UNPROVEN.",
+  "slices": [
+    {
+      "SLICE": "SECTION_11_14_LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING_V1",
+      "SLICE_1_CLOSES": "POS_SEMANTICS uniquely bound or explicit remaining-gap bind; still no writer.",
+      "SLICE_1_PRECONDITIONS": "This architecture adjudication consumed; owner remains NONE.",
+      "SLICE_ID": "SLICE_1"
+    },
+    {
+      "SLICE": "SECTION_11_14_LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF_V1",
+      "SLICE_2_CLOSES": "COMPLETE_CAPTURE_SEAM proven or remains UNPROVEN/absent without invention.",
+      "SLICE_2_PRECONDITIONS": "POS_SEMANTICS proven and not a rejected derivation.",
+      "SLICE_ID": "SLICE_2"
+    },
+    {
+      "SLICE": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_MINT_V1",
+      "SLICE_3_CLOSES": "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT becomes the first owner ID without writer join unless that later GO also authorizes writer.",
+      "SLICE_3_PRECONDITIONS": "POS_SEMANTICS proven AND complete capture seam proven.",
+      "SLICE_ID": "SLICE_3"
+    },
+    {
+      "SLICE": "SECTION_11_14_LIVE_HANDOFF_WRITER_READER_PRODUCTIVE_BIND_V1",
+      "SLICE_4_CLOSES": "Writer/reader contracts productively bound; still no restart execution.",
+      "SLICE_4_PRECONDITIONS": "Owner minted; seam proven; pos proven; separate explicit Owner-GO.",
+      "SLICE_ID": "SLICE_4"
+    },
+    {
+      "SLICE": "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_FROM_CONTEMPORANEOUS_HANDOFF_V1",
+      "SLICE_5_CLOSES": "LIVE_RESTART_RECONSTRUCTED adjudication from GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF.",
+      "SLICE_5_PRECONDITIONS": "Durable contemporaneous handoff present; RESTART_HANDOFF_ELIGIBLE true.",
+      "SLICE_ID": "SLICE_5"
+    }
+  ]
+}

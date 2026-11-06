@@ -1,0 +1,24 @@
+# Safety attestation — CS RS momentum v1 development evaluation
+
+- BASE_SHA=e7963fe3071c9942a58fce0e2f4b7394a75715f2
+- EXACT_COMMAND=python3 scripts/research/run_evaluate_cross_sectional_relative_strength_momentum_development_v1.py --mode evaluate --authorize-single-development-evaluation CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1
+- PROCESS_EXIT_CODE=2
+- STATUS=FAIL_CLOSED
+- REASON=UNEXPECTED:ValueError:ALIGNMENT_GAP:okx:linear_perpetual:1INCH:USDT:USDT:perp
+- EVALUATION_EXECUTED=false
+- RUNNER_STARTED=true (evaluate path entered; panel load failed before metrics)
+- CLI_REPORTED_RUNNER_STARTED=false
+- RUN_BUDGET_CONSUMED=true
+- EVALUATION_RUN_COUNT=1
+- RUNNER_START_COUNT=1
+- RETRY_FORBIDDEN=true
+- HOLDOUT_ACCESSED=false
+- RUNTIME_ACTIVATED=false
+- ORDERS=false
+- SHADOW=false
+- TESTNET=false
+- LIVE=false
+- MASTER_V2_UNCHANGED=true
+- DOUBLE_PLAY_UNCHANGED=true
+- START_UTC=2026-07-22T08:11:27Z
+- END_UTC=2026-07-22T08:11:33Z

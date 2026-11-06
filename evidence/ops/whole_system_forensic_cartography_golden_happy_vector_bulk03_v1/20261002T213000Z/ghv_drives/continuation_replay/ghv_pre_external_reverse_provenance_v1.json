@@ -1,0 +1,65 @@
+{
+  "FIRST_DIVERGENCE_FROM_GHV_ENTER_SEMANTICS": [
+    {
+      "actual": "observe",
+      "classification": "UNKNOWN_CURRENT",
+      "expected": "enter_short",
+      "field": "decision_outcome",
+      "generation_id": "gen_7cf9f53df9071c6ef5d4efbb",
+      "kind": "FIRST_DIVERGENCE_FROM_GHV_ENTER_SEMANTICS"
+    }
+  ],
+  "cross_branch_conflicts": [],
+  "divergences": [
+    {
+      "actual": "observe",
+      "classification": "UNKNOWN_CURRENT",
+      "expected": "enter_short",
+      "field": "decision_outcome",
+      "generation_id": "gen_7cf9f53df9071c6ef5d4efbb",
+      "kind": "FIRST_DIVERGENCE_FROM_GHV_ENTER_SEMANTICS"
+    },
+    {
+      "actual": "none",
+      "expected": "short",
+      "field": "selected_side",
+      "generation_id": "gen_7cf9f53df9071c6ef5d4efbb",
+      "kind": "SIDE_STATE_DIVERGENCE"
+    }
+  ],
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "reverse_chains": [
+    {
+      "chain": [
+        {
+          "field": "decision_outcome",
+          "generation_id": "gen_d24177e498855564dcc907cb",
+          "producer_symbol": "try_bind_current_productive_venue_plan_v1",
+          "source_generation_id": "gen_6707de3f1efce3e1688cecf8",
+          "transformation_kind": "PASSTHROUGH"
+        }
+      ],
+      "consumer_field": "decision_outcome",
+      "terminus": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1"
+    },
+    {
+      "chain": [
+        {
+          "field": "selected_side",
+          "generation_id": "gen_d24177e498855564dcc907cb",
+          "producer_symbol": "try_bind_current_productive_venue_plan_v1",
+          "source_generation_id": "gen_6707de3f1efce3e1688cecf8",
+          "transformation_kind": "PASSTHROUGH"
+        }
+      ],
+      "consumer_field": "selected_side",
+      "terminus": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1"
+    },
+    {
+      "chain": [],
+      "consumer_field": "venue_plan_pass",
+      "terminus": "UNKNOWN_CURRENT"
+    }
+  ],
+  "schema_version": "ghv_pre_external_reverse_provenance.v1"
+}

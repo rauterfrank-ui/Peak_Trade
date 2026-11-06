@@ -1,0 +1,122 @@
+{
+  "backtest": {
+    "cost_model_version": "backtest_cost_v0",
+    "economic_research_execution_cost": {
+      "conservative_half_spread_bps": 5.0,
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "initial_cash": 10000.0,
+    "parameter_sensitivity": {
+      "bind": true,
+      "grid_version": "v1",
+      "policy_version": "parameter_sensitivity_v1",
+      "primary_binding_only": true,
+      "parameter_search_forbidden": true
+    },
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "binding_digest": "a98d40449cf32bc5415fadd4c26976e380d3be2880a03efebbc1e9149e809cd9",
+  "config_digest": "e0d169f143e16bb60148a26c450a5e7abf0606253fe50c4fb2f8277e9f64a414",
+  "config_schema_version": "cross_sectional_funding_rate_carry_v0_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "cross_sectional_evaluation_binding_v1": {
+    "candidate_binding_ref": "config/research/cross_sectional_funding_rate_carry_v0_versioned_research_binding_v0.json",
+    "candidate_binding_version": "v0",
+    "candidate_id": "cross_sectional_funding_rate_carry/v0",
+    "hypothesis_id": "CROSS_SECTIONAL_FUNDING_RATE_CARRY_NON_BITCOIN_PERPETUALS_V0",
+    "binding_digest": "a98d40449cf32bc5415fadd4c26976e380d3be2880a03efebbc1e9149e809cd9",
+    "config_digest": "e0d169f143e16bb60148a26c450a5e7abf0606253fe50c4fb2f8277e9f64a414",
+    "implementation_digest": "c8bdeaca4e26f111ce932e2c6e300d5d2b2a8bf175e3b7c4fa1c1205d6db538e",
+    "data_contract_digest": "0c4f26bfa044f82c3bda505906bcf59da3ff43ad4a63b1e8da6b97ce8b730224",
+    "data_digest": "0c4f26bfa044f82c3bda505906bcf59da3ff43ad4a63b1e8da6b97ce8b730224",
+    "dataset_binding": {
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "dataset_version": "v1",
+      "dataset_extension": "with_funding_v1",
+      "panel_staging_profile": "cross_sectional_research_staging_v1_with_funding"
+    },
+    "digest_materialization_semantics": "panel_funding_semantic_data_digest_v0",
+    "instrument_universe_binding": {
+      "bitcoin_excluded": true,
+      "futures_only": true,
+      "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1"
+    },
+    "panel_dataset_manifest_ref": "pit_okx_pt1h_panel_funding_dataset_v1:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:with_funding_v1",
+    "parameter_binding": {
+      "parameter_search_forbidden": true,
+      "score_formula_version": "cross_sectional_funding_rate_rank_long_low_short_high_v0"
+    },
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1",
+    "period_binding_version": "v1",
+    "orchestrator_owner": "cross_sectional_single_slot_research_orchestrator_v0"
+  },
+  "economic_evaluation_v1": {
+    "economic_policy_binding": "economic_validity_policy_v1",
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "engine_signal_source": "cross_sectional_funding_rate_carry_single_slot_research_orchestrator_v0",
+    "monte_carlo": {
+      "bind": true,
+      "policy_version": "monte_carlo_v1",
+      "runs": 64,
+      "seed": 42
+    },
+    "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
+    "strategy_id": "cross_sectional_funding_rate_carry",
+    "strategy_version": "v0",
+    "stress": {
+      "bind": true,
+      "policy_version": "stress_class_suite_v1"
+    },
+    "walk_forward": {
+      "bind": true,
+      "policy_version": "walk_forward_v1"
+    }
+  },
+  "evidence_schema_version": "economic_viability_evidence_schema_v1.json",
+  "fail_closed_contract": {
+    "economic_evaluation_executed_must_be_false_for_recovery": true,
+    "forbid_dataset_substitution": true,
+    "forbid_implicit_zero_cost": true,
+    "forbid_parameter_search": true,
+    "forbid_period_binding_substitution": true,
+    "forbid_runtime_or_order_effect": true,
+    "require_bound_data_digest_match": true,
+    "require_manifest_verify_rc_zero": true
+  },
+  "implementation_digest": "c8bdeaca4e26f111ce932e2c6e300d5d2b2a8bf175e3b7c4fa1c1205d6db538e",
+  "offline_evaluation_sizing_contract_v1": {
+    "initial_equity": 10000.0,
+    "max_position_pct": 1.0,
+    "sizing_contract_version": "offline_evaluation_sizing_contract_v1",
+    "sizing_mode": "single_slot_full_notional_v0"
+  },
+  "output_contract": {
+    "bundle_subdir": "implementation",
+    "entrypoint_dry_run_required": true,
+    "required_outputs": [
+      "GIT_PROVENANCE.txt",
+      "SCOPE_AND_GO.txt",
+      "DATASET_MATERIALIZATION_RESULT.json",
+      "ENTRYPOINT_DRY_RUN_RESULT.json",
+      "INFRASTRUCTURE_SUMMARY.json",
+      "MANIFEST.sha256"
+    ],
+    "result_schema_version": "cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_execution.v0"
+  },
+  "strategy_id": "cross_sectional_funding_rate_carry",
+  "strategy_version": "v0",
+  "timeout_contract": {
+    "max_runtime_seconds": 1500,
+    "timeout_policy": "fail_closed"
+  }
+}

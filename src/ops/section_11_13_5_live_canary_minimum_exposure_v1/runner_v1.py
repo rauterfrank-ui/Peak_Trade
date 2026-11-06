@@ -1,0 +1,546 @@
+"""Runner for §11.13.5 LIVE_CANARY_MINIMUM_EXPOSURE (authoring/preflight; gated execute)."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+from types import SimpleNamespace
+from typing import Any, Mapping
+
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.authorization_v1 import (
+    LiveCanaryAuthorizationError,
+    default_authorization_is_false_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.config_v1 import (
+    LiveCanaryConfigError,
+    example_incomplete_config_dict_v1,
+    load_live_canary_config_v1,
+)
+from src.core.environment import LIVE_CONFIRM_TOKEN
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    AUTHORIZATION_SCOPE,
+    BLOCKS_NEW_ENTRY,
+    CANARY_SUBMIT_TRANSPORT_IMPLEMENTED,
+    CANARY_SUBMIT_TRANSPORT_SCOPE,
+    CAPABILITY_11_9_LIVE_CANARY_ACTIVATED,
+    CAPABILITY_11_9_REMAINS_FIXTURE_ONLY,
+    GENERAL_LIVE_SUBMIT_UNLOCKED,
+    LIVE_AUTHORIZED,
+    LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED,
+    LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN,
+    LIVE_RECONCILIATION_PROVEN,
+    OWNER_GO_AUTHORING,
+    OWNER_GO_EXECUTE,
+    PACKAGE_MARKER,
+    PREPARATION_SURFACE_READY,
+    PRODUCTIVE_EXECUTE_PATH_READY,
+    SUBMIT_UNLOCKED,
+    TRANSPORT_CLASS_FORENSIC_SEALED_ONLY,
+    TRANSPORT_CLASS_PREFLIGHT_NO_NETWORK,
+    UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
+    seal_authoring_forensic_evidence_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.forensic_reconciliation_v1 import (
+    classify_from_sealed_evidence_roots_v1,
+    prove_forensic_classification_contract_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import (
+    build_lifecycle_and_closeout_contract_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_restart_handoff_capture_caller_v1 import (
+    call_pre_restart_handoff_capture_after_bound_fill_v1,
+    compose_live_order_pre_restart_capture_host_graph_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_gates_v1 import (
+    evaluate_canary_submit_gates_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_transport_v1 import (
+    LiveCanarySubmitTransportError,
+    run_canary_submit_transport_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.trade_permission_forensic_v1 import (
+    build_trade_permission_forensic_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_post_action_binding_v1 import (
+    bind_flatten_execute_post_action_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_gated_submit_v1 import (
+    FlattenGatedSubmitBoundaryV1,
+    default_flatten_execute_gate_input_from_runner_v1,
+    default_gated_productive_flatten_transport_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_transport_v1 import (
+    LIVE_FLATTEN_PROVABILITY,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INSTRUMENT_ID as _FLATTEN_DEFAULT_INSTRUMENT_ID,
+)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
+
+class LiveCanaryRunnerError(RuntimeError):
+    """Fail-closed runner violation."""
+
+
+@dataclass(frozen=True)
+class LiveCanaryRunnerResultV1:
+    ok: bool
+    mode: str
+    payload: dict[str, Any]
+
+    def to_dict(self) -> dict[str, Any]:
+        out = dict(self.payload)
+        out["ok"] = self.ok
+        out["mode"] = self.mode
+        out["PACKAGE_MARKER"] = PACKAGE_MARKER
+        return out
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
+def run_live_order_pre_restart_handoff_capture_v1(**kwargs: Any) -> dict[str, Any]:
+    """Production LIVE_ORDER host join: after bound fill, before restart.
+
+    Does not submit. Does not GET. Does not POST. Does not wire-send.
+    Fail-closed unless the production host graph contains the unique caller.
+    """
+    graph = compose_live_order_pre_restart_capture_host_graph_v1()
+    caller_nodes = [
+        row
+        for row in graph["nodes"]
+        if row.get("id") == "PRODUCTIVE_HOOK_CALLER" and row.get("symbol")
+    ]
+    if len(caller_nodes) != 1:
+        raise LiveCanaryRunnerError("PRODUCTION_GRAPH_WITHOUT_UNIQUE_CALLER")
+    result = call_pre_restart_handoff_capture_after_bound_fill_v1(**kwargs)
+    result["host_graph"] = graph
+    result["HOST_JOIN_SYMBOL"] = "run_live_order_pre_restart_handoff_capture_v1"
+    result["WIRE_SEND"] = False
+    if kwargs.get("runtime_execution_authorized") is not True:
+        result["CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED"] = False
+    return result
+
+
+def run_section_11_13_5_live_canary_minimum_exposure_v1(
+    *,
+    mode: str,
+    config_payload: Mapping[str, Any] | None = None,
+    origin_main_sha: str,
+    executed_code_sha: str | None = None,
+    owner_go: str | None = None,
+    live_canary_authorized: bool | None = None,
+    evidence_run_root: str | None = None,
+    permission_attestation: Mapping[str, Any] | None = None,
+    live_enabled: bool = False,
+    live_armed: bool = False,
+    confirm_token: str | None = None,
+    owner_go_consumed: bool = False,
+    seal_forensic_evidence: bool = False,
+    transport: Any = None,
+    allow_productive_wire_send: bool = False,
+    vault_backend: Any = None,
+    vault_file: str | None = None,
+    live_canary_cybersecurity_gate: str = "PASS",
+    flatten_execute_token: str | None = None,
+    flatten_execute_purpose: str | None = None,
+    flatten_execute_owner_go: str | None = None,
+    flatten_execute_bound_origin_main_sha: str | None = None,
+    flatten_live_wire_enabled: bool = False,
+    positions_payload: Mapping[str, Any] | None = None,
+    pending_orders_payload: Mapping[str, Any] | None = None,
+    price_input: Any = None,
+    post_positions_payload: Mapping[str, Any] | None = None,
+    post_pending_orders_payload: Mapping[str, Any] | None = None,
+    category_c_runtime_status: str | None = None,
+    flatten_pre_send_decision_id: str | None = None,
+    position_observation_freshness_evidence: Any = None,
+    monotonic_ms_clock: Any = None,
+    bounded_activation_permit: Any = None,
+) -> LiveCanaryRunnerResultV1:
+    mode_norm = str(mode or "").strip().lower()
+    if mode_norm not in {"preflight", "forensic", "execute", "flatten_execute"}:
+        raise LiveCanaryRunnerError(f"UNKNOWN_MODE:{mode}")
+
+    if CAPABILITY_11_9_LIVE_CANARY_ACTIVATED or not CAPABILITY_11_9_REMAINS_FIXTURE_ONLY:
+        raise LiveCanaryRunnerError("CAPABILITY_11_9_MUST_REMAIN_FIXTURE_ONLY")
+    if LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN or LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED:
+        raise LiveCanaryRunnerError("PACKAGE_PROVEN_EXECUTED_FLAGS_MUST_REMAIN_FALSE")
+    if LIVE_AUTHORIZED:
+        raise LiveCanaryRunnerError("LIVE_AUTHORIZED_MUST_REMAIN_FALSE")
+    if GENERAL_LIVE_SUBMIT_UNLOCKED or SUBMIT_UNLOCKED:
+        raise LiveCanaryRunnerError("GENERAL_LIVE_SUBMIT_UNLOCK_FORBIDDEN")
+    if not CANARY_SUBMIT_TRANSPORT_IMPLEMENTED:
+        raise LiveCanaryRunnerError("CANARY_SUBMIT_TRANSPORT_NOT_IMPLEMENTED")
+    if CANARY_SUBMIT_TRANSPORT_SCOPE != "SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY":
+        raise LiveCanaryRunnerError("CANARY_SUBMIT_TRANSPORT_SCOPE_DRIFT")
+    if not PREPARATION_SURFACE_READY or not PRODUCTIVE_EXECUTE_PATH_READY:
+        raise LiveCanaryRunnerError("PREPARATION_OR_EXECUTE_PATH_NOT_READY")
+    if not default_authorization_is_false_v1():
+        raise LiveCanaryRunnerError("DEFAULT_AUTHORIZATION_MUST_BE_FALSE")
+
+    cfg_payload = dict(config_payload or example_incomplete_config_dict_v1())
+    try:
+        cfg = load_live_canary_config_v1(
+            cfg_payload,
+            require_execute_fields=(mode_norm == "execute"),
+        )
+    except LiveCanaryConfigError as exc:
+        raise LiveCanaryRunnerError(str(exc)) from exc
+
+    if mode_norm == "flatten_execute":
+        return _run_flatten_execute_mode_v1(
+            cfg=cfg,
+            origin_main_sha=origin_main_sha,
+            executed_code_sha=executed_code_sha,
+            owner_go=owner_go,
+            live_canary_authorized=bool(live_canary_authorized),
+            live_enabled=live_enabled,
+            live_armed=live_armed,
+            allow_productive_wire_send=allow_productive_wire_send,
+            transport=transport,
+            flatten_execute_token=flatten_execute_token,
+            flatten_execute_purpose=flatten_execute_purpose,
+            flatten_execute_owner_go=flatten_execute_owner_go,
+            flatten_execute_bound_origin_main_sha=flatten_execute_bound_origin_main_sha,
+            flatten_live_wire_enabled=flatten_live_wire_enabled,
+            positions_payload=positions_payload,
+            pending_orders_payload=pending_orders_payload,
+            price_input=price_input,
+            post_positions_payload=post_positions_payload,
+            post_pending_orders_payload=post_pending_orders_payload,
+            category_c_runtime_status=category_c_runtime_status,
+            flatten_pre_send_decision_id=flatten_pre_send_decision_id,
+            position_observation_freshness_evidence=position_observation_freshness_evidence,
+            monotonic_ms_clock=monotonic_ms_clock,
+            bounded_activation_permit=bounded_activation_permit,
+        )
+
+    repo = _repo_root()
+    forensic = prove_forensic_classification_contract_v1(repo_root=repo)
+    trade = build_trade_permission_forensic_v1()
+    lifecycle = build_lifecycle_and_closeout_contract_v1()
+
+    # Standing gates remain blocking until Owner adoption + TRADE attestation + execute GO.
+    gate = evaluate_canary_submit_gates_v1(
+        owner_go=owner_go,
+        owner_go_consumed=owner_go_consumed,
+        authorization_scope=AUTHORIZATION_SCOPE if owner_go else None,
+        bound_origin_main_sha=origin_main_sha,
+        expected_origin_main_sha=origin_main_sha,
+        live_canary_authorized=bool(live_canary_authorized),
+        live_enabled=live_enabled,
+        live_armed=live_armed,
+        confirm_token=confirm_token,
+        blocks_new_entry=BLOCKS_NEW_ENTRY,
+        unresolved_economic_divergence=UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY,
+        live_reconciliation_proven=LIVE_RECONCILIATION_PROVEN,
+        permission_attestation=permission_attestation or trade["PRIOR_PERMISSION_ATTESTATION"],
+        environment=str(cfg.payload.get("environment") or "LIVE"),
+        fixture_or_demo_or_testnet=False,
+        max_notional=str(cfg.payload.get("max_notional") or "") or None,
+        min_executable_notional=None,
+        order_count=1,
+        position_count=0,
+        exposure_above_minimum_bound=False,
+    )
+
+    if mode_norm == "execute":
+        if str(owner_go or "") == OWNER_GO_AUTHORING:
+            raise LiveCanaryRunnerError("AUTHORING_GO_CANNOT_EXECUTE_CANARY")
+        backend = vault_backend
+        if backend is None:
+            if not str(vault_file or "").strip():
+                raise LiveCanaryRunnerError("EXECUTE_REQUIRES_VAULT_FILE")
+            try:
+                backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+            except RuntimeError as extra:
+                raise LiveCanaryRunnerError(str(exc)) from exc
+        try:
+            execute_payload = run_canary_submit_transport_v1(
+                cfg=cfg,
+                origin_main_sha=origin_main_sha,
+                owner_go=owner_go,
+                live_canary_authorized=bool(live_canary_authorized),
+                live_enabled=live_enabled,
+                live_armed=live_armed,
+                confirm_token=confirm_token,
+                owner_go_consumed=owner_go_consumed,
+                permission_attestation=permission_attestation
+                or trade["PRIOR_PERMISSION_ATTESTATION"],
+                transport=transport,
+                allow_productive_wire_send=allow_productive_wire_send,
+                live_canary_cybersecurity_gate=live_canary_cybersecurity_gate,
+                vault_backend=backend,
+            )
+        except (LiveCanarySubmitTransportError, Exception) as exc:  # noqa: BLE001
+            raise LiveCanaryRunnerError(str(exc)) from exc
+        execute_payload["forensic"] = forensic
+        execute_payload["trade_permission_forensic"] = trade
+        execute_payload["lifecycle_contract"] = lifecycle
+        execute_payload["pre_restart_capture_host_graph"] = (
+            compose_live_order_pre_restart_capture_host_graph_v1()
+        )
+        execute_payload["LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN"] = False
+        execute_payload["LIVE_AUTHORIZED"] = False
+        execute_payload["OWNER_GO_CONSUMED"] = False
+        return LiveCanaryRunnerResultV1(
+            ok=bool(execute_payload.get("ok")),
+            mode=mode_norm,
+            payload=execute_payload,
+        )
+
+    claims = {
+        "mode": mode_norm,
+        "LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN": False,
+        "LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED": False,
+        "LIVE_AUTHORIZED": False,
+        "LIVE_RECONCILIATION_PROVEN": False,
+        "BLOCKS_NEW_ENTRY": True,
+        "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": True,
+        "TRADE_ATTESTATION": False,
+        "PRODUCTIVE_CANARY_SURFACE_READY": True,
+        "PREPARATION_SURFACE_READY": True,
+        "PRODUCTIVE_EXECUTE_PATH_READY": True,
+        "CAPABILITY_11_9_REMAINS_FIXTURE_ONLY": True,
+        "ORDER_EFFECT": "NONE",
+        "ACCOUNT_MUTATION_EFFECT": "NONE",
+        "NETWORK_EFFECT": (
+            TRANSPORT_CLASS_FORENSIC_SEALED_ONLY
+            if mode_norm == "forensic"
+            else TRANSPORT_CLASS_PREFLIGHT_NO_NETWORK
+        ),
+        "SECRET_VALUE_ACCESS": "NONE",
+        "WRITE_REQUEST_COUNT": 0,
+        "ORDER_REQUEST_COUNT": 0,
+        "origin_main_sha": origin_main_sha,
+        "executed_code_sha": executed_code_sha or origin_main_sha,
+        "owner_go_observed": owner_go,
+        "OWNER_GO_EXECUTE": OWNER_GO_EXECUTE,
+        "OWNER_GO_AUTHORING": OWNER_GO_AUTHORING,
+        "SUBMIT_ALLOWED": gate.submit_allowed,
+        "SUBMIT_BLOCK_REASONS": list(gate.reasons),
+    }
+    summary = {
+        "PACKAGE_MARKER": PACKAGE_MARKER,
+        "FORENSIC_OK": True,
+        "TRADE_ATTESTATION": False,
+        "PRODUCTIVE_CANARY_SURFACE_READY": True,
+        "LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN": False,
+        "LIVE_RECONCILIATION_PROVEN": False,
+        "BLOCKS_NEW_ENTRY": True,
+    }
+
+    sealed = None
+    if seal_forensic_evidence:
+        if not evidence_run_root:
+            raise LiveCanaryRunnerError("EVIDENCE_ROOT_REQUIRED_TO_SEAL")
+        sealed = seal_authoring_forensic_evidence_v1(
+            evidence_root=evidence_run_root,
+            forensic=forensic,
+            trade_forensic=trade,
+            submit_gate=gate.to_dict(),
+            claims=claims,
+            summary=summary,
+            config_digest={
+                "config_digest": cfg.digest(),
+                "config_version": cfg.payload.get("config_version"),
+            },
+        )
+
+    return LiveCanaryRunnerResultV1(
+        ok=True,
+        mode=mode_norm,
+        payload={
+            "forensic": forensic,
+            "trade_permission_forensic": trade,
+            "lifecycle_contract": lifecycle,
+            "pre_restart_capture_host_graph": (
+                compose_live_order_pre_restart_capture_host_graph_v1()
+            ),
+            "submit_gate": gate.to_dict(),
+            "claims": claims,
+            "summary": summary,
+            "sealed_evidence": sealed,
+            "config_digest": cfg.digest(),
+            "classify_helper_ok": bool(
+                classify_from_sealed_evidence_roots_v1(repo_root=repo).get("ok")
+            ),
+        },
+    )
+
+
+def _run_flatten_execute_mode_v1(
+    *,
+    cfg: Any,
+    origin_main_sha: str,
+    executed_code_sha: str | None,
+    owner_go: str | None,
+    live_canary_authorized: bool,
+    live_enabled: bool,
+    live_armed: bool,
+    allow_productive_wire_send: bool,
+    transport: Any,
+    flatten_execute_token: str | None,
+    flatten_execute_purpose: str | None,
+    flatten_execute_owner_go: str | None,
+    flatten_execute_bound_origin_main_sha: str | None,
+    flatten_live_wire_enabled: bool,
+    positions_payload: Mapping[str, Any] | None,
+    pending_orders_payload: Mapping[str, Any] | None,
+    price_input: Any,
+    post_positions_payload: Mapping[str, Any] | None,
+    post_pending_orders_payload: Mapping[str, Any] | None,
+    category_c_runtime_status: str | None,
+    flatten_pre_send_decision_id: str | None = None,
+    position_observation_freshness_evidence: Any = None,
+    monotonic_ms_clock: Any = None,
+    bounded_activation_permit: Any = None,
+) -> LiveCanaryRunnerResultV1:
+    """Explicit flatten_execute only. Never runs on preflight/forensic/execute."""
+    payload_cfg = dict(getattr(cfg, "payload", {}) or {})
+    token = flatten_execute_token
+    if token is None:
+        token = str(payload_cfg.get("flatten_execute_token") or "")
+    purpose = flatten_execute_purpose
+    if purpose is None:
+        purpose = str(payload_cfg.get("flatten_execute_purpose") or "")
+    flatten_go = flatten_execute_owner_go
+    if flatten_go is None:
+        flatten_go = str(payload_cfg.get("flatten_execute_owner_go") or "")
+    bound = flatten_execute_bound_origin_main_sha
+    if bound is None:
+        bound = str(payload_cfg.get("flatten_execute_bound_origin_main_sha") or "") or None
+    wire = bool(flatten_live_wire_enabled) or bool(payload_cfg.get("flatten_live_wire_enabled"))
+    instrument_id = str(payload_cfg.get("instrument_id") or "").strip() or None
+    if instrument_id is None:
+        from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+            DEFAULT_INSTRUMENT_ID,
+        )
+
+        instrument_id = DEFAULT_INSTRUMENT_ID
+    flatten_transport = (
+        transport if transport is not None else default_gated_productive_flatten_transport_v1()
+    )
+    if price_input is None:
+        result_payload = {
+            "ok": False,
+            "mode": "flatten_execute",
+            "send_attempted": False,
+            "send_completed": False,
+            "reasons": ["RUNTIME_PRICE_INPUT_UNAVAILABLE"],
+            "LIVE_FLATTEN_PROVABILITY": LIVE_FLATTEN_PROVABILITY,
+            "NETWORK_EFFECT": "NONE",
+            "PRODUCTIVE_VENUE_PROOF": False,
+            "origin_main_sha": origin_main_sha,
+            "executed_code_sha": executed_code_sha or origin_main_sha,
+            "owner_go_observed": owner_go,
+            "flatten_position_proven": False,
+        }
+        result_payload.update(
+            bind_flatten_execute_post_action_v1(
+                submit_result=SimpleNamespace(send_attempted=False),
+                pre_positions_payload=positions_payload,
+                post_positions_payload=post_positions_payload,
+                post_pending_orders_payload=post_pending_orders_payload,
+                category_c_runtime_status=category_c_runtime_status,
+                instrument_id=instrument_id,
+            )
+        )
+        return LiveCanaryRunnerResultV1(ok=False, mode="flatten_execute", payload=result_payload)
+    gate_input = default_flatten_execute_gate_input_from_runner_v1(
+        live_authorized=False,
+        live_enabled=bool(live_enabled),
+        live_armed=bool(live_armed),
+        flatten_live_wire_enabled=wire,
+        allow_productive_wire_send=bool(allow_productive_wire_send),
+        flatten_execute_token=token,
+        flatten_execute_purpose=purpose,
+        flatten_execute_owner_go=flatten_go,
+        flatten_execute_bound_origin_main_sha=bound,
+        positions_payload=positions_payload,
+        pending_orders_payload=pending_orders_payload,
+        price_input=price_input,
+        owner_go=str(owner_go or ""),
+        origin_main_sha=origin_main_sha,
+        instrument_id=instrument_id,
+        flatten_pre_send_decision_id=flatten_pre_send_decision_id,
+        position_observation_freshness_evidence=position_observation_freshness_evidence,
+        monotonic_ms_clock=monotonic_ms_clock,
+        bounded_activation_permit=bounded_activation_permit,
+    )
+    if gate_input is None:
+        raise LiveCanaryRunnerError("FLATTEN_GATE_INPUT_UNAVAILABLE")
+    boundary = FlattenGatedSubmitBoundaryV1()
+    outcome = boundary.submit(gate_input=gate_input, transport=flatten_transport)
+    result_payload = outcome.to_dict()
+    result_payload.update(
+        bind_flatten_execute_post_action_v1(
+            submit_result=outcome,
+            pre_positions_payload=positions_payload,
+            post_positions_payload=post_positions_payload,
+            post_pending_orders_payload=post_pending_orders_payload,
+            category_c_runtime_status=category_c_runtime_status,
+            instrument_id=instrument_id,
+        )
+    )
+    result_payload.update(
+        {
+            "ok": bool(outcome.send_completed),
+            "mode": "flatten_execute",
+            "LIVE_FLATTEN_PROVABILITY": LIVE_FLATTEN_PROVABILITY,
+            "NETWORK_EFFECT": "NONE",
+            "PRODUCTIVE_VENUE_PROOF": False,
+            "origin_main_sha": origin_main_sha,
+            "executed_code_sha": executed_code_sha or origin_main_sha,
+            "owner_go_observed": owner_go,
+            "flatten_position_proven": False,
+        }
+    )
+    return LiveCanaryRunnerResultV1(
+        ok=bool(outcome.send_completed),
+        mode="flatten_execute",
+        payload=result_payload,
+    )
+
+
+def assert_execute_refuses_authoring_go_v1() -> None:
+    try:
+        run_section_11_13_5_live_canary_minimum_exposure_v1(
+            mode="execute",
+            origin_main_sha="0f21b53e001e94085941c774a43a27562a1743fe",
+            owner_go=OWNER_GO_AUTHORING,
+            live_canary_authorized=True,
+            permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
+            live_enabled=True,
+            live_armed=True,
+            confirm_token=LIVE_CONFIRM_TOKEN,
+        )
+    except LiveCanaryRunnerError as exc:
+        text = str(exc)
+        if any(
+            marker in text
+            for marker in (
+                "AUTHORING_GO",
+                "CANARY_SUBMIT_HARD_BLOCKED",
+                "EXECUTE_FIELD_REQUIRED",
+            )
+        ):
+            return
+        raise
+    raise LiveCanaryRunnerError("AUTHORING_GO_EXECUTE_SHOULD_HAVE_FAILED")
+
+
+__all__ = [
+    "LiveCanaryRunnerError",
+    "LiveCanaryRunnerResultV1",
+    "LiveCanaryAuthorizationError",
+    "assert_execute_refuses_authoring_go_v1",
+    "run_section_11_13_5_live_canary_minimum_exposure_v1",
+]

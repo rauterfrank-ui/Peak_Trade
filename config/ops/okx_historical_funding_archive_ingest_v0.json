@@ -1,0 +1,30 @@
+{
+  "archive_cache_subdir": "datasets/staging/okx_historical_funding_archive_panel_v0",
+  "archive_cdn_base": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly",
+  "archive_source_id": "OKX_HISTORICAL_FUNDING_ARCHIVE",
+  "binding_origin_main_sha": "2256bf5048b8128fc5145933c63cc722f56db293",
+  "bound_archive_months": [
+    "2024-04",
+    "2024-05",
+    "2024-06",
+    "2024-07",
+    "2024-08"
+  ],
+  "enforce_settlement_interval": false,
+  "funding_owner": "scripts/ops/materialize_cross_sectional_funding_rate_carry_v0_bound_panel_funding_dataset_v0.py",
+  "guard_max_http_requests": 650,
+  "guard_max_instruments": 118,
+  "guard_max_months_per_instrument": 5,
+  "guard_max_runtime_seconds": 900,
+  "guard_max_total_bytes": 524288000,
+  "output_staging_rel": "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+  "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+  "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+  "panel_member_count_bound": 118,
+  "preflight_owner": "scripts/ops/run_csf_rdm_v0_dataset_funding_binding_materialization_preflight_v0.py",
+  "prior_funding_fetch_evidence_bundle": "research/bounded_offline_funding_fetch_for_materialized_panel_v0_20260704T165402Z",
+  "prior_panel_materialization_evidence_bundle": "archive/research/offline_panel_materialization_from_partial_tmp_no_fetch_v0_20260703T221342Z",
+  "probe_archive_rel": "probes/okx_historical_funding_archive_probe_v0_20260703T160811Z/raw",
+  "schema_version": "okx_historical_funding_archive_ingest_for_materialized_panel.v0",
+  "source_panel_materialization_owner": "src/research/offline_panel_materialization_from_partial_tmp_no_fetch_v0.py"
+}

@@ -1,0 +1,45 @@
+{
+  "schema": "lb_rec_001_phase1_v1",
+  "id": "multi_symbol_positions_match_cash_fail",
+  "notes": "LB-REC-001 Phase 7: BTC+ETH internal; external positions match internal; fixed external cash wrong → single CASH FAIL only (no POSITION diffs). Mock-only; not an exchange baseline.",
+  "as_of_time": "2026-04-08T12:00:00+00:00",
+  "internal": {
+    "initial_cash": "200000.00",
+    "fills": [
+      {
+        "fill_id": "lbrec_fill_p7_a",
+        "client_order_id": "lbrec_co_p7_a",
+        "exchange_order_id": "lbrec_ex_p7_a",
+        "symbol": "BTC/EUR",
+        "side": "BUY",
+        "quantity": "1.0",
+        "price": "50000.00",
+        "fee": "5.00"
+      },
+      {
+        "fill_id": "lbrec_fill_p7_b",
+        "client_order_id": "lbrec_co_p7_b",
+        "exchange_order_id": "lbrec_ex_p7_b",
+        "symbol": "ETH/EUR",
+        "side": "BUY",
+        "quantity": "2.0",
+        "price": "3000.00",
+        "fee": "3.00"
+      }
+    ]
+  },
+  "external": {
+    "positions": {
+      "BTC/EUR": "1.0",
+      "ETH/EUR": "2.0"
+    },
+    "cash_balance": { "mode": "fixed", "value": "0" }
+  },
+  "expect": {
+    "diff_count": 1,
+    "min_fail": 1,
+    "first_diff_type": "CASH",
+    "first_severity": "FAIL",
+    "all_diff_types": ["CASH"]
+  }
+}

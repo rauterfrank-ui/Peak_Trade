@@ -1,0 +1,134 @@
+{
+  "scope": "existing pure OLS fit, existing native store cold read, projection AST and relative rank seam only",
+  "ols_synthetic_controls": {
+    "base": {
+      "coefficients": {
+        "intercept": 0.9999999999999972,
+        "x": 2.0000000000000013
+      },
+      "analysis_calculated_value_at_x8": 17.000000000000007,
+      "rmse_over_all_supplied_rows": 2.8953735271858725e-15,
+      "status": "CALIBRATION_CANDIDATE",
+      "runtime_effect": "NONE",
+      "cost_policy_output": "diagnostic_only"
+    },
+    "training_changed": {
+      "coefficients": {
+        "intercept": 0.9999999999999956,
+        "x": 3.0000000000000018
+      },
+      "analysis_calculated_value_at_x8": 25.00000000000001,
+      "rmse_over_all_supplied_rows": 5.20740757162067e-15,
+      "status": "CALIBRATION_CANDIDATE",
+      "runtime_effect": "NONE",
+      "cost_policy_output": "diagnostic_only"
+    },
+    "heldout_only_changed": {
+      "coefficients": {
+        "intercept": 0.9999999999999972,
+        "x": 2.0000000000000013
+      },
+      "analysis_calculated_value_at_x8": 17.000000000000007,
+      "rmse_over_all_supplied_rows": 50.0,
+      "status": "CALIBRATION_CANDIDATE",
+      "runtime_effect": "NONE",
+      "cost_policy_output": "diagnostic_only"
+    }
+  },
+  "native_calibration_cold_read": {
+    "error": 0.0670113769896297,
+    "method": "RETURN_ERROR_V1",
+    "realized_return": 0.0870113769896297
+  },
+  "learning_projection_body_keys": [
+    [
+      "actual_outcome_ref",
+      "bar_spec_ref",
+      "calibration_evidence_digest",
+      "calibration_evidence_id",
+      "calibration_method",
+      "domain",
+      "evaluability",
+      "evaluation_observation_ref",
+      "evidence_class",
+      "forecast_created_at_utc",
+      "forecast_evidence_id",
+      "forecast_is_not_decision",
+      "forecast_outcome_join_digest",
+      "horizon_observation_status",
+      "information_set_ref",
+      "instrument_ref",
+      "legacy_learning_evidence_ref",
+      "mi_learning_evidence_authority",
+      "n_bars",
+      "outcome_finalization_status",
+      "outcome_horizon_end_utc",
+      "productive_ddo_reducer_mutated",
+      "provenance",
+      "schema_version",
+      "selected_instrument_ref",
+      "temporal_integrity_digest"
+    ],
+    [
+      "actual_outcome_ref",
+      "bar_spec_ref",
+      "calibration_evidence_digest",
+      "calibration_evidence_id",
+      "calibration_method",
+      "domain",
+      "evaluability",
+      "evaluation_observation_ref",
+      "evidence_class",
+      "forecast_created_at_utc",
+      "forecast_evidence_id",
+      "forecast_is_not_decision",
+      "forecast_outcome_join_digest",
+      "horizon_observation_status",
+      "information_set_ref",
+      "instrument_ref",
+      "legacy_learning_evidence_ref",
+      "mi_learning_evidence_authority",
+      "n_bars",
+      "outcome_finalization_status",
+      "outcome_horizon_end_utc",
+      "productive_ddo_reducer_mutated",
+      "provenance",
+      "schema_version",
+      "selected_instrument_ref",
+      "temporal_integrity_digest"
+    ]
+  ],
+  "relative_ranking_controls": {
+    "movement_sample": [
+      {
+        "id": "a",
+        "volatility": 0.02,
+        "amplitude": 0.2,
+        "score": 1.0
+      },
+      {
+        "id": "b",
+        "volatility": 0.01,
+        "amplitude": 0.1,
+        "score": 0.0
+      }
+    ],
+    "uniformly_quieter_sample": [
+      {
+        "id": "a",
+        "volatility": 2e-08,
+        "amplitude": 2e-07,
+        "score": 1.0
+      },
+      {
+        "id": "b",
+        "volatility": 1e-08,
+        "amplitude": 1e-07,
+        "score": 0.0
+      }
+    ]
+  },
+  "mi_training_or_inference_implemented": false,
+  "new_model_artifact_persisted": false,
+  "natural_quality_or_dp_improvement_proven": false
+}

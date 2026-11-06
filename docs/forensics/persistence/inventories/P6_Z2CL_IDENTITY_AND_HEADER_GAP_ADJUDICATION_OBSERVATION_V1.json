@@ -1,0 +1,260 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "OBSERVATION_IDENTITY": "P6_Z2CL_IDENTITY_AND_HEADER_GAP_ADJUDICATION_OBSERVATION_V1",
+  "PROPOSED_ALIAS": "A-OBS-Z2CL-ID-HDR-GAP",
+  "OWNER_GO": "PEAK_TRADE_Z2CL_FORENSIC_IDENTITY_AND_HEADER_GAP_PERSISTENCE_V1",
+  "SOURCE_READ_ONLY_OWNER_GO": "P6_GLOBAL_UNIVERSE_CENSUS_COMPLETENESS_ORPHAN_AND_CLOSURE_PRECONDITION_AUDIT_READ_ONLY_V1",
+  "CHAT_REPORT_IS_NOT_SSOT": true,
+  "PERSISTENCE_IS_NOT_CANONIZATION": true,
+  "PERSISTENCE_IS_NOT_ADJUDICATION": true,
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "STRUCTURING_IS_CANONIZATION": false,
+  "OBSERVATION_IS_CANONICAL": false,
+  "OBSERVATION_IS_POLICY": false,
+  "OBSERVATION_IS_EXECUTION_GRANT": false,
+  "OBSERVATION_IS_UNIVERSE_CLOSURE": false,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_PREMERGE_INV_AUDIT": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_HARDEN": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_RT_PROOF": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_OFFLINE_SEM": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_UNIVERSE_RECON": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CK_BLK": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_P3C": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_P3D": true,
+  "A_OBS_Z2CL_UNIVERSE_RECON_MUTATED": false,
+  "SOURCE_IDENTITY_COLLAPSED": false,
+  "SOURCE_IDENTITY_COLLAPSE_ALLOWED": false,
+  "BYTE_IDENTICAL_DOES_NOT_MERGE_SOURCE_IDENTITY": true,
+  "ABSENCE_IMPLIES_NEGATIVE_FACT": false,
+  "INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF": true,
+  "HISTORICAL_REWRITE_COUNT": 0,
+  "bound_origin_main_sha": "5aa2d5f10ae5e24f367dd8b13eb3c403a8d27a17",
+  "SOURCE_CLASS": "REPO_INTERNAL",
+  "SOURCE_SURFACE_ID": "SS-03",
+  "NETWORK_USED": false,
+  "EXCHANGE_GET_PERFORMED": false,
+  "AUTHENTICATED_POST_PERFORMED": false,
+  "TRADING_PERFORMED": false,
+  "FLATTEN_EXECUTE_PERFORMED": false,
+  "CLASS_D_CONSUMED": false,
+  "Z2AP_CONSUMED": false,
+  "EXECUTION_READY": false,
+  "OPTION_A_SELECTED": false,
+  "OPTION_B_SELECTED": false,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_RELATION_TYPE_CREATED": false,
+  "NEW_U_RF_ID_CREATED": false,
+  "NEW_CN_ID_CREATED": false,
+  "NEW_UC_ID_CREATED": false,
+  "NEW_SCHEMA_CREATED": false,
+  "SECRET_VALUES_INCLUDED": false,
+  "U_RF_ID_IS_PERSISTENCE_ID": false,
+  "CN_IDENTITY_COLLAPSE_WITH_C01_C16_ALLOWED": false,
+  "SOURCE_WORDING_AND_NORMALIZED_SEMANTIC_MUST_REMAIN_DISTINCT": true,
+  "chronology": {
+    "FOLLOWS": "A-OBS-Z2CL-UNIVERSE-RECON",
+    "DOES_NOT_COLLAPSE_ONTO": [
+      "A-OBS-Z2CL",
+      "A-OBS-Z2CL-PREMERGE-INV-AUDIT",
+      "A-OBS-Z2CL-HARDEN",
+      "A-OBS-Z2CL-RT-PROOF",
+      "A-OBS-Z2CL-OFFLINE-SEM",
+      "A-OBS-Z2CL-UNIVERSE-RECON",
+      "A-OBS-Z2CK-BLK",
+      "A-OBS-P3C",
+      "A-OBS-P3D"
+    ]
+  },
+  "source_layers": {
+    "LAYER_1": "origin/main",
+    "LAYER_2": "local committed HEAD",
+    "LAYER_3": "dirty worktree",
+    "LAYER_4": "repo forensic persistence",
+    "LAYER_5": "external forensic material",
+    "LAYER_6": "canonical authority",
+    "LAYER_7": "historical forensic observations",
+    "LAYER_1_SHA": "5aa2d5f10ae5e24f367dd8b13eb3c403a8d27a17",
+    "LAYER_2_SHA_OF_OPERATOR_WORKTREE_AT_READ": "75be51bedb3ed22145749a66b10fed9ee9a47d95",
+    "LAYER_3_IS_NOT_COMMITTED_SOURCE": true,
+    "LAYER_7_PREDECESSOR_ALIAS": "A-OBS-Z2CL-UNIVERSE-RECON",
+    "LAYER_7_PREDECESSOR_LOCATOR": "docs/forensics/persistence/inventories/P6_Z2CL_RUNTIME_UNIVERSE_RECONSTITUTION_OBSERVATION_V1.json",
+    "THIS_ARTIFACT_LAYER": "LAYER_4"
+  },
+  "count_hard_block_preserved_open": {
+    "COUNT_HARD_BLOCK_REMAINS_OPEN": true,
+    "CLOSED_UNIVERSE_PROVEN": false,
+    "SOURCE_UNIVERSE_EXHAUSTED": false,
+    "CAN_CLOSED_WORLD_ADJUDICATION_NOW_PROCEED": "PROVEN_FALSE",
+    "UNIVERSE_CLOSURE": false,
+    "CLOSED_WORLD_ADJUDICATION": false,
+    "AUDIT_DECLARED_UNIVERSE_CENSUS_COUNT_NOT_REWRITTEN": true,
+    "RECONCILED_CENSUS_COUNT_STATUS_NOT_NORMALIZED": true,
+    "THIS_FILE_DOES_NOT_MINT_UC_IDS": true,
+    "THIS_FILE_DOES_NOT_RECOMPUTE_CLASSIFICATION_COUNTS": true
+  },
+  "d1_dirty_committed_source_identity_locator_contradiction": {
+    "DELTA_ID": "D1",
+    "STATUS_CLASS": "CONTRADICTION",
+    "DIRTY_COMMITTED_LAYER_MIX_CONFIRMED": "PROVEN_TRUE",
+    "U_RF_19_IDENTITY_COLLAPSE_CONFIRMED": "PROVEN_TRUE",
+    "NEW_U_RF_ID_MINTED": false,
+    "NEW_CN_ID_MINTED": false,
+    "EXISTING_LOCAL_LABELS_NOT_REDEFINED": true,
+    "COMMITTED_UNSIGNED_BY_OMISSION_EQUALS_DIRTY_EXPLICIT_DENY": false,
+    "facts": [
+      {
+        "FACT_ID": "FACT_1",
+        "KIND": "FACT",
+        "SOURCE_LAYER": "LAYER_1",
+        "SOURCE_TREE_SHA": "5aa2d5f10ae5e24f367dd8b13eb3c403a8d27a17",
+        "LOCATOR": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_productive_transport_v1.py",
+        "SOURCE_IDENTITY": "origin/main committed blob of flatten_productive_transport_v1.py",
+        "STATEMENT": "assert_flatten_transport_remains_unsigned_v1 is absent on committed origin/main at the expected baseline."
+      },
+      {
+        "FACT_ID": "FACT_2",
+        "KIND": "FACT",
+        "SOURCE_LAYER": "LAYER_3",
+        "SOURCE_TREE_SHA": "DIRTY_UNCOMMITTED_OPERATOR_WORKTREE_NOT_A_COMMIT_SHA",
+        "LOCATOR": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_productive_transport_v1.py",
+        "SOURCE_IDENTITY": "dirty worktree blob of flatten_productive_transport_v1.py",
+        "STATEMENT": "assert_flatten_transport_remains_unsigned_v1 exists in the dirty worktree at that locator."
+      },
+      {
+        "FACT_ID": "FACT_3",
+        "KIND": "FACT",
+        "SOURCE_LAYER": "LAYER_7",
+        "SOURCE_TREE_SHA": "5aa2d5f10ae5e24f367dd8b13eb3c403a8d27a17",
+        "LOCATOR": "docs/forensics/persistence/inventories/P6_Z2CL_RUNTIME_UNIVERSE_RECONSTITUTION_OBSERVATION_V1.json",
+        "SOURCE_IDENTITY": "A-OBS-Z2CL-UNIVERSE-RECON historical observation artifact",
+        "STATEMENT": "The predecessor observation binds local labels U-RF-19 and CN-12 to locator assert_flatten_transport_remains_unsigned_v1 with CURRENT_STATUS=current and EVIDENCE_CLASS=raw_code, without separating LAYER_1 committed absence from LAYER_3 dirty presence."
+      }
+    ],
+    "interpretation": {
+      "KIND": "INTERPRETATION",
+      "STATEMENT": "The predecessor observation treats a LAYER_3-only function locator as current reconstruction source. That is a source-identity / locator contradiction between LAYER_7 and LAYER_1. The predecessor remains historical and is not rewritten."
+    },
+    "unresolved": {
+      "KIND": "UNRESOLVED",
+      "STATEMENT": "This file does not decide whether a later committed implementation should add, omit, or rename the dirty function. It does not close U-RF-19 membership and does not redefine CN-12."
+    },
+    "u_rf_19": {
+      "LOCAL_LABEL": "U-RF-19",
+      "U_RF_ID_IS_PERSISTENCE_ID": false,
+      "PREDECESSOR_SOURCE_BINDING": "assert_flatten_transport_remains_unsigned_v1",
+      "LAYER_1_STATUS": "ABSENT",
+      "LAYER_3_STATUS": "PRESENT",
+      "DIRTY_FUNCTION_IS_NOT_COMMITTED_SOURCE": true
+    },
+    "cn_12": {
+      "LOCAL_LABEL": "CN-12",
+      "CN_ID_IS_PERSISTENCE_ID": false,
+      "PREDECESSOR_TARGET": "assert_flatten_transport_remains_unsigned_v1",
+      "PREDECESSOR_CURRENT_STATUS": "current",
+      "PREDECESSOR_EVIDENCE_CLASS": "raw_code",
+      "LAYER_1_TARGET_STATUS": "ABSENT",
+      "LAYER_3_TARGET_STATUS": "PRESENT",
+      "LAYER_CORRECTION_PERSISTED": true,
+      "EXISTING_ID_NOT_REDEFINED": true
+    },
+    "cn_20": {
+      "LOCAL_LABEL": "CN-20",
+      "CN_ID_IS_PERSISTENCE_ID": false,
+      "PREDECESSOR_SOURCE": "flatten_operation_id",
+      "PREDECESSOR_EVIDENCE_CLASS": "raw_code_dirty_worktree",
+      "PREDECESSOR_CURRENT_STATUS": "dirty",
+      "CN_20_COMMITTED_STATUS": "ABSENT",
+      "CN_20_DIRTY_STATUS": "PRESENT",
+      "LAYER_SEPARATION_ALREADY_PRESENT_IN_PREDECESSOR": true,
+      "THIS_FILE_DOES_NOT_REDEFINE_CN_20": true
+    }
+  },
+  "d2_committed_request_identity_versus_forwarded_headers": {
+    "DELTA_ID": "D2",
+    "STATUS_CLASS": "FACT",
+    "HEADER_IDENTITY_GAP_CONFIRMED": "PROVEN_TRUE",
+    "COMMITTED_REQUEST_IDENTITY_FIELDS": [
+      "method",
+      "url",
+      "body_text"
+    ],
+    "HEADERS_INCLUDED_IN_APPROVED_REQUEST_IDENTITY": false,
+    "COMMITTED_TRANSPORT_FORWARDS_REQUEST_HEADERS": true,
+    "facts": [
+      {
+        "FACT_ID": "D2_FACT_IDENTITY",
+        "KIND": "FACT",
+        "SOURCE_LAYER": "LAYER_1",
+        "SOURCE_TREE_SHA": "5aa2d5f10ae5e24f367dd8b13eb3c403a8d27a17",
+        "LOCATOR": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_pre_send_gate_v1.py",
+        "SOURCE_IDENTITY": "origin/main committed flatten_approved_request_identity_v1",
+        "STATEMENT": "flatten_approved_request_identity_v1 hashes method, url, and body_text only. Request headers are not part of that approved-request / receipt identity."
+      },
+      {
+        "FACT_ID": "D2_FACT_FORWARD",
+        "KIND": "FACT",
+        "SOURCE_LAYER": "LAYER_1",
+        "SOURCE_TREE_SHA": "5aa2d5f10ae5e24f367dd8b13eb3c403a8d27a17",
+        "LOCATOR": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_productive_transport_v1.py",
+        "SOURCE_IDENTITY": "origin/main committed open_productive_flatten_urllib_post_v1",
+        "STATEMENT": "open_productive_flatten_urllib_post_v1 forwards request.headers on the urllib POST via headers=dict(request.headers)."
+      }
+    ],
+    "interpretation": {
+      "KIND": "INTERPRETATION",
+      "STATEMENT": "The committed receipt / approved-request identity does not cover all request components that the committed transport actually forwards."
+    },
+    "not_adjudicated": {
+      "KIND": "UNRESOLVED",
+      "AUTHENTICATED": "NOT_ADJUDICATED",
+      "NOT_AUTHENTICATED_FROM_THIS_FACT_ALONE": "NOT_ADJUDICATED",
+      "EXPLOITABLE": "NOT_ADJUDICATED",
+      "COMPROMISED": "NOT_ADJUDICATED",
+      "UNSAFE": "NOT_ADJUDICATED",
+      "CREDENTIAL_LEAKAGE": "NOT_ADJUDICATED",
+      "UNAUTHORIZED_MUTATION": "NOT_ADJUDICATED",
+      "STATEMENT": "This identity/coverage gap is not an authentication, exploitability, compromise, unsafety, credential-leakage, or unauthorized-mutation finding."
+    }
+  },
+  "federated_relation": {
+    "BINDING_ID": "FB-P3D-10",
+    "FROM": "A-OBS-Z2CL-UNIVERSE-RECON",
+    "TYPE": "INPUT_TO",
+    "TO": "A-OBS-Z2CL-ID-HDR-GAP",
+    "TYPE_REUSED": true,
+    "NEW_RELATION_TYPE_CREATED": false,
+    "EVIDENCE": "same FB-P3D INPUT_TO chain; this observation FOLLOWS A-OBS-Z2CL-UNIVERSE-RECON additively; predecessor locators and payload remain unrewritten; contradiction is recorded in observation fields not as a new relation TYPE"
+  },
+  "maintenance_contract": {
+    "SUBJECT_IMPACT_CHECK": "PERFORMED",
+    "IMPACTED_INFORMATION_OBJECT_IDS": [
+      "IO-CAN-NEXT",
+      "IO-FLATTEN"
+    ],
+    "SUBJECT_SUPPLEMENTED": true,
+    "SUBJECT_SUPERSEDED": false,
+    "SUBJECT_NEWLY_ADJUDICATED": false,
+    "SUBJECT_NEW_EVIDENCE_ADDED": true,
+    "SUBJECT_RESIDUAL_STATUS_CHANGED": false,
+    "SUBJECT_OWNER_DECISION_STATUS_CHANGED": false,
+    "SUBJECT_NEW_ARTIFACT_LOCATOR_INTRODUCED": true,
+    "L0_UPDATE_REQUIRED": false,
+    "L0_NO_CHANGE_REASON": "new inventory file remains under already registered SS-03; no new source surface or source-identity class; L0 SS-01 Z2CI finish-sequence note left unoverwritten",
+    "L2_UPDATE_REQUIRED": true,
+    "L2_UPDATE_REASON": "new alias A-OBS-Z2CL-ID-HDR-GAP; IO-CAN-NEXT/IO-FLATTEN supporting locator; FB-P3D-10 INPUT_TO without rewriting A-OBS-Z2CL-UNIVERSE-RECON, without minting U-RF/CN/UC IDs, and without universe closure",
+    "L4_UPDATE_REQUIRED": true,
+    "L4_UPDATE_REASON": "project additive identity/header-gap observation; U-RF-19 dirty/committed layer mix remains visible; CN-20 remains committed ABSENT / dirty PRESENT; header identity gap is coverage not auth; universe and census-count discontinuity remain open",
+    "FEDERATED_ENTRYPOINT_UPDATE_NOT_REQUIRED": false,
+    "FEDERATED_ENTRYPOINT_NO_CHANGE_PROOF": "",
+    "FEDERATED_ENTRYPOINT_INSUFFICIENT": false,
+    "MISSING_INFORMATION_TYPE": "",
+    "HISTORICAL_OBSERVATION_REWRITE_COUNT": 0
+  }
+}

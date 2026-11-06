@@ -1,0 +1,303 @@
+# Peak_Trade — Meta-Learning Universe Golden Vector V1 (Loop / Feedback Topology)
+
+Generated (UTC): 2026-09-30T00:42:17.321090+00:00
+
+## 1. Executive Adjudication
+
+**What is Meta-Learning (CURRENT)?** A **research-only evidence and routing plane** spanning:
+- DDO-typed `meta_learning_evidence_v1` / routing envelope `meta_evidence_v1`
+- Experiment-side analyzer `canonical_meta_learning_v1` (Phase 11)
+- Ingest `canonical_meta_learning_ingest_v1` (M6: Optimization experiment evidence → meta evidence)
+- Consumers: `canonical_meta_to_optimization_feedback_v1` (M7) and `canonical_meta_to_learning_research_adaptation_input_v1`
+- Dual router `canonical_meta_evidence_dual_router_v1` (Phase 23)
+
+**NOT the same as:** entire `src/meta/learning_loop/*` (promotion/comparison SSOT — separate infrastructure; keyword/import alone does not prove membership).
+
+**WHAT_IS_META_LEARNED?** CURRENT evidence shows **process/outcome pattern projection** from optimization experiment evidence into meta-learning evidence fields (patterns, search_method token, support_count, digests) — **not** persistent learned weights or trading parameters. `CANONICAL_ANALYZER_INVOKED=false` on ingest path; `LEARNING_STATE_MUTATION_PERFORMED=false`.
+
+**Loops:** **0 proven closed adaptation loops**. **Multiple open evidence chains** and **ACK-only return seams**. M7 changes **feedback disposition identity** when meta fields change; **`SEARCH_EXECUTED=false`** always.
+
+**NO_COMPOSED_PRODUCTIVE_CAUSAL_PATH_PROVEN**
+
+## 2. Baseline
+- PRIMARY_HEAD=`10f601e6087c33334034b2e013a72ed46835e9e9`
+- ORIGIN_MAIN_HEAD=`5b606f6daf322995a7f26a7208bba70a43cdd392`
+- FORENSIC_BASELINE_SHA=`5b606f6daf322995a7f26a7208bba70a43cdd392`
+- FORENSIC_WORKTREE=`/Users/frnkhrz/Peak_Trade/.wt_whole_system_matrix_v1`
+- BASELINE_RELATION=`PRIMARY_AHEAD_DIRTY; forensic on detached worktree at ORIGIN_MAIN`
+
+## 3. Proven Meta-Learning Boundary
+
+### META_LEARNING_INTERNAL (PROVEN_CURRENT)
+- `src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py`
+- `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py`
+- `src/experiments/canonical_meta_learning_v1.py`
+- `src/experiments/canonical_meta_learning_ingest_v1.py`
+- `src/experiments/canonical_meta_to_optimization_feedback_v1.py`
+- `src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py`
+- `src/experiments/canonical_meta_evidence_dual_router_v1.py`
+
+TOTAL_INTERNAL_COMPONENTS=7
+
+### META_LEARNING_INPUT_BOUNDARY
+- Optimization experiment evidence + return ACK (`MetaLearningIngestRequestV1`)
+- Optional Phase 11 analyzer inputs (comparison/failure/reality-gap records) via `canonical_meta_learning_v1` when invoked
+- Self-learning namespace hosts evidence schemas (not trading producers)
+
+### META_LEARNING_OUTPUT_BOUNDARY
+- `meta_learning_evidence_v1` records
+- `meta_evidence_v1` routing envelopes
+- M7 `bounded_research_feedback_decision_v1`
+- Learning adaptation decision (research input only)
+
+### META_LEARNING_AUTHORITY_BOUNDARY
+```text
+META_EVIDENCE_AUTHORITY=NONE
+META_LEARNING_AUTHORITY=RESEARCH_ONLY (analyzer module)
+SEARCH_EXECUTED=false
+LEARNING_STATE_MUTATION_PERFORMED=false
+```
+
+## 4. Internal Component Census
+| Module | Role |
+|---|---|
+| `meta_learning_evidence_v1.py` | Typed meta evidence schema/validator (DDO namespace) |
+| `meta_evidence_v1.py` | META_EVIDENCE_V1 routing envelope + semantic class |
+| `canonical_meta_learning_v1.py` | Phase 11 analyzer over research evidence (no historical mutation) |
+| `canonical_meta_learning_ingest_v1.py` | M6 projection OPT experiment evidence → meta evidence |
+| `canonical_meta_to_optimization_feedback_v1.py` | M7 bounded research feedback dispositions |
+| `canonical_meta_to_learning_research_adaptation_input_v1.py` | LEARNING_REPRESENTATION research input ACK |
+| `canonical_meta_evidence_dual_router_v1.py` | Phase 23 single-consumer routing |
+
+## 5. Input Map
+| INPUT_ID | SOURCE | CONTRACT | REQUIRED | ACTUAL_USE | BEHAVIORAL_EFFECT |
+|---|---|---|---|---|---|
+| IN-OPT-EVID | Optimization | optimization_experiment_evidence_v1 | YES (M6) | Meta evidence projection | Changes meta_learning_evidence | PROVEN |
+| IN-RETURN-ACK | Optimization→SL seam | return_input_ack | YES (M6 ingest) | Gate/ordering | None beyond gate | PROVEN |
+| IN-SL-EXPORT | Self-Learning | learning_evidence_record_v1 | Indirect | Feeds OPT plane in tests | Enables OPT→Meta chain in harness | PROVEN |
+| IN-PH11-BUNDLE | Research plane | failure/reality-gap/comparison | OPTIONAL | Analyzer when called | Analyzer proposals | UNKNOWN |
+
+TOTAL_INPUT_EDGES=4
+
+## 6. Output Map
+| OUTPUT | TARGET | CONSUMER | WRITE/STATE | PRODUCTIVE |
+|---|---|---|---|---|
+| meta_learning_evidence_v1 | Meta plane | M7 / dual router | none | NONE |
+| meta_evidence_v1 | Router | route_meta_evidence_v1 | none | NONE |
+| bounded_research_feedback_decision | Optimization research | human/offline orchestration | SEARCH_EXECUTED=false | NONE |
+| learning_research_adaptation_decision | Self-Learning research | ACK only | LEARNING_STATE_MUTATION=false | NONE |
+
+TOTAL_OUTPUT_EDGES=4
+
+## 7. State / Memory / Persistence
+- **No dedicated durable meta-learning state store proven** in boundary modules.
+- Identity via `meta_evidence_id`, `reproducibility_digest`, `feedback_decision_identity` (content hashes).
+- **Cycle N → N+1 different computation:** **PROVEN_CURRENT(false)** for stateful adaptation; ingest flags forbid mutation.
+META_LEARNING_ADAPTATION=PROVEN_CURRENT(false) for persistent state; disposition-only adaptation in M7.
+
+## 8. What Meta-Learning Actually Learns
+| LEARNING_TARGET | CURRENT behavior | Evidence |
+|---|---|---|
+| Optimization process patterns | Projected fields on ingest from OPT evidence slices | meta_learning_ingest_v1 |
+| Experiment recurrence | `source_experiment_ids`, `support_count` | meta_learning_evidence_v1 |
+| Search method association | `search_method.method_token` | M7 feedback items |
+| Trading parameters | **NO** | authority constants |
+| Self-learning weights/state | **NO** | LEARNING_STATE_MUTATION_PERFORMED=false |
+
+## 9. Meta → Optimization Field-Level Trace
+TOTAL_META_EXPORTED_FIELDS (required meta_learning_evidence) = **19**
+
+| META_FIELD | M7 CONSUMER | SEARCH_EXEC | OBJECTIVE | CANDIDATE | PROPOSAL |
+|---|---|---|---|---|---|
+| `schema_version` | validation | NO | NO | NO | NO |
+| `domain` | disposition logic | NO | NO | NO | NO |
+| `meta_evidence_id` | validation | NO | NO | NO | NO |
+| `source_experiment_ids` | feedback_items | NO | NO | NO | NO |
+| `source_envelope_versions` | disposition logic | NO | NO | NO | NO |
+| `observed_regime_or_context_ref` | disposition logic | NO | NO | NO | NO |
+| `optimization_family` | feedback_items | NO | NO | NO | NO |
+| `search_method` | feedback_items | NO | NO | NO | NO |
+| `repeated_success_or_failure_pattern` | disposition logic | NO | NO | NO | NO |
+| `oos_robustness_pattern` | disposition logic | NO | NO | NO | NO |
+| `cost_slippage_failure_pattern` | disposition logic | NO | NO | NO | NO |
+| `predictive_evidence_features` | feedback_items | NO | NO | NO | NO |
+| `uncertainty` | disposition logic | NO | NO | NO | NO |
+| `support_count` | disposition logic | NO | NO | NO | NO |
+| `provenance` | disposition logic | NO | NO | NO | NO |
+| `reproducibility_digest` | validation | NO | NO | NO | NO |
+| `meta_evidence_authority` | validation | NO | NO | NO | NO |
+| `source_optimization_experiment_evidence_record_id` | disposition logic | NO | NO | NO | NO |
+| `source_optimization_experiment_evidence_digest` | disposition logic | NO | NO | NO | NO |
+
+**Differential probe:** changing nested `search_method.method_token` → `feedback_decision_identity` **changes**; `search_executed` **remains false**.
+
+```text
+TOTAL_META_EXPORTED_FIELDS=19
+TOTAL_META_CONSUMED_FIELDS=8
+  (source_experiment_ids, search_method.method_token, search_method.advanced_search_schema_version,
+   support_count, repeated_success_or_failure_pattern, optimization_family,
+   predictive_evidence_features, uncertainty)
+TOTAL_META_BEHAVIORALLY_EFFECTIVE_FIELDS=1
+  (feedback_decision_identity / feedback_items payload via M7 disposition builder;
+   0 fields proven to change live search/objective/candidate execution — SEARCH_EXECUTED=false)
+```
+
+## 10. Optimization → Meta Return Trace
+```text
+run_optimization_universe_experiment_plane_v1
+ → build_optimization_experiment_evidence_from_plane_v1
+ → validate_self_learning_optimization_return_input_v1 (ACK, no SL mutation)
+ → ingest_meta_learning_evidence_from_return_input_v1 (M6)
+ → meta_learning_evidence_v1
+```
+EXISTS=PROVEN_CURRENT; STATE_MUTATION=PROVEN_CURRENT(false); NEXT_CYCLE_AUTO=PROVEN_CURRENT(false).
+
+## 11. Self-Learning ↔ Meta Relation
+- **SL→Meta:** indirect via OPT plane test harness; direct M6 requires OPT evidence, not raw DDO state.
+- **Meta→SL:** `canonical_meta_to_learning_research_adaptation_input_v1` — research ACK only.
+- **Meta part of SL loop?** **NO** as stateful loop; **YES** as shared DDO evidence namespace.
+
+## 12. Complete Directed Edge Graph
+- SL:learning_evidence_export → OPT:learning_input → OPT:experiment_plane
+- OPT:experiment_plane → OPT:experiment_evidence
+- OPT:experiment_evidence → SL:return_input_ACK
+- OPT:experiment_evidence → META:meta_learning_ingest
+- META:meta_learning_ingest → META:meta_learning_evidence
+- META:meta_learning_evidence → META:meta_evidence (router)
+- META:meta_learning_evidence → OPT:M7_feedback
+- META:meta_learning_evidence → SL:learning_adaptation_input
+
+## 13. Discovered Loops
+
+| LOOP_ID | NODES | CLASS | REACHABILITY | BEHAVIOR | STATUS |
+|---|---|---|---|---|---|
+| LOOP-OPEN-1 | SL→OPT→Meta ingest | OPEN_CHAIN | TEST_REACHABLE | NO state mutation | PROVEN_CURRENT |
+| LOOP-OPEN-2 | Meta→M7 feedback | OPEN_CHAIN | TEST_REACHABLE | Disposition only; no search exec | PROVEN_CURRENT |
+| LOOP-ACK-1 | OPT→SL return | ACK_ONLY_LOOP | TEST_REACHABLE | ACK only | PROVEN_CURRENT |
+
+**NUMBER_OF_PROVEN_LOOPS=0** (no closed stateful adaptation cycle proven).
+
+## 14. Two-Loop Hypothesis Adjudication
+- **H1 Learning loop exists:** UNKNOWN_CURRENT — support: DDO offline loops in tests; counter: Not same as meta loop; missing: productive proof
+- **H2 Separate meta-learning loop:** PROVEN_CURRENT — support: M6/M7 chain; counter: Closed adaptation; missing: return edge
+- **H3 Loops coupled:** PROVEN_CURRENT — support: OPT→Meta ingest; counter: Behavioral search coupling; missing: M7→search exec
+- **H4 Meta influences Optimization:** PROVEN_CURRENT — support: M7 dispositions; counter: Auto search exec; missing: SEARCH_EXECUTED=false
+- **H5 OPT results flow to Meta:** PROVEN_CURRENT — support: M6 ingest; counter: —; missing: —
+- **H6 Meta changes next-cycle behavior via state:** PROVEN_CURRENT(false) — support: No mutation flags; counter: —; missing: state store
+
+## 15. Loop Coupling Map
+- **LOOP_A (Self-Learning / DDO evaluation-export)** ↔ **LOOP_B (Meta ingest/feedback):** `EVIDENCE_COUPLED` via Optimization experiment evidence; **NOT** `STATE_COUPLED` or `BEHAVIORALLY_COUPLED` to search execution.
+LOOP_COUPLING_STATUS=PROVEN_CURRENT (evidence coupled; not behaviorally coupled to OPT search)
+
+## 16. Differential Meta-Learning Golden Vector
+| Test | Delta | Observed | FIRST_DIVERGENCE | NEXT_CYCLE_DELTA |
+|---|---|---|---|---|
+| DV-M7-01 | search_method token | feedback_decision_identity changes | M7 build_bounded_research_feedback_decision | none (no state) |
+| DV-M6-01 | same OPT evidence twice | identical meta_evidence_id | none | none |
+Tests: 23 passed (M7 ingest + dual router suites).
+
+## 17. Information Sufficiency
+INFORMATION_SUFFICIENCY_STATUS=UNKNOWN_CURRENT (no canonical minimums); INPUT_CONNECTIVITY=PROVEN_CURRENT.
+
+## 18. Authority Matrix
+- CAN_WRITE_SELF_LEARNING_STATE: **NO**
+- CAN_WRITE_OPTIMIZATION_STATE: **NO**
+- CAN_CHANGE_SEARCH_PRIORITY: **NO (exec)**
+- CAN_CHANGE_SEARCH_SPACE: **NO**
+- CAN_PROMOTE: **NO**
+- CAN_EXECUTE: **NO**
+- CAN_AGGREGATE/disposition: **YES (M7)**
+
+## 19. Composed Authority
+NO_COMPOSED_PRODUCTIVE_CAUSAL_PATH_PROVEN; COMPOSED_AUTHORITY_STATUS=PROVEN_CURRENT(none).
+
+## 20. Runtime Reachability
+| Chain segment | CODE | TEST | PRODUCTIVE |
+|---|---|---|---|
+| M6 ingest | YES | YES | UNKNOWN/NO |
+| M7 feedback | YES | YES | NO |
+| Dual router | YES | YES | NO |
+RUNTIME_REACHABILITY_STATUS=UNKNOWN_CURRENT (productive)
+
+## 21. Real vs Synthetic/Replay Data
+Test chains use `_learning_state` fixtures + `SYNTHETIC-OFFLINE-RESEARCH-ONLY` plane constants → **FIXTURE/SYNTHETIC**; not proven productive runtime observation.
+
+## 22. UNKNOWN_CURRENT Register
+- Whether Phase 11 analyzer runs in any non-test runtime host
+- Canonical minimum samples for meta learnability
+- Productive-host execution of dual router
+- MI → Meta direct edges (not proven in boundary scan)
+- Persistent meta state across process restarts
+
+## 23. CONFLICTING_CURRENT Register
+- Primary HEAD `10f601e6087c33334034b2e013a72ed46835e9e9` vs forensic `5b606f6daf322995a7f26a7208bba70a43cdd392`.
+
+## 24. VIOLATED_CURRENT Register
+- none proven
+
+## 25. Evidence Index
+- `src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py`
+- `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py`
+- `src/experiments/canonical_meta_learning_v1.py`
+- `src/experiments/canonical_meta_learning_ingest_v1.py`
+- `src/experiments/canonical_meta_to_optimization_feedback_v1.py`
+- `src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py`
+- `src/experiments/canonical_meta_evidence_dual_router_v1.py`
+- `tests/experiments/test_canonical_meta_to_optimization_feedback_v1.py`
+- `tests/learning/test_meta_learning_ingest_v1.py`
+- `tests/experiments/test_canonical_meta_evidence_dual_router_v1.py`
+- `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_NORMATIVE_V1.md`
+- `Deterministic probe: search_method token → feedback_decision_identity`
+
+## 26. Final CURRENT Topology
+```text
+OPEN CHAIN (test-proven):
+  SL export → OPT plane → OPT evidence → (ACK) → M6 ingest → meta_learning_evidence
+    → [dual router] → M7 feedback decision (dispositions, SEARCH_EXECUTED=false)
+    → [optional] learning adaptation ACK (no state mutation)
+
+ACK-ONLY:
+  OPT evidence → SL return_input (no mutation)
+
+NOT PRESENT (proven absent):
+  M7 → advanced_search execution wire
+  Meta → DDO learning_state write
+  Closed N→N+1 state adaptation loop
+```
+NUMBER_OF_PROVEN_LOOPS=0
+NUMBER_OF_OPEN_CHAINS=2
+NUMBER_OF_ACK_ONLY_RETURNS=2
+LEARNING_LOOP_STATUS=UNKNOWN_CURRENT
+META_LEARNING_LOOP_STATUS=PROVEN_CURRENT (open evidence chain; not closed adaptation)
+LOOP_COUPLING_STATUS=PROVEN_CURRENT (evidence-only coupling via OPT)
+
+## 27. Exact Blockers
+- **Closed loop blocker:** no return edge that mutates state and feeds next meta cycle automatically.
+- **Search execution blocker:** `SEARCH_EXECUTED=false`; M7 dispositions do not invoke `build_canonical_advanced_search_v1`.
+- **Productive blocker:** authority NONE; synthetic offline fixtures in tests.
+
+## 28. Final Relation Fitness (dimensions)
+- **META_LEARNING_BOUNDARY:** PROVEN_CURRENT
+- **META_LEARNING_INPUTS:** PROVEN_CURRENT
+- **META_LEARNING_OUTPUTS:** PROVEN_CURRENT
+- **META_LEARNING_INTERNAL_PROCESS:** PROVEN_CURRENT
+- **META_LEARNING_STATE:** PROVEN_CURRENT
+- **META_LEARNING_PERSISTENCE:** UNKNOWN_CURRENT
+- **META_LEARNING_REPLAY:** PROVEN_CURRENT
+- **META_LEARNING_INFORMATION_SUFFICIENCY:** UNKNOWN_CURRENT
+- **META_LEARNING_LEARNABILITY:** UNKNOWN_CURRENT
+- **META_TO_OPTIMIZATION:** PROVEN_CURRENT
+- **OPTIMIZATION_TO_META:** PROVEN_CURRENT
+- **SELF_LEARNING_TO_META:** PROVEN_CURRENT
+- **META_TO_SELF_LEARNING:** PROVEN_CURRENT
+- **META_LEARNING_FEEDBACK:** PROVEN_CURRENT
+- **META_LEARNING_ADAPTATION:** PROVEN_CURRENT
+- **LEARNING_LOOP:** UNKNOWN_CURRENT
+- **META_LEARNING_LOOP:** PROVEN_CURRENT
+- **LOOP_COUPLING:** PROVEN_CURRENT
+- **RUNTIME_REACHABILITY:** UNKNOWN_CURRENT
+- **AUTHORITY_ISOLATION:** PROVEN_CURRENT
+- **COMPOSED_AUTHORITY:** PROVEN_CURRENT
+- **PRODUCTIVE_ISOLATION:** PROVEN_CURRENT
+
+PROVEN_CURRENT=17; UNKNOWN_CURRENT=5; CONFLICTING_CURRENT=1; VIOLATED_CURRENT=0

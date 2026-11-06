@@ -1,0 +1,33 @@
+{
+  "LIVE_FILL_OBSERVED": false,
+  "LIVE_FILL_OBSERVED_may_adjudicate_only_after": "LIVE_SUBMIT_ACK_OBSERVED=true",
+  "LIVE_POSITION_RECONCILED": false,
+  "LIVE_POSITION_RECONCILED_may_adjudicate_only_after": "LIVE_FILL_OBSERVED and LIVE_FEE_OBSERVED per ladder order",
+  "POST_SUBMIT_RECON_AUTHORIZED_BY_THIS_GO": false,
+  "budget_after_nine_gets": "POST plus at most two recon GETs fits DEFAULT_MAX_REQUEST_COUNT=12",
+  "classifier": "classify_unknown_submit_from_exchange_v1",
+  "duplicate_submit_excluded_by": [
+    "_entry_send_attempted",
+    "entry_submit_count>=1 -> DUPLICATE_ENTRY_SUBMIT_FORBIDDEN",
+    "clOrdId rebind forbidden",
+    "ONE_SHOT_CLORDID_PER_OWNER_GO_BINDING"
+  ],
+  "fills_get_not_part_of_ack_unknown_recon": true,
+  "identity_for_unknown_resolution": "clOrdId from the just-built plan",
+  "implemented_unknown_path_owner": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py::run_canary_submit_transport_v1",
+  "max_request_count": 12,
+  "observed_plan_get_count": 9,
+  "read_only_recon_may_resolve_existence_without_reclassifying_ack": true,
+  "schema_version": "section_11_14_post_submit_recon.v1",
+  "sequence_if_unknown_after_send_attempted": [
+    "/api/v5/trade/orders-pending",
+    "/api/v5/trade/orders-history"
+  ],
+  "success_return_path_has_no_automatic_recon_gets": true,
+  "unknown_outcomes": [
+    "UNKNOWN_SUBMIT_RESOLVED_PENDING",
+    "UNKNOWN_SUBMIT_RESOLVED_HISTORY",
+    "UNKNOWN_SUBMIT_UNRESOLVED_HALT"
+  ],
+  "unknown_resolution_is_not_live_submit_ack_observed": true
+}

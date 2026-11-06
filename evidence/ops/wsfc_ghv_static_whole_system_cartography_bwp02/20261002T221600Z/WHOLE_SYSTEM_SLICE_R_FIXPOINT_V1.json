@@ -1,0 +1,156 @@
+{
+  "SUBSLICE": "BWP02-R-FINAL-CONFIGURATION-FIXPOINT",
+  "SLICE_R1_CONFIG_CONFLICTS": [
+    {
+      "CONFLICT_ID": "CONF-001",
+      "CONTROL_IDS": ["CTRL-F1M9-SEAM-001"],
+      "COMPONENTS": ["CMP-M01", "CMP-B07", "CMP-E04"],
+      "CURRENT_VALUES": "G17 live producer + frozen test ctx in f1_m9_cycle_evaluator",
+      "CURRENT_EFFECTIVE_SEMANTICS": "Cycle gate checks wiring STATUS_WIRED with static CanonicalMarketContext; trading path uses g17_producers",
+      "REQUIREMENT_A": "Production typed-vol / G17 hot path for DP admission",
+      "REQUIREMENT_B": "M01 _build_f1_m9_evaluator uses tests._valid_estimate",
+      "CANONICAL_AUTHORITY": "PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1; f1_m9_productive_runtime_threshold_consumer_wiring_v1",
+      "GHV_ROUTE": "GHV-R-02 parallel + GHV-R-01 critical",
+      "NATURAL_ENTER_EFFECT": "Cycle gate may pass while vol semantics on gate path ≠ S7 path until INJ-001",
+      "RESOLUTION_STATUS": "STATICALLY_RESOLVED",
+      "STATIC_RESOLUTION": "RUNNER_WIRING_ONLY (INJ-001); not production implementation gap",
+      "RUNTIME_PROOF_REQUIRED": true
+    },
+    {
+      "CONFLICT_ID": "CONF-002",
+      "CONTROL_IDS": ["CTRL-MD-FRESH-001", "CTRL-B10-INPUT2-001"],
+      "COMPONENTS": ["CMP-B01", "CMP-C02"],
+      "CURRENT_VALUES": "PUBLIC_V1_MARK_PRICE_MAX_AGE_SECONDS=5; INPUT2_MAX_AGE_SECONDS=UNRATIFIED",
+      "CURRENT_EFFECTIVE_SEMANTICS": "Public REST/WS freshness 5s; ranking input-2 age explicitly not ratified",
+      "REQUIREMENT_A": "Public mark freshness 5s (public_md plane)",
+      "REQUIREMENT_B": "B10 policy gap for ranking input-2 max age",
+      "CANONICAL_AUTHORITY": "Master Runbook; peak_trade_ranking_matrix_policy_v1 INPUT2_* pins",
+      "GHV_ROUTE": "GHV-R-03 + Cap22",
+      "NATURAL_ENTER_EFFECT": "Indirect via ranking feature staleness semantics; no invented threshold",
+      "RESOLUTION_STATUS": "STATICALLY_RESOLVED",
+      "STATIC_RESOLUTION": "Not a value conflict: planes differ; coherent target = remain UNRATIFIED until Owner ratification (INJ-003)",
+      "RUNTIME_PROOF_REQUIRED": false
+    },
+    {
+      "CONFLICT_ID": "CONF-003",
+      "CONTROL_IDS": ["CTRL-RES-ENABLE-001", "CTRL-RES-GATE-001"],
+      "COMPONENTS": ["CMP-C03", "CMP-M01"],
+      "RESOLUTION_STATUS": "STATICALLY_RESOLVED",
+      "STATIC_RESOLUTION": "Default OFF canonical; scoped CLI is OPTIONAL_SCOPED_EXPERIMENT_ONLY; CFG-SET-01 = propagation fix not activation",
+      "RUNTIME_PROOF_REQUIRED": true
+    }
+  ],
+  "STATICALLY_RESOLVED_CONFIG_CONFLICTS": 3,
+  "UNRESOLVED_CONFIG_CONFLICTS": 0,
+  "SLICE_R2_F1_M9": {
+    "F1_OWNER": "governance F1/M9 apply + threshold ledgers (f1_m9_productive_apply_ledger_v1, threshold_value_authorization)",
+    "F1_PRODUCER": "governed seam transport via run_governed_f1_m9_productive_runtime_threshold_consumer_wiring_continuation_v1",
+    "F1_OUTPUT_TYPE": "F1M9ProductiveRuntimeThresholdConsumerPathResultV1 (wiring_status, threshold_numeric_max_age_seconds)",
+    "F1_CONFIG": "config/governance/governed_f1_m9_* decision JSON; RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS=600 in consumer wiring module",
+    "F1_CONSUMERS": ["current_continuous_run_runtime_binding_v1._require_admission", "double_play alpha boundary via consumer wiring"],
+    "M9_OWNER": "governance f1_m9 scoped threshold value authority + M9 research surfaces (separate from productive gate)",
+    "M9_PRODUCER": "canonical volatility / max-age research runners (non-productive default path)",
+    "M9_OUTPUT_TYPE": "threshold_numeric_max_age_seconds when authorized",
+    "M9_CONFIG": "RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS=600; VOLATILITY_NUMERIC_MAX_AGE_ENFORCING=false globally per specs",
+    "M9_CONSUMERS": ["evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1", "presence gate chain"],
+    "FIELD_COMPARISON": [
+      {"FIELD": "market_context.canonical_volatility_estimate", "PRODUCTIVE_SOURCE": "G17 prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1 → lane producer", "PRODUCTIVE_TYPE": "CanonicalMarketContextV1 (live bind)", "FIXTURE_SOURCE": "tests.test_double_play_runtime_typed_volatility_presence_gate_v1._valid_estimate + _bound_context", "FIXTURE_TYPE": "Static CanonicalMarketContextV1", "SEMANTIC_EQUIVALENCE": false, "USED_BY_GATE": "f1_m9_cycle_evaluator only", "DIFFERENCE_IMPACT": "Cycle admission gate not coupled to per-cycle vol observation"},
+      {"FIELD": "governed_seam_record", "PRODUCTIVE_SOURCE": "governed continuation + repo config", "FIXTURE_SOURCE": "same (M01 uses real continuation)", "SEMANTIC_EQUIVALENCE": true, "USED_BY_GATE": true, "DIFFERENCE_IMPACT": "none"},
+      {"FIELD": "threshold_numeric_max_age_seconds", "PRODUCTIVE_SOURCE": "600 ratified in f1_m9_productive_runtime_threshold_consumer_wiring_v1", "FIXTURE_SOURCE": "same path when wired", "SEMANTIC_EQUIVALENCE": true, "USED_BY_GATE": true, "DIFFERENCE_IMPACT": "none if wiring passes"}
+    ],
+    "F1_M9_PRODUCTION_IMPLEMENTATION_EXISTS": true,
+    "F1_M9_PRODUCTION_BINDING_EXISTS": true,
+    "F1_M9_RUNNER_USES_PRODUCTION_BINDING": false,
+    "F1_M9_FIXTURE_ONLY_OBSERVATION_PROBLEM": true,
+    "F1_M9_RUNTIME_PATH_PROBLEM": false,
+    "F1_M9_REQUIRED_CHANGE_TYPE": "RUNNER_WIRING_ONLY"
+  },
+  "SLICE_R3_M01": {
+    "M01_PROPAGATION_CLASSIFICATION": "VALID_PARTIAL_PROPAGATION",
+    "DETAIL": "Cap21-29p→S6→S7→S5 chain uses production transports and G17; f1_m9_cycle_evaluator is parallel admission gate with fixture ctx (SEMANTIC_MISMATCH sub-path documented in INJ-001)",
+    "SOURCE_CONTROL": "require_f1_m9_each_cycle=True",
+    "BYPASSED_OWNER": "none for main spine; gate path bypasses per-cycle G17 ctx binding",
+    "FUTURE_DELTA": "INJ-001"
+  },
+  "SLICE_R4_B10_INPUT2": {
+    "CONTROL_ID": "CTRL-B10-INPUT2-001",
+    "DECLARATION": "src/ops/peak_trade_ranking_matrix_policy_v1.py",
+    "DEFAULT": "UNRATIFIED / RATIFIED=false",
+    "CURRENT_CONFIGURED_VALUE": "INPUT2_MAX_AGE_SECONDS=UNRATIFIED",
+    "CURRENT_EFFECTIVE_VALUE": "No numeric enforcement; witnesses record UNRATIFIED",
+    "OWNER": "B03 ranking matrix policy owner",
+    "CONSUMER": "productive_futures_ranking_producer evidence witnesses",
+    "B10_INPUT2_MAX_AGE_CLASSIFICATION": "INVARIANT_PROVEN_NOT_NUMERIC",
+    "COHERENT_TARGET": "INPUT2_MAX_AGE_SECONDS_RATIFIED=false until Owner BWP; then finite seconds from ratified policy only",
+    "RUNTIME_PROOF_REQUIRED": false
+  },
+  "SLICE_R5_EFFECTIVE_VALUE_CLOSURE": {
+    "RULE": "94 controls classified: 52 EXACT_OR_SEMANTICS_PROVEN, 28 RUNTIME_DERIVED_KNOWN, 9 NOT_ACTIVE_DEFAULT_OFF, 5 RUNTIME_PROOF_ONLY",
+    "EFFECTIVE_VALUE_MAPPING_COMPLETE": true
+  },
+  "SLICE_R6_PROPAGATION_CLOSURE": {
+    "PROPAGATION_GAPS": [
+      {
+        "PROP_GAP_ID": "PGAP-001",
+        "CONTROL_ID": "CTRL-F1M9-SEAM-001",
+        "LAST_PROVEN_OWNER": "g17_producers → S7 compose",
+        "EXPECTED_NEXT_OWNER": "f1_m9_cycle_evaluator per-cycle ctx",
+        "MISSING_CONTRACT": "Explicit bind evaluator ctx to lane G17 output",
+        "IMPACT": "Natural-enter config incoherence on gate vs decision path",
+        "STATICALLY_RESOLVABLE": true,
+        "MANIFEST_CHANGE": "INJ-001"
+      },
+      {
+        "PROP_GAP_ID": "PGAP-002",
+        "CONTROL_ID": "CTRL-RES-COALESCE-001",
+        "LAST_PROVEN_OWNER": "cap21 persist coalesce",
+        "EXPECTED_NEXT_OWNER": "M01 cap24 writer handoff",
+        "MISSING_CONTRACT": "scoped_integrated_eval=None when flags on",
+        "IMPACT": "Partial scoped residency without coalesce",
+        "STATICALLY_RESOLVABLE": true,
+        "MANIFEST_CHANGE": "INJ-002"
+      }
+    ],
+    "PROPAGATION_MAPPING_COMPLETE": true
+  },
+  "SLICE_R7_RESIDENCY": {
+    "RESIDENCY_TARGET_STATE": "OFF",
+    "CFG_SET_01_CLASSIFICATION": "FIX_PROPAGATION_WITHOUT_ACTIVATION",
+    "NOTE": "Does NOT turn residency ON by default"
+  },
+  "SLICE_R8_DELTA_SUMMARY": {
+    "TOTAL_CURRENT_TO_TARGET_DELTAS": 94,
+    "NO_CHANGE_COUNT": 88,
+    "VALUE_CHANGE_COUNT": 0,
+    "BINDING_CHANGE_COUNT": 1,
+    "PROPAGATION_CHANGE_COUNT": 2,
+    "OWNER_CHANGE_COUNT": 0,
+    "SSOT_CHANGE_COUNT": 0,
+    "DOCUMENTATION_ONLY_COUNT": 1,
+    "RUNTIME_PROOF_ONLY_COUNT": 2
+  },
+  "SLICE_R11_NATURAL_ENTER_PROJECTION": {
+    "KNOWN_CONFIG_INCOHERENCE_REMAINING_ON_NATURAL_ENTER_ROUTE": [
+      "F1/M9 cycle gate fixture ctx (INJ-001)",
+      "Optional scoped residency coalesce handoff when flags on (INJ-002)"
+    ],
+    "AFTER_INJECTION_STATIC_EXPECTATION": "No known configuration incoherence on NE route; market conditions may still block enter"
+  },
+  "SLICE_R12_FIXPOINT": {
+    "CONTROL_DISCOVERY_COMPLETE": true,
+    "EFFECTIVE_VALUE_MAPPING_COMPLETE": true,
+    "CONTROL_OWNERSHIP_COMPLETE": true,
+    "INJECTION_MAPPING_COMPLETE": true,
+    "PROPAGATION_MAPPING_COMPLETE": true,
+    "CONSTRAINT_GRAPH_COMPLETE": true,
+    "COHERENT_TARGET_DERIVED": true,
+    "COHERENT_TARGET_CONTRADICTION_FREE": true,
+    "INJECTION_DELTA_COMPLETE": true,
+    "INJECTION_DEPENDENCY_DAG_COMPLETE": true,
+    "NATURAL_ENTER_CONFIG_PROJECTION_COMPLETE": true,
+    "CONFIGURATION_FIXPOINT": true,
+    "READY_FOR_CONFIGURATION_INJECTION": true,
+    "PRODUCTIVE_RUNTIME_PROOF": false
+  },
+  "MANIFEST_REF": "WHOLE_SYSTEM_CONFIGURATION_INJECTION_MANIFEST_V1.json"
+}

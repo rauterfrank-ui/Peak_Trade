@@ -1,0 +1,55 @@
+name: CI / Workflow Dispatch Guard
+
+on:
+  workflow_dispatch: {}
+
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    # NO paths filter at workflow level (required checks must always run)
+  merge_group:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/**/*.yml"
+      - ".github/workflows/**/*.yaml"
+      - "scripts/ops/validate_workflow_dispatch_guards.py"
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Detect workflow changes
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3
+        id: changes
+        with:
+          filters: |
+            workflows:
+              - '.github/workflows/**/*.yml'
+              - '.github/workflows/**/*.yaml'
+              - 'scripts/ops/validate_workflow_dispatch_guards.py'
+              - 'tests/ops/test_validate_workflow_dispatch_guards.py'
+              - 'tests/fixtures/workflows_dispatch_guard/**'
+
+      - name: Setup Python
+        if: steps.changes.outputs.workflows == 'true'
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Run guard (scan .github/workflows)
+        if: steps.changes.outputs.workflows == 'true'
+        run: |
+          python scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflows --fail-on-warn
+
+      - name: No-op pass (no workflow changes detected)
+        if: steps.changes.outputs.workflows != 'true'
+        run: |
+          echo "✅ No workflow changes detected; dispatch-guard no-op pass."
+          echo "This check is required on main but only validates workflow files."
+          echo "PR does not modify workflows → fast success."

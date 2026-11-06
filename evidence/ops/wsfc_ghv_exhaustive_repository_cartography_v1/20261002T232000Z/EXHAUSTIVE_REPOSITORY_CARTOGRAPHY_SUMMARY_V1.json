@@ -1,0 +1,337 @@
+{
+  "BASELINE_SHA": "69826a7a5f6724d1cdd57a87f1cd07b3de10b6bc",
+  "OPS_PACKAGE_TOTAL": 254,
+  "OPS_OTHER_CORPUS_COUNT": 166,
+  "SECTION_PACKAGE_COUNT": 46,
+  "RUNNER_COUNT": 291,
+  "PHASE_A": {
+    "GAP_11135_LOCAL_FIXPOINT": true,
+    "GAP_11135_NEW_UNMAPPED_NODES": 0,
+    "records": [
+      {
+        "MODULE": "max_available_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/max_available_observation_v1.py",
+        "FUNCTION": "Decision-bound fresh MAX_AVAILABLE observation for \u00a711.13.5 pretrade. Owner-adjudicated operative source is authenticated GET /api/v5/account/max-size. Historical max-avail-size / BTC windows are not an operative cache. No TTL. No POST. No trading.",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/envelope_reprice_or_freshness_at_send_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/get_only_preflight_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/max_available_consumer_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-MAX_AVAILABLE_OBSERVATION"
+      },
+      {
+        "MODULE": "available_margin_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/available_margin_observation_v1.py",
+        "FUNCTION": "Decision-bound AVAILABLE_MARGIN observation for \u00a711.13.5 pretrade. AVAILABLE_MARGIN is currency-scoped cross-margin free margin, not a global account scalar, not MAX_AVAILABLE, not max-avail-size, and not availBal. First-Party OKX free margin for cross futures is details[].availEq. Account-level availEq is a different USD-denominated account-equity field. USD is not USDC. Empty details are not zer",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/adjudicate_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-AVAILABLE_MARGIN_OBSERVATION"
+      },
+      {
+        "MODULE": "price_band_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/price_band_observation_v1.py",
+        "FUNCTION": "Decision-bound fresh PRICE_BAND observation for \u00a711.13.5 pretrade. Owner-adjudicated operative source is unsigned GET /api/v5/public/price-limit. Percent fields, markPx, last, bid/ask, tickSz, and historical BTC/testnet 51006 packs are not an operative cache. No TTL. No POST. No trading.",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/envelope_reprice_or_freshness_at_send_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/get_only_preflight_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/price_band_consumer_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-PRICE_BAND_OBSERVATION"
+      },
+      {
+        "MODULE": "leverage_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/leverage_observation_v1.py",
+        "FUNCTION": "Decision-bound fresh LEVERAGE observation for \u00a711.13.5 pretrade. Owner-adjudicated operative source is authenticated GET /api/v5/account/leverage-info. This is current configured set-account leverage, not max leverage, not MMR/IMR, not public instruments lever, not historical BTC lever=3, and not a TTL cache. Request uses mgnMode. Order trade mode remains tdMode. No POST. No set-leverage.",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/get_only_preflight_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_live_identity_bound_venue_fill_readiness_and_exact_execution_contract_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-LEVERAGE_OBSERVATION"
+      },
+      {
+        "MODULE": "pos_mode_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pos_mode_observation_v1.py",
+        "FUNCTION": "Decision-bound fresh POS_MODE observation for \u00a711.13.5 pretrade. Owner-adjudicated operative source is authenticated GET /api/v5/account/config. The raw response field is posMode. This is account-global configuration, not per-instrument, not posSide, not acctLv, not tdMode, not mgnMode, and not a TTL cache. No POST. No set-position-mode. Venue tokens are not rewritten to posSide ``net``.",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/get_only_preflight_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/adjudicate_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_live_identity_bound_venue_fill_readiness_and_exact_execution_contract_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pos_mode_consumer_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-POS_MODE_OBSERVATION"
+      },
+      {
+        "MODULE": "margin_mode_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/margin_mode_observation_v1.py",
+        "FUNCTION": "Decision-bound MARGIN_MODE observation for \u00a711.13.5 pretrade. OKX does not expose a global account-level cross/isolated setting analogous to posMode. Cross and isolated positions may coexist. Margin mode for a trade is chosen per order via tdMode. Position rows may carry mgnMode. Empty positions data is not a margin mode and is not zero. This owner binds the current single-selected-future executio",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/available_margin_observation_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/orchestrator_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/available_margin_consumer_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/margin_mode_consumer_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-MARGIN_MODE_OBSERVATION"
+      },
+      {
+        "MODULE": "instrument_state_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/instrument_state_observation_v1.py",
+        "FUNCTION": "Decision-bound fresh INSTRUMENT_STATE observation for \u00a711.13.5 pretrade. Owner-adjudicated operative source is unsigned GET /api/v5/public/instruments exact-row field `state`. Admissible order-attempt value is the exact documented enum `live`. Historical BTC rows, the Z2BY identity rebind, Aug-27 SUI observations, ruleType, instType, expTime, ticker, and mark price are not this edge. No TTL. No ve",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/orchestrator_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/instrument_state_consumer_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-INSTRUMENT_STATE_OBSERVATION"
+      },
+      {
+        "MODULE": "account_mode_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/account_mode_observation_v1.py",
+        "FUNCTION": "Decision-bound ACCOUNT_MODE observation for \u00a711.13.5 pretrade. Owner-adjudicated operative source is authenticated GET /api/v5/account/config field ``acctLv``. This is account-global configuration, not posMode, not tdMode, not mgnMode, not leverage, not settleCcy, not instrument state, and not a TTL cache. No POST. No set-account-level. Raw venue token ``2`` is not rewritten to an alias. This slic",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/account_mode_consumer_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/orchestrator_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-ACCOUNT_MODE_OBSERVATION"
+      },
+      {
+        "MODULE": "max_size_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/max_size_observation_v1.py",
+        "FUNCTION": "Decision-bound fresh max-size observation for \u00a711.13.5 pretrade. Historical #6148 windows are not an operative cache. No TTL. No event-cache. Unsigned public GET only. No POST. No trading.",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/execute_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/account_mode_observation_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/max_size_consumer_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/available_margin_observation_v1.py",
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pos_mode_observation_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-MAX_SIZE_OBSERVATION"
+      },
+      {
+        "MODULE": "venue_pretrade_limit_observation_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/venue_pretrade_limit_observation_v1.py",
+        "FUNCTION": "Decision-bound venue-pretrade limit observation for \u00a711.13.5. Owner-adjudicated source is the same unsigned GET /api/v5/public/instruments exact-row already used for MAX_SIZE and INSTRUMENT_STATE. Required LIMIT-entry fields are minSz, lotSz, tickSz, and maxLmtSz. maxMktSz is observed as a MARKET peer and is not a LIMIT substitute. ctVal/ctMult are unit context only. No new GET. No POST. No TTL. N",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "READ_ONLY_OBSERVATION",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/venue_pretrade_limit_gates_consumer_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-VENUE_PRETRADE_LIMIT_OBSERVATION"
+      },
+      {
+        "MODULE": "economic_baseline_private_read_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/economic_baseline_private_read_v1.py",
+        "FUNCTION": "GET-only productive private-read helper for \u00a711.13.5.E economic baseline. Reuses \u00a711.13.3 HTTP/signer/credential primitives. Does not reuse the consumed \u00a711.13.3 Owner-GO. No orders, no account mutation.",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "TRANSPORT_INFRA",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/scripts/ops/materialize_section_11_13_5_economic_baseline_and_okx_clearance_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-ECONOMIC_BASELINE_PRIVATE_READ"
+      },
+      {
+        "MODULE": "http_client_v1",
+        "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+        "FUNCTION": "\u00a711.13.5-scoped LIVE HTTP client. POST is permit-gated; not a general live transport.",
+        "OWNER": "section_11_13_5_live_canary_minimum_exposure_v1",
+        "AUTHORITY": "TRANSPORT_INFRA",
+        "IMPORTER_SAMPLE": [
+          "/Users/frnkhrz/Peak_Trade/tests/ops/test_section_11_13_5_z2cq_prerequisite_08_cluster_contract_v1.py",
+          "/Users/frnkhrz/Peak_Trade/tests/ops/test_section_11_14_live_submit_ack_forensic_adjudication_v1.py",
+          "/Users/frnkhrz/Peak_Trade/tests/ops/test_offline_funding_balance_read_producer_v1.py",
+          "/Users/frnkhrz/Peak_Trade/tests/ops/test_peak_trade_post_restoration_live_safety_gates_adjudication_v1.py",
+          "/Users/frnkhrz/Peak_Trade/tests/ops/test_full_core_d6_path_b_package_1_observation_execution_v1.py",
+          "/Users/frnkhrz/Peak_Trade/tests/ops/test_section_11_14_durable_consume_success_object_v1.py"
+        ],
+        "CONFIG_SOURCE": "constants_v1.py / config_v1.py",
+        "GATES": "canary authorization_v1 upstream for mutating paths",
+        "PRODUCTIVE_REACHABILITY": "YES_via_full_core_admission_DAG",
+        "GHV_RELATION": "GHV_UPSTREAM",
+        "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+        "NODE_ID": "NODE-11135-HTTP_CLIENT"
+      }
+    ]
+  },
+  "OPS_CLASSIFICATION_COUNTS": {
+    "PROVEN_CURRENT": 219,
+    "SHADOW_ONLY": 13,
+    "TEST_ONLY": 18,
+    "DUPLICATE_REPRESENTATION": 4
+  },
+  "UNKNOWN_OPS_COUNT": 0,
+  "OTHER_ROOTS": {
+    "webui": 79,
+    "governance": 296,
+    "learning": 106,
+    "trading": 142,
+    "config_governance": 291
+  },
+  "EXTRA_CORPUS_NODES": [
+    {
+      "NODE_ID": "NODE-EXEC-CORPUS",
+      "PATH": "src/execution",
+      "PY_FILES": 135,
+      "DOMAIN": "EXECUTION_LEGACY_PARALLEL",
+      "GHV_RELATION": "GHV_SHADOW_BRANCH",
+      "CLASSIFICATION": "PROVEN_CURRENT"
+    },
+    {
+      "NODE_ID": "NODE-RISK-CORPUS",
+      "PATH": "src/risk",
+      "PY_FILES": 33,
+      "DOMAIN": "RISK_ANALYTICS_OFFLINE",
+      "GHV_RELATION": "INDEPENDENT_CURRENT_SUBSYSTEM",
+      "CLASSIFICATION": "PROVEN_CURRENT"
+    },
+    {
+      "NODE_ID": "NODE-GOV-CORPUS",
+      "PATH": "src/governance",
+      "PY_FILES": 296,
+      "DOMAIN": "GOVERNANCE_CONTROL_PLANE",
+      "GHV_RELATION": "GHV_CONTROL_BRANCH",
+      "CLASSIFICATION": "PROVEN_CURRENT"
+    },
+    {
+      "NODE_ID": "NODE-TRADING-CORPUS",
+      "PATH": "src/trading",
+      "PY_FILES": 142,
+      "DOMAIN": "TRADING_CORE",
+      "GHV_RELATION": "GHV_MAIN_PATH",
+      "CLASSIFICATION": "PROVEN_CURRENT"
+    },
+    {
+      "NODE_ID": "NODE-LIVE-CORPUS",
+      "PATH": "src/live",
+      "PY_FILES": 43,
+      "DOMAIN": "LIVE_SESSION_LEGACY",
+      "GHV_RELATION": "GHV_SHADOW_BRANCH",
+      "CLASSIFICATION": "SHADOW_ONLY"
+    }
+  ],
+  "EXTRA_REPO_DIRS": [
+    "src/execution",
+    "src/risk"
+  ],
+  "RESCAN_LOG": [
+    {
+      "pass": 1,
+      "new_nodes": 5,
+      "new_domains": 5
+    },
+    {
+      "pass": 2,
+      "new_nodes": 0,
+      "new_domains": 0
+    }
+  ],
+  "FINAL_COUNTS": {
+    "domains": 26,
+    "nodes": 115,
+    "edges": 381,
+    "config_points": 130
+  },
+  "GLOBAL_GRAPH_EXPANSION_FIXPOINT": true,
+  "STATIC_SYSTEM_CARTOGRAPHY_COMPLETE": true,
+  "OPS_REGISTER_COUNT": 254,
+  "RUNNER_REGISTER_COUNT": 291
+}

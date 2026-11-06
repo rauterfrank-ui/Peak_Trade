@@ -1,0 +1,94 @@
+{
+  "ACCOUNTED": [
+    "RECONCILED"
+  ],
+  "ACKNOWLEDGED": [
+    "AMEND_PENDING",
+    "CANCEL_PENDING",
+    "FILLED",
+    "OPEN",
+    "PARTIALLY_FILLED",
+    "REJECTED"
+  ],
+  "AMEND_PENDING": [
+    "CANCELLED",
+    "CANCEL_PENDING",
+    "EXPIRED",
+    "FILLED",
+    "OPEN",
+    "PARTIALLY_FILLED",
+    "REJECTED"
+  ],
+  "CANCELLED": [
+    "ACCOUNTED"
+  ],
+  "CANCEL_PENDING": [
+    "CANCELLED",
+    "EXPIRED",
+    "FILLED",
+    "PARTIALLY_FILLED"
+  ],
+  "EVIDENCED": [],
+  "EXPIRED": [
+    "ACCOUNTED"
+  ],
+  "FILLED": [
+    "ACCOUNTED"
+  ],
+  "INTENT_CREATED": [
+    "ORDER_PLAN_CREATED"
+  ],
+  "OPEN": [
+    "AMEND_PENDING",
+    "CANCELLED",
+    "CANCEL_PENDING",
+    "EXPIRED",
+    "FILLED",
+    "PARTIALLY_FILLED"
+  ],
+  "ORDER_PLAN_CREATED": [
+    "RISK_RESERVED"
+  ],
+  "PARTIALLY_FILLED": [
+    "AMEND_PENDING",
+    "CANCELLED",
+    "CANCEL_PENDING",
+    "EXPIRED",
+    "FILLED",
+    "PARTIALLY_FILLED"
+  ],
+  "PRE_SUBMIT_VALIDATED": [
+    "SUBMIT_PENDING"
+  ],
+  "RECONCILED": [
+    "EVIDENCED"
+  ],
+  "REJECTED": [
+    "ACCOUNTED",
+    "TERMINAL_REJECTED"
+  ],
+  "RISK_RESERVED": [
+    "PRE_SUBMIT_VALIDATED"
+  ],
+  "SUBMIT_ATTEMPTED": [
+    "ACKNOWLEDGED",
+    "REJECTED",
+    "UNKNOWN"
+  ],
+  "SUBMIT_PENDING": [
+    "SUBMIT_ATTEMPTED"
+  ],
+  "TERMINAL_REJECTED": [
+    "ACCOUNTED"
+  ],
+  "UNKNOWN": [
+    "ACKNOWLEDGED",
+    "CANCELLED",
+    "EXPIRED",
+    "FILLED",
+    "OPEN",
+    "PARTIALLY_FILLED",
+    "REJECTED",
+    "TERMINAL_REJECTED"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "AS_OF_EVENT_TIME": "estimate.as_of_event_time from accepted EventTimeInstantV1",
+  "CMC_BINDING_CALLER": "trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1",
+  "CURRENT_DISCONNECT_BEFORE": "run_hardened_wallclock_bridge_observation_cycle_v2->run_hardened_bridge_cycle_v2(missing finalized_pt1m_*)->apply_to_market_context_v1(ingest_sample=False)->on_runtime_cycle_without_sample_v1->producer_outcome=WARMUP permanent",
+  "CURRENT_PRODUCTIVE_CALLER": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.wallclock_hardening_binding_v2.run_hardened_wallclock_bridge_observation_cycle_v2",
+  "DOUBLE_PLAY_CONSUMER": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+  "ESTIMATE_TYPE": "CanonicalVolatilityEstimateV1",
+  "FAIL_CLOSED_BEHAVIOR": "WARMUP_NO_ESTIMATE / reject outcomes block alpha entry",
+  "FILE": "src/trading/master_v2/canonical_volatility_typed_runtime_producer_scaffold_v1.py",
+  "INPUT_OBSERVATIONS": "finalized PT1M mark samples from PT1M finalizer",
+  "MARKET_EVENT_TIME_REFERENCE": "finalized PT1M close event time",
+  "MASTER_V2_CONSUMER": "integrated_offline_trading_logic_replay via CMC",
+  "PERSISTENCE_CLASSIFICATION": "PERSIST_DIRECTLY_WHEN_PATH_CONFIGURED_ELSE_PROCESS_LOCAL_CONTINUITY",
+  "PERSISTENCE_OWNER": "trading.master_v2.canonical_volatility_runtime_mark_history_v1",
+  "PROVENANCE_FIELDS": [
+    "source_digest",
+    "history_digest",
+    "observation_count",
+    "as_of_event_time",
+    "config/feature contract digest"
+  ],
+  "PT1M_FINALIZER_OWNER": "trading.master_v2.canonical_volatility_pt1m_mark_observation_finalizer_v1",
+  "RESTART_SEMANTICS": "History restores via existing mark-history persistence when configured; estimate remains fail-closed until next PRODUCED. Wallclock sessions without persistence_path keep process-local continuity only; cross-process restart without persistence remains an explicit open boundary.",
+  "SEMANTICS": {
+    "annualized": false,
+    "bar_interval": "PT1M",
+    "ddof": 0,
+    "unit": "PER_BAR_DECIMAL_RETURN_VOLATILITY",
+    "warmup_required_price_count": 61
+  },
+  "STATE_OWNER": "trading.master_v2.canonical_volatility_runtime_mark_history_v1",
+  "SYMBOL": "CanonicalVolatilityTypedRuntimeProducerScaffoldV1",
+  "WARMUP_RULE": 61,
+  "WINDOW_REQUIREMENT": 60
+}

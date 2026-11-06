@@ -1,0 +1,127 @@
+{
+  "additional_replay_performed": false,
+  "authority_effect": "NONE",
+  "counter_replay_v1": {
+    "current_defect_inferred": false,
+    "result": "NOT_EXECUTED_AGENT_ABORT",
+    "retry_performed": false,
+    "started": false
+  },
+  "current_authority_sha": "6101441571ccb25565ebea1c6ccf139752bbd4e9",
+  "current_market_state_to_trading_decision_authority": true,
+  "current_technical_defect_open": null,
+  "economic_qualification_v1": {
+    "productive_trading_authority": false,
+    "status": "CLOSED_INSUFFICIENT_TRADES"
+  },
+  "frozen_at_utc": "2026-10-11T19:13:32+00:00",
+  "full_v3_replay_performed": false,
+  "ghv_contract_closure_v1": {
+    "chain_semantic_map": {
+      "CRS_OVERLAY": "GHV NODE_ID CRS_SIZING",
+      "MV2_POSITION_FEEDBACK": "MV2 sequence projection + portfolio observation overlay (B2/position-truth tests)",
+      "PORTFOLIO_TRUTH": "CURRENT source productive_offline_simulated_portfolio_position_truth_v1 + portfolio truth wiring (pytest contract)",
+      "SIMULATED_FILL": "GHV NODE_ID SIMULATED_ECONOMICS (BOUND_OFFLINE fill bridge)",
+      "SUBSEQUENT_DECISION_STATE": "GHV corridor through ENTRY_EXIT_POLICY / DOUBLE_PLAY_COMPOSITION to subsequent epochs"
+    },
+    "ghv_current_contract_match": true,
+    "ghv_position_truth_chain_on_main": true,
+    "ghv_post_merge_reverse_complete": false,
+    "ghv_post_merge_reverse_frontier": "ghv_reverse_walk_complete=false; loss_count=0; first_repeated_economic_divergence_node=INSUFFICIENT_BOUNDED_EVIDENCE",
+    "ghv_protected_semantics_unchanged": true,
+    "ghv_reverse_limit_classification": "GHV_COVERAGE_LIMITATION_NOT_CURRENT_DEFECT"
+  },
+  "historical_data_productive_trading_authority": false,
+  "historical_data_strategy_tuning_authority": false,
+  "historical_tuning_performed": false,
+  "next_action": "Merge evidence-only PR after gates; no Shadow/Testnet until separate governed authorization",
+  "next_productive_gate": "ECONOMIC_QUALIFICATION_REMAINS_CLOSED; TESTNET/LIVE promotion not authorized",
+  "peak_trade_market_model": "CURRENT_STATE_REACTIVE",
+  "position_truth_lineage_on_main": true,
+  "position_truth_source_modules_v1": [
+    "src/ops/integrated_offline_economic_evidence_v1/productive_offline_simulated_portfolio_position_truth_v1.py",
+    "src/ops/integrated_offline_economic_evidence_v1/productive_offline_replay_portfolio_truth_wiring_v1.py",
+    "tests/ops/test_productive_offline_simulated_portfolio_position_truth_v1.py"
+  ],
+  "pr_7085_merge_sha": "6101441571ccb25565ebea1c6ccf139752bbd4e9",
+  "pr_7085_merged": true,
+  "productive_config_changed": false,
+  "proof_layers_v1": {
+    "current_productive_proof": {
+      "description": "Runtime remains PRE_EXTERNAL; no Shadow/Testnet/Live activation in this work package.",
+      "runtime_terminal": "PRE_EXTERNAL"
+    },
+    "historical_regression_audit": {
+      "note": "Historical paths are regression/audit provenance only; not productive trading authority.",
+      "post_fix_bounded_reproof_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/current_offline_position_state_truth_remediation_v1/POST_FIX_BOUNDED_REPROOF_V1.json",
+      "post_fix_bounded_reproof_sha256": "66c1c5828395fd7d8cce12d5f3a71d867020924d4a3d1e348236829f976e754b",
+      "qualification_audit_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001500Z/POSITION_STATE_TRUTH_REQUALIFICATION_AUDIT_V1.json"
+    },
+    "post_merge_technical_proof": {
+      "focused_pytest_v1": {
+        "command": "./scripts/pt -m pytest -q tests/ops/test_productive_offline_simulated_portfolio_position_truth_v1.py tests/ops/test_integrated_offline_economic_evidence_b2_bridge_and_equivalence_v1.py tests/research/test_double_play_composition_narrow_reuse_first_rewire_v0.py tests/ops/test_replay_simulated_economics_bridge_v1.py",
+        "executed_at_utc": "2026-10-11T18:53:38.713Z",
+        "failed": 0,
+        "passed": 56,
+        "repository_head_sha": "6101441571ccb25565ebea1c6ccf139752bbd4e9",
+        "wallclock_seconds": 38.14
+      },
+      "ghv_bounded_walk_binding_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/ghv_current_ledger_economic_differential_walk_bounded_v1/GHV_POST_MERGE_BOUNDED_WALK_BINDING_V1.json",
+      "ghv_bounded_walk_binding_sha256": "7fd3d5f750048334d82df944d46a4b73fd4ad741f16028577cf6eb3eb4ea29ec"
+    }
+  },
+  "protected_semantics_v1": {
+    "double_play_changed": false,
+    "dynamic_scope_changed": false,
+    "entry_policy_changed": false,
+    "gge_changed": false,
+    "risk_limit_changed": false,
+    "sizing_formula_changed": false,
+    "strategy_changed": false
+  },
+  "schema_id": "ops.current_main_authority_fixpoint_after_pr7085.v1",
+  "source_changed_after_pr7085": false,
+  "substep": "FINAL_CURRENT_FIXPOINT_REFREEZE_FROM_EXISTING_PROOFS",
+  "technical_invariants_v1": {
+    "double_play_composition_parity": {
+      "basis": [
+        "focused_pytest includes test_double_play_composition_narrow_reuse_first_rewire_v0 (56/56 pass)"
+      ],
+      "status": "PROVEN_POST_MERGE"
+    },
+    "false_repeated_new_entry": {
+      "basis": [
+        "POST_FIX_BOUNDED_REPROOF_V1.false_repeated_new_entry_eliminated",
+        "POSITION_STATE_TRUTH_REQUALIFICATION_AUDIT_V1.false_repeated_new_entry_count=0"
+      ],
+      "status": "PROVEN_BY_EXISTING_REGRESSION"
+    },
+    "no_lookahead": {
+      "basis": [
+        "focused_pytest includes test_f_no_lookahead_pending_not_applied_same_epoch_capture (56/56 pass)"
+      ],
+      "status": "PROVEN_POST_MERGE"
+    },
+    "position_state_reconciliation": {
+      "basis": [
+        "ghv.accounting_reconciliation_pass",
+        "ghv.reconciliation_blockers_empty"
+      ],
+      "status": "PROVEN_POST_MERGE"
+    },
+    "stale_zero_crs_input": {
+      "basis": [
+        "POST_FIX_BOUNDED_REPROOF_V1.stale_zero_crs_input_eliminated"
+      ],
+      "status": "PROVEN_BY_EXISTING_REGRESSION"
+    },
+    "unintended_exposure_amplification": {
+      "basis": [
+        "POST_FIX_BOUNDED_REPROOF_V1.unintended_exposure_amplification_eliminated",
+        "POSITION_STATE_TRUTH_REQUALIFICATION_AUDIT_V1.unintended_exposure_amplification_count=0"
+      ],
+      "status": "PROVEN_BY_EXISTING_REGRESSION"
+    }
+  },
+  "work_package": "GOVERNED_PR_MERGE_AND_FIXPOINT_REFREEZE_V1"
+}

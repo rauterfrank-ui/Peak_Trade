@@ -1,0 +1,137 @@
+# PeakTrade: ursprüngliche Architektur, Kausalität und Semantik — Überblick
+
+## Schwerpunkt
+
+Der Schwerpunkt ist die ursprüngliche fachliche Konstruktion und ihre späteren Varianten. Dateizählungen, technische Suchfelder und Oberflächen sind unterstützende Navigation. Das Dashboard bleibt nachrangig. Diese Übersicht ist eine quellengebundene Zusammenschau außerhalb der kanonischen Register, kein neuer System-SSOT und kein abgeschlossenes Sollmodell.
+
+## Historische Architekturlinien
+
+### H01: Research-/Backtest-Zielbild — Dezember 2025
+
+**Ursprüngliche Idee:** Config, Marktdaten, Features, Strategie-Signale, Risk-Sizing, Backtest und Kennzahlen; langfristige Verbindung empirischer und Quant-/Theoriemodelle.
+**Belege:** Frühes Architekturpapier am Commit 78979ed4. Ein Sollbild, keine pauschale Implementierungsbehauptung.
+**Kausaler Zusammenhang:** Das Papier beschreibt einen Research-Datenfluss. Es ist keine Quelle für die spätere vollständige Universe-/Runtime-Topologie.
+**Semantischer Kern:** OHLCV-Daten und Zeitsignale; Equity/Entry/Stop/Risikobudget; Equity-Curve, Trades und Kennzahlen.
+**Offen:** Geplanter Ordner und existierende Funktion sind zu trennen: ECM liegt im frühen Tree z.B. unter strategies, während features nur Initialisierung enthält. Früherer oder abweichender Ursprung weiter offen.
+
+- A01: `src/docs/architecture.md`, Zeilen 1–261, Revision `78979ed413aae9bee0dee4b9c5451a308f30a114`, SHA256 `9ffd2d2d3cc7449067e14cba524b27999edcd39ffb41fc4c152a7a2e9ea1ca6d`.
+
+### H02: InfoStream und Promotion als getrennte Anpassungslinien — Dezember 2025 bis spätere Varianten
+
+**Ursprüngliche Idee:** TestHealth-Informationen auswerten und Learnings protokollieren; daneben Vorschläge und begrenzte Parameteränderungen verwalten.
+**Belege:** Historischer InfoStream-Orchestrator enthält AI-Auswertungs- und Learning-Log-Aufrufe. Der zuvor geprüfte Promotion-Writer hatte eine eigene bedingte Dateiwirkung.
+**Kausaler Zusammenhang:** Bericht → IntelEvent → Auswertung → LearningSnippet/Log ist nicht automatisch dieselbe Kette wie ConfigPatch → Promotion → wirksamer Parameter.
+**Semantischer Kern:** Textuelles Learning, normierter Event, Änderungsvorschlag und angewandter Wert sind verschiedene Objekte mit verschiedenen Wirkungen.
+**Offen:** Originale Bewertungslogik, tatsächliche Verbindungen zwischen diesen Linien und alle späteren Varianten bleiben breit zu verbinden. Keine Modell-/API-Ausführung in dieser Untersuchung.
+
+- A02: `src/meta/infostream/run_cycle.py`, Zeilen 1–14, Revision `66f06b149b2289b5abb748932eb04ed223318636`, SHA256 `dffcc6f883b0f2e9f29716bfc53c79ce038e93abf630bdb00386d6bbf75d147e`.
+- A02: `src/meta/infostream/run_cycle.py`, Zeilen 316–316, Revision `66f06b149b2289b5abb748932eb04ed223318636`, SHA256 `dffcc6f883b0f2e9f29716bfc53c79ce038e93abf630bdb00386d6bbf75d147e`.
+- A02: `src/meta/infostream/run_cycle.py`, Zeilen 283–283, Revision `66f06b149b2289b5abb748932eb04ed223318636`, SHA256 `dffcc6f883b0f2e9f29716bfc53c79ce038e93abf630bdb00386d6bbf75d147e`.
+
+### H03: Instrumentwissen, Eignung, Envelope und Handelszustand — April 2026
+
+**Ursprüngliche Idee:** Ein ausgewähltes Future, Long-/Bull- und Short-/Bear-Seite, begrenzte dynamische Scope-Regeln und getrennte Schutz-/Not-Aus-Logik.
+**Belege:** Manifest 1972c706 ausdrücklich docs-only. Seine Anforderungen reichen weit über die Zustandsmaschine hinaus.
+**Kausaler Zusammenhang:** Vorgesehener Zusammenhang: Selector/Instrumentwissen → Analysekontext → Strategy Suitability → Envelope/Scope → State-Switch, mit getrennten Risk-/Safety-/Governance- und späteren Execution-Grenzen. Das ist dokumentierte Absicht, kein vollständig bewiesener Ablauf.
+**Semantischer Kern:** Selector liefert Kontext, keine Handelsfreigabe; AI-Kontext ist keine Autorität; Eignung ist keine Permission; normaler Seitenwechsel ist kein Kill-All.
+**Offen:** Welche Kontextmerkmale und Regeln später tatsächlich an welchen Consumern ankamen, muss je historischer Variante belegt werden. Das Manifest ist kein fertiges Endsystem.
+
+- A04: `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md`, Zeilen 3–18, Revision `1972c706ae8b962f1f23fc9b5c71886b40100e9e`, SHA256 `2f769e7145cb74a9e955deadd4c3fa76bf7e51c07436d70ed98a4d7c2e3c711b`.
+- A04: `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md`, Zeilen 407–548, Revision `1972c706ae8b962f1f23fc9b5c71886b40100e9e`, SHA256 `2f769e7145cb74a9e955deadd4c3fa76bf7e51c07436d70ed98a4d7c2e3c711b`.
+- A04: `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md`, Zeilen 674–744, Revision `1972c706ae8b962f1f23fc9b5c71886b40100e9e`, SHA256 `2f769e7145cb74a9e955deadd4c3fa76bf7e51c07436d70ed98a4d7c2e3c711b`.
+
+### H04: Von Konzepten zu Replay und Runtime-Host — Juni bis September 2026
+
+**Ursprüngliche Idee:** Entscheidungs-/Zustandskomponenten in einen ausgeführten Programmablauf einbetten.
+**Belege:** Am Juni-Replay sind transition_state und Entry/Exit-Policy syntaktisch aufgerufen; der September-Host enthält den Replay-Aufruf.
+**Kausaler Zusammenhang:** Konkrete Programmanbindung ist enger als die gesamte ursprüngliche Kontext-/Wissenskette. Existenz dieser Aufrufe beweist noch keine vollständige Verbindung aller fachlichen Inputs.
+**Semantischer Kern:** Komposition, Zustand, Policy-Ergebnis, Host-Eingang und spätere Ausführung sind getrennte Stufen.
+**Offen:** Vorbedingungen, tatsächliche Host-Nutzung, Zustandspersistenz und Laufzeitwirkung der Gesamtverbindung bleiben getrennt zu belegen.
+
+- A05: `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`, Zeilen 675–675, Revision `540b8cfdb28a82e3810fca598a7018f94f89783e`, SHA256 `a5ce55d36d05f86fb3fcf76c2e521de337aa11f76fac008aedfd72da37fc3807`.
+- A05: `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`, Zeilen 740–740, Revision `540b8cfdb28a82e3810fca598a7018f94f89783e`, SHA256 `a5ce55d36d05f86fb3fcf76c2e521de337aa11f76fac008aedfd72da37fc3807`.
+- A06: `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, Zeilen 459–459, Revision `7360cb0c6fc229de2835aa68399cc8271ad5c8d0`, SHA256 `606769a3cf8a762afb6b83358db713219b8337abd64093258792d62d43598420`.
+
+### H05: Erweiterungen, Sperren, Persistenz und Rückkopplungen — September/Oktober 2026, mehrere parallele Varianten
+
+**Ursprüngliche Idee:** Market-/Account-Beobachtung, Ranking/Selection, G17/GGE, DDO, Kapitalpfade, Schutz und Wiederanlauf ergänzen die Entscheidungslogik.
+**Belege:** Vorhandene Entwicklungs- und Evolutionsregister beschreiben Aufrufstände, spätere Änderungen und offene Übergänge. Ihre Behauptungen bleiben an den jeweiligen Suchraum und Pin gebunden.
+**Kausaler Zusammenhang:** Kein einzelner vollständiger Außenring oder globaler Höchststand wird übernommen. Dateikopräsenz und ein späteres Ebenenmodell reichen dafür nicht.
+**Semantischer Kern:** Frisch vs gecacht/epoch-rebound; session-spezifisch vs unscoped; Snapshot-Konsum vs Producer-Kette; Feedback-Metadaten vs Parameteränderung.
+**Offen:** Globale Kohärenz und ursprüngliche Gesamtstruktur von Intelligent-/Learning-/Optimization-Verbindungen sind nicht vollständig belegt. Spätere analytische Ebenen nicht als Urstruktur behandeln.
+
+- A07: `/Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-HISTORICAL-OUTER-RING-ORIGINAL-DEVELOPMENT-V1/DEVELOPMENT_LINE.md`, früherer Archivbefund, Revision `Archivquelle; keine neue Codeverifikation`, SHA256 `db7a894fb9da0b068704cca3871ca09bc6afb0ccd5b32525b186e8857bdb7cdf`.
+- A08: `/Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-HISTORICAL-OUTER-RING-INTEGRATION-SEARCH-V2/INTEGRATION_FINDING.md`, früherer Archivbefund, Revision `Archivquelle; keine neue Codeverifikation`, SHA256 `66be0d6ca3f5e95ebc5f77e13410deafddd022a8c8e0b20862139e861b611fea`.
+- A09: `/Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-POST094-HISTORICAL-EVOLUTION-006/evolution_matrix.json`, früherer Archivbefund, Revision `Archivquelle; keine neue Codeverifikation`, SHA256 `c055819d6704257dccb475feac8aa39664c43207102a77a95532cf0c25eea398`.
+
+## Welche Semantik über die Verbindungen erhalten bleiben muss
+
+### Instrumentwissen → Auswahl/Scope/Eignung
+
+Marktprofil umfasst mehr als Rang: Volatilität, Liquidität, Spread, Funding, Freshness, Trend/Chop sowie Metadaten/Provenienz.
+Quellenbezug: A04 §9–12.
+Belegstand: Ursprüngliche Absicht neu direkt gelesen; einzelne heutige Producer/Consumer separat untersucht.
+Offen: Vollständige Übergabe jedes ursprünglich vorgesehenen Merkmals und Wirkung bei jedem Consumer offen.
+
+### Kontext → Autorität
+
+Erklärung, Score oder Suitability dürfen nicht still als Freigabe/Permission interpretiert werden.
+Quellenbezug: A04 §10–12.
+Belegstand: Explizite Rollentrennung im historischen Manifest; spätere Aufträge/Config-Varianten getrennt dokumentiert.
+Offen: Reale Zulassungswerte und nachgelagerte Auswahl je Host nicht vollständig kartiert.
+
+### Normaler Zustandswechsel → Schutz
+
+Seitenwechsel, Positionszustand, Reconciliation, Kill-All und mögliche externe Order sind verschiedene Zustände/Wirkungen.
+Quellenbezug: A04 §0–4; frühere Policy-Untersuchungen.
+Belegstand: Manifest plus ausgewählte historische und aktuelle Codeaufrufe.
+Offen: Komplette Zustands-/Host-Übergänge und historische Varianten offen.
+
+### Beobachtung → Berechnung → Menge
+
+Preis, Volatilität, Stop-Abstand, Währung, Kapitalart, Multiplikator, Prozentkonvention und Menge behalten ihren jeweiligen Einheitenbezug.
+Quellenbezug: A01 Risk-Zweck; frühere Sizing-/Geometrie-Nachweise.
+Belegstand: Einzelne Rechen- und Übergabepfade statisch gelesen.
+Offen: Durchgängige Einheiten-/Währungs-/Rundungskohärenz über alle Pfade offen.
+
+### Zeit/Identität → gültiger Zustand
+
+Instrument, Venue, Account, Session, Decision, Epoche und Zustandversion passen zur verwendeten Beobachtung.
+Quellenbezug: A04 Beispiel-Handoff; A09 aufgezeichnete Evolutionsbefunde.
+Belegstand: Session-Filter und Epoch-Rebind sind in früheren Registern als Änderungen benannt; hier nicht neu als Gesamtwirkung bewiesen.
+Offen: Keine Gleichsetzung unveränderter Zahl mit unveränderter Gültigkeit; Quelle und Consumer noch vollständig zu verbinden.
+
+### Ergebnis → Learning → spätere Entscheidung
+
+Text-Learning, Outcome, Lernzustand, Offline-Ack, Vergleich, Proposal und tatsächlich angewandte Änderung unterscheiden.
+Quellenbezug: A02/A03; frühere DDO-/Apply-Nachweise.
+Belegstand: Mehrere getrennte historische Linien und enge heutige Teilverbindungen belegt.
+Offen: Ursprüngliche gesamte Lernkonstruktion und geschlossene adaptive Wirkung nicht vollständig belegt.
+
+### Nachweis → Systembehauptung
+
+Dokumentierte Absicht, syntaktischer Aufruf, gelesene Consumer-Wirkung und beobachtete Laufzeit haben unterschiedliche Aussagekraft.
+Quellenbezug: A07–A11 und neue Quellenanker.
+Belegstand: Archivlabels bleiben Quellenbehauptungen. Eine Shallow-Grenze wurde bereits als ungeeigneter globaler Ursprungsbeleg erkannt.
+Offen: Vorhandene Graphen, PROVEN-Labels und Teiltests ergeben keinen vollständigen Kausalgraphen.
+
+## Historische Veränderung nicht auf Dateiverlust reduzieren
+
+Die frühere Evolutionsmatrix beschreibt zwölf begrenzte Funktionsbefunde: sieben als erhalten, fünf als weiterentwickelt. Das sind aufgezeichnete Klassifikationen der damals gelesenen Funktionskörper, keine neue globale Bewertung. Dazu gehören Änderungen bei session-spezifischen Outcome-Daten, Epoch-Rebind von Kapitalfakten, monetären Eingaben und Ranking-/Selection-/Residency-Schritten. Jede Zeile bleibt mit JSON-Pointer, offenen Fragen und damaliger Beweisgrenze erhalten.
+
+Der Ausdruck höchster Integrationsstand im alten Suchbericht bezieht sich auf dessen untersuchte Aufrufmenge. Er wird hier weder als vollständiges historisches System noch als bestes Endsystem übernommen. Auch das dort verwendete Acht-Ebenen-Modell ist ein späterer Analyseansatz, keine nachgewiesene ursprüngliche Gesamtarchitektur.
+
+## Offene Gesamtübersicht
+
+Offen bleiben die ursprüngliche Gesamtstruktur und innere Konstruktion aller Universen, alle Querverbindungen, zeitliche Varianten zwischen den vorhandenen Ankern und vollständige historische Ursprünge. Belegt werden müssen die Übergänge zwischen gewünschtem Wissen, erzeugten Daten, Zuständen, Entscheidungen, Ressourcen und Rückkopplung. Dazu reichen Namen, Ordner, gleiche Werte oder Diagrammpfeile nicht aus.
+
+Die weitere breite Rekonstruktion verknüpft je Funktionszusammenhang die Originalabsicht mit historischen Implementierungen und späteren Änderungen. Bei ungeklärter Wirkung wird kein historischer Baustein als sinnlos eingestuft. Sowohl Erhalt der Grundidee als auch begründete Semantikänderung müssen mit ihren systemweiten Folgen erklärt werden.
+
+## Dateien
+
+- `source-evidence.json`: sechs direkt gelesene Git-Quellen und fünf erneut gelesene Architekturberichte mit Hashes.
+- `historical-static-call-anchors.json`: fünf neu am historischen Code geprüfte syntaktische Aufrufstellen.
+- `recorded-evolution-obligations.json`: zwölf frühere Evolutionsbefunde mit unveränderten offenen Beweisfragen.
+- `architecture-overview.json`: strukturierte Architekturlinien und übergreifende Semantik-Themen.
+
+Keine Änderung von Produktcode, Originalarchiven oder Obsidian-Registern; keine Runtime-/AI-/Exchange-Ausführung.

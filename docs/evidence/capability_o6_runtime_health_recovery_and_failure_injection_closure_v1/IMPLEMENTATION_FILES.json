@@ -1,0 +1,18 @@
+{
+  "files": [
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/__init__.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/component_health_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/composite_health_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/constants_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/evidence_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/failure_injection_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/failure_taxonomy_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/idempotency_proofs_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/path_sanitization_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/recovery_v1.py"
+  ],
+  "package": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1",
+  "tests": [
+    "tests/ops/test_runtime_health_recovery_and_failure_injection_closure_v1.py"
+  ]
+}

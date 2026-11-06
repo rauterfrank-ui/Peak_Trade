@@ -1,0 +1,23 @@
+{
+  "artifact_class": "F2_DETERMINISTIC_COST_GRID_IDENTITY_REPLAY_STEP29M_BOUNDED_SENSITIVITY_OOS_RESEARCH_EXECUTION_DECISION_V1",
+  "workpackage_id": "F2_DETERMINISTIC_COST_GRID_IDENTITY_REPLAY_AND_STEP29M_BOUNDED_SENSITIVITY_OOS_RESEARCH_EXECUTION_V1",
+  "bound_origin_main_sha": "903acb8afe5422a1e20edf077748524c95685e2e",
+  "predecessor_workpackage_id": "F2_RESEARCH_BACKTEST_COST_GRID_END_TO_END_V1",
+  "normative_spec": "docs/ops/specs/F2_DETERMINISTIC_COST_GRID_IDENTITY_REPLAY_AND_STEP29M_BOUNDED_SENSITIVITY_OOS_RESEARCH_EXECUTION_V1.md",
+  "owner_module": "src/experiments/canonical_f2_research_backtest_cost_grid_research_execution_v1.py",
+  "authorized_surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+  "f2_e2e_research_execution_materialized": true,
+  "d27_f2_test_entry_gate_enforced": true,
+  "step29m_parameter_sensitivity_owner": "backtest.parameter_sensitivity_v1",
+  "authoritative_step29m_config_ref": "config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json",
+  "research_optimization_only": true,
+  "proposal_only": true,
+  "productive_trading_effect": "NONE",
+  "optimization_productive_authority": "NONE",
+  "promotion_performed": false,
+  "productive_parameter_mutation": false,
+  "trading_authority": "NONE",
+  "selection_authority": "NONE",
+  "execution_authority": "NONE",
+  "external_effect_authorized": false
+}

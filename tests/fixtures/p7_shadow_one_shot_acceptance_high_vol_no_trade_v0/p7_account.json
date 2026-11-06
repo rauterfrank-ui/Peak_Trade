@@ -1,0 +1,9 @@
+{
+  "cash": 999.6,
+  "positions": {
+    "BTC": 0.0,
+    "scenario": 0.0
+  },
+  "scenario": "high_vol_no_trade",
+  "schema_version": "p7.account.v0"
+}

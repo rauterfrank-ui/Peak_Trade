@@ -1,0 +1,74 @@
+Phase 16C: Reporting Bridge + Run Compare + Stable Run Summary Contract
+========================================================================
+
+NEW FILES CREATED
+-----------------
+
+Core Implementation:
+  src/experiments/tracking/__init__.py
+  src/experiments/tracking/run_summary.py        (RunSummary contract)
+  src/experiments/tracking/peaktrade_run.py      (PeakTradeRun context manager)
+
+CLI Tools:
+  scripts/dev/compare_runs.py                    (Run comparison CLI)
+  scripts/dev/demo_tracking.py                   (Demo script)
+
+Tests:
+  tests/test_run_summary_contract.py             (17 tests)
+  tests/test_compare_runs.py                     (16 tests)
+
+Reports:
+  reports/quarto/backtest_report.qmd             (Quarto report template)
+  reports/quarto/_quarto.yml                     (Quarto config)
+
+Documentation:
+  docs/dev/REPORTING.md                          (Comprehensive user guide)
+  PHASE_16C_IMPLEMENTATION_SUMMARY.md            (Implementation summary)
+  PHASE_16C_FILES.txt                            (This file)
+
+Directories Created:
+  results/                                        (Run summaries storage)
+
+MODIFIED FILES
+--------------
+  (None - all fresh implementation)
+
+TEST RESULTS
+------------
+  33 tests passing in 0.46s
+  - test_run_summary_contract.py: 17 tests ✅
+  - test_compare_runs.py: 16 tests ✅
+
+COMMANDS TO VERIFY
+------------------
+  # Run tests
+  python3 -m pytest tests/test_run_summary_contract.py tests/test_compare_runs.py -v
+
+  # Run demo
+  python3 scripts/dev/demo_tracking.py
+
+  # Compare runs
+  python3 scripts/dev/compare_runs.py --n 10
+
+  # Generate report (requires Quarto)
+  cd reports/quarto && quarto render backtest_report.qmd
+
+KEY FEATURES
+------------
+  ✅ Stable JSON contract for run summaries
+  ✅ Optional MLflow integration with graceful fallback
+  ✅ Fast CLI comparison tool (<0.5s)
+  ✅ Quarto report bridge
+  ✅ Comprehensive documentation
+  ✅ 33 deterministic tests
+  ✅ Works without network/MLflow
+  ✅ Configuration precedence: CLI > ENV > defaults
+
+CONSTRAINTS MET
+---------------
+  ✅ Tests <0.5s (0.46s)
+  ✅ Deterministic (no flaky tests)
+  ✅ No network access required
+  ✅ Works without MLflow
+  ✅ No global paths (tmp_path in tests)
+  ✅ Graceful fallback everywhere

@@ -1,0 +1,270 @@
+{
+  "schema": "self_learning_executed_counterexample_remediation_candidates_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "execution_evidence_ref": "docs/ops/evidence/self_learning_offline_functional_execution_v1_2026_11_05/results.json",
+  "execution_evidence_sha256": "4dd3fae74ce3b6650ead93d822b74ed1899a04eed67a01658d3c371e05039646",
+  "implementation_changes_authorized": false,
+  "implementation_changes_applied": false,
+  "concrete_addition_groups": [
+    {
+      "id": "REMEDY-01",
+      "criteria": [
+        "GF-T01",
+        "GF-T02"
+      ],
+      "classification": "ONE_REPRODUCED_CAUSE_TWO_COUNTEREXAMPLE_CLASSES",
+      "cause": "The second candidate result is discarded, while the baseline repeat result and protected manifest are compared.",
+      "concrete_addition": "Bind a snapshot digest of the first candidate result and compare the second candidate verdict/result against it before post-gate/evidence registration. Classify drift through the existing non-determinism failure path.",
+      "consumer": "GenericRunnerV1._verify_deterministic_replay and its execute caller",
+      "preserve": [
+        "No productive authority",
+        "Existing baseline/manifest drift guards",
+        "Measured corpus/archive/Meta reference binding",
+        "Separate protected-domain digest contract"
+      ],
+      "acceptance": [
+        "Second Candidate FAIL rejects the run before registration",
+        "Second Candidate metric/semantic-result drift rejects the run",
+        "Unchanged result remains deterministic",
+        "Baseline drift remains NON_DETERMINISM"
+      ],
+      "open_detail": "Specify which DomainEvaluationResult fields constitute stable result identity; full current canonical result digest is a concrete candidate, not an already adopted contract.",
+      "source_bindings": [
+        {
+          "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+          "line_start": 112,
+          "line_end": 265,
+          "snippet_sha256": "e18d5abf037fd2016a838f4c40af5da049710e1c1e77f8889df3d5f189763835"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+          "line_start": 267,
+          "line_end": 285,
+          "snippet_sha256": "79513b28e3eb413fcd87a83687e49b85862cb2eb3be80316f3091fbbc8046c62"
+        }
+      ],
+      "implementation_status": "NOT_APPLIED_FROZEN_IMPLEMENTATION",
+      "verification_status": "CURRENT_COUNTEREXAMPLE_EXECUTED_FUTURE_REPAIR_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "REMEDY-02",
+      "criteria": [
+        "FMC-T01"
+      ],
+      "classification": "REPRODUCED_REQUEST_EXPECTATION_NOT_ENFORCED",
+      "cause": "Federated M6 request declares expected Optimization schema but never consumes this field.",
+      "concrete_addition": "Apply the existing non-federated expectation check (None or bound schema constant) at the federated ingress before processing the join. Retain actual payload validation independently.",
+      "consumer": "ingest_meta_learning_evidence_from_federated_return_join_v1",
+      "preserve": [
+        "Actual M5 schema/content checks",
+        "Join digest/surface identity and no-plane boundary",
+        "M6 evidence-only role and no analyzer execution",
+        "No Search/learning-state/promotion authority"
+      ],
+      "acceptance": [
+        "Wrong expected schema rejects with the existing stale-contract reason family",
+        "Correct expectation and correct payload retain current result",
+        "Bad actual payload is still rejected even when expectation matches"
+      ],
+      "open_detail": "No new schema defaults or silent compatibility conversion; follow the existing non-federated contract.",
+      "source_bindings": [
+        {
+          "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16",
+          "line_start": 304,
+          "line_end": 396,
+          "snippet_sha256": "bb4c4bd5397633a7f009f808a437d31235904e92506a5e1aba1b7fbc6cb6d626"
+        },
+        {
+          "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16",
+          "line_start": 88,
+          "line_end": 181,
+          "snippet_sha256": "161ef865c00f6c529a519f29a3b21aa36ac2ad3fb286d46ddfa000b4ccd39410"
+        }
+      ],
+      "implementation_status": "NOT_APPLIED_FROZEN_IMPLEMENTATION",
+      "verification_status": "CURRENT_COUNTEREXAMPLE_EXECUTED_FUTURE_REPAIR_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "REMEDY-03",
+      "criteria": [
+        "NRC-T02",
+        "NRC-T03",
+        "NRC-T04"
+      ],
+      "classification": "REPRODUCED_LATE_IDENTITY_CONFLICT_REQUIRES_SESSION_CONSUMER_RULE",
+      "cause": "The next proposed ID is known before the provider measures, but existing experiment memory is only checked when Phase10 writes. A new timestamp changes the immutable payload for the same canonical ID.",
+      "concrete_addition": "At the actual Session boundary, inspect the already proposed canonical experiment ID before invoking the provider. Distinguish explicit read-only archive replay from a genuinely new research attempt. For an existing ID without a valid reuse route, return an explicit non-executed conflict/needs-reconciliation outcome before measurement; do not silently reuse old evidence as if bound to the new Search.",
+      "consumer": "run_native_research_session_step_v1 before provider invocation",
+      "preserve": [
+        "Immutable ExperimentMemory records",
+        "Canonical experiment identity",
+        "Original Search/Loop/time/horizon/universe bindings",
+        "Explicit retest rationale does not override memory",
+        "No arbitrary seed/ID change to bypass duplicates"
+      ],
+      "acceptance": [
+        "Existing ID with divergent requested execution metadata is classified before engine measurement",
+        "Read-only replay preserves original packet and original Search binding",
+        "A genuinely new declared identity is handled separately",
+        "Failed/unknown contexts do not cause fabricated successful reuse"
+      ],
+      "open_detail": "The exact Session outcome and a true retest/attempt identity contract must be specified. A blind one-line return of old execution under a new Search is invalid.",
+      "source_bindings": [
+        {
+          "path": "src/experiments/canonical_native_research_session_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "7c952bd685cea83d5e685e7fed04c1d88a4c4da6924ac3cf7e676b977b93ba0b",
+          "line_start": 283,
+          "line_end": 374,
+          "snippet_sha256": "d2bd5e771f8568a8a5242d5953af21d7d9d364c7c974b9a8009057714fe7e5e7"
+        },
+        {
+          "path": "src/experiments/canonical_experiment_memory_store_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "459f73dc2d975d6cd3c5e446d0fcaf89f2dd2487db100fda42afffe28ae9fd99",
+          "line_start": 49,
+          "line_end": 83,
+          "snippet_sha256": "9b370309b9c7b9104f7261b65c13c8636ed2c4db156cafdd01ae610d52879ff6"
+        }
+      ],
+      "implementation_status": "NOT_APPLIED_FROZEN_IMPLEMENTATION",
+      "verification_status": "CURRENT_COUNTEREXAMPLE_EXECUTED_FUTURE_REPAIR_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "REMEDY-04",
+      "criteria": [
+        "GF-T13",
+        "GF-T14",
+        "GF-T15",
+        "GF-T18"
+      ],
+      "classification": "CONDITIONAL_FIXTURE_PROJECTION_NOT_UNCONDITIONAL_PRODUCT_DEFECT",
+      "cause": "The chosen Fixture builder/comparator omit SelfLearning domain-result content and use a seed digest in a corpus field; protected-output digest does not directly bind the candidate result.",
+      "concrete_addition": "Where a real consumer requires full result preservation, provide a separately versioned result-binding artifact containing actual candidate result/trace/corpus identities and compare it at that consumer. Keep fixture semantics and legacy protected digest domains explicit.",
+      "consumer": "Actual evidence builder and its required consuming registry/archive/handoff, selected by the application caller",
+      "preserve": [
+        "Do not redefine existing protected digest domains as a covert fix",
+        "Existing actual VectorCorpusIntegrityGate",
+        "Separate numeric archive and Meta input",
+        "No quality acceptance inferred from artifact digest"
+      ],
+      "acceptance": [
+        "Candidate/trace changes alter the required result-binding artifact",
+        "Registered corpus identity matches actual bound corpus rather than seed digest",
+        "SelfLearning invariants/result references survive to the required consumer"
+      ],
+      "open_detail": "Current fixtures do not promise a complete numerical-quality/result archive. Do not replace all default fixtures or claim current numeric Meta path is absent.",
+      "source_bindings": [
+        {
+          "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+          "line_start": 287,
+          "line_end": 310,
+          "snippet_sha256": "46d7d9284758347105bf51b841d7779567d9c158930dc3e38839605cd9cd19a3"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427",
+          "line_start": 168,
+          "line_end": 243,
+          "snippet_sha256": "e4b3fec99f2eb6f7996ec03be038e52a5ed8dc3776386ab3794be37fd550fbbd"
+        }
+      ],
+      "implementation_status": "NOT_APPLIED_FROZEN_IMPLEMENTATION",
+      "verification_status": "CURRENT_COUNTEREXAMPLE_EXECUTED_FUTURE_REPAIR_NOT_IMPLEMENTED"
+    }
+  ],
+  "open_contract_dispositions": [
+    {
+      "criterion": "GF-T09",
+      "current_contract": "One injected domain evaluator per runner; Whole-System is fail-closed reproof fan-out.",
+      "disposition": "No automatic all-domain orchestration inferred. A real cross-domain acceptance consumer remains a separate integration obligation.",
+      "automatic_patch_authorized": false,
+      "source_bindings": [
+        {
+          "path": "src/evaluation/golden_vectors/integration/whole_system_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "b19050d5e8eb7780043a729fb30cd3bb77b45f536deb1c1bfd63d0a4b508ab70",
+          "line_start": 12,
+          "line_end": 13,
+          "snippet_sha256": "d916a599d5467cc196d82e5f4f47d74b007fb3a9acf94a44b34af3c121fab120"
+        }
+      ]
+    },
+    {
+      "criterion": "GF-T10",
+      "current_contract": "Canonical evidence registry is explicitly in-memory with digest and duplicate checks. Numeric research restart uses a separate actual content-addressed archive.",
+      "disposition": "Duplicate and archive restart tests pass in their scopes. Do not silently add durable registry authority or equate the two stores.",
+      "automatic_patch_authorized": false,
+      "source_bindings": [
+        {
+          "path": "src/evaluation/golden_vectors/registry/evidence_registry_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "d5625dfd0b6a9a155589fd999a86b862656dfdfe2dd435f314724efabc1c5d59",
+          "line_start": 18,
+          "line_end": 47,
+          "snippet_sha256": "4b1e9b9d328861bf5e71f67c78e290b0ed9488b4e5dc9d8772534002dced68c6"
+        },
+        {
+          "path": "src/experiments/canonical_native_research_session_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "7c952bd685cea83d5e685e7fed04c1d88a4c4da6924ac3cf7e676b977b93ba0b",
+          "line_start": 260,
+          "line_end": 271,
+          "snippet_sha256": "a4a45ed9966296ce17134f1c49dd79f34e0401a70bf035e20c5a9964d315f2b3"
+        }
+      ]
+    },
+    {
+      "criterion": "GF-T12",
+      "current_contract": "Default adapter deliberately returns None; explicit concrete adapter produces an authority-free envelope.",
+      "disposition": "Optional handoff passes. Required external consumer/ACK is an application contract not supplied by this Runner API; do not force auto-promotion.",
+      "automatic_patch_authorized": false,
+      "source_bindings": [
+        {
+          "path": "src/evaluation/golden_vectors/promotion/promotion_evidence_adapter_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "f7141779fee3f4d5f6322e3992064fbbe4a0d498924f87c194f4709c5a70eb11",
+          "line_start": 105,
+          "line_end": 115,
+          "snippet_sha256": "7a193a7a9e8392612e44cfff22b3ecab52322ade2a777670bb7fcb20cd786b38"
+        }
+      ]
+    },
+    {
+      "criterion": "NRC-T05",
+      "current_contract": "Atomic archive packet is not a distributed transaction with Phase2/3/7 stores; existing documentation expressly preserves earlier records after late failure.",
+      "disposition": "Failing archive creates no successful Session. A complete recovery owner would need original execution/receipt plus matching immutable store identities; never fabricate lost Loop/measurement evidence or delete records as rollback.",
+      "automatic_patch_authorized": false,
+      "source_bindings": [
+        {
+          "path": "src/experiments/canonical_native_research_session_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "7c952bd685cea83d5e685e7fed04c1d88a4c4da6924ac3cf7e676b977b93ba0b",
+          "line_start": 222,
+          "line_end": 258,
+          "snippet_sha256": "9b9f96b37b78ac1d62a7fc0dac575d03e9e1c1e576560596bcfe479f0dba58db"
+        },
+        {
+          "path": "src/experiments/canonical_native_research_session_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "7c952bd685cea83d5e685e7fed04c1d88a4c4da6924ac3cf7e676b977b93ba0b",
+          "line_start": 283,
+          "line_end": 374,
+          "snippet_sha256": "d2bd5e771f8568a8a5242d5953af21d7d9d364c7c974b9a8009057714fe7e5e7"
+        }
+      ]
+    }
+  ],
+  "remaining_runtime_acceptance": "No repaired stand or productive end-to-end effect has been executed. Offline counterexample reproduction is not repair acceptance."
+}

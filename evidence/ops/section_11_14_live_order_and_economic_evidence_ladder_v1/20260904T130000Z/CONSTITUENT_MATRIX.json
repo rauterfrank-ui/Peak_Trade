@@ -1,0 +1,157 @@
+{
+  "admissibility_predicate": "LIVE_EXECUTION_PATH_REACHABLE is true iff every PART_OF_REACHABILITY constituent is proven true on current origin/main using the lowest authority admissible evidence. The field means the current productive Live canary path can be traversed to the pre-submit boundary: the static graph is complete and integrated, the entrypoint is selectable, fail-closed gates are evaluable, the urllib Live transport is constructible, required SecretRef credential material is present, the production EEA host is connectable, and a current authenticated private GET demonstrates functional authentication and account/venue read access, with no static blocker preventing that pre-submit boundary. Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, OWNER execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. \u00a74.9 CURRENTLY_REACHABLE, LIVE_EXECUTION_CODE_EXISTS, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN or any later ladder field, and does not authorize POST or submit.",
+  "candidate_count": 15,
+  "candidate_required_names": [
+    "STATIC_EXECUTION_GRAPH_COMPLETE",
+    "ENTRYPOINT_INTEGRATED",
+    "CURRENT_RUNTIME_PATH_ENABLED_OR_SELECTABLE",
+    "REQUIRED_FAIL_CLOSED_GATES_EVALUABLE",
+    "TRANSPORT_CONSTRUCTIBLE",
+    "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE",
+    "AUTHENTICATION_PATH_FUNCTIONAL",
+    "REQUIRED_CREDENTIAL_MATERIAL_AVAILABLE",
+    "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL",
+    "NO_STATIC_BLOCKER_PREVENTS_REACHING_PRE_SUBMIT_BOUNDARY"
+  ],
+  "canonical_definition": "LIVE_EXECUTION_PATH_REACHABLE is the second \u00a711.14 Live proof-claim field. It is true iff every bound PART_OF_REACHABILITY constituent is proven: the current productive Live canary static graph is complete and the entrypoint is integrated and selectable; fail-closed submit gates are evaluable; UrllibLiveCanaryTransportV1 is constructible; required SecretRef credential material is present without value disclosure; the production EEA host is currently connectable; a current authenticated private GET proves functional authentication and account/venue read access; and no static blocker prevents reaching the pre-submit boundary (refuse_submit_unless_gates_pass_v1). Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, Owner execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. File presence, LIVE_EXECUTION_CODE_EXISTS, \u00a74.9 CURRENTLY_REACHABLE, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN, LIVE_ORDER_PLAN_OBSERVED, any later ladder field, submit authorization, or POST.",
+  "canonical_location": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md ## 11.14 Live order and economic evidence ladder",
+  "later_ladder_fields_excluded": true,
+  "reachability_constituent_count": 10,
+  "reachability_constituents": [
+    "STATIC_EXECUTION_GRAPH_COMPLETE",
+    "ENTRYPOINT_INTEGRATED",
+    "CURRENT_RUNTIME_PATH_SELECTABLE",
+    "REQUIRED_FAIL_CLOSED_GATES_EVALUABLE",
+    "TRANSPORT_CONSTRUCTIBLE",
+    "REQUIRED_CREDENTIAL_MATERIAL_AVAILABLE",
+    "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE",
+    "AUTHENTICATION_PATH_FUNCTIONAL",
+    "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL",
+    "NO_STATIC_BLOCKER_PREVENTS_REACHING_PRE_SUBMIT_BOUNDARY"
+  ],
+  "rows": [
+    {
+      "interpretation": "CODE_EXISTS_GRAPH_MUST_REMAIN_COMPLETE",
+      "name": "STATIC_EXECUTION_GRAPH_COMPLETE",
+      "notes": "Predecessor LIVE_EXECUTION_CODE_EXISTS graph; not sufficient alone.",
+      "proof_layer": "STATIC_OFFLINE",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "RUN_CANARY_SUBMIT_TRANSPORT_IS_CURRENT_PRODUCTIVE_ORCHESTRATOR",
+      "name": "ENTRYPOINT_INTEGRATED",
+      "notes": "Integrated Class-B orchestrator on the current Live canary path.",
+      "proof_layer": "STATIC_OFFLINE",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "SELECTABLE_NOT_ENABLED",
+      "name": "CURRENT_RUNTIME_PATH_ENABLED_OR_SELECTABLE",
+      "notes": "Bound as CURRENT_RUNTIME_PATH_SELECTABLE. ENABLED (LIVE_ENABLED / CANARY_SUBMIT_TRANSPORT_ACTIVATED) is submit authorization, not reachability. Selectable means the current productive orchestrator is constructible and callable as code.",
+      "proof_layer": "STATIC_OFFLINE",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "GATES_MUST_BE_EVALUABLE_NOT_CURRENTLY_PASSING_FOR_SUBMIT",
+      "name": "REQUIRED_FAIL_CLOSED_GATES_EVALUABLE",
+      "notes": "evaluate_canary_submit_gates_v1 and refuse_submit_unless_gates_pass_v1 must exist and be callable. Current submit_allowed=false is expected under standing fail-closed flags and is not a reachability blocker.",
+      "proof_layer": "STATIC_OFFLINE",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "URLLIB_LIVE_CANARY_TRANSPORT_CONSTRUCTIBLE",
+      "name": "TRANSPORT_CONSTRUCTIBLE",
+      "notes": "UrllibLiveCanaryTransportV1 and LiveCanaryHttpClientV1 constructible.",
+      "proof_layer": "STATIC_OFFLINE",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "PRODUCTION_EEA_HOST_CURRENTLY_CONNECTABLE",
+      "name": "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE",
+      "notes": "eea.okx.com must currently accept the authenticated GET. Configured host is not the fact.",
+      "proof_layer": "FRESH_AUTHENTICATED_PRIVATE_GET",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "CURRENT_SIGNED_PRIVATE_GET_AUTH_SUCCESS",
+      "name": "AUTHENTICATION_PATH_FUNCTIONAL",
+      "notes": "Credential presence is not authentication success. Historical GET is not current.",
+      "proof_layer": "FRESH_AUTHENTICATED_PRIVATE_GET",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "SECRETREF_BOUND_AND_FIELDS_COMPLETE_WITHOUT_VALUES",
+      "name": "REQUIRED_CREDENTIAL_MATERIAL_AVAILABLE",
+      "notes": "Vault/SecretRef presence and field completeness. Not auth success.",
+      "proof_layer": "CREDENTIAL_MATERIAL_PRESENCE_WITHOUT_VALUES",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "CURRENT_PRIVATE_GET_RETURNS_READABLE_ACCOUNT_PAYLOAD",
+      "name": "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL",
+      "notes": "HTTP 200 and OKX code 0 with parseable account/config data.",
+      "proof_layer": "FRESH_AUTHENTICATED_PRIVATE_GET",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "NO_HARDCODED_DEAD_PATH_BEFORE_PRE_SUBMIT",
+      "name": "NO_STATIC_BLOCKER_PREVENTS_REACHING_PRE_SUBMIT_BOUNDARY",
+      "notes": "Standing LIVE_ENABLED=false does not statically prevent gate evaluation. PRODUCTIVE_WIRE_SEND_DISABLED is a constructor default, not a deleted path. Submit-gate refusal is the pre-submit boundary.",
+      "proof_layer": "STATIC_OFFLINE",
+      "required_for_path_reachable": true,
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "interpretation": "EXECUTE_PERMIT_NOT_REQUIRED_TO_REACH_PRE_SUBMIT",
+      "name": "OWNER_OR_EXECUTION_PERMIT_STATE",
+      "notes": "Owner execute-permit and canary confirm token are submit authorization.",
+      "proof_layer": "CONFIG_DEFAULT_INSPECTION",
+      "required_for_path_reachable": false,
+      "role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION"
+    },
+    {
+      "interpretation": "STANDING_FALSE_IS_NOT_A_REACHABILITY_CONSTITUENT",
+      "name": "LIVE_ENABLED",
+      "notes": "Fail-closed submit gate. Evaluable while false. Not PATH_REACHABLE.",
+      "proof_layer": "CONFIG_DEFAULT_INSPECTION",
+      "required_for_path_reachable": false,
+      "role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION"
+    },
+    {
+      "interpretation": "STANDING_FALSE_IS_NOT_A_REACHABILITY_CONSTITUENT",
+      "name": "LIVE_ARMED",
+      "notes": "Fail-closed submit gate. Evaluable while false. Not PATH_REACHABLE.",
+      "proof_layer": "CONFIG_DEFAULT_INSPECTION",
+      "required_for_path_reachable": false,
+      "role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION"
+    },
+    {
+      "interpretation": "STANDING_FALSE_IS_NOT_A_REACHABILITY_CONSTITUENT",
+      "name": "SUBMIT_UNLOCKED",
+      "notes": "Fail-closed submit gate. Evaluable while false. Not PATH_REACHABLE.",
+      "proof_layer": "CONFIG_DEFAULT_INSPECTION",
+      "required_for_path_reachable": false,
+      "role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION"
+    },
+    {
+      "interpretation": "STANDING_FALSE_IS_NOT_A_REACHABILITY_CONSTITUENT",
+      "name": "CANARY_AUTHORIZED",
+      "notes": "live_canary_authorized is submit authorization, not path reachability.",
+      "proof_layer": "CONFIG_DEFAULT_INSPECTION",
+      "required_for_path_reachable": false,
+      "role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION"
+    }
+  ],
+  "schema_version": "section_11_14_path_reachable_constituent_matrix.v1",
+  "section_4_9_currently_reachable_excluded": true,
+  "submit_authorization_excluded": true
+}

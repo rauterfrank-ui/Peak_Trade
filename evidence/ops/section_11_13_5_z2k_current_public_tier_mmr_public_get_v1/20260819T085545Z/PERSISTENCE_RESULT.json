@@ -1,0 +1,10 @@
+{
+  "COVER_USDC_STATUS": "UNINSTANTIATED",
+  "GET_EXECUTED": true,
+  "MMR_PUBLIC_TIER_QTY_ONE_CURRENT_VALUE": "0.01",
+  "POST_COUNT": 0,
+  "RUN_ID": "20260819T085545Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "evidence_root": "/private/tmp/peak-trade-z2k/evidence/ops/section_11_13_5_z2k_current_public_tier_mmr_public_get_v1/20260819T085545Z",
+  "ok": true
+}

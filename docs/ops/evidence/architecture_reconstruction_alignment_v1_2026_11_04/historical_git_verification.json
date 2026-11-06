@@ -1,0 +1,89 @@
+{
+  "method": "git show exact introduction revision:path; no fetch",
+  "results": [
+    {
+      "id": "SL01",
+      "commit": "ecbe5b7b4f8a71d3a81443a65949fcce6a5de350",
+      "path": "src/experiments/canonical_experiment_identity_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL02",
+      "commit": "e10f32f56fad0576cd250958401d13f044c5920d",
+      "path": "src/experiments/canonical_experiment_memory_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL03",
+      "commit": "e763bf1bf133afab1c3850a6bbaafde6f83e39d2",
+      "path": "src/experiments/canonical_failure_memory_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL04",
+      "commit": "2cd8f6b6e1c8051decb3506abc3a2250b4f228c5",
+      "path": "src/experiments/canonical_robustness_suite_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL05",
+      "commit": "e1efa56f2bde5fefd48c62260c1f720d99138e71",
+      "path": "src/experiments/canonical_comparison_ssot_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL06",
+      "commit": "bc97d43f715305c8b70eb84ddd12fd718f8460a6",
+      "path": "src/experiments/canonical_champion_challenger_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL07",
+      "commit": "defa59f12813b961d6edce11c7ead91c6e369950",
+      "path": "src/experiments/canonical_reality_gap_store_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL08",
+      "commit": "4fa4086ba6a96b0cec18d8171da70b1d1d8099d9",
+      "path": "src/experiments/canonical_regime_aware_evaluation_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL09",
+      "commit": "562345af2153fa0c659ca261a71a9191b4b7210e",
+      "path": "src/experiments/canonical_portfolio_learning_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL10",
+      "commit": "7c36858bb6b9ed036bba901170d370b61a805110",
+      "path": "src/experiments/canonical_automated_offline_research_loop_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL11",
+      "commit": "fc059d1285be55e433a9ca59e89ce187e7a4b363",
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    },
+    {
+      "id": "SL12",
+      "commit": "899e154d1bb095227c13690943e13284fb936972",
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "local_git_object_available": true,
+      "matches_snapshot": true
+    }
+  ]
+}

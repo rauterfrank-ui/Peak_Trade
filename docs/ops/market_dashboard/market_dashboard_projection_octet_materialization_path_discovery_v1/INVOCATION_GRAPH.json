@@ -1,0 +1,190 @@
+{
+  "schema_name": "market_dashboard_projection_octet_materialization_path_discovery_invocation_graph.v1",
+  "schema_version": 1,
+  "generated_at": "2026-08-04T19:54:24Z",
+  "repository_head_sha": "8aa5606fc08419d5e436a1e4db414deb680e9f71",
+  "observed_facts": {
+    "common_octet_orchestrator_module_present": false,
+    "common_cli_present": false,
+    "ops_script_invoking_any_octet_materializer_present": false,
+    "launchagent_invoking_any_octet_materializer_present": false,
+    "session_start_or_closeout_path_invoking_octet_materializer_present": false,
+    "o_series_orchestration_invoking_octet_materializer_present": false,
+    "dashboard_consumer_imports_loaders_only": true,
+    "dashboard_consumer_module": "src/webui/market_dashboard_landscape_producer_binding_v2.py",
+    "dashboard_materializer_imports": false,
+    "ast_non_test_call_sites_total": 0,
+    "ast_test_call_sites_total": 70,
+    "materializer_modules_count": 8,
+    "shared_archive_root_contract": "src/webui/workflow_dashboard_archive_root_v1.py",
+    "shared_pattern": "eight_independent_library_entrypoints_same_archive_root_convention_no_common_wrapper"
+  },
+  "authority_chain_direction": [
+    "Trading SSOT",
+    "authorized Read Models / Evidence / durable source siblings",
+    "authorized durable Presentation Projections (materializer write)",
+    "Dashboard PURE_CONSUMER loaders (try_load_*)"
+  ],
+  "forbidden_dashboard_actions_observed_as_absent": [
+    "dashboard_does_not_call_materializers",
+    "dashboard_does_not_create_projections",
+    "dashboard_does_not_derive_missing_values_from_siblings_as_projection_substitute",
+    "loaders_require_projection_artifact_present_else_MISSING_SOURCE",
+    "sibling_presence_without_projection_does_not_satisfy_loader"
+  ],
+  "nodes": [
+    {
+      "node_id": "trading_ssot_producers",
+      "role": "AUTHORITY_SOURCE",
+      "note": "Canonical trading/decision/risk/safety/execution/economic producers remain SSOT; not modified by this discovery."
+    },
+    {
+      "node_id": "durable_source_siblings",
+      "role": "AUTHORIZED_READMODEL_OR_EVIDENCE_SIBLING",
+      "active_archive_present_count": 0,
+      "expected_paths": [
+        "readmodels/dynamic_scope_state_v1.json",
+        "readmodels/regime_bull_bear_switch.v1.json",
+        "readmodels/canonical_trading_decision_evidence.v1.json",
+        "readmodels/double_play_dashboard_display.v1.json",
+        "readmodels/risk_sizing_capital.v1.json",
+        "readmodels/execution_reconciliation.v1.json",
+        "readmodels/economic_summary.v1.json"
+      ],
+      "safety_authority_exception": "no durable sibling loader; caller object required"
+    },
+    {
+      "node_id": "presentation_materializers",
+      "role": "NON_AUTHORITATIVE_MATERIALIZER_LIBRARY",
+      "entrypoints": [
+        "materialize_dynamic_scope_presentation_projection_v1",
+        "materialize_bull_bear_regime_presentation_projection_v1",
+        "materialize_canonical_decision_presentation_projection_v1",
+        "materialize_double_play_presentation_projection_v1",
+        "materialize_safety_authority_presentation_projection_v1",
+        "materialize_risk_sizing_capital_presentation_projection_v1",
+        "materialize_execution_reconciliation_presentation_projection_v1",
+        "materialize_economic_summary_presentation_projection_v1"
+      ],
+      "operational_caller_present": false,
+      "test_caller_present": true
+    },
+    {
+      "node_id": "presentation_projection_artifacts",
+      "role": "DURABLE_PRESENTATION_PROJECTION",
+      "active_archive_present_count": 0,
+      "expected_paths": [
+        "readmodels/dynamic_scope_presentation_projection.v1.json",
+        "readmodels/bull_bear_regime_presentation_projection.v1.json",
+        "readmodels/canonical_decision_presentation_projection.v1.json",
+        "readmodels/double_play_presentation_projection.v1.json",
+        "readmodels/safety_authority.v1.json",
+        "readmodels/risk_sizing_capital_presentation_projection.v1.json",
+        "readmodels/execution_reconciliation_presentation_projection.v1.json",
+        "readmodels/economic_summary_presentation_projection.v1.json"
+      ]
+    },
+    {
+      "node_id": "dashboard_loaders",
+      "role": "PURE_CONSUMER",
+      "module": "src/webui/market_dashboard_landscape_producer_binding_v2.py",
+      "authority_effect": "NONE"
+    }
+  ],
+  "edges": [
+    {
+      "from": "trading_ssot_producers",
+      "to": "durable_source_siblings",
+      "relation": "authorized_persist_or_dump",
+      "operationally_proven_into_active_archive": false
+    },
+    {
+      "from": "durable_source_siblings",
+      "to": "presentation_materializers",
+      "relation": "materializer_reads_sibling_or_caller_object",
+      "operationally_proven": false,
+      "test_proven": true
+    },
+    {
+      "from": "presentation_materializers",
+      "to": "presentation_projection_artifacts",
+      "relation": "atomic_write_projection_json",
+      "operationally_proven": false,
+      "test_proven": true
+    },
+    {
+      "from": "presentation_projection_artifacts",
+      "to": "dashboard_loaders",
+      "relation": "try_load_projection_only",
+      "operationally_proven": true,
+      "note": "B2 runtime verify proved loaders resolve ABSENT when artifacts missing; no fallback synthesis."
+    },
+    {
+      "from": "dashboard_loaders",
+      "to": "presentation_materializers",
+      "relation": "DOES_NOT_INVOKE",
+      "proven_absent": true
+    }
+  ],
+  "family_edges": [
+    {
+      "family_id": "dynamic_scope",
+      "source": "readmodels/dynamic_scope_state_v1.json",
+      "materializer": "materialize_dynamic_scope_presentation_projection_v1",
+      "output": "readmodels/dynamic_scope_presentation_projection.v1.json",
+      "loader": "try_load_dynamic_scope_presentation_projection_v1"
+    },
+    {
+      "family_id": "regime_bull_bear_switch",
+      "source": "readmodels/regime_bull_bear_switch.v1.json",
+      "materializer": "materialize_bull_bear_regime_presentation_projection_v1",
+      "output": "readmodels/bull_bear_regime_presentation_projection.v1.json",
+      "loader": "try_load_bull_bear_regime_presentation_projection_v1"
+    },
+    {
+      "family_id": "canonical_decision",
+      "source": "readmodels/canonical_trading_decision_evidence.v1.json",
+      "materializer": "materialize_canonical_decision_presentation_projection_v1",
+      "output": "readmodels/canonical_decision_presentation_projection.v1.json",
+      "loader": "try_load_canonical_decision_presentation_projection_v1"
+    },
+    {
+      "family_id": "double_play",
+      "source": "readmodels/double_play_dashboard_display.v1.json",
+      "materializer": "materialize_double_play_presentation_projection_v1",
+      "output": "readmodels/double_play_presentation_projection.v1.json",
+      "loader": "try_load_double_play_presentation_projection_v1"
+    },
+    {
+      "family_id": "safety_authority",
+      "source": "CALLER_PROVIDED_OBJECT_ONLY",
+      "materializer": "materialize_safety_authority_presentation_projection_v1",
+      "output": "readmodels/safety_authority.v1.json",
+      "loader": "try_load_safety_authority_presentation_projection_v1"
+    },
+    {
+      "family_id": "risk_sizing_capital",
+      "source": "readmodels/risk_sizing_capital.v1.json",
+      "materializer": "materialize_risk_sizing_capital_presentation_projection_v1",
+      "output": "readmodels/risk_sizing_capital_presentation_projection.v1.json",
+      "loader": "try_load_risk_sizing_capital_presentation_projection_v1"
+    },
+    {
+      "family_id": "execution_reconciliation",
+      "source": "readmodels/execution_reconciliation.v1.json",
+      "materializer": "materialize_execution_reconciliation_presentation_projection_v1",
+      "output": "readmodels/execution_reconciliation_presentation_projection.v1.json",
+      "loader": "try_load_execution_reconciliation_presentation_projection_v1"
+    },
+    {
+      "family_id": "economic_summary",
+      "source": "readmodels/economic_summary.v1.json",
+      "materializer": "materialize_economic_summary_presentation_projection_v1",
+      "output": "readmodels/economic_summary_presentation_projection.v1.json",
+      "loader": "try_load_economic_summary_presentation_projection_v1"
+    }
+  ],
+  "octet_path_classification": "EIGHT_INDEPENDENT_PATHS_PROVEN",
+  "octet_path_classification_note": "Eight separate materializer symbols/modules share archive-root convention and PURE_CONSUMER loaders, but no common operational octet materialization orchestrator/CLI/session path exists in repository. Operational reachability for all eight is currently false.",
+  "operational_reachability_classification": "NO_OPERATIONAL_PATH_PROVEN"
+}

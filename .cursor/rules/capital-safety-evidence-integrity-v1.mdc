@@ -1,0 +1,72 @@
+---
+description: Capital & safety evidence integrity — PROVEN is proof-bound; NOT_PROVEN over false PASS
+alwaysApply: true
+---
+
+# CAPITAL_SAFETY_EVIDENCE_INTEGRITY_V1
+
+OWNER_MANDATORY. Does not override Master Runbook or `peak-trade-governance.mdc`. Does not change trading logic, safety invariants, or capital limits.
+
+## Grundsatz
+
+Unbelegtes PROVEN/PASS ist schwerwiegender als korrektes NOT_PROVEN. Korrekte Unsicherheit hat Vorrang — keine Optimierung auf grüne Ergebnisse.
+
+GHV and graph artifacts: **REFERENCE_ONLY**. CURRENT code, active contracts, and actual runtime evidence are authoritative.
+
+Technical PROVEN is never a guarantee against financial loss (`FINANCIAL_GUARANTEE=NONE`).
+
+## PROVEN evidence gate (mandatory)
+
+PROVEN is a **proof-bound status**, not a free-form closing phrase.
+
+Every PROVEN claim requires all of:
+
+- exact claim text and bounded scope
+- CURRENT code evidence (paths, behavior)
+- contract evidence where applicable
+- relevant runtime evidence when the claim is runtime-reachability
+- GHV coverage when the claim is whole-system / cross-cutting (or explicit N/A with reason)
+- active adversarial counter-evidence search (see Self-falsification)
+- documented remaining uncertainty
+
+Missing decisive evidence → **NOT_PROVEN** for that claim. Counter-evidence found → **FAILED** or **RETRACTED**. No blanket all-clear from a narrow partial proof.
+
+Do not downgrade **FAILED** to WARN or PASS without new evidence and explicit Owner decision.
+
+For safety- or capital-relevant NOT_PROVEN/FAILED: do **not** derive productive release from that proof alone.
+
+## Self-falsification (before safety/capital/architecture PROVEN)
+
+1. State the strongest counter-claim to your conclusion.
+2. Search deliberately for that counter-evidence.
+3. Check reverse and transitive dependencies.
+4. Check shared state, archive, configuration, external effects.
+5. Check graph drift and coverage gaps.
+6. Document which counter-claims were ruled out and how.
+7. Non-excluded relevant counter-claims → claim stays **NOT_PROVEN**.
+
+## Retraction discipline
+
+If new evidence contradicts a prior PROVEN:
+
+- identify the prior claim; mark it **RETRACTED** (no silent correction)
+- document original scope and why it was wrong
+- name affected downstream decisions
+- state required re-verification
+
+## Required closure block (audits, reviews, releases, CAUSAL_MODE)
+
+```text
+EVIDENCE_INTEGRITY_V1=
+CLAIM_EXACT=
+SCOPE=
+POSITIVE_EVIDENCE=
+ADVERSARIAL_COUNTERCHECK=
+REMAINING_UNCERTAINTIES=
+RESULT=PROVEN|NOT_PROVEN|FAILED|RETRACTED
+FINANCIAL_GUARANTEE=NONE
+CAPITAL_SAFETY_GATE=OPEN|CLOSED
+STOP_REASON=
+```
+
+STOP when evidence is insufficient for a safety- or capital-relevant claim.

@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_presentation_export_plan
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-presentation-export-plan
+MODE: paper_stability_guard
+
+GOAL
+- define how bounded acceptance slides should be exported and packaged
+
+OUTPUT
+- docs/ops/reviews/bounded_acceptance_presentation_export_plan/PLAN.md
+
+NEXT SUGGESTED STEP
+- only if needed later: bounded_acceptance_export_runbook

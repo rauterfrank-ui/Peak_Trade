@@ -1,0 +1,2 @@
+timing_proof_status=TIMING_PROOF_NOT_REQUIRED_JUSTIFIED
+slice_class=DEFINITION_ONLY

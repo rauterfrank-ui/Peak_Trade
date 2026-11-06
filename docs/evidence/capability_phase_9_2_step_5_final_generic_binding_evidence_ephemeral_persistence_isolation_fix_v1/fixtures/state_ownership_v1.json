@@ -1,0 +1,7 @@
+{
+  "authorization_ledger_owner": "per-call persistence_root / step5_authorization_consumption_ledger_v1.jsonl",
+  "committed_evidence_owner": "docs/evidence/... redacted reports only; never FI ledgers",
+  "confirm_token_ledger_owner": "per-call persistence_root / step5_confirm_token_consumption_ledger_v1.jsonl",
+  "failure_injection_persistence_owner": "caller-injected Path or TemporaryDirectory owned by materialize",
+  "legacy_shared_path_role": "not selected by materializer; forbidden if explicitly equal"
+}

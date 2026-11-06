@@ -1,0 +1,2 @@
+# Exact historical before-images retain their original whitespace bytes.
+vault-before/** -whitespace

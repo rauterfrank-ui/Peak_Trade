@@ -1,0 +1,40 @@
+{
+  "schema_version": "phase_9_2_productive_restart_recovery_post_unlock_runtime_invocation.v1",
+  "capability_id": "PHASE_9_2_PRODUCTIVE_RESTART_RECOVERY_POST_UNLOCK_RUNTIME_INVOCATION_V1",
+  "authority_owner": "ops.phase_9_2_productive_restart_recovery_post_unlock_runtime_invocation_v1",
+  "predecessor_capability_id": "PHASE_9_2_PRODUCTIVE_RESTART_RECOVERY_SESSION_GO_CAPABILITY_V1",
+  "predecessor_merge_sha": "9d81ed8bb6f4b34d461d8e47ed27bf6230786bb6",
+  "target_session_id": "phase_9_2_public_md_restart_recovery_session_v1",
+  "productive_entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.py",
+  "canonical_runtime_runner": "src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.orchestrator_v1.run_offline_productive_restart_orchestration_v1",
+  "canonical_wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+  "session_go_builder": "src.ops.phase_9_2_productive_restart_recovery_session_go_capability_v1.contract_v1.build_session_go_authority_v1",
+  "network_session_allowed_by_capability_config": false,
+  "authorization_issuance_allowed_by_capability_config": false,
+  "authorization_consumption_allowed_by_capability_config": false,
+  "session_execution_allowed_by_capability_config": false,
+  "productive_network_session_execution_authorized": false,
+  "no_permanent_unscoped_enable_flag": true,
+  "public_md_only": true,
+  "http_get_only": true,
+  "consumers": {
+    "post_unlock_invocation": "src.ops.phase_9_2_productive_restart_recovery_post_unlock_runtime_invocation_v1.invocation_v1",
+    "productive_entrypoint": "scripts/ops/run_phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.py"
+  },
+  "ordering": [
+    "SESSION_GO_EVALUATION",
+    "OWNER_GO_AND_OWNER_SESSION_GO",
+    "AUTHORIZATION_VALIDATION",
+    "AUTHORIZATION_CONSUMPTION_ONCE",
+    "SESSION_LOCK",
+    "CANONICAL_RUNTIME_RUNNER",
+    "CONTROLLED_RESTART",
+    "STATE_RELOAD_AND_RECONCILIATION_BEFORE_ALPHA",
+    "EVIDENCE_AND_LOCK_RELEASE"
+  ],
+  "notes": [
+    "Wires post-unlock handoff to the preexisting canonical restart orchestration runner.",
+    "Does not authorize or execute a productive real-network session in this capability.",
+    "Does not flip productive_network_session_execution_authorized permanently."
+  ]
+}

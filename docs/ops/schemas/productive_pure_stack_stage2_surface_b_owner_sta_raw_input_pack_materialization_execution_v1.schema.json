@@ -1,0 +1,155 @@
+{
+  "$id": "productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_execution_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Machine-readable execution surface for RAW_INPUT_PACK_MATERIALIZATION_ONLY under DEC_RAW_INPUT_PACK_MATERIALIZATION. Does not authorize campaign start, INPUT_AUTHORITY, RUNTIME_IMPLEMENTED, regime-coverage flips, or orders.",
+  "properties": {
+    "campaign_start": {
+      "const": false
+    },
+    "campaign_start_authorized": {
+      "const": false
+    },
+    "campaign_started": {
+      "const": false
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION"
+    },
+    "dashboard_authority_effect": {
+      "const": "NONE"
+    },
+    "decision_id": {
+      "const": "DEC_RAW_INPUT_PACK_MATERIALIZATION"
+    },
+    "decision_status": {
+      "const": "RATIFIED"
+    },
+    "document_type": {
+      "const": "OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_EXECUTION_MANIFEST"
+    },
+    "input_authority": {
+      "const": false
+    },
+    "invented_values": {
+      "const": false
+    },
+    "materialization_proofs": {
+      "properties": {
+        "bar_count": {
+          "const": 299
+        },
+        "campaign_id": {
+          "type": "null"
+        },
+        "dataset_id": {
+          "const": "surface_b_eth_usdt_swap_pt1m_okx_public_tip1785934680_v1"
+        },
+        "observation_pack_digest": {
+          "const": "268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676"
+        },
+        "raw_source_digest": {
+          "const": "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57"
+        },
+        "regime_coverage_counts": {
+          "type": "null"
+        },
+        "regime_coverage_instance": {
+          "type": "null"
+        },
+        "remaining_null_fields": {
+          "const": [
+            "campaign_id",
+            "regime_coverage_counts",
+            "regime_coverage_instance"
+          ],
+          "type": "array"
+        },
+        "scenario_id": {
+          "const": "surface_b_regime_coverage_structural_partition_v1"
+        }
+      },
+      "required": [
+        "dataset_id",
+        "scenario_id",
+        "campaign_id",
+        "observation_pack_digest",
+        "raw_source_digest",
+        "bar_count",
+        "remaining_null_fields",
+        "regime_coverage_counts",
+        "regime_coverage_instance"
+      ],
+      "type": "object"
+    },
+    "orders_testnet_live": {
+      "const": false
+    },
+    "owner_go": {
+      "const": "OWNER_STA_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION_V1"
+    },
+    "owner_go_base_sha": {
+      "const": "24da36c1b4ded14a376d9f73555a0cba28b41204"
+    },
+    "owner_value": {
+      "const": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION"
+    },
+    "pack_materialization": {
+      "const": true
+    },
+    "productive_thresholds_lookbacks": {
+      "const": false
+    },
+    "proposed_values": {
+      "const": false
+    },
+    "raw_input_pack_created": {
+      "const": true
+    },
+    "raw_input_pack_materialization_authorized": {
+      "const": true
+    },
+    "regime_coverage_producer_available": {
+      "const": false
+    },
+    "runtime_implemented": {
+      "const": false
+    },
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization/v1"
+    },
+    "scope": {
+      "const": "RAW_INPUT_PACK_MATERIALIZATION_ONLY"
+    },
+    "silent_defaults": {
+      "const": false
+    },
+    "status": {
+      "const": "OWNER_STA_RAW_INPUT_PACK_MATERIALIZED_OBSERVATION_DIGEST_COMPUTED_REMAINING_NULL"
+    },
+    "trading_logic_change": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "owner_go",
+    "owner_go_base_sha",
+    "scope",
+    "decision_id",
+    "decision_status",
+    "owner_value",
+    "pack_materialization",
+    "raw_input_pack_created",
+    "raw_input_pack_materialization_authorized",
+    "campaign_start",
+    "input_authority",
+    "runtime_implemented",
+    "materialization_proofs"
+  ],
+  "title": "Stage-2 Surface B Owner/STA Raw Input Pack Materialization Execution v1",
+  "type": "object"
+}

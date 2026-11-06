@@ -1,0 +1,126 @@
+{
+  "ECONOMIC_CLASS": "INCONCLUSIVE_UNSTABLE",
+  "ECONOMIC_GATE_OPENED": false,
+  "PROMOTION_ELIGIBLE": false,
+  "chronological_sign_changes": 1,
+  "classes": {
+    "A_measurement_defect": {
+      "evidence": "post-#5349 COST_APPLICATION=APPLIED; ledger/equity PASS; reproduction match",
+      "status": "NOT_SUPPORTED"
+    },
+    "B_cost_drag": {
+      "evidence": "cost_drag=22.879432 \u2248 49.6% of gross; stress modelled cost increases flip net return negative",
+      "status": "CONFIRMED"
+    },
+    "C_direction_imbalance": {
+      "evidence": "count SHORT/LONG=385/69; LONG_net=57.678107 SHORT_net=-34.424246; SHORT count dominance coincides with negative SHORT net contribution",
+      "status": "CONFIRMED"
+    },
+    "D_instrument_concentration": {
+      "evidence": "LOO dominated_by_single=True; top_pos=TURBO top_neg=ORDI",
+      "status": "CONTRIBUTING"
+    },
+    "E_scope_switch_instability": {
+      "evidence": "No per-trade Dynamic Scope / Switch fields in sealed exports \u2192 DATA_GAP",
+      "status": "INCONCLUSIVE"
+    },
+    "F_composition_filtering_or_timing": {
+      "evidence": "No CompositionStatus time series in sealed exports \u2192 DATA_GAP",
+      "status": "INCONCLUSIVE"
+    },
+    "G_exit_inefficiency": {
+      "evidence": "stop_loss n=437 net=-204.80218347394765; end_of_data n=17 net=228.05604419159346; wins almost exclusively end_of_data; stop exits dominate losses",
+      "status": "CONFIRMED"
+    },
+    "H_low_exposure_capital_inefficiency": {
+      "evidence": "capital_utilization\u22480.041967966677123804; peak_gross_exposure\u22481466.1642226234028; idle_capital_proxy high",
+      "status": "CONTRIBUTING"
+    },
+    "I_insufficient_pit_period": {
+      "evidence": "Only 2024-05..2024-09 PIT; no longer chronological non-BTC dataset available",
+      "status": "CONFIRMED"
+    },
+    "J_statistical_low_sample": {
+      "evidence": "454 trades / 4 months / win_rate\u22480.0374; bootstrap P(ret<=0)=0.961",
+      "status": "CONTRIBUTING"
+    },
+    "K_broad_absence_of_economic_edge": {
+      "evidence": "net_return\u22480.002325, sharpe\u22480.191, PF\u22481.114; WF sign instability; stress fragility",
+      "status": "CONTRIBUTING"
+    },
+    "L_other": {
+      "evidence": "No additional unexplained residual after A\u2013K attribution",
+      "status": "NOT_SUPPORTED"
+    }
+  },
+  "meta": {
+    "audit_authority_effect": "NONE",
+    "audit_id": "SEPARATE_READ_ONLY_ROBUSTNESS_ATTRIBUTION_AUDIT_V1",
+    "audit_runtime_effect": "NONE",
+    "command": "classify_root_causes",
+    "config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+    "crs_scale": 0.00847457627118644,
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+    "economic_gate_opened": false,
+    "expected_main": "891044056537a4033e6136ba01652a0a2c6e76b7",
+    "fee_bps": 10.0,
+    "initial_capital": 10000.0,
+    "known_limitations": [
+      "Scope/Composition DATA_GAP"
+    ],
+    "live_authorized": false,
+    "measurement_contract": "shared_book_CRS_scale=1/118; cost_application=APPLIED; equity from RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+    "orders": false,
+    "period": "2024-05-01T00:00:00Z..2024-09-01T00:00:00Z",
+    "portfolio_aggregation": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+    "promotion_eligible": false,
+    "reference_pr": 5349,
+    "repo_sha": "891044056537a4033e6136ba01652a0a2c6e76b7",
+    "runner": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/run_attribution_audit_v1.py",
+    "seed": 42,
+    "slippage_bps": 5.0,
+    "timestamp_utc": "2026-07-20T17:09:56Z"
+  },
+  "primary_root_cause": "G_exit_inefficiency",
+  "secondary_root_causes": [
+    "C_direction_imbalance",
+    "B_cost_drag",
+    "I_insufficient_pit_period",
+    "K_broad_absence_of_economic_edge",
+    "H_low_exposure_capital_inefficiency",
+    "J_statistical_low_sample",
+    "D_instrument_concentration"
+  ],
+  "stress_blocker": {
+    "observed": "alle_kostenseitigen_Stresspfade_drehen_Net_Return_negativ_sobald_extra_roundtrip_bps>0",
+    "primary_blocker": "nur_modellierter_Roundtrip_BPS_Drag_kein_voller_Path_Rerun",
+    "stress_status": "INCONCLUSIVE",
+    "unavailable_stresses": [
+      "signal_delay_NOT_PRESENT_IN_REFERENCE_CONTRACT",
+      "execution_delay_NOT_PRESENT",
+      "missed_fill_NOT_PRESENT",
+      "instrument_outage_runner_NOT_PRESENT",
+      "stop_pct_live_rerun_NOT_AVAILABLE_SIZING_CONFIG_DIGEST_SEALED"
+    ]
+  },
+  "wf_blocker": {
+    "contributing_blockers": [
+      "zu_wenig_Perioden_nur_3_Fenster_im_4_Monats_PIT",
+      "kein_laengerer_chronologischer_PIT_als_2024-05..2024-09",
+      "validation_segment_stark_negativ_bei_hohem_SHORT_Anteil",
+      "keine_Parameteranpassung_in_diesem_Audit"
+    ],
+    "fold_sign_pattern": [
+      1,
+      -1,
+      1
+    ],
+    "not_blockers": [
+      "kein_technischer_Runner_Ausfall_fuer_Baseline",
+      "Config-Bindung_seed42_fee10_slip5_unver\u00e4ndert"
+    ],
+    "primary_blocker": "instabile_Fold-Ergebnisse_mit_Vorzeichenwechsel",
+    "probe_verdict": "INCONCLUSIVE",
+    "walk_forward_status": "INCONCLUSIVE"
+  }
+}

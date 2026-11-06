@@ -1,0 +1,33 @@
+{
+  "authorization_consumed": false,
+  "binding_cli_path": "scripts/ops/run_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.py",
+  "call_graph_after": [
+    "Governed Step-5 Session Request",
+    "exact repository SHA validation",
+    "exact session-contract digest validation",
+    "exact binding-config digest validation",
+    "authorization artifact validation",
+    "hidden confirm-token handoff",
+    "authorization/token scope validation",
+    "single-use consumption boundary (fail-closed until separate Owner-GO)",
+    "execution permit validation",
+    "bounded prolonged Public-MD executor",
+    "pacing / retry / backoff / reconnect control",
+    "heartbeat / staleness / interrupt / recovery handling",
+    "bounded disk/evidence writer",
+    "terminal classification",
+    "manifest assembly",
+    "verifier"
+  ],
+  "call_graph_before": [
+    "Step-5 Binding CLI (binding-only)",
+    "Session contract + binding config digests",
+    "assemble-session-request (binding)",
+    "NO productive execution entrypoint"
+  ],
+  "capability_id": "PHASE_9_2_STEP_5_GOVERNED_PRODUCTIVE_REAL_NETWORK_PROLONGED_NATURAL_MARKET_SESSION_EXECUTION_CAPABILITY_V1",
+  "confirm_token_consumed": false,
+  "network_session_started": false,
+  "productive_entrypoint": "scripts/ops/run_phase_9_2_step_5_governed_productive_real_network_prolonged_natural_market_session_execution_v1.py",
+  "schema_version": "phase_9_2_step_5_governed_productive_real_network_prolonged_natural_market_session_execution.v1"
+}

@@ -1,0 +1,37 @@
+{
+  "baseline": {
+    "lane": "B_RAW|baseline",
+    "cycles": 9360,
+    "hysteresis_over_mark_dispersion": 0.0,
+    "medians_hyst_over_mark_by_pc": {
+      "MICRO": 0.02,
+      "LOW": 0.02,
+      "MID": 0.02,
+      "HIGH": 0.02,
+      "VERY_HIGH": 0.02
+    },
+    "raw_to_dynamic_collapse": 0.047700656955155685,
+    "rank_corr_raw_to_hyst": 1.0,
+    "structural_failure_count": 0,
+    "bound_lower_activations": 0,
+    "bound_upper_activations": 0,
+    "RAW_BELOW_1_COUNT": 5284,
+    "S3_ONE_FLOOR_REACHED_COUNT": 0,
+    "S3_ONE_FLOOR_EFFECTIVE_COUNT": 0,
+    "S3_ONE_FLOOR_CHANGED_VALUE_COUNT": 0,
+    "failures": []
+  },
+  "GHV_USES_ACTUAL_PRODUCTIVE_IR_PATH": true,
+  "GHV_FEATURE_COVERAGE": "12/12",
+  "BASELINE_390_FLIGHTS_COMPLETE": true,
+  "BASELINE_9360_CYCLES_COMPLETE": true,
+  "STRESS_REPROOF_COMPLETE": true,
+  "LONG_HORIZON_REPROOF_COMPLETE": true,
+  "SHOCK_RECOVERY_REPROOF_COMPLETE": true,
+  "RAW_SCALE_INVARIANCE_REPRODUCED": true,
+  "NORMALIZED_EQUIVALENCE_PASS": true,
+  "RAW_STRUCTURAL_FAILURE_COUNT": 0,
+  "PRODUCTIVE_50_FLOOR_ACTIVATION_COUNT": 0,
+  "PRODUCTIVE_500_CAP_ACTIVATION_COUNT": 0,
+  "S3_ONE_CHANGED_IR_RAW_COUNT": 0
+}

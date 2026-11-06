@@ -1,0 +1,18 @@
+{
+  "authorized_scope": "BOUNDED_EVIDENCE_PROMOTION_INTO_COMPONENT_A_ONLY",
+  "baseline_sha": "ae63905816c2d4033c0674587b87bbf823477e19",
+  "explicitly_forbidden_by_this_decision": [
+    "trading_decision_authority",
+    "double_play_semantic_authority",
+    "component_b_authority",
+    "layer_semantic_authority",
+    "productive_activation",
+    "external_effect",
+    "blanket_producer_admission",
+    "research_to_productive_reclassification_without_productive_lineage_proof"
+  ],
+  "owner_go_token": "OWNER_GO_P5_BLOCKER_CLOSURE_PR_6875",
+  "schema_version": "master_v2_double_play_evidence_input_plane_p5_owner_promotion_authority_decision/v1",
+  "trading_authority_effect": "NONE",
+  "workpackage_id": "P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1"
+}

@@ -1,0 +1,138 @@
+{
+  "document": "OKX_MAXIMUM_OBSERVATION_V6H_ARCHITECTURE_DECISION",
+  "timestamp_utc": "2026-10-16T07:40:00Z",
+  "mode": "READ_ONLY_FORENSIC",
+  "owner_go": "ANALYSIS_ONLY",
+  "evidence_corpus": [
+    "evidence/ops/okx_maximum_observation_workstation_v6/20261016T070435Z (V6, V6B)",
+    "evidence/ops/okx_maximum_observation_workstation_v6/20261016T091800Z_v6c",
+    "evidence/ops/okx_maximum_observation_workstation_v6/20261016T092300Z_v6d",
+    "evidence/ops/okx_maximum_observation_workstation_v6/20261016T092800Z_v6f"
+  ],
+  "decision": {
+    "recommendation": "HYBRID",
+    "strategic_target": "LOCAL_READ_ONLY_WORKSTATION",
+    "native_okx_layout_optimization": "STOP",
+    "rationale_summary": "Native OKX EEA Pro-Terminal erfüllt das Owner-Ziel (trading-freie, dichte, persistente Beobachtungsstation) nach Evidenz nicht. HYBRID nutzt OKX nur für authentifizierte Kontextdaten und ergänzende Read-only-Seiten; echte visuelle/inhaltliche Zielerfüllung erfordert später eine lokale Read-only-Workstation mit separater Datenquellen-Freigabe — ohne V6B–V6F-Layout-Experimente fortzusetzen."
+  },
+  "owner_goal_vs_evidence_gap": {
+    "prior_pass_reports_measured": "Funktionsverfügbarkeit (Tabs/Panels existieren), Workspace-IDs, klineLayout 3A/1A, Sicherheits-Invarianten",
+    "owner_goal_measured": "Dauerhaft sichtbare, trading-arme Beobachtungs-UI (kein Orderformular, keine Kaufen/Verkaufen, OB+T&S parallel, integrierte Marktübersicht)",
+    "alignment": "MISMATCH — technische PASS ≠ visuelles/strukturelles Owner-Ziel"
+  },
+  "requirements_feasibility_native_okx_only": {
+    "A_large_central_tradingview_chart": "SUPPORTED",
+    "B_orderbook_always_visible": "PARTIAL",
+    "C_time_and_sales_simultaneous_with_orderbook": "UNSUPPORTED",
+    "D_no_visible_trading_buttons": "UNSUPPORTED",
+    "E_no_order_entry_mask": "UNSUPPORTED",
+    "F_positions_and_orders_panels": "SUPPORTED",
+    "G_pnl_and_balance": "SUPPORTED",
+    "H_funding_and_open_interest": "SUPPORTED",
+    "I_market_overview_instrument_ranking_integrated": "UNSUPPORTED",
+    "J_durable_layout_persistence_observation_mode": "UNSUPPORTED",
+    "K_recovery_after_safari_restart_observation_mode": "UNKNOWN"
+  },
+  "options_comparison": {
+    "OPTION_A_NATIVE_OKX": {
+      "visual_quality_vs_owner_goal": "FAIL",
+      "information_density": "MEDIUM — trading chrome dominates",
+      "safety": "HIGH if operator discipline; UI always exposes order paths",
+      "data_freshness": "HIGH for live terminal",
+      "maintainability": "LOW — UI DOM/layout drift, fragile automation",
+      "persistence": "PARTIAL — klineLayout/instruments; not observation layout",
+      "cost": "LOW",
+      "integration_effort": "LOW (already in use)",
+      "okx_ui_change_risk": "HIGH",
+      "peak_trade_trading_authority_separation": "STRONG — no Peak Trade coupling required"
+    },
+    "OPTION_B_HYBRID": {
+      "description": "OKX Safari: WS1 multi-chart + WS2 futures terminal for live microstructure/account tabs; separate Safari tabs/bookmarks for /de/markets/futures and /de/account/users; no further layout automation",
+      "visual_quality_vs_owner_goal": "PARTIAL",
+      "information_density": "MEDIUM — split across tabs; main tab remains trading UI",
+      "safety": "HIGH with read-only navigation policy",
+      "data_freshness": "HIGH on terminal; account rollup near-live",
+      "maintainability": "MEDIUM — manual runbook, no DOM hacks",
+      "persistence": "PARTIAL — same OKX limits",
+      "cost": "LOW",
+      "integration_effort": "LOW",
+      "okx_ui_change_risk": "MEDIUM on supplemental pages",
+      "peak_trade_trading_authority_separation": "STRONG"
+    },
+    "OPTION_C_LOCAL_READ_ONLY_WORKSTATION": {
+      "description": "Architecture-only: dedicated local UI (browser or desktop) composing read-only feeds; no order endpoints; no Peak Trade execution coupling unless explicitly authorized in a future charter",
+      "visual_quality_vs_owner_goal": "SUPPORTED_IN_PRINCIPLE",
+      "information_density": "HIGH — custom layout",
+      "safety": "UNKNOWN until data-path charter; design intent HIGH",
+      "data_freshness": "UNKNOWN — depends on chosen feeds",
+      "maintainability": "MEDIUM-HIGH once built",
+      "persistence": "SUPPORTED — local layout state",
+      "cost": "MEDIUM — engineering time; no new paid services assumed",
+      "integration_effort": "HIGH — requires data-source inventory OWNER_GO",
+      "okx_ui_change_risk": "LOW for local shell; MEDIUM for upstream APIs",
+      "peak_trade_trading_authority_separation": "STRONG if execution APIs excluded by design"
+    }
+  },
+  "security_architecture_by_option": {
+    "OPTION_A": {
+      "read_only_data_flow": "PARTIAL — UI exposes write actions",
+      "no_trading_endpoints_required": "N/A — browser session",
+      "no_order_execution": "POLICY_ONLY",
+      "no_account_mutations": "POLICY_ONLY",
+      "no_api_key_manipulation": "PASS",
+      "no_browser_storage_manipulation_by_agent": "PASS (V6C–V6F agent policy)",
+      "no_peak_trade_changes": "PASS",
+      "no_double_play_master_v2_changes": "PASS",
+      "no_productive_contract_changes": "PASS",
+      "no_additional_paid_services": "PASS"
+    },
+    "OPTION_B": {
+      "read_only_data_flow": "PARTIAL — same as A on terminal tab",
+      "no_trading_endpoints_required": "N/A",
+      "no_order_execution": "POLICY_ONLY",
+      "no_account_mutations": "POLICY_ONLY",
+      "no_api_key_manipulation": "PASS",
+      "no_browser_storage_manipulation_by_agent": "PASS",
+      "no_peak_trade_changes": "PASS",
+      "no_double_play_master_v2_changes": "PASS",
+      "no_productive_contract_changes": "PASS",
+      "no_additional_paid_services": "PASS"
+    },
+    "OPTION_C": {
+      "read_only_data_flow": "DESIGN_TARGET_PASS — implementation UNKNOWN",
+      "no_trading_endpoints": "DESIGN_REQUIREMENT",
+      "no_order_execution": "DESIGN_REQUIREMENT",
+      "no_account_mutations": "DESIGN_REQUIREMENT",
+      "no_api_key_manipulation": "DESIGN_REQUIREMENT",
+      "no_browser_storage_manipulation": "DESIGN_REQUIREMENT",
+      "no_peak_trade_changes": "REQUIRED_FOR_V6H_SCOPE",
+      "no_double_play_master_v2_changes": "REQUIRED",
+      "no_productive_contract_changes": "REQUIRED",
+      "no_additional_paid_services": "DESIGN_DEFAULT"
+    }
+  },
+  "local_workstation_architecture_sketch": {
+    "implementation_status": "NOT_AUTHORIZED — proposal only",
+    "ui_layers": [
+      "Layout shell (persistent tiles: chart, depth, trades, positions, funding/OI, market list)",
+      "Feed adapters (read-only, typed, rate-limited)",
+      "Account mirror (optional, authenticated read-only OKX account API or manual import — UNKNOWN feasibility here)"
+    ],
+    "explicit_non_sources_until_charter": [
+      "Peak Trade productive execution/runtime paths",
+      "Historical dashboards or retired services",
+      "Legacy architecture documents without CURRENT validation"
+    ],
+    "data_source_categories_requiring_owner_go": [
+      "OKX public market data (REST/WebSocket) — legality, EEA endpoints, rate limits",
+      "OKX authenticated read-only account endpoints — scope, keys, IP allowlist",
+      "Third-party market data — cost and ToS",
+      "Any Peak Trade CURRENT read-only export — must be proven CURRENT_FIRST in separate mission"
+    ]
+  },
+  "smallest_sensible_next_step": {
+    "action": "OWNER_GO_READ_ONLY_DATA_SOURCE_CHARTER_V1",
+    "scope": "Inventory and security review of authorized read-only feeds only; no implementation; no Safari layout experiments; freeze OKX workspace IDs as operational bookmarks only",
+    "deliverable": "Signed list of allowed endpoints/channels + explicit exclusion of trading/write APIs + decision to proceed or not with LOCAL build"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_EVIDENCE_REQUIREMENTS_V1",
+  "schema_version": "canonical_f5_fresh_futures_input_freshness_evidence_requirements/v1",
+  "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+  "owner_value_token": "OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS",
+  "required_evidence_classes": [
+    "SHADOW_FRESHNESS_AGE_OBSERVATION",
+    "STAGE1_MANIFEST_DIGEST",
+    "CALIBRATION_PROTOCOL_BINDING",
+    "CANDIDATE_THRESHOLD_PROPOSAL_ONLY",
+    "REPRODUCIBILITY_DIGEST"
+  ],
+  "calibration_protocol_ref": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_CALIBRATION_PROTOCOL_V1.md",
+  "evidence_requirements_ref": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_EVIDENCE_REQUIREMENTS_V1.md",
+  "campaign_manifest_ref": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_CALIBRATION_CAMPAIGN_MANIFEST_V1.json",
+  "primary_safety_metrics_required": true,
+  "promotion_evidence_forbidden": true,
+  "productive_apply_evidence_forbidden": true,
+  "input_authority_evidence_forbidden": true,
+  "mandatory_rejection_if_cmc_alpha_reuse": true
+}

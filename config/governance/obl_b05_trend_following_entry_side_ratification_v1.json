@@ -1,0 +1,68 @@
+{
+  "schema_version": "obl_b05_trend_following_entry_side_ratification.v1",
+  "slice_id": "OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_RATIFICATION_V1",
+  "base_sha": "589099fed2445920531066cd89549e1c4391301e",
+  "parent_decision": "OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1",
+  "parent_carrier_contract": "OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1",
+  "encoding_owner": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py::_ENTRY_EXIT_EVENT_OWNERS",
+  "side_emission_owner": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py::_resolve_entry_side_carrier_v1",
+  "producer_id": "trend_following",
+  "productive_producer_path": "src/strategies/trend_following.py",
+  "TREND_FOLLOWING_SIDE_RATIFIED": true,
+  "PRODUCTIVE_TREND_FOLLOWING_SIDE_EMISSION_CHANGED": true,
+  "OTHER_PRODUCER_SIDE_EMISSION_CHANGED": false,
+  "BOLLINGER_SIDE_ACTIVATED": false,
+  "MACD_SIDE_ACTIVATED": false,
+  "LIVE_AUTHORIZED": false,
+  "ORDERS_ENABLED": false,
+  "short_entry_condition_present": false,
+  "short_side_emitted": false,
+  "exit_never_mapped_to_short": true,
+  "generic_cycle_sign_not_side_authority_for_other_producers": true,
+  "productive_contract_proof": {
+    "meaning_plus_one": "LONG_ENTRY",
+    "meaning_minus_one": "EXIT_EVENT",
+    "meaning_zero": "NONE_OR_FLAT",
+    "long_entry_condition": "rising edge ADX>threshold and +DI>-DI (optional MA filter)",
+    "short_entry_condition": null,
+    "exit_condition": "rising edge ADX<exit_threshold or -DI>+DI",
+    "authority_surfaces": [
+      "src/strategies/trend_following.py::TrendFollowingStrategy.generate_signals docstring (1=long, -1=exit, 0=neutral)",
+      "src/strategies/trend_following.py module docstring Long-Entry / Exit",
+      "config/governance/obl_b05_entry_exit_producer_side_authority_decision_v1.json producers[trend_following]"
+    ]
+  },
+  "emission_rules": [
+    {
+      "when": "executed_strategy_id==trend_following AND encoding==ENTRY_EXIT_EVENT_V1 AND event_kind==ENTRY AND cycle_signal_value==1",
+      "entry_side": "LONG"
+    },
+    {
+      "when": "executed_strategy_id==trend_following AND event_kind==EXIT",
+      "entry_side": "NONE",
+      "note": "EXIT is not SHORT; downtrend exit must not be read as short entry"
+    },
+    {
+      "when": "executed_strategy_id==trend_following AND cycle_signal_value==0",
+      "entry_side": "NONE"
+    },
+    {
+      "when": "SHORT_ENTRY (absent in productive contract)",
+      "entry_side": "SHORT",
+      "active": false,
+      "reason": "short_entry_condition_present=false"
+    },
+    {
+      "when": "any other ENTRY_EXIT producer (bollinger_bands, macd, momentum_1h, mean_reversion, my_strategy, ecm_cycle)",
+      "entry_side": "NONE"
+    }
+  ],
+  "forbidden_derivations": [
+    "ENTRY_NEVER_IMPLIES_LONG_FOR_UNRATIFIED_PRODUCERS",
+    "CYCLE_SIGNAL_PLUS_ONE_IS_NOT_SIDE_AUTHORITY_OUTSIDE_TREND_FOLLOWING_RATIFICATION",
+    "EXIT_IS_NOT_OPPOSITE_ENTRY_SIDE",
+    "SUPPORTED_SIDES_IS_NOT_SIGNAL_AUTHORITY",
+    "SUITABILITY_ENTRY_AGREE_LONG_IS_NOT_PRODUCER_AUTHORITY",
+    "NO_NAME_OR_CLASS_HEURISTIC_FOR_OTHER_PRODUCERS"
+  ]
+}

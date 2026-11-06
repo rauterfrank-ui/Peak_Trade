@@ -1,0 +1,7 @@
+REPO_ROOT=/Users/frnkhrz/Peak_Trade
+RECOVERY_NOTE=Regenerated after untracked delete; original capture unavailable.
+SOURCE_HEAD_SHA=3f817d8590db3d301139ff6f1ba471c6659e29d2
+SOURCE_ORIGIN_MAIN=43558204d4f7bcab30ce9e8357d2513a9a5f0970
+LIVE_AUTHORIZED=false
+ORDERS_ENABLED=false
+CAPTURED_AT=2026-07-18T23:21:53Z

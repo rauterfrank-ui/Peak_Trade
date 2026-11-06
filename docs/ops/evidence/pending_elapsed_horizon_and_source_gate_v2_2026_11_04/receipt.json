@@ -1,0 +1,42 @@
+{
+  "source_commit": "be7ca7f0153d5bb1afd34438dda340e8fa2614ff",
+  "original_pending_commit": "29d4ccd52df524a4fbf180c4bc80ca54241a441c",
+  "source_paths_sha256": {
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py": "64b87392bb5659dc2b1cfb42a9c9099132e4680e20f3e8249f3da4e0e055a7ab",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_canonical_bar_producer_session_binding_v1.py": "da5374e7c3c3b6cf2b66f00166601c1e0228a36fdae03eda29abd33596b9a262",
+    "tests/ops/test_pending_outcome_elapsed_horizon_v2.py": "2d84da2b4bb6045bc907d69523e1d940260beef434fbe896e413b0ece91130d3",
+    "tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py": "4d29cc87f1b69e010e135f6fdffe14cdf8c99291fd1b99f620921c270217f81e"
+  },
+  "tests": {
+    "before": "16 FAIL",
+    "final_scope": "64 PASS",
+    "downstream": "30 PASS"
+  },
+  "boundaries": [
+    "declared source class is not authenticity",
+    "legacy mark history denied, originals retained",
+    "journal/index order and crash semantics open",
+    "complete durable measurement artifacts open"
+  ],
+  "runtime_activation_authorized": false,
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/pending_elapsed_horizon_and_source_gate_v2_2026_11_04/README.md",
+      "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 535,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

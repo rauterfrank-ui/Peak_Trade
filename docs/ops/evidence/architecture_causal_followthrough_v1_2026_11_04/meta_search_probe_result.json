@@ -1,0 +1,445 @@
+{
+  "source_commit": "f69fc6f6d2cd5276d6447b24c0cff9b250a535f0",
+  "scope": "Synthetic fixture experiment records → actual SL11 builder → actual SL12 builder, controlled in-memory calls; no natural outcomes, measurements, training, orders or execution.",
+  "network": "socket creation and create_connection denied during probe",
+  "fixture_modules": [
+    "tests/experiments/test_canonical_meta_learning_v1.py",
+    "tests/experiments/test_canonical_advanced_search_v1.py"
+  ],
+  "fixture_sha256": {
+    "tests/experiments/test_canonical_meta_learning_v1.py": "d9653b48eb8dfc2a57ffe26bd70ac77bd7429b33f3f79ef82594c5de19d5fda2",
+    "tests/experiments/test_canonical_advanced_search_v1.py": "4f1761da529d0f98ed3fb8f18e4301f8886de2fe3187c025f56fe268bd73d9b2"
+  },
+  "meta_identity": "db3a439f69157e4bf2f2130e0f8d3b39fc57050de667e398c07f206bdc091905",
+  "actual_meta_proposals": [
+    {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "PRIORITIZE_RESEARCH",
+      "promotion_authority": "NONE",
+      "question_id": "STRATEGY_FAMILY_OOS_SURVIVAL",
+      "reason": "OOS_SURVIVAL_DOMINATES",
+      "target": "ma_crossover",
+      "target_kind": "strategy_family",
+      "proposal_id": "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2"
+    },
+    {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "PRIORITIZE_RESEARCH",
+      "promotion_authority": "NONE",
+      "question_id": "RESEARCH_PATH_INFORMATION_GAIN",
+      "reason": "HIGHEST_INFORMATION_GAIN",
+      "target": "path.offline.v1",
+      "target_kind": "research_path",
+      "proposal_id": "5c2e19ecabd52ee81599afe4002f5017215018c5342089e4883fb11b556dacba"
+    },
+    {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "DEPRIORITIZE_RESEARCH",
+      "promotion_authority": "NONE",
+      "question_id": "HYPOTHESIS_KIND_POOR_RESULTS",
+      "reason": "REPEATED_POOR_RESULTS",
+      "target": "trend_following",
+      "target_kind": "hypothesis_kind",
+      "proposal_id": "672cd39b62784a51abb44175bbcc5d78893fe0035b9bf4e91e1c43cae4f472cf"
+    },
+    {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "DEPRIORITIZE_RESEARCH",
+      "promotion_authority": "NONE",
+      "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+      "reason": "REPEATED_OVERFIT",
+      "target": "aec334e287d62c605cfc2032e1f2b5f33aed91f9d87437dcae337a3b9ac0d975",
+      "target_kind": "parameter_region",
+      "proposal_id": "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d"
+    },
+    {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "INVESTIGATE",
+      "promotion_authority": "NONE",
+      "question_id": "COST_MODEL_REALITY_UNDERESTIMATION",
+      "reason": "COST_MODEL_UNDERESTIMATION",
+      "target": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+      "target_kind": "cost_model",
+      "proposal_id": "a2b9821ef439322351179ec5231fe62c4b4d839e33c0622182d8a913e78185d6"
+    },
+    {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "ASSOCIATION",
+      "kind": "INVESTIGATE",
+      "promotion_authority": "NONE",
+      "question_id": "BACKTEST_METRIC_PREDICTIVE_ASSOCIATION",
+      "reason": "METRIC_LATER_ASSOCIATION",
+      "target": "sharpe",
+      "target_kind": "backtest_metric",
+      "proposal_id": "ed07cd49763b5847ed044216994551e60f279146df00ffe39c2128aa5ead4403"
+    },
+    {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "INVESTIGATE",
+      "promotion_authority": "NONE",
+      "question_id": "REGIME_RECURRING_FAILURE_MODES",
+      "reason": "RECURRING_FAILURE_MODE",
+      "target": "high_vol",
+      "target_kind": "regime",
+      "proposal_id": "f50236c3d9e2f17b1a8982050eb342be2925e9f262e5c28f8257dd2c6279b6f0"
+    }
+  ],
+  "baseline": {
+    "candidate_scores": [
+      {
+        "region": {
+          "fast": 10,
+          "slow": 100
+        },
+        "score": 0,
+        "status": "BUDGET_EXCLUDED",
+        "matched": []
+      },
+      {
+        "region": {
+          "fast": 10,
+          "slow": 50
+        },
+        "score": 0,
+        "status": "PROPOSED",
+        "matched": []
+      },
+      {
+        "region": {
+          "fast": 15,
+          "slow": 100
+        },
+        "score": 0,
+        "status": "BUDGET_EXCLUDED",
+        "matched": []
+      },
+      {
+        "region": {
+          "fast": 15,
+          "slow": 50
+        },
+        "score": 0,
+        "status": "BUDGET_EXCLUDED",
+        "matched": []
+      }
+    ],
+    "selected_regions": [
+      {
+        "fast": 10,
+        "slow": 50
+      }
+    ],
+    "requests_executed": [
+      false
+    ],
+    "search_can_promote": false
+  },
+  "actual_region_digest_proposal": {
+    "proposal": {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "DEPRIORITIZE_RESEARCH",
+      "promotion_authority": "NONE",
+      "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+      "reason": "REPEATED_OVERFIT",
+      "target": "aec334e287d62c605cfc2032e1f2b5f33aed91f9d87437dcae337a3b9ac0d975",
+      "target_kind": "parameter_region",
+      "proposal_id": "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d"
+    },
+    "result": {
+      "candidate_scores": [
+        {
+          "region": {
+            "fast": 10,
+            "slow": 100
+          },
+          "score": 0,
+          "status": "BUDGET_EXCLUDED",
+          "matched": []
+        },
+        {
+          "region": {
+            "fast": 10,
+            "slow": 50
+          },
+          "score": 0,
+          "status": "PROPOSED",
+          "matched": []
+        },
+        {
+          "region": {
+            "fast": 15,
+            "slow": 100
+          },
+          "score": 0,
+          "status": "BUDGET_EXCLUDED",
+          "matched": []
+        },
+        {
+          "region": {
+            "fast": 15,
+            "slow": 50
+          },
+          "score": 0,
+          "status": "BUDGET_EXCLUDED",
+          "matched": []
+        }
+      ],
+      "selected_regions": [
+        {
+          "fast": 10,
+          "slow": 50
+        }
+      ],
+      "requests_executed": [
+        false
+      ],
+      "search_can_promote": false
+    },
+    "observed": "whole-region digest did not match single-value target semantics"
+  },
+  "actual_family_proposal": {
+    "proposal": {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "PRIORITIZE_RESEARCH",
+      "promotion_authority": "NONE",
+      "question_id": "STRATEGY_FAMILY_OOS_SURVIVAL",
+      "reason": "OOS_SURVIVAL_DOMINATES",
+      "target": "ma_crossover",
+      "target_kind": "strategy_family",
+      "proposal_id": "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2"
+    },
+    "result": {
+      "candidate_scores": [
+        {
+          "region": {
+            "fast": 10,
+            "slow": 100
+          },
+          "score": 20,
+          "status": "BUDGET_EXCLUDED",
+          "matched": [
+            "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2"
+          ]
+        },
+        {
+          "region": {
+            "fast": 10,
+            "slow": 50
+          },
+          "score": 20,
+          "status": "PROPOSED",
+          "matched": [
+            "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2"
+          ]
+        },
+        {
+          "region": {
+            "fast": 15,
+            "slow": 100
+          },
+          "score": 20,
+          "status": "BUDGET_EXCLUDED",
+          "matched": [
+            "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2"
+          ]
+        },
+        {
+          "region": {
+            "fast": 15,
+            "slow": 50
+          },
+          "score": 20,
+          "status": "BUDGET_EXCLUDED",
+          "matched": [
+            "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2"
+          ]
+        }
+      ],
+      "selected_regions": [
+        {
+          "fast": 10,
+          "slow": 50
+        }
+      ],
+      "requests_executed": [
+        false
+      ],
+      "search_can_promote": false
+    },
+    "observed": "uniform +20 scores; unchanged budget-selected region"
+  },
+  "all_actual_meta_proposals": {
+    "result": {
+      "candidate_scores": [
+        {
+          "region": {
+            "fast": 10,
+            "slow": 100
+          },
+          "score": 0,
+          "status": "BUDGET_EXCLUDED",
+          "matched": [
+            "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2",
+            "672cd39b62784a51abb44175bbcc5d78893fe0035b9bf4e91e1c43cae4f472cf"
+          ]
+        },
+        {
+          "region": {
+            "fast": 10,
+            "slow": 50
+          },
+          "score": 0,
+          "status": "PROPOSED",
+          "matched": [
+            "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2",
+            "672cd39b62784a51abb44175bbcc5d78893fe0035b9bf4e91e1c43cae4f472cf"
+          ]
+        },
+        {
+          "region": {
+            "fast": 15,
+            "slow": 100
+          },
+          "score": 0,
+          "status": "BUDGET_EXCLUDED",
+          "matched": [
+            "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2",
+            "672cd39b62784a51abb44175bbcc5d78893fe0035b9bf4e91e1c43cae4f472cf"
+          ]
+        },
+        {
+          "region": {
+            "fast": 15,
+            "slow": 50
+          },
+          "score": 0,
+          "status": "BUDGET_EXCLUDED",
+          "matched": [
+            "0ca87ac77d33675219b3089af63624993b3fdb1bb93c1d6271d91e9c85a033d2",
+            "672cd39b62784a51abb44175bbcc5d78893fe0035b9bf4e91e1c43cae4f472cf"
+          ]
+        }
+      ],
+      "selected_regions": [
+        {
+          "fast": 10,
+          "slow": 50
+        }
+      ],
+      "requests_executed": [
+        false
+      ],
+      "search_can_promote": false
+    },
+    "observed": "family +20 and hypothesis -20 canceled; other supplied target types gave no match in this fixture"
+  },
+  "positive_control": {
+    "signal": {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "DEPRIORITIZE_RESEARCH",
+      "promotion_authority": "NONE",
+      "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+      "reason": "REPEATED_OVERFIT",
+      "target": "10",
+      "target_kind": "parameter_region",
+      "proposal_id": "6aa7e37b4b2db74ba04b47a162c37547bca08d19beb571f98cabbcd27a637263"
+    },
+    "result": {
+      "candidate_scores": [
+        {
+          "region": {
+            "fast": 10,
+            "slow": 100
+          },
+          "score": -20,
+          "status": "BUDGET_EXCLUDED",
+          "matched": [
+            "6aa7e37b4b2db74ba04b47a162c37547bca08d19beb571f98cabbcd27a637263"
+          ]
+        },
+        {
+          "region": {
+            "fast": 10,
+            "slow": 50
+          },
+          "score": -20,
+          "status": "BUDGET_EXCLUDED",
+          "matched": [
+            "6aa7e37b4b2db74ba04b47a162c37547bca08d19beb571f98cabbcd27a637263"
+          ]
+        },
+        {
+          "region": {
+            "fast": 15,
+            "slow": 100
+          },
+          "score": 0,
+          "status": "PROPOSED",
+          "matched": []
+        },
+        {
+          "region": {
+            "fast": 15,
+            "slow": 50
+          },
+          "score": 0,
+          "status": "BUDGET_EXCLUDED",
+          "matched": []
+        }
+      ],
+      "selected_regions": [
+        {
+          "fast": 15,
+          "slow": 100
+        }
+      ],
+      "requests_executed": [
+        false
+      ],
+      "search_can_promote": false
+    },
+    "observed": "single-value target altered budget-selected region; control is not a whole-region mapper"
+  },
+  "equals_target_negative_control": "meta_learning_signals[0].target is not a canonical token",
+  "semantic_projection": {
+    "producer_has_claim_type": true,
+    "normalized_consumer_signal": [
+      {
+        "applies_to_champion": false,
+        "authority": "RESEARCH_ONLY",
+        "kind": "DEPRIORITIZE_RESEARCH",
+        "meta_learning_identity": "db3a439f69157e4bf2f2130e0f8d3b39fc57050de667e398c07f206bdc091905",
+        "promotion_authority": "NONE",
+        "proposal_id": "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d",
+        "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+        "reason": "REPEATED_OVERFIT",
+        "target": "aec334e287d62c605cfc2032e1f2b5f33aed91f9d87437dcae337a3b9ac0d975",
+        "target_kind": "parameter_region"
+      }
+    ],
+    "consumer_keeps_claim_type": false,
+    "note": "Search normalizer reads a smaller signal shape. The meaningful lineage/claim contract still needs separate review."
+  },
+  "protected_learning_ledger_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "assertions_passed": true,
+  "causal_scope_limit": "Demonstrates bounded functions on synthetic inputs. Does not prove global absence of a mapper/dispatcher, natural adaptation, or desired final architecture."
+}

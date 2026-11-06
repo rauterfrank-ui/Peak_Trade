@@ -1,0 +1,270 @@
+{
+  "STATES": [
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L02",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "Cap21",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "READERS": [
+        "Cap22",
+        "EconomicMD",
+        "Profile",
+        "DDO"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "S_CAP21",
+      "STATE_LIFECYCLE_CURRENT": null,
+      "STATE_OWNER_CURRENT": "Cap21",
+      "STATE_PERSISTENCE_CURRENT": null,
+      "STATE_READER_CURRENT": [
+        "Cap22",
+        "EconomicMD",
+        "Profile",
+        "DDO"
+      ],
+      "STATE_WRITER_CURRENT": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "WRITER": "universe snapshot writer"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L03",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "EconomicMD",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "READERS": [
+        "B05"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "S_ECON_MD",
+      "STATE_LIFECYCLE_CURRENT": null,
+      "STATE_OWNER_CURRENT": "EconomicMD",
+      "STATE_PERSISTENCE_CURRENT": null,
+      "STATE_READER_CURRENT": [
+        "B05"
+      ],
+      "STATE_WRITER_CURRENT": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "WRITER": "MD writer"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L04",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "B05",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "READERS": [
+        "B06/Cap22"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "S_B05",
+      "STATE_LIFECYCLE_CURRENT": null,
+      "STATE_OWNER_CURRENT": "B05",
+      "STATE_PERSISTENCE_CURRENT": null,
+      "STATE_READER_CURRENT": [
+        "B06/Cap22"
+      ],
+      "STATE_WRITER_CURRENT": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "WRITER": "feature producer"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L07",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "Cap22",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "READERS": [
+        "Cap23",
+        "Residency",
+        "GVEF RU",
+        "DDO"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "S_CAP22",
+      "STATE_LIFECYCLE_CURRENT": null,
+      "STATE_OWNER_CURRENT": "Cap22",
+      "STATE_PERSISTENCE_CURRENT": null,
+      "STATE_READER_CURRENT": [
+        "Cap23",
+        "Residency",
+        "GVEF RU",
+        "DDO"
+      ],
+      "STATE_WRITER_CURRENT": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "WRITER": "ranking writer"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L09",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "Top20 residency",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "READERS": [
+        "Cap23 gate"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "S_RESIDENCY",
+      "STATE_LIFECYCLE_CURRENT": null,
+      "STATE_OWNER_CURRENT": "Top20 residency",
+      "STATE_PERSISTENCE_CURRENT": null,
+      "STATE_READER_CURRENT": [
+        "Cap23 gate"
+      ],
+      "STATE_WRITER_CURRENT": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "WRITER": "residency writer"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L12",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "Cap23",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "READERS": [
+        "Cap24",
+        "DDO"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "S_CAP23",
+      "STATE_LIFECYCLE_CURRENT": null,
+      "STATE_OWNER_CURRENT": "Cap23",
+      "STATE_PERSISTENCE_CURRENT": null,
+      "STATE_READER_CURRENT": [
+        "Cap24",
+        "DDO"
+      ],
+      "STATE_WRITER_CURRENT": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "WRITER": "selection writer"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "L13",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "Cap24",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "READERS": [
+        "Full-Core"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "S_CAP24",
+      "STATE_LIFECYCLE_CURRENT": null,
+      "STATE_OWNER_CURRENT": "Cap24",
+      "STATE_PERSISTENCE_CURRENT": null,
+      "STATE_READER_CURRENT": [
+        "Full-Core"
+      ],
+      "STATE_WRITER_CURRENT": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "WRITER": "binding consumer"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAYER": "PARALLEL",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "DDO",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "READERS": [
+        "learning"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "S_DDO",
+      "STATE_LIFECYCLE_CURRENT": null,
+      "STATE_OWNER_CURRENT": "DDO",
+      "STATE_PERSISTENCE_CURRENT": null,
+      "STATE_READER_CURRENT": [
+        "learning"
+      ],
+      "STATE_WRITER_CURRENT": null,
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "WRITER": "observe_after_producer_v0"
+    },
+    {
+      "CLASS": "EVALUATION_STATE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "NAME": "RunnerState machine",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "GenericRunnerV1",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "STATE_EXISTS_CURRENT": true,
+      "STATE_ID": "GVEF.RunnerState",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    }
+  ],
+  "TEMPORAL_VIEW": "CURRENT_ONLY"
+}

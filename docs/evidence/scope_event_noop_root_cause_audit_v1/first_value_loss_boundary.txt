@@ -1,0 +1,27 @@
+FIRST_VALUE_LOSS_BOUNDARY
+
+OWNER_FILE=src/backtest/mv2_research_wiring_v1.py
+OWNER_FUNCTION=_build_replay_input
+LINES=1704-1707
+MATERIAL_LOSS=Injects absolute price distances up_distance=120.0 / adverse_exit_distance=60.0 / reversal_distance=90.0
+              that are incompatible with economic-research mark scales (~0.23–0.53 for 1INCH).
+
+DOWNSTREAM_EMIT_SITE
+OWNER_FILE=src/trading/master_v2/deterministic_scope_event_generator_v1.py
+OWNER_FUNCTION=generate_deterministic_scope_event
+LINES≈754-756
+MATERIAL_LOSS=selected_kind is None -> CanonicalScopeEventType.NOOP
+              (no bull/bear candidate; confirmation never advances)
+
+CHAIN_TO_PRIOR_AUDIT
+  NOOP -> transition_state keeps LONG_ARMED
+  -> short composition cannot enter_short (STATE_TRANSITION consumer symptom)
+  This audit isolates the FIRST generator-side cause of exclusive noop: UNIT_MISMATCH of distances.
+
+NOT_THE_FIRST_LOSS
+  Confirmation logic
+  CMC prior_mark / price_path (post-#5337 OK)
+  Composition matrix
+  entry_side (remains NONE by OPTION_D)
+
+MACHINE_TOKEN=src/backtest/mv2_research_wiring_v1.py::_build_replay_input:1704

@@ -1,0 +1,5 @@
+wallclock_seconds=48
+target_max_seconds=840
+hard_stop_seconds=900
+passed=749
+selector_mode=PR_BOUNDED_FULL

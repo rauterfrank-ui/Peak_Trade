@@ -1,0 +1,5 @@
+{
+  "provider": "local",
+  "api_mode": "offline",
+  "max_clients": 2
+}

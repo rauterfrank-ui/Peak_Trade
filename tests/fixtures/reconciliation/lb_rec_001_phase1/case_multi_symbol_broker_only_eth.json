@@ -1,0 +1,33 @@
+{
+  "schema": "lb_rec_001_phase1_v1",
+  "id": "multi_symbol_broker_only_eth",
+  "notes": "Internal ledger has BTC only; external reports extra ETH (broker-side-only position) -> POSITION FAIL on ETH.",
+  "as_of_time": "2026-04-08T12:00:00+00:00",
+  "internal": {
+    "initial_cash": "100000.00",
+    "fill": {
+      "fill_id": "lbrec_fill_bo_1",
+      "client_order_id": "lbrec_co_bo_1",
+      "exchange_order_id": "lbrec_ex_bo_1",
+      "symbol": "BTC/EUR",
+      "side": "BUY",
+      "quantity": "1.0",
+      "price": "50000.00",
+      "fee": "5.00"
+    }
+  },
+  "external": {
+    "positions": {
+      "BTC/EUR": "1.0",
+      "ETH/EUR": "0.5"
+    },
+    "cash_balance": { "mode": "match_internal" }
+  },
+  "expect": {
+    "diff_count": 1,
+    "min_fail": 1,
+    "first_diff_type": "POSITION",
+    "first_severity": "FAIL",
+    "all_diff_types": ["POSITION"]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "calculator_method": "SMA_ROLLING_MEAN",
+  "calculator_ssot": "src/strategies/rsi_reversion.py",
+  "definitions": {
+    "eligibility_rule": "For a long entry-candidate (signal==1): ELIGIBLE iff close > SMA(50). For a short entry-candidate (signal==-1): ELIGIBLE iff close < SMA(50). Otherwise STAND_ASIDE. First warmup_bars=50 bars are always STAND_ASIDE. Side-aware admission only; does not change direction/side.",
+    "sma_50h": "SMA(50) of close via price.rolling(window=50).mean() (rsi_reversion.py SSOT, config.toml [strategies.rsi_reversion.defaults] trend_ma_window=50) over trailing finalized PT1H closes; first 50 bars are warmup"
+  },
+  "feature_formula_id": "ma_trend_alignment_mr_eligibility_sma50_features_v1",
+  "feature_formula_sha256": "3de062e653476d94f1c95948c769aa7f25a66fb18d0392bbb16c5a50a6811643",
+  "filter_id": "canonical_ma_trend_alignment_entry_eligibility_v1",
+  "frozen_parameters": {
+    "ma_period": 50,
+    "ma_type": "SMA",
+    "side_aware": true,
+    "warmup_bars": 50
+  },
+  "lookahead_forbidden": true,
+  "post_hoc_retune_forbidden": true,
+  "source": "finalized_pt1h_ohlcv_high_low_close_only",
+  "threshold_adjustment_forbidden": true
+}

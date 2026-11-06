@@ -1,0 +1,100 @@
+{
+  "authority_preservation": {
+    "cap23_rerank_count": 0,
+    "cap23_rescore_count": 0,
+    "cap23_sole_selection_owner": true,
+    "cross_universe_authority": "NONE",
+    "live_external_effect_authorized": false,
+    "max_positions_effective": 1,
+    "multi_future_runtime_authorized": false,
+    "profile_only_selection_effect": false
+  },
+  "b10_implemented": true,
+  "b11_started": false,
+  "determinism": {
+    "proven": true,
+    "scenario_id": "walk_forward_window_01"
+  },
+  "finding_counts": {
+    "EXPECTED_BEHAVIOR": 9,
+    "IMPLEMENTATION_DEFECT": 0,
+    "OUT_OF_SCOPE_LEGACY": 0,
+    "PASS": 6,
+    "RATIFIED_POLICY_CONSEQUENCE": 2,
+    "UNRATIFIED_POLICY_GAP": 1
+  },
+  "missing_data_stress": {
+    "no_guessed_value": true,
+    "no_silent_default": true,
+    "no_synthetic_rank": true,
+    "no_venue_order_fallback_as_economic_substitute": true,
+    "proven": true,
+    "scenario_count": 3
+  },
+  "no_lookahead_preserved": true,
+  "no_silent_economic_fallback": true,
+  "outlier_stress": {
+    "invalid_non_finite_output_count": 0,
+    "proven": true,
+    "scenario_count": 2
+  },
+  "package_id": "PEAK_TRADE_B10_ROBUSTNESS_AND_STRESS_V1",
+  "package_version": "peak_trade_b10_robustness_and_stress.v1",
+  "report_digest": "0695da86fd2427d9fd6152dc98e86b5bdc26393143558ec0c841025b795cba30",
+  "safe_to_merge": false,
+  "scenario_count": 18,
+  "sensitivity": {
+    "near_tie_rank_change_classification": "RATIFIED_TIE_OR_BOUNDARY_BEHAVIOR",
+    "proven": true,
+    "scenario_count": 2
+  },
+  "single_feature_dominance": {
+    "amplitude_only_order": [
+      "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+      "okx_eea:linear_perpetual:SOL:USDT:USDT:sol-usdt-swap",
+      "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap"
+    ],
+    "contribution_ranges": {
+      "CAP22_PT1M_MARK_LOG_RETURN_POPULATION_SIGMA_V1": {
+        "count": 49,
+        "max": 0.5,
+        "min": 0.0
+      },
+      "CAP22_PT1M_MARK_MID_RELATIVE_RANGE_V1": {
+        "count": 49,
+        "max": 0.5,
+        "min": 0.0
+      }
+    },
+    "dominant_feature": "NONE",
+    "opposing_feature_scenarios_present": true,
+    "owner_policy_decision_required": false,
+    "result": "BOTH_RATIFIED_FEATURES_AFFECT_ORDER_IN_BOUNDED_CORPUS",
+    "structurally_suppressed": false,
+    "volatility_only_order": [
+      "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+      "okx_eea:linear_perpetual:SOL:USDT:USDT:sol-usdt-swap",
+      "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap"
+    ]
+  },
+  "stale_invalid_stress": {
+    "invalid_input_fail_closed_cases": 2,
+    "proven": true,
+    "scenario_count": 3,
+    "stale_max_age_policy": "UNRATIFIED_POLICY_GAP_INPUT2_MAX_AGE_SECONDS"
+  },
+  "walk_forward": {
+    "proven": true,
+    "rank_transitions": 2,
+    "tie_frequency": 0,
+    "top_rank_persistence_adjacent_count": 1,
+    "top_rank_sequence": [
+      "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+      "okx_eea:linear_perpetual:SOL:USDT:USDT:sol-usdt-swap",
+      "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+      "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap"
+    ],
+    "top_rank_turnover_adjacent_count": 2,
+    "window_count": 4
+  }
+}

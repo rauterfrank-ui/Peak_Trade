@@ -1,0 +1,173 @@
+{
+  "BAND_FIELD_OWNER": "trading.master_v2.double_play_state.RuntimeScopeState.current_hysteresis_band",
+  "BAND_PRODUCER": "trading.master_v2.double_play_state.update_dynamic_boundaries",
+  "BAND_SAMPLE_CLASS": "FORMULA_VALID_BAND_NOT_PER_INSTRUMENT_PRODUCTIVE_SNAPSHOT",
+  "BAND_SAMPLE_OWNER": "src/ops/derive_scope_event_distances_v1/golden_vectors_v1.py",
+  "CAP22_EVIDENCE_RANKING_SNAPSHOT_ID": "pfr_evidence_cap22_v1",
+  "CAP23_HISTORICAL_SELECTION_ID": "ssf_4535102470e4542c69cda862",
+  "CAP23_HISTORICAL_SELECTION_INSTRUMENT_ID": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+  "CAP23_HISTORICAL_SELECTION_PATH": "docs/evidence/capability_2_3_single_selected_future_policy_v1/productive_selection/single_selected_future_selection_v1.json",
+  "CAP23_HISTORICAL_SELECTION_RANKING_SNAPSHOT_ID": "pfr_0f8f19329bd8de687457fab0",
+  "CAP62_BAND_EXEMPLAR": {
+    "class": "BAND_FIELD_OWNER_EXEMPLAR_NOT_UNIVERSE_MEMBER",
+    "current_hysteresis_band": 50.0,
+    "epistemic_class": "FORENSIC_RAW_EVIDENCE",
+    "evidence_path": "docs/evidence/capability_6_2_dynamic_scope_persistence_binding_v1/productive_binding/dynamic_scope_gate_results_v1.json",
+    "in_cap23_selectable_set": false,
+    "instrument_id": "ETH-USD_UM_XPERP-310404",
+    "used_as_productive_sample_for_cap23_instrument": false
+  },
+  "EXCLUSIONS": {
+    "CTVAL_ALIGNMENT": "NOT_IN_SCOPE",
+    "GENERATOR_HARD_MAX_POLICY": "NOT_IN_SCOPE_HERE",
+    "LOT_ALIGNMENT": "NOT_IN_SCOPE",
+    "METADATA_GATE_CONSUMED": false,
+    "MODEL_C_RUNTIME_BIND_AUTHORIZED": false,
+    "PRICE_SCALE_ALIGNMENT": "NOT_IN_SCOPE",
+    "TICK_ALIGNMENT": "NOT_IN_SCOPE",
+    "VENUE_EXECUTABILITY": "NOT_IN_SCOPE"
+  },
+  "EXPECTED_ORIGIN_MAIN": "26b62aae2965bf146818a40e951513f9be05c5df",
+  "FORMULA": {
+    "adverse_exit_distance": "up_distance * (80.0 / 200.0)",
+    "reversal_distance": "up_distance * (120.0 / 200.0)",
+    "up_distance": "current_hysteresis_band"
+  },
+  "GOLDEN_VECTORS_ARE_FORMULA_VECTORS_NOT_INSTRUMENT_UNIVERSE": true,
+  "MAX_POSITIONS": 1,
+  "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+  "OBSERVED_PER_INSTRUMENT_RUNTIME_SCOPE_STATE_BAND": "ABSENT_ON_ORIGIN_MAIN",
+  "OWNER_GO": "OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1",
+  "PRE_METADATA_SCOPE": true,
+  "SELECTION_MODE": "SINGLE_SELECTED_FUTURE",
+  "SELECTION_OWNER": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+  "SELECTION_OWNER_SPEC": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
+  "SNAPSHOT_IDENTITY_JOIN": "NOT_PROVEN_IDENTICAL",
+  "SNAPSHOT_IDENTITY_JOIN_EPISTEMIC_CLASS": "OPEN_OR_CONTRADICTORY",
+  "SYNTHETIC_BAND_SET_AS_PRODUCTIVE_AUTHORITY": false,
+  "THIS_VALIDATION_DEFINES_NO_INSTRUMENT_LIST": true,
+  "VALIDATION_UNIVERSE_PATH": "docs/evidence/capability_2_2_productive_futures_ranking_producer_v1/productive_ranking/productive_futures_ranking_snapshot_v1.json",
+  "VALIDATION_UNIVERSE_SOURCE": "CAP22_EVIDENCE_RANKED_ELIGIBLE_CANDIDATES_AS_CAP23_SELECTABLE_CONTEXT",
+  "selectable_instruments": [
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 1,
+      "venue_native_id": "ADA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:APT:USDT:USDT:apt-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 2,
+      "venue_native_id": "APT-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:ARB:USDT:USDT:arb-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 3,
+      "venue_native_id": "ARB-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:ATOM:USDT:USDT:atom-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 4,
+      "venue_native_id": "ATOM-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:AVAX:USDT:USDT:avax-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 5,
+      "venue_native_id": "AVAX-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:BCH:USDT:USDT:bch-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 6,
+      "venue_native_id": "BCH-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOT:USDT:USDT:dot-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 7,
+      "venue_native_id": "DOT-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 8,
+      "venue_native_id": "ETH-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:FIL:USDT:USDT:fil-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 9,
+      "venue_native_id": "FIL-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:INJ:USDT:USDT:inj-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 10,
+      "venue_native_id": "INJ-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:LINK:USDT:USDT:link-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 11,
+      "venue_native_id": "LINK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:LTC:USDT:USDT:ltc-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 12,
+      "venue_native_id": "LTC-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:NEAR:USDT:USDT:near-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 13,
+      "venue_native_id": "NEAR-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:OP:USDT:USDT:op-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 14,
+      "venue_native_id": "OP-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:SEI:USDT:USDT:sei-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 15,
+      "venue_native_id": "SEI-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:SOL:USDT:USDT:sol-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 16,
+      "venue_native_id": "SOL-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:SUI:USDT:USDT:sui-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 17,
+      "venue_native_id": "SUI-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:TIA:USDT:USDT:tia-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 18,
+      "venue_native_id": "TIA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:TON:USDT:USDT:ton-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 19,
+      "venue_native_id": "TON-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:TRX:USDT:USDT:trx-usdt-swap",
+      "eligibility_status": "ELIGIBLE",
+      "rank": 20,
+      "venue_native_id": "TRX-USDT-SWAP"
+    }
+  ]
+}

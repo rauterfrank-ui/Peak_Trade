@@ -1,0 +1,39 @@
+{
+  "RESTART_DETERMINISTIC": true,
+  "classification_counts": {
+    "AUTHORIZED_COMPOSITION_INPUT": 1,
+    "CANONICAL_AUTHORITY": 2,
+    "EXPERIMENT_ONLY": 11,
+    "LEGACY_DEAUTHORIZED": 8,
+    "RESEARCH_INFORMATION": 6
+  },
+  "matrix_digest": "14fae9ffc82ef6cca08762efe59ee705ee960a9da250291ba76237545cf28ade",
+  "ok": true,
+  "registry_semantic_digest": "01c8f10bd5f23c8bf23a2c231dbb77ba2aa5f6eef5381c5d05e938102286f97e",
+  "serialization_stable": true,
+  "strategy_ids_sorted": [
+    "armstrong_cycle",
+    "bollinger_bands",
+    "bouchaud_microstructure",
+    "breakout",
+    "breakout_donchian",
+    "composite",
+    "ecm_cycle",
+    "ehlers_cycle_filter",
+    "el_karoui_vol_model",
+    "ma_crossover",
+    "macd",
+    "mean_reversion",
+    "mean_reversion_channel",
+    "meta_labeling",
+    "momentum_1h",
+    "my_strategy",
+    "regime_aware_portfolio",
+    "rsi_reversion",
+    "rsi_strategy",
+    "trend_following",
+    "vol_breakout",
+    "vol_regime_filter",
+    "vol_regime_overlay"
+  ]
+}

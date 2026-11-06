@@ -1,0 +1,684 @@
+{
+  "NO_PORTFOLIO_STATE_ROLLBACK": true,
+  "PARTIAL_REDUCE_LIFECYCLE_PROVEN": true,
+  "RESTART_DURING_OPEN_POSITION_PROVEN": true,
+  "ok": true,
+  "post_fills": [
+    {
+      "accounting_output_digest": "6af2ce95112cdb22db806df79d24707fa9364b784db78dc2c7023a401b2d17a9",
+      "canonical_futures_accounting": true,
+      "cycle_index": 6,
+      "event_time_unix": null,
+      "fee": "0.03155376",
+      "fill_id": "fill_cd8836911d604da0835e4e38",
+      "fill_input_digest": "712a4691c045a6ec24580ea1552aa8db4f222cf5a06fb9be81173326ac13505e",
+      "fill_price": "3944.22",
+      "instrument_id": "ETH-USD_UM_XPERP-310404",
+      "mark_price": "3943.820792262528",
+      "notional": "157.7688",
+      "quantity": "0.04",
+      "reduce_only": false,
+      "side": "BUY",
+      "slippage_cost": "0.01596831",
+      "trading_epoch": 6
+    }
+  ],
+  "post_rows": [
+    {
+      "authority_effect": "NONE",
+      "blockers": [],
+      "call_graph": [
+        "persisted_single_selected_future",
+        "selection_integrity_freshness_validation",
+        "ranking_snapshot_reference_validation",
+        "governed_universe_instrument_validation",
+        "venue_native_instrument_binding",
+        "single_selected_future_runtime_binding",
+        "productive_reconciliation_startup_gate",
+        "canonical_decision_runtime_config_bind",
+        "okx_public_market_data",
+        "distinct_market_observation_acceptor",
+        "observation_acceptance_result",
+        "feature_pipeline",
+        "regime_pipeline",
+        "directional_confirmation_progress",
+        "directional_assessment_confirmation_integration",
+        "previous_canonical_runtime_scope_state",
+        "exit_policy_producer_evaluation",
+        "master_v2_double_play_integrated_offline_replay",
+        "dynamic_scope_transition",
+        "canonical_confirmation_state_commit",
+        "canonical_dynamic_scope_state_commit",
+        "decision_path_atomic_runtime_commit",
+        "exit_policy_state_commit",
+        "risk_position_sizing",
+        "safety_kernel",
+        "intended_side_quantity",
+        "analytical_simulated_execution",
+        "simulated_fill_fee_slippage",
+        "canonical_futures_accounting",
+        "session_persistent_portfolio",
+        "realized_unrealized_pnl_equity_drawdown",
+        "risk_state_from_accounting",
+        "simulated_economics_no_order_path",
+        "pending_evidence_cursor_commit",
+        "evidence",
+        "full_economic_reconstruction_verifier"
+      ],
+      "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+      "cycle_index": 6,
+      "decision_authority_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "decision_outcome": "enter_long",
+      "direction": "long_armed",
+      "economic_metrics": {
+        "drawdown": "0",
+        "equity": "100021.85797134",
+        "exposure": "157.7688",
+        "fees": "0.18175276",
+        "fill_count": 3,
+        "funding": "0",
+        "hit_rate": "0",
+        "profit_factor": "0",
+        "realized_pnl": "22.14767800",
+        "slippage": "0.09198559",
+        "turnover": "157.7688",
+        "unrealized_pnl": "-0.01596830949888"
+      },
+      "economic_validity_pass": false,
+      "execution_class": "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION",
+      "execution_eligible": false,
+      "feature_regime": {
+        "blockers": [],
+        "liquidity_features": {
+          "depth_score": 0.0
+        },
+        "mark_price": 3943.820792262528,
+        "market_structure_features": {
+          "range_ratio": 0.11253574024795195
+        },
+        "momentum_features": {
+          "roc": 0.12680594064643655,
+          "rsi": 99.9
+        },
+        "ok": true,
+        "regime_id": "trending",
+        "trend_features": {
+          "slope": 0.042268646882145516,
+          "strength": 1.0
+        },
+        "volatility_estimate": 0.1258767457829736,
+        "warmup_complete": true
+      },
+      "fill": {
+        "accounting_output_digest": "6af2ce95112cdb22db806df79d24707fa9364b784db78dc2c7023a401b2d17a9",
+        "canonical_futures_accounting": true,
+        "cycle_index": 6,
+        "event_time_unix": null,
+        "fee": "0.03155376",
+        "fill_id": "fill_cd8836911d604da0835e4e38",
+        "fill_input_digest": "712a4691c045a6ec24580ea1552aa8db4f222cf5a06fb9be81173326ac13505e",
+        "fill_price": "3944.22",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "mark_price": "3943.820792262528",
+        "notional": "157.7688",
+        "quantity": "0.04",
+        "reduce_only": false,
+        "side": "BUY",
+        "slippage_cost": "0.01596831",
+        "trading_epoch": 6
+      },
+      "instrument_id": "ETH-USD_UM_XPERP-310404",
+      "intended_action": {
+        "decision_outcome": "enter_long",
+        "intended_quantity": "0.04",
+        "intended_side": "BUY",
+        "intent_action": "ENTER_LONG",
+        "quantity_source": "canonical_order_intent",
+        "reason_codes": [
+          "entry_long_eligible"
+        ],
+        "safety_blocked": false,
+        "selected_side": "long"
+      },
+      "live_authorized": false,
+      "notes": [
+        "ANALYTICAL_SIMULATION_ONLY",
+        "NO_ORDERS",
+        "NO_BROKER_WRITES",
+        "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
+        "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+        "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
+        "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+        "C1_C2_C3_CONFIRMATION_PRODUCTIVELY_BOUND",
+        "FUTURES_ACCOUNTING_RUNTIME_BOUND=True",
+        "ACCOUNTING_SINGLE_WRITER=productive_futures_accounting_portfolio_writer_v1",
+        "PORTFOLIO_SINGLE_WRITER=productive_portfolio_position_state_writer_v1",
+        "CONFIRMATION_SESSION_ID=cfsess-okx-ETH-USD_UM_XPERP-310404-79e20b2ea3c39d0c63c57433",
+        "DYNAMIC_SCOPE_SESSION_ID=scsess-okx-ETH-USD_UM_XPERP-310404-6812f00cabc57ac47c8ffa82",
+        "DYNAMIC_SCOPE_ADVANCED=True",
+        "FEATURE_WINDOW_MIN=3",
+        "DYNAMIC_SCOPE_PRODUCTIVELY_BOUND"
+      ],
+      "ok": true,
+      "order_effect": "NONE",
+      "orders_authorized": false,
+      "owner": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+      "package_marker": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1=true",
+      "paper_execution_authorized": false,
+      "portfolio_snapshot": {
+        "broker_writes": false,
+        "economic_metrics": {
+          "drawdown": "0",
+          "equity": "100021.85797134",
+          "exposure": "157.7688",
+          "fees": "0.18175276",
+          "fill_count": 3,
+          "funding": "0",
+          "hit_rate": "0",
+          "profit_factor": "0",
+          "realized_pnl": "22.14767800",
+          "slippage": "0.09198559",
+          "turnover": "157.7688",
+          "unrealized_pnl": "-0.01596830949888"
+        },
+        "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+        "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+        "model_version": "v1",
+        "orders_submitted": false,
+        "params": {
+          "fee_rate_bps": "2.0",
+          "funding_rate_per_interval": "0",
+          "initial_equity": "100000",
+          "max_leverage": "1",
+          "slippage_bps": "1.0"
+        },
+        "state": {
+          "cash": "100021.87393965",
+          "cumulative_fees": "0.18175276",
+          "cumulative_funding": "0",
+          "cumulative_slippage": "0.09198559",
+          "equity": "100021.85797134",
+          "fill_count": 3,
+          "intended_action_count": 1,
+          "max_drawdown": "0",
+          "peak_equity": "100021.85797134",
+          "positions": {
+            "ETH-USD_UM_XPERP-310404": {
+              "avg_entry_price": "3944.22",
+              "instrument_id": "ETH-USD_UM_XPERP-310404",
+              "quantity": "0.04",
+              "realized_pnl": "0",
+              "unrealized_pnl": "-0.01596830949888"
+            }
+          },
+          "realized_pnl": "22.14767800",
+          "turnover_notional": "157.7688",
+          "unrealized_pnl": "-0.01596830949888"
+        }
+      },
+      "promotion_pass": false,
+      "reason_codes": [
+        "entry_long_eligible"
+      ],
+      "risk_sizing_result": "PASS",
+      "runtime_bridge_live_activated": false,
+      "runtime_effect": "NONE",
+      "safety_result": "PASS",
+      "schema_version": "v1",
+      "selected_side": "long",
+      "testnet_authorized": false,
+      "trading_epoch": 6
+    },
+    {
+      "authority_effect": "NONE",
+      "blockers": [],
+      "call_graph": [
+        "persisted_single_selected_future",
+        "selection_integrity_freshness_validation",
+        "ranking_snapshot_reference_validation",
+        "governed_universe_instrument_validation",
+        "venue_native_instrument_binding",
+        "single_selected_future_runtime_binding",
+        "productive_reconciliation_startup_gate",
+        "canonical_decision_runtime_config_bind",
+        "okx_public_market_data",
+        "distinct_market_observation_acceptor",
+        "observation_acceptance_result",
+        "feature_pipeline",
+        "regime_pipeline",
+        "directional_confirmation_progress",
+        "directional_assessment_confirmation_integration",
+        "previous_canonical_runtime_scope_state",
+        "exit_policy_producer_evaluation",
+        "master_v2_double_play_integrated_offline_replay",
+        "dynamic_scope_transition",
+        "canonical_confirmation_state_commit",
+        "canonical_dynamic_scope_state_commit",
+        "decision_path_atomic_runtime_commit",
+        "exit_policy_state_commit",
+        "risk_position_sizing",
+        "safety_kernel",
+        "intended_side_quantity",
+        "analytical_simulated_execution",
+        "simulated_fill_fee_slippage",
+        "canonical_futures_accounting",
+        "session_persistent_portfolio",
+        "realized_unrealized_pnl_equity_drawdown",
+        "risk_state_from_accounting",
+        "simulated_economics_no_order_path",
+        "pending_evidence_cursor_commit",
+        "evidence",
+        "full_economic_reconstruction_verifier"
+      ],
+      "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+      "cycle_index": 7,
+      "decision_authority_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "decision_outcome": "hold",
+      "direction": "long_armed",
+      "economic_metrics": {
+        "drawdown": "0",
+        "equity": "100025.01302797",
+        "exposure": "157.7688",
+        "fees": "0.18175276",
+        "fill_count": 3,
+        "funding": "0",
+        "hit_rate": "0",
+        "profit_factor": "0",
+        "realized_pnl": "22.14767800",
+        "slippage": "0.09198559",
+        "turnover": "157.7688",
+        "unrealized_pnl": "3.139088324311136"
+      },
+      "economic_validity_pass": false,
+      "execution_class": "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION",
+      "execution_eligible": false,
+      "feature_regime": {
+        "blockers": [],
+        "liquidity_features": {
+          "depth_score": 0.0
+        },
+        "mark_price": 4022.6972081077784,
+        "market_structure_features": {
+          "range_ratio": 0.12993700024309013
+        },
+        "momentum_features": {
+          "roc": 0.14934205945936524,
+          "rsi": 99.9
+        },
+        "ok": true,
+        "regime_id": "trending",
+        "trend_features": {
+          "slope": 0.03733551486484131,
+          "strength": 1.0
+        },
+        "volatility_estimate": 0.12074446690152887,
+        "warmup_complete": true
+      },
+      "fill": null,
+      "instrument_id": "ETH-USD_UM_XPERP-310404",
+      "intended_action": {
+        "decision_outcome": "hold",
+        "intended_quantity": "0",
+        "intended_side": "HOLD",
+        "intent_action": "NONE",
+        "quantity_source": "non_actionable",
+        "reason_codes": [
+          "existing_long_hold"
+        ],
+        "safety_blocked": false,
+        "selected_side": "long"
+      },
+      "live_authorized": false,
+      "notes": [
+        "ANALYTICAL_SIMULATION_ONLY",
+        "NO_ORDERS",
+        "NO_BROKER_WRITES",
+        "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
+        "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+        "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
+        "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+        "C1_C2_C3_CONFIRMATION_PRODUCTIVELY_BOUND",
+        "FUTURES_ACCOUNTING_RUNTIME_BOUND=True",
+        "ACCOUNTING_SINGLE_WRITER=productive_futures_accounting_portfolio_writer_v1",
+        "PORTFOLIO_SINGLE_WRITER=productive_portfolio_position_state_writer_v1",
+        "CONFIRMATION_SESSION_ID=cfsess-okx-ETH-USD_UM_XPERP-310404-79e20b2ea3c39d0c63c57433",
+        "DYNAMIC_SCOPE_SESSION_ID=scsess-okx-ETH-USD_UM_XPERP-310404-6812f00cabc57ac47c8ffa82",
+        "DYNAMIC_SCOPE_ADVANCED=True",
+        "FEATURE_WINDOW_MIN=3",
+        "DYNAMIC_SCOPE_PRODUCTIVELY_BOUND"
+      ],
+      "ok": true,
+      "order_effect": "NONE",
+      "orders_authorized": false,
+      "owner": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+      "package_marker": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1=true",
+      "paper_execution_authorized": false,
+      "portfolio_snapshot": {
+        "broker_writes": false,
+        "economic_metrics": {
+          "drawdown": "0",
+          "equity": "100025.01302797",
+          "exposure": "157.7688",
+          "fees": "0.18175276",
+          "fill_count": 3,
+          "funding": "0",
+          "hit_rate": "0",
+          "profit_factor": "0",
+          "realized_pnl": "22.14767800",
+          "slippage": "0.09198559",
+          "turnover": "157.7688",
+          "unrealized_pnl": "3.139088324311136"
+        },
+        "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+        "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+        "model_version": "v1",
+        "orders_submitted": false,
+        "params": {
+          "fee_rate_bps": "2.0",
+          "funding_rate_per_interval": "0",
+          "initial_equity": "100000",
+          "max_leverage": "1",
+          "slippage_bps": "1.0"
+        },
+        "state": {
+          "cash": "100021.87393965",
+          "cumulative_fees": "0.18175276",
+          "cumulative_funding": "0",
+          "cumulative_slippage": "0.09198559",
+          "equity": "100025.01302797",
+          "fill_count": 3,
+          "intended_action_count": 2,
+          "max_drawdown": "0",
+          "peak_equity": "100025.01302797",
+          "positions": {
+            "ETH-USD_UM_XPERP-310404": {
+              "avg_entry_price": "3944.22",
+              "instrument_id": "ETH-USD_UM_XPERP-310404",
+              "quantity": "0.04",
+              "realized_pnl": "0",
+              "unrealized_pnl": "3.139088324311136"
+            }
+          },
+          "realized_pnl": "22.14767800",
+          "turnover_notional": "157.7688",
+          "unrealized_pnl": "3.139088324311136"
+        }
+      },
+      "promotion_pass": false,
+      "reason_codes": [
+        "existing_long_hold"
+      ],
+      "risk_sizing_result": "NONE",
+      "runtime_bridge_live_activated": false,
+      "runtime_effect": "NONE",
+      "safety_result": "PASS",
+      "schema_version": "v1",
+      "selected_side": "long",
+      "testnet_authorized": false,
+      "trading_epoch": 7
+    }
+  ],
+  "pre": {
+    "accounting_snapshot": {
+      "position": "None",
+      "realized_pnl": "22.14767800"
+    },
+    "claims": {
+      "ADVERSE_EXIT_PROVEN": false,
+      "ENTRY_FILL_OBSERVED": true,
+      "ENTRY_INTENT_OBSERVED": true,
+      "EXIT_FILL_OBSERVED": true,
+      "EXIT_INTENT_OBSERVED": true,
+      "PROFIT_EXIT_PROVEN": true,
+      "REDUCE_FILL_OBSERVED": false,
+      "REDUCE_INTENT_OBSERVED": false,
+      "TIME_OR_INVALIDATION_EXIT_PROVEN": false
+    },
+    "digests": {
+      "fills": "9e2b7366fa20e7ffa3d9c64e4a82c950ffb7495593d13eaa5bd321ab724e9f40",
+      "intents": "71bfe3cee27232012c3d8b8222890ba4fb764c531f217e1e4c24a501245dc656",
+      "rows": "a1260eb01fbf55977a107945d235e2419ceaf6f4050d75aaacb31e4a867ed11c"
+    },
+    "fills": [
+      {
+        "accounting_output_digest": "9da42d7568601c88295d9c3e4cc949355ece406c6364dbb1b4ec9b97d54c5b4f",
+        "canonical_futures_accounting": true,
+        "cycle_index": 2,
+        "decision_outcome": "enter_long",
+        "event_time_unix": null,
+        "fee": "0.07287700",
+        "fill_class": "entry",
+        "fill_id": "fill_7717624cc9ea8a93c55f831d",
+        "fill_input_digest": "0c2fb007ab0d6c40ef891c581a2e76fa0f21cdd6065e998f46e299aa9b513ead",
+        "fill_price": "3643.85",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "mark_price": "3643.4808",
+        "notional": "364.3850",
+        "quantity": "0.10",
+        "reduce_only": false,
+        "side": "BUY",
+        "slippage_cost": "0.03692000",
+        "trading_epoch": 2
+      },
+      {
+        "accounting_output_digest": "1454786bb7ee71be6deef32efa1a702ef86825717fe3bb66446623474c0b9783",
+        "canonical_futures_accounting": true,
+        "cycle_index": 5,
+        "decision_outcome": "exit",
+        "event_time_unix": null,
+        "fee": "0.07732200",
+        "fill_class": "exit",
+        "fill_id": "fill_bb040002eea84c3cc42edbeb",
+        "fill_input_digest": "71b4e20ffb67004cd2a636ba2fb4c77589bb2aeb160ba6855d091a85d99e53ac",
+        "fill_price": "3866.10",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "mark_price": "3866.4909728064",
+        "notional": "386.6100",
+        "quantity": "0.10",
+        "reduce_only": false,
+        "side": "SELL",
+        "slippage_cost": "0.03909728",
+        "trading_epoch": 5
+      }
+    ],
+    "intents": [
+      {
+        "class": "entry",
+        "cycle_index": 2,
+        "decision_outcome": "enter_long",
+        "intended_quantity": "0.10",
+        "intended_side": "BUY",
+        "intent_action": "ENTER_LONG",
+        "reason_codes": [
+          "entry_long_eligible"
+        ]
+      },
+      {
+        "class": "exit",
+        "cycle_index": 5,
+        "decision_outcome": "exit",
+        "intended_quantity": "0.10",
+        "intended_side": "SELL",
+        "intent_action": "SIZING::exit",
+        "reason_codes": [
+          "profit_protection_exit",
+          "profit_lock"
+        ]
+      }
+    ],
+    "metrics": {
+      "cycles": 5,
+      "entry_fill_count": 1,
+      "entry_intent_count": 1,
+      "exit_fill_count": 1,
+      "exit_intent_count": 1,
+      "final_flat": true,
+      "final_position_side": "none",
+      "reason_codes_seen": [
+        "entry_long_eligible",
+        "existing_long_hold",
+        "observe_only",
+        "profit_lock",
+        "profit_protection_exit"
+      ],
+      "reduce_fill_count": 0,
+      "reduce_intent_count": 0,
+      "simulated_fill_count": 2,
+      "total_fees": "0.15019900",
+      "total_slippage": "0.07601728"
+    },
+    "name": "partial_reduce_pre_restart",
+    "ok": true,
+    "portfolio_snapshot": {
+      "broker_writes": false,
+      "economic_metrics": {
+        "drawdown": "0",
+        "equity": "100021.92146172",
+        "exposure": 0,
+        "fees": "0.15019900",
+        "fill_count": 2,
+        "funding": "0",
+        "hit_rate": "0",
+        "profit_factor": "0",
+        "realized_pnl": "22.14767800",
+        "slippage": "0.07601728",
+        "turnover": "750.9950",
+        "unrealized_pnl": "0"
+      },
+      "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+      "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+      "model_version": "v1",
+      "orders_submitted": false,
+      "params": {
+        "fee_rate_bps": "2.0",
+        "funding_rate_per_interval": "0",
+        "initial_equity": "100000",
+        "max_leverage": "1",
+        "slippage_bps": "1.0"
+      },
+      "state": {
+        "cash": "100021.92146172",
+        "cumulative_fees": "0.15019900",
+        "cumulative_funding": "0",
+        "cumulative_slippage": "0.07601728",
+        "equity": "100021.92146172",
+        "fill_count": 2,
+        "intended_action_count": 5,
+        "max_drawdown": "0",
+        "peak_equity": "100021.92146172",
+        "positions": {},
+        "realized_pnl": "22.14767800",
+        "turnover_notional": "750.9950",
+        "unrealized_pnl": "0"
+      }
+    },
+    "rows": [
+      {
+        "confirmation_phase": "candidate",
+        "cycle_index": 1,
+        "decision_outcome": "observe",
+        "event_ts_unix": 1700000000.0,
+        "fee": null,
+        "fill_id": null,
+        "fill_quantity": null,
+        "fill_side": null,
+        "intended_quantity": "0",
+        "intended_side": "HOLD",
+        "intent_action": "NONE",
+        "mid_price": 3572.04,
+        "observation_classification": "distinct",
+        "position_side": "none",
+        "reason_codes": [
+          "observe_only"
+        ],
+        "slippage_cost": null,
+        "venue_flat": true
+      },
+      {
+        "confirmation_phase": "confirmed",
+        "cycle_index": 2,
+        "decision_outcome": "enter_long",
+        "event_ts_unix": 1700000001.0,
+        "fee": "0.07287700",
+        "fill_id": "fill_7717624cc9ea8a93c55f831d",
+        "fill_quantity": "0.10",
+        "fill_side": "BUY",
+        "intended_quantity": "0.10",
+        "intended_side": "BUY",
+        "intent_action": "ENTER_LONG",
+        "mid_price": 3643.4808,
+        "observation_classification": "distinct",
+        "position_side": "long",
+        "reason_codes": [
+          "entry_long_eligible"
+        ],
+        "slippage_cost": "0.03692000",
+        "venue_flat": false
+      },
+      {
+        "confirmation_phase": "confirmed",
+        "cycle_index": 3,
+        "decision_outcome": "hold",
+        "event_ts_unix": 1700000002.0,
+        "fee": null,
+        "fill_id": null,
+        "fill_quantity": null,
+        "fill_side": null,
+        "intended_quantity": "0",
+        "intended_side": "HOLD",
+        "intent_action": "NONE",
+        "mid_price": 3716.3504159999998,
+        "observation_classification": "distinct",
+        "position_side": "long",
+        "reason_codes": [
+          "existing_long_hold"
+        ],
+        "slippage_cost": null,
+        "venue_flat": false
+      },
+      {
+        "confirmation_phase": "confirmed",
+        "cycle_index": 4,
+        "decision_outcome": "hold",
+        "event_ts_unix": 1700000003.0,
+        "fee": null,
+        "fill_id": null,
+        "fill_quantity": null,
+        "fill_side": null,
+        "intended_quantity": "0",
+        "intended_side": "HOLD",
+        "intent_action": "NONE",
+        "mid_price": 3790.67742432,
+        "observation_classification": "distinct",
+        "position_side": "long",
+        "reason_codes": [
+          "existing_long_hold"
+        ],
+        "slippage_cost": null,
+        "venue_flat": false
+      },
+      {
+        "confirmation_phase": "confirmed",
+        "cycle_index": 5,
+        "decision_outcome": "exit",
+        "event_ts_unix": 1700000004.0,
+        "fee": "0.07732200",
+        "fill_id": "fill_bb040002eea84c3cc42edbeb",
+        "fill_quantity": "0.10",
+        "fill_side": "SELL",
+        "intended_quantity": "0.10",
+        "intended_side": "SELL",
+        "intent_action": "SIZING::exit",
+        "mid_price": 3866.4909728064,
+        "observation_classification": "distinct",
+        "position_side": "none",
+        "reason_codes": [
+          "profit_protection_exit",
+          "profit_lock"
+        ],
+        "slippage_cost": "0.03909728",
+        "venue_flat": true
+      }
+    ]
+  }
+}

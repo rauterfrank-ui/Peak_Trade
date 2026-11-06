@@ -1,0 +1,94 @@
+{
+  "EVIDENCE_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.evidence_v1",
+  "EVIDENCE_VERSION": "naked_mv2_dp_explicit_layered_core_layer_separation/v1",
+  "EXPLICIT_LAYERED_CORE_VERSION": "naked_mv2_dp_explicit_layered_core/v1",
+  "FINAL_D_T_FORMULA_SELECTED": false,
+  "LAYERS": [
+    {
+      "DOWNSTREAM_CONSUMER": "L2_MARKET_OBSERVATION",
+      "INPUT": "instrument_selection_request",
+      "LAYER_ID": "L1_SELECTED_FUTURE",
+      "MUTATES": "selected_future_state_only",
+      "OUTPUT": "selected_future_binding",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l1_selected_future_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "L3_INITIAL_DIRECTION",
+      "INPUT": "selected_future + observation_candidate",
+      "LAYER_ID": "L2_MARKET_OBSERVATION",
+      "MUTATES": "observation_acceptance_state_only",
+      "OUTPUT": "accepted_market_observation",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l2_market_observation_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "L4_INITIAL_STATE_INITIALIZATION",
+      "INPUT": "consecutive_distinct_observations",
+      "LAYER_ID": "L3_INITIAL_DIRECTION",
+      "MUTATES": "none_pure_evaluator",
+      "OUTPUT": "elementary_direction_result",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l3_initial_direction_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "L5_NULLLINE",
+      "INPUT": "non_neutral_elementary_direction",
+      "LAYER_ID": "L4_INITIAL_STATE_INITIALIZATION",
+      "MUTATES": "regime_authority_established_once",
+      "OUTPUT": "initial_bull_or_bear_regime",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l4_initial_state_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "L6_DYNAMIC_SCOPE_GENERATOR",
+      "INPUT": "initialization_mark_at_regime_birth",
+      "LAYER_ID": "L5_NULLLINE",
+      "MUTATES": "nullline_state_only_not_running_reference",
+      "OUTPUT": "nullline_price_basis",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l5_nullline_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "L7_SCOPE_STATE",
+      "INPUT": "nullline_context + external_d_t_proposal",
+      "LAYER_ID": "L6_DYNAMIC_SCOPE_GENERATOR",
+      "MUTATES": "none_replaceable_generator",
+      "OUTPUT": "validated_d_t_or_fail_closed",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "L8_RUNNING_REFERENCE",
+      "INPUT": "validated_d_t + nullline_provenance",
+      "LAYER_ID": "L7_SCOPE_STATE",
+      "MUTATES": "scope_state_only_no_regime_switch",
+      "OUTPUT": "materialized_scope_state",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l7_scope_state_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "L9_COUNTER_MOVE",
+      "INPUT": "regime + mark + prior_running_reference",
+      "LAYER_ID": "L8_RUNNING_REFERENCE",
+      "MUTATES": "running_reference_state_only_not_nullline",
+      "OUTPUT": "updated_running_reference_r_t",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l8_running_reference_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "L10_BULL_BEAR_STATE_SWITCH",
+      "INPUT": "regime + mark + running_reference",
+      "LAYER_ID": "L9_COUNTER_MOVE",
+      "MUTATES": "none_pure_formula",
+      "OUTPUT": "counter_move_cm_t",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l9_counter_move_v1"
+    },
+    {
+      "DOWNSTREAM_CONSUMER": "orchestrator_persisted_state",
+      "INPUT": "cm_t + scope_d_t + prior_regime",
+      "LAYER_ID": "L10_BULL_BEAR_STATE_SWITCH",
+      "MUTATES": "regime_switch_authority_sole_price_rule",
+      "OUTPUT": "regime_post + r_t_reset_flag",
+      "SEMANTIC_OWNER": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l10_bull_bear_switch_v1"
+    }
+  ],
+  "NULLLINE_RUNNING_REFERENCE_SEPARATION": true,
+  "NULLLINE_SCOPE_SEPARATION": true,
+  "PRODUCTIVE_D_T_BINDING_PRESENT": false,
+  "SCOPE_GENERATOR_REPLACEABLE": true,
+  "SCOPE_RUNNING_REFERENCE_SEPARATION": true,
+  "SOLE_PRICE_SWITCH_RULE": "CM_t>=D_t"
+}

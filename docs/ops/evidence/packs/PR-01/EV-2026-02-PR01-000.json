@@ -1,0 +1,21 @@
+{
+  "evidence_id": "EV-2026-02-PR01-000",
+  "pr_id": "PR-01",
+  "component": "docs_contracts",
+  "claim": "Status Matrix + Evidence Schema v1 exist in repo",
+  "level": "E0",
+  "status": "implemented",
+  "artifacts": [
+    { "type": "doc", "path": "docs/ops/STATUS_MATRIX.md" },
+    { "type": "doc", "path": "docs/ops/evidence/EVIDENCE_SCHEMA_v1.json" },
+    { "type": "doc", "path": "docs/ops/evidence/README.md" }
+  ],
+  "how_to_verify": {
+    "commands": [
+      "ls -la docs/ops/STATUS_MATRIX.md docs/ops/evidence/EVIDENCE_SCHEMA_v1.json docs/ops/evidence/README.md"
+    ],
+    "expected": [
+      "files_exist=true"
+    ]
+  }
+}

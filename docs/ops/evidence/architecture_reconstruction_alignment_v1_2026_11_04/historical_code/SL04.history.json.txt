@@ -1,0 +1,155 @@
+{
+  "id": "SL04",
+  "phase": 4,
+  "title": "Robustheitsprüfung",
+  "introduction_commit": "2cd8f6b6e1c8051decb3506abc3a2250b4f228c5",
+  "introduction_date": "2026-08-17T19:39:35Z",
+  "commit_subject": "research: add canonical robustness suite v1 (#5931)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/2cd8f6b6e1c8051decb3506abc3a2250b4f228c5",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_robustness_suite_v1.py",
+  "code_blob": "dea5dceb08582dfffa0fb1bb03700c93c16640f9",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL04-canonical_robustness_suite_v1.source.py",
+  "source_lines": 1620,
+  "module_docstring": "Phase 4 Canonical Robustness Suite v1 (research evidence only).\n\nDeterministic, versioned robustness evaluation for a Canonical Experiment\nIdentity bound candidate. This layer reuses Phase 1 identity, Phase 2\nexperiment_id / REJECTED_* dispositions, and Phase 3 Failure Memory. It\nhas no runtime, order, live, funding, canary, promotion, or config-write\nauthority.\n\nBEST_SHARPE => PROMOTE is forbidden. Missing required evidence cannot be\ntreated as PASS.",
+  "public_functions": [
+    {
+      "name": "canonical_robustness_policy_v1",
+      "line": 263
+    },
+    {
+      "name": "derive_robustness_policy_digest_v1",
+      "line": 290
+    },
+    {
+      "name": "derive_robustness_suite_identity_v1",
+      "line": 301
+    },
+    {
+      "name": "build_canonical_robustness_evidence_v1",
+      "line": 327
+    },
+    {
+      "name": "validate_canonical_robustness_evidence_v1",
+      "line": 460
+    },
+    {
+      "name": "build_failure_records_for_failed_gates_v1",
+      "line": 548
+    },
+    {
+      "name": "canonical_record_payload",
+      "line": 587
+    }
+  ],
+  "classes": [
+    {
+      "name": "RobustnessSuiteValidationError",
+      "line": 239
+    },
+    {
+      "name": "CanonicalRobustnessSuiteRequestV1",
+      "line": 244
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 331,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 488,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 558,
+      "imported_module": "src.experiments.canonical_failure_memory_v1",
+      "called_symbol": "CanonicalFailureMemoryRecordRequestV1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 1490,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 1565,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "canonicalize_value",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 583,
+      "imported_module": "src.experiments.canonical_failure_memory_v1",
+      "called_symbol": "build_canonical_failure_memory_record_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_ROBUSTNESS_SUITE_V1.md",
+      "status": "added",
+      "sha": "b6b732a1af4127a7d37ca300123a0aa28a01c47c",
+      "additions": 142,
+      "deletions": 0,
+      "changes": 142
+    },
+    {
+      "filename": "src/experiments/canonical_robustness_suite_v1.py",
+      "status": "added",
+      "sha": "dea5dceb08582dfffa0fb1bb03700c93c16640f9",
+      "additions": 1620,
+      "deletions": 0,
+      "changes": 1620
+    },
+    {
+      "filename": "tests/experiments/test_canonical_robustness_suite_v1.py",
+      "status": "added",
+      "sha": "8c41ebcf96066f9d80bca0b403cf708b2b0e71c0",
+      "additions": 443,
+      "deletions": 0,
+      "changes": 443
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_robustness_suite_v1.py",
+      "status": "added",
+      "sha": "8c41ebcf96066f9d80bca0b403cf708b2b0e71c0",
+      "additions": 443,
+      "deletions": 0,
+      "changes": 443
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_robustness_suite_v1.py",
+      "status": "added",
+      "sha": "dea5dceb08582dfffa0fb1bb03700c93c16640f9",
+      "additions": 1620,
+      "deletions": 0,
+      "changes": 1620
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "2cd8f6b6e1c8051decb3506abc3a2250b4f228c5",
+      "date": "2026-08-17T19:39:35Z",
+      "subject": "research: add canonical robustness suite v1 (#5931)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/2cd8f6b6e1c8051decb3506abc3a2250b4f228c5",
+      "parents": [
+        "e763bf1bf133afab1c3850a6bbaafde6f83e39d2"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

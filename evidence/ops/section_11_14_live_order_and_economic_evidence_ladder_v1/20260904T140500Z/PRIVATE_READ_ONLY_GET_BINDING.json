@@ -1,0 +1,17 @@
+{
+  "ENDPOINTS": [
+    "/api/v5/account/config",
+    "/api/v5/account/balance"
+  ],
+  "EXPECTED_MUTATION": "NONE",
+  "LIVE_ORDER_PLAN_OBSERVED_PROMOTION": false,
+  "MAXIMUM_REQUEST_COUNT": 2,
+  "METHOD": "GET",
+  "POST": false,
+  "PRIVATE_GET": true,
+  "PUBLIC_GET": false,
+  "REQUIRED_FACT": "CURRENT_AUTHENTICATED_PRIVATE_READ_CONFIG_AND_BALANCE",
+  "RETRY": false,
+  "SECTION_11_13_2_TRADE_FALSE_ATTESTATION_NOT_A_1114_CONJUNCT": true,
+  "WHY_GET_REQUIRED": "LIVE_PRIVATE_READ_ONLY_PROVEN requires current authenticated private GET of /api/v5/account/config and /api/v5/account/balance. A single reachability GET is not this field. Historical \u00a711.13.2 success is stale."
+}

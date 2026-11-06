@@ -1,0 +1,19 @@
+{
+  "exit_code": 0,
+  "failed": 0,
+  "focused_phase92_passed": 1,
+  "focused_pso_passed": 3,
+  "focused_s03_passed": 1,
+  "o2_integration_passed": 16,
+  "o3_owner_passed": 20,
+  "ok": true,
+  "passed": 36,
+  "repository_sha": "02f32fb6533efeb191320571b0b288c1878c6486",
+  "tests_run": [
+    "tests/ops/test_secure_confirm_token_family_and_hidden_input_handoff_v1.py",
+    "tests/ops/test_canonical_local_launcher_and_process_supervision_v1.py",
+    "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py (focused)",
+    "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.py (focused)",
+    "tests/ops/test_phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.py (focused)"
+  ]
+}

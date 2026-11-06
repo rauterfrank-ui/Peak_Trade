@@ -1,0 +1,47 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏥 Peak_Trade Ops Inspector – Doctor Mode
+⏰ 2025-12-22T23:12:46.331780Z
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 Summary:
+   ✅ OK:   6
+   ⚠️  WARN: 3
+   ❌ FAIL: 0
+   ⏭️  SKIP: 0
+
+🔍 Checks:
+
+✅ [repo.git_root] Git repository root found: /Users/frnkhrz/Peak_Trade
+      /Users/frnkhrz/Peak_Trade/.git
+
+⚠️  [repo.git_status] Uncommitted changes: 3 files
+   💡 Fix: Commit or stash changes: git commit -m '...' or git stash
+      ?? docs/ops/OPS_DOCTOR_README.md
+      ?? scripts/ops/ops_doctor.sh
+      ?? src/ops/doctor.py
+
+✅ [deps.uv_lock] uv.lock up to date
+
+⚠️  [deps.requirements_sync] requirements.txt out of sync
+   💡 Fix: Run: uv export --no-dev > requirements.txt
+
+
+✅ [config.pyproject] pyproject.toml valid (project: peak_trade)
+
+✅ [config.files] All expected config files present (2)
+      ✓ default.toml
+      ✓ config.toml
+
+⚠️  [docs.registry] README_REGISTRY.md exists but appears empty
+
+✅ [tests.infrastructure] Test infrastructure OK
+      ✓ pytest.ini
+      ✓ tests/ (217 test files)
+
+✅ [ci.files] CI/CD infrastructure present (3 components)
+      ✓ .github/workflows
+      ✓ Makefile
+      ✓ policy_packs/ci.yml
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  Doctor found warnings

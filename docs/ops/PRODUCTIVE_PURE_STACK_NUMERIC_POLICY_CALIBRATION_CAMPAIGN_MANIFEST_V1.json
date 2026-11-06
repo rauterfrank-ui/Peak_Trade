@@ -1,0 +1,1269 @@
+{
+  "schema_version": "productive_pure_stack_numeric_policy_evidence_pack/v1",
+  "campaign_id": "productive_pure_stack_numeric_policy_calibration_campaign_v1",
+  "campaign_status": "NOT_STARTED",
+  "origin_main_sha": "80977448775bd4819cbeef9122364e6330d7100f",
+  "stage1_manifest_digest": "187cd375b3d3763de7d37c9f13d56f318ccd2987f1e57ab1db77c26169d862fe",
+  "calibration_protocol_digest": "3352a5f92ba67593409cd4bf4933dd43d6ae33d90b8a99ea15d0c88bd52f3b58",
+  "sole_trading_authority_symbol": "run_integrated_offline_trading_logic_replay_v1",
+  "observation_identity": {
+    "observation_family": "PUBLIC_MARKET_FINALIZED_BARS",
+    "bar_interval": "PT1M",
+    "point_in_time_only": true,
+    "no_lookahead": true,
+    "no_implicit_fill": true,
+    "provenance_required": true,
+    "sole_consumer_authority": "run_integrated_offline_trading_logic_replay_v1"
+  },
+  "producer_identity": {
+    "status": "SCAFFOLD_ONLY",
+    "productive_activation": false,
+    "allowed_producer_classes": [
+      "sole_trading_authority_shadow_calibration_producer"
+    ],
+    "forbidden_producer_classes": [
+      "fixture_scenario_scalar",
+      "webui_hardcoded_limit",
+      "dashboard_presentation_projection",
+      "cmc_volatility_estimate",
+      "SurvivalResultV1",
+      "SuitabilityResultV1",
+      "archive_authority_mutation",
+      "parallel_arithmetic_volatility_opportunity_kernel"
+    ]
+  },
+  "dataset_manifest": {
+    "status": "EMPTY_SCAFFOLD",
+    "populated": false,
+    "entries": [],
+    "digest": null,
+    "notes": "Stage-2 scaffolding only; no calibration dataset populated"
+  },
+  "train_calibration_validation_partition_manifest": {
+    "status": "EMPTY_SCAFFOLD",
+    "populated": false,
+    "entries": [],
+    "digest": null,
+    "notes": "Train/calibration/validation partitions not started"
+  },
+  "walk_forward_manifest": {
+    "status": "EMPTY_SCAFFOLD",
+    "populated": false,
+    "entries": [],
+    "digest": null,
+    "notes": "Walk-forward folds not started"
+  },
+  "bootstrap_monte_carlo_manifest": {
+    "status": "EMPTY_SCAFFOLD",
+    "populated": false,
+    "entries": [],
+    "digest": null,
+    "notes": "Bootstrap/Monte-Carlo not started"
+  },
+  "stress_pack_manifest": {
+    "status": "EMPTY_SCAFFOLD",
+    "populated": false,
+    "entries": [],
+    "digest": null,
+    "notes": "Stress packs not started"
+  },
+  "metric_definition_digests": {
+    "block_allow_rate": null,
+    "false_allow_rate": null,
+    "false_block_rate": null,
+    "path_survival": null,
+    "early_loss_toxicity": null,
+    "liquidation_near_miss_rate": null,
+    "governance_breach_frequency": null,
+    "effective_leverage": null,
+    "liquidation_buffer": null,
+    "adverse_fill_loss": null
+  },
+  "per_token_evidence": [
+    {
+      "token": "OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS",
+      "semantic_role": "Futures Input readiness/safety max age for provenance freshness_state; independent of CMC numeric max-age alpha",
+      "required_producer": "market_data_provenance_producer_feeding_FuturesMarketDataProvenanceStatus",
+      "required_observations": [
+        "public_market_finalized_pt1m_bars",
+        "futures_market_data_provenance_status",
+        "event_time_freshness_metadata"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "stale_unknown_block_rate"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "cmc_numeric_max_age_alpha_reuse",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch"
+      ],
+      "dependency_tokens": [],
+      "allowed_calibration_output_type": "THRESHOLD_SECONDS",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MIN_PATH_SURVIVAL_RATIO",
+      "semantic_role": "Minimum path survival ratio gate for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_RATIO_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_EARLY_LOSS_TOXICITY",
+      "semantic_role": "Maximum early loss toxicity gate for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_RATIO_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MIN_MARGIN_BUFFER_AT_RISK_99",
+      "semantic_role": "Minimum margin buffer at risk 99 gate for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_RATIO_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_SEQUENCE_FRAGILITY_INDEX",
+      "semantic_role": "Maximum sequence fragility index gate for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_RATIO_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_LIQUIDATION_NEAR_MISS_RATE",
+      "semantic_role": "Maximum liquidation near-miss rate gate for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_RATIO_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_GOVERNANCE_BREACH_FREQUENCY",
+      "semantic_role": "Maximum governance breach frequency gate for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_RATIO_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MIN_CHOP_SWITCH_SURVIVAL_SCORE",
+      "semantic_role": "Minimum chop/switch survival score gate for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_RATIO_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_EFFECTIVE_LEVERAGE",
+      "semantic_role": "Maximum effective leverage layer limit for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_NONNEGATIVE_REAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MIN_LIQUIDATION_BUFFER",
+      "semantic_role": "Minimum liquidation buffer layer limit for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_NONNEGATIVE_REAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_ADVERSE_FILL_LOSS",
+      "semantic_role": "Maximum adverse fill loss layer limit for DoublePlaySurvivalEnvelope",
+      "required_producer": "double_play_survival_envelope_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sequence_metric_set_stage1",
+        "path_survival_ratio_stage1",
+        "canonical_futures_accounting_kernel_projection"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_definition_digest_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "survival_or_suitability_result_v1_as_numeric_authority",
+        "parallel_arithmetic_kernel"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+        "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_NONNEGATIVE_REAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_PROFIT_STEP_PCT",
+      "semantic_role": "Capital-slot profit step as fraction of effective slot base",
+      "required_producer": "capital_slot_config_v1_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "capital_slot_cashflow_step_events",
+        "effective_slot_base_observations"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "isolated_sharpe_or_profit_optimization",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete"
+      ],
+      "dependency_tokens": [],
+      "allowed_calibration_output_type": "THRESHOLD_PERCENT_FRACTION",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_CASHFLOW_LOCK_FRACTION",
+      "semantic_role": "Capital-slot cashflow lock fraction in unit interval; mechanically couples reinvest_fraction",
+      "required_producer": "capital_slot_config_v1_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "capital_slot_cashflow_split_observations"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "independent_reinvest_fraction_value",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_CAPITAL_SLOT_REINVEST_FRACTION"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_FRACTION_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_MIN_REALIZED_VOLATILITY",
+      "semantic_role": "Minimum realized volatility gate in Stage-1 Pure-Stack units; not CMC.volatility_estimate",
+      "required_producer": "capital_slot_config_v1_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "fps_realized_volatility_population_stdev_mark_log_returns_v1"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "cmc_volatility_estimate_as_realized_volatility_alias",
+        "primary_safety_gate_fail",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete",
+        "stage1_unit_mismatch"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_REALIZED_VOLATILITY_FORMULA_ID",
+        "OWNER_VALUE_REALIZED_VOLATILITY_UNIT",
+        "OWNER_VALUE_REALIZED_VOLATILITY_HORIZON"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_NONNEGATIVE_REAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_MIN_ATR_OR_RANGE",
+      "semantic_role": "Minimum ATR/range gate in Stage-1 price quote currency units",
+      "required_producer": "capital_slot_config_v1_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "fps_atr_or_range_wilder_atr_finalized_ohlcv_v1"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "stage1_unit_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_ATR_OR_RANGE_FORMULA_ID",
+        "OWNER_VALUE_ATR_OR_RANGE_UNIT",
+        "OWNER_VALUE_ATR_OR_RANGE_WINDOW"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_PRICE_QUOTE_UNITS",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_MAX_TIME_WITHOUT_CASHFLOW_STEP",
+      "semantic_role": "Maximum Sole Trading Authority cycle-index quanta without cashflow step",
+      "required_producer": "capital_slot_config_v1_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "sole_trading_authority_cycle_index",
+        "cashflow_step_event_times_in_cycle_quanta"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "wallclock_seconds_as_time_quantum",
+        "primary_safety_gate_fail",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_CAPITAL_SLOT_TIME_QUANTUM"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_INTEGER_CYCLE_QUANTA",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_MIN_OPPORTUNITY_SCORE",
+      "semantic_role": "Minimum opportunity score gate on Stage-1 unit interval scale",
+      "required_producer": "capital_slot_config_v1_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "fps_opportunity_score_fee_slippage_breakeven_movement_v1"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "primary_safety_gate_fail",
+        "stage1_scale_mismatch",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete"
+      ],
+      "dependency_tokens": [
+        "OWNER_VALUE_OPPORTUNITY_SCORE_FORMULA_ID",
+        "OWNER_VALUE_OPPORTUNITY_SCORE_SCALE"
+      ],
+      "allowed_calibration_output_type": "THRESHOLD_SCORE_UNIT_INTERVAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_INITIAL_SLOT_BASE",
+      "semantic_role": "Initial capital slot base; Owner policy amount, not ambient account equity remap",
+      "required_producer": "capital_slot_state_store_v1_shadow_calibration_under_sole_trading_authority",
+      "required_observations": [
+        "owner_declared_slot_base_candidate_observations_only"
+      ],
+      "required_stratification": [
+        "instrument_id",
+        "volatility_regime_taxonomy_label_low_mid_high_unknown",
+        "missing_regime_stratum",
+        "time_segment"
+      ],
+      "required_stress_families": [
+        "observation_gaps_missing_bars",
+        "staleness_near_and_beyond_candidate",
+        "spread_expansion_crossed_book",
+        "volatility_shocks_high_realized_vol_atr",
+        "liquidation_near_miss_path_families",
+        "chop_rapid_switch_clusters"
+      ],
+      "primary_safety_metrics": [
+        "block_allow_rate",
+        "false_allow_rate",
+        "false_block_rate",
+        "path_survival",
+        "early_loss_toxicity",
+        "liquidation_near_miss_rate",
+        "governance_breach_frequency",
+        "effective_leverage",
+        "liquidation_buffer",
+        "adverse_fill_loss"
+      ],
+      "secondary_metrics": [
+        "profit_factor",
+        "max_drawdown",
+        "turnover",
+        "fees",
+        "slippage",
+        "opportunity_cost"
+      ],
+      "mandatory_rejection_criteria": [
+        "account_equity_derivation",
+        "primary_safety_gate_fail",
+        "fixture_webui_cmc_dashboard_authority_source",
+        "oos_acceptance_fail",
+        "stress_pack_incomplete"
+      ],
+      "dependency_tokens": [],
+      "allowed_calibration_output_type": "THRESHOLD_NONNEGATIVE_REAL",
+      "productive_numeric_value": null,
+      "input_authority": false,
+      "runtime_implemented": false,
+      "owner_ratification_status": "NOT_RATIFIED",
+      "authority_source": null,
+      "derivation_source": null,
+      "acceptance_gate_results": [],
+      "rejection_reasons": []
+    }
+  ],
+  "acceptance_gate_results": [
+    {
+      "gate_id": "stage2_scaffold_integrity",
+      "status": "NOT_EVALUATED",
+      "notes": "Scaffolding only"
+    },
+    {
+      "gate_id": "oos_acceptance",
+      "status": "NOT_EVALUATED",
+      "notes": null
+    },
+    {
+      "gate_id": "stress_pack_completeness",
+      "status": "NOT_EVALUATED",
+      "notes": null
+    },
+    {
+      "gate_id": "primary_safety_before_economics",
+      "status": "NOT_EVALUATED",
+      "notes": null
+    }
+  ],
+  "rejection_reasons": [],
+  "owner_ratification_status": "NOT_RATIFIED",
+  "productive_numeric_values_set": 0,
+  "evidence_complete": false,
+  "owner_ratified": false,
+  "input_authority": false,
+  "runtime_implemented": false,
+  "dashboard_role": "READ_ONLY_CONSUMER",
+  "forbidden_authority_declarations": {
+    "fixture_scenario_webui_as_authority": false,
+    "cmc_volatility_estimate_as_realized_volatility": false,
+    "survival_result_v1_as_numeric_authority": false,
+    "suitability_result_v1_as_numeric_authority": false,
+    "dashboard_as_authority": false,
+    "archive_as_authority": false,
+    "reinvest_fraction_independent_numeric": false,
+    "capital_slot_time_quantum_wallclock_seconds": false,
+    "initial_slot_base_from_account_equity": false
+  }
+}

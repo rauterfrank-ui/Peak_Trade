@@ -1,0 +1,14 @@
+{
+  "baseline": {
+    "entries_in_range": 51,
+    "entries_outside_range_unexpected": 0,
+    "mean_range_bound_bar_share": 0.9809089789382931,
+    "standaside_gate_enabled": false
+  },
+  "treatment": {
+    "entries_in_range": 51,
+    "entries_outside_range_unexpected": 0,
+    "mean_range_bound_bar_share": 0.9809089789382931,
+    "standaside_gate_enabled": true
+  }
+}

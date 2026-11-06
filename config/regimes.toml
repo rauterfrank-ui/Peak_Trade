@@ -1,0 +1,45 @@
+# config/regimes.toml
+# =====================
+# Konfiguration für Regime-Erkennung (Phase 19)
+#
+# Dieses File definiert Parameter für die Klassifikation von Marktregimes:
+# - Volatilität: low_vol / mid_vol / high_vol
+# - Trend: uptrend / sideways / downtrend
+#
+# Die Regime-Erkennung dient der Robustheits-Analyse von Strategien.
+
+[volatility]
+# Rolling-Window für Volatilitätsberechnung (Anzahl Bars)
+# Volatilität wird als annualisierte Standardabweichung der Log-Returns berechnet.
+lookback = 20
+
+# Schwellenwerte für 3-Bucket-Klassifikation (annualisierte Volatilität)
+# - vol < low_threshold  => "low_vol"
+# - vol > high_threshold => "high_vol"
+# - sonst                => "mid_vol"
+#
+# Typische Werte für Krypto (hohe Volatilität):
+# - low: < 30% annualisiert
+# - high: > 60% annualisiert
+low_threshold = 0.30
+high_threshold = 0.60
+
+# Annualisierungsfaktor (252 für tägliche Daten, 365*24 für stündliche)
+# Dieser Wert wird verwendet, um die Rolling-StdDev zu annualisieren.
+annualization_factor = 365
+
+[trend]
+# Moving-Average-basierte Trend-Erkennung
+# Berechnet MA_short und MA_long, dann delta = (MA_short - MA_long) / MA_long
+
+# Fenstergrößen für die Moving Averages
+short_window = 20
+long_window = 50
+
+# Schwelle für Trend-Entscheidung (relative Differenz)
+# - delta > +slope_threshold  => "uptrend"
+# - delta < -slope_threshold  => "downtrend"
+# - sonst                     => "sideways"
+#
+# slope_threshold = 0.02 bedeutet: MA_short muss 2% über/unter MA_long liegen
+slope_threshold = 0.02

@@ -1,0 +1,16 @@
+{
+    "artifact_class": "OPTIMIZATION_TO_SELF_LEARNING_RETURN_LOOP_DECISION_V1",
+    "workpackage_id": "OPTIMIZATION_TO_SELF_LEARNING_M5_RETURN_LOOP_V1",
+    "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+    "predecessor_slice": "OPTIMIZATION_UNIVERSE_M4_EXPERIMENT_PLANE_V1",
+    "normative_spec": "docs/ops/specs/OPTIMIZATION_TO_SELF_LEARNING_RETURN_LOOP_NORMATIVE_V1.md",
+    "optimization_experiment_evidence_contract_id": "peak_trade.optimization_experiment_evidence.v1",
+    "self_learning_return_input_contract_id": "peak_trade.learning.ddo.self_learning_optimization_return_input.v1",
+    "learning_productive_authority": "NONE",
+    "optimization_productive_authority": "NONE",
+    "learning_state_mutation_authorized": false,
+    "meta_learning_ingest_authorized": false,
+    "authorized_productive_surfaces": 0,
+    "external_effect_authorized": false,
+    "return_ack_means_applied": false
+}

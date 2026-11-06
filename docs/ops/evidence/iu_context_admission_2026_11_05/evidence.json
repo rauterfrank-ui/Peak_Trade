@@ -1,0 +1,34 @@
+{
+  "schema_version": "iu_context_admission_implementation_evidence_v1",
+  "baseline_head": "1814ca5b24d1d3ab537683e340b3ab045ea51e62",
+  "data_class": "EXPLICIT_SYNTHETIC_OFFLINE",
+  "result": "PASS",
+  "tests": 46,
+  "test_selector": [
+    "tests/learning/test_intelligence_context_admission_v1.py",
+    "tests/learning/test_market_context_existing_fact_materialization_v1.py",
+    "tests/learning/test_market_context_phase_19_orthogonal_materialization_v1.py",
+    "tests/learning/test_market_context_v1.py",
+    "tests/governance/test_unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.py",
+    "tests/governance/test_unified_blueprint_phase_19_orthogonal_context_v1.py"
+  ],
+  "exit_code": 0,
+  "source_bindings": {
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py": "d5643610897776253cfd158c98cc218dc7b52ebb1122bc2b2b614807af545695",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py": "4edbaba3def6a557a613c4511b8003e4cd505c8cb042985e285eb77aac2928f3",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py": "19dcf5c7d58c5bad0ad76a46371c62fc6546e93682dacff4c89b328dbd4bac85",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py": "4d24ebca8aaab630f578cfb71a948589894749f739ea7681f77c7caffdab094d",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py": "19b81f5d07a3d34ee5776662ddb1dda1a16906097943480f7ad082b7c9a911d8",
+    "tests/learning/test_intelligence_context_admission_v1.py": "0024ee0047c4c36ed19331d0838f500fb2b91eb5bd50fdb7119a90c3e789b175",
+    "docs/ops/specs/INTELLIGENCE_CONTEXT_ADMISSION_AND_ORIGINAL_DERIVATIONS_V1.md": "9688b81039514ee89c1dc5e12892df966a4796f6783e3480e6a3f8f9696735ee"
+  },
+  "pytest_sha256": "6d5fe9bf1a1a31bdd9d26fa7b3465530e10db61ec4fb0701f7428ebca8de3bba",
+  "preexisting_dirty_files_preserved": 135,
+  "original_calculation_formulas_changed": false,
+  "scope_or_parameters_changed": false,
+  "slots": 5,
+  "activation": false,
+  "predictive_quality": "NOT_PROVEN",
+  "natural_source_authenticated": false,
+  "productive_host_binding": false
+}

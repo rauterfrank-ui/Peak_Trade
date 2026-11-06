@@ -1,0 +1,52 @@
+{
+  "BASELINE_SHA": "8cf74278712bf2db247884cc102cc516165c1abf",
+  "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": "false",
+  "CYCLE_COUNT": 3,
+  "DPO": {
+    "decision_event_ref": "ddo.dec:0f4659b4b9f782c9590c1c7d",
+    "decision_outcome": "observe",
+    "dpo_ref": "ddo.dpo:062b83b485a52119fca7bc54",
+    "execution_eligible": "",
+    "selected_side": "none"
+  },
+  "EFFECTIVE_MAX_CYCLES": 4,
+  "EFFECTIVE_MAX_RUN_DURATION_SECONDS": 180.0,
+  "ENTER_SIDE": "",
+  "EVIDENCE_ROOT": "/Users/frnkhrz/Peak_Trade/evidence/research/natural_enter_rerun_post_7065_v1/20261006T064200Z",
+  "EXECUTION_HEAD_SHA": "8cf74278712bf2db247884cc102cc516165c1abf",
+  "EXTERNAL_EFFECT_COUNT": 0,
+  "FIRST_GENUINE_BLOCKER": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+  "GET_REQUEST_COUNT": 57,
+  "LIVE_PUBLIC_C1_GET_EXECUTED": "true",
+  "NATIVE_ID": "API3-USDT-SWAP",
+  "NATURAL_ENTER_OBSERVED": "false",
+  "NATURAL_PRE_EXTERNAL_REACHED": "false",
+  "OWNER_GO_FRESH_C1_GET_CONSUMPTION_COUNT": 24,
+  "PERMIT_CREATED": "false",
+  "POST_COUNT": 0,
+  "PRE_EXTERNAL_REACHED": "true",
+  "REQUESTED_MAX_CYCLES": 4,
+  "REQUESTED_MAX_RUN_DURATION_SECONDS": 180.0,
+  "RUN_ID": "38eaf7ea0998a95d",
+  "S5_CYCLE_SUMMARIES": [
+    {
+      "c1_venue_event_time": 1791269160.0,
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791269220.0,
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791269280.0,
+      "cycle_index": 3,
+      "s5_disposition": "PRE_EXTERNAL_EFFECT"
+    }
+  ],
+  "S5_TERMINAL_CLASS": "PRE_EXTERNAL_EFFECT",
+  "SYNTHETIC_ENTER_COUNT": 0,
+  "SYNTHETIC_ENTER_OBSERVED": "false",
+  "TERMINAL_DISPOSITION": "PRE_EXTERNAL_EFFECT"
+}

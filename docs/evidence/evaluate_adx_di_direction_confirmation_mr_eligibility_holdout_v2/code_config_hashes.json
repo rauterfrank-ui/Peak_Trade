@@ -1,0 +1,7 @@
+{
+  "adx_di_direction_confirmation_eligibility_filter_v1.py": "466666a2a6929683d3ab9e12759fae851ce72fd365e963db34d14dfdfaa45d51",
+  "contract": "ae523b36d9ca9b6896af614d8dfb1129ea43a483a3d30359a51c48e2c0417a70",
+  "feature_formula_sha256": "05104afcc41e07d7b14ed8a0e3f2e7bcb97cfabc80cd6ef0c422004136eb36e4",
+  "holdout_panel_bars_v1.py": "e4ff7e6be4c4d957ebb84a3521dfe633e4112d9d5ac13463250f2ccf72435301",
+  "panel_runner_v1.py": "121dc1a9651e26f9c82f1690793736f9dab94923950257290b5ad627324d6863"
+}

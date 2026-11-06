@@ -1,0 +1,26 @@
+# Safety attestation — VCB v1 development evaluation
+
+- BASE_SHA=cb0f7997e07f72a37c4ca3c7f125532709f6fe85
+- EXACT_COMMAND=python3 scripts/research/run_evaluate_volatility_compression_breakout_development_v1.py --mode evaluate --authorize-single-development-evaluation VOLATILITY_COMPRESSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1
+- PROCESS_EXIT_CODE=2
+- STATUS=FAIL_CLOSED
+- REASON=UNEXPECTED:OverflowError:(34, 'Result too large')
+- EVALUATION_EXECUTED=false
+- RUNNER_STARTED=true (evaluate path entered; productive exit/PnL evaluator bound; overflow during PnL/metrics)
+- CLI_REPORTED_RUNNER_STARTED=false
+- RUN_BUDGET_CONSUMED=true
+- EVALUATION_RUN_COUNT=1
+- RUNNER_START_COUNT=1
+- RETRY_FORBIDDEN=true
+- HOLDOUT_ACCESSED=false
+- RUNTIME_ACTIVATED=false
+- ORDERS=false
+- SHADOW=false
+- TESTNET=false
+- LIVE=false
+- MASTER_V2_UNCHANGED=true
+- DOUBLE_PLAY_UNCHANGED=true
+- RISK_SIZING_UNCHANGED=true
+- EXECUTION_KERNEL_UNCHANGED=true
+- START_UTC=2026-07-22T11:56:49Z
+- END_UTC=2026-07-22T11:57:16Z

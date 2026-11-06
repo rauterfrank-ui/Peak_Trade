@@ -1,0 +1,15 @@
+{
+  "mode": "Exact staged Markdown paths, existing token/reference validators via canonical Python",
+  "files": [
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+    "docs/ops/evidence/pending_mark_clock_binding_v1_2026_11_04/README.md",
+    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+  ],
+  "references": 531,
+  "token_violations": [],
+  "missing_targets": []
+}

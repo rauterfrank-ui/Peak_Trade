@@ -1,0 +1,23 @@
+{
+  "baseline_binding_digests": {
+    "binding_semantic_digest": "8a8fdbf2c24e6a4f40cf465b265f6487aa68a289ab204f008a8825a94752f7c8",
+    "config_digest": "cb9873d09e762ae9d3155b64be444cd7d317865645a1c3c14028ba2e0cf44b5a",
+    "data_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
+    "implementation_digest": "734a94cd4eaa753ff8ade60ebf41a60e116e2c97beade2bc5e8f56e2a6387f33"
+  },
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "cost_model": {
+    "fee_bps": 10.0,
+    "fixed": true,
+    "half_spread_bps": 5.0,
+    "slippage_bps": 5.0
+  },
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "decision_segment": {
+    "end_exclusive": "2023-08-16T05:55:00Z",
+    "start": "2023-05-20T00:00:00Z"
+  },
+  "development_split_digest": "a35783bf0268c174dfe585c9839ba45cc6e3835021699786f4490a0d8c9b33db",
+  "scope_id": "bollinger_mr_economic_failure_decomposition_development_v1",
+  "seed": 20220601
+}

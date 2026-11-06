@@ -1,0 +1,69 @@
+{
+  "authorization_digest": "03a455a10312a534a3bc549b211b321698c9ab6d9d5d11ffc6f045e84fbca0e3",
+  "authorization_id": "auth_session_1",
+  "claims": {
+    "AUTHORIZATION_REUSED": false,
+    "BOUNDED_RECONNECT_PROVED": true,
+    "CLAIMS_MATCH_TELEMETRY": true,
+    "CONFIRM_TOKEN_REUSED": false,
+    "DUPLICATE_CONFIRMATION_ADVANCE": false,
+    "DUPLICATE_FILL": false,
+    "EXCHANGE_CREDENTIAL_PATH_REACHED": false,
+    "OBSERVED_SESSION": true,
+    "ORDER_SIDE_EFFECT_OCCURRED": false,
+    "PER_SESSION_AUTHORIZATION_USED": true,
+    "PRIVATE_ENDPOINT_REACHED": false,
+    "RESTART_RECOVERY_PROVED": true,
+    "STALE_ADVERSE_PROVED": true
+  },
+  "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+  "confirm_token_fingerprint": "confirm_fp_1",
+  "confirmation_advance_count": 1,
+  "credential_access_reachable": false,
+  "duplicate_confirmation_advance_count": 0,
+  "duplicate_fill_count": 0,
+  "evidence_digest": "d09b0c0d505ef94f11ba530edf59787775cce8f4f742be50265139529ebc402b",
+  "fill_count": 0,
+  "order_side_effect_occurred": false,
+  "owner": "ops.phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.per_session_evidence_contract_v1",
+  "private_endpoint_reachable": false,
+  "reconnect_result": {
+    "ok": true,
+    "reused_owner": "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1",
+    "status": "PASS"
+  },
+  "repository_sha": "3c334644a2d81ff7e6c2104d7e0917f3d6bb3c84",
+  "restart_recovery_result": {
+    "ok": true,
+    "reused_owner": "ops.phase_9_2_step_3_governed_productive_real_network_restart_recovery_session_execution_v1",
+    "status": "PASS"
+  },
+  "schema_version": "phase_9_2_multi_session_continuity_session_evidence.v1",
+  "session_id": "phase_9_2_public_md_multi_session_continuity_session_v1_001",
+  "session_id_prefix": "phase_9_2_public_md_multi_session_continuity_session_v1",
+  "session_ordinal": 1,
+  "session_result": {
+    "observed_session": true,
+    "ok": true,
+    "status": "PASS"
+  },
+  "stale_adverse_result": {
+    "ok": true,
+    "reused_owner": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.governed_injected_stale_data_fault_v1",
+    "status": "PASS"
+  },
+  "state_root_after": "state_root_B",
+  "state_root_before": "state_root_A",
+  "telemetry": {
+    "credential_access_reachable": false,
+    "duplicate_confirmation_advance_count": 0,
+    "duplicate_fill_count": 0,
+    "order_side_effect_occurred": false,
+    "private_endpoint_reachable": false
+  },
+  "verifier_result": {
+    "blockers": [],
+    "ok": true,
+    "status": "PASS"
+  }
+}

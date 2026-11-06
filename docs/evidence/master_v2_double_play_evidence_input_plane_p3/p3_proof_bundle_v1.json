@@ -1,0 +1,31 @@
+{
+  "baseline_sha": "fc9db97beabc6741ed43d771574849bd07eb8966",
+  "component_b_runtime_authority_contract_ok": true,
+  "failure_codes": [],
+  "non_interference_hits": [],
+  "non_interference_ok": true,
+  "owner_decision_config_ok": true,
+  "proof_obligations": {
+    "first_admit_ok": true,
+    "proof_10_no_trading_authority_on_binding": true,
+    "proof_11_no_dp_state_mutation_authority": true,
+    "proof_12_no_cap_23_24_change": true,
+    "proof_13_no_crs_change": true,
+    "proof_14_no_order_permit_post": true,
+    "proof_15_no_productive_dp_seam": true,
+    "proof_16_p1_component_b_contract_still_ok": true,
+    "proof_17_runtime_scan_excludes_bounded_p3": true,
+    "proof_1_admit_bind_produces_typed_l6_input": true,
+    "proof_2_non_admit_no_bind": true,
+    "proof_3_unapproved_target_layer": true,
+    "proof_4_unapproved_contract_version": true,
+    "proof_5_instrument_mismatch": true,
+    "proof_6_epoch_mismatch": true,
+    "proof_7_direct_producer_to_b_forbidden": true,
+    "proof_8_deterministic_binding_result_digest": true,
+    "proof_9_duplicate_binding_idempotent": true
+  },
+  "schema_version": "master_v2_double_play_evidence_input_plane_p3_proof/v1",
+  "verdict": "PROVEN_COMPLETE",
+  "workpackage_id": "P3_MASTER_V2_DOUBLE_PLAY_INPUT_CREATOR_BINDER_RUNTIME_V1"
+}

@@ -1,0 +1,89 @@
+{
+  "$defs": {
+    "EvidenceBundleRefV0": {
+      "additionalProperties": false,
+      "description": "Reference to an evidence bundle directory under the repo (offline pointer).",
+      "properties": {
+        "relative_dir": {
+          "description": "Path relative to repository root; must stay under out/ops/.",
+          "title": "Relative Dir",
+          "type": "string"
+        }
+      },
+      "required": [
+        "relative_dir"
+      ],
+      "title": "EvidenceBundleRefV0",
+      "type": "object"
+    },
+    "SliceContractV0": {
+      "additionalProperties": false,
+      "description": "One Level-Up work unit: contract summary + optional evidence pointer.",
+      "properties": {
+        "contract_summary": {
+          "description": "What is guaranteed / what blocks (operator-facing, short).",
+          "maxLength": 8000,
+          "title": "Contract Summary",
+          "type": "string"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceBundleRefV0"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "slice_id": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Slice Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slice_id",
+        "title",
+        "contract_summary"
+      ],
+      "title": "SliceContractV0",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Root document for a Level-Up v0 manifest (serializable JSON artifact).",
+  "properties": {
+    "schema_version": {
+      "const": "levelup/manifest/v0",
+      "default": "levelup/manifest/v0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "slices": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SliceContractV0"
+      },
+      "title": "Slices",
+      "type": "array"
+    },
+    "title": {
+      "default": "Peak Trade Level-Up (Evidence-first)",
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "title": "LevelUpManifestV0",
+  "type": "object"
+}

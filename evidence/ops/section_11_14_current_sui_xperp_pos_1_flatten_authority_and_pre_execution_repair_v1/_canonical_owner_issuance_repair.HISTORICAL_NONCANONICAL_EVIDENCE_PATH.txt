@@ -1,0 +1,4 @@
+HISTORICAL_NONCANONICAL_EVIDENCE_PATH=true
+CANONICAL_COPY_UTC_PREFIXED=see sibling *_canonical_owner_issuance_repair directory
+OLD_PATH_NOT_DELETED=true
+OLD_MANIFEST_UNMUTATED=true

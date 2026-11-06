@@ -1,0 +1,59 @@
+{
+  "CAPTURE_TRIGGER_JOINED_TO_AUTHORIZED_RUNTIME": false,
+  "CONSUMER_SYMBOL": "adjudicate_live_restart_reconstructed_v1::consume_validated_handoff_for_restart_reconstruction_v1",
+  "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_commit_handoff_after_bound_fill_before_restart_v1": 0,
+  "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_emit_s05_handoff_pos_v1": 0,
+  "DOCUMENT_CLASS": "SECTION_11_14_FUTURE_CAPTURE_WINDOW_RUNTIME_GRAPH_CENSUS_V1",
+  "INTERNAL_WRITER_TO_PRODUCER_CALL_PRESENT": true,
+  "INTERNAL_WRITER_TO_PRODUCER_IS_NOT_PRODUCTIVE_RUNTIME_JOIN": true,
+  "PRODUCER_ID": "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_V1",
+  "PRODUCER_SYMBOL": "emit_s05_handoff_pos_v1",
+  "PRODUCTIVE_S05_QTY_SOURCE_STATUS": "ABSENT",
+  "READER_SYMBOL": "read_validated_durable_pre_restart_handoff_v1",
+  "REQUIRED_EVENT_CHAIN": [
+    "REAL_BOUND_FILL",
+    "PRODUCTIVE_STATE_TRANSITION",
+    "CAPTURE_WINDOW_OPEN",
+    "HANDOFF_PRODUCER",
+    "DURABLE_WRITER",
+    "DURABLE_RECORD_COMMITTED",
+    "RESTART_BOUNDARY",
+    "READER",
+    "VALIDATION",
+    "RESTART_CONSUMER",
+    "LIVE_RESTART_RECONSTRUCTED_ADJUDICATION"
+  ],
+  "WRITER_SYMBOL": "commit_handoff_after_bound_fill_before_restart_v1",
+  "producer_census": {
+    "CALL_SITE_COUNT": 1,
+    "DEFINITION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py",
+    "PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+    "SYMBOL": "emit_s05_handoff_pos_v1",
+    "TEST_ONLY_CALL_SITE_COUNT": 0,
+    "rows": [
+      {
+        "AUTHORITY_CLASS": "FORENSIC_RAW_EVIDENCE",
+        "BOUND_OR_UNBOUND": "UNBOUND_FROM_PRODUCTIVE_ENTRYPOINT",
+        "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+        "FILE": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+        "LINE_RANGE": "257-270",
+        "NODE_ID": "emit_s05_handoff_pos_v1@src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py:257",
+        "PRODUCTIVE_OR_TEST_ONLY": "FORENSIC_OFFLINE",
+        "REACHABLE_FROM_PRODUCTIVE_ENTRYPOINT": false,
+        "REQUIRES_CREDENTIALS": false,
+        "REQUIRES_LIVE_SURFACE": false,
+        "REQUIRES_VENUE_RESPONSE": false,
+        "REQUIRES_WIRE_SEND": false,
+        "SYMBOL": "emit_s05_handoff_pos_v1"
+      }
+    ]
+  },
+  "writer_census": {
+    "CALL_SITE_COUNT": 0,
+    "DEFINITION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+    "PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+    "SYMBOL": "commit_handoff_after_bound_fill_before_restart_v1",
+    "TEST_ONLY_CALL_SITE_COUNT": 0,
+    "rows": []
+  }
+}

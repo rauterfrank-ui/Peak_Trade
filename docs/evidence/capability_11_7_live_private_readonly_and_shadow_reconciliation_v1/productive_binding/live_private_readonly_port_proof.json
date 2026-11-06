@@ -1,0 +1,32 @@
+{
+  "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+  "LIVE_PRIVATE_READONLY_ACTIVATED": false,
+  "LIVE_PRIVATE_READONLY_CONTRACT_ACTIVATED": false,
+  "LIVE_PRIVATE_READONLY_CONTRACT_BOUND": true,
+  "LIVE_PRIVATE_READONLY_PORT_CONSTRUCTIBLE": false,
+  "LIVE_PRIVATE_READONLY_PORT_DECLARED": true,
+  "OWNER": "ops.capability_11_7_live_private_readonly_and_shadow_reconciliation_v1",
+  "PRIVATE_NETWORK_SESSION_STARTED": false,
+  "PRIVATE_READONLY_NETWORK_REACHABLE": false,
+  "allowed_get_endpoints": [
+    "accounts",
+    "open_positions",
+    "open_orders"
+  ],
+  "construction_blocked": true,
+  "credential_access_blocked": true,
+  "fetch_blocked": true,
+  "forbidden_mutation_actions": [
+    "submit_order",
+    "cancel_order",
+    "amend_order",
+    "withdraw",
+    "transfer",
+    "sendorder",
+    "batchorder"
+  ],
+  "mutation_blocked": true,
+  "network_session_blocked": true,
+  "ok": true,
+  "unknown_endpoint_blocked": true
+}

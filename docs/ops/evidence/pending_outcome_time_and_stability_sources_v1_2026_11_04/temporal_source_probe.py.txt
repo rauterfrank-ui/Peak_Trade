@@ -1,0 +1,39 @@
+from pathlib import Path
+from types import SimpleNamespace
+from datetime import datetime,timezone
+import tempfile,json
+import src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.resolver_v1 as resolver
+import src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.session_integration_v1 as session
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
+from tests.ops.test_natural_enter_cross_session_outcome_closure_v1 import _create_pending,_norm,DECISION_REF,REPO_SHA,T_BAR1,T_BAR2,CANON,NATIVE,EVIDENCE_CLASS_TEST_FIXTURE
+from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1 import load_pending_outcome_by_decision_ref_v1
+from copy import deepcopy
+captured=[];original=resolver.invoke_productive_n_bars_horizon_observation_v1
+
+def capture_horizon(*a,**kw):
+ out=original(*a,**kw);captured.append({'producer_observed_at_unix':kw['event_ts_unix'],'result':deepcopy(out)});return out
+resolver.invoke_productive_n_bars_horizon_observation_v1=capture_horizon
+with tempfile.TemporaryDirectory(prefix='peaktrade-pending-time-audit-') as temp:
+ root=Path(_create_pending(Path(temp)));results=[]
+ for ts,price in [(T_BAR1,3500.0),(T_BAR2,3510.0)]:
+  p=load_pending_outcome_by_decision_ref_v1(root,DECISION_REF)
+  r=resolver.ingest_pending_outcome_mark_observation_v1(lane_state_root=root,pending=p,normalized=_norm(mark=price,event_ts=ts),repository_sha=REPO_SHA,evidence_class=EVIDENCE_CLASS_TEST_FIXTURE,allow_test_fixture=True)
+  results.append({'sample_event_ts_unix':ts,'advanced':r.advanced,'closed':r.closed,'reason':r.reason,'bars_observed':r.record.bars_observed})
+ assert results[-1]['closed']
+ h=captured[-1]['result'];measurement=h['measurement_evidence_artifact'];end=datetime.fromisoformat(measurement['bar_close_times_utc'][-1].replace('Z','+00:00')).timestamp()
+ records=AppendOnlyDdoLedgerV0(root/'LANE_1'/'ddo_learning_capture_v1.jsonl').read_all()
+ classes=sorted({r['outcome_evidence_provenance']['outcome_semantic_class'] for r in records if r.get('outcome_evidence_provenance')})
+ closure={'input_evidence_class':EVIDENCE_CLASS_TEST_FIXTURE,'samples':results,'last_supplied_sample_time_utc':datetime.fromtimestamp(T_BAR2,timezone.utc).isoformat(),'measurement_last_bar_close_time_utc':measurement['bar_close_times_utc'][-1],'bar_close_seconds_after_last_input_event':end-T_BAR2,'horizon_producer_observed_at_unix':captured[-1]['producer_observed_at_unix'],'embedded_classes_in_written_temporary_ledger':classes,'measurement':measurement,'limit':'Synthetic explicit fixture, temporary state only. This demonstrates current mechanics, not a natural market witness.'}
+resolver.invoke_productive_n_bars_horizon_observation_v1=original
+mark_time=T_BAR2+1800.0
+obs=SimpleNamespace(mark_price_payload={'code':'0','data':[{'instId':NATIVE,'markPx':'3510','ts':str(int(mark_time*1000))}]},candles_payload={'data':[[str(int(T_BAR2*1000)),'1','1','1','1']]})
+class Source:
+ def poll(self):return obs
+calls=[];original_advance=session.advance_all_open_pending_from_mark_v1
+session.advance_all_open_pending_from_mark_v1=lambda **kw:calls.append(kw)
+wrapper=session.PendingOutcomeAdvanceObservationSourceV1(inner=Source(),lane_state_root=Path('/unused-controlled-input'),evidence_root=Path('/unused-controlled-evidence'),canonical_instrument_id=CANON,native_id=NATIVE,repository_sha=REPO_SHA)
+assert wrapper.poll() is obs;assert len(calls)==1
+session.advance_all_open_pending_from_mark_v1=original_advance
+clock={'mark_price_payload_event_ts_unix':mark_time,'latest_candle_open_ts_unix':T_BAR2,'passed_mark_event_ts_unix':calls[0]['event_ts_unix'],'price':calls[0]['mark_px'],'stated_input_evidence_class':calls[0]['evidence_class'],'limit':'Pure wrapper interception, no file/network call; supplied distinct clocks intentionally expose mapping.'}
+Path('/tmp/peaktrade_pending_outcome_time_boundary_2026_11_04.json').write_text(json.dumps({'schema':'pending_outcome_temporal_source_probe_v1','closure_probe':closure,'wrapper_clock_probe':clock},indent=2)+'\n')
+print(json.dumps({'closed':results[-1]['closed'],'close_seconds_after_input':end-T_BAR2,'recorded_classes':classes,'wrapper_mark_time':mark_time,'wrapper_passed_time':calls[0]['event_ts_unix']},indent=2))

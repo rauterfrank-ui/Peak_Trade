@@ -1,0 +1,17 @@
+{
+  "schema": "cap52_public_md_no_order_shadow_authorization_v1",
+  "capability_id": "CAPABILITY_5_2_SINGLE_FUTURE_CANONICAL_RUNTIME_PUBLIC_MD_NO_ORDER_SHADOW_EVIDENCE_V1",
+  "authorization_id": "cap52_auth_b70655c3ef6b474a",
+  "network_scope": "PUBLIC_MARKET_DATA_ONLY",
+  "public_market_data_only": true,
+  "orders_authorized": false,
+  "live_authorized": false,
+  "testnet_authorized": false,
+  "paper_order_execution_authorized": false,
+  "authorization_consumption_allowed": true,
+  "multi_future_runtime_authorized": false,
+  "vol_max_age_enforcement_enabled": false,
+  "runtime_activated": false,
+  "one_time_use": true,
+  "repository_sha": "a7a1a5a5466eb619a7284247f794ee34035f6407"
+}

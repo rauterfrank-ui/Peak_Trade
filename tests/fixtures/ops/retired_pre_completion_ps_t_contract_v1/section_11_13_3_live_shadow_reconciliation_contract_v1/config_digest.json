@@ -1,0 +1,36 @@
+{
+  "config": {
+    "account_scope": "856964404452495999",
+    "config_version": "section_11_13_3_live_shadow_with_exchange_reconciliation_config.v1",
+    "credential_class": "LIVE_SHADOW_RECONCILIATION_READ_ONLY_API_KEY",
+    "endpoint_allowlist": [
+      "/api/v5/account/balance",
+      "/api/v5/account/config",
+      "/api/v5/account/positions",
+      "/api/v5/trade/orders-pending"
+    ],
+    "entity": "OKX Europe Limited",
+    "environment": "LIVE",
+    "evidence_root": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1",
+    "evidence_version": "section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1",
+    "expected_demo_marker_absent": true,
+    "expected_live_marker": "LIVE",
+    "instrument_scope": null,
+    "max_request_count": 4,
+    "max_retries": 2,
+    "method_allowlist": [
+      "GET"
+    ],
+    "owner_declared_host_allowlist": [
+      "eea.okx.com"
+    ],
+    "region": "EEA/DE",
+    "rest_base": "https://eea.okx.com",
+    "rest_host": "eea.okx.com",
+    "schema_version": "section_11_13_3_live_shadow_with_exchange_reconciliation.v1",
+    "secretref_uri": "secretref://vault/peak-trade/live-shadow-recon/okx",
+    "timeout_seconds": 10.0,
+    "venue": "OKX"
+  },
+  "config_digest": "40c720ab855983615e9cdad424c9948bca3662a8dd969852ba82e7c1eb07633c"
+}

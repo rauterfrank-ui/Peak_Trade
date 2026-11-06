@@ -1,0 +1,187 @@
+"""CURRENT_PRODUCTIVE thin join: JOIN-2 G17 producer -> existing CMC typed bind.
+
+Owner lock for this S2-BIND MS2 slice only (prospective, not historical rewrite):
+ESTIMATE_ABSENT_CMC_POLICY=BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE
+INGEST_SAMPLE=false
+PRESENCE_GATE_IN_THIS_WP=false
+
+Reuses the JOIN-2 producer object and
+``bind_typed_canonical_volatility_estimate_into_market_context_v1``.
+Does not ingest, create, restore, wrap a second persistence owner, mutate
+the presence gate, or own HardeningSession.
+
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import datetime
+
+from trading.master_v2.canonical_market_context_v1 import CanonicalMarketContextV1
+from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+    bind_typed_canonical_volatility_estimate_into_market_context_v1,
+)
+from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
+    CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
+    TypedRuntimeProducerOutcomeV1,
+)
+
+PACKAGE_MARKER = "FULL_CORE_G17_TYPED_VOL_CMC_BIND_V1=true"
+BIND_OWNER = (
+    "ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1"
+)
+ESTIMATE_ABSENT_CMC_POLICY = "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE"
+_REJECT_NO_BINDING_OUTCOMES: frozenset[TypedRuntimeProducerOutcomeV1] = frozenset(
+    {
+        TypedRuntimeProducerOutcomeV1.OUT_OF_ORDER_REJECTED,
+        TypedRuntimeProducerOutcomeV1.INVALID_SAMPLE_REJECTED,
+        TypedRuntimeProducerOutcomeV1.HISTORY_GAP_REJECTED,
+        TypedRuntimeProducerOutcomeV1.PERSISTENCE_REJECTED,
+        TypedRuntimeProducerOutcomeV1.MATERIALIZATION_REJECTED,
+    }
+)
+_REUSE_ALLOWED_OUTCOMES: frozenset[TypedRuntimeProducerOutcomeV1] = frozenset(
+    {
+        TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP,
+        TypedRuntimeProducerOutcomeV1.PRODUCED,
+    }
+)
+INGEST_SAMPLE = False
+PRESENCE_GATE_IN_THIS_WP = False
+CMC_BINDING_PERFORMED = True
+PRESENCE_GATE_MUTATED = False
+HARDENING_SESSION_OWNER = False
+SIDESTATE_CURSOR_OWNER = False
+ECONOMIC_MD_OWNER = False
+GLOBAL_SINGLETON = False
+JOIN_1_REWRITTEN = False
+JOIN_2_REWRITTEN = False
+
+
+class CurrentProductiveG17CmcBindError(ValueError):
+    """Fail-closed CURRENT_PRODUCTIVE G17 CMC bind violation."""
+
+    def __init__(self, reason_code: str, detail: str = "") -> None:
+        self.reason_code = reason_code
+        self.detail = detail
+        super().__init__(f"{reason_code}:{detail}" if detail else reason_code)
+
+
+@dataclass(frozen=True)
+class CurrentProductiveG17CmcBindResultV1:
+    context: CanonicalMarketContextV1
+    bind_performed: bool
+    producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1 | None
+    outcome: str
+    estimate_present: bool
+
+
+def apply_current_productive_g17_typed_vol_cmc_bind_v1(
+    context: CanonicalMarketContextV1,
+    *,
+    producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1 | None,
+    expected_venue_native_id: str | None = None,
+    expected_venue: str | None = None,
+) -> CurrentProductiveG17CmcBindResultV1:
+    """Bind typed G17 estimate into CMC per productive runtime typed-binding v1.
+
+    JOIN-2 already ingested finalized PT1M marks upstream; this join performs
+    cycle-without-new-sample semantics and may reuse a prior PRODUCED estimate
+    on DUPLICATE_NOOP when the producer output port still carries it.
+    """
+    if producer is None:
+        return CurrentProductiveG17CmcBindResultV1(
+            context=context,
+            bind_performed=False,
+            producer=None,
+            outcome="",
+            estimate_present=False,
+        )
+    if not isinstance(producer, CanonicalVolatilityTypedRuntimeProducerScaffoldV1):
+        raise CurrentProductiveG17CmcBindError(
+            "G17_CMC_BIND_PRODUCER_TYPE_INVALID",
+            type(producer).__name__,
+        )
+    if producer.history.canonical_instrument_id != context.instrument_id:
+        raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_INSTRUMENT_MISMATCH")
+    if expected_venue_native_id is not None and producer.history.venue_instrument_id != expected_venue_native_id:
+        raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_NATIVE_INSTRUMENT_MISMATCH")
+    if expected_venue is not None and producer.history.venue != expected_venue:
+        raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_VENUE_MISMATCH")
+    _ = producer.on_runtime_cycle_without_sample_v1()
+    port = producer.output_port_v1()
+    outcome_enum = port.outcome
+    outcome = str(outcome_enum.value)
+    estimate_present = port.estimate is not None
+    if outcome_enum in _REJECT_NO_BINDING_OUTCOMES:
+        return CurrentProductiveG17CmcBindResultV1(
+            context=context,
+            bind_performed=False,
+            producer=producer,
+            outcome=outcome,
+            estimate_present=estimate_present,
+        )
+    from trading.master_v2.double_play_old_effective_host_contract_v1 import (
+        g17_cmc_bind_produced_only_v1,
+    )
+
+    bind_estimate = None
+    if outcome_enum is TypedRuntimeProducerOutcomeV1.PRODUCED and port.estimate is not None:
+        bind_estimate = port.estimate
+    elif (
+        not g17_cmc_bind_produced_only_v1()
+        and outcome_enum in _REUSE_ALLOWED_OUTCOMES
+        and port.ready_for_binding_handoff is True
+        and port.estimate is not None
+    ):
+        bind_estimate = port.estimate
+    if bind_estimate is None:
+        return CurrentProductiveG17CmcBindResultV1(
+            context=context,
+            bind_performed=False,
+            producer=producer,
+            outcome=outcome,
+            estimate_present=estimate_present,
+        )
+    try:
+        decision_time = datetime.fromisoformat(context.decision_time.replace("Z", "+00:00"))
+        if decision_time.tzinfo is None:
+            raise ValueError("timezone_missing")
+        if bind_estimate.as_of_event_time > decision_time:
+            raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_FUTURE_ESTIMATE")
+    except (ValueError, TypeError) as exc:
+        if isinstance(exc, CurrentProductiveG17CmcBindError):
+            raise
+        raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_EVENT_TIME_INVALID") from exc
+    bound = bind_typed_canonical_volatility_estimate_into_market_context_v1(
+        context,
+        bind_estimate,
+    )
+    return CurrentProductiveG17CmcBindResultV1(
+        context=bound,
+        bind_performed=True,
+        producer=producer,
+        outcome=outcome,
+        estimate_present=True,
+    )
+
+
+__all__ = [
+    "BIND_OWNER",
+    "CMC_BINDING_PERFORMED",
+    "CurrentProductiveG17CmcBindError",
+    "CurrentProductiveG17CmcBindResultV1",
+    "ECONOMIC_MD_OWNER",
+    "ESTIMATE_ABSENT_CMC_POLICY",
+    "GLOBAL_SINGLETON",
+    "HARDENING_SESSION_OWNER",
+    "INGEST_SAMPLE",
+    "JOIN_1_REWRITTEN",
+    "JOIN_2_REWRITTEN",
+    "PACKAGE_MARKER",
+    "PRESENCE_GATE_IN_THIS_WP",
+    "PRESENCE_GATE_MUTATED",
+    "SIDESTATE_CURSOR_OWNER",
+    "apply_current_productive_g17_typed_vol_cmc_bind_v1",
+]

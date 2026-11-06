@@ -1,0 +1,379 @@
+{
+  "AUTHORITY": "NONE",
+  "CANARY_AUTHORIZED": false,
+  "DOCUMENT_CLASS": "PRODUCTIVE_FLATTEN_POST_ACTION_V1",
+  "DOCUMENT_ROLE": "SANITIZED_POST_ACTION_EVIDENCE_NOT_SSOT",
+  "FUNDING_USED": false,
+  "GATE_RECEIPT": {
+    "allowed": true,
+    "approved_request_identity": "01b4c9518d3c2d8069252193482d4c46829530433f129dc15bcbb45eb991df0e",
+    "approved_url": "https://eea.okx.com/api/v5/trade/order",
+    "audit_decisions": [
+      [
+        "STANDING_LIVE_FLAGS",
+        "PASS"
+      ],
+      [
+        "LIVE_AUTHORIZED_CLAIM",
+        "PASS"
+      ],
+      [
+        "BOUNDED_ACTIVATION_PERMIT",
+        "PASS"
+      ],
+      [
+        "LIVE_ENABLED_CLAIM",
+        "PASS"
+      ],
+      [
+        "LIVE_ARMED_CLAIM",
+        "PASS"
+      ],
+      [
+        "FLATTEN_LIVE_WIRE_CLAIM",
+        "PASS"
+      ],
+      [
+        "ALLOW_PRODUCTIVE_WIRE_SEND",
+        "PASS"
+      ],
+      [
+        "FLATTEN_EXECUTE_AUTHORITY",
+        "PASS"
+      ],
+      [
+        "FLATTEN_EXECUTE_BOUND_SHA",
+        "PASS"
+      ],
+      [
+        "INSTRUMENT_BINDING",
+        "PASS"
+      ],
+      [
+        "TARGET_POSITION_STATE",
+        "PASS"
+      ],
+      [
+        "PRODUCTIVE_POSITION_OBSERVED",
+        "PASS"
+      ],
+      [
+        "PRE_POS_NONZERO",
+        "PASS"
+      ],
+      [
+        "SINGLE_SELECTED_INSTRUMENT",
+        "PASS"
+      ],
+      [
+        "OPEN_ORDER_CONFLICT",
+        "PASS"
+      ],
+      [
+        "B8_CAP",
+        "PASS"
+      ],
+      [
+        "CLOSE_SIDE",
+        "PASS"
+      ],
+      [
+        "FLATTEN_QTY",
+        "PASS"
+      ],
+      [
+        "LIMIT_PRICE_POLICY",
+        "PASS"
+      ],
+      [
+        "QUOTE_FRESHNESS_5000MS",
+        "PASS"
+      ],
+      [
+        "REDUCE_ONLY",
+        "PASS"
+      ],
+      [
+        "LIMIT_ONLY",
+        "PASS"
+      ],
+      [
+        "OVERSHOOT_FLIP",
+        "PASS"
+      ],
+      [
+        "MUTATION_LIMITED_TO_PROVEN_POSITION",
+        "PASS"
+      ],
+      [
+        "NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
+        "PASS"
+      ],
+      [
+        "SEND_TIME_PASS_18_19_21_24",
+        "PASS"
+      ],
+      [
+        "AUTHENTICATED_PRODUCTIVE_TRANSPORT",
+        "PASS"
+      ],
+      [
+        "SEND_TIME_POSITION_REOBSERVATION",
+        "PASS"
+      ],
+      [
+        "BOUNDED_RUNTIME_PERMIT_ISSUANCE",
+        "PASS"
+      ],
+      [
+        "ONE_SHOT_NO_RETRY",
+        "PASS"
+      ],
+      [
+        "DUPLICATE_POST_PROTECTION",
+        "PASS"
+      ],
+      [
+        "POSITION_OBSERVATION_FRESHNESS",
+        "PASS"
+      ]
+    ],
+    "close_side": "SELL",
+    "gate_digest": "bd5581b332d0212b49fb1c66c475f75172f6af4ec5548c05965f59c295eabb02",
+    "limit_px": "0.7675",
+    "live_flatten_provability": "UNPROVEN",
+    "observed_signed_pos": "1",
+    "ord_type": "limit",
+    "productive_venue_proof": false,
+    "qty": "1",
+    "reasons": [],
+    "reduce_only": true,
+    "request_body": {
+      "clOrdId": "ptokxeprod508b7b41508b7b4101",
+      "instId": "SUI-USD_UM_XPERP-310404",
+      "ordType": "limit",
+      "px": "0.7675",
+      "reduceOnly": true,
+      "side": "sell",
+      "sz": "1",
+      "tdMode": "cross"
+    },
+    "td_mode": "cross"
+  },
+  "LIVE_AUTHORIZED": false,
+  "MERGE_AUTHORIZED_BY_THIS_PERSIST": false,
+  "ORDER_ID_REDACTED": "redacted:fa4e4f57ce34a75e",
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_MAXIMUM_SAFE_LEVERAGE_V1",
+  "POST_ACTION_VERDICT": {
+    "account_mutation_effect": "none",
+    "already_flat_noop": false,
+    "blocking_reasons": [
+      "PENDING_NOT_EMPTY",
+      "POST_NOT_FLAT"
+    ],
+    "causal_submit_bound": true,
+    "choice_b_pos_eq_0": false,
+    "contract_state": "FLATTEN_PROOF_FAIL_CLOSED",
+    "instrument_id": "SUI-USD_UM_XPERP-310404",
+    "live_authorized": false,
+    "live_flatten_provability": "UNPROVEN",
+    "live_wire_enabled": false,
+    "network_effect": "none",
+    "no_flip": true,
+    "no_unexpected_related_instrument_position": true,
+    "offline_contract_satisfied": false,
+    "open_order_instruments": [
+      "SUI-USD_UM_XPERP-310404"
+    ],
+    "order_effect": "none",
+    "pending_empty": false,
+    "post_pos_zero": false,
+    "post_signed_pos": "1",
+    "post_target_observed": true,
+    "pre_pos_nonzero": true,
+    "pre_signed_pos": "1",
+    "productive_sequence_required": true,
+    "related_nonzero_instruments": [],
+    "submit_authorized": false,
+    "submit_reachable": false
+  },
+  "RETRY_USED": false,
+  "SECRET_VALUES_INCLUDED": false,
+  "SUBMIT_RESULT": {
+    "DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED": false,
+    "LIVE_FLATTEN_PROVABILITY": "UNPROVEN",
+    "allowed": true,
+    "duplicate_blocked": false,
+    "fake_transport_rejected": false,
+    "flatten_position_proven": false,
+    "http_response_received": true,
+    "http_status": 200,
+    "live_flatten_provability": "UNPROVEN",
+    "network_used": true,
+    "productive_venue_proof": false,
+    "reasons": [],
+    "receipt": {
+      "allowed": true,
+      "approved_request_identity": "01b4c9518d3c2d8069252193482d4c46829530433f129dc15bcbb45eb991df0e",
+      "approved_url": "https://eea.okx.com/api/v5/trade/order",
+      "audit_decisions": [
+        [
+          "STANDING_LIVE_FLAGS",
+          "PASS"
+        ],
+        [
+          "LIVE_AUTHORIZED_CLAIM",
+          "PASS"
+        ],
+        [
+          "BOUNDED_ACTIVATION_PERMIT",
+          "PASS"
+        ],
+        [
+          "LIVE_ENABLED_CLAIM",
+          "PASS"
+        ],
+        [
+          "LIVE_ARMED_CLAIM",
+          "PASS"
+        ],
+        [
+          "FLATTEN_LIVE_WIRE_CLAIM",
+          "PASS"
+        ],
+        [
+          "ALLOW_PRODUCTIVE_WIRE_SEND",
+          "PASS"
+        ],
+        [
+          "FLATTEN_EXECUTE_AUTHORITY",
+          "PASS"
+        ],
+        [
+          "FLATTEN_EXECUTE_BOUND_SHA",
+          "PASS"
+        ],
+        [
+          "INSTRUMENT_BINDING",
+          "PASS"
+        ],
+        [
+          "TARGET_POSITION_STATE",
+          "PASS"
+        ],
+        [
+          "PRODUCTIVE_POSITION_OBSERVED",
+          "PASS"
+        ],
+        [
+          "PRE_POS_NONZERO",
+          "PASS"
+        ],
+        [
+          "SINGLE_SELECTED_INSTRUMENT",
+          "PASS"
+        ],
+        [
+          "OPEN_ORDER_CONFLICT",
+          "PASS"
+        ],
+        [
+          "B8_CAP",
+          "PASS"
+        ],
+        [
+          "CLOSE_SIDE",
+          "PASS"
+        ],
+        [
+          "FLATTEN_QTY",
+          "PASS"
+        ],
+        [
+          "LIMIT_PRICE_POLICY",
+          "PASS"
+        ],
+        [
+          "QUOTE_FRESHNESS_5000MS",
+          "PASS"
+        ],
+        [
+          "REDUCE_ONLY",
+          "PASS"
+        ],
+        [
+          "LIMIT_ONLY",
+          "PASS"
+        ],
+        [
+          "OVERSHOOT_FLIP",
+          "PASS"
+        ],
+        [
+          "MUTATION_LIMITED_TO_PROVEN_POSITION",
+          "PASS"
+        ],
+        [
+          "NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
+          "PASS"
+        ],
+        [
+          "SEND_TIME_PASS_18_19_21_24",
+          "PASS"
+        ],
+        [
+          "AUTHENTICATED_PRODUCTIVE_TRANSPORT",
+          "PASS"
+        ],
+        [
+          "SEND_TIME_POSITION_REOBSERVATION",
+          "PASS"
+        ],
+        [
+          "BOUNDED_RUNTIME_PERMIT_ISSUANCE",
+          "PASS"
+        ],
+        [
+          "ONE_SHOT_NO_RETRY",
+          "PASS"
+        ],
+        [
+          "DUPLICATE_POST_PROTECTION",
+          "PASS"
+        ],
+        [
+          "POSITION_OBSERVATION_FRESHNESS",
+          "PASS"
+        ]
+      ],
+      "close_side": "SELL",
+      "gate_digest": "bd5581b332d0212b49fb1c66c475f75172f6af4ec5548c05965f59c295eabb02",
+      "limit_px": "0.7675",
+      "live_flatten_provability": "UNPROVEN",
+      "observed_signed_pos": "1",
+      "ord_type": "limit",
+      "productive_venue_proof": false,
+      "qty": "1",
+      "reasons": [],
+      "reduce_only": true,
+      "request_body": {
+        "clOrdId": "ptokxeprod508b7b41508b7b4101",
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "ordType": "limit",
+        "px": "0.7675",
+        "reduceOnly": true,
+        "side": "sell",
+        "sz": "1",
+        "tdMode": "cross"
+      },
+      "td_mode": "cross"
+    },
+    "retry_attempted": false,
+    "send_attempted": true,
+    "send_completed": true,
+    "transport_call_completed": true,
+    "transport_class": "AUTHENTICATED_PRODUCTIVE_FLATTEN_GATED",
+    "venue_acceptance_proven": true,
+    "wire_attempted": true
+  }
+}

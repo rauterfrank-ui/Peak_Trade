@@ -1,0 +1,28 @@
+{
+  "activation_eligible": false,
+  "canonical_evidence": [
+    {
+      "relpath": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "sha256": "e826cc924111b6ad9da896d60acf3344b34b1c9d6ea175e7e12f58e189ad26f1"
+    },
+    {
+      "relpath": "config/research/step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.json",
+      "sha256": "d76ce8f47e718a757148792c51f1976419418b8b35135e8e4a6666be6360e090"
+    },
+    {
+      "relpath": "evidence/ops/step_29u_activation_evidence_economic_readiness/20260726T011500Z_local_pre_pr/economic_validity_result.json",
+      "sha256": "1dadd61cb2e77e8ba2b6f98250ec4c84fbabb9749688dae597f74cddec9ba67a"
+    }
+  ],
+  "economic_validity_status": "FAIL",
+  "historical_evidence_preserved": true,
+  "retired_hypothesis_count": 3,
+  "retired_hypothesis_ids": [
+    "trend_following/v1",
+    "bollinger_bands/v1",
+    "momentum_1h/v1"
+  ],
+  "retirement_reason": "TERMINAL_ECONOMIC_FAILURE",
+  "retirement_scope": "UNCHANGED_FINAL_FLEET_ONLY",
+  "selected_recovery_option": "RETIRE_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESES"
+}

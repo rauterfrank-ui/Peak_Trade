@@ -1,0 +1,14 @@
+{
+  "baseline_commit": "fcb136d2b45182cd8d309718a021284d45c502f5",
+  "method": "Read pinned pre-cutover Git blobs and the baseline diff; not a full baseline suite execution.",
+  "preexisting_findings": {
+    "host_crash_navigation_heading_missing": true,
+    "crash_reproof_required_headings_missing": [
+      "### 11.13.5 Parallel-track DDO A1 host-crash durability closure persist"
+    ],
+    "old_control_storage_spec_missing_from_navigation": true,
+    "old_workpackage_diff_prefix_gate_baseline_violating_path_count": 340,
+    "capture_wrapper_already_contained_ledger_path_assignment": true
+  },
+  "consequence": "Five broader-suite failures remain open; no gate weakened or failure converted to PASS."
+}

@@ -1,0 +1,23 @@
+# PREREGISTER VOLATILITY_EXPANSION_PULLBACK_CONTINUATION HYPOTHESIS V1
+
+```
+SCOPE_TYPE=PREREGISTRATION_ONLY
+PROGRAM_ID=VOLATILITY_REGIME_RESEARCH_PROGRAM_V1
+STRATEGY_ID=VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1
+HYPOTHESIS_ID=VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1
+BASELINE_ID=UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1
+DATASET_ID=pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1
+DEVELOPMENT_EVALUATION_EXECUTED=false
+DEVELOPMENT_RUN_COUNT=0
+DEVELOPMENT_SLOT_CONSUMED=false
+HOLDOUT_ACCESSED=false
+LIVE_AUTHORIZED=false
+ORDERS=false
+SECOND_PNL_TRUTH_CREATED=false
+```
+
+Definition-only preregistration after terminal VCEB `FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`.
+No Development evaluation, no strategy producer, no holdout, no runtime/orders.
+
+Canonical future entry point (definition/binding only, unauthorized):
+`scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py`

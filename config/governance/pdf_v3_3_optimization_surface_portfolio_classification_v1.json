@@ -1,0 +1,77 @@
+{
+    "artifact_class": "PDF_V3_3_OPTIMIZATION_SURFACE_PORTFOLIO_CLASSIFICATION_V1",
+    "schema_version": "pdf_v3_3_optimization_surface_portfolio_classification_v1",
+    "workpackage_id": "META_LEARNING_OPTIMIZATION_UNIVERSE_PDF_V3_3_FINAL_COMPLETION_V1",
+    "universe_member_implies_authorization": false,
+    "families": {
+        "F1_VOLATILITY_NUMERIC_MAX_AGE": {
+            "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+            "classification": "AUTHORIZED_ACTIVE",
+            "productive_relevance": "PRODUCTIVE_PARAMETER_SURFACE",
+            "optimizer_envelope_authorized": true,
+            "decision_ref": "config/governance/optimization_surface_owner_grants_materialization_v1_decision_v1.json"
+        },
+        "F2_FEE_SLIPPAGE_COST_GRID": {
+            "surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+            "classification": "AUTHORIZED_RESEARCH_ONLY",
+            "productive_relevance": "RESEARCH_EVIDENCE_ONLY",
+            "optimizer_envelope_authorized": true,
+            "decision_ref": "config/governance/optimization_surface_owner_grants_materialization_v1_decision_v1.json"
+        },
+        "F5_FRESH_INPUT_FRESHNESS": {
+            "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+            "classification": "AUTHORIZED_SHADOW_ONLY",
+            "productive_relevance": "NONE",
+            "optimizer_envelope_authorized": true,
+            "decision_ref": "config/governance/f5_fresh_futures_input_freshness_optimizable_surface_owner_grant_v1.json"
+        },
+        "F5_SURV_CALIBRATION": {
+            "surface_id": "F5-SURV",
+            "classification": "AUTHORIZED_SHADOW_ONLY",
+            "productive_relevance": "NONE",
+            "optimizer_envelope_authorized": false,
+            "decision_ref": "config/governance/optimization_surface_owner_grants_materialization_v1_decision_v1.json"
+        },
+        "F5_CAP_CALIBRATION": {
+            "surface_id": "F5-CAP",
+            "classification": "AUTHORIZED_SHADOW_ONLY",
+            "productive_relevance": "NONE",
+            "optimizer_envelope_authorized": false,
+            "decision_ref": "config/governance/optimization_surface_owner_grants_materialization_v1_decision_v1.json"
+        },
+        "F3_STRATEGY_HYPERPARAMETERS": {
+            "surface_id": "GLOBAL_F3_STRATEGY_HYPERPARAMETERS",
+            "classification": "EXCLUDED",
+            "productive_relevance": "NONE",
+            "optimizer_envelope_authorized": false,
+            "decision_ref": "config/governance/optimization_surface_owner_grants_materialization_v1_decision_v1.json"
+        },
+        "OLS_COEFFICIENTS": {
+            "classification": "DIAGNOSTIC_ONLY",
+            "productive_relevance": "NONE",
+            "optimizer_envelope_authorized": false
+        },
+        "FUNDING_EVALUATION_BINDING": {
+            "classification": "DEFERRED",
+            "productive_relevance": "NONE",
+            "optimizer_envelope_authorized": false
+        },
+        "RISK_SIZING": {
+            "classification": "EXCLUDED",
+            "productive_relevance": "NONE",
+            "optimizer_envelope_authorized": false,
+            "note": "CONSTITUTIONAL_NOT_OPTIMIZABLE"
+        },
+        "OPTUNA_LEGACY": {
+            "classification": "HISTORICAL_ONLY",
+            "productive_relevance": "NONE",
+            "optimizer_envelope_authorized": false
+        }
+    },
+    "authorized_active_surface_ids": [
+        "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+        "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+        "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1"
+    ],
+    "isolation_namespace_field": "surface_id"
+}

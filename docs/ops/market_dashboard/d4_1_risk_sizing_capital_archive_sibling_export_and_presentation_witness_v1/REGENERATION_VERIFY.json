@@ -1,0 +1,43 @@
+{
+  "wp_id": "D4_1_RISK_SIZING_CAPITAL_ARCHIVE_SIBLING_EXPORT_AND_PRESENTATION_WITNESS_V1",
+  "atlas_authority": "NONE",
+  "dashboard_authority": "NONE",
+  "canonical_base_sha": "6e095cd7a21d2eea6132811feec1fcadcf494f52",
+  "entrypoint": "scripts/ops/run_productive_decision_host_active_archive_three_family_binding_v1.py",
+  "entrypoint_subcommand": "smoke",
+  "archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "runtime_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_d4_1_runtime_6e095cd",
+  "session_id": "d4-1-risk-sizing-capital-6e095cd",
+  "smoke_execution_count": 1,
+  "preflight_status": "PASS",
+  "smoke_status": "PASS",
+  "selected_future_symbol": "SATS-USDT-SWAP",
+  "selected_future_source": "archive:readmodels/universe_selection_readmodel.v1.json:selected_future.symbol",
+  "activation_enabled": true,
+  "network_session_allowed": false,
+  "genuine_regeneration_proven": true,
+  "same_cycle_id": "d4-1-risk-sizing-capital-6e095cd:cycle:7",
+  "risk_sizing_capital": {
+    "domain_source": "IntegratedOfflineReplayIntermediateV1.capital_risk_sizing_decision",
+    "sibling_path": "readmodels/risk_sizing_capital.v1.json",
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "bind_market_universe_slots_availability": "AVAILABLE",
+    "source_digest": "7114e94443f1ba30ffb4598d58751f6dee48099473c25e3390a183fa7bbd021c",
+    "presentation_path": "readmodels/risk_sizing_capital_presentation_projection.v1.json",
+    "presentation_timestamp_class": "MATERIALIZATION_WALLCLOCK_NOT_DOMAIN_PRODUCER"
+  },
+  "optional_double_play": {
+    "exported": false,
+    "error_code": "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE",
+    "fail_closed": true
+  },
+  "trading_effects": false,
+  "execution_effects": false,
+  "orders": false,
+  "evidence_paths": {
+    "smoke_session_result": "docs/ops/market_dashboard/d4_1_risk_sizing_capital_archive_sibling_export_and_presentation_witness_v1/SMOKE_SESSION_RESULT.json",
+    "cycle_commit_trace": "docs/ops/market_dashboard/d4_1_risk_sizing_capital_archive_sibling_export_and_presentation_witness_v1/cycle_commit_trace.jsonl"
+  }
+}

@@ -1,0 +1,3 @@
+RECOVERY_NOTE=Original focused pytest log not byte-recoverable from transcripts.
+STATUS=NOT_RERUN_IN_RECOVERY
+REASON=No authoritative original test command log recovered; refusing to invent pass/fail lines.

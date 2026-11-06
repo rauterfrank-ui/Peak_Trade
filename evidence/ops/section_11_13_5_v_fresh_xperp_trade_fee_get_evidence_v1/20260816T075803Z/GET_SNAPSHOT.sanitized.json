@@ -1,0 +1,61 @@
+{
+  "BODY_BYTE_LEN": 376,
+  "BODY_SHA256": "822110185e9031b43bb3900b10268f2efab1f7cc274667b4ba243451ba68d040",
+  "BOUND_ORIGIN_MAIN_SHA": "0ff8f7307cdbb7c5e1fceb0b9ea9727fc3813c25",
+  "CANARY_INSTRUMENT": "BTC-USD_UM_XPERP-310404",
+  "CANARY_INST_FAMILY": "BTC-USD_UM_XPERP",
+  "CANARY_INST_TYPE": "FUTURES",
+  "COLLECTED_UTC": "2026-08-16T07:58:03.175865Z",
+  "DOCUMENT_CLASS": "SECTION_11_13_5_V_FRESH_XPERP_TRADE_FEE_GET_EVIDENCE_V1",
+  "DOCUMENT_ROLE": "DERIVED_NON_SSOT_GET_ONLY_NOT_POLICY_PERSIST_NOT_FUNDING",
+  "FINISHED_UTC": "2026-08-16T07:58:03.504042Z",
+  "GET_COUNT": 1,
+  "HOST": "eea.okx.com",
+  "HTTP_METHOD": "GET",
+  "HTTP_STATUS": 200,
+  "LIVE_AUTHORIZED": false,
+  "MAPPING_CONFLICT": null,
+  "OKX_CODE": "0",
+  "OKX_MSG": "",
+  "OWNER_GO": "OWNER_GO_FOR_BOUNDED_GET_ONLY_FRESH_XPERP_TRADE_FEE_EVIDENCE_USING_RATIFIED_QUERY_GRAMMAR",
+  "PARSE_ERROR": null,
+  "QUERY": "/api/v5/account/trade-fee?instType=FUTURES&instFamily=BTC-USD_UM_XPERP",
+  "RESPONSE_DATA_SANITIZED": {
+    "code": "0",
+    "data": [
+      {
+        "category": "1",
+        "delivery": "0.0003",
+        "exercise": "",
+        "feeGroup": [
+          {
+            "elpMaker": "-0.0002",
+            "groupId": "7",
+            "maker": "-0.0002",
+            "rpiMaker": "-0.0002",
+            "taker": "-0.0005"
+          }
+        ],
+        "fiat": [],
+        "instType": "FUTURES",
+        "level": "Lv1",
+        "maker": "",
+        "makerU": "",
+        "makerUSDC": "-0.0002",
+        "ruleType": "normal",
+        "settle": "",
+        "taker": "",
+        "takerU": "",
+        "takerUSDC": "-0.0005",
+        "ts": "1786867083606"
+      }
+    ],
+    "msg": ""
+  },
+  "RETRY_EXECUTED": false,
+  "RUN_ID": "20260816T075803Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "SSOT_SECTION": "11.13.5.V",
+  "TRANSPORT_ERROR": null,
+  "VENUE": "OKX_PRODUCTION_EEA"
+}

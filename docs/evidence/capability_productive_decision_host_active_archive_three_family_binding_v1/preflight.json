@@ -1,0 +1,14 @@
+{
+  "branch": "ops/dashboard-three-family-canonical-source-persistence-v1",
+  "dashboard_pid_after": 737,
+  "dashboard_pid_before": 737,
+  "expected_origin_main_sha": "1989e7e4dc0697d049a25c4b3d84baf27016ecf5",
+  "head_sha": "1989e7e4dc0697d049a25c4b3d84baf27016ecf5",
+  "o2_authorized_modes": [
+    "dashboard-only"
+  ],
+  "ok": true,
+  "origin_main_sha": "1989e7e4dc0697d049a25c4b3d84baf27016ecf5",
+  "repo_root": "/Users/frnkhrz/Peak_Trade",
+  "tracked_worktree_clean_before": true
+}

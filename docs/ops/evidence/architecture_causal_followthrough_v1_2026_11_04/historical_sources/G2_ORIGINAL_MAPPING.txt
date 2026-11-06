@@ -1,0 +1,63 @@
+{
+  "schema_version": "governed_runtime_learning_input_to_optimization_universe_learning_input_binding_field_mapping_ledger_v1",
+  "workpackage_id": "GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1",
+  "source_contract": "runtime_to_learning_input_v1",
+  "destination_contract": "learning_evidence_record_v1",
+  "canonical_consumer": "validate_canonical_optimization_universe_learning_input_v1",
+  "mappings": {
+    "source_learning_state_record_ref": {
+      "adjudication": "MECHANICAL_TRANSFORM",
+      "source": "runtime_learning_input.output_digest",
+      "transform": "g2.rtls.{digest_prefix_40}"
+    },
+    "evaluation_bundle_fingerprint": {
+      "adjudication": "MECHANICAL_TRANSFORM",
+      "source": [
+        "runtime_learning_input.output_digest",
+        "runtime_learning_input.source_observation_digest",
+        "provenance.primary_evidence_manifest_digest",
+        "projection_record_digest"
+      ],
+      "transform": "sha256_canonical_json"
+    },
+    "decision_event_ref": {
+      "adjudication": "MECHANICAL_TRANSFORM",
+      "source": "provenance.primary_evidence_manifest_digest",
+      "transform": "g2.primary.{digest_prefix_48}"
+    },
+    "economic_score_label": {
+      "adjudication": "MECHANICAL_TRANSFORM",
+      "source": "provenance.review_verdict",
+      "transform": "g2.review.{verdict}"
+    },
+    "evaluation_horizon": {
+      "adjudication": "MECHANICAL_TRANSFORM",
+      "source": "provenance.source_execution_mode",
+      "transform": "g2.mode.{mode}.bounded_observation"
+    },
+    "actual_outcome_ref": {
+      "adjudication": "DIRECT_SOURCE",
+      "source": "runtime_learning_input.source_observation_ref"
+    },
+    "observed_at_utc": {
+      "adjudication": "DIRECT_SOURCE",
+      "source": "provenance.observation_time_utc"
+    },
+    "state_scope_id": {
+      "adjudication": "MECHANICAL_TRANSFORM",
+      "source": "provenance.source_run_session_identity",
+      "transform": "g2.scope.{run_session_identity}"
+    },
+    "state_version": {
+      "adjudication": "MECHANICAL_CONSTANT",
+      "source": "1",
+      "transform": "runtime_projection_snapshot_version"
+    }
+  },
+  "admission_predicates": {
+    "runtime_learning_input.decision_code": "LEARNING_INPUT_VALID",
+    "runtime_learning_input.learning_input_status": "VALID",
+    "provenance_alignment": "session_instrument_venue_environment_and_primary_parent_ref",
+    "ddo_fixture_state": "FORBIDDEN_IN_BINDING_REQUEST"
+  }
+}

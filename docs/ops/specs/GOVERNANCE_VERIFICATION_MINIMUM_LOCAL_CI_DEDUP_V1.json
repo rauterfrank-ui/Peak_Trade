@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1",
+  "document_class": "GOVERNANCE_VERIFICATION_ORCHESTRATION",
+  "runtime_authorization_effect": "NONE",
+  "core_logic_change": false,
+  "activation_effect": "NONE",
+  "capability_11_13_started": false,
+  "canonical_owners": {
+    "policy_json": "docs/ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.json",
+    "policy_markdown": "docs/ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md",
+    "orchestrator": "scripts/ops/verification_minimum_local_ci_dedup_v1.py",
+    "pre_pr_verifier": "scripts/ops/verify_pre_pr_validation_result_v0.py",
+    "required_checks_ssot": "config/ci/required_status_checks.json",
+    "runbook_section": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#15.3",
+    "contract_tests": "tests/ci/test_verification_minimum_local_ci_dedup_v1.py"
+  },
+  "github_required_checks_role": "BINDING_BROAD_INTEGRATION_AND_REGRESSION_LAYER",
+  "decision_principle": {
+    "A_github_required": "Is this check already executed as a GitHub required check?",
+    "B_local_pre_push_value": "Does a local re-execution add information that is mandatory before push?",
+    "skip_when": "A=true AND B=false",
+    "skip_identical_stand_pass": "If the exact same stand already has a full PASS with EXIT=0 for the same selector/command, do not re-execute."
+  },
+  "test_evidence_reuse_rule": {
+    "sufficient_when": [
+      "identical_commit_or_bound_worktree_diff",
+      "identical_test_selector_or_command",
+      "full_run_completed",
+      "result_PASS",
+      "exit_code_0"
+    ],
+    "invalid_when": [
+      "stand_changed",
+      "incomplete_run",
+      "missing_binding",
+      "exit_code_nonzero",
+      "result_not_PASS"
+    ]
+  },
+  "evidence_reexecution_rule": "Evidence may reference or seal an existing bound PASS; it must not re-start an already-passed expensive suite solely for sealing.",
+  "verifier_reexecution_rule": "Verifiers must validate artifacts, claims, hashes, and bindings statically unless additional runtime information is strictly required.",
+  "pre_pr_reexecution_rule": "Pre-PR must not re-run a suite already bound as PASS for the identical stand; only non-GitHub-covered local invariants and first-diagnosis fail-closed pre-push checks remain.",
+  "local_checks_retained": [
+    {
+      "check_id": "final_diff_freeze_and_sha256",
+      "reason": "Local orchestration invariant; not a GitHub required check context."
+    },
+    {
+      "check_id": "canonical_ci_selector_on_final_diff",
+      "reason": "Determines FOCUSED/NO_OP/FULL and timing-proof necessity before push."
+    },
+    {
+      "check_id": "ruff_format_and_check_on_python_diff",
+      "reason": "Mandatory pre-push first-diagnosis fail-closed; GitHub Lint Gate must not be the first format/lint diagnosis."
+    },
+    {
+      "check_id": "docs_token_policy_on_md_diff",
+      "reason": "Mandatory pre-push first-diagnosis fail-closed for changed Markdown."
+    },
+    {
+      "check_id": "docs_reference_targets_on_md_diff",
+      "reason": "Mandatory pre-push first-diagnosis fail-closed for changed Markdown links."
+    },
+    {
+      "check_id": "bound_capability_or_owner_test_once",
+      "reason": "One full local PASS+EXIT=0 for the exact stand binds local test evidence; not a duplicate of GitHub breadth."
+    },
+    {
+      "check_id": "static_evidence_and_manifest_verify",
+      "reason": "Local durable-evidence integrity; not covered by GitHub required test matrix alone."
+    },
+    {
+      "check_id": "safety_activation_credential_order_hard_stops",
+      "reason": "Must never be weakened; GitHub required checks do not replace these local fail-closed claims."
+    }
+  ],
+  "redundant_local_reexecutions_removed": [
+    {
+      "check_id": "capability_suite_rerun_for_evidence_seal_only",
+      "reason": "Already bound PASS+EXIT=0 for identical stand is sufficient; evidence seals/references it."
+    },
+    {
+      "check_id": "capability_suite_rerun_inside_static_verifier",
+      "reason": "Verifier validates sealed artifacts statically when no additional runtime info is required."
+    },
+    {
+      "check_id": "pre_pr_rerun_of_identical_bound_suite",
+      "reason": "LOCAL_GATE may reuse bound PASS for identical stand/command; GitHub required tests remain the broad layer."
+    },
+    {
+      "check_id": "local_full_suite_mirror_of_github_required_tests",
+      "reason": "GitHub required context tests (3.11) already provides binding broad regression; local full mirror adds no pre-push information when a bound FOCUSED PASS exists."
+    },
+    {
+      "check_id": "timing_proof_rerun_of_identical_already_measured_stand",
+      "reason": "Reuse wallclock from the identical bound full PASS when selector/timing conditions still hold."
+    }
+  ],
+  "github_covered_check_ids_example": [
+    "Lint Gate",
+    "docs-token-policy-gate",
+    "docs-reference-targets-gate",
+    "tests (3.11)",
+    "strategy-smoke",
+    "audit",
+    "dispatch-guard",
+    "docs-drift-guard",
+    "repo-truth-claims",
+    "Policy Critic Gate",
+    "Guard tracked files in reports folders"
+  ],
+  "allowed_local_actions": [
+    "EXECUTE_REQUIRED_LOCAL",
+    "REUSE_BOUND_PASS",
+    "SKIP_GITHUB_COVERED_NO_EXTRA_LOCAL_VALUE"
+  ],
+  "forbidden": [
+    "WEAKEN_SAFETY_ACTIVATION_CREDENTIAL_ORDER_HARD_STOPS",
+    "START_CAPABILITY_11_13",
+    "REEXECUTE_IDENTICAL_BOUND_PASS_FOR_EVIDENCE_ONLY",
+    "REEXECUTE_IDENTICAL_BOUND_PASS_FOR_STATIC_VERIFIER_ONLY",
+    "REEXECUTE_IDENTICAL_BOUND_PASS_FOR_PRE_PR_ONLY",
+    "CLAIM_REUSE_WITHOUT_IDENTICAL_STAND_BINDING"
+  ]
+}

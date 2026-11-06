@@ -1,0 +1,384 @@
+{
+  "action_recommendation": null,
+  "artifact_kind": "bollinger_mr_economic_failure_decomposition_development_summary",
+  "artifact_version": "v1",
+  "authority_effect": "NONE",
+  "base_sha": "734900d18ba0cf49b557a398c78985d937dfa177",
+  "baseline_binding_digests": {
+    "binding_semantic_digest": "8a8fdbf2c24e6a4f40cf465b265f6487aa68a289ab204f008a8825a94752f7c8",
+    "config_digest": "cb9873d09e762ae9d3155b64be444cd7d317865645a1c3c14028ba2e0cf44b5a",
+    "data_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
+    "implementation_digest": "734a94cd4eaa753ff8ade60ebf41a60e116e2c97beade2bc5e8f56e2a6387f33"
+  },
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "classification": {
+    "action_recommendation": null,
+    "diagnostic_class": "COSTS_DESTROY_MARGINAL_EDGE",
+    "flags": {
+      "COST_DRAG_MATERIAL": true,
+      "ENTRY_GROSS_EDGE_PRESENT": true,
+      "EXIT_LEAKAGE_MATERIAL": true,
+      "INSTRUMENT_CONCENTRATION_MATERIAL": false,
+      "SHORT_SIDE_DRAG_MATERIAL": true
+    },
+    "new_hypothesis": null,
+    "reason": "positive_gross_destroyed_by_canonical_costs",
+    "supporting_metrics": {
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "long_net_pnl": 0.0,
+      "long_trades": 0,
+      "mean_mfe_to_exit_leakage": 229.51831786929728,
+      "mean_realized_pnl_over_mfe_capture_ratio": -3.1113994236335936,
+      "net_pnl": -274.6899929958916,
+      "net_profit_factor": 0.8945131625090622,
+      "pf_gross_lt_one": false,
+      "short_net_pnl": -274.6899929958916,
+      "short_trades": 51,
+      "trade_count": 51,
+      "worst1_abs_net_share": 0.1846903370050265
+    }
+  },
+  "concentration": {
+    "dominated_by_single": false,
+    "worst1_abs_net_share": 0.1846903370050265,
+    "worst5_abs_net_share": 0.5418117918459673
+  },
+  "core_metrics": {
+    "fees": 201.68019531001602,
+    "gross_pnl": 27.830299969132085,
+    "gross_profit_factor": 1.0119859537996807,
+    "mean_holding_period_hours": 310.8627450980392,
+    "mean_mfe_to_exit_leakage": 229.51831786929728,
+    "mean_realized_pnl_over_mfe_capture_ratio": -3.1113994236335936,
+    "median_holding_period_hours": 22.0,
+    "net_pnl": -274.6899929958916,
+    "net_profit_factor": 0.8945131625090622,
+    "slippage": 100.84009765500801,
+    "trade_count": 51,
+    "trades_missing_mfe_mae": 0,
+    "trades_with_computed_mfe_mae": 51
+  },
+  "cost_model": {
+    "fee_bps": 10.0,
+    "fixed": true,
+    "half_spread_bps": 5.0,
+    "slippage_bps": 5.0
+  },
+  "cost_stress": [
+    {
+      "cost_multiplier": 0.5,
+      "fees": 100.84009765500801,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -123.42984651338043,
+      "net_profit_factor": 0.949885677847558,
+      "slippage": 50.420048827504004,
+      "trade_count": 51
+    },
+    {
+      "cost_multiplier": 1.0,
+      "fees": 201.68019531001602,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -274.6899929958916,
+      "net_profit_factor": 0.8945131625090622,
+      "slippage": 100.84009765500801,
+      "trade_count": 51
+    },
+    {
+      "cost_multiplier": 1.5,
+      "fees": 302.52029296502405,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -425.95013947840386,
+      "net_profit_factor": 0.8448312884170267,
+      "slippage": 151.26014648251203,
+      "trade_count": 51
+    },
+    {
+      "cost_multiplier": 2.0,
+      "fees": 403.36039062003204,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -577.2102859609156,
+      "net_profit_factor": 0.8000056876171731,
+      "slippage": 201.68019531001602,
+      "trade_count": 51
+    }
+  ],
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_period": "2023-05-20T00:00:00Z..2023-08-16T05:55:00Z",
+  "development_split_digest": "a35783bf0268c174dfe585c9839ba45cc6e3835021699786f4490a0d8c9b33db",
+  "diagnostic_class": "COSTS_DESTROY_MARGINAL_EDGE",
+  "diagnostic_only": true,
+  "double_play_authority_changed": false,
+  "economic_validity_offline_gate_pass": false,
+  "evidence_class_id": "BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_EVIDENCE_V1",
+  "execution_id": "BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_EXECUTION_V1",
+  "flags": {
+    "COST_DRAG_MATERIAL": true,
+    "ENTRY_GROSS_EDGE_PRESENT": true,
+    "EXIT_LEAKAGE_MATERIAL": true,
+    "INSTRUMENT_CONCENTRATION_MATERIAL": false,
+    "SHORT_SIDE_DRAG_MATERIAL": true
+  },
+  "holdout_data_accessed": false,
+  "holdout_rerun_executed": false,
+  "instrument_attribution": [
+    {
+      "fees": 23.82787383839676,
+      "gross_pnl": -294.1712819555142,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:LINK:USDT:USDT:perp",
+      "net_pnl": -329.91309271310934,
+      "net_profit_factor": 0.0,
+      "slippage": 11.91393691919838,
+      "trade_count": 6
+    },
+    {
+      "fees": 23.694616453955522,
+      "gross_pnl": -292.5261290611781,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:DOGE:USDT:USDT:perp",
+      "net_pnl": -328.0680537421114,
+      "net_profit_factor": 0.0,
+      "slippage": 11.847308226977761,
+      "trade_count": 6
+    },
+    {
+      "fees": 20.024166167750902,
+      "gross_pnl": -247.21192799692395,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:NEO:USDT:USDT:perp",
+      "net_pnl": -277.24817724855023,
+      "net_profit_factor": 0.0,
+      "slippage": 10.012083083875451,
+      "trade_count": 5
+    },
+    {
+      "fees": 19.91188065596525,
+      "gross_pnl": -245.82568711068117,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:CFX:USDT:USDT:perp",
+      "net_pnl": -275.6935080946291,
+      "net_profit_factor": 0.0,
+      "slippage": 9.955940327982624,
+      "trade_count": 5
+    },
+    {
+      "fees": 16.06424642960496,
+      "gross_pnl": -198.32402999512274,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:LTC:USDT:USDT:perp",
+      "net_pnl": -222.42039963953016,
+      "net_profit_factor": 0.0,
+      "slippage": 8.03212321480248,
+      "trade_count": 4
+    },
+    {
+      "fees": 16.06424642960493,
+      "gross_pnl": -198.32402999512198,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:GRT:USDT:USDT:perp",
+      "net_pnl": -222.42039963952936,
+      "net_profit_factor": 0.0,
+      "slippage": 8.032123214802464,
+      "trade_count": 4
+    },
+    {
+      "fees": 12.081996223427806,
+      "gross_pnl": -149.1604472028118,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:SOL:USDT:USDT:perp",
+      "net_pnl": -167.28344153795354,
+      "net_profit_factor": 0.0,
+      "slippage": 6.040998111713903,
+      "trade_count": 3
+    },
+    {
+      "fees": 8.077289624999997,
+      "gross_pnl": -99.7196249999997,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:XLM:USDT:USDT:perp",
+      "net_pnl": -111.83555943749968,
+      "net_profit_factor": 0.0,
+      "slippage": 4.0386448124999985,
+      "trade_count": 2
+    },
+    {
+      "fees": 8.077289624999985,
+      "gross_pnl": -99.71962499999947,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:MASK:USDT:USDT:perp",
+      "net_pnl": -111.83555943749946,
+      "net_profit_factor": 0.0,
+      "slippage": 4.038644812499992,
+      "trade_count": 2
+    },
+    {
+      "fees": 8.031996223427818,
+      "gross_pnl": -99.16044720281201,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+      "net_pnl": -111.20844153795373,
+      "net_profit_factor": 0.0,
+      "slippage": 4.015998111713909,
+      "trade_count": 2
+    },
+    {
+      "fees": 7.98707728454826,
+      "gross_pnl": -98.60589240183009,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:API3:USDT:USDT:perp",
+      "net_pnl": -110.58650832865247,
+      "net_profit_factor": 0.0,
+      "slippage": 3.99353864227413,
+      "trade_count": 2
+    },
+    {
+      "fees": 4.05,
+      "gross_pnl": -50.0,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:IOST:USDT:USDT:perp",
+      "net_pnl": -56.075,
+      "net_profit_factor": 0.0,
+      "slippage": 2.025,
+      "trade_count": 1
+    },
+    {
+      "fees": 4.049999999999987,
+      "gross_pnl": -49.99999999999971,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "net_pnl": -56.07499999999969,
+      "net_profit_factor": 0.0,
+      "slippage": 2.0249999999999937,
+      "trade_count": 1
+    },
+    {
+      "fees": 4.027350374999992,
+      "gross_pnl": -49.72037499999965,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:UNI:USDT:USDT:perp",
+      "net_pnl": -55.76140056249964,
+      "net_profit_factor": 0.0,
+      "slippage": 2.013675187499996,
+      "trade_count": 1
+    },
+    {
+      "fees": 4.027350374999996,
+      "gross_pnl": -49.720374999999585,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:COMP:USDT:USDT:perp",
+      "net_pnl": -55.76140056249958,
+      "net_profit_factor": 0.0,
+      "slippage": 2.013675187499998,
+      "trade_count": 1
+    },
+    {
+      "fees": 11.591732266795226,
+      "gross_pnl": 341.1035094297741,
+      "gross_profit_factor": 4.4206256735299,
+      "instrument_id": "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+      "net_pnl": 323.71591102958126,
+      "net_profit_factor": 3.8945704984870386,
+      "slippage": 5.795866133397613,
+      "trade_count": 3
+    },
+    {
+      "fees": 3.5593750000000037,
+      "gross_pnl": 440.6250000000005,
+      "gross_profit_factor": null,
+      "instrument_id": "okx:linear_perpetual:THETA:USDT:USDT:perp",
+      "net_pnl": 435.2859375000005,
+      "net_profit_factor": null,
+      "slippage": 1.7796875000000019,
+      "trade_count": 1
+    },
+    {
+      "fees": 3.4062292909211296,
+      "gross_pnl": 593.7707090788584,
+      "gross_profit_factor": null,
+      "instrument_id": "okx:linear_perpetual:ALGO:USDT:USDT:perp",
+      "net_pnl": 588.6613651424767,
+      "net_profit_factor": null,
+      "slippage": 1.7031146454605648,
+      "trade_count": 1
+    },
+    {
+      "fees": 3.1254790456175003,
+      "gross_pnl": 874.5209543824933,
+      "gross_profit_factor": null,
+      "instrument_id": "okx:linear_perpetual:APE:USDT:USDT:perp",
+      "net_pnl": 869.8327358140671,
+      "net_profit_factor": null,
+      "slippage": 1.5627395228087502,
+      "trade_count": 1
+    }
+  ],
+  "instrument_count": 46,
+  "new_hypothesis": null,
+  "new_hypothesis_tested": false,
+  "next_research_question": "Given COSTS_DESTROY_MARGINAL_EDGE on the sealed DEVELOPMENT_ONLY Bollinger/MR baseline (marginal gross PF~1.01, all-SHORT book), does a cost-structure or holding/exit-efficiency change class exist that preserves gross edge without retuning terminal entry-eligibility parameters or reopening exhausted filter families?",
+  "non_authorizing": true,
+  "orders_sent": false,
+  "panel_proof": {
+    "archive_root": "/private/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/peak_trade_data_archive/dev_pre_holdout_panel_v1_20260720T2052Z",
+    "content_hash": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+    "manifest_sha256": "be953c559ac3dd797961bdda8cbc190076353c91d3299b9031ae1ee767d4b594"
+  },
+  "parent_baseline_evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/",
+  "parent_baseline_metrics": {
+    "fees": 459.42545240128703,
+    "gross_pnl": -890.3483239437896,
+    "long_trades": 21,
+    "net_pnl": -1579.4865025457202,
+    "profit_factor": 0.7324360833782796,
+    "short_trades": 96,
+    "slippage": 229.71272620064352,
+    "trade_count": 117
+  },
+  "portfolio_aggregation_id": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+  "portfolio_metrics": {
+    "final_equity": 10025.751067451909,
+    "max_drawdown": -0.007131950824027808,
+    "net_return": 0.0025751067451909027,
+    "sharpe": 0.5420104867699256
+  },
+  "process_classification": "BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_EXECUTION_V1",
+  "production_strategy_semantics_changed": false,
+  "promotion_eligible": false,
+  "risk_sizing_execution_semantics_changed": false,
+  "runtime_activated": false,
+  "runtime_effect": "NONE",
+  "scope_classification": "READ_ONLY_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_ONLY_BOLLINGER_MR_BASELINE_V1",
+  "scope_id": "bollinger_mr_economic_failure_decomposition_development_v1",
+  "seed": 20220601,
+  "side_attribution": {
+    "long": {
+      "fees": 0.0,
+      "gross_pnl": 0.0,
+      "gross_profit_factor": null,
+      "net_pnl": 0.0,
+      "net_profit_factor": null,
+      "slippage": 0.0,
+      "trade_count": 0
+    },
+    "short": {
+      "fees": 201.68019531001602,
+      "gross_pnl": 27.830299969132085,
+      "gross_profit_factor": 1.0119859537996807,
+      "net_pnl": -274.6899929958916,
+      "net_profit_factor": 0.8945131625090622,
+      "slippage": 100.84009765500801,
+      "trade_count": 51
+    }
+  },
+  "strategy_id": "bollinger_bands",
+  "strategy_version": "v2",
+  "timestamp_utc": "2026-07-21T11:57:04Z",
+  "wallclock_seconds": 190.94039270800002
+}

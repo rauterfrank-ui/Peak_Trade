@@ -1,0 +1,13 @@
+{
+  "authorization_consumption": "forbidden",
+  "credential_load": "absent",
+  "path": [
+    "Canonical Stateful Trading Core",
+    "Canonical Intent Contract (Cap 11.1)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Canonical Execution Event Contract",
+    "Accounting / Portfolio / Reconciliation / Evidence",
+    "credential_reference_metadata owner=credential_boundary_future_cap_11_2",
+    "authorization owner=authorization_contract_future"
+  ]
+}

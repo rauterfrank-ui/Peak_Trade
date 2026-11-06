@@ -1,0 +1,76 @@
+{
+  "rows": [
+    {
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "EXPECTED_ORIGIN_MAIN_MATCH",
+      "PROVENANCE": "git rev-parse origin/main",
+      "SATISFIED": true,
+      "VALUE": "705a063d0fddb60bc6d94693e029bb57669108dc"
+    },
+    {
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "OWNER_EXECUTION_GO_TOKEN_MATCH",
+      "PROVENANCE": "owner_token_exact",
+      "SATISFIED": true,
+      "VALUE": "PEAK_TRADE_OWNER_EXECUTION_GO_SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_ORIGIN_MAIN_705A063D0FDDB60BC6D94693E029BB57669108DC_PRE_EXISTING_POSITION_POS_1_V1"
+    },
+    {
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "POSITION_SCOPE_MATCH",
+      "PROVENANCE": "GET /api/v5/account/positions",
+      "SATISFIED": true,
+      "VALUE": "pos=1"
+    },
+    {
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "TECHNICAL_PRE_EXECUTION_READINESS",
+      "PROVENANCE": "GET_ONLY_PACK",
+      "SATISFIED": true,
+      "VALUE": true
+    },
+    {
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "OPEN_POSITION_PRESENT",
+      "PROVENANCE": "evaluate_pre_submit_exchange_state_v1",
+      "SATISFIED": true,
+      "VALUE": true
+    },
+    {
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "WOULD_INCREASE_EXISTING_POSITION",
+      "PROVENANCE": "canary DEFAULT_SIDE=BUY against pos=1",
+      "SATISFIED": true,
+      "VALUE": true
+    },
+    {
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "MAX_POSITIONS_GATE_PASS",
+      "PROVENANCE": "POSITION_COUNT_LIMIT=1 plus existing slot occupied",
+      "SATISFIED": false,
+      "VALUE": false
+    },
+    {
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "FINAL_SUBMIT_GATE",
+      "PROVENANCE": "NO_EXECUTION",
+      "SATISFIED": false,
+      "VALUE": false
+    },
+    {
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT",
+      "PREDICATE": "EXACT_OKX_FEE_FORMULA",
+      "PROVENANCE": "standing_policy",
+      "SATISFIED": true,
+      "VALUE": "UNPROVEN"
+    }
+  ]
+}

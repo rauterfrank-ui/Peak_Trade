@@ -1,0 +1,235 @@
+{
+  "fixture_version": "single_future_canonical_runtime_deterministic_offline_market_data_fixture.v1",
+  "fixture_id": "cap51_single_future_deterministic_offline_market_data_v1",
+  "seed_policy": "EXPLICIT_VERSIONED_NO_RANDOM",
+  "seed": "cap51-offline-fixture-v1",
+  "instrument_metadata": {
+    "instId": "SOL-USDT-SWAP",
+    "instType": "SWAP",
+    "state": "live",
+    "baseCcy": "SOL",
+    "quoteCcy": "USDT",
+    "settleCcy": "USDT",
+    "ctType": "linear",
+    "ctVal": "0.01",
+    "ctValCcy": "SOL",
+    "tickSz": "0.01",
+    "lotSz": "1",
+    "minSz": "1",
+    "uly": "SOL-USDT",
+    "expTime": ""
+  },
+  "companion_instruments": [
+    {
+      "instId": "ETH-USDT-SWAP",
+      "instType": "SWAP",
+      "state": "live",
+      "baseCcy": "ETH",
+      "quoteCcy": "USDT",
+      "settleCcy": "USDT",
+      "ctType": "linear",
+      "ctVal": "0.01",
+      "ctValCcy": "ETH",
+      "tickSz": "0.01",
+      "lotSz": "1",
+      "minSz": "1",
+      "uly": "ETH-USDT",
+      "expTime": ""
+    },
+    {
+      "instId": "ADA-USDT-SWAP",
+      "instType": "SWAP",
+      "state": "live",
+      "baseCcy": "ADA",
+      "quoteCcy": "USDT",
+      "settleCcy": "USDT",
+      "ctType": "linear",
+      "ctVal": "0.01",
+      "ctValCcy": "ADA",
+      "tickSz": "0.01",
+      "lotSz": "1",
+      "minSz": "1",
+      "uly": "ADA-USDT",
+      "expTime": ""
+    }
+  ],
+  "mark_price_baseline": {
+    "SOL-USDT-SWAP": "100.50",
+    "ETH-USDT-SWAP": "100.50",
+    "ADA-USDT-SWAP": "100.50"
+  },
+  "typed_volatility_baseline": {
+    "SOL-USDT-SWAP": {
+      "presence": true,
+      "typed_volatility_id": "tv_sol_usdt_swap_v1",
+      "numeric_max_age_strata_diagnostic": {
+        "stratum": "diagnostic_only",
+        "enforcement_enabled": false,
+        "age_seconds": 0,
+        "max_age_seconds": 3600
+      }
+    }
+  },
+  "checkpoint_after_observation_index": 7,
+  "observations": [
+    {
+      "observation_id": "obs-001",
+      "event_time_unix": 1700000100.0,
+      "kind": "warmup_flat",
+      "mark_price": "100.50",
+      "sequence_role": "flat_hold",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-002",
+      "event_time_unix": 1700000101.0,
+      "kind": "warmup_flat",
+      "mark_price": "100.55",
+      "sequence_role": "flat_hold",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-003",
+      "event_time_unix": 1700000102.0,
+      "kind": "long_setup",
+      "mark_price": "100.80",
+      "sequence_role": "long",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-004",
+      "event_time_unix": 1700000103.0,
+      "kind": "long_continuation",
+      "mark_price": "101.20",
+      "sequence_role": "long",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-005",
+      "event_time_unix": 1700000104.0,
+      "kind": "long_entry_window",
+      "mark_price": "101.80",
+      "sequence_role": "entry",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-006",
+      "event_time_unix": 1700000105.0,
+      "kind": "hold",
+      "mark_price": "101.85",
+      "sequence_role": "hold",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-007",
+      "event_time_unix": 1700000106.0,
+      "kind": "adverse",
+      "mark_price": "101.10",
+      "sequence_role": "adverse",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-008",
+      "event_time_unix": 1700000107.0,
+      "kind": "reduce_window",
+      "mark_price": "100.90",
+      "sequence_role": "reduce",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-009",
+      "event_time_unix": 1700000108.0,
+      "kind": "short_setup",
+      "mark_price": "100.40",
+      "sequence_role": "short",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-010",
+      "event_time_unix": 1700000109.0,
+      "kind": "short_continuation",
+      "mark_price": "99.80",
+      "sequence_role": "short",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-011",
+      "event_time_unix": 1700000110.0,
+      "kind": "exit_window",
+      "mark_price": "99.50",
+      "sequence_role": "exit",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-012",
+      "event_time_unix": 1700000111.0,
+      "kind": "flat_hold",
+      "mark_price": "99.55",
+      "sequence_role": "flat_hold",
+      "typed_volatility_present": true,
+      "duplicate_of": null,
+      "missing": false
+    },
+    {
+      "observation_id": "obs-005-dup",
+      "event_time_unix": 1700000104.0,
+      "kind": "duplicate",
+      "mark_price": "101.80",
+      "sequence_role": "duplicate",
+      "typed_volatility_present": true,
+      "duplicate_of": "obs-005",
+      "missing": false
+    },
+    {
+      "observation_id": "obs-missing-gap",
+      "event_time_unix": 1700000112.0,
+      "kind": "missing",
+      "mark_price": null,
+      "sequence_role": "missing",
+      "typed_volatility_present": false,
+      "duplicate_of": null,
+      "missing": true
+    }
+  ],
+  "required_sequence_roles": [
+    "long",
+    "short",
+    "flat_hold",
+    "hold",
+    "adverse",
+    "exit",
+    "entry",
+    "reduce",
+    "duplicate",
+    "missing"
+  ],
+  "notes": [
+    "Fully local deterministic market-data fixture",
+    "Event-time is decision authority; wallclock is never decision authority",
+    "No HTTP, WebSocket, credentials, sleep, or network session",
+    "Typed volatility and mark price are explicit; no silent defaults",
+    "Numeric max-age strata are diagnostic only"
+  ]
+}

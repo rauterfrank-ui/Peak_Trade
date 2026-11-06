@@ -1,0 +1,32 @@
+{
+  "authority_effect": "NONE",
+  "binding_completion_ref": "config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json",
+  "economic_evaluation_authorized": true,
+  "evaluation_classes": [
+    "OFFLINE_BACKTEST",
+    "WALK_FORWARD",
+    "MONTE_CARLO",
+    "STRESS",
+    "PARAMETER_SENSITIVITY",
+    "ECONOMIC_VIABILITY_EVIDENCE"
+  ],
+  "evidence_class_id": "RATIFIED_FINAL_FLEET_VERSIONED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "execution_go_token": "GO_EXECUTE_RATIFIED_FINAL_FLEET_VERSIONED_OFFLINE_ECONOMIC_EVALUATION_V0",
+  "execution_performed": false,
+  "expected_origin_main_sha": "400b6e9d8cbbf1ade46f36e8fda797808b6db47a",
+  "fleet_candidates": [
+    "trend_following/v1",
+    "bollinger_bands/v1",
+    "momentum_1h/v1"
+  ],
+  "order_effect": "NONE",
+  "parent_ratification_ref": "config/research/ratify_versioned_final_fleet_bindings_and_offline_economic_evaluation_scope_v0.json",
+  "parent_ratification_pr": 4917,
+  "process_classification": "RATIFIED_FINAL_FLEET_VERSIONED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "retry_unchanged_binding_allowed": false,
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "schema_version": "ratified_final_fleet_offline_economic_evaluation_execution_scope.v0",
+  "scope_classification": "RATIFIED_FINAL_FLEET_VERSIONED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "strategy_version": "v1"
+}

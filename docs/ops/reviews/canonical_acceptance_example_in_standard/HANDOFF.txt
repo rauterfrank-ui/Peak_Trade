@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: canonical_acceptance_example_in_standard
+STATUS: docs_draft_ready
+BRANCH: feat/canonical-acceptance-example-in-standard
+MODE: paper_stability_guard
+
+GOAL
+- add the canonical accepted-and-filled run as the preferred example in the acceptance evidence standard
+
+OUTPUT
+- docs/ops/specs/ACCEPTANCE_EVIDENCE_STANDARD.md
+
+NEXT SUGGESTED STEP
+- reference the canonical accepted-and-filled example from future closeouts, runbooks, and governance packaging

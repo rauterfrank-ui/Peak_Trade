@@ -1,0 +1,274 @@
+{
+  "AUTH_SESSION_CONTRACT_SATISFIED": true,
+  "BOUND_ENVELOPE_ORIGIN_MAIN_SHA": "565cee16783ba0a3f1aea606626bf6418bad21e8",
+  "BOUND_FROZEN_ENVELOPE_ID": "76f0ad245070206d7fe8807fca8d130dbdedbdc3969e7ba42f23ca88901c164a",
+  "COMPUTED_LIMIT_PX": "0.8121",
+  "CURRENT_CANONICAL_BOUNDARY_AFTER": "RECEIPT_MISSING",
+  "CURRENT_ORIGIN_MAIN_SHA": "74bd47f7e4d33760eb7c8830d6e318c1113e2729",
+  "CURRENT_ORIGIN_MAIN_TREE": "6a86b50f7ac3fbc2c955f1c18e9ba0b09ee92a1c",
+  "CURRENT_POSITION": "instId=SUI-USD_UM_XPERP-310404,pos=1,posSide=net,mgnMode=cross",
+  "CURRENT_POSITION_REASON": "TARGET_POSITION_NONZERO_PROVEN",
+  "CURRENT_POSITION_STATE": "TARGET_POSITION_NONZERO_PROVEN",
+  "DURABLE_CONSUMED": false,
+  "EARLIEST_UNRESOLVED_RUNTIME_GATE_AFTER": "ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND",
+  "ENVELOPE_FRESHNESS_STATUS": "REPRICE_REQUIRED",
+  "ENVELOPE_REBUILT": false,
+  "EXPECTED_ORIGIN_MAIN_SHA": "74bd47f7e4d33760eb7c8830d6e318c1113e2729",
+  "FINAL_STATUS": "FRESH_GET_COMPLETE_REPRICE_AUTHORITY_REQUIRED",
+  "FIRST_DENY_AFTER_FRESH_GET": "ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND",
+  "FIRST_DENY_BEFORE": "RECEIPT_MISSING",
+  "FROZEN_EVIDENCE_RELATIVE": "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/20260908T022750Z",
+  "FROZEN_LIMIT_PX": "0.8343",
+  "GET_CALL_COUNT": 4,
+  "GET_CONTRACT_CANDIDATE_COUNT": 12,
+  "GET_CONTRACT_STATUS": "DEFINED",
+  "GET_EXECUTED": true,
+  "GET_ONLY_ENDPOINT_ALLOWLIST": [
+    "/api/v5/account/config",
+    "/api/v5/account/balance",
+    "/api/v5/account/positions",
+    "/api/v5/account/leverage-info",
+    "/api/v5/account/max-size",
+    "/api/v5/account/trade-fee",
+    "/api/v5/public/instruments",
+    "/api/v5/public/price-limit",
+    "/api/v5/market/ticker",
+    "/api/v5/trade/orders-pending"
+  ],
+  "GET_SUCCESS_COUNT": 4,
+  "GET_TARGETS_ADJUDICATED": true,
+  "GET_TIMEOUT_COUNT": 0,
+  "HMAC_EXECUTED": false,
+  "HMAC_HEADER_GENERATED": false,
+  "HTTP_POST_EXECUTED": false,
+  "LEASE_CONSUMED": false,
+  "NEXT_OWNER_AUTHORITY_REQUIRED": "ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND",
+  "NEXT_RUNTIME_BLOCKER": "ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND",
+  "OPEN_GATE_ORDER_BLOCKER": "ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND",
+  "OTHER_FRESHNESS_INPUTS": "GET /api/v5/trade/orders-pending contemporaneous (no TTL; None=OPEN_ORDER_STATE_UNAVAILABLE; data=[] code=0 means zero pending rows); GET /api/v5/public/instruments tickSz identity (no TTL freshness predicate)",
+  "OWNER_GO": "FRESH_PRE_SUBMIT_GET",
+  "PENDING_ORDER_GATE": {
+    "ACCOUNT_PENDING_ORDER_COUNT": 0,
+    "EMPTY_DATA_MEANS_ZERO_PENDING_ROWS": true,
+    "PENDING_ORDERS_OBSERVED": true,
+    "PENDING_ORDER_COMPATIBLE_WITH_FLATTEN": true,
+    "PENDING_ORDER_GATE_PASS": true,
+    "TARGET_INSTRUMENT_PENDING_ORDER_COUNT": 0,
+    "reason": ""
+  },
+  "PLACE_ORDER_GET_HARD_BLOCK": "MUTATION_ENDPOINT_HARD_BLOCK:/api/v5/trade/order",
+  "POSITION_FRESHNESS_AGE_MS": 558,
+  "POSITION_FRESHNESS_CONTRACT": "GET /api/v5/account/positions unfiltered; classify_target_position_state_v1; EMPTY_DATA_IS_NOT_ZERO; ABSENT_TARGET_ROW_IS_NOT_ZERO; LOCAL_MONOTONIC_MS max-age=5000",
+  "POSITION_FRESHNESS_REASON": "",
+  "POSITION_FRESHNESS_VALID": true,
+  "POSITION_MUTATION": false,
+  "POSITION_OBSERVED": true,
+  "POSITION_VALUE": "1",
+  "POST_HARD_BLOCK": "HTTP_METHOD_HARD_BLOCK_BEFORE_WIRE:POST:/api/v5/trade/order",
+  "PREDECESSOR_SLICE": "11.14.FLATTEN_PRE_SEND_RECEIPT_AUTHORITY_AND_BINDING",
+  "PRICE_PERMIT_ISSUED": true,
+  "PRICE_REJECT_REASONS": [],
+  "PRODUCER_AUDIT_DECISIONS": [
+    [
+      "STANDING_LIVE_FLAGS",
+      "PASS"
+    ],
+    [
+      "LIVE_AUTHORIZED_CLAIM",
+      "PASS"
+    ],
+    [
+      "BOUNDED_ACTIVATION_PERMIT",
+      "DENY:BOUNDED_ACTIVATION_PERMIT_MISSING"
+    ],
+    [
+      "LIVE_ENABLED_CLAIM",
+      "DENY:LIVE_ENABLED_CLAIM_FALSE"
+    ],
+    [
+      "LIVE_ARMED_CLAIM",
+      "DENY:LIVE_ARMED_CLAIM_FALSE"
+    ],
+    [
+      "FLATTEN_LIVE_WIRE_CLAIM",
+      "DENY:FLATTEN_LIVE_WIRE_CLAIM_FALSE"
+    ],
+    [
+      "ALLOW_PRODUCTIVE_WIRE_SEND",
+      "DENY:ALLOW_PRODUCTIVE_WIRE_SEND_FALSE"
+    ],
+    [
+      "FLATTEN_EXECUTE_AUTHORITY",
+      "DENY:FLATTEN_EXECUTE_TOKEN_MISSING,FLATTEN_EXECUTE_PURPOSE_MISSING,FLATTEN_EXECUTE_OWNER_GO_MISSING"
+    ],
+    [
+      "FLATTEN_EXECUTE_BOUND_SHA",
+      "DENY:FLATTEN_EXECUTE_BOUND_SHA_MISSING"
+    ],
+    [
+      "INSTRUMENT_BINDING",
+      "PASS"
+    ],
+    [
+      "TARGET_POSITION_STATE",
+      "PASS"
+    ],
+    [
+      "PRODUCTIVE_POSITION_OBSERVED",
+      "PASS"
+    ],
+    [
+      "PRE_POS_NONZERO",
+      "PASS"
+    ],
+    [
+      "SINGLE_SELECTED_INSTRUMENT",
+      "PASS"
+    ],
+    [
+      "OPEN_ORDER_CONFLICT",
+      "PASS"
+    ],
+    [
+      "B8_CAP",
+      "PASS"
+    ],
+    [
+      "CLOSE_SIDE",
+      "PASS"
+    ],
+    [
+      "FLATTEN_QTY",
+      "PASS"
+    ],
+    [
+      "LIMIT_PRICE_POLICY",
+      "PASS"
+    ],
+    [
+      "QUOTE_FRESHNESS_5000MS",
+      "PASS"
+    ],
+    [
+      "REDUCE_ONLY",
+      "PASS"
+    ],
+    [
+      "LIMIT_ONLY",
+      "PASS"
+    ],
+    [
+      "OVERSHOOT_FLIP",
+      "PASS"
+    ],
+    [
+      "MUTATION_LIMITED_TO_PROVEN_POSITION",
+      "PASS"
+    ],
+    [
+      "NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
+      "PASS"
+    ],
+    [
+      "SEND_TIME_PASS_18_19_21_24",
+      "PASS"
+    ],
+    [
+      "AUTHENTICATED_PRODUCTIVE_TRANSPORT",
+      "PASS"
+    ],
+    [
+      "SEND_TIME_POSITION_REOBSERVATION",
+      "PASS"
+    ],
+    [
+      "BOUNDED_RUNTIME_PERMIT_ISSUANCE",
+      "DENY:BOUNDED_ACTIVATION_PERMIT_SCHEMA_DENIED,BOUNDED_ACTIVATION_PERMIT_EXPIRED"
+    ],
+    [
+      "ONE_SHOT_NO_RETRY",
+      "PASS"
+    ],
+    [
+      "DUPLICATE_POST_PROTECTION",
+      "PASS"
+    ],
+    [
+      "POSITION_OBSERVATION_FRESHNESS",
+      "PASS"
+    ]
+  ],
+  "PRODUCER_REASONS": [
+    "BOUNDED_ACTIVATION_PERMIT_MISSING",
+    "LIVE_ENABLED_CLAIM_FALSE",
+    "LIVE_ARMED_CLAIM_FALSE",
+    "FLATTEN_LIVE_WIRE_CLAIM_FALSE",
+    "ALLOW_PRODUCTIVE_WIRE_SEND_FALSE",
+    "FLATTEN_EXECUTE_TOKEN_MISSING",
+    "FLATTEN_EXECUTE_PURPOSE_MISSING",
+    "FLATTEN_EXECUTE_OWNER_GO_MISSING",
+    "FLATTEN_EXECUTE_BOUND_SHA_MISSING",
+    "BOUNDED_ACTIVATION_PERMIT_SCHEMA_DENIED",
+    "BOUNDED_ACTIVATION_PERMIT_EXPIRED"
+  ],
+  "PRODUCTIVE_URLLIB_POST_EXECUTED": false,
+  "QUOTE_ASK": "0.8127",
+  "QUOTE_BID": "0.8121",
+  "QUOTE_FRESHNESS_CONTRACT": "GET /api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404; bidPx/askPx/ts; QUOTE_FRESHNESS_5000MS threshold_ms=5000; SELL selects BID; tickSz from public/instruments",
+  "QUOTE_FRESHNESS_VALID": true,
+  "QUOTE_LAST": "0.8131",
+  "QUOTE_OBSERVED": true,
+  "QUOTE_TICK_SZ": "0.0001",
+  "QUOTE_TS_MS": "1788848794462",
+  "READ_ONLY_NETWORK_GUARD_ACTIVE": true,
+  "RECEIPT_ALLOWED": false,
+  "RECEIPT_ATTACHED": false,
+  "RECEIPT_BOUND": false,
+  "RECEIPT_IDENTIFIER": "456ae4e62fe99142346bff6b558f6ae60e2c3056ba6554723d76f710fed73b9c",
+  "RECEIPT_MINTED": false,
+  "RECEIPT_PRODUCER_EVALUATED": true,
+  "REPRICE_EXECUTED": false,
+  "REQUIRED_FRESH_GET_COUNT": 4,
+  "REQUIRED_FRESH_GET_ENDPOINTS": [
+    "/api/v5/account/positions",
+    "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+    "/api/v5/trade/orders-pending",
+    "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404"
+  ],
+  "SCHEMA_VERSION": "section_11_14_fresh_pre_submit_get_and_freshness_adjudication.v1",
+  "SESSION_AUTH": {
+    "AUTH_SESSION_CONTRACT_SATISFIED": true,
+    "CREDENTIAL_VALUES_LOGGED": false,
+    "GET_AUTH_CLASS": "SECRETREF_GET_ONLY_HMAC_FOR_GET_NOT_POST",
+    "GET_ONLY_SIGNER_FORBIDS_POST": true,
+    "HOST": "eea.okx.com",
+    "METHOD_ALLOWLIST": [
+      "GET"
+    ],
+    "NETWORK_SESSION_CANNOT_AUTHORIZE_WIRE_SEND": true,
+    "NETWORK_SESSION_ORIGIN_MAIN_SHA": "565cee16783ba0a3f1aea606626bf6418bad21e8",
+    "NETWORK_SESSION_SHA_EQUALS_CURRENT_ORIGIN_MAIN": false,
+    "POST_AUTHORITY": false,
+    "REST_SCHEME_HOST": "https://eea.okx.com",
+    "STANDING_FLAGS": {
+      "CANARY_AUTHORIZED": false,
+      "LIVE_ARMED": false,
+      "LIVE_ENABLED": false,
+      "POST_ALLOWED": false,
+      "SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED": false
+    },
+    "VAULT_EXISTS": true,
+    "VAULT_PATH_REDACTED": true,
+    "WIRE_SEND_AUTHORITY": false
+  },
+  "STANDING_FLAGS": {
+    "CANARY_AUTHORIZED": false,
+    "LIVE_ARMED": false,
+    "LIVE_ENABLED": false,
+    "POST_ALLOWED": false,
+    "SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED": false
+  },
+  "THIS_SLICE": "11.14.FRESH_PRE_SUBMIT_GET_AND_FRESHNESS_ADJUDICATION",
+  "WIRE_SEND_EXECUTED": false,
+  "WORK_BLOCKED_BY_OPEN_GATE_ORDER": true
+}

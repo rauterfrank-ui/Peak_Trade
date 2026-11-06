@@ -1,0 +1,23 @@
+{
+  "schema_id": "market_data_private_state_runtime_convergence_v1_policy_v1",
+  "schema_version": 1,
+  "owner_ratification_date": "2026-09-26",
+  "baseline_sha": "0daf4c4119293416bdda8cf84e834b06f16ccf08",
+  "non_authorizing": true,
+  "runtime_authorization_effect": "NONE",
+  "workpackage_id": "WP_C_RUNTIME_CONVERGENCE_CONSUMER_CLOSURE_V1",
+  "public_market_data_selection_authority": "NONE",
+  "private_state_strategy_authority": "NONE",
+  "cap_2_3_selection_owner_status": "UNCHANGED",
+  "mv2_dp_authority_status": "UNCHANGED",
+  "pretrade_authority_status": "UNCHANGED",
+  "execution_authority_status": "UNCHANGED",
+  "wire_boundary_status": "UNCHANGED",
+  "account_equity_sizing_authority_not_acquired_by_wp_c": true,
+  "private_ws_order_send_authorized": false,
+  "rest_post_permit_change": false,
+  "live_external_effect_authorized": false,
+  "multi_future_runtime_authorized": false,
+  "max_positions_effective": 1,
+  "k2_status": "ABSENT"
+}

@@ -1,0 +1,18 @@
+{
+  "activation": "not_activated",
+  "cap_11_4_adapter": "not_activated",
+  "cap_11_4_single_controlled_lifecycle_contract": "reused_fixture_only",
+  "network_effect": "NONE",
+  "network_writes": "unauthorized",
+  "next_consumer": "CAPABILITY_11_SECTION_11_12_4_ENTRY_PARTIAL_FILL_CANCEL_EXIT_LIFECYCLES_V1",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_2_OrderSerializationDryRun",
+    "Cap11_Section_11_12_3_SingleControlledOrderLifecycle",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled",
+  "path_class": "SINGLE_CONTROLLED_ORDER_LIFECYCLE",
+  "section_11_12_3": "productive_single_controlled_order_lifecycle_bound",
+  "section_11_12_4": "not_started"
+}

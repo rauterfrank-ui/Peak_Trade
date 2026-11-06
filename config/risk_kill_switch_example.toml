@@ -1,0 +1,49 @@
+# Kill Switch Configuration Example
+# ==================================
+#
+# The Kill Switch is a P0 safety mechanism that blocks trading when
+# critical risk thresholds are exceeded.
+#
+# Copy this section to your main config file under [risk.kill_switch]
+
+[risk.kill_switch]
+# Enable/disable the kill switch
+# Production systems should always have this enabled
+enabled = true
+
+# Daily loss limit as percentage (0.05 = 5%)
+# Kill switch arms when daily_pnl_pct <= -daily_loss_limit_pct
+# Example: -6% daily loss exceeds 5% limit → armed
+daily_loss_limit_pct = 0.05
+
+# Maximum drawdown as percentage (0.20 = 20%)
+# Kill switch arms when current_drawdown_pct >= max_drawdown_pct
+# Example: 21% drawdown exceeds 20% limit → armed
+max_drawdown_pct = 0.20
+
+# Maximum volatility as percentage (optional)
+# Kill switch arms when realized_vol_pct >= max_volatility_pct
+# Uncomment to enable volatility checking
+# max_volatility_pct = 0.10
+
+# ============================================================================
+# Alternative Profiles (uncomment to use)
+# ============================================================================
+#
+# Conservative Profile (Lower Risk Tolerance):
+# enabled = true
+# daily_loss_limit_pct = 0.03  # 3% daily loss limit
+# max_drawdown_pct = 0.15      # 15% max drawdown
+# max_volatility_pct = 0.08    # 8% max volatility
+#
+# Aggressive Profile (Higher Risk Tolerance):
+# enabled = true
+# daily_loss_limit_pct = 0.10  # 10% daily loss limit
+# max_drawdown_pct = 0.30      # 30% max drawdown
+# # max_volatility_pct = 0.10    # Omit or comment to disable volatility limit
+#
+# Development/Testing (Disabled):
+# enabled = false
+# daily_loss_limit_pct = 0.05
+# max_drawdown_pct = 0.20
+# # max_volatility_pct = 0.10    # Optional

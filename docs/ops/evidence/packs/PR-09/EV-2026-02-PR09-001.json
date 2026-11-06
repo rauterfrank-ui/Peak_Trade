@@ -1,0 +1,27 @@
+{
+  "evidence_id": "EV-2026-02-PR09-001",
+  "pr_id": "PR-09",
+  "component": "stage1_runner_gate",
+  "claim": "Stage1 runners generate index.json and validation.json using tracked scripts; validation enforces required artifacts (snapshot/summary/trend) and exits 2 on failure.",
+  "level": "E2",
+  "status": "enforced",
+  "artifacts": [
+    { "type": "script", "path": "scripts/obs/stage1_report_index.py" },
+    { "type": "script", "path": "scripts/obs/validate_stage1_index.py" },
+    { "type": "script", "path": "scripts/obs/stage1_run_daily.sh" },
+    { "type": "script", "path": "scripts/obs/stage1_run_weekly.sh" },
+    { "type": "script", "path": "scripts/obs/run_stage1_monitoring.sh" }
+  ],
+  "how_to_verify": {
+    "commands": [
+      "RUN_DATE=2026-02-03 REPORT_ROOT=reports/obs/stage1 bash scripts/obs/stage1_run_daily.sh",
+      "python3 - <<'PY'\nimport json\nfrom pathlib import Path\nv=json.loads(Path('reports/obs/stage1/validation.json').read_text(encoding='utf-8'))\nprint(v.get('ok'), v.get('errors'))\nPY"
+    ],
+    "expected": [
+      "exit_code=0",
+      "validation.ok == True",
+      "errors == []"
+    ]
+  },
+  "notes": "Required artifacts are aligned to actual Stage1 outputs: ${RUN_DATE}_snapshot.md, ${RUN_DATE}_summary.json, stage1_trend.json."
+}

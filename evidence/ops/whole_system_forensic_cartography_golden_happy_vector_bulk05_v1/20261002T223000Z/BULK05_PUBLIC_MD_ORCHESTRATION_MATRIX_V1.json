@@ -1,0 +1,7 @@
+{
+  "PUBLIC_MD_ORCHESTRATOR_OWNER": "ops.peak_trade_public_market_data_runtime_v1",
+  "PRIMARY_ORCHESTRATOR": "PublicMarketDataRuntimeV1",
+  "PUBLIC_MD_IDENTITY_COHERENT": true,
+  "PUBLIC_MD_CONFIG_PROPAGATION_COHERENT": true,
+  "GHV_PROOF": "test_peak_trade_public_market_data_runtime_v1.py + phase_9_2 restart entrypoint"
+}

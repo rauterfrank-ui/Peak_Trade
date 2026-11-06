@@ -1,0 +1,27 @@
+{
+  "actionable_intents": 1,
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+  "cycles": 8,
+  "economic_validity_pass": false,
+  "equity": "99502.80119006000",
+  "fills": 1,
+  "live_authorized": false,
+  "ok": true,
+  "orders_authorized": false,
+  "verification": {
+    "blockers": [],
+    "call_graph_complete": true,
+    "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+    "expected_equity": "99502.80119006000",
+    "expected_fees": "0.09940994000",
+    "notes": [
+      "cycles=8",
+      "reconstructed_fills=1"
+    ],
+    "ok": true,
+    "reconstructed_equity": "99502.80119006000",
+    "reconstructed_fees": "0.09940994000",
+    "reconstructed_fill_count": 1,
+    "verifier_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1"
+  }
+}

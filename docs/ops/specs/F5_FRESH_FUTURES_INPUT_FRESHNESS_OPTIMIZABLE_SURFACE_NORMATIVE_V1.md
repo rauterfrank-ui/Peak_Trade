@@ -1,0 +1,26 @@
+---
+docs_token: DOCS_TOKEN_F5_FRESH_FUTURES_INPUT_FRESHNESS_OPTIMIZABLE_SURFACE_NORMATIVE_V1
+status: active
+scope: Owner D1 F5-FRESH separate shadow research optimizable surface
+capability: F5_FRESH_FUTURES_INPUT_FRESHNESS_OPTIMIZABLE_SURFACE_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-19
+---
+
+# F5-FRESH — Futures Input Freshness Shadow Research Surface V1
+
+```text
+OWNER_DECISION_ID=D1
+AUTHORIZED_SURFACE_ID=F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1
+OWNER_VALUE_TOKEN=OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS
+RESEARCH_OPTIMIZATION_ONLY=true
+PRODUCTIVE_TRADING_EFFECT=NONE
+INPUT_AUTHORITY=false
+PRODUCTIVE_FRESHNESS_STATE_ADMISSION=false
+F1_M9_DEDUPLICATION_FORBIDDEN=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+```
+
+Owner grant: `config/governance/f5_fresh_futures_input_freshness_optimizable_surface_owner_grant_v1.json`
+
+Registry: `src/experiments/canonical_f5_fresh_futures_input_freshness_optimizable_surface_v1.py`

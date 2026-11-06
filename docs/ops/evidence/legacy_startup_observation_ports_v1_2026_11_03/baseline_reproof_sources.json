@@ -1,0 +1,9 @@
+{
+  "base_commit": "aadba02744b20de9fa2129765b53a8504933b757",
+  "method": "Import only three affected API modules from Git HEAD via isolated-process loader; no source writes; remaining unchanged source from checkout",
+  "modules_sha256": {
+    "src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py": "d4049af5fd5d98246ccf883a49054d8d6b614f18264eb231efb9514f4db80c8c",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": "5cb8e1463cc22384e8871a3e7da92e1cb393888434814d5239c2470986368077",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py": "418bedb03042196f91e4e062a4c3814612203045a72134c26d05cd0a6ed6d2cc"
+  }
+}

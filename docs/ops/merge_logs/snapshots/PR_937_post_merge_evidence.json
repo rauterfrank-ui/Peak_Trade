@@ -1,0 +1,19 @@
+{
+  "collectedAtUtc": "2026-01-22T14:56:36Z",
+  "repo": "rauterfrank-ui/Peak_Trade",
+  "pr": {
+    "number": 937,
+    "title": "fix(ops): preserve exit_code=0 in compare consumer stdout",
+    "url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/937",
+    "state": "MERGED",
+    "mergedAt": "2026-01-22T14:56:12Z",
+    "mergedBy": "rauterfrank-ui",
+    "mergeCommitOid": "a6949aa71d85b346d5f16161f12a4d7ee58fea9b",
+    "baseRefName": "main",
+    "headRefName": "fix/compare-consumer-exit0",
+    "headRefOid": "5162ea9de238a08f95184b39534ec89362dc2a60"
+  },
+  "commits": [
+    "5162ea9de238a08f95184b39534ec89362dc2a60"
+  ]
+}

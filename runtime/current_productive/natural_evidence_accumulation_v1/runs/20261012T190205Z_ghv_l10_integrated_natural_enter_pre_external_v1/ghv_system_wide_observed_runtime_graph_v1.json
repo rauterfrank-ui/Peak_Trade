@@ -1,0 +1,266 @@
+{
+  "continuation": {
+    "GRAPH_EDGES_TOTAL": 0,
+    "GRAPH_NODES_TOTAL": 10,
+    "OBSERVED_RUNTIME_GRAPH": true,
+    "UNACCOUNTED_DISCOVERED_SURFACES": 0,
+    "edges": [],
+    "nodes": [
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:compose_core_live_execution_intent_v1->COMPOSE_CORE_LIVE_EXECUTION_INTENT@COMPOSE_CORE_LIVE_EXECUTION_INTENT",
+        "symbol": "compose_core_live_execution_intent_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:try_bind_current_productive_venue_plan_v1->VENUE_PLAN_BIND@VENUE_PLAN_BIND",
+        "symbol": "try_bind_current_productive_venue_plan_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:resolve_protective_stop_sizing_side_for_live_29p_join_v1->PROTECTIVE_STOP_DERIVATION@PROTECTIVE_STOP_DERIVATION",
+        "symbol": "resolve_protective_stop_sizing_side_for_live_29p_join_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:fresh_pretrade_runtime_get_v1->FRESH_PRETRADE_CONTRACT@FRESH_PRETRADE_CONTRACT",
+        "symbol": "fresh_pretrade_runtime_get_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:get_only_credential_transport_bind_v1->CREDENTIAL_HANDLE_BIND@CREDENTIAL_HANDLE_BIND",
+        "symbol": "get_only_credential_transport_bind_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:FullCoreProductiveReadOnlyGetTransportV1->AUTHENTICATED_PRIVATE_GET@AUTHENTICATED_PRIVATE_GET",
+        "symbol": "FullCoreProductiveReadOnlyGetTransportV1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->LIVE_29P_CARRIER@LIVE_29P_CARRIER",
+        "symbol": "join_current_productive_enter_live_29p_before_venue_plan_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:execution_eligibility_v1->EXECUTION_ELIGIBILITY@EXECUTION_ELIGIBILITY",
+        "symbol": "execution_eligibility_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:pre_external_admission_v1->ADMISSION@ADMISSION",
+        "symbol": "pre_external_admission_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "OFFLINE_CONTINUATION",
+        "surface_id": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+        "symbol": "DISPOSITION_PRE_EXTERNAL_EFFECT"
+      }
+    ],
+    "owner": "full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1",
+    "schema_version": "ghv_system_wide_observed_runtime_graph.v1"
+  },
+  "product": {
+    "GRAPH_EDGES_TOTAL": 24,
+    "GRAPH_NODES_TOTAL": 6,
+    "OBSERVED_RUNTIME_GRAPH": true,
+    "UNACCOUNTED_DISCOVERED_SURFACES": 0,
+    "edges": [
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_f8286d007b04f73aa6bc8959"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_f8286d007b04f73aa6bc8959",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_23e33a6199c84edf941a20e9"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_23e33a6199c84edf941a20e9",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_3613b5bc0a5a1152d0bd7e4e"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_4085deab7356d60c84529879"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_4085deab7356d60c84529879",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_b1cf639ff2544e4a032ea558"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_b1cf639ff2544e4a032ea558",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_c54698b1282cecb0db7ad7b8"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_0d09d12a1efa34e78550e742"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_0d09d12a1efa34e78550e742",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_1553ed7e7dd528df3802a81d"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_1553ed7e7dd528df3802a81d",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_08bf0c2fb4b97ebd8ad08455"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_e829d4dfe250199fe7f928e2"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_e829d4dfe250199fe7f928e2",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_3a549ee3cd456f4e129e87d3"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_3a549ee3cd456f4e129e87d3",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_de3482b5afc7504cf59db5c7"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_6993ea8fbcf22de3e42db754"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_6993ea8fbcf22de3e42db754",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_88e5fd759719c69a17a60aed"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_88e5fd759719c69a17a60aed",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_b775cdd722424f9b8ca9b386"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_0991d6721d0ecf572ae6a583"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_0991d6721d0ecf572ae6a583",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_c7b1fc403dd013dcd2ec4ff5"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_c7b1fc403dd013dcd2ec4ff5",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_0e9c69bf4df2b869314047c8"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_04c996650444246499171009"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_04c996650444246499171009",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_578c76767310b40366e3c792"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_578c76767310b40366e3c792",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_a0a567aa18616cfd103e4e4a"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_578c76767310b40366e3c792",
+        "surface_id": "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->try_bind_current_productive_venue_plan_v1@VENUE_PLAN_INPUT",
+        "to_generation": "gen_75c800325feaaf201e73404d"
+      },
+      {
+        "edge_kind": "DERIVES_FROM_TRACED_STATE",
+        "from_generation": "gen_venue_plan_root",
+        "surface_id": "OBS:compose_core_live_execution_intent_v1->try_bind_current_productive_venue_plan_v1@VENUE_PLAN_COMPOSE_EXECUTION_INTENT",
+        "to_generation": "gen_893ad98fc2cd9bc288ee0dcb"
+      },
+      {
+        "edge_kind": "GATES_TRACED_STATE",
+        "from_generation": "gen_893ad98fc2cd9bc288ee0dcb",
+        "surface_id": "OBS:translate_core_live_intent_to_venue_plan_v1->downstream_pre_external@VENUE_PLAN_BIND",
+        "to_generation": "gen_f4da0250b23071573e6cd5c2"
+      }
+    ],
+    "nodes": [
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "symbol": "compose_occupied_lane_mv2_dp_durable_cycle_v1"
+      },
+      {
+        "causal_relation": "PRODUCES_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "symbol": "join_current_productive_enter_live_29p_before_venue_plan_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "symbol": "persist_continuation_snapshot_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->try_bind_current_productive_venue_plan_v1@VENUE_PLAN_INPUT",
+        "symbol": "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      },
+      {
+        "causal_relation": "DERIVES_FROM_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:compose_core_live_execution_intent_v1->try_bind_current_productive_venue_plan_v1@VENUE_PLAN_COMPOSE_EXECUTION_INTENT",
+        "symbol": "compose_core_live_execution_intent_v1"
+      },
+      {
+        "causal_relation": "GATES_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:translate_core_live_intent_to_venue_plan_v1->downstream_pre_external@VENUE_PLAN_BIND",
+        "symbol": "translate_core_live_intent_to_venue_plan_v1"
+      }
+    ],
+    "owner": "full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1",
+    "schema_version": "ghv_system_wide_observed_runtime_graph.v1"
+  },
+  "schema_version": "ghv_system_wide_observed_runtime_graph.v1"
+}

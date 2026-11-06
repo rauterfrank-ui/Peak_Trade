@@ -1,0 +1,83 @@
+# Peak_Trade Emergency Kill Switch Configuration
+# Version: 1.0
+# Dokumentation: docs/risk/KILL_SWITCH_ARCHITECTURE.md
+#
+# Auto-trip Threshold / Watchdog / External trigger stanzas were removed
+# by KS_THIN_01. Productive kill remains operator CLI + StatePersistence +
+# kill_switch_should_block_trading. Do not re-add unwired enabled=true
+# auto-trip claims.
+
+[kill_switch]
+# Core Settings
+enabled = true
+mode = "active"  # Options: "active" | "disabled" (nur für Backtest)
+
+# Recovery Settings
+recovery_cooldown_seconds = 300  # 5 Minuten Cooldown nach Recovery-Request
+require_approval_code = true
+approval_code_env = "KILL_SWITCH_APPROVAL_CODE"  # Name der Umgebungsvariable
+
+# Persistence
+persist_state = true
+state_file = "data/kill_switch/state.json"
+audit_dir = "data/kill_switch/audit"
+audit_retention_days = 90
+
+# Logging
+log_level = "INFO"  # DEBUG | INFO | WARNING | ERROR | CRITICAL
+
+# =============================================================================
+# RECOVERY CONFIGURATION
+# =============================================================================
+
+[kill_switch.recovery]
+# Basis-Einstellungen
+cooldown_seconds = 300           # 5 Minuten Cooldown
+require_approval_code = true
+require_health_check = true
+require_trigger_clear = true     # Trigger muss "clear" sein vor Recovery
+
+# Gradual Restart
+gradual_restart_enabled = true
+initial_position_limit_factor = 0.5  # Start bei 50% Position Size
+escalation_intervals = [3600, 7200]  # Nach 1h, nach 2h (in Sekunden)
+escalation_factors = [0.75, 1.0]     # Dann 75%, dann 100%
+
+# Health Check Requirements
+min_memory_available_mb = 512
+max_cpu_percent = 80
+require_exchange_connection = true
+require_price_feed = true
+
+# Dual Approval (für Production, aktuell disabled)
+require_dual_approval = false
+second_approver_required = false
+
+# =============================================================================
+# NOTIFICATIONS (Optional)
+# =============================================================================
+
+[kill_switch.notifications]
+enabled = false  # Aktuell disabled, später mit Slack/Email Integration
+
+# Email Settings (später)
+# email_enabled = false
+# email_recipients = ["ops@peak-trade.com"]
+# email_smtp_host = "smtp.example.com"
+
+# Slack Settings (später)
+# slack_enabled = false
+# slack_webhook_url_env = "KILL_SWITCH_SLACK_WEBHOOK"
+
+# =============================================================================
+# MONITORING (Optional)
+# =============================================================================
+
+[kill_switch.monitoring]
+# Prometheus Metrics (optional, later)
+prometheus_enabled = false
+prometheus_port = 9090
+
+# Custom Metrics Export
+export_metrics = false
+metrics_file = "data/kill_switch/metrics.json"

@@ -1,0 +1,352 @@
+{
+  "schema": "peaktrade_obsidian_repo_alignment_v1",
+  "date": "2026-11-06",
+  "captured_at_utc": "2026-11-05T23:27:22.666359+00:00",
+  "repository_head_before": "63a3627598ac228ef37b3c61befe50b3bbfe450b",
+  "authority": "NONE",
+  "global_semantic_recertified": false,
+  "product_code_changed": false,
+  "historical_source_binding_preserved": true,
+  "older_global_checks_current_view_acceptance": false,
+  "before_file_counts": {
+    "system": 4887,
+    "plan": 2389
+  },
+  "changes": [
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/09 Konkrete Werte bis zum Ursprung.md",
+      "before_sha256": null,
+      "after_sha256": "18e70adecfceff4f3d796d911e74e6b439ed18391c765ae14068d114fbf77849",
+      "change": "NEW"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/10 Innere Ebenen der aktuellen Anschlussmodule.md",
+      "before_sha256": null,
+      "after_sha256": "9ca5803ab960ed7e97fa411c53e63f8af2331b3285743420802fbc6b5f1d13bf",
+      "change": "NEW"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Betrieb/Wiederanlauf und Stromausfall.md",
+      "before_sha256": null,
+      "after_sha256": "c849495ad199f98d135320c972d984e4a64b03642a91e50b39347c190bbd9d0d",
+      "change": "NEW"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Repoabgleich/Standabgleich mit dem Repository.md",
+      "before_sha256": null,
+      "after_sha256": "5ad6bcf95fb8c8e31defa967b82042810ed5ee7d569e3ddca19a235215d8f462",
+      "change": "NEW"
+    },
+    {
+      "vault": "system",
+      "path": "Start.md",
+      "before_sha256": "cab695d195cb1048125657165b19945bc6406318cda7d1bcbb2a46fc50a8b86b",
+      "after_sha256": "2e2238ef1575d141ee3bde57dec0c9fccca76229a50f17cc75a1587619ac8cad",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "PeakTrade-Systemindex.md",
+      "before_sha256": "5357f2f3598222a226ad09d451889d30645fa26b44aad3a802fe2c567101e3b2",
+      "after_sha256": "6bdf19f0a680489c8abcd9b9dc0c55e1e75a0f970390cfc88420b0d2a3970566",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Belegstand.md",
+      "before_sha256": "c9b33629522a7756db099bd2e9a88a063adfee889c923f7498193657250cd864",
+      "after_sha256": "99b69737a2a2b3164c54158d2cbf6b7f8f9b21ddc9051ca0b8cc89e4cac6e2f2",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md",
+      "before_sha256": "68d7cdbf4cff029d2e4ddf4ba88872539e7b99eef374496d64f3a447f3c9e9ef",
+      "after_sha256": "02b6b260782e16c4fd7a02c11ac61879509aeb7355fa54a3acad5b52bcc9c127",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Architekturpruefung/Universen/OPT.md",
+      "before_sha256": "632d32c4e60a63f37d49b2f75fa53a2c0a19cc3cc73b4766ea2e3a1bad2aa2ab",
+      "after_sha256": "f8dbc172588c2ac9d0f655e8a9534e19aab9f4279169977c690996f5523a7472",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Cross Meta und Eingriffsgrenzen.md",
+      "before_sha256": "381f5bdba6b4cc7e86f204ec7a12350a265847f495e6d23d6b246c42b0fb7c0d",
+      "after_sha256": "540e673cb01dbc64fd15e895bf07384fb77dcfd087cc2b684496bb39b9249023",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Fallverlaeufe/F06.md",
+      "before_sha256": "0d6f892736d54ba6af88e2444e5c2a1725b8b104c897f6308733a9f25118f3e7",
+      "after_sha256": "588bfe234b4a386bfeeb149e9d35a82697fad8cf593f52e9bb932aac5a98e1bd",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/07 MI bis SL OPT Meta Governance und GVEF.md",
+      "before_sha256": "78e374a140d2a490f9e0dcdc66cd5109df817f133dcda68f66ab76afba9cf2ae",
+      "after_sha256": "d0def5c76250111c785f24b42343a20d27a2bd8be075178fb55d904b8221e0f9",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/08 Befunde und historische Unterschiede.md",
+      "before_sha256": "d553b7ea501c8bf1ad07bd953ff503df92a63ed4a49b74504376d8e459c7b261",
+      "after_sha256": "2cb1ddc9e847cd1c8e4f867aa5fb4f2ea71094c46826d6114f8b215cf760878c",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/Integration/03 Owner Aussenkanten und Ports.md",
+      "before_sha256": "4c9a0edcd978cd9a73879cd197bf306d80705e7df72c0c3ecb932e822d43a315",
+      "after_sha256": "e954da1a3baa6d576eded16ced223663f312833b42c3ea3e3e0330d4f0093be0",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/Integration/06 Forecast Kalibrierung und Research.md",
+      "before_sha256": "576c16869cb5e0a3b4e377f1f7cc62d0101b31fdf0171eb67df9b15bd00e050c",
+      "after_sha256": "3d9cef7560efd0aeb632fc58c1a3492022060f7541f52ef06fd912a67abadc14",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Offene Punkte Quellenabgleich.md",
+      "before_sha256": "d7d29a39f28110d7d2b8ae1b838af95ea9a7c6f729d61964330744db969abaa9",
+      "after_sha256": "18afa21780ca13e6254447c92d9f0398673b51a3ad1e12909543b0baf1fb2593",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/SL OPT Trennung/Kausalrekonstruktion/Kausalitaet bis GVEF.md",
+      "before_sha256": "2744277c1fff1e029a5f05fa6cdb3156ff5638ff2b3b36417ba8ce1c04197e31",
+      "after_sha256": "fdeba3b077290a100c208a4caed7709669478acdef0fe0dc19b055fe80527a14",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/SL OPT Trennung/Meta Freilegung/04 Welche Metavorschlaege Search wirklich nutzt.md",
+      "before_sha256": "adfcbd1a379457741b45defe42778004dd64a9ca9505fe97b7c054d0452e8e76",
+      "after_sha256": "f0fcf89dec7b179273d0411d26d306b1c2ec1e881100c7f2d41de599612c8cc4",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Semantik/S04.md",
+      "before_sha256": "7f228bde1d957c7d682dc16aa3e7d75481b1516b4721af6a61a94d2e65971413",
+      "after_sha256": "cf7f07046373c2f61f767ed83508e5a07f11ab5ec7113945d31201c8c35364fd",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Systempruefung/Bereiche/OPT.md",
+      "before_sha256": "eda9f96becf4fb575485dd17b3ba027659a278d7584ca4c7673c613f87375342",
+      "after_sha256": "e4e15e733925a3bfa62d57955e2c4b84b9138d0f6ca924a2ce704357dbbd991c",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Systempruefung/Semantik/M06.md",
+      "before_sha256": "f33524a05f6c5f79630dbb4db07824ff7d97729e894803b5acba2af9001596b1",
+      "after_sha256": "a8d76bbf3c395d134decf3eb61d8bae1f01ab484884ff8057459f2d3f049d763",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Wirkungsnachweise/39 Pflichtfaelle mit Wirkungsgrenzen.md",
+      "before_sha256": "3d4aca38c2e5481522a6cb167f6b89dca5301d1cc26e1ddd8da8b76cd70e2319",
+      "after_sha256": "04e2f42f6b0bc24519d56dcb92ed89a016c58704374f0f41ed4c6c48407770c8",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Wirkungsnachweise/Wirkungsnachweise im Gesamtzusammenhang.md",
+      "before_sha256": "dbe747ebddb3ac348be0973951dcd3487b7edaf7ea99ff4d8d97445cb7b03a3b",
+      "after_sha256": "3d9cee011cb1dfceef6ee4e1e4459af8e5cd015003e39e304a8ff83ecb5ecfca",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Zielbild und Umsetzung.md",
+      "before_sha256": "999754dd735a59f5826cdd9110202180ca02df8388314ace0449d88a024f46bb",
+      "after_sha256": "e3f5dd4fd9acd2311830e472605693e0ea9c4b2ddc67950aa1d0dd612f15c566",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "05 Systematlas/Cross Meta und Rueckkopplungen.md",
+      "before_sha256": "6d91ce36e8ff69e55df27ef07b3b15ca78ae306d852bd6366c0026bc55f391a8",
+      "after_sha256": "e0de88693930c10f704648d859d6705843d5f53d050b1513b7a1550d25ae8f88",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "05 Systematlas/Wertketten und Rechenrichtung.md",
+      "before_sha256": "a14ac0c78c77a758fc4bf5b6069ef2fed6c5308c89f3538b70a2754ccb48f370",
+      "after_sha256": "50d0c032b5a23989d9690cdfb4504823393829d33f1d5ca0e6891452c52481a6",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "10 Fachbereiche/Outcome Lernen Forschung und Optimization.md",
+      "before_sha256": "f1d725113eddc19c1b97a385db4419766cd642e4c62be8cd0566569bf877b74d",
+      "after_sha256": "18337d6833f16c79174a76a4825d3655e7175456246ba2167c9ba8a4c20c83b9",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Semantik/S02.md",
+      "before_sha256": "81e31075beaa170be10e17b3a650cbc7f1eaacc9e61860c24f92cf77483811db",
+      "after_sha256": "3deb8211253c71d35209b9298922775c939ded9b0062142e7e230ffd101b9b6a",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Semantik/S03.md",
+      "before_sha256": "127455c121b93c97a248a5b5b60ed3283162ebcd594d723499c01011f3115b96",
+      "after_sha256": "19209c02dd8f66c7eb6b53667fb264e70d077a9ada96cafeb0f436afd5690b5c",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Semantik/S06.md",
+      "before_sha256": "9e718d214b313a965bb1917adfec3f6d07992cbdb4527cc8feb959fc7899d295",
+      "after_sha256": "35ab8bf800c9e7a5eb0f9547002bbcd8b5667bb543f72341f666878e88519089",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Semantik/S11.md",
+      "before_sha256": "ce5d4546e02a83144092440ef479935adfae605273742788b35b4f99b2427fe9",
+      "after_sha256": "be8c12a34b60a2ba6ad0aa647a4dc7033e61dec65eac1aff0bd24d54f2af0184",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Universen/SL.md",
+      "before_sha256": "22eb79fd1736e2b232a9fbb650f62659d67eb86b54d6122f8792b1be38cec310",
+      "after_sha256": "24e3b2f30c0de379490e927682b51b8113c721971216d6154e3f4a31277a3503",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Universen/OPT.md",
+      "before_sha256": "7532648440148cb00030213a64beb66e4e2aa44fea22e7b1d948f2a04cf60d22",
+      "after_sha256": "83329b1634325017797a18227d57a243264bd0723f4053ca10af388d983c9097",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Universen/INT.md",
+      "before_sha256": "deb8d33e3ac92ac3d9905876e2784eaefcfddcc341da9ae14316afe06cd687d0",
+      "after_sha256": "a082fdba1cc41ffeb4df641c072cffa606df923e4b55498b14d458cb75eccc08",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Aussenbereiche/HOST.md",
+      "before_sha256": "1c515003b9786226f6a2eb49a1ad1e301d7a1c1cad25207f352912bf10cef39c",
+      "after_sha256": "31b4afd248f2850f36ca2b42c65f168644148bb7d2db5026ad01ae59cdc0cf33",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "plan",
+      "path": "00 Einstieg/Repo und Erkenntnisstand 2026-11-06.md",
+      "before_sha256": null,
+      "after_sha256": "5bc0d65842e0a78644d3b865ee27f4fa31c3c924144bd3ab06725eb2afedfaa2",
+      "change": "NEW"
+    },
+    {
+      "vault": "plan",
+      "path": "README.md",
+      "before_sha256": "d0e4b1bc986206cb2b78703f26c5e88ea39eea3fb49f640ab2cfa885590c9fba",
+      "after_sha256": "51544043c79f24f50750b7aad8059a5ff6353a58f2a5773ffcbcc2f1a8b2e201",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "plan",
+      "path": "00 Einstieg/Gesamtsystementwurf 2026-11-05.md",
+      "before_sha256": "bde597a5e887c715d23ec5ee45fe1697e75186c3e195b58daf27fb83788ad51e",
+      "after_sha256": "e806fe1185bf66ebd86734dedaa2fd169715c52a9265ade27f4eccfb2203b514",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "plan",
+      "path": "00 Einstieg/Arbeitsentscheidung.md",
+      "before_sha256": "0b91b0de54421bf192a5b47789b1d2b32fbbd1cbbf86264ee2a05c38a1224e3d",
+      "after_sha256": "c054384c88a0438d806761ff4ccf4ebc1bf05680d7eeb80d1db9144e41b90f72",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "plan",
+      "path": "65 Gesamtsystementwurf/Aktueller Arbeitsstand.json",
+      "before_sha256": "73617f0f66f7976cb44bb899d9724756ca41d61641aad02a8468d3d982a8c263",
+      "after_sha256": "9d8582038baec777ef3ce721e62c22b1656aabd7b93ac93abceb1971235de0e4",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "Systemindexbindung.json",
+      "before_sha256": "78e2dd1df6e79eafa4d18cb798cd280279198edaf00693a4ac915ef990abc392",
+      "after_sha256": "6fb7fe6625950a94e7ff4290de0e8b976562c769d6f285c55a81eb6ccfa99fc2",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "Systematlasbindung.json",
+      "before_sha256": "57c55021170db5e1ef75ca8122322f452185f56d7fa67227f9f0aef183db0989",
+      "after_sha256": "c6a40c357c20ab558035a6de7ca326f28f46838038facfd237a74f0dae0a0e11",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "Ansichtsbindung.json",
+      "before_sha256": "b0397c358b566a842a7314e42849619cae251532ef47a91cdf5a7b9fc37b0b47",
+      "after_sha256": "4b0f897252d203d7d0082ac1b21d82ef09ff5e654cfdf65fd10675d2c8461ad1",
+      "change": "UPDATE"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md",
+      "before_sha256": null,
+      "after_sha256": "588bbcb9067449141fd7ea48d57c14fc456a0132ba88a4ce69ceeac26db5edb7",
+      "change": "NEW"
+    }
+  ],
+  "causal_correction_pages": [
+    "00 Systemindex/Architekturpruefung/Universen/OPT.md",
+    "00 Systemindex/Cross Meta und Eingriffsgrenzen.md",
+    "00 Systemindex/Fallverlaeufe/F06.md",
+    "00 Systemindex/Intelligentes Universum/07 MI bis SL OPT Meta Governance und GVEF.md",
+    "00 Systemindex/Intelligentes Universum/08 Befunde und historische Unterschiede.md",
+    "00 Systemindex/Intelligentes Universum/Integration/03 Owner Aussenkanten und Ports.md",
+    "00 Systemindex/Intelligentes Universum/Integration/06 Forecast Kalibrierung und Research.md",
+    "00 Systemindex/Offene Punkte Quellenabgleich.md",
+    "00 Systemindex/SL OPT Trennung/Kausalrekonstruktion/Kausalitaet bis GVEF.md",
+    "00 Systemindex/SL OPT Trennung/Meta Freilegung/04 Welche Metavorschlaege Search wirklich nutzt.md",
+    "00 Systemindex/Semantik/S04.md",
+    "00 Systemindex/Systempruefung/Bereiche/OPT.md",
+    "00 Systemindex/Systempruefung/Semantik/M06.md",
+    "00 Systemindex/Wirkungsnachweise/39 Pflichtfaelle mit Wirkungsgrenzen.md",
+    "00 Systemindex/Wirkungsnachweise/Wirkungsnachweise im Gesamtzusammenhang.md",
+    "00 Systemindex/Zielbild und Umsetzung.md",
+    "05 Systematlas/Cross Meta und Rueckkopplungen.md",
+    "05 Systematlas/Wertketten und Rechenrichtung.md",
+    "10 Fachbereiche/Outcome Lernen Forschung und Optimization.md"
+  ],
+  "proof_reuse": "1575_DISTINCT_PASS_BOUND_TO_ORIGINAL_SOURCE_AND_JUNIT",
+  "limits": [
+    "NO_GLOBAL_SEMANTIC_RECERTIFICATION",
+    "NO_NATURAL_LEARNING_QUALITY_PROOF",
+    "NO_POWERLOSS_BOOT_SERVICE_PROOF"
+  ]
+}

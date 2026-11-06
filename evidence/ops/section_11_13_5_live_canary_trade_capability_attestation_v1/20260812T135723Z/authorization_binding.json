@@ -1,0 +1,15 @@
+{
+  "LIVE_ARMED": false,
+  "LIVE_AUTHORIZED": false,
+  "LIVE_ENABLED": false,
+  "LIVE_ORDER_AUTHORIZED": false,
+  "authorization_scope": "LIVE_CANARY_TRADE_KEY_ATTESTATION",
+  "authorization_validated": true,
+  "bound_origin_main_sha": "20f2eb51d933f67b7ff0d57d7aef94b767e68f99",
+  "owner_go": "OWNER_GO_LIVE_CANARY_TRADE_KEY_ATTESTATION",
+  "owner_go_status": "CONSUMED",
+  "passkey_reset_go": "OWNER_GO_OKX_PASSKEY_RESET_FOR_LIVE_CANARY_PROVISIONING",
+  "prior_canary_owner_go_reused": false,
+  "provision_go": "OWNER_GO_PROVISION_LIVE_CANARY_TRADE_KEY_AND_REATTEST",
+  "reusable_for_later_live_stages": false
+}

@@ -1,0 +1,28 @@
+{
+  "action_recommendation": null,
+  "diagnostic_class": "COSTS_DESTROY_MARGINAL_EDGE",
+  "flags": {
+    "COST_DRAG_MATERIAL": true,
+    "ENTRY_GROSS_EDGE_PRESENT": true,
+    "EXIT_LEAKAGE_MATERIAL": true,
+    "INSTRUMENT_CONCENTRATION_MATERIAL": false,
+    "SHORT_SIDE_DRAG_MATERIAL": true
+  },
+  "new_hypothesis": null,
+  "reason": "positive_gross_destroyed_by_canonical_costs",
+  "supporting_metrics": {
+    "gross_pnl": 27.830299969132085,
+    "gross_profit_factor": 1.0119859537996807,
+    "long_net_pnl": 0.0,
+    "long_trades": 0,
+    "mean_mfe_to_exit_leakage": 229.51831786929728,
+    "mean_realized_pnl_over_mfe_capture_ratio": -3.1113994236335936,
+    "net_pnl": -274.6899929958916,
+    "net_profit_factor": 0.8945131625090622,
+    "pf_gross_lt_one": false,
+    "short_net_pnl": -274.6899929958916,
+    "short_trades": 51,
+    "trade_count": 51,
+    "worst1_abs_net_share": 0.1846903370050265
+  }
+}

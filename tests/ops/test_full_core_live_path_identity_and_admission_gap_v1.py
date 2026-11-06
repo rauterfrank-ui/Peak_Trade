@@ -1,0 +1,250 @@
+"""Path identity and Full-Core live-admission gap DAG. Offline. No network."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from src.ops.full_core_live_path_composition_root_v1.canary_isolation_v1 import (
+    refuse_canary_plan_as_full_core_e2e_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY,
+    CANARY_SUBMIT_EVIDENCE_IS_NOT_FULL_CORE_SUBMIT_EVIDENCE,
+    CANARY_VENUE_PROOF_PATH_IS_FULL_CORE_E2E,
+    CANARY_VENUE_PROOF_PATH_ROLE,
+    CURRENT_LIVE_CORE_PATH_PROVEN,
+    FULL_CORE_SYSTEM_E2E_PROVEN,
+    FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
+    G12_IS_NOT_FULL_CORE_E2E,
+    HOST_JOIN_OWNER,
+    LIVE_ARMED,
+    LIVE_ENABLED,
+    PATH_KIND,
+    PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY,
+    SECTION_11_13_5_NEXT_POINTER_DOMAIN,
+    SECTION_11_14_ACCOUNTING_IS_NOT_FULL_CORE_E2E,
+    SECTION_11_14_NEXT_POINTER_DOMAIN,
+    SECTION_11_14_POST_IS_NOT_STEP_29Q,
+    SEND_CAPABLE_ADAPTER_OWNER,
+    STANDING_LIVE_AUTHORIZATION,
+    WIRE_SEND_PERMITTED,
+)
+from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 import (
+    EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY,
+    FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE,
+    LIVE_ADMISSION_GAP_NODES,
+    MAX_SAFE_REPO_INTERNAL_NEXT_SLICE,
+    gap_node_v1,
+    live_admission_gap_dag_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.overclaim_guards_v1 import (
+    prove_package_does_not_import_wire_surfaces_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.path_identity_v1 import (
+    bound_path_identity_v1,
+    refuse_competing_productive_live_next_pointer_v1,
+    refuse_historical_evidence_as_full_core_e2e_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INSTRUMENT_ID,
+    DEFAULT_SIDE,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md"
+REQUIRED_GAP_COMPONENTS = (
+    "LIVE_ACCOUNT_BOUND",
+    "CAPITAL_ADMISSION",
+    "FRESH_GET_PER_PRETRADE_DECISION",
+    "PRIVATE_AUTH_PREFLIGHT",
+    "MAX_AVAILABLE",
+    "AVAILABLE_MARGIN",
+    "PRICE_BAND",
+    "LEVERAGE",
+    "POS_MODE",
+    "MARGIN_MODE",
+    "INSTRUMENT_STATE",
+    "ACCOUNT_MODE",
+    "DURABLE_FILEGATE_RUNTIME_JOIN",
+    "ExecutionAdmissionDecisionV1",
+    "LiveExecutionPort",
+    "OWNER_ONE_SHOT_EXECUTION_PERMIT",
+    "LIVE_ENABLED",
+    "LIVE_ARMED",
+    "WIRE_SEND_PERMITTED",
+    "SUBMISSION_AUTHORIZED",
+    "LIVE_AUTHORIZED",
+    "EXTERNAL_EFFECT",
+)
+
+
+def _section_11_2_1_i(text: str) -> str:
+    start = text.index("11.2.1.I FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP")
+    return text[start : text.index("11.2.1.J FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM", start)]
+
+
+def test_standing_identity_and_gates_remain_fail_closed() -> None:
+    identity = bound_path_identity_v1()
+    assert FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH == PATH_KIND == "FULL_CORE_LIVE_PATH"
+    assert identity["FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH"] == "FULL_CORE_LIVE_PATH"
+    assert identity["CANARY_VENUE_PROOF_PATH_ROLE"] == "HISTORICAL_AND_SCOPED_VENUE_PROOF"
+    assert identity["CANARY_VENUE_PROOF_PATH_IS_FULL_CORE_E2E"] is False
+    assert identity["CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY"] is False
+    assert identity["FULL_CORE_SYSTEM_E2E_PROVEN"] is False
+    assert identity["CURRENT_LIVE_CORE_PATH_PROVEN"] is False
+    assert identity["STANDING_LIVE_AUTHORIZATION"] is False
+    assert identity["HOST_JOIN_OWNER"] == "stateful_no_order_host_join_v1"
+    assert identity["SEND_CAPABLE_ADAPTER_OWNER"] == "send_capable_adapter_v1"
+    assert HOST_JOIN_OWNER == "stateful_no_order_host_join_v1"
+    assert SEND_CAPABLE_ADAPTER_OWNER == "send_capable_adapter_v1"
+    assert LIVE_ENABLED is True
+    assert LIVE_ARMED is True
+    assert WIRE_SEND_PERMITTED is True
+    assert STANDING_LIVE_AUTHORIZATION is False
+    assert FULL_CORE_SYSTEM_E2E_PROVEN is False
+    assert CURRENT_LIVE_CORE_PATH_PROVEN is False
+
+
+def test_canary_and_section_11_14_are_not_productive_live_next_pointers() -> None:
+    canary = refuse_competing_productive_live_next_pointer_v1("SECTION_11_13_5")
+    ladder = refuse_competing_productive_live_next_pointer_v1("SECTION_11_14")
+    full_core = refuse_competing_productive_live_next_pointer_v1("SECTION_11_2_1")
+    semantic = refuse_competing_productive_live_next_pointer_v1("full_core_live_path_authority_v1")
+    assert canary["refused_as_productive_live_next_pointer"] is True
+    assert ladder["refused_as_productive_live_next_pointer"] is True
+    assert full_core["claimed_is_productive_live_authority"] is True
+    assert full_core["refused_as_productive_live_next_pointer"] is False
+    assert semantic["claimed_is_productive_live_authority"] is True
+    assert semantic["refused_as_productive_live_next_pointer"] is False
+    assert PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY == "full_core_live_path_authority_v1"
+    assert SECTION_11_13_5_NEXT_POINTER_DOMAIN == "SCOPED_CANARY_VENUE_PROOF_EVIDENCE_ONLY"
+    assert SECTION_11_14_NEXT_POINTER_DOMAIN == (
+        "HISTORICAL_CANARY_LIFECYCLE_EVIDENCE_LADDER_NOT_FULL_CORE_E2E"
+    )
+
+
+def test_historical_canary_and_g12_facts_are_not_full_core_e2e() -> None:
+    verdict = refuse_historical_evidence_as_full_core_e2e_v1(
+        {
+            "LIVE_SUBMIT_ACK_OBSERVED": True,
+            "LIVE_ACCOUNTING_RECONSTRUCTED": True,
+            "G12": "OPEN",
+            "canary_post": True,
+        }
+    )
+    assert verdict["admissible_as_full_core_e2e"] is False
+    assert SECTION_11_14_POST_IS_NOT_STEP_29Q is True
+    assert SECTION_11_14_ACCOUNTING_IS_NOT_FULL_CORE_E2E is True
+    assert G12_IS_NOT_FULL_CORE_E2E is True
+    assert CANARY_SUBMIT_EVIDENCE_IS_NOT_FULL_CORE_SUBMIT_EVIDENCE is True
+    assert CANARY_VENUE_PROOF_PATH_IS_FULL_CORE_E2E is False
+    canary_plan = refuse_canary_plan_as_full_core_e2e_v1(
+        {"instrument_id": DEFAULT_INSTRUMENT_ID, "side": DEFAULT_SIDE}
+    )
+    assert canary_plan["admissible_as_full_core_e2e"] is False
+    assert canary_plan["CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY"] is False
+    assert canary_plan["CANARY_VENUE_PROOF_PATH_ROLE"] == CANARY_VENUE_PROOF_PATH_ROLE
+
+
+def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slice() -> None:
+    dag = live_admission_gap_dag_v1()
+    present = {node.component_id for node in LIVE_ADMISSION_GAP_NODES}
+    for component in REQUIRED_GAP_COMPONENTS:
+        assert component in present
+        node = gap_node_v1(component)
+        if component in {
+            "DURABLE_FILEGATE_RUNTIME_JOIN",
+            "OWNER_ONE_SHOT_EXECUTION_PERMIT",
+            "FRESH_GET_PER_PRETRADE_DECISION",
+            "PRIVATE_AUTH_PREFLIGHT",
+            "LIVE_ACCOUNT_BOUND",
+            "CAPITAL_ADMISSION",
+            "LIVE_ENABLED",
+            "LIVE_ARMED",
+            "WIRE_SEND_PERMITTED",
+            "SUBMISSION_AUTHORIZED",
+            "LIVE_AUTHORIZED",
+            "EXTERNAL_EFFECT",
+            "LiveExecutionPort",
+        }:
+            assert node.wiring_authorized is True
+        else:
+            assert node.wiring_authorized is False
+    filegate = gap_node_v1("DURABLE_FILEGATE_RUNTIME_JOIN")
+    assert filegate.repo_internal_solvable is True
+    assert filegate.fresh_external_evidence_required is False
+    assert filegate.productive_account_access_required is False
+    assert filegate.standing_live_gates_would_change is False
+    assert filegate.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
+    permit = gap_node_v1("OWNER_ONE_SHOT_EXECUTION_PERMIT")
+    assert permit.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
+    assert permit.wiring_authorized is True
+    assert permit.standing_live_gates_would_change is False
+    assert permit.fresh_external_evidence_required is False
+    bound = gap_node_v1("LIVE_ACCOUNT_BOUND")
+    assert bound.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
+    assert bound.wiring_authorized is True
+    assert bound.standing_live_gates_would_change is False
+    assert bound.fresh_external_evidence_required is False
+    capital = gap_node_v1("CAPITAL_ADMISSION")
+    assert capital.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
+    assert capital.wiring_authorized is True
+    assert capital.standing_live_gates_would_change is False
+    assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
+        EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
+    )
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "CURRENT_PRODUCTIVE_TREASURY_SINGLE_SOURCE_CAPITAL_HANDOFF_REQUIRES_FRESH_TRUSTED_GET"
+    )
+    assert dag["MAX_SAFE_REPO_INTERNAL_NEXT_SLICE"] == MAX_SAFE_REPO_INTERNAL_NEXT_SLICE
+    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
+    assert dag["CANARY_29Q_CONSUMER_WIRING_AUTHORIZED"] is False
+    reusable = set(dag["REUSABLE_MECHANISM_ONLY_COMPONENTS"])
+    assert "MAX_AVAILABLE" in reusable
+    assert "PRIVATE_AUTH_PREFLIGHT" not in reusable
+    live_enabled = gap_node_v1("LIVE_ENABLED")
+    assert live_enabled.standing_live_gates_would_change is False
+    assert live_enabled.repo_internal_solvable is True
+    assert live_enabled.implementation_status == ("STANDING_TRUE_NOT_AUTOMATIC_ADMISSION")
+    assert live_enabled.wiring_authorized is True
+    port = gap_node_v1("LiveExecutionPort")
+    assert port.implementation_status == "SEND_CAPABLE_NOT_EXTERNAL_EFFECT"
+    submission = gap_node_v1("SUBMISSION_AUTHORIZED")
+    assert submission.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_WIRE"
+    assert submission.wiring_authorized is True
+    live_auth = gap_node_v1("LIVE_AUTHORIZED")
+    assert live_auth.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_SEND"
+    effect = gap_node_v1("EXTERNAL_EFFECT")
+    assert effect.implementation_status == (
+        "ENVELOPE_BOUND_SINGLE_USE_SEAM_IMPLEMENTED_STANDING_FALSE"
+    )
+    assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
+
+
+def test_package_still_does_not_import_wire_surfaces() -> None:
+    proof = prove_package_does_not_import_wire_surfaces_v1()
+    assert proof["ok"] is True
+    assert proof["STANDING_LIVE_AUTHORIZATION"] is False
+    assert proof["CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY"] is False
+
+
+def test_runbook_and_spec_bind_path_identity_without_rewriting_11_14_facts() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH" in spec
+    assert "CANARY_VENUE_PROOF_PATH_ROLE=HISTORICAL_AND_SCOPED_VENUE_PROOF" in spec
+    assert "CANARY_VENUE_PROOF_PATH_IS_FULL_CORE_E2E=false" in spec
+    assert "CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false" in spec
+    assert "FULL_CORE_SYSTEM_E2E_PROVEN=false" in spec
+    assert "CURRENT_LIVE_CORE_PATH_PROVEN=false" in spec
+    assert "STANDING_LIVE_AUTHORIZATION=false" in spec
+    assert "SECTION_11_14_POST_IS_NOT_STEP_29Q=true" in spec
+    assert "SECTION_11_14_ACCOUNTING_IS_NOT_FULL_CORE_E2E=true" in spec
+    assert "G12_IS_NOT_FULL_CORE_E2E=true" in spec
+    assert "CANARY_SUBMIT_EVIDENCE_IS_NOT_FULL_CORE_SUBMIT_EVIDENCE=true" in spec
+    assert "CURRENT_GAP_DAG_EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=" in spec
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY in spec
+    assert "docs_token:" in spec
+    assert "DOCS_TOKEN_FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1" in spec
+    assert "CANARY_29Q_CONSUMER_WIRING_AUTHORIZED=false" in spec
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY in spec

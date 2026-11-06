@@ -1,0 +1,139 @@
+{
+  "all_standing_live_submit_gates_false": true,
+  "mutation_performed": false,
+  "rows": [
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "LIVE_AUTHORIZED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "LIVE_ENABLED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "LIVE_ARMED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "LIVE_ORDER_AUTHORIZED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "ENABLE_LIVE_TRADING",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "SUBMIT_UNLOCKED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "GENERAL_LIVE_SUBMIT_UNLOCKED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "CANARY_AUTHORIZED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "LIVE_CANARY_MINIMUM_EXPOSURE_AUTHORIZED_DEFAULT",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "TESTNET_AUTHORIZED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "NOT_PART_OF_REACHABILITY",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "SECTION_11_14_AUTHORIZED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_LATER_LADDER_STAGE",
+      "repo_default": false
+    },
+    {
+      "configured_default": false,
+      "current_external_proven": false,
+      "current_runtime_proven": false,
+      "implementation_status": "IMPLEMENTED",
+      "mutated_by_this_go": false,
+      "name": "CANARY_SUBMIT_TRANSPORT_ACTIVATED",
+      "observation_status": "NOT_OBSERVED_AS_RUNTIME_TRUE",
+      "reachability_role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION",
+      "repo_default": false
+    }
+  ],
+  "schema_version": "section_11_14_runtime_gate_classification.v1"
+}

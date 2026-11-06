@@ -1,0 +1,17 @@
+{
+  "schema_version": "okx_historical_open_interest_public_fetch.v0",
+  "confirm_go_token": "GO_BOUNDED_OKX_HISTORICAL_OPEN_INTEREST_PANEL_FETCH_PIT_SEMANTICS_REGISTRATION_AND_DATASET_MATERIALIZATION_V0",
+  "source_endpoint": "/api/v5/rubik/stat/contracts/open-interest-history",
+  "source_owner": "okx_historical_open_interest_public_fetch_v0",
+  "materializer_owner": "scripts/ops/materialize_cross_sectional_open_interest_delta_rank_v0_bound_panel_open_interest_dataset_v0.py",
+  "research_scope": "cross_sectional_open_interest_delta_rank/v0",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_open_interest_panel/v0",
+  "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+  "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+  "ohlcv_staging_rel": "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+  "output_staging_rel": "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_open_interest_panel/v0",
+  "okx_period": "1H",
+  "open_interest_unit": "okx_native_contract_count",
+  "public_market_data_only": true,
+  "credentials_allowed": false
+}

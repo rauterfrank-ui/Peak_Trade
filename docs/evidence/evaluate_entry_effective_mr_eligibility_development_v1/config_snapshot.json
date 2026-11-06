@@ -1,0 +1,58 @@
+{
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "contract_id": "entry_effective_mr_eligibility_preregistered_economic_hypothesis_measurement_contract.v1",
+  "cost_model": {
+    "adjustment_forbidden_after_preregistration": true,
+    "cost_drag_fully_included_in_net_metrics": true,
+    "fee_bps": 10.0,
+    "fixed": true,
+    "half_spread_bps": 5.0,
+    "roundtrip_reference_bps": 30.0,
+    "slippage_bps": 5.0
+  },
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "decision_segment": {
+    "end_exclusive": "2023-08-16T05:55:00Z",
+    "start": "2023-05-20T00:00:00Z"
+  },
+  "decision_thresholds": {
+    "decision_segment": "final_development_confirmation_only",
+    "fail_if_any": [
+      "evaluable AND entry_eligibility_divergence_observed == false",
+      "evaluable AND net_profit_factor_treatment <= net_profit_factor_control",
+      "evaluable AND net_max_drawdown_treatment < net_max_drawdown_control",
+      "evaluable AND net_return_treatment <= net_return_control",
+      "evaluable AND trade_count_treatment < trade_count_control * (1 - max_trade_count_reduction_fraction_vs_control)",
+      "any_holdout_use_for_tuning_or_selection",
+      "any_post_hoc_threshold_or_feature_adjustment",
+      "any_second_or_repeated_evaluation_run",
+      "any_parameter_sweep_or_variant"
+    ],
+    "inconclusive_if_any": [
+      "trade_count_control < minimum_trade_count",
+      "technical_panel_hash_or_load_failure",
+      "feature_warmup_leaves_zero_evaluable_entry_candidates",
+      "contract_or_wiring_integrity_failure_preventing_measurement"
+    ],
+    "inconclusive_never_for_poor_economic_results": true,
+    "materiality_epsilon_net_return_abs": 0.0,
+    "max_trade_count_reduction_fraction_vs_control": 0.5,
+    "minimum_trade_count": 50,
+    "pass_requires_all": [
+      "entry_eligibility_divergence_observed == true",
+      "trade_count_treatment >= minimum_trade_count",
+      "trade_count_treatment >= trade_count_control * (1 - max_trade_count_reduction_fraction_vs_control)",
+      "net_profit_factor_treatment > net_profit_factor_control",
+      "net_max_drawdown_treatment >= net_max_drawdown_control",
+      "net_return_treatment > net_return_control",
+      "cost_drag_fully_included_in_net_metrics == true"
+    ],
+    "threshold_adjustment_forbidden_after_preregistration": true
+  },
+  "feature_formula_sha256": "99865b94fbc34026b25e2667cfc14e7290bd940b5287a5030509dc7adc610f08",
+  "hypothesis_id": "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+  "schema_version": "evaluate_entry_effective_mr_eligibility_development_config_snapshot.v1",
+  "seed": 20220601,
+  "stop_pct": 0.025,
+  "treatment_id": "entry_effective_vol_percentile_mr_eligibility_v1"
+}

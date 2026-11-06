@@ -1,0 +1,18 @@
+# Safety attestation
+
+- LIVE_AUTHORIZED=false
+- ORDERS=false
+- HOLDOUT_ACCESSED=false
+- SEALED_ACCESSED=false
+- DEVELOPMENT_RERUN=false
+- EVALUATION_EXECUTED=false
+- RUNNER_START_COUNT=0
+- RUN_SLOT_CONSUMED=true (historical Development slot; not reset)
+- STRATEGY_IMPLEMENTATION_MUTATED=false
+- SUCCESSOR_CREATED=false
+- DECISION_APPLIED=CLOSE_LANE_NO_FURTHER_RESEARCH
+- ACTIVATION_ELIGIBLE=false
+- AUTOMATIC_SELECTION_ENABLED=false
+- PROMOTION_PERFORMED=false
+- ADMIN_BYPASS_USED=false
+- Trading-core / Master V2 / Double-Play / risk / sizing / execution kernel: unchanged

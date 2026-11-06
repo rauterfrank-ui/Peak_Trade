@@ -1,0 +1,27 @@
+{
+  "evidence_id": "EV-2026-02-PR04-001",
+  "pr_id": "PR-04",
+  "component": "event_schemas",
+  "claim": "Execution/AI events have JSON schema contracts; validator CLI validates JSONL; fixtures pass; invalid fixture fails.",
+  "level": "E2",
+  "status": "enforced",
+  "artifacts": [
+    { "type": "schema", "path": "schemas/events/execution_event.schema.json" },
+    { "type": "schema", "path": "schemas/events/ai_event.schema.json" },
+    { "type": "code", "path": "scripts/validate_events.py" },
+    { "type": "test", "path": "tests/validation/test_event_schemas.py" },
+    { "type": "fixture", "path": "tests/fixtures/events/execution_events.valid.jsonl" },
+    { "type": "fixture", "path": "tests/fixtures/events/ai_events.valid.jsonl" }
+  ],
+  "how_to_verify": {
+    "commands": [
+      "python3 -m pytest -q tests/validation/test_event_schemas.py",
+      "python3 -m scripts.validate_events --schema schemas/events/execution_event.schema.json --jsonl tests/fixtures/events/execution_events.valid.jsonl --strict"
+    ],
+    "expected": [
+      "exit_code=0",
+      "PASSED"
+    ]
+  },
+  "notes": "Validator prefers jsonschema if installed; otherwise falls back to required-field checks (strict adds schema_version const check)."
+}

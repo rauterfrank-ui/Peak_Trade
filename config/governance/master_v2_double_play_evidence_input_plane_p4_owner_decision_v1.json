@@ -1,0 +1,18 @@
+{
+  "a_runtime_implementation_authorized": true,
+  "a_runtime_reachable": true,
+  "b_runtime_implementation_authorized": true,
+  "b_runtime_reachable": true,
+  "baseline_sha": "91cb2a475ddc0bf0dab0d0fee3d64fbd3d1abdc7",
+  "external_effect_authorized": false,
+  "final_d_t_formula_selected": false,
+  "l6_external_evidence_admissibility": "YES_BOUNDED_TYPED_ONLY",
+  "l6_productive_binding": true,
+  "p4_first_approved_seam": "L6",
+  "p5_producer_integration_introduced": false,
+  "productive_activation_authorized": false,
+  "productive_dp_seam_bound": true,
+  "productive_l6_binding_authorized": true,
+  "schema_version": "master_v2_double_play_evidence_input_plane_p4_owner_decision/v1",
+  "workpackage_id": "P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1"
+}
