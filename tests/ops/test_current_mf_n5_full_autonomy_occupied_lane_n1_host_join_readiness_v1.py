@@ -117,8 +117,8 @@ from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_
     SUCCESS_DISPOSITIONS,
     _clear_cycle_ledger,
     _lane_g17,
-    _market_kwargs,
-    _pair,
+    _market_kwargs as _legacy_market_kwargs,
+    _pair as _legacy_pair,
     _s7_kwargs,
 )
 
@@ -154,13 +154,44 @@ def _called_names(source: str) -> set[str]:
     return called
 
 
+def _pair(tmp_path, lane_id):
+    """Use real future identities; the historical VENUE-HARNESS is inadmissible."""
+    slot, bound = _legacy_pair(tmp_path, lane_id)
+    base = {"LANE_1": "ETH", "LANE_2": "SOL", "LANE_3": "XRP", "LANE_4": "AVAX", "LANE_5": "LINK"}[
+        lane_id
+    ]
+    bound = replace(
+        bound,
+        instrument_id=f"okx:linear_perpetual:{base}:USDT:USDT:perp",
+        venue_native_id=f"{base}-USDT-SWAP",
+    )
+    return replace(slot, canonical_instrument_id=bound.instrument_id), bound
+
+
+def _market_kwargs(*, venue_native_id="ETH-USDT-SWAP", **kwargs):
+    return _legacy_market_kwargs(venue_native_id=venue_native_id, **kwargs)
+
+
 def _compose(tmp_path: Path, lane_ids: tuple[str, ...], **overrides: object):
     pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in lane_ids}
     last_ts = float(overrides.pop("last_ts", C1_TS))
     kwargs = _market_kwargs(
         cycle_id_prefix=str(overrides.pop("cycle_id_prefix", "n1-hjr")),
         last_ts=last_ts,
+        venue_native_id=pairs[lane_ids[0]][1].venue_native_id,
     )
+    kwargs.pop("canonical_price_provenance")
+    kwargs["canonical_price_provenance_by_lane"] = {
+        lane: _market_kwargs(
+            cycle_id_prefix="fixture", last_ts=last_ts, venue_native_id=bound.venue_native_id
+        )["canonical_price_provenance"]
+        for lane, (_slot, bound) in pairs.items()
+    }
+    kwargs["candles_payload_by_lane"] = {
+        lane: {**kwargs["candles_payload"], "instId": bound.venue_native_id}
+        for lane, (_slot, bound) in pairs.items()
+    }
+    kwargs["candles_payload"] = None
     kwargs["g17_typed_vol_producers"] = _lane_g17(pairs)
     kwargs.update(overrides)
     return pairs, compose_occupied_lane_n1_host_join_readiness_v1(pairs, **kwargs)
@@ -306,14 +337,22 @@ def test_n1_end_to_end_pre_external_effect_is_join_ready(tmp_path: Path) -> None
     assert "lane_id" not in loaded
 
 
+def test_unknown_native_contract_identity_remains_rejected(tmp_path: Path) -> None:
+    pairs = {"LANE_1": _legacy_pair(tmp_path, "LANE_1")}
+    kwargs = _legacy_market_kwargs(cycle_id_prefix="unknown-native")
+    kwargs["g17_typed_vol_producers"] = _lane_g17(pairs)
+    with pytest.raises(ValueError, match="future_native_contract_identity_unknown"):
+        compose_occupied_lane_n1_host_join_readiness_v1(pairs, **kwargs)
+
+
 def test_identity_native_id_is_bound_instrument_throughout(tmp_path: Path) -> None:
     pairs, projections = _compose(tmp_path, ("LANE_3",), cycle_id_prefix="n1-hjr-id")
     bound = pairs["LANE_3"][1]
     projection = projections["LANE_3"]
-    assert projection.native_id == bound.venue_native_id == "VENUE-3"
+    assert projection.native_id == bound.venue_native_id == "XRP-USDT-SWAP"
     cycle = projection.n1_consumer_result.governed_cycle_result
     assert cycle.disposition in SUCCESS_DISPOSITIONS, cycle.reason_code
-    assert cycle.c1_used.startswith("native_id=VENUE-3;")
+    assert cycle.c1_used.startswith("native_id=XRP-USDT-SWAP;")
     assert projection.writer_session_id == "n1-hjr-id:LANE_3"
 
 
@@ -334,7 +373,11 @@ def test_restart_reloads_lane_cursor_and_stays_unjoined(tmp_path: Path) -> None:
     second = compose_occupied_lane_n1_host_join_readiness_v1(
         pairs,
         g17_typed_vol_producers=_lane_g17(pairs),
-        **_market_kwargs(cycle_id_prefix="n1-hjr-restart-2", last_ts=C1_TS_NEXT),
+        **_market_kwargs(
+            cycle_id_prefix="n1-hjr-restart-2",
+            last_ts=C1_TS_NEXT,
+            venue_native_id=pairs["LANE_2"][1].venue_native_id,
+        ),
     )
     second_projection = second["LANE_2"]
     assert second_projection.n1_consumer_result.bootstrap_used is False

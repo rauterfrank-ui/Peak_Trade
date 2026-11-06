@@ -385,7 +385,7 @@ def test_retry_before_core_reuses_original_writers_without_double_consumption(
 
 
 @pytest.mark.parametrize("ack_written", [False, True])
-def test_interruption_at_core_ack_never_blindly_reinvokes_core(tmp_path, monkeypatch, ack_written):
+def test_lost_core_ack_is_recovered_without_reinvoking_core(tmp_path, monkeypatch, ack_written):
     args, owner, writer, _ = _fixture(tmp_path, monkeypatch)
     calls = _count_consumption(monkeypatch)
     original = continuation.acknowledge_post_close_consumer_v1
@@ -400,12 +400,10 @@ def test_interruption_at_core_ack_never_blindly_reinvokes_core(tmp_path, monkeyp
         with pytest.raises(OSError):
             run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
         assert calls == [1]
-        if ack_written:
-            replay = run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
-            assert isinstance(replay, PostCloseContinuationReplayV1)
-        else:
-            with pytest.raises(PostCloseContinuationError, match="CORE_OUTCOME_UNCERTAIN"):
-                run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
+        replay = run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
+        assert isinstance(replay, PostCloseContinuationReplayV1)
+        assert replay.receipt["phase"] == "ACKED"
+        assert replay.receipt["consumed"]["LANE_1"]["native_id"] == "ETH-USDT-SWAP"
         assert calls == [1]
     finally:
         owner.close()

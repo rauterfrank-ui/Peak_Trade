@@ -1,0 +1,140 @@
+{
+  "schema": "peaktrade.n1_consumer_ack_readback_evidence.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "82615aa2cdc01b74a08204b6a156712a6e29344f",
+  "source_binding": [
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/consumer_completion_v1.py",
+      "base_sha256": null,
+      "sha256": "6f2c6e82d122091ddaf9c854b93567855be21f6e804d3ce1e6a1b2a7e41c4073"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py",
+      "base_sha256": "c0c0a8f64b738acafe541a2d3c62cf8490c32db6a1688bc4b16f789023d0643f",
+      "sha256": "4bec97a5d61c14729f368ef033e31661562211d46257faecec704decbbc7ecba"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "base_sha256": "11db8faefe5cfee61829446d0447cd1b79772bd8aca4179d4f877e5d4dbcc763",
+      "sha256": "3e2977025d66317281f733ee09e65f3ec5241ffd1fa24c7951e9c3089def6ceb"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py",
+      "base_sha256": "0f296f8f537a4ae4eb5f4071be2b53b9150e45aa0787d9d08fc6f7fc51a1c4b1",
+      "sha256": "ac0f74f482dd575fb865ea538eb7273eafb6959b457390449ca0ddb8d70df2c3"
+    },
+    {
+      "path": "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.py",
+      "base_sha256": "2a081ef8904aa9b0db5a30302aa23678278271991d9befb7c4725dfeb9378a64",
+      "sha256": "ad5b6b88d13ba01597a08df0a0159ece014ca85db997aa9851116d0853b72865"
+    },
+    {
+      "path": "tests/ops/test_n1_consumer_completion_readback_v1.py",
+      "base_sha256": null,
+      "sha256": "b31c832944ff9d1439c7c6ed1c28c6bebf4ae7cb90f9fc42f534a5f704afbe36"
+    },
+    {
+      "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "base_sha256": "93bc521c07d9dd43604eeaafbdd9dce888cb96f713ae4d4cac394bf7bcdfea7c",
+      "sha256": "e7a694925508a3ae3978d614c6c88a22e6edb2fd70e87e4e3a1ae03887cc7ac7"
+    }
+  ],
+  "problem": "CONSUMING without upper ACK cannot distinguish an original completed Core consumption from an uncertain output.",
+  "change": "The original N1 readiness consumer durably prepares exact historical output, then publishes it. Resume finalizes an exact original prepared output and restores a lost handoff ACK without invoking Core or financial owners again.",
+  "receipt_contract": {
+    "schema": "occupied_lane_n1_consumer_completion.v1",
+    "producer": "compose_occupied_lane_n1_host_join_readiness_v1",
+    "path": "<lane_state_root>/n1_consumer_completions_v1/<handoff_binding_digest>.json",
+    "identity": [
+      "handoff binding digest",
+      "lane and original state root",
+      "full BoundInstrument generation",
+      "origin_main_sha",
+      "cycle prefix",
+      "actual Core cycle ID, input digest and decision outcome"
+    ],
+    "persistence": "Original output in durable .pending.json first, then atomic final create without overwrite; file and directory fsync. Pending output survives final publication failure and is completed on resume; invalid final output is never overwritten.",
+    "effect": "Historical ACK/replay only; no new execution, capital admission, permit or owner reset"
+  },
+  "verification": {
+    "red": {
+      "passed": 1,
+      "failed": 1,
+      "cause": "New lost-ACK case reproduces original CORE_OUTCOME_UNCERTAIN before implementation."
+    },
+    "new_readback_file": {
+      "passed": 30,
+      "seconds": 10.42,
+      "log": "/tmp/peaktrade-n1-ack-readback-complete-new-final.txt"
+    },
+    "readiness_owner": {
+      "passed": 14,
+      "seconds": 1.77,
+      "included_in_integration_selection": true
+    },
+    "other_final_integration_cases": {
+      "passed": 83,
+      "files": 4,
+      "reuse": "From the fully passed 110-case recovery integration run. The production sources and these four test files are unchanged; the final readback test file adds three cases and passes all 30."
+    },
+    "final_unique_selected_cases": 113,
+    "files": [
+      "tests/ops/test_n1_consumer_completion_readback_v1.py",
+      "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.py",
+      "tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py",
+      "tests/ops/test_current_productive_post_close_feedback_v1.py"
+    ],
+    "intermediate_integration_run": {
+      "passed": 102,
+      "failed": 1,
+      "cause": "The new os.link fault injection initially intercepted an earlier owner write. Restricting the injection to the original consumer completion publication produced the intended post-Core failure; all 20 tests in that changed test file then passed."
+    },
+    "actual_core_observation": "The new cases wrap the original runtime cycle function without replacing its result; actual call lists remain identical across readback. Cold-start bootstrap and final consumer cycle IDs remain distinct.",
+    "cold_readback": "Final readback and recovery of an original prepared completion in fresh scripts/pt processes. This is not a full autonomous host restart or physical power-loss claim.",
+    "preexisting_readiness_baseline": {
+      "base": "82615aa2cdc01b74a08204b6a156712a6e29344f",
+      "passed": 6,
+      "failed": 7,
+      "method": "Load unchanged original readiness module function from git show at the base; unchanged productive Core dependencies; run original readiness tests.",
+      "cause": "Historical non-future native placeholders; corrected only the local test identities and per-lane price/candle bindings. Original isolation, lock, restart and boundary assertions retained; unknown native contract rejection added."
+    },
+    "population": "Injected offline market/account/ranking inputs and temporary original stores; no venue call or economic performance claim.",
+    "recovery_integration_run": {
+      "passed": 110,
+      "seconds": 18.44,
+      "log": "/tmp/peaktrade-n1-ack-readback-recovery-final.txt",
+      "before_additional_readiness_and_cold_pending_cases": true
+    },
+    "fresh_readiness_control": "After repaired ACK and owner reopening, budget admission remains false. Calling the original budget recovery owner with fresh original facts produces ADMITTED; stale facts remain fenced. This control does not implement the complete host/scheduler join.",
+    "publication_recovery": "Interrupted final publication and repeated storage errors preserve exact original prepared output; after the error clears, the same transition automatically finalizes and acknowledges without new Core calls or capital resets."
+  },
+  "unchanged_paths": [
+    "src/trading/master_v2",
+    "src/ops/full_core_live_path_composition_root_v1",
+    "runtime",
+    "src/ops/single_selected_future_policy_v1",
+    "src/ops/single_selected_future_runtime_binding_v1",
+    "config/governance/clean_core_seal_manifest_v1.json"
+  ],
+  "limits": [
+    "Core consumption interrupted before the first durable prepared original output remains fenced and requires further original-state reconciliation.",
+    "Old uncertain receipts without original completion are not migrated",
+    "No atomic full financial/execution transaction claim",
+    "No active Scope/SideState carry proof across new binding generations",
+    "No natural continuous N5 runtime, complete kill-switch emergency operation or physical power-loss claim",
+    "Historical research remains deferred; no Kraken reactivation"
+  ],
+  "verification_date": "2026-11-07",
+  "self_recovery_requirement": {
+    "user_requirement": "Automatically regain operational readiness rather than remain indefinitely blocked.",
+    "implemented": "Original prepared-output publication recovery and historical ACK restoration on restart/reinvoke.",
+    "existing_owner_verified": "Separate original fresh budget reconciliation/admission, with stale negative control.",
+    "remaining_required_outer_ring_work": [
+      "Automatic host recovery trigger and complete readiness/safety admission join",
+      "Original reconciliation of Core outcomes lacking any durable original completion; no fabricated ACK or reset",
+      "Fresh public/private observations from the selected runtime sources"
+    ]
+  }
+}

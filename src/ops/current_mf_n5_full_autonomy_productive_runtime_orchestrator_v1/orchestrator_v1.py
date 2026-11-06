@@ -418,6 +418,9 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     if continuation_handle is not None:
         from .post_close_continuation_v1 import admit_post_close_target_v1
 
+        readiness_kwargs["consumer_completion_binding_digest"] = continuation_handle[1][
+            "binding_digest"
+        ]
         admit_post_close_target_v1(
             post_close_continuation,
             continuation_handle,
