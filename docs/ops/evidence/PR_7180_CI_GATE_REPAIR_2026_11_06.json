@@ -848,5 +848,55 @@
     }
   ],
   "remote_CI_status": "Pending push of this bound candidate; previous candidate had only the two addressed failed gates.",
-  "full_repository_test_pass_claimed": false
+  "full_repository_test_pass_claimed": false,
+  "DDO_document_followup": {
+    "failed_remote_commit": "40d34b4190688e3220732abad9bbe252b81a2b50",
+    "remote_job": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/42289032342/job/128138433433",
+    "remote_result": {
+      "passed": 971,
+      "failed": 2,
+      "duration_seconds": 190.5
+    },
+    "failed_cases": [
+      "test_master_runbook_refers_to_valid_spec",
+      "test_map_and_atlas_remain_navigation_only"
+    ],
+    "current_documentation_fix": "Actual owner-spec links in Master Runbook and Map; current no-authority Atlas navigation checked",
+    "historical_document_assertions_preserved": true,
+    "historical_source_commit": "c17ffa3f9cf812f5422a35ca3c2eb20cde54cb57",
+    "historical_source_kind": "read-only preserved local Git archive",
+    "historical_document_digests": {
+      "atlas": "a36cf73eaebcfca6b59e19f95caed19df65077bb3255611599f7b5dbc9a22a32",
+      "map": "49706f9f6a4661603bdf07fcff644ef18a74695d9fc45e9ce7a505574fc18ec7",
+      "master": "4f35d94fd6c2b378b615204589d11c0fb26da684194f207334ae7c23a95b20de"
+    },
+    "fixture_path": "tests/fixtures/learning/ddo_document_history_v1.json.gz",
+    "fixture_sha256": "aff32d60094afeb469110125021dd8b61588f505e13f42fe3d0005ea71c1e6e8",
+    "historical_diff": {
+      "base": "c14730e99f1b1303b69a117fdc0d6896ee1c1e51",
+      "head": "89eef9dfc021fe1954f071eaf0559c184b2b0bdf",
+      "paths_sha256": "270e197a8759b87c293403f28eba1d01e37a03f01ecd7d743d8ccb58475cc2c4"
+    },
+    "product_code_imported": false,
+    "archive_written": false,
+    "owner_contract_local_tests": {
+      "passed": 6,
+      "duration_seconds": 0.13
+    },
+    "data_point_completeness_claimed": false,
+    "all_original_assert_ASTs_identical": {
+      "test_master_runbook_refers_to_valid_spec": 145,
+      "test_map_and_atlas_remain_navigation_only": 24
+    },
+    "documentation_validation": {
+      "result": "PASS",
+      "markdown_files": 7,
+      "references": 142,
+      "atlas_development_files": 110,
+      "law": "PASS",
+      "current_link_debt": 651,
+      "baseline": 653
+    },
+    "changed_test_sha256": "4002f7351bb78c201e9264e83ff99523719b76af02d1991c778a806f356f2730"
+  }
 }

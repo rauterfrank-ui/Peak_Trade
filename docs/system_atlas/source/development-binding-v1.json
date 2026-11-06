@@ -17,6 +17,11 @@
       "sha256": "8eb672a313aa3601ed4843778d5d950c057c92d55ea33627b3cb5574a925e01e"
     },
     {
+      "path": "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+      "before_sha256": "21f97d4e8ed323c9db9132640f6ed5c2375c7a76ff401c771a9b4314583642fb",
+      "sha256": "99cefea14fa9ac875ceb402c5970cdbdb8db118d71ec46ac3cd438c52921aeff"
+    },
+    {
       "path": "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
       "before_sha256": "6b17fa9863f3446049e989c097003dd8200e833ac21c5a8b0466f37a1fa9aafe",
       "sha256": "cfc1fd1aa6781e6aba7901499f35e518d34fea2672566657936fac32246aa0f6"
@@ -44,17 +49,27 @@
     {
       "path": "docs/ops/evidence/PR_7180_CI_GATE_REPAIR_2026_11_06.json",
       "before_sha256": null,
-      "sha256": "3aeb0734d7781b75ed41fa85fcb8fb4cb44c49a23220b83f9556edb041a6a595"
+      "sha256": "005bc9b646817343d27fab6d8068608501ea5cf19edd1bd304c4de593b418a3f"
     },
     {
       "path": "docs/ops/evidence/PR_7180_CI_GATE_REPAIR_2026_11_06.md",
       "before_sha256": null,
-      "sha256": "d701420d726882e22e18d81f74cf45ed1135a4923d47967ce577f33f8a9dbcbf"
+      "sha256": "be387e2939cad20aa46bcf1a81e57e61298cb78fc4e8adbe9097cafe2c81d02e"
     },
     {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
       "before_sha256": null,
       "sha256": "a642486daea329a606690aed67d6a22782bb85225875e706ef10f4fbee52a04e"
+    },
+    {
+      "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "before_sha256": "8428160baf7ca319d07b7053e8075a0960e318c1560a7442226aec4e00185548",
+      "sha256": "d9600206cdc53decd510f43aa2f50610865b7bc2f257b9a2d13835ac8a21b10d"
+    },
+    {
+      "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json",
+      "before_sha256": "17de1c86371555bcd9fcb1fed554d8396c805d001c119b78b2c831e1dd7a9fc9",
+      "sha256": "9247b2cfb72bef55f3b46eef3b4c9a72d8222a5d874492c6503d56072f3cf12f"
     },
     {
       "path": "docs/system_atlas/README.md",
@@ -392,6 +407,11 @@
       "sha256": "acdecde8847c63cc9d7854b0d1aa2b51d25a742834f60b6fb5f9fda9c161619e"
     },
     {
+      "path": "tests/fixtures/learning/ddo_document_history_v1.json.gz",
+      "before_sha256": null,
+      "sha256": "aff32d60094afeb469110125021dd8b61588f505e13f42fe3d0005ea71c1e6e8"
+    },
+    {
       "path": "tests/governance/test_clean_core_seal_v1.py",
       "before_sha256": "e3ee55d2bfd7c0db74319049de562f2fc423fd03ea8107f66286749f3983569a",
       "sha256": "dad74b7e4bc999a527e18c4dfad82595234b2173631eb181007d266a0918249e"
@@ -400,6 +420,11 @@
       "path": "tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
       "before_sha256": "a06a83172b73f694e261dcc2b7b23612cf0fd9c5249e56a9acf38fe96d633f13",
       "sha256": "900aeaf6e90c7cf651ffc2340cd435c355de65708c9afae3e23b618c750011a0"
+    },
+    {
+      "path": "tests/learning/test_ddo_durable_evidence_storage_owner_contract_v1.py",
+      "before_sha256": "afba0c5617cdcb79a28a3debf1a9d943ab5dc01979e6bffec68396ec47f5ec89",
+      "sha256": "4002f7351bb78c201e9264e83ff99523719b76af02d1991c778a806f356f2730"
     },
     {
       "path": "tests/learning/test_incremental_immediate_predecessor_binding_v1.py",

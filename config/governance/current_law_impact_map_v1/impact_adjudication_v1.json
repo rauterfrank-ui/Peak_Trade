@@ -104,8 +104,10 @@
     "tests/experiments/test_meta_stability_observed_sample_v1.py",
     "tests/experiments/test_representation_adaptation_decision_integrity_v1.py",
     "tests/experiments/test_representation_plan_required_context_v1.py",
+    "tests/fixtures/learning/ddo_document_history_v1.json.gz",
     "tests/governance/test_clean_core_seal_v1.py",
     "tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+    "tests/learning/test_ddo_durable_evidence_storage_owner_contract_v1.py",
     "tests/learning/test_incremental_immediate_predecessor_binding_v1.py",
     "tests/learning/test_learning_provenance_envelope_consistency_v1.py",
     "tests/learning/test_mi_forecast_exact_outcome_end_v1.py",
@@ -133,10 +135,10 @@
     "tests/ops/test_productive_n1_post_close_continuation_v1.py",
     "tests/ops/test_treasury_budget_owner_start_contract_v1.py"
   ],
-  "changed_paths_sha256": "8c7af6b317bad2d3e70a7c35510366186f3a9dd37403a258cc68614e06d3b5dc",
+  "changed_paths_sha256": "978b880bdcc2851992dd5091896976c6eb2643a749e7f6a310976e53943839c8",
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
   "selector_used_as_law_impact_authority": false,
-  "reason": "Change-bound N1 continuation and explicit CI hygiene repair. Seventy-seven non-protected Python files are formatted with identical ASTs; 31 exact frozen Master V2 and policy sources retain their original bytes and are independently checked before Ruff formatting. Core seal, approved source digests, frozen policy inventory, original tags and runtime state remain unchanged. The stale link-debt baseline is rebound to the verified actual main snapshot under the existing debt-management guide; no new PR debt is admitted. Functional and negative verification is recorded in the CI repair evidence. The newly reached stale CI Core-seal manifest is rebound only after all 20 production sources match the accepted frozen commit; the obsolete BTC-specific assignment is replaced by protection of the existing common-admission consumer. Core source bytes and canonical asset/risk decisions remain unchanged. The one explicit CI-policy development delta preserves the original frozen policy objects. All 21 original economic/diagnostic boundary-controlled research/test sources are preserved byte-for-byte; no new grant or boundary implementation change is introduced.",
+  "reason": "Change-bound N1 continuation and explicit CI hygiene repair. Seventy-seven non-protected Python files are formatted with identical ASTs; 31 exact frozen Master V2 and policy sources retain their original bytes and are independently checked before Ruff formatting. Core seal, approved source digests, frozen policy inventory, original tags and runtime state remain unchanged. The stale link-debt baseline is rebound to the verified actual main snapshot under the existing debt-management guide; no new PR debt is admitted. Functional and negative verification is recorded in the CI repair evidence. The newly reached stale CI Core-seal manifest is rebound only after all 20 production sources match the accepted frozen commit; the obsolete BTC-specific assignment is replaced by protection of the existing common-admission consumer. Core source bytes and canonical asset/risk decisions remain unchanged. The one explicit CI-policy development delta preserves the original frozen policy objects. All 21 original economic/diagnostic boundary-controlled research/test sources are preserved byte-for-byte; no new grant or boundary implementation change is introduced. Current DDO owner-spec navigation is restored; all prior documentation assertions are retained against digest-bound historical document fixtures from their original Git revision. No historical authority is promoted to current runtime status.",
   "evidence_refs": [
     "docs/system_atlas/source/documentation-cleanup.json",
     "docs/system_atlas/source/policy-inventory.json",
