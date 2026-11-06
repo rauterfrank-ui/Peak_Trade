@@ -1,0 +1,269 @@
+PEAKTRADE – VORGELAGERTE N_BARS-VERSORGUNG DES ERSTEN PILOT-FALLS
+Untersuchung: 02.11.2026 · lokale Offline-Rekonstruktion
+
+ERGEBNIS
+
+Die beiden vorher nicht aufgelösten Referenzen des ersten Outcome-Bündels
+lassen sich exakt aus vorhandenen gespeicherten O4-Bar-Fakten rekonstruieren.
+Auch die drei Evaluation-Records stimmen einschließlich content_hash mit dem
+historischen Ledger überein. Der anschließende neue Lernzustand, Export und
+Optimierungseingang funktionieren erneut.
+
+Die so gebundene Quelle ist jedoch kein Nachweis später beobachteten
+PT1H-Marktverhaltens. Die Bars wurden aus schon verfügbaren Schlusskursen
+mit künstlich vorgeschobenen Stunden-Zeitpunkten erzeugt. Die offene Grenze
+ist deshalb konkreter als zuvor: Ein vorhandener Handoff ersetzt echte
+spätere Beobachtungen durch umdatierte Eingaben. Das wirtschaftliche Label
+bleibt UNKNOWN. Der akzeptierte Optimierungseingang erkennt diese
+Herkunfts-/Zeitverletzung in den untersuchten Records nicht.
+
+Diese Aussage betrifft die nachgewiesene Seed-Kette. Sie ist kein Urteil
+über jeden Outcome-Weg im Repository oder jede historische Ausführung.
+
+ARBEITSSTAND UND GRENZEN
+
+Checkout: /Users/frnkhrz/Peak_Trade
+Branch: feat/ghv-current-exchange-reconciliation-pr-integration-v1
+HEAD: 242b7974fc93f0bdb47706556101bd6f0c497414
+Lokaler origin/main-Ref: 5d1c838c15369507c5247834db4dd0df25592169
+Kein Fetch; keine Gleichsetzung dieses Refs mit dem aktuellen Remote-Stand.
+Runtime: scripts/pt; Python 3.11.14; WORKTREE_ENV_ISOLATION_PASS.
+
+Vor und nach dieser Fortsetzung: 87 Einträge in git status --short,
+einschließlich der beiden schon vorhandenen Pilot-Dateien. Drei bestehende
+versionierte Änderungen blieben erhalten. In dieser Fortsetzung wurden
+keine Repository-Quelldateien, Produktivdaten oder Obsidian-Register geändert.
+Neue Skripte, Tests und Nachweise liegen ausschließlich in diesem Fallordner.
+Kein Commit, Push, PR, GET, Credential-Zugriff, Auftrag oder externer Effekt.
+
+QUELLEN UND IDENTITÄT
+
+Vollständige Pfade, Größen und SHA256 stehen in inputs/manifest.json.
+Unveränderte Kopien aller vier Eingabedateien liegen je Lauf unter
+source_snapshots/. Die Originalquellen wurden am Ende erneut gehasht.
+
+1. Historischer DDO-Ledger:
+   runtime/current_productive/natural_evidence_accumulation_v1/lane_state/
+   LANE_1/ddo_learning_capture_v1.jsonl
+   SHA256 33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b
+   742 Records; kanonisch mit Integritäts-/Lineage-Prüfung eingelesen.
+
+2. O4-Faktenspeicher unter demselben LANE_1:
+   peak_trade_public_market_data_runtime_v1/
+   peak_trade_public_market_data_runtime_v1/normalized_finalized_facts.jsonl
+   SHA256 d3a84d5fad701209fc8eecad80fc4bf44e0edf8e45fa86ec1f32a976111da240
+   10 Fakten. Die payload-basierten fact_digest-Werte wurden neu berechnet.
+   Zwei explizite fact_digest-Werte binden den ersten Fall.
+
+3. Gespeicherte öffentliche GET-Captures des Laufs 20261012T111235Z:
+   runtime/current_productive/natural_evidence_accumulation_v1/runs/
+   20261012T111235Z/natural_market_data_get_capture_v1.jsonl
+   SHA256 6e551ab706cde0dd1fd6f27d50585c7e72cdabf1cfb5140fba98f2275d0cd158
+   136 Capture-Zeilen. Originale HTTP-Body-Bytes fehlen in diesem Export;
+   der dort gespeicherte body_sha256 wurde daher nicht erneut verifiziert.
+
+4. inputs/fixture-input.json:
+   Neu deklarierte, konstruierte Testeingabe; keine historische Marktquelle.
+
+Erstes Outcome:
+out.nbars.fad412edd4cd045c6ca17cb2744b5f162a70b66805e515d9
+Entscheidung:
+ddo.dec:5b197cf15b39310f5913134b
+
+Aus den beiden exakt reproduzierten Referenzen ergibt sich die gespeicherte
+Instrumentbindung RSR-USDT-SWAP mit kanonischer Identität
+okx_eea:linear_perpetual:RSR:USDT:USDT:rsr-usdt-swap.
+Diese Bindung gehört zur referenzierten Messung. Sie wird nicht nachträglich
+in die Entscheidung geschrieben: selected_instrument_ref bleibt dort null.
+Auch UNKNOWN-Felder der historischen Provenienz bleiben unverändert.
+
+REF- UND EVALUATION-REPRODUKTION
+
+actual_outcome_ref:
+ddo.outcome.measure.c9e38efa7454b611fcb05536cbb050f0ebc0001b0e2ea3d1f5dd3b4f48505a1c
+
+evaluation_time_information_set_ref:
+ddo.eval_info_set.9af081ab58cd884b59359f156d4099ad1cb96228401d3f2a14a32dc839379e41
+
+Beide Referenzen wurden mit dem bestehenden Supplier neu erzeugt und exakt
+verglichen. Die allein zum Vergleich neu berechneten historischen Outcome-,
+Attribution- und Counterfactual-Records sind in kanonischer JSON-Darstellung
+bytegleich zum Ledger. Sie liegen ausdrücklich unter
+historical_comparison_only/ und sind kein neuer produktiver Nachweis.
+Die historische Standard-Provenienz wurde nur für diesen Vergleich erhalten.
+
+Die ursprünglichen separaten Mess-/Informationsset-Dateien wurden im
+gezielt gesuchten lokalen Bereich nicht gefunden. Sie sind jetzt als neue
+Rekonstruktionen aus den noch vorhandenen Fakten gespeichert. Das ist kein
+Nachweis, dass diese beiden vollständigen Artefaktkörper damals persistiert
+wurden. Der heutige real_outcome_horizon_productive_host_v1 übernimmt aus
+der Supplier-Materialisierung Referenzen und Metadaten, gibt die beiden
+vollständigen Artefaktkörper jedoch nicht an seinen Aufrufer zurück.
+
+ZEITLICHE REKONSTRUKTION – ALLE ZEITEN UTC
+
+Gespeicherte Entscheidung: 12.10.2026, 11:15:00.
+
+Der öffentliche Capture enthält bei /api/v5/market/candles,
+instId=RSR-USDT-SWAP, bar=1m zwei bestätigte Zeilen mit:
+  Original-Candle-Zeit 11:15:00, Schlusskurs 0.002258;
+  Original-Candle-Zeit 11:16:00, Schlusskurs 0.002261.
+Die Zeitwerte sind die Candle-Zeitstempel der gespeicherten Venue-Zeilen;
+die originale Request-Granularität ist 1 Minute.
+
+Neun Capture-Zeilen liefern dasselbe numerische Schlusskurspaar, darunter
+Zeile 2, erfasst um 11:17:31.984002. Die Capture-Korrelation ist ausdrücklich
+PARTIAL. Der exakte GET-Aufruf, aus dem der damalige Cycle diese Werte
+übernommen hat, ist damit nicht eindeutig bewiesen. Numerische Gleichheit,
+statische Aufrufkette und exakte Messreferenz-Rekonstruktion werden getrennt
+ausgewiesen. Kein vollständiges Poll-Bündel wird behauptet.
+
+Der Seed-Code übernimmt die letzten zwei finalized_closes, setzt aber:
+  event_ts = decision_time + (bar_index + 1) * 3600 Sekunden.
+
+Daraus entstehen:
+  Bar 12:00–13:00, Schlusskurs 0.002258, behauptete Beobachtung 12:15;
+  Bar 13:00–14:00, Schlusskurs 0.002261, behauptete Beobachtung 13:15.
+
+Beide Bars waren laut gespeichertem persisted_at bereits um 11:17:32
+geschrieben. Die Zeitangaben sind keine unabhängige Uhr-Attestierung;
+zusammen mit dem exakten Seed-Replay und den Capture-Werten belegen sie
+aber konsistent die künstlich vorgezogene Speicherung später datierter Bars.
+Die Bars werden unmittelbar nach dem einzelnen Seed-Sample finalisiert.
+
+Das ist keine Aggregation echter späterer 1-Minuten-Beobachtungen zu
+abgeschlossenen Stunden-Bars. Unterliegende Preiswerte können aus einem
+gespeicherten öffentlichen Capture stammen; ihre neu erzeugten Stunden-
+Zeitpunkte und FINALIZED_BAR-Klassen machen daraus keine echte spätere
+Marktbeobachtung.
+
+MESSSEMANTIK
+
+n_bars = 2; Intervall PT1H; Horizontstart 12:00, Ende 14:00.
+Messung = ln(0.002261 / 0.002258) = 0.0013277275683624453.
+Einheit des LOG_RETURN: dimensionslos, natürlicher Logarithmus.
+Die Formel vergleicht den Schlusskurs des ersten mit dem Schlusskurs des
+letzten Bars. Im behaupteten Stundenraster ist das 13:00→14:00, nicht
+Entscheidungspreis 11:15→14:00 und auch kein monetärer Trade-PnL.
+Im gefundenen Capture liegen die zugehörigen Candle-Zeilen eine Minute
+auseinander. Vertragsgröße, Gebühren, Slippage und tatsächliche Ausführung
+werden damit nicht gemessen. Ein economic_score wird daraus nicht abgeleitet.
+
+CODE- UND HISTORIENBINDUNG
+
+Die zwei Fakten nennen als repository_sha:
+693a48ceb7b8f503d7294c54bfc7f5faaab1ecfe.
+
+Fünf zentrale heutige Module wurden vollständig gegen diese Revision
+verglichen; alle fünf sind bytegleich. Hashes: historical-code-binding.json.
+Das betrifft Seed-Handoff, Snapshot-Materialisierung, Supplier,
+Canonical-Bar-Producer und Evaluation-Engine. Andere Module und die gesamte
+damalige Umgebung sind dadurch nicht automatisch gleich oder bewiesen.
+Es wurde kein historischer Checkout gestartet und keine damalige
+Laufzeitausführung nachträglich als beobachtet ausgegeben.
+
+Konkrete Fundstellen im aktuellen Checkout:
+- current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py,
+  src/ops/full_core_live_path_composition_root_v1/, Zeilen 120–176:
+  letzte Preise, Stunden-Verschiebung, injizierte Mark-Identität, Finalisierung.
+- current_productive_master_v2_runtime_cycle_v1.py, gleicher Ordner,
+  Zeilen 1025–1038: Übergabe bereits vorhandener finalized_closes an den Handoff.
+- current_productive_persistent_natural_enter_convergence_v1.py, gleicher
+  Ordner, Funktion _market_kwargs_from_observation_v1: Candle-Close-Extraktion.
+- src/learning/deterministic_decision_outcome_v0/
+  n_bars_bar_evidence_supplier_v1.py, Zeilen 215–216, 237 und 267:
+  erster/letzter Schlusskurs und content-addressed Referenzen.
+- evaluation_engine_v0.py, gleicher Lernordner, Zeilen 347 ff.:
+  N_BARS kann ohne explizite Bindung automatisch die Pre-External-Klasse setzen.
+
+Gezielter lokaler Git-Verlauf: Handoff-Datei als neue Datei in
+b3af49d714cf0f248a572b5799bb5edef4b45fa6, 28.09.2026, PR #6937;
+zusätzlich lokaler Entwicklungscommit 43fde5e7873d919159b02c095acce06428a6e9ec,
+ebenfalls 28.09.2026. Das ist ein erreichbarer lokaler Entwicklungsbeleg,
+keine globale Behauptung über den allerersten fachlichen Ursprung.
+
+BEGRENZTER GEGENCHECK DER ANDEREN BEIDEN PILOT-OUTCOMES
+
+Auch für W-USDT-SWAP und DNA-USDT-SWAP wurden aus jeweils zwei schon
+vorhandenen Fakten beide Referenzen und alle drei Evaluation-Records exakt
+reproduziert. Die Seed-Funktion erzeugt auch dort dieselben gespeicherten
+Bars; persisted_at liegt jeweils vor der behaupteten Beobachtungszeit.
+Details: other-two-outcomes-bounded-crosscheck.json.
+Für diese beiden Fälle wurde kein eigener Raw-Capture-Pfad rückwärts verfolgt.
+Es erfolgte keine zusätzliche globale Quellen- oder Archivsuche.
+
+SEPARATER NEUER OFFLINE-FUNKTIONSTEST
+
+inputs/fixture-input.json deklariert eine konstruierte TEST-USD-SWAP-Identität,
+zwei PT1H-Bars, Zeitgrenzen, Beobachtungsidentitäten, Preise und die Einheit.
+Keine Seed-Zeitverschiebung; die Eingabe ist ausdrücklich Testdaten-Replay.
+Der vorhandene Supplier erzeugt Messung und Informationsset. Die Evaluation
+wird explizit mit REPLAY_HISTORICAL und DEV gebunden; producer_id benennt
+die konstruierte Fixture. Diese bestehende Replay-Klasse wird hier für das
+Offline-Wiederabspielen der deklarierten Fixture verwendet, nicht als
+Behauptung historischer echter Marktpreise.
+
+Instrument, Venue-ID, Cycle, Fixture-Epoch, Markt-/Entscheidungs-/Evaluations-
+Zeit und Lineage-Digest sind explizit gebunden. Die sechs vom vorhandenen
+Pilot diagnostizierten Provenienzfelder sind nicht mehr UNKNOWN. Das ist
+keine Behauptung universeller semantischer Vollständigkeit.
+
+Messung→Evaluation→neuer Lernzustand→Export→Intake: PASS.
+Intake: ACCEPTED_OFFLINE_RESEARCH_INPUT.
+Wirtschaftliches Label: vor und nach Export UNKNOWN.
+Keine Such-, Ranking-, Promotion- oder Tradingwirkung nachgewiesen/aktiviert.
+Die report.json-Felder des vorhandenen Lern-/Export-Abschnitts lassen den realen End-to-End-
+Versorgungsnachweis weiterhin offen; die Fixture überschreibt sie nicht.
+
+VERIFIKATION
+
+- Kanonische Runtime-Prüfung bestanden.
+- Ruff format/check für neues Untersuchungsskript und Tests bestanden.
+- Sechs fokussierte Tests bestanden, 1.28 Sekunden:
+  genaue Referenzen trotz falscher Zeitsemantik; beschädigter Fakt;
+  neu gehashter geänderter Preis; unbekannte Faktidentität;
+  falscher Quellenhash ohne Resultatordner; explizite Fixture-Replay-Provenienz.
+- Zwei separate tatsächliche Durchläufe in run-001 und
+  run-002-reproducibility.
+- 19 ausgewählte fachliche Ausgabedateien bytegleich, darunter Messartefakte,
+  historische Vergleichsrecords und neue Lern-/Exportdaten beider Wege.
+- Pfadtragende Reports und Manifeste sind nicht als bytegleich bezeichnet.
+- Alle vier Originaleingaben am Ende erneut gehasht: unverändert.
+- Kein vollständiger Repository-Testlauf und kein Gesamtbetriebsnachweis.
+
+REPRODUKTION
+
+Aus /Users/frnkhrz/Peak_Trade:
+
+./scripts/pt -c 'import runpy; runpy.run_path("/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/offline-learning-supply-upstream-v1/reproduce_upstream_case.py", run_name="__main__")' --manifest '/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/offline-learning-supply-upstream-v1/inputs/manifest.json' --output '<NEUER_ABSOLUTER_AUSGABEORDNER>'
+
+Der neue Runner beendet sich mit 0, wenn Vergleich und Fixture erfolgreich
+ausgeführt wurden. Das bedeutet nicht, dass die echte Marktversorgung
+geschlossen ist. Dies steht separat als NOT_PROVEN_SEEDED_TIME_AXIS im
+report.json. Bestehende Ausgabeordner werden nicht überschrieben.
+
+Tests:
+./scripts/pt -m pytest -q '/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/offline-learning-supply-upstream-v1/test_upstream_case.py'
+
+NÄCHSTER FACHLICHER SCHRITT
+
+Der erste begrenzte historische Abschnitt bleibt technisch reproduzierbar.
+Seine Datenqualität als Lernsignal für späteres Marktverhalten ist durch
+diese Rekonstruktion nicht bestätigt; der konkrete Seed-Weg verletzt diese
+Interpretation. Diese Outputs dürfen nicht allein aufgrund ACCEPTED oder
+OBSERVED_PRODUCTIVE_PRE_EXTERNAL als reale N_BARS-Zielwerte verwendet werden.
+Bestehende Evidenz wurde deshalb erhalten und durch diesen Befund ergänzt.
+
+Als nächster Umsetzungsschritt bietet sich ein ausschließlich separater
+Offline-Fall an, der tatsächlich später erfasste Beobachtungen mit ihren
+Originalzeiten verarbeitet und vor Horizontreife kein Outcome erzeugt.
+Die vorhandene natural_enter_cross_session_outcome_closure_v1 ist dafür ein
+zu prüfender Kandidat, keine bereits abgenommene Lösung; ihre Finalisierung,
+Bar-Abdeckung und Recovery-Semantik müssen konkret belegt werden.
+Der Seed-Handoff und der Optimierungs-Consumer wurden hier nicht produktiv
+umgebaut. Der konkrete Optimierungszweck und zuständige Producer eines
+wirtschaftlichen Labels bleiben gesondert zu klären.
+
+Keine externen Laufwerke oder weiteren Checkouts wurden benötigt: Die
+exakten referenzierten Seed-Eingaben waren lokal vorhanden. Das behauptet
+keine globale Abwesenheit echter späterer Marktaufzeichnungen anderswo.

@@ -1,0 +1,142 @@
+{
+  "id": "SL01",
+  "phase": 1,
+  "title": "Experimentidentität",
+  "introduction_commit": "ecbe5b7b4f8a71d3a81443a65949fcce6a5de350",
+  "introduction_date": "2026-08-17T17:55:28Z",
+  "commit_subject": "research: add canonical experiment identity v1 (#5928)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/ecbe5b7b4f8a71d3a81443a65949fcce6a5de350",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_experiment_identity_v1.py",
+  "code_blob": "d9499b867bf0be2f7682df067e8f141c94108e0e",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "d9974edd7874393c2dae0f7b900d2f393d5b62d7a5284da7c21d2214e5113ef7",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL01-canonical_experiment_identity_v1.source.py",
+  "source_lines": 646,
+  "module_docstring": "Phase 1 Canonical Experiment Identity v1 (research metadata only).\n\nThis contract binds every COMPLETE research/backtest experiment to explicit\ncritical inputs. It has no runtime, order, live, funding, canary, or config\nwrite authority.\n\nPackage N ``experiment_identity_manifest_v1`` remains an incomplete historical\nprojection and is not reinterpreted by this schema.",
+  "public_functions": [
+    {
+      "name": "digest_domain_name",
+      "line": 160
+    },
+    {
+      "name": "domain_separated_digest",
+      "line": 169
+    },
+    {
+      "name": "compute_trading_decision_core_binding_v1",
+      "line": 179
+    },
+    {
+      "name": "canonicalize_value",
+      "line": 198
+    },
+    {
+      "name": "canonicalize_mapping",
+      "line": 228
+    },
+    {
+      "name": "inspect_code_provenance_v1",
+      "line": 394
+    },
+    {
+      "name": "build_canonical_experiment_identity_v1",
+      "line": 433
+    },
+    {
+      "name": "validate_canonical_experiment_identity_v1",
+      "line": 548
+    }
+  ],
+  "classes": [
+    {
+      "name": "CanonicalExperimentIdentityError",
+      "line": 122
+    },
+    {
+      "name": "CanonicalCodeProvenanceV1",
+      "line": 127
+    },
+    {
+      "name": "CanonicalExperimentIdentityRequestV1",
+      "line": 134
+    }
+  ],
+  "static_canonical_call_sites": [],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_EXPERIMENT_IDENTITY_V1.md",
+      "status": "added",
+      "sha": "eb8d1fab93a28efa7af0c6872590d76ee3454db3",
+      "additions": 83,
+      "deletions": 0,
+      "changes": 83
+    },
+    {
+      "filename": "src/experiments/canonical_experiment_identity_v1.py",
+      "status": "added",
+      "sha": "d9499b867bf0be2f7682df067e8f141c94108e0e",
+      "additions": 646,
+      "deletions": 0,
+      "changes": 646
+    },
+    {
+      "filename": "src/experiments/experiment_identity_manifest_v1.py",
+      "status": "modified",
+      "sha": "36e2d7dc7181c7c011b6598c2a800878563eaedf",
+      "additions": 11,
+      "deletions": 1,
+      "changes": 12
+    },
+    {
+      "filename": "tests/experiments/test_canonical_experiment_identity_v1.py",
+      "status": "added",
+      "sha": "e9873ab42178d7127cc25bad604d9c4d1dae52a1",
+      "additions": 370,
+      "deletions": 0,
+      "changes": 370
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_experiment_identity_v1.py",
+      "status": "added",
+      "sha": "e9873ab42178d7127cc25bad604d9c4d1dae52a1",
+      "additions": 370,
+      "deletions": 0,
+      "changes": 370
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_experiment_identity_v1.py",
+      "status": "added",
+      "sha": "d9499b867bf0be2f7682df067e8f141c94108e0e",
+      "additions": 646,
+      "deletions": 0,
+      "changes": 646
+    },
+    {
+      "filename": "src/experiments/experiment_identity_manifest_v1.py",
+      "status": "modified",
+      "sha": "36e2d7dc7181c7c011b6598c2a800878563eaedf",
+      "additions": 11,
+      "deletions": 1,
+      "changes": 12
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "ecbe5b7b4f8a71d3a81443a65949fcce6a5de350",
+      "date": "2026-08-17T17:55:28Z",
+      "subject": "research: add canonical experiment identity v1 (#5928)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/ecbe5b7b4f8a71d3a81443a65949fcce6a5de350",
+      "parents": [
+        "a7f4502e04e168b2dd12b56fecb745323bd6c783"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

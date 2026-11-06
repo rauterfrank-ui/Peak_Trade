@@ -31,7 +31,11 @@ from src.evaluation.golden_vectors.runner.digest_projection import (
     protected_semantic_digests_digest,
     run_manifest_protected_digest_hex,
 )
-from src.evaluation.golden_vectors.runner.errors import GvefNonDeterminismError, GvefRunnerError
+from src.evaluation.golden_vectors.runner.errors import (
+    GvefNonDeterminismError,
+    GvefResultMutationError,
+    GvefRunnerError,
+)
 from src.evaluation.golden_vectors.corpus.errors import GvefCorpusDriftError
 from src.evaluation.golden_vectors.digest.errors import GvefProtectedDigestDriftError
 from src.evaluation.golden_vectors.corpus.gate_v1 import PassThroughCorpusIntegrityGateV1
@@ -153,7 +157,7 @@ class GenericRunnerV1:
             if baseline.verdict is DomainVerdict.FAIL:
                 fc = baseline.failure_classification or FailureClassification.INVARIANT_FAILURE
                 return self._fail(record, fc, deps.evaluator.failure_fan_out(fc))
-            record.baseline_result = baseline
+            record.baseline_result = self._result_copy(baseline)
             record.baseline_result_digest = contract_digest_hex(baseline)
 
             candidate = deps.evaluator.evaluate_candidate(
@@ -168,7 +172,20 @@ class GenericRunnerV1:
                     FailureClassification.INVARIANT_FAILURE,
                     run.fan_out_evaluation_class,
                 )
-            record.candidate_result = candidate
+            record.candidate_result = self._result_copy(candidate)
+            candidate_digest = contract_digest_hex(candidate)
+
+            def check_retained_results() -> None:
+                # Frozen models still contain mutable lists/maps. Retain the first
+                # full content identity across every injected downstream callback.
+                if (
+                    contract_digest_hex(baseline) != record.baseline_result_digest
+                    or contract_digest_hex(record.baseline_result) != record.baseline_result_digest
+                    or contract_digest_hex(candidate) != candidate_digest
+                    or contract_digest_hex(record.candidate_result) != candidate_digest
+                ):
+                    raise GvefResultMutationError("retained evaluation result changed")
+
             self._advance(record, RunnerState.EVALUATED)
 
             if verify_deterministic_replay:
@@ -178,7 +195,9 @@ class GenericRunnerV1:
                     run=run,
                     replay=replay,
                     baseline_digest=record.baseline_result_digest,
+                    candidate_digest=candidate_digest,
                 )
+            check_retained_results()
 
             baseline_d = deps.evaluator.protected_digests_baseline(
                 context=request.evaluation_context
@@ -186,12 +205,14 @@ class GenericRunnerV1:
             candidate_d = deps.evaluator.protected_digests_candidate(
                 context=request.evaluation_context
             )
+            check_retained_results()
             delta, merged_d = deps.comparator.compare(
-                baseline=baseline,
-                candidate=candidate,
+                baseline=self._result_copy(record.baseline_result),
+                candidate=self._result_copy(record.candidate_result),
                 baseline_digests=baseline_d,
                 candidate_digests=candidate_d,
             )
+            check_retained_results()
             record.protected_digests = merged_d
             self._advance(record, RunnerState.COMPARED)
 
@@ -204,6 +225,7 @@ class GenericRunnerV1:
                 post_gate_pass_required=True,
                 protected_digests=merged_d,
             )
+            check_retained_results()
             if not post_ok:
                 return self._fail(
                     record,
@@ -218,12 +240,14 @@ class GenericRunnerV1:
                 protected_digests=merged_d,
                 boundary_results=pre_boundaries + post_boundaries,
                 post_gate_pass=True,
-                domain_evaluation_result=record.candidate_result,
+                domain_evaluation_result=self._result_copy(record.candidate_result),
             )
+            check_retained_results()
             record.evidence_bundle = bundle
             self._advance(record, RunnerState.EVIDENCE_BUILT)
 
             record.registry_ref = deps.registry.register(bundle)
+            check_retained_results()
             self._advance(record, RunnerState.REGISTERED)
             try:
                 envelope = deps.promotion_adapter.adapt(
@@ -235,6 +259,7 @@ class GenericRunnerV1:
                 )
                 if envelope is not None:
                     record.promotion_envelope = envelope
+                check_retained_results()
             except GvefPromotionAuthorityError:
                 return self._fail(
                     record,
@@ -244,6 +269,13 @@ class GenericRunnerV1:
             record.fan_out_evaluation_class = run.fan_out_evaluation_class
             record.protected_output_digest = self._protected_output_digest(record)
             return record
+        except GvefResultMutationError:
+            fan = (
+                record.run_manifest.fan_out_evaluation_class
+                if record.run_manifest
+                else FanOutEvaluationClass.LOCAL_EVALUATION
+            )
+            return self._fail(record, FailureClassification.INVARIANT_FAILURE, fan)
         except GvefNonDeterminismError:
             return self._fail(
                 record,
@@ -272,6 +304,7 @@ class GenericRunnerV1:
         run: RunManifestV1,
         replay: ReplayTraceV1,
         baseline_digest: str,
+        candidate_digest: str,
     ) -> None:
         first_manifest_digest = run_manifest_protected_digest_hex(run)
         baseline2 = deps.evaluator.evaluate_baseline(
@@ -279,10 +312,23 @@ class GenericRunnerV1:
         )
         if contract_digest_hex(baseline2) != baseline_digest:
             raise GvefNonDeterminismError("baseline replay digest mismatch")
-        _ = deps.evaluator.evaluate_candidate(context=request.evaluation_context, replay=replay)
+        candidate2 = deps.evaluator.evaluate_candidate(
+            context=request.evaluation_context, replay=replay
+        )
+        if contract_digest_hex(candidate2) != candidate_digest:
+            raise GvefNonDeterminismError("candidate replay digest mismatch")
+        # The second candidate may retain a reference to baseline2 as well.
+        if contract_digest_hex(baseline2) != baseline_digest:
+            raise GvefNonDeterminismError("baseline replay result changed during candidate replay")
         second_manifest_digest = run_manifest_protected_digest_hex(run)
         if first_manifest_digest != second_manifest_digest:
             raise GvefNonDeterminismError("run manifest protected digest drift")
+
+    @staticmethod
+    def _result_copy(result: DomainEvaluationResultV1) -> DomainEvaluationResultV1:
+        return DomainEvaluationResultV1.model_validate(
+            result.model_dump(mode="json", by_alias=True)
+        )
 
     def _protected_output_digest(self, record: GvefRunRecordV1) -> str:
         payload: dict[str, Any] = {

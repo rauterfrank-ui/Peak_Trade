@@ -368,9 +368,9 @@ def test_adverse_exit_distance_exceeds_reversal_invalid() -> None:
     assert ScopeEventBlockReason.POLICY_ADVERSE_EXCEEDS_REVERSAL.value in evidence.blocked_reasons
 
 
-def test_hard_max_scope_distance_exceeded() -> None:
+def test_default_scope_events_have_no_fixed_economic_distance_cap() -> None:
     evidence = _generate(up_distance=1500.0, current_price=5000.0)
-    assert ScopeEventBlockReason.POLICY_HARD_MAX_SCOPE_EXCEEDED.value in evidence.blocked_reasons
+    assert ScopeEventBlockReason.POLICY_HARD_MAX_SCOPE_EXCEEDED.value not in evidence.blocked_reasons
 
 
 def test_unfinalized_bar_blocks() -> None:

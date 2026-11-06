@@ -1,0 +1,110 @@
+# Woher erhielt Self-Learning seine Daten?
+
+Stand: 02.11.2026. Untersuchungsnotiz außerhalb des kanonischen Obsidian-Ledgers; keine neue System-SSOT.
+
+Historischer Forschungsstand: `899e154d1bb095227c13690943e13284fb936972`. Späterer Vergleich: `5d1c838c15369507c5247834db4dd0df25592169`.
+
+## Vorläufige Antwort
+
+Mehrere Datenwege sind codiert, aber aus unterschiedlichen Entwicklungsständen. Im August-Forschungsprogramm werden bereits erhobene Experimentmesswerte und vorhandene Evidenz vom Aufrufer übergeben. Ein späterer September-Adapter übersetzt vorhandene Paper-/Shadow-/Testnet-Archive tatsächlich in Forschungsbeobachtungen. DDO erfasst zusätzlich Entscheidungen und später auch typisierte Entscheidungseingaben; eine weitere Strecke liefert spätere Marktpreise für die Ergebnisbewertung. Das ist keine bewiesene einheitliche unterste Urarchitekturebene.
+
+## INPUT-01 — 17./18.08.2026: ursprünglicher Forschungsloop
+
+**Quelle:** Aufrufer liefert experiment_observations und Vergleichs-/Gap-Werte.
+
+**Was ankommt:** Messwerte, Robustheits- und Regimeergebnisse, Artefaktreferenzen; keine automatisch beschafften Rohmarktdaten.
+
+**Empfänger:** OfflineExperimentObservationsV1 → Phase-10-Loop → Experiment Memory / Bewertungen.
+
+**Beleg:** Codierte Eingabeschnittstelle und Verarbeitung. Quellen: IN01:171–207.
+
+**Offen/Grenze:** Konkreter ursprünglicher Backtest-/Paper-/Shadow-Datenlieferant bisher nicht belegt.
+
+## INPUT-02 — August: Meta-Learning und historische Evidenz
+
+**Quelle:** Aufrufer übergibt Experimentserien, Fehlergedächtnis und Reality-Gap-Records.
+
+**Was ankommt:** backtest_metrics, regime, market_universe, parameter_region, robustness_test_statuses; optional later_outcome mit Oberfläche/Zeit/Wert.
+
+**Empfänger:** CanonicalMetaLearningRequestV1.
+
+**Beleg:** Codierte Felder; früh vorgesehener Vergleich mit späteren Ergebnissen. Quellen: IN02:191–238, IN03.
+
+**Offen/Grenze:** Ein Feld observed_surface=SHADOW/PAPER belegt noch keinen automatischen Anschluss einer solchen Sitzung.
+
+## INPUT-03 — Ab 01.09.2026: DDO-Beobachtung bestehender Producer
+
+**Quelle:** Ergebnis vorhandener Producer nach deren Ausführung, z. B. Universe, Ranking, Auswahl, Reconciliation, simuliertes Execution-Ergebnis.
+
+**Was ankommt:** Entscheidungs-/Incident-Records und Producer-Ergebnis; Capture nur bei aktivierter Bindung.
+
+**Empfänger:** DDO-Capture / Ledger.
+
+**Beleg:** Decorator-Code und reale Decorator-Stellen am Einführungscommit 0a8ec8e8d73 geprüft. Quellen: IN04:415–444, IN04:506–507.
+
+**Offen/Grenze:** Frühe generische DecisionEvents setzen market_snapshot_ref und feature_snapshot_ref auf None; kein Beleg für vollständige Rohdatenaufnahme.
+
+## INPUT-04 — Späterer Stand am bestätigten main-Pin
+
+**Quelle:** Typisierte Eingabe des Double-Play-Producers zum Entscheidungszeitpunkt.
+
+**Was ankommt:** Instrument/Epoch, Composition, Richtungs-/Positions-/Recon-Zustand, Gates, Safety, Datenintegrität und Exit-Signale.
+
+**Empfänger:** Input-Evidence-Snapshot und Join mit DecisionEvent / Producer-Beobachtung.
+
+**Beleg:** Snapshot-Felder und Join im Code gelesen. Quellen: IN08:396–437, IN09:231–292.
+
+**Offen/Grenze:** Join erlaubt optionale Input-Evidence. Kein Nachweis, dass jede reale Entscheidung einen vollständigen Snapshot besitzt; keine pauschale Rohmarktdatenaufnahme.
+
+## INPUT-05 — Ab 26.09.2026: #6879, G2-Archivprojektion
+
+**Quelle:** Bereits vorhandenes dauerhaftes PAPER-/SHADOW-/TESTNET-Evidence-Archiv; validierte Herkunft.
+
+**Was ankommt:** review/REVIEW_RESULT.json.metrics oder nur Review-Urteil; Artefakt-/Manifestreferenzen, Modus und Beobachtungszeit.
+
+**Empfänger:** OfflineExperimentObservationsV1 → Identitätsbindung; parallel Runtime-Observation → RuntimeToLearningInput.
+
+**Beleg:** Konkrete codierte Archiv-zu-Forschung-Verbindung. Quellen: IN05:326–380, IN05:479–620, IN06.
+
+**Offen/Grenze:** robustness_results/regime_results leer; Cost-/Execution-quality-/Risk-event-/Recon-Refs leer. Kein hier untersuchter realer Archivlauf beweist tatsächlichen historischen Lernzufluss.
+
+## INPUT-06 — Ab 26.09.2026: #6846, später geändert
+
+**Quelle:** Kanonischer Public-Market-Data-Bar-Producer / persistierte abgeschlossene oder korrigierte PT1H-Bar-Fakten.
+
+**Was ankommt:** Zeitlich und nach Sitzung gebundene Kursbalken für N_BARS-Horizont; forward_fill wird abgelehnt.
+
+**Empfänger:** WP-A-Fakten → WP-C-O4-Handoff → DDO-Outcome-Bar-Snapshot.
+
+**Beleg:** Codierte Marktdatenstrecke bis zum Outcome-Snapshot. Quellen: IN07:57–176.
+
+**Offen/Grenze:** Spätere Preisentwicklung zur Ergebnisbewertung, nicht Beleg einer ursprünglichen August-Rohdatenbasis. Upstream-Venue/Transport und konkrete reale Aufnahme hier nicht vollständig verfolgt.
+
+## Semantische Trennungen
+
+- Rohkurse und Features sind etwas anderes als aggregierte Backtest-Messwerte.
+- Konfiguration, Parameterbereiche, Referenzen und Digests beschreiben Identität/Herkunft; sie sind nicht die referenzierten Rohdaten.
+- Zum Entscheidungszeitpunkt verfügbare Information muss von erst später bekannten Outcomes getrennt bleiben.
+- Der G2-Adapter liest bestehende Archive; er führt die zugrunde liegenden Sessions nicht selbst aus. Seine COMPLETE-Markierung ersetzt keinen Nachweis vollständiger fachlicher Messgrößen.
+
+## Nächster belegorientierter Schritt
+
+Den ursprünglichen Lieferanten der August-experiment_observations weiter rückwärts verfolgen: konkrete Aufrufstelle → Ergebnisproduzent → Eingabedatensatz/Zeitraum → Experimentidentität → persistierter Record. Für die späteren Wege ein vorhandenes, unverändertes Sitzungsarchiv mit dessen erzeugten Learning-Records abgleichen. Erst dies kann tatsächlichen Zufluss belegen. Der vorbereitete Offline-Lernversuch bleibt zurückgestellt.
+
+## Quellen mit Revision und lokalem Snapshot
+
+- **IN01** [src/experiments/canonical_automated_offline_research_loop_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/899e154d1bb095227c13690943e13284fb936972/src/experiments/canonical_automated_offline_research_loop_v1.py) · `899e154d1bb095227c13690943e13284fb936972` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN01-canonical_automated_offline_research_loop_v1.py) · SHA256 `3290171ea806a48ad68d90e600c04d013efca872c698fb849e6ea75d38b1d31f`.
+- **IN02** [src/experiments/canonical_meta_learning_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/899e154d1bb095227c13690943e13284fb936972/src/experiments/canonical_meta_learning_v1.py) · `899e154d1bb095227c13690943e13284fb936972` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN02-canonical_meta_learning_v1.py) · SHA256 `b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331`.
+- **IN03** [src/experiments/canonical_reality_gap_store_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/899e154d1bb095227c13690943e13284fb936972/src/experiments/canonical_reality_gap_store_v1.py) · `899e154d1bb095227c13690943e13284fb936972` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN03-canonical_reality_gap_store_v1.py) · SHA256 `5dd07e13ed772321bed2043dde78d3076da522905a82afd4ad7ab4c6c9c30660`.
+- **IN04** [src/learning/deterministic_decision_outcome_v0/capture_v0.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/615de3b307132b73a60df33fd3bedfac811c8cce/src/learning/deterministic_decision_outcome_v0/capture_v0.py) · `615de3b307132b73a60df33fd3bedfac811c8cce` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN04-capture_v0.py) · SHA256 `cc2c00d3b8743b4c91c5d1ff246b976c0f8b0c47a6310489a13fc252cc233196`.
+- **IN05** [src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py) · `5d1c838c15369507c5247834db4dd0df25592169` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN05-governed_runtime_primary_to_offline_observation_projection_v1.py) · SHA256 `8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3`.
+- **IN06** [docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md) · `5d1c838c15369507c5247834db4dd0df25592169` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN06-GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md) · SHA256 `159292d8dae9903fadaa815e131214501e8791c6c222d1e40080b4823777fc18`.
+- **IN07** [src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py) · `5d1c838c15369507c5247834db4dd0df25592169` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN07-ddo_o4_n_bars_public_plane_convergence_v1.py) · SHA256 `f3d2d21f35efa4b63d0d2afa0f52bab05516cba13869bb34b0148f80b6acc7a3`.
+- **IN08** [src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py) · `5d1c838c15369507c5247834db4dd0df25592169` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN08-double_play_input_evidence_v1.py) · SHA256 `e72de933b6d5f1b7a1bedd6bba33164ec2633aafa9a2ab6877a85ee61b619d0b`.
+- **IN09** [src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/5d1c838c15369507c5247834db4dd0df25592169/src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py) · `5d1c838c15369507c5247834db4dd0df25592169` · [Snapshot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/input-origins/IN09-current_decision_learning_binding_v1.py) · SHA256 `54b20be2e2b8491ade673f1f46f034fa21b839203e567286c7a0f8accb9eb145`.
+
+Einführung G2: [85d4d70 / #6879](https://github.com/rauterfrank-ui/Peak_Trade/commit/85d4d70cb910239c4809d24ae6a177672a813629). Einführung O4-Konvergenz: [e8fd6d9 / #6846](https://github.com/rauterfrank-ui/Peak_Trade/commit/e8fd6d97515269fd672b6eb2608b1538fd6959b7). Diese Datierungen ersetzen keine Laufzeitbelege.
+
+## Ergänzte Arbeitsvorgabe: Andockstelle und Aufgabe
+
+Die Quellenherkunft allein reicht nicht. Für jede einzelne Verbindung werden unmittelbarer Empfänger, fachliche Aufgabe, Transformation, Weitergabe und tatsächliche Consumer-Verwendung getrennt erfasst. Derselbe Datenstrom kann an mehreren Bausteinen unterschiedliche Aufgaben erfüllen. Ein gemeinsamer unterster Eingang wird nicht vorausgesetzt. Eine Zuordnung zu einer ursprünglichen Ebene bleibt offen, solange dafür kein Quellenbeleg vorliegt. Die bisher beschriebenen Eingangswege sind keine neu behaupteten Ebenen.

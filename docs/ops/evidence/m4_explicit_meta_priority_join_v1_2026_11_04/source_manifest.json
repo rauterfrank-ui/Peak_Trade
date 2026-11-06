@@ -1,0 +1,13 @@
+{
+  "source_commit": "15f9440114fd59001c6cacc70f6ab5f282b5dc22",
+  "files": {
+    ".gitattributes": "5b60419c62f19a3968f2f34fe299083b36d6ed878e16c8c6b6c6380800357746",
+    "README.md": "63248cb677875fa56b93263730d88d9db70df71447179698437ff6c85c4bfdfc",
+    "causal_fixture_result.json": "7f9a1eddff2698d7f101b5605b4657b92fb4cce85d93160cffd8150dcb1e22c5",
+    "default_before.fixture.json": "cc2f89302fb8fb2336185595fe947d4b66c54785b543addd7409aed7e7ea0f97",
+    "m4.before.py.txt": "468bd79c771bdd1cea3e8e81c99b197285c2b71cedea3da93ffb5e49e853114c",
+    "receipt.json": "43be5f0c954e10100881ac4a9d28beac85c0f7d7113febcd8ad1f29f512d4758",
+    "source_changes.patch.txt": "9112db96a4ec9f7b85b52a4db3df65c3cf666e8fabafc0c9edfeb3ad8cfc9758",
+    "tests.xml": "400cf8462385e3bc3212e4ebb3b9e855255a3be78ec5afe4d9dcbb6103cb2ee3"
+  }
+}

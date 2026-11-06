@@ -1,0 +1,31 @@
+{
+  "EXTERNAL_EFFECT_COUNT": "0",
+  "PERMIT_CREATED": "false",
+  "POST_COUNT": "0",
+  "binding_digest": "4669cd98802a3ba242d449a6bf32e804625daa2dfa9d76623e58e7bc0188301d",
+  "consumed_instance_ids": [
+    "3c1666b90a912cf40fd33380706e4224b2ef83e3189aafcb50c1072aa01fd95a",
+    "a17cafdede27af186fc76f5126ca01d6deb37c144f4f481e474ed504bbd357d8",
+    "759e3dee9060b4cb1a9ed896cad5cdd58b516054083bbcbbb5cd9d3fadfcf347",
+    "6a63e2dc3c4bce0b3a21519a1794183b4890cf12d9647c13a16b6912df65fa1c",
+    "3995d8c3c6b927f692f3dca3facef2fd86a5cbfbcfdec2055482e79ed40fb82b",
+    "315555cdf82c29742d715d7a0c51de6bafde978765af7fdc7ea1db118edcfd88",
+    "c728d1fd3d16e82bbb290e68d8d2e8bc5213593d90b2f1b5d26c524dab3647fa",
+    "87118bebaa827687bfe55034b68b10e4b6b660e5d678455940d5630bed724726",
+    "385bad5d1059aaed8220fc447a584791abcb56374b3c5bdd50da3e98e277b2c5",
+    "0caa28fd4ee94a21114a5eb35abb6fa294152410c27b1aca07501b3f1908e8fd",
+    "7319e1e3a9edf3189806a07a5b060493edebbb1dd0936d21c7c9d9c4f29c4556",
+    "1d9e64dee3638ccbea8fc295ef5c292e70deb7a544c35901b29cc95c450009f7"
+  ],
+  "continuous_owner_go": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1",
+  "expected_cursor_floor": 1791824700.0,
+  "last_accepted_c1": 1791827880.0,
+  "max_cycles_per_run": 12,
+  "max_run_duration_seconds": 900.0,
+  "native_id": "W-USDT-SWAP",
+  "reason_code": "MAX_CYCLES_PER_RUN",
+  "run_id": "4669cd98802a3ba2",
+  "s5_invoke_count": 12,
+  "s5_runtime_owner_go": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1",
+  "state": "COMPLETED"
+}

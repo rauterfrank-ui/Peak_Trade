@@ -1,0 +1,48 @@
+{
+  "source": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/2fd5ccb8-0d19-4e91-b2b5-038b0b9c894b/2fd5ccb8-0d19-4e91-b2b5-038b0b9c894b.jsonl",
+  "sha256": "61511351eda4dccdfbeb104ef807d6e91c23f41a1eeda5023a98a362ba72998f",
+  "reconstruction": "Write plus all retained ordered StrReplace operations, source-only; not executed",
+  "steps": [
+    {
+      "line": 44,
+      "tool": "Write",
+      "sha256": "0aff297559ac28e00a36cb1cfbb0113c83d791c813fac30250fd7243536667a6"
+    },
+    {
+      "line": 46,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "0c591e3ea7dfca5ec1e14c3374f51665f8ae852daee85d8b8b3a9424cbcdf132"
+    },
+    {
+      "line": 46,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "e663aa13f505700af193d5887ca3785c54d71309ec2c2e5392b4a917b12b131b"
+    },
+    {
+      "line": 46,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "14866ce6b3e6248a705fc4e0f829bfe5e9af1dc27b3ce4eb9b0d46361a9656f8"
+    },
+    {
+      "line": 46,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "54a778abedcc1a7d9bcec0e5297c08a0eb9ef780c5955087ca656cbb3a00642c"
+    },
+    {
+      "line": 47,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "b6c2ae393a376e09bc189abae88a9bf2f20db2bd1ce69fb310afb88c2270c72b"
+    },
+    {
+      "line": 49,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "e7dbab3ae3519caa7585c740162387793a1e825f86d535bd9d43210ef94b3d81"
+    }
+  ]
+}

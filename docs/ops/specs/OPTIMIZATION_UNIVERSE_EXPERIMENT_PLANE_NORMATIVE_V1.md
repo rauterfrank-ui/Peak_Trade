@@ -45,3 +45,17 @@ VALID_OPTIMIZATION_INPUT
 ## Non-goals
 
 M5–M9, productive search, promotion/apply, trading/selection/execution
+
+## Explicit Phase-11 research priority input (2026-11-04)
+
+M4 may receive optional `meta_learning_signals` and `meta_learning_identity` from
+its caller and forwards them unchanged to the existing Search validator/consumer.
+No signal or identity is inferred. M7 budget metadata is not this proposal schema.
+Only explicitly supplied signals add `search_meta_priority_evidence` to the Plane
+chain: source Meta identity, supplied proposal IDs and actual Search candidate
+priority/match/status evidence. There is no second priority calculation. Without
+these inputs the captured controlled default output is unchanged.
+
+This is an explicit offline research-input seam, not automatic next-request
+construction, measured market research, productive authority or promotion.
+[Bound evidence](../evidence/m4_explicit_meta_priority_join_v1_2026_11_04/README.md).

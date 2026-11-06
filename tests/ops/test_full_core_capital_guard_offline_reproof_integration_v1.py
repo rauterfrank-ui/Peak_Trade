@@ -12,6 +12,10 @@ from pathlib import Path
 
 import pytest
 
+from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalReservationBudgetOwnerV1,
+)
+
 from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
     ATOMIC_STATE_DIR_ENV_VAR,
     JOIN_ENV_VAR,
@@ -76,6 +80,7 @@ def _run_productive_pre_external_closure_v1(
         last_event_ts_unix=event_ts,
     )
     cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
+    budget_owner = PortfolioCapitalReservationBudgetOwnerV1()
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
         origin_main_sha=origin_sha,
@@ -103,9 +108,12 @@ def _run_productive_pre_external_closure_v1(
         },
         g17_typed_vol_producers={"LANE_1": aligned_g17},
         execution_integrity_backend=integrity,
+        portfolio_budget_owner=budget_owner,
     )
     claims_path = Path(result.store_root) / "claims.json"
     claims = json.loads(claims_path.read_text(encoding="utf-8"))
+    assert 0 < budget_owner.active_sum_v1() <= 25
+    budget_owner.close()
     return result, claims
 
 

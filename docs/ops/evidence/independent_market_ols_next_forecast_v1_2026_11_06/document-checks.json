@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "official_reference_checker_python_body_sha256": "b5df6e6e2e9134d8f735787860725bd376cb88b2a55714261bbd3f8235984308",
+  "invocation": "scripts/pt; unchanged owner Python body, no PATH interpreter or PYTHONPATH override",
+  "new_documents_stdout": "Docs Reference Targets: scanned 2 md file(s), found 3 reference(s).\nAll referenced targets exist.\n",
+  "additional_added_references": [
+    {
+      "document": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "target": "../../ops/specs/INDEPENDENT_MARKET_OLS_NEXT_FORECAST_V1.md"
+    },
+    {
+      "document": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "target": "../../ops/evidence/independent_market_ols_next_forecast_v1_2026_11_06/README.md"
+    }
+  ],
+  "ruff_check": "PASS: new product module, test module, two evidence scripts",
+  "source_test_suite_rerun": "NONE: reuse unchanged source-bound 798 PASS"
+}

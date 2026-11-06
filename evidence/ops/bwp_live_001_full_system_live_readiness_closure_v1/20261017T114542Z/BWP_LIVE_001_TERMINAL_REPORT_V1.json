@@ -1,0 +1,55 @@
+{
+  "schema_version": "bwp_live_001_terminal_report.v1",
+  "authority": "NONE",
+  "production_live_authorization": false,
+  "financial_guarantee": "NONE",
+  "baseline_sha": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
+  "branch": "feat/bwp-live-001-full-system-live-readiness-closure",
+  "head_sha_code_commit": "2fdcb7ed9b25876e480b895c7f21fd31553f8ee8",
+  "final_committed_diff_sha256": "021839475b65ef22820d5b60c0d3b3a47199b763bd7aaf6d06027973fb2427bd",
+  "ghv": {
+    "status": "STALE_NAVIGATION_ONLY",
+    "snapshot_id": "60aab7a34b0be5946030c8bd1ac7e74a",
+    "wp1_strict": "FAIL_CENSUS_BASELINE_MISMATCH",
+    "nodes": 302,
+    "edges": 81,
+    "composed_forensic_graph_sha256": "685a6215946ab04d992574992c5b725c5db1c89caaa2b1f818af6ab60db3d779",
+    "integrated_causal_graph_sha256": "21e0bfc74edf81db407ba22a54cd982c8d1e555f76fc510aba42c68a352f9f42"
+  },
+  "gates": {
+    "B1_TREASURY": "NO_DEFECT_FOUND_OWNER_DECISION_CAPITAL_SOURCE",
+    "B2_OWNER_CAPS_CAPITAL_GUARD": "DEFECT_FIXED_PARSER_COERCION_AND_NON_FINITE_CAPS_OWNER_RATIFICATION_OPEN",
+    "B3_K1_CREDENTIALS": "IMPLEMENTED_OWNER_GO_GATED_NOT_EXERCISED",
+    "B4_PRE_EXTERNAL_EXECUTION_BOUNDARY": "STANDING_POST_PINS_FALSE_POST_ONLY_MANUAL_ONE_SHOT",
+    "B5_KILL_SWITCH": "IMPLEMENTED_PER_7139_NO_NEW_DEFECT_FOUND",
+    "B5_RR": "IMPLEMENTED_PER_7138_RESIDUAL_UNSIGNED_DIGEST",
+    "B6_CLAIM_REPLAY_PERMIT": "IMPLEMENTED_PER_7138_NO_NEW_DEFECT_FOUND",
+    "B7_AUTONOMOUS_EXECUTION": "NOT_CONNECTED_TO_POST_GUARDED_BY_AST_TESTS_ACTIVATION_LOCKED",
+    "ECO": "NOT_QUALIFIED_1_OF_50_ROUND_TRIPS_NOT_WIRED_AS_POST_GATE_OWNER_DECISION"
+  },
+  "defect_witness": {
+    "before": "defect_witness_before.json",
+    "after": "defect_witness_after.json"
+  },
+  "tests": {
+    "focused_bound_batch": {"log": "focused_final_bound.log", "passed": 610, "failed": 0, "rc": 0},
+    "timing_proof": {"mode": "PR_BOUNDED_FULL", "wallclock_seconds": 65, "smoke_passed": 10, "bounded_passed": 744, "rc": 0},
+    "wide_regression_isolated_compare": {"result": "FAIL_SETS_IDENTICAL_BRANCH_VS_ORIGIN_MAIN", "lists": ["regression/fail_iso_base.txt", "regression/fail_iso_branch.txt"]},
+    "not_run_locally": "regression/not_run_slow.txt"
+  },
+  "open_evidence_gaps": [
+    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py fails on origin/main (harness drift after #7118/#7138/#7139); partial repair (19/24) kept out of PR as e2e_harness_partial_repair_followup.patch; 4 crash-subprocess tests exit 1 (child lacks isolated kill-switch/ledger, root cause NOT_PROVEN), 1 permit-reuse test now denied earlier by GLOBAL_REPLAY_DENIED",
+    "12 section_11_14_live_handoff test files not run locally (runtime), transitively affected only",
+    "PR_BOUNDED_FULL CI does not execute the new B2/B4/B7 tests; local evidence is authoritative for them",
+    "a pre-existing test writes runtime/governance/f1_m9_scoped_owner_productive_apply_v1 into the repo tree"
+  ],
+  "owner_decisions_required": [
+    "B1 capital source authorization",
+    "B2 owner-cap ratification and cap values",
+    "B3 productive K1 keychain use",
+    "B4/B7 any productive POST or autonomous POST connection",
+    "ECO whether economic qualification becomes a POST gate and when evidence suffices",
+    "follow-up for offline E2E harness repair"
+  ],
+  "technical_live_readiness": "NOT_READY_OWNER_DECISIONS_AND_EVIDENCE_GAPS_OPEN"
+}

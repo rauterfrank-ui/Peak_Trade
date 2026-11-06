@@ -1,0 +1,170 @@
+{
+  "files": [
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "sha256": "886607ce405fd19f7233fb83d2b68cac524b6cba9d77f763a59838cfe0872b21"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py",
+      "sha256": "bfd79144f85eefefada451758b9e8ff7a489c1b569de78fded3eeb95f4b31867"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py",
+      "sha256": "37126c8167902ab046624aadb5222f2bcb8fa8acb182afff833452eb5fb6e43a"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py",
+      "sha256": "f9d2e733ac49273185c99cb5d9544e7807ebbde53840462979c1750550214144"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "sha256": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "sha256": "1507f008b47df920860b9c380d055cfac4ffe30c232429276568d9a9f5fdef5c"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+      "sha256": "94fae7b7516630a99f18f33f253b9301bfeaf46f3d93fe845fe98f6f70359b74"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "sha256": "085c4f87d3954eb8d479ad3b8d96df90c19bd5019f56a5dc2e810a55b718b73c"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py",
+      "sha256": "de74237164f1f77f22db63289dbdca1113c4cf8c56f3e191df21b023fd125f64"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_store_v1.py",
+      "sha256": "c756be8eb78d3022e8dda4c67c325ea9ccd7077cb308f396eb6090c2e3e5b783"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+      "sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py",
+      "sha256": "3150df03e7cf8b3c62ae205c4240818ae725963b9195fcc835660f152134bbec"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
+      "sha256": "ec6236e755490ebd107249b2b6f84083f65fbbbe04ffaf990d21dc96fed032d1"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_record_v1.py",
+      "sha256": "e90e144610c8cad19f4388194370ab1b6ecefeff2b2a1f3a49212ccf309de7d8"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_store_v1.py",
+      "sha256": "e51e8c20d46f097831e4fb43a1d8375752a5ccb100d032817f1b1295425b40df"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_persist_v1.py",
+      "sha256": "70526c541e8678b788f45346a2ecf5ec11f9ee08214e56072d7a09cab862513e"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
+      "sha256": "9c5e66d4fc9d6a1a48797c4d6fe890dbebbddc169702f39d6521496923ce63b3"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+      "sha256": "19abf38618000e12a8d81a3b9c5db2ccd78f4c490a6b36fd80f49aac379099bb"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/decision_attribution_query_v1.py",
+      "sha256": "d94b7d05c9dd33cfab212c1ad10dc28ec67f5e3f54af2f5d215b82fbc1d1ccf3"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
+      "sha256": "b2c2add38316dffdd1ea5b5d02d658a8dcee58d32303d3e5c0ff39b628adbe05"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+      "sha256": "3337304ccdb69b66ccbce14292c98504a6361be43ea2a43b9905535d56111f43"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "sha256": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md",
+      "sha256": "175d65a56edd5845399ee5d43fdd39804838fc8dcf20371c4d70010bef61a154"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+      "sha256": "ebfb93845ef3582c227cc11a899f7adf9db7ad6deb8f2ad731c26f785c85f314"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+      "sha256": "2a26e70165c6aa1530a620fa2cac959f4c3260d7aa647295637b2c486fadd41c"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
+      "sha256": "72971a51da0c72dc36ba0c7aa0d12b518d731972474f1f8cfedc6a6e0819ebb8"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+      "sha256": "a96d8fb924c029825e0aa18baf81fb78174e40e7893c96da3579b99749294b95"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py",
+      "sha256": "4f2fc48f7dd542363ced6633a036315d80ce42a198bc308688717e6b2ea89966"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "tests/learning/test_learning_evidence_export_v1.py",
+      "sha256": "a3654f43dc747bf1c8e3763c14730e2110446e212404544b3e6acefc367edb7b"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+      "sha256": "158b2c68fb29be3f9a6c279fed53850daac0aaa076a04e612986f784e9294a10"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py",
+      "sha256": "99d4fa9cc7e455eec061d6ead25e1c38b4cfe0ca69de9905c188abc12f1f20cb"
+    },
+    {
+      "coverage": "Relevant owner/interface body or fixture supplier inspected; not full application runtime certification",
+      "path": "tests/experiments/test_canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "sha256": "cba1685caa96dfe65ffc20de0f56d423b58f07c469b95b92b47914b475c392c8"
+    }
+  ],
+  "source_commit": "98e7182508b7641b132ec3871e238737987bc56c"
+}

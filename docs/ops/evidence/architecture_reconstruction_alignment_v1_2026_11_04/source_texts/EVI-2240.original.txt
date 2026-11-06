@@ -1,0 +1,119 @@
+# Wirtschaftliche Wirkung, Herkunft und Lernen
+
+Quellengebundener Untersuchungsanhang. Lokaler Vergleichspin `5d1c838c15369507c5247834db4dd0df25592169`; kein neuer Fetch. Sieben Specs und fünf Codequellen gelesen, bei drei größeren Modulen nur die angegebenen Funktionskörper. Keine neue semantische Systemautorität, keine Produktänderung und keine Projektfunktion ausgeführt.
+
+## Zusammenhang und Beweisgrenze
+
+Beobachtung eines Markts, Decision-Token, Orderabsicht, simulierter Fill, tatsächlicher Venue-Fill, Accounting-PnL, N_BARS-Messung, Attribution und Learning-Ingest sind unterschiedliche Gegenstände. Die gefundenen Teilverbindungen werden deshalb nicht zu einer behaupteten globalen Pipeline zusammengezogen.
+
+Das Wort REAL in der datierten DDO-Horizon-Spec bezeichnet eine vollständige Messung des gebundenen Horizonts; es beweist allein keine Live-Ausführung und keinen realisierten Handelsgewinn. Die damalige Aussage fehlender Horizon-Implementierung bleibt an diese Vertragsfassung gebunden und wird nicht als heutiger Gesamtzustand übernommen.
+
+## Neu abgeglichene statische Befunde
+
+### EL01 · Evidence-Komposition ruft hier nicht automatisch Learning-Ingest auf
+
+build_decision_attribution_evidence_v1 erzeugt Bundle-/Decision-/Kontextreferenzen und gibt learning_ingest_result=None zurück. ingest_decision_attribution_to_learning_state_v1 ist ein eigener Funktionskörper mit bestehendem Learning-Ingest-Aufruf.
+
+**Offene Grenze:** Aufrufer und tatsächlich persistierte Lernzustände wurden hier nicht nachgewiesen; kein vollständiger Rückkopplungsbeweis.
+
+### EL02 · Zeit-/Kontextprüfungen sind konkrete, begrenzte Bedingungen
+
+Die gelesenen Phase-25-Helfer verwerfen Kontext nach Decision-Zeit und prüfen Kontextreferenz sowie ausgewählte Horizon-Felder. Mehrere Gleichheitsprüfungen werden nur ausgeführt, wenn beide Werte vorhanden sind; externe Validatoren bleiben gesondert.
+
+**Offene Grenze:** Nicht alle IDs, Validatoren und möglichen Eingabekombinationen neu geprüft. Das ausgegebene pit_join_proven=True wird nicht als unabhängiger Gesamtbeweis übernommen.
+
+### EL03 · Portfolio-Builder bewertet angelieferte Messwerte
+
+Der gelesene Builder übernimmt explizite Portfolio-Metriken aus request, lässt Mitglieder/Paare kanonisieren, prüft Vergleichbarkeit und Policy-Gates und setzt applied_allocation=False.
+
+**Offene Grenze:** Producer der Metriken, Helper-Bodies, tatsächliche Kampagnenaufrufe und Allokations-Consumer nicht neu geprüft. Keine automatische Portfolio-Umschichtung belegt.
+
+### EL04 · Accounting-Bridge: Simulation → Accounting → analytische Projektion
+
+Im Fill-Zweig steht build_simulated_fill_v1 vor session.apply_fill und anschließender Portfolio-Projektion. Persistenz folgt nur bei persist=True und vorhandenem state_root; HOLD-/Nullmengen-Zweige kehren früher zurück.
+
+**Offene Grenze:** Accounting-Kernel, Call-Sites, Writer-Exklusivität und Prozess-Restart nicht neu vollständig verifiziert. Keine Venue-Fills oder Venue-Positionen beobachtet.
+
+### EL05 · Rundung und Instrument-Defaults bleiben eigene Semantik
+
+Die Bridge verwendet ROUND_HALF_EVEN für Mengen-Lot-Schritte. Metadata-Factory und Mapping-Adapter enthalten Defaults für Contract-Größe, Tick, Mindestmenge und Margin.
+
+**Offene Grenze:** Kein Nachweis, dass diese Defaults in einem konkreten Lauf oder einer Orderroute wirksam werden; keine Einordnung als Fehler ohne Host-/Einheiten-/Risikoabgleich.
+
+### EL06 · Herkunftsachsen bleiben im Schema getrennt
+
+Der gelesene Provenienzcode führt eigene Enums für Umgebung, Beobachtungsquelle, Decision-Quelle, Ausführungsmodus, Fill-Quelle, Outcome-Klasse, Realisierungsart und Kapitalfluss.
+
+**Offene Grenze:** Enum-/Digest-Prüfungen allein sichern nicht jede fachlich zulässige Kombination oder ihre Wahrheit. Eligibility-Consumer und tatsächliche Datenherkunft bleiben separat zu prüfen.
+
+## Verträge zwischen Bereichen
+
+### E01 · Entscheidungswert, Messung und Handelsergebnis
+
+DDO-REAL ist hier eine horizon-vollständige Messung. decision_outcome, economic_score, simulierter Accounting-PnL und Venue-Fill sind davon zu unterscheiden.
+
+**Weiterer Nachweis:** Jeden Outcome-Consumer auf tatsächlich konsumierte Messart, Preisart, Zeitraum und Herkunft prüfen.
+
+**Systemische Bedeutung:** Ein falsch gleichgesetzter Erfolgswert kann Learning, Optimierung und wirtschaftliche Bewertung gemeinsam verzerren.
+
+### E02 · Mehrdimensionale Herkunft statt eines Realm-Labels
+
+Umgebung, Decision-Quelle, Ausführungsmodus, Fill-Quelle, Outcome-Klasse, Realisierungsart und Kapitalfluss sind als getrennte Provenienzdimensionen modelliert.
+
+**Weiterer Nachweis:** Zulässige Kombinationen, tatsächliche Erzeugung, Übertragung und Eligibility an Ingest/Export/Optimization nachweisen.
+
+**Systemische Bedeutung:** Ein PROD-, REALIZED- oder productive-Label allein belegt weder eine externe Order noch echten realisierten Handelsgewinn.
+
+### E03 · Attribution ist zunächst Referenzzuordnung
+
+Phase 14 verbindet Decision- und Outcome-Referenzen; Phase 25 ergänzt zeitgebundenen Kontext, Realized-Behavior, Konfiguration und Qualität.
+
+**Weiterer Nachweis:** Die referenzierten Inhalte und tatsächliche Consumer-Verwendung prüfen. Ein ATTRIBUTED- oder pit_join_proven-Label ist kein unabhängiger kausaler oder vollständiger PIT-Beweis.
+
+**Systemische Bedeutung:** Rückverfolgbare Zuordnung ist wertvoll, beantwortet aber allein nicht, warum eine Entscheidung erfolgreich war.
+
+### E04 · Evidence-Erzeugung und Zustandsänderung
+
+Der Attribution-Builder liefert Evidence; Learning-Ingest steht in einer getrennten Funktion mit eigenem Aufruf und Zustandsscope.
+
+**Weiterer Nachweis:** Welche Hosts rufen den Builder und anschließend den Ingest tatsächlich auf? Wie wird die neue Evidence später genutzt?
+
+**Systemische Bedeutung:** Eine erzeugte Evidence-Datei oder ein Rückgabewert bedeutet noch keine Änderung des Lernzustands oder angewandter Parameter.
+
+### E05 · Portfolio-Lernen ist nicht Strategieranking
+
+Der gelesene Builder nimmt Portfolio-Messwerte entgegen und bewertet nach Vergleichbarkeit und Policy. Strategie-Beobachtungen und Portfolio-Eignung bleiben getrennt.
+
+**Weiterer Nachweis:** Herkunft von Korrelation, Kovarianz, Risikobeitrag, Kosten und Kapazität sowie Pairwise- und Policy-Helfer prüfen.
+
+**Systemische Bedeutung:** Eine starke Einzelstrategie kann im Portfolio wegen gemeinsamer Risiken oder Kosten ungeeignet sein; Messwertbewertung ist noch keine Messwerterzeugung.
+
+### E06 · Simulation, Accounting und optionale Dauerhaftigkeit
+
+Die gelesene Bridge erzeugt simulierte Fills, ruft Accounting auf und projiziert dessen Zustand in die analytische Portfolio-Shell. Persistenz ist im Fill-Zweig bedingt.
+
+**Weiterer Nachweis:** Kernel, Host-Aufruf, Re-Entry/Restart, Gebühren-/Slippage-Rechnung, Duplicate-Fill-Behandlung und alle Persistenzzweige getrennt nachweisen.
+
+**Systemische Bedeutung:** Analytischer Portfoliostand, durabler Accounting-Stand und tatsächlicher Venue-Positionsstand dürfen nicht unbemerkt austauschbar werden.
+
+### E07 · Mengenrundung und Modellannahmen bis zum Consumer
+
+Die Bridge quantisiert vor simuliertem Fill mit ROUND_HALF_EVEN und besitzt Default-Metadaten. Der frühere Sizing-Befund dokumentiert dagegen Lot-Floor in einem anderen Rechenkörper.
+
+**Weiterer Nachweis:** Ob dieselbe Menge beide Stellen erreicht und welche Contract-Daten tatsächlich verwendet werden, bleibt zu belegen; kein globaler Fehler aus lokalen Unterschieden ableiten.
+
+**Systemische Bedeutung:** Lokale Rundungs- oder Simulationsannahmen können eine vorgelagerte Mengenbegrenzung verändern; relevant ist die konkret zusammenhängende Kette.
+
+### E08 · Statusgrammatik, technischer Fill und laufende Funktion
+
+Gate-Fill meint in der April-Spec dokumentarische Ergänzung. Das ist kein Order-Fill. Auch CODE_EXISTS/BOUND/REACHABLE und ACTIVATED werden im Accounting-Vertrag getrennt.
+
+**Weiterer Nachweis:** Jede Statusaussage an ihre Zähleinheit, Revision und Belegart binden; alte Closure-Meldungen nicht pauschal als heutigen Betrieb übernehmen.
+
+**Systemische Bedeutung:** Mehrdeutige Wörter können scheinbar geschlossene Ketten erzeugen, obwohl verschiedene Gegenstände gemeint sind.
+
+## Bezug zur bisherigen Rekonstruktion
+
+Der frühere Sizing-Anhang dokumentiert Lot-Floor in einem anderen Rechenkörper. Hier ist Half-Even vor einem simulierten Fill sichtbar. Daraus folgt noch kein konkreter Mengenfehler: Erst die tatsächliche gemeinsame Kette, Contract-Einheit und zulässige Begrenzung entscheiden.
+
+Diese Untersuchung ergänzt die Kapital-/Schutzsicht um Ergebnis-, Attribution- und Portfolio-Ebenen. Sie bestätigt weder vollständige Ursprünge noch einen vollständigen Lernkreislauf. Historische Ziele, heutige Implementierung und beobachtete Wirkung bleiben offen, soweit kein eigener Nachweis vorliegt.

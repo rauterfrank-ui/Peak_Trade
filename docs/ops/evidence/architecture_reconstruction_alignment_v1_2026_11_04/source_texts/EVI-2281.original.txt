@@ -1,0 +1,134 @@
+# Self-Learning: vom Vorgänger zur späteren Konstruktion
+
+Die Untersuchung folgt der Git-/GitHub-Historie. Der angefragte Vergleichspin 5d1c838c15369507c5247834db4dd0df25592169 wurde über GitHub als aktueller main-HEAD bestätigt. Die Zeitangaben unten verwenden Europe/Berlin.
+
+## Was jetzt feststeht
+
+Die frühesten in den untersuchten Lern-/Promotion-Pfaden gefundenen Vorgänger stammen vom **13.12.2025**. Der damals codierte ConfigPatch-/Promotion-Ansatz ist von der zwölfteiligen Forschungskonstruktion im August und der DDO-Linie ab September zu unterscheiden. Die erstmalige Konzeption des späteren Universums und seine vollständige ursprüngliche Ebenenzahl sind dadurch noch nicht bewiesen.
+
+## Entwicklungslinien
+
+### 2025-12-13 — Früheste gefundene Learning-/Promotion-Vorgänger
+
+Promotion-Modelle/-Engine und ConfigPatch/PatchStatus entstehen. Das belegt einen damaligen Patch-/Promotion-Ansatz, nicht bereits die spätere vollständige Universumsarchitektur.
+
+Belegart: `LEGACY_PRECURSOR_NOT_CURRENT_TARGET`.
+
+- [feat(governance): add promotion loop system (config + runner + docs) (#31)](https://github.com/rauterfrank-ui/Peak_Trade/commit/c8096ad4f2750bc6da6187f977898ba9c5d5bb4a) · 2025-12-13T00:20:38+01:00
+- [Meta / InfoStream (v1) (#32)](https://github.com/rauterfrank-ui/Peak_Trade/commit/66f06b149b2289b5abb748932eb04ed223318636) · 2025-12-13T00:20:44+01:00
+
+### 2026-01-27 — Legacy-Apply-/Override-Stufe
+
+Die Pfadhistorie ergänzt den Learning-Apply-Runner und den Promotion-/Override-Kontext. Nur als historische Vorstufe führen; keine Wiederaktivierung.
+
+Belegart: `HISTORICAL_CONSTRUCTION`.
+
+- [feat(learning-promotion): promotion loop v1 (runner + live overrides + docs finalizer) (#1011)](https://github.com/rauterfrank-ui/Peak_Trade/commit/5bc2624f818e3a582192d41b528d4c9e8c1593be) · 2026-01-27T18:04:09+01:00
+
+### 2026-03-31 — Explizite Ausgabe- und Normalisierungsbausteine
+
+Emitter und Bridge-Normalisierung werden in getrennten Commits ergänzt. Genauer fachlicher Umfang bleibt am Code zu prüfen.
+
+Belegart: `CODE_INTRODUCTION_DIFF_METADATA`.
+
+- [auto: feat(meta): add learning loop emitter and align architecture docs (#2135)](https://github.com/rauterfrank-ui/Peak_Trade/commit/42242c80811e2c59f17c132aeea37fc842603c9f) · 2026-03-31T12:10:21+02:00
+- [feat(meta): add learning loop bridge normalizer and sync architecture docs (#2136)](https://github.com/rauterfrank-ui/Peak_Trade/commit/c0681f800b3634d573ae3258d08771fdefe78cff) · 2026-03-31T12:35:02+02:00
+
+### 2026-06-27 bis 2026-07-08 — Vertrags-, Evidence- und Vergleichsausbau
+
+Manifest-, Identitäts-, Vergleichs- und Übergabeverträge wachsen im damaligen Learning-Loop-Kontext. Die gesamte damalige Vertragskette wird nicht als aktive Lernarchitektur oder neue Layerzahl übernommen.
+
+Belegart: `HISTORICAL_CONTRACT_LINEAGE`.
+
+- [feat(learning): Package A — Self-Learning contract manifests v1 (offline)](https://github.com/rauterfrank-ui/Peak_Trade/commit/c8bebe87acf0c7c10cf2aa86e3e2888a5115b733) · 2026-06-27T06:35:10+02:00
+- [feat(experiments): add experiment identity manifest producer v1 (#4610)](https://github.com/rauterfrank-ui/Peak_Trade/commit/be7f0ef193221d5e2183878a4607426aa26623fd) · 2026-06-27T13:27:13+02:00
+- [feat(meta): add comparison ssot v1 (#4614)](https://github.com/rauterfrank-ui/Peak_Trade/commit/ffd96543c992609cc75dbbb9fb8c8b80f642f477) · 2026-06-27T16:45:46+02:00
+- [feat(meta): add learning loop comparison checkpoint v1 (#4621)](https://github.com/rauterfrank-ui/Peak_Trade/commit/a3128e6d25913967209e443edb3f4644c713d4c4) · 2026-06-27T21:58:13+02:00
+
+### 2026-08-17 bis 2026-08-18 — Legacy-Grenze und zwölfteilige Forschungskonstruktion
+
+Die Legacy-Konfigurationsautorität wird begrenzt; zwölf separate Forschungsbausteine entstehen. Ihre Codeeinführungen sind direkt mit GitHub abgeglichen.
+
+Belegart: `CONTEMPORANEOUS_DESIGN_AND_CODE_ARTIFACTS`.
+
+- [safety: fail-close legacy learning config authority (#5927)](https://github.com/rauterfrank-ui/Peak_Trade/commit/a7f4502e04e168b2dd12b56fecb745323bd6c783) · 2026-08-17T19:22:56+02:00
+- [research: add canonical experiment identity v1 (#5928)](https://github.com/rauterfrank-ui/Peak_Trade/commit/ecbe5b7b4f8a71d3a81443a65949fcce6a5de350) · 2026-08-17T19:55:28+02:00
+- [research: add canonical advanced search v1 (#5940)](https://github.com/rauterfrank-ui/Peak_Trade/commit/899e154d1bb095227c13690943e13284fb936972) · 2026-08-18T16:04:39+02:00
+
+### 2026-08-18 — Nachträgliche Änderungen an der Forschungsschleife
+
+Die Pfadhistorie führt zwei Änderungen zur identitätsgebundenen Beobachtungsbindung und Persistenzdelegation. Das ist ein konkreter späterer Umbau; seine volle Verhaltenswirkung ist noch nicht geprüft.
+
+Belegart: `CHANGE_METADATA_NOT_FULL_BEHAVIOR_REVIEW`.
+
+- [research: consume identity-bound observation binding in phase 10 (#5944)](https://github.com/rauterfrank-ui/Peak_Trade/commit/dfe2003fdd03eb782725bd99eb56788320ae0592) · 2026-08-18T19:28:21+02:00
+- [research: delegate phase-10 persist to identity observation binding (#5945)](https://github.com/rauterfrank-ui/Peak_Trade/commit/eac9bbafeee98ffb7bacb1bd407625c667e9d71e) · 2026-08-18T19:55:13+02:00
+
+### 2026-09-01 — DDO als eigene spätere Codierungslinie
+
+Die spätere DDO-Linie ergänzt Ledger/Records, Decision Capture, Replay, Outcomes, Attribution, Counterfactuals und Lern-/Validierungsprodukte. Das sind separate historische Einführungen, nicht rückwirkend der Anfang sämtlichen Self-Learnings.
+
+Belegart: `INTRODUCTION_METADATA; SOURCE_DETAILS_PENDING`.
+
+- [feat(learning): add offline DDO contract and append-only ledger foundation (#6204)](https://github.com/rauterfrank-ui/Peak_Trade/commit/29b1ad5104f2fe59dfdfe89a40541fe8d2d6998b) · 2026-09-01T18:54:23+02:00
+- [feat(learning): complete offline DDO records and control plane (#6205)](https://github.com/rauterfrank-ui/Peak_Trade/commit/e811da431f9f54e050fba0a14bf482cff25d6781) · 2026-09-01T19:36:31+02:00
+- [feat(learning): observation-only DDO decision-spine capture (WP-FA-04) (#6206)](https://github.com/rauterfrank-ui/Peak_Trade/commit/0a8ec8e8d73558c7b8a340b514fc86c0157dc525) · 2026-09-01T20:26:00+02:00
+- [feat(learning): add offline DDO replay/outcome/attribution/counterfactual engine (WP-FA-05) (#6207)](https://github.com/rauterfrank-ui/Peak_Trade/commit/2c67dd736216151b7bc1f70acaaff515e17b56ea) · 2026-09-01T20:57:01+02:00
+- [feat(learning): add offline DDO learning registry, validation packs, and shadow challenger (WP-FA-06) (#6208)](https://github.com/rauterfrank-ui/Peak_Trade/commit/f7e765f89dd1fa620540998871e2e446a4f90224) · 2026-09-01T21:23:07+02:00
+- [feat(learning): bind DDO to existing experiment identity and offline drift contracts (WP-FA-07)](https://github.com/rauterfrank-ui/Peak_Trade/commit/615de3b307132b73a60df33fd3bedfac811c8cce) · 2026-09-01T22:17:44+02:00
+
+### 2026-09-02 bis 2026-09-08 — Beobachtungs-, Haltbarkeits- und Replay-Bindung
+
+Die DDO-Pfadhistorie führt Host-Beobachtung, präzisere Double-Play-Projektion, Durability und Replay-Erweiterungen. Keine globale Runtime-Schließung daraus abgeleitet.
+
+Belegart: `CHANGE_METADATA; SEMANTIC_RECONSTRUCTION_OPEN`.
+
+- [feat(learning): complete DDO observation host decorators (WP-FS-B1) (#6215)](https://github.com/rauterfrank-ui/Peak_Trade/commit/14e8a58f32dcb6b521be6b2559b388bf27360194) · 2026-09-02T07:57:52+02:00
+- [feat(learning): capture exact Double-Play decisions in DDO observation projection (#6300)](https://github.com/rauterfrank-ui/Peak_Trade/commit/c14730e99f1b1303b69a117fdc0d6896ee1c1e51) · 2026-09-06T09:47:08+02:00
+- [feat(learning): harden DDO ledger durability without productive host binding (#6302)](https://github.com/rauterfrank-ui/Peak_Trade/commit/433721ab3ed08e948da65c723a9e3c84546ef4db) · 2026-09-06T11:01:49+02:00
+- [feat(learning): replay typed Double-Play DDO output from immutable evidence (#6353)](https://github.com/rauterfrank-ui/Peak_Trade/commit/52ff607efd17c362a4c0139ceae110e7baa07b1e) · 2026-09-08T16:55:45+02:00
+- [feat(learning): implement isolated in-memory Double-Play current-code function replay (#6356)](https://github.com/rauterfrank-ui/Peak_Trade/commit/874ed2e6ccf99de8cf7042af65b9b7f453a14142) · 2026-09-08T19:15:31+02:00
+
+### 2026-09-19 bis 2026-09-30 — Decision-Bundle, Outcome-Horizont und Evidence-Übergaben
+
+Spätere Änderungen binden aktuelle Decision-Bundles, N_BARS-Outcomes, Learning-State-/Evidence-Übergaben und Herkunftsnachweise. Ihre ursprüngliche fachliche Einordnung bleibt von Codevorhandensein getrennt.
+
+Belegart: `CHANGE_METADATA; NOT_FULL_LEARNING_LOOP_PROOF`.
+
+- [Learning: normative Double-Play decision bundle join (Slice 1) (#6624)](https://github.com/rauterfrank-ui/Peak_Trade/commit/2446760832031abed7bc48dbec8825ed53b6d2ab) · 2026-09-19T11:44:00+02:00
+- [Learning: rebind DDO consumers to current decision bundle (Slice 2). (#6625)](https://github.com/rauterfrank-ui/Peak_Trade/commit/b976b2400ab0d3370bd9d67259c1e5caf8742393) · 2026-09-19T12:03:33+02:00
+- [Bind DDO REAL N_BARS horizon through offline supplier and evaluation (#6627)](https://github.com/rauterfrank-ui/Peak_Trade/commit/5320a087f4c4d58a54b9710ac663bb9cd355bcea) · 2026-09-19T18:10:28+02:00
+- [Self-learning v1: outcome evidence ingest and horizon feedback seam (#6634)](https://github.com/rauterfrank-ui/Peak_Trade/commit/c889577bef56300f74039d921472f0638cbb8810) · 2026-09-19T20:16:20+02:00
+- [Optimization universe: foundation → envelope → M9-A (research-only) (#6635)](https://github.com/rauterfrank-ui/Peak_Trade/commit/25b0518b93f91a9609d70c30fb8cd3bf96401a46) · 2026-09-19T21:38:40+02:00
+- [Realm outcome provenance closure (#6988)](https://github.com/rauterfrank-ui/Peak_Trade/commit/881efd47285ebccd83c0e57691e5832730c017a9) · 2026-09-30T14:27:32+02:00
+
+## Heutiges Vorhandensein der zwölf August-Hauptmodule
+
+Alle zwölf Hauptmodule sind am bestätigten main-Pin vorhanden. Bei elf ist der Datei-Blob gegenüber dem Einführungscommit unverändert; die Forschungsschleife hat einen geänderten Blob. Das sagt nichts über Änderungen ihrer externen Consumer, Konfiguration oder tatsächlichen Verwendung.
+
+- **Experimentidentität**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_experiment_identity_v1.py`.
+- **Unveränderliches Experimentgedächtnis**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_experiment_memory_v1.py`.
+- **Fehlergedächtnis**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_failure_memory_v1.py`.
+- **Robustheitsprüfung**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_robustness_suite_v1.py`.
+- **Vergleichbarkeit und Vergleich**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_comparison_ssot_v1.py`.
+- **Champion-/Challenger-Bewertung**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_champion_challenger_v1.py`.
+- **Erwartung gegen beobachtete Realität**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_reality_gap_store_v1.py`.
+- **Regimeabhängige Bewertung**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_regime_aware_evaluation_v1.py`.
+- **Getrenntes Portfolio-Learning**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_portfolio_learning_v1.py`.
+- **Koordinierter Offline-Forschungsablauf**: `PRESENT_CHANGED_BLOB`; `src/experiments/canonical_automated_offline_research_loop_v1.py`.
+- **Meta-Learning**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_meta_learning_v1.py`.
+- **Erweiterte Forschungssuche**: `PRESENT_SAME_BLOB`; `src/experiments/canonical_advanced_search_v1.py`.
+
+## Umfang und Grenzen der Historienprüfung
+
+119 eindeutige Commits aus den abgefragten Pfadhistorien wurden mit lokal verfügbaren Commitobjekten und expliziten Eltern-Diffs abgeglichen. Erfasst sind 309 relevante Dateiänderungsdatensätze. Die vollständigen Status-, Vorher-/Nachher-Blob- und Verbleibslisten stehen im JSON. Das ist eine Codierungs- und Navigationsgrundlage, kein vollständig gelesener semantischer Audit aller Änderungen.
+
+Die zusätzliche Committextsuche liefert 106 Treffer über alle zurückgegebenen Seiten. Committextsuche kann Codierung ohne passendes Stichwort übersehen; deshalb sind die Pfadhistorien die tragende Navigation. Alle Branches, PR-Zwischenstände und Umbenennungen sind nicht automatisch vollständig erfasst.
+
+Die zwölfteilige August-Konstruktion hat zeitnahe Primärverträge und gesicherte Codeeinführungen. Die übrigen Epochen sind hier überwiegend aus Änderungen und Dateinamen belegt; die genaue semantische Entwicklung ihrer einzelnen Bausteine bleibt weiter auszuwerten. Ein altes Ready-/Complete-Label wird nicht als Funktionsbeweis übernommen.
+
+## Weiterer Fokus
+
+Nicht das gesamte Projekt ausweiten. Die Ebenenfrage im Self-Learning-Ursprung durch die Beziehung zwischen ursprünglichen Aufgaben, damaligen Codebausteinen und belegten Umbauten beantworten. Das fehlende eigenständige Master-Runbook bleibt eine benannte Quellenlücke; seine Inhalte werden nicht aus der Timeline erfunden.
+
+Keine Produktdateien, Branches, Ref-Pins oder Obsidian-Ledger geändert. Keine Reaktivierung historischer Bausteine.

@@ -8,6 +8,9 @@ docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0"
 
 # Master V2 Double Play Futures Input Read Model v0
 
+**Current Owner amendment, 2026-11-03:** [GGE-only geometry and common futures asset admission v3](GGE_ONLY_FUTURES_AND_COMMON_ASSET_ADMISSION_V3.md). Fixed Scope is retired from executable Double Play. BTC uses the same metadata, minimum-size, capital and risk rules as other admitted Futures. Earlier fixed-bound/BTC-exclusion statements are dated or superseded, not the active policy.
+
+
 ## 1. Purpose
 
 This specification defines the **Futures Input Snapshot**: a **safe, data-only, precomputed** read model that may later supply futures-universe and instrument-intelligence **context** into Master V2 / Double Play pure layers (dynamic scope envelope, strategy suitability projection, capital slot ratchet/release, arithmetic/sequence survival, pure composition, and read-only dashboard labels).

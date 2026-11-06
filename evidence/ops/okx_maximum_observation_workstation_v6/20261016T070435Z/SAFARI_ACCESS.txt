@@ -1,0 +1,2 @@
+INITIAL_JS=BLOCKED
+INITIAL_URL=https://my.okx.com/de/trade-spot/xrp-usdc#workspaceId=1031216400532770816

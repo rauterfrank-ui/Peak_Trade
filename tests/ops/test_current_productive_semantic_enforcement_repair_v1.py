@@ -100,7 +100,7 @@ def test_natural_enter_accepts_distinct_cmc_mark_and_index() -> None:
     mark_px = 101.25
     index_px = 100.75
     candles = governed_c1_candles_payload_from_enter_closes_v1(
-        enter_closes=(100.0, 100.5, 101.0),
+        enter_closes=tuple(100.0 + i / 99 for i in range(100)),
         last_event_ts_unix=1_700_000_100.0,
     )
     mark_payload = okx_public_mark_price_payload_v1(
@@ -121,7 +121,7 @@ def test_natural_enter_accepts_distinct_cmc_mark_and_index() -> None:
 
 def test_cycle_rejects_forbidden_candle_close_mark_source() -> None:
     bound = _bound()
-    closes = (100.0, 101.0, 102.0, 103.0, 104.0, 105.0, 106.0, 107.0)
+    closes = tuple(100.0 + i * 7 / 99 for i in range(100))
     bad = replace(
         build_explicit_test_fixture_price_provenance_v1(
             venue_native_id=str(bound.venue_native_id),
@@ -184,11 +184,11 @@ def test_venue_occupancy_does_not_mint_long_active_side_state() -> None:
             bound=bound
         ),
     )
-    assert result.replay is not None
-    assert result.replay.replay_pass is True
-    intermediate = result.replay.intermediate
-    assert intermediate is not None
-    assert intermediate.state_switch is not None
+    # Venue occupancy alone cannot initialize decision state: the persisted
+    # cursor is required before replay. No SideState is invented from a position.
+    assert result.replay is None
+    assert result.input_blocker == "CURSOR_MISSING"
+    assert result.outgoing_cursor is None
 
 
 def test_observation_sidestate_seed_class_rejected_on_bind() -> None:

@@ -1,0 +1,33 @@
+{
+  "vault": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL",
+  "changes": [
+    {
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/13 Vom MI Ergebnis zum naechsten verwendeten Modell.md",
+      "snapshot": "vault-after/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/13 Vom MI Ergebnis zum naechsten verwendeten Modell.md.txt",
+      "sha256": "e7f8b917a0e6d2c083bc77252523ec959fdadffc245ad422c9f3840a567a5396",
+      "before_snapshot": null,
+      "before_sha256": null
+    },
+    {
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md",
+      "snapshot": "vault-after/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt",
+      "sha256": "25d3502d7ea047a8c12322382ff2dcc8360da77898696418fab37a2d451eead0",
+      "before_snapshot": "vault-before/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt",
+      "before_sha256": "924682b3d43b55ac4c13bdedbe1b2ea4cf21f50739fa2dac22ce669cc76adb5b"
+    },
+    {
+      "path": "00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md",
+      "snapshot": "vault-after/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt",
+      "sha256": "cbc9d48c71ee8d3727edb7690b06d7587702b9192b6616a0862d0ed07872824d",
+      "before_snapshot": "vault-before/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt",
+      "before_sha256": "51af72571b54867b7405a18078fc83fc21b7cb5e4429fc9d337852ce5a9ff067"
+    }
+  ],
+  "binding": {
+    "path": "Systemindexbindung.json",
+    "before_snapshot": "systemindex-before.json.gz",
+    "before_sha256": "0b369a7ef8ac7848c375cce35a1661b7bddfdc7b4125a06dd12961dcceb3a8ce",
+    "snapshot": "systemindex-after.json.gz",
+    "sha256": "8202acd988c544201ce7d50b0fbeeffd50a12bef491a038c2eda59e1a1f9932c"
+  }
+}

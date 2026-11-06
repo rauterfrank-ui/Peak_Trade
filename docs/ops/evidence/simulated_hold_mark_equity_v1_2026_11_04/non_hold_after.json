@@ -1,0 +1,152 @@
+{
+  "BUY": {
+    "fills": [
+      {
+        "fee": "0.04000400",
+        "fill_price": "100.0100",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "mark_price": "100",
+        "notional": "200.0200",
+        "quantity": "2",
+        "side": "BUY",
+        "slippage_cost": "0.0200"
+      },
+      {
+        "fee": "0.04399560",
+        "fill_price": "109.9890",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "mark_price": "110",
+        "notional": "219.9780",
+        "quantity": "2",
+        "side": "SELL",
+        "slippage_cost": "0.0220"
+      }
+    ],
+    "snapshot": {
+      "broker_writes": false,
+      "economic_metrics": {
+        "drawdown": "0.00200080004",
+        "equity": "100019.85400040",
+        "exposure": "0",
+        "fees": "0.08399960",
+        "fill_count": 2,
+        "funding": "0",
+        "hit_rate": "1",
+        "profit_factor": "0",
+        "realized_pnl": "19.9580",
+        "slippage": "0.0420",
+        "turnover": "419.9980",
+        "unrealized_pnl": "-0.0200"
+      },
+      "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+      "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+      "model_version": "v1",
+      "orders_submitted": false,
+      "params": {
+        "fee_rate_bps": "2.0",
+        "funding_rate_per_interval": "0",
+        "initial_equity": "100000",
+        "max_leverage": "1",
+        "slippage_bps": "1.0"
+      },
+      "state": {
+        "cash": "100019.87400040",
+        "cumulative_fees": "0.08399960",
+        "cumulative_funding": "0",
+        "cumulative_slippage": "0.0420",
+        "equity": "100019.85400040",
+        "fill_count": 2,
+        "intended_action_count": 2,
+        "max_drawdown": "0.00200080004",
+        "peak_equity": "100019.85400040",
+        "positions": {
+          "ETH-USD_UM_XPERP-310404": {
+            "avg_entry_price": "0",
+            "instrument_id": "ETH-USD_UM_XPERP-310404",
+            "quantity": "0",
+            "realized_pnl": "19.9580",
+            "unrealized_pnl": "-0.0200"
+          }
+        },
+        "realized_pnl": "19.9580",
+        "turnover_notional": "419.9980",
+        "unrealized_pnl": "-0.0200"
+      }
+    }
+  },
+  "SELL": {
+    "fills": [
+      {
+        "fee": "0.03999600",
+        "fill_price": "99.9900",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "mark_price": "100",
+        "notional": "199.9800",
+        "quantity": "2",
+        "side": "SELL",
+        "slippage_cost": "0.0200"
+      },
+      {
+        "fee": "0.04400440",
+        "fill_price": "110.0110",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "mark_price": "110",
+        "notional": "220.0220",
+        "quantity": "2",
+        "side": "BUY",
+        "slippage_cost": "0.0220"
+      }
+    ],
+    "snapshot": {
+      "broker_writes": false,
+      "economic_metrics": {
+        "drawdown": "0.002196269262402753644417969450",
+        "equity": "99979.85399960",
+        "exposure": "0",
+        "fees": "0.08400040",
+        "fill_count": 2,
+        "funding": "0",
+        "hit_rate": "0",
+        "profit_factor": "0E+4",
+        "realized_pnl": "-20.0420",
+        "slippage": "0.0420",
+        "turnover": "420.0020",
+        "unrealized_pnl": "-0.0200"
+      },
+      "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+      "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+      "model_version": "v1",
+      "orders_submitted": false,
+      "params": {
+        "fee_rate_bps": "2.0",
+        "funding_rate_per_interval": "0",
+        "initial_equity": "100000",
+        "max_leverage": "1",
+        "slippage_bps": "1.0"
+      },
+      "state": {
+        "cash": "99979.87399960",
+        "cumulative_fees": "0.08400040",
+        "cumulative_funding": "0",
+        "cumulative_slippage": "0.0420",
+        "equity": "99979.85399960",
+        "fill_count": 2,
+        "intended_action_count": 2,
+        "max_drawdown": "0.002196269262402753644417969450",
+        "peak_equity": "100199.92000400",
+        "positions": {
+          "ETH-USD_UM_XPERP-310404": {
+            "avg_entry_price": "0",
+            "instrument_id": "ETH-USD_UM_XPERP-310404",
+            "quantity": "0",
+            "realized_pnl": "-20.0420",
+            "unrealized_pnl": "-0.0200"
+          }
+        },
+        "realized_pnl": "-20.0420",
+        "turnover_notional": "420.0020",
+        "unrealized_pnl": "-0.0200"
+      }
+    }
+  }
+}

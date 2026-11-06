@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import math
+import time
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Mapping, Protocol
 
 from scripts.ops.pre_external_convergence_natural_enter_reporting_v1 import (
     NaturalEnterReportingResultV1,
@@ -102,6 +105,7 @@ class PendingOutcomeAdvanceObservationSourceV1:
         observation = self.inner.poll()
         if observation is None:
             return None
+        receive_ts = time.time()
         mark_payload = observation.mark_price_payload
         if not isinstance(mark_payload, dict):
             return observation
@@ -110,9 +114,13 @@ class PendingOutcomeAdvanceObservationSourceV1:
         )
         if mark_px is None:
             return observation
-        candles = observation.candles_payload
-        event_ts = _extract_latest_candle_ts_v1(candles)
-        if event_ts is None:
+        event_ts = _extract_mark_event_ts_v1(mark_payload, native_id=self.native_id)
+        if (
+            event_ts is None
+            or not math.isfinite(float(mark_px))
+            or not math.isfinite(receive_ts)
+            or event_ts > receive_ts
+        ):
             return observation
         advance_all_open_pending_from_mark_v1(
             lane_state_root=self.lane_state_root,
@@ -120,6 +128,7 @@ class PendingOutcomeAdvanceObservationSourceV1:
             native_id=self.native_id,
             mark_px=float(mark_px),
             event_ts_unix=float(event_ts),
+            receive_ts_unix=receive_ts,
             repository_sha=self.repository_sha,
             evidence_root=self.evidence_root,
             evidence_class=EVIDENCE_CLASS_REAL_PUBLIC,
@@ -128,17 +137,35 @@ class PendingOutcomeAdvanceObservationSourceV1:
         return observation
 
 
-def _extract_latest_candle_ts_v1(candles_payload: Any) -> float | None:
-    data = candles_payload.get("data") if isinstance(candles_payload, dict) else None
-    if not isinstance(data, list) or not data:
+def _extract_mark_event_ts_v1(
+    mark_payload: Mapping[str, object], *, native_id: str
+) -> float | None:
+    """Use the exact single-instrument mark row; OKX ts is integer milliseconds.
+
+    Missing/ambiguous source time cannot be replaced with a candle or wall time.
+    Receipt is measured separately at this wrapper's poll-return boundary.
+    """
+    rows = mark_payload.get("data")
+    if str(mark_payload.get("code")) != "0" or not isinstance(rows, list) or len(rows) != 1:
         return None
-    row = data[0]
-    if isinstance(row, (list, tuple)) and row:
-        try:
-            return float(row[0]) / 1000.0 if float(row[0]) > 1e12 else float(row[0])
-        except (TypeError, ValueError):
+    row = rows[0]
+    if not isinstance(row, Mapping) or row.get("instId") != native_id:
+        return None
+    raw = row.get("ts")
+    if isinstance(raw, bool):
+        return None
+    try:
+        timestamp_ms = Decimal(str(raw))
+        if (
+            not timestamp_ms.is_finite()
+            or timestamp_ms <= 0
+            or timestamp_ms != timestamp_ms.to_integral_value()
+        ):
             return None
-    return None
+        event_time = float(timestamp_ms / 1000)
+    except (InvalidOperation, ValueError, TypeError, OverflowError):
+        return None
+    return event_time if math.isfinite(event_time) else None
 
 
 def wrap_observation_source_for_pending_outcome_advance_v1(

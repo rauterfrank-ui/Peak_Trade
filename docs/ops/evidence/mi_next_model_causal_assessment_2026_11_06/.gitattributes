@@ -1,0 +1,3 @@
+# Exact historical requests and beforeimages retain original whitespace.
+historical/** -whitespace
+vault-before/** -whitespace

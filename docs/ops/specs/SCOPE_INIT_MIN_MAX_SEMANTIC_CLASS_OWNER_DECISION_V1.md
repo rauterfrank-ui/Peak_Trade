@@ -8,6 +8,9 @@ docs_token: "DOCS_TOKEN_SCOPE_INIT_MIN_MAX_SEMANTIC_CLASS_OWNER_DECISION_V1"
 
 # Scope Init min/max_scope_band Semantic Class Owner Decision v1
 
+**Current Owner amendment, 2026-11-03:** [GGE-only geometry and common futures asset admission v3](GGE_ONLY_FUTURES_AND_COMMON_ASSET_ADMISSION_V3.md). Fixed Scope is retired from executable Double Play. BTC uses the same metadata, minimum-size, capital and risk rules as other admitted Futures. Earlier fixed-bound/BTC-exclusion statements are dated or superseded, not the active policy.
+
+
 Canonical persist of the Owner classification captured under
 `OWNER_GO_BOUNDED_SCOPE_INIT_MIN_MAX_SEMANTIC_CLASS_DECISION_DOCS_ONLY_V1`.
 

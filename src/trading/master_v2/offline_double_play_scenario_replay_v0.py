@@ -215,7 +215,7 @@ REASON_SCENARIO_INJECTION_EXECUTION_SURFACE_FORBIDDEN = (
     "scenario_scope_event_injection_execution_surface_forbidden"
 )
 
-_BTC_SPOT_RE = re.compile(r"(?i)(btc|xbt|bitcoin|/usd|/eur|spot)")
+_BTC_SPOT_RE = re.compile(r"(?i)(spot)")
 
 _STATIC_LIMITS = StaticHardLimits(
     max_notional=1.0,

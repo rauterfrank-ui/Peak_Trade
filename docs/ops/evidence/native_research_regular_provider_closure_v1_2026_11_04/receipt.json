@@ -1,0 +1,33 @@
+{
+  "source_commit": "607210def6105e9964379c91bcc17ccdb3b90706",
+  "tests": "25 scoped tests PASS, including the previous18 and7 connected provider cases; counts not additive. Full Meta-selected native execution survives GVEF reference reload with exactly equal later Meta.",
+  "ruff_status": "PASS; format PASS",
+  "runtime_activation_authorized": false,
+  "full_system_restoration_proven": false,
+  "boundaries": [
+    "Controlled synthetic bars and test-only synthetic fee-gap context; no observed natural Shadow or market-learning effectiveness claim.",
+    "No source authentication for core/feature/Git from source component hashes alone.",
+    "Funding binding does not prove applied actual-quantity cashflow. Research model and observed productive accounting remain separate; no research-to-accounting bypass or new cash writer.",
+    "Other robustness/regime/portfolio suppliers remain absent where the existing owner requires them; BLOCKED is retained. Optional advanced statistical controls are not redefined as mandatory for every minimal learning loop.",
+    "Existing baseline implementations, four Scope source files and original learning ledger preserved; no scheduler, services, activation, orders, push or external source writes; U04/GAP-0370 deferred."
+  ],
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/README.md",
+      "docs/ops/specs/CANONICAL_NATIVE_RESEARCH_MEASUREMENTS_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 263,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; format PASS",
+    "atlas_structure_generated_drift": "PASS"
+  },
+  "post_commit_git_object_replay": "git_object_replay.json"
+}

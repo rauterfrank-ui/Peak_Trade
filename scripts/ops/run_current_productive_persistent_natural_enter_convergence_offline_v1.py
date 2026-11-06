@@ -22,7 +22,14 @@ def _main() -> int:
     parser.add_argument("--authorization-native-id", required=True)
     parser.add_argument("--binding-epoch", required=True)
     parser.add_argument("--post-durable-store", type=Path, default=None)
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+        add_startup_portfolio_arguments_v1,
+        load_startup_portfolio_args_v1,
+        startup_observation_now_v1,
+    )
+    add_startup_portfolio_arguments_v1(parser, replay_clock=True)
     args = parser.parse_args()
+    observed_portfolio = load_startup_portfolio_args_v1(args)
 
     from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
         CONTINUOUS_RUN_AUTHORIZED,
@@ -45,6 +52,8 @@ def _main() -> int:
         repository_sha=origin_sha,
         binding_epoch=args.binding_epoch,
         authorization_native_id=args.authorization_native_id,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=startup_observation_now_v1(args),
     )
     owner_go = adjudicate_existing_owner_go_reuse_read_only_v1(
         post_durable_store_root=args.post_durable_store,

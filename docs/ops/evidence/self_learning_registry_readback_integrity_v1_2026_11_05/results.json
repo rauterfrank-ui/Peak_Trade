@@ -1,0 +1,147 @@
+{
+  "schema": "self_learning_registry_readback_integrity_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "execution_head": "14a9620b731799148532a0c77d5d26b73273d4ad",
+  "date": "2026-11-05",
+  "source_review": {
+    "id": "GRC01",
+    "title": "GVEF-Registry kopiert beim Register, gibt beim Lesen aber ihren gespeicherten Inhalt zurück",
+    "source_observed_effect": "register validiert den Evidence-Digest und speichert ein neu aufgebautes Modell. get gibt die interne gespeicherte Instanz direkt zurück. EvidenceBundle enthält verschachtelte Listen; eine Änderung an der aus get erhaltenen seed_set-Liste ändert in der Offline-Probe den gespeicherten Payload bei unverändertem deklariertem Digest und unverändertem Mitgliedschaftsmanifest. Der konkrete Promotionadapter rehasht den Payload und weist diesen veränderten Readback ab.",
+    "semantics": "Unabhängigkeit vom ursprünglichen Register-Input, Schutz des späteren Lesepfads und Validierung beim tatsächlichen Consumer sind verschiedene Integritätsgrenzen. append_only im Manifest beschreibt hier Mitgliedschaft und Reihenfolge, nicht die nachgewiesene Unveränderlichkeit aller Inhalte. CorpusRegistry, EvidenceRegistry und numerisches Forschungsarchiv bleiben verschiedene Owner.",
+    "limit": "Drei kontrollierte Offline-Tests mit synthetischem gültigem Bundle; kein produktiv beschädigter Eintrag, keine Aktivierung und kein externer Handoff. Keine globale Aussage, dass alle aktuellen Caller get verwenden. Der gemessene SelfLearning-Referenztest verwendet eine andere InMemoryEvidenceRegistry-Fixture. Die konkrete Handoff-Rehashprüfung ist ein belegter Gegenbeleg gegen einen ungeprüften Durchlass.",
+    "source_bindings": [
+      {
+        "path": "src/evaluation/golden_vectors/registry/evidence_registry_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "d5625dfd0b6a9a155589fd999a86b862656dfdfe2dd435f314724efabc1c5d59",
+        "line_start": 25,
+        "line_end": 36,
+        "snippet_sha256": "1e1a74af2b1926097216fef3b0211aa3a8ff910edcbd6b6a9b1ab698833630eb"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/registry/evidence_registry_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "d5625dfd0b6a9a155589fd999a86b862656dfdfe2dd435f314724efabc1c5d59",
+        "line_start": 38,
+        "line_end": 39,
+        "snippet_sha256": "34e7f4f1678f34f07601bf35edf3147c2f9e525587256bedac514230c6236c69"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/registry/evidence_registry_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "d5625dfd0b6a9a155589fd999a86b862656dfdfe2dd435f314724efabc1c5d59",
+        "line_start": 41,
+        "line_end": 47,
+        "snippet_sha256": "8081cb4b688b79b00054d9f1688b9b01787e9bbcc3f8c5cc523edb01e518df13"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/contracts/models.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "c9fd96c72aadeec712f7e2644db2a25875659413cd1ce8b4a7a6ddc868599005",
+        "line_start": 50,
+        "line_end": 51,
+        "snippet_sha256": "7849743c9b3fdd2da97f90d4e474e0d7ce5e82142cb04fb4a9d3b7c85d509673"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/contracts/models.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "c9fd96c72aadeec712f7e2644db2a25875659413cd1ce8b4a7a6ddc868599005",
+        "line_start": 307,
+        "line_end": 376,
+        "snippet_sha256": "ba75bc158730b0eebaf7800459b392776067d00899da886c139b8e21db245506"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/promotion/promotion_evidence_adapter_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "f7141779fee3f4d5f6322e3992064fbbe4a0d498924f87c194f4709c5a70eb11",
+        "line_start": 45,
+        "line_end": 87,
+        "snippet_sha256": "a516374e1fef72035fdd4e7d115df2a36d8b1d992ee3389e49b625b3c0f6ebcd"
+      }
+    ],
+    "evidence_class": "PINNED_SOURCE_PLUS_CONTROLLED_OFFLINE_API_PROBE_NOT_PRODUCTIVE_FAILURE",
+    "product_change": false
+  },
+  "tests": [
+    {
+      "name": "test_registration_takes_independent_snapshot",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_readback_exposes_registry_owned_nested_list",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_concrete_handoff_rejects_changed_readback",
+      "outcome": "PASS"
+    }
+  ],
+  "observations": [
+    {
+      "id": "REG-READ01",
+      "status": "EXISTING_SNAPSHOT_GUARD_CONFIRMED",
+      "observed": {
+        "original_input_changed_after_register": true,
+        "stored_snapshot_unchanged": true,
+        "stored_digest_valid": true,
+        "handoff_envelope_created": true,
+        "productive_authority": false
+      },
+      "productive_failure_observed": false,
+      "implementation_changed": false
+    },
+    {
+      "id": "REG-READ02",
+      "status": "OFFLINE_READBACK_INTEGRITY_GAP_REPRODUCED",
+      "observed": {
+        "returned_readback_changed_stored_payload": true,
+        "original_input_unchanged": true,
+        "manifest_unchanged": true,
+        "manifest_append_only": true,
+        "entry_count": 1,
+        "declared_digest": "b5391b44a926f8382be324bebb459e195729b9c8a83fa532289197fe83267a05",
+        "recomputed_digest": "30f56b3059398130ebd898edbb6b9c850ab67d3de52b53b397c0f37c4446298b",
+        "invalid_stored_digest_returned_without_error": true
+      },
+      "productive_failure_observed": false,
+      "implementation_changed": false
+    },
+    {
+      "id": "REG-READ03",
+      "status": "EXISTING_CONSUMER_REHASH_GUARD_CONFIRMED",
+      "observed": {
+        "stored_readback_digest_invalid": true,
+        "concrete_promotion_adapter_rejected": true,
+        "envelope_created": false
+      },
+      "productive_failure_observed": false,
+      "implementation_changed": false
+    }
+  ],
+  "probes_executed": 3,
+  "readback_counterexamples": 1,
+  "positive_guards_confirmed": 2,
+  "implementation_changed": false,
+  "productive_failure_observed": false,
+  "remediation_candidate": "Preserve register snapshot validation. For a required integrity-preserving readback, validate the stored digest before return and return an independent model copy using the established serialization/validation path. Keep manifest membership semantics explicit. This is not an applied patch and does not introduce persistent registry authority.",
+  "future_acceptance": [
+    "Mutating the original register input does not alter the stored entry",
+    "Mutating an object returned by get does not alter later registry reads",
+    "Invalid stored digest cannot be silently returned as valid evidence",
+    "Concrete handoff digest validation continues to reject changed evidence"
+  ],
+  "execution_artifacts": [
+    {
+      "path": "tests.xml",
+      "sha256": "aefe05933c61e36271f2bc10c544b18c161faabed4dbdf22c0973aad798ae59c"
+    },
+    {
+      "path": "tests.log",
+      "sha256": "5f77bb431fb12a428f55dd89e71d66d4ff3f6283b5bac603274ce0dcff3f5491"
+    },
+    {
+      "path": "test_registry_readback_integrity.py",
+      "sha256": "6f1260881898907d85bc22c54dd7b884455481821bec9188e9c78c1980cf27c1"
+    }
+  ]
+}

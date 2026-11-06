@@ -1,0 +1,175 @@
+# Anforderungen und Implementierungsbelege im Gesamtzusammenhang
+
+Vergleich: lokaler Git-Pin `5d1c838c15369507c5247834db4dd0df25592169`; kein neuer Remote-Abgleich. Ausgangspunkt sind 19 datierte historische Anforderungen, keine vollständige Ursprungsgeschichte.
+
+Dieser Anhang verbindet vorhandene Untersuchungen mit den Anforderungen. Frühere Archivlabels bleiben historische Aussagen. Neu geprüft wurden ausgewählte Git-Objektidentitäten und eine konkrete Guard-Bedingung; keine Runtime und kein Produktcode wurden ausgeführt.
+
+## Übergreifende Befunde
+
+- Datenbereitstellung, fachliche Verwendung und Autorität sind unterschiedliche Verbindungen. Ein Adapter oder Surface-Name schließt die Kette nicht.
+- Der ausgewählte Market-Context-Adapter bricht unter seinen deklarierten Konstanten vor der Materialisierung ab. Das ist ein enger statischer Befund; Absicht, andere Zugänge und tatsächlicher Betrieb bleiben offen.
+- Die CAP21-zu-CAP23-Persistenzdatei und der isolierte MF-N5-Invoke-Join unterscheiden sich vom früheren Archivpin. Alte Aussagen zu ihr werden daher nicht automatisch auf den Vergleichspin übertragen.
+- Für den zusätzlichen Informationswert und nutzbare Ablehnungs-Evidenz wird hier noch kein gezielter Implementierungsbeleg verknüpft. Das ist keine Feststellung fehlender Implementierung.
+- Keine der 19 Anforderungen gilt durch diese Zuordnung als insgesamt erfüllt. Fachlicher Nutzen und Folgen einer Änderung bleiben vor Entscheidungen zu prüfen.
+
+## Anforderungen und offene systemische Folgen
+
+### B01 · Markt-Kontext ist ein zusammengesetzter Informationszustand
+
+Market-Context-Adapter und publizierte Datenflächen sind als begrenzte historische Teilbefunde auffindbar. Die neu geprüfte Adapter-Bedingung bricht unter ihren Konstanten vor Materialisierung ab.
+
+**Fehlender Nachweis:** Informationsfamilien, Missing-/Qualitätssemantik und wirkliche Weitergabe an Prognose und Entscheidung fehlen als Gesamtnachweis.
+
+**Systemzusammenhang:** Ein eingeschränkter oder unterbrochener Kontext kann mehrere nachgelagerte Lern- und Entscheidungsbereiche betreffen.
+
+### B02 · Lernen erfordert einen zeitlich korrekten Vergleich
+
+Archivbefunde unterscheiden Forecast/Outcome-Join, kanonische Bars und eine sitzungsgebundene O4-Konvergenz.
+
+**Fehlender Nachweis:** Entscheidungszeitpunkt, Horizont, Finalität und tatsächliche Outcome-Verwendung über Sitzungsgrenzen hinweg gemeinsam belegen.
+
+**Systemzusammenhang:** Falsche Zeitzuordnung würde Kalibrierung, Vergleichbarkeit und darauf beruhende Optimierung zugleich entwerten.
+
+### B03 · Mehrere Lernfunktionen mit verschiedenen Gegenständen
+
+Frisch gelesene Quellkörper zeigen Pending-Closure mit Offline-Ack und einen begrenzten Mehrzyklus-Feedbackpfad.
+
+**Fehlender Nachweis:** Die unterschiedlichen Lerngegenstände und deren vollständige Rückwirkung sind damit nicht systemweit bewiesen.
+
+**Systemzusammenhang:** Ergebnislernen, Repräsentationslernen und Optimierung dürfen ihre Bedeutung nicht durch gemeinsame Exportnamen verlieren.
+
+### B04 · Meta-Feedback wird nach Bedeutung geroutet
+
+Historische Adapterbefunde für Learning-Export und Offline-Research-Eingang liegen vor.
+
+**Fehlender Nachweis:** Vollständiges typisiertes Routing einschließlich UNKNOWN/MIXED und tatsächlicher Consumer-Wahl bleibt offen.
+
+**Systemzusammenhang:** Eine falsche Route könnte Evidenz an einen fachlich unzuständigen Lern- oder Optimierungsprozess übergeben.
+
+### B05 · Zusätzliche Informationen müssen ihren Nutzen belegen
+
+Für inkrementellen Informationswert und verworfene Feature-Familien wird in diesem Abgleich noch kein gezielter Implementierungsbeleg verknüpft.
+
+**Fehlender Nachweis:** Nachweise für zusätzliche Information, zeitlich saubere Validierung und nutzbare Ablehnungs-Evidenz suchen.
+
+**Systemzusammenhang:** Feature-Verfügbarkeit oder wirtschaftlicher Rank ersetzen keinen Nachweis zusätzlichen Informationswerts.
+
+### B06 · Optimierung soll reale Parameterrelevanz erreichen
+
+Echter alter Parameter-Writer, spätere Autoritätssperre und getrennte Apply-/Zulassungssemantik sind revisionsgebunden dokumentiert.
+
+**Fehlender Nachweis:** Gewünschter fachlicher Nutzen und gesamte Linie von Kandidat über Freigabe bis zu angewandtem Wert und Consumer fehlen noch.
+
+**Systemzusammenhang:** Eine Autoritätssperre bewahrt nicht automatisch alle ursprünglich gewünschten Lernfunktionen; eine Wiederöffnung wäre ebenso wenig begründet.
+
+### B07 · Pfeile tragen unterschiedliche Wirkungen
+
+Ein Ranking-Evaluator liefert einen konkreten Fall: deklarierte Owner und Datenresultate sind keine bewiesenen Writer-Aufrufe.
+
+**Fehlender Nachweis:** Daten-, Entscheidungs-, Evidence-, Freigabe- und Rückflussbeziehungen im ganzen System getrennt nachweisen.
+
+**Systemzusammenhang:** Ein gemeinsames Pfeilbild würde fachlich verschiedene Wirkungsarten vermischen und falsche Autorität suggerieren.
+
+### B08 · Alte Zahl, Modellregel und technischer Default sind verschieden
+
+Frühere Querschnitts-Sizing-Untersuchung und Apply-Befunde liefern begrenzte Anker für Werte, Einheiten und Wirkung.
+
+**Fehlender Nachweis:** Historische Modellregeln, Testwerte, Defaults und tatsächlich konsumierte Parameter systemweit unterscheiden.
+
+**Systemzusammenhang:** Ein fortbestehender Zahlenwert kann trotz gleicher Schreibweise eine andere fachliche Rolle erhalten haben.
+
+### B09 · Ein früher Snapshot ist kein heutiger Funktionsnachweis
+
+Die datierte DDO-Bestandsaufnahme lässt sich späteren, getrennt geprüften Closure- und Ingress-Befunden gegenüberstellen.
+
+**Fehlender Nachweis:** Zeitlich und revisionsbezogen klären, welche damaligen Lücken geschlossen, verändert oder anders begrenzt wurden.
+
+**Systemzusammenhang:** Ein früherer Teilbetrieb darf weder als heutiger Defekt noch als spätere Gesamtfreigabe weitergetragen werden.
+
+### B10 · Eignung, Rangfolge und ausgewählte Identität erfüllen verschiedene Aufgaben
+
+Economic-Ranking-, Selection- und Persistenzbefunde sind verknüpft; die untersuchte CAP21-Datei hat sich seit dem alten Archivpin geändert.
+
+**Fehlender Nachweis:** Zulässigkeit, wirtschaftlichen Rank, Auswahl und Bindung bis zum heutigen Consumer getrennt verfolgen; geänderte Datei neu einordnen.
+
+**Systemzusammenhang:** Ein erlaubtes Instrument ist nicht automatisch das wirtschaftlich beste oder tatsächlich gebundene Instrument.
+
+### B11 · Ein eigener ökonomischer Rang benötigt eine eigene Bedeutung
+
+Ein historischer Funktionskörper überführt Feature-Snapshots in Ranking-Ergebnisse; seine Feature-Produktion blieb dort offen.
+
+**Fehlender Nachweis:** Wirtschaftliche Bedeutung, Score-Erzeugung und Abgrenzung von struktureller Readiness prüfen.
+
+**Systemzusammenhang:** Ein formal sortiertes Ergebnis kann eine andere Auswahlabsicht verwirklichen als die ursprüngliche ökonomische Idee.
+
+### B12 · Faktenwiederverwendung darf keine versteckte Rollenübertragung sein
+
+Das alte Archiv unterscheidet eine zurückgegebene Surface-Dictionary von echten nachgelagerten Ranker-/Optimizer-Aufrufen.
+
+**Fehlender Nachweis:** Tatsächliche Nutzung und je Consumer erlaubte Autorität separat nachweisen; alte Dateiänderungen bleiben zu klassifizieren.
+
+**Systemzusammenhang:** Gemeinsame Datenversorgung darf nicht unbemerkt Freigabe- oder Schreibrechte übertragen.
+
+### B13 · Single-Future, isolierter Active Set und Beobachtungsumfang sind getrennt
+
+Historische Hinweise auf Hysterese, Persistenz und Rotation sind verknüpft.
+
+**Fehlender Nachweis:** Produktive SSF-, isolierte MF- und reine Beobachtungspfade in ihren realen Hosts auseinanderhalten.
+
+**Systemzusammenhang:** Eine im isolierten Pfad richtige Auswahlregel kann im produktiven Pfad andere Zustands- und Positionsfolgen haben.
+
+### B14 · Preisart, Intervall und Finalität sind Teil der Datenbedeutung
+
+Mark-Extraktion, Persistenzübergabe und unterschiedliche geometrische Ausgangsgrößen sind getrennte Teilanker.
+
+**Fehlender Nachweis:** Preisart, Bar-Finalität, Volumenbedeutung und unveränderte Interpretation bei jedem betroffenen Consumer prüfen.
+
+**Systemzusammenhang:** Gleiche Feldnamen oder Ratios sichern keine gleiche Bedeutung für Risiko, Scope, Ranking oder Lernen.
+
+### B15 · Verschiedene Consumer dürfen unterschiedliche Zeithorizonte behalten
+
+Datenflächen, Bar-Producer und sitzungsgebundene O4-Konvergenz liefern unterschiedliche historische Übergaben.
+
+**Fehlender Nachweis:** PT1M-Ranking- und PT1H-Outcome-Verträge einschließlich Lücken und Horizontidentität nicht gleichsetzen.
+
+**Systemzusammenhang:** Eine zeitlich passende Quelle für einen Consumer kann für den anderen fachlich ungeeignet sein.
+
+### B16 · Recovery und Gültigkeit sind Bestandteil des Faktenvertrags
+
+Restore-/Restart- und öffentliche Datenbefunde bleiben auf ihre gelesenen Funktionskörper begrenzt.
+
+**Fehlender Nachweis:** Bootstrap, Gap-Recovery, Wiederanlauf und Freshness pro Faktart sowie tatsächliche Host-Aufrufe belegen.
+
+**Systemzusammenhang:** Erfolgreicher Neustart eines Teilpfads beweist weder Datenvollständigkeit noch Handelsbereitschaft.
+
+### B17 · Privater Zustand ist keine neu erfundene Kapitalwahrheit
+
+Reconciliation, gemeinsamer Epoch-Handoff und Sizing-Base-Rebind haben getrennte Archivanker.
+
+**Fehlender Nachweis:** Private Zustandsbaseline/Deltas, Missing-vs-empty und Equity-Autorität bis zum Risiko-Consumer gemeinsam prüfen.
+
+**Systemzusammenhang:** Ein leerer technischer Zustand darf nicht als tatsächliche Positionsfreiheit oder verfügbare Equity missverstanden werden.
+
+### B18 · Autonomie bedeutet Ablaufsteuerung bei getrennter Entscheidungszuständigkeit
+
+Bridge-Flags, Submit-Gates und simulierter Fill-Ledger sind unterschiedliche historische Befundklassen.
+
+**Fehlender Nachweis:** Orchestrierung, Entscheidung, Befugnis, tatsächlicher Versand und Ergebnisführung je Host trennen.
+
+**Systemzusammenhang:** Technische Ablaufautonomie verleiht keine fachliche Handels- oder Kontoberechtigung.
+
+### B19 · Ergänzungen aktualisieren nicht automatisch alle früheren Aussagen
+
+PDF-Fassungen und Addenda sind datiert erfasst; die vermeintliche Git-Wurzel wurde als Shallow-Grenze qualifiziert.
+
+**Fehlender Nachweis:** Je Behauptung Dokumentdatum, Scope, Revision und spätere Änderung bestimmen; ursprüngliche Erstkonstruktion bleibt offen.
+
+**Systemzusammenhang:** Eine spätere Ergänzung validiert nicht rückwirkend alle alten Annahmen und Nachweise.
+
+## Prüfumfang
+
+19 Anforderungen zugeordnet; 271 Archivfundstellen mit JSON-Pointern und Quellhashes überprüft. 29 indexierte Quellobjekte an zwei Pins verglichen (27 bytegleich, 2 abweichend; Wiederholungen möglich).
+
+Die zugehörigen PDF-Hashes wurden erneut geprüft. Die vollständigen Ursprünge, historische Änderungen, Einheiten-/Zeit-/Identitätsverträge und End-to-End-Laufzeit aller Bereiche bleiben offen. Die aktuelle Architektur ist kein vorgegebenes Zielbild. Produktcode, externe Laufwerke und kanonische Register wurden nicht beschrieben.
+
+Die bestehende interaktive Übersicht wurde um die Ansicht „Anforderung und Belege“ erweitert. TypeScript-Syntaxprüfung ohne Fehler; keine vollständige Render-/Laufzeitprüfung. Diese 19 Anforderungen sind ein ausgewählter Teil der Rekonstruktion, kein vollständiger Anforderungskatalog des Systems.

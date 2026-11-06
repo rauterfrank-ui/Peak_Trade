@@ -1,0 +1,14 @@
+import importlib.util
+from importlib.machinery import SourceFileLoader
+from pathlib import Path
+import sys
+import pytest
+from src.ops.integrated_paper_shadow_observation_session_v1 import portfolio_economics_model_v1 as current
+name='_peaktrade_baseline_portfolio_model'
+original=Path('docs/ops/evidence/simulated_hold_mark_equity_v1_2026_11_04/model_before.py.txt').resolve()
+spec=importlib.util.spec_from_loader(name,SourceFileLoader(name,str(original)))
+baseline=importlib.util.module_from_spec(spec)
+sys.modules[name]=baseline
+spec.loader.exec_module(baseline)
+current.SimulatedPortfolioEconomicsModelV1.apply_intended_action=baseline.SimulatedPortfolioEconomicsModelV1.apply_intended_action
+raise SystemExit(pytest.main(['tests/ops/test_wallclock_bridge_hardening_v2.py::test_warmup_complete_true_features_ok_false_no_required_window_incomplete','-q','--junitxml=docs/ops/evidence/simulated_hold_mark_equity_v1_2026_11_04/baseline_unrelated.xml']))

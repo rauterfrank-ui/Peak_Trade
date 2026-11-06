@@ -1,0 +1,14 @@
+{
+  "source_commit": "688d0a6536bf7bcb74b6b7dfbee335866f7e7ea6",
+  "files": {
+    ".gitattributes": "5b60419c62f19a3968f2f34fe299083b36d6ed878e16c8c6b6c6380800357746",
+    "README.md": "d133cb7fb2a0f1bca94f3b434c0962bc43aca0dbe273231987c1475023bc6fad",
+    "after_tests.xml": "c5be2ebdbc7a1a29e32f0efbab79937ccaed37296652f19c775bfeebdb92d7e7",
+    "before_router_tests.xml": "99f3bc76f1686fe51854c276d5c9df56e695d16c138ac838cfb375f78e720c8c",
+    "canonical_learning_representation_research_adaptation_plan_v1.py.before.txt": "2e33a957266df883479cb863c49dc3b75859dbbbe3d4a12e5688751fc5ebe1e9",
+    "canonical_meta_evidence_dual_router_v1.py.before.txt": "a858aaf9e6595aa1693ee0bb929af05a00791d8b71d9752a2dad5651b8c17c2d",
+    "plan_tamper_before.json": "6c0432d7fc1c6b404c3c124b71b6c0a43218579f208f63bcc7cde136c2fa0a2b",
+    "receipt.json": "8517aa5d2094563f7b3b34669959c34a335edc7f974cef45cc6164592b186aa0",
+    "source_changes.patch.txt": "59aead45247f77894a22ee25871eb6a963098f3adbd806629add36ab101ed996"
+  }
+}

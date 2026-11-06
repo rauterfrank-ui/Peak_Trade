@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import math
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
@@ -26,7 +28,6 @@ from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.canonical
 from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.constants_v1 import (
     BAR_STATE_CORRECTED,
     BAR_STATE_FINALIZED,
-    BAR_STATE_IN_PROGRESS,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.normalized_market_data_v1 import (
     NormalizedPublicMarketDataV1,
@@ -42,6 +43,9 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.o4_pt1h_bar_fact_v1 import (
     canonical_bar_envelope_to_o4_bar_element_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_canonical_bar_producer_session_binding_v1 import (
+    _finalize_due_bars_v1,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_n_bars_public_plane_convergence_v1 import (
     sync_session_producer_finalized_bars_to_wp_a_v1,
@@ -64,10 +68,15 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
     STATUS_IN_PROGRESS,
 )
 from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1 import (
-    _events_path,
+    load_pending_outcome_events_v1,
+    NaturalEnterPendingOutcomeStoreError,
     lane_pending_lane_dir_v1,
     persist_record_v1,
     replace_record_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.measurement_store_v1 import (
+    persist_pending_measurement_artifacts_v1,
+    load_pending_measurement_artifacts_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.types_v1 import (
     NaturalEnterPendingOutcomeRecordV1,
@@ -121,7 +130,7 @@ def _normalized_from_ingest_detail_v1(
             venue="okx_eea",
             mark_px=float(detail["mark_px"]),
             event_ts_unix=float(detail["event_ts_unix"]),
-            receive_ts_unix=float(detail.get("receive_ts_unix") or detail["event_ts_unix"]) + 1.0,
+            receive_ts_unix=float(detail["receive_ts_unix"]),
             mark_price_endpoint=str(detail.get("mark_price_endpoint") or "/pending-outcome/replay"),
             mark_price_field="markPx",
             mapping_digest="natural-enter-pending-outcome-v1",
@@ -129,6 +138,73 @@ def _normalized_from_ingest_detail_v1(
         )
     except (KeyError, TypeError, ValueError):
         return None
+
+
+MARK_OBSERVATION_CONTRACT_V2 = "pending_mark_observation.v2_elapsed_finalization"
+_PENDING_SOURCE_CLASSES = frozenset({EVIDENCE_CLASS_REAL_PUBLIC, EVIDENCE_CLASS_TEST_FIXTURE})
+
+
+def _normalized_observation_error_v2(
+    pending: NaturalEnterPendingOutcomeRecordV1,
+    normalized: NormalizedPublicMarketDataV1,
+) -> str | None:
+    if (
+        normalized.canonical_instrument_id != pending.canonical_instrument_id
+        or normalized.venue_instrument_id != pending.native_id
+        or normalized.venue != "okx_eea"
+    ):
+        return "INSTRUMENT_MISMATCH"
+    try:
+        values = (normalized.mark_px, normalized.event_ts_unix, normalized.receive_ts_unix)
+        if any(isinstance(value, bool) for value in values):
+            return "PENDING_MARK_OBSERVATION_INVALID"
+        price, event, received = map(float, values)
+        if not all(math.isfinite(value) for value in (price, event, received)):
+            return "PENDING_MARK_OBSERVATION_INVALID"
+        if price <= 0 or event <= 0 or received < event:
+            return "PENDING_MARK_OBSERVATION_INVALID"
+        if event <= pending.decision_timestamp_unix:
+            return "OBSERVATION_NOT_AFTER_DECISION"
+    except (TypeError, ValueError, OverflowError):
+        return "PENDING_MARK_OBSERVATION_INVALID"
+    return None
+
+
+def _pending_mark_events_v2(
+    lane_state_root: Path,
+    pending: NaturalEnterPendingOutcomeRecordV1,
+) -> list[tuple[NormalizedPublicMarketDataV1, str]]:
+    result = []
+    for event in load_pending_outcome_events_v1(lane_state_root):
+        if event.get("pending_outcome_id") != pending.pending_outcome_id:
+            continue
+        if event.get("event_type") != EVENT_BAR_INGESTED:
+            continue
+        detail = event.get("detail")
+        if (
+            not isinstance(detail, Mapping)
+            or detail.get("mark_observation_contract") != MARK_OBSERVATION_CONTRACT_V2
+        ):
+            raise DdoValidationError("PENDING_MARK_HISTORY_CONTRACT_UNSUPPORTED")
+        source = detail.get("evidence_class")
+        if source not in _PENDING_SOURCE_CLASSES:
+            raise DdoValidationError("PENDING_SOURCE_CLASS_UNSUPPORTED")
+        if result and source != result[0][1]:
+            raise DdoValidationError("PENDING_SOURCE_CLASS_CONFLICT")
+        if (
+            detail.get("venue") != "okx_eea"
+            or detail.get("venue_instrument_id") != pending.native_id
+            or any(
+                isinstance(detail.get(key), bool)
+                for key in ("mark_px", "event_ts_unix", "receive_ts_unix")
+            )
+        ):
+            raise DdoValidationError("PENDING_MARK_HISTORY_OBSERVATION_INVALID")
+        normalized = _normalized_from_ingest_detail_v1(pending, detail)
+        if normalized is None or _normalized_observation_error_v2(pending, normalized):
+            raise DdoValidationError("PENDING_MARK_HISTORY_OBSERVATION_INVALID")
+        result.append((normalized, source))
+    return result
 
 
 def _replay_producer_from_pending_events_v1(
@@ -140,35 +216,13 @@ def _replay_producer_from_pending_events_v1(
     producer = CanonicalPublicMdBarProducerV1(
         session_id=pending.pending_outcome_id,
         repository_sha=repository_sha[:40],
-        config_digest="natural-enter-pending-outcome-o4-v1",
+        config_digest=MARK_OBSERVATION_CONTRACT_V2,
     )
-    events_path = _events_path(lane_pending_lane_dir_v1(lane_state_root))
-    if not events_path.is_file():
-        return producer
-    for line in events_path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        event = json.loads(line)
-        if str(event.get("pending_outcome_id") or "") != pending.pending_outcome_id:
-            continue
-        if str(event.get("event_type") or "") != EVENT_BAR_INGESTED:
-            continue
-        detail = event.get("detail") or {}
-        norm = _normalized_from_ingest_detail_v1(pending, detail)
-        if norm is None:
-            continue
-        opened = producer.ingest_normalized_event(norm, runtime_cycle_index=0)
+    for normalized, _source in _pending_mark_events_v2(lane_state_root, pending):
+        opened = producer.ingest_normalized_event(normalized, runtime_cycle_index=0)
         if opened.get("accepted") is not True:
-            continue
-        envelope = opened.get("envelope")
-        if isinstance(envelope, dict):
-            try:
-                producer.finalize_bar(
-                    canonical_instrument_id=pending.canonical_instrument_id,
-                    bar_open_time=float(envelope["bar_open_time"]),
-                )
-            except (ValueError, TypeError):
-                pass
+            raise DdoValidationError("PENDING_MARK_HISTORY_OBSERVATION_REJECTED")
+        _finalize_due_bars_v1(producer, normalized.event_ts_unix)
     return producer
 
 
@@ -210,8 +264,8 @@ def _count_post_decision_finalized_bars_v1(
             continue
         if str(env.get("canonical_instrument_id") or "") != canonical_instrument_id:
             continue
-        close_ts = float(env.get("bar_close_time") or 0.0)
-        if close_ts <= float(decision_timestamp_unix):
+        open_ts = float(env.get("bar_open_time") or 0.0)
+        if open_ts < float(decision_timestamp_unix):
             continue
         identities.append(_bar_identity_v1(env))
     deduped = tuple(dict.fromkeys(identities))
@@ -246,20 +300,40 @@ def ingest_pending_outcome_mark_observation_v1(
             reason="TEST_FIXTURE_FORBIDDEN",
             record=pending,
         )
-    if normalized.canonical_instrument_id != pending.canonical_instrument_id:
+    if evidence_class not in _PENDING_SOURCE_CLASSES:
         return PendingOutcomeBarIngestResultV1(
             ok=False,
             advanced=False,
             duplicate=False,
-            reason="INSTRUMENT_MISMATCH",
+            reason="PENDING_SOURCE_CLASS_UNSUPPORTED",
             record=pending,
         )
-    if float(normalized.event_ts_unix) <= float(pending.decision_timestamp_unix):
+    error = _normalized_observation_error_v2(pending, normalized)
+    if error:
         return PendingOutcomeBarIngestResultV1(
             ok=False,
             advanced=False,
             duplicate=False,
-            reason="OBSERVATION_NOT_AFTER_DECISION",
+            reason=error,
+            record=pending,
+        )
+    try:
+        history = _pending_mark_events_v2(lane_state_root, pending)
+        if history and evidence_class != history[0][1]:
+            raise DdoValidationError("PENDING_SOURCE_CLASS_CONFLICT")
+        if history and normalized.event_ts_unix < history[-1][0].event_ts_unix:
+            raise DdoValidationError("PENDING_MARK_OUT_OF_ORDER")
+        producer = _replay_producer_from_pending_events_v1(
+            lane_state_root=lane_state_root,
+            pending=pending,
+            repository_sha=repository_sha,
+        )
+    except (DdoValidationError, ValueError, TypeError) as exc:
+        return PendingOutcomeBarIngestResultV1(
+            ok=False,
+            advanced=False,
+            duplicate=False,
+            reason=str(exc),
             record=pending,
         )
     runtime_root = _o4_runtime_root_v1(lane_state_root, pending.pending_outcome_id)
@@ -271,12 +345,7 @@ def ingest_pending_outcome_mark_observation_v1(
         ddo_durable_evidence_runtime_state_root=runtime_root,
         ddo_n_bars_horizon_n_bars=int(pending.n_bars_required),
     )
-    producer = _ensure_producer_v1(
-        state,
-        lane_state_root=lane_state_root,
-        pending=pending,
-        repository_sha=repository_sha,
-    )
+    state.ddo_canonical_public_md_bar_producer = producer
     ingest = producer.ingest_normalized_event(normalized, runtime_cycle_index=0)
     if ingest.get("accepted") is not True:
         count, identities = _count_post_decision_finalized_bars_v1(
@@ -300,24 +369,7 @@ def ingest_pending_outcome_mark_observation_v1(
         return PendingOutcomeBarIngestResultV1(
             ok=False, advanced=False, duplicate=False, reason="O4_ENVELOPE_MISSING", record=pending
         )
-    try:
-        producer.finalize_bar(
-            canonical_instrument_id=pending.canonical_instrument_id,
-            bar_open_time=float(envelope["bar_open_time"]),
-        )
-    except (ValueError, TypeError):
-        pass
-    for env in list(producer.list_envelopes()):
-        if str(env.get("finalization_state") or "") != BAR_STATE_IN_PROGRESS:
-            continue
-        if float(normalized.event_ts_unix) >= float(env.get("bar_close_time") or 0.0):
-            try:
-                producer.finalize_bar(
-                    canonical_instrument_id=str(env["canonical_instrument_id"]),
-                    bar_open_time=float(env["bar_open_time"]),
-                )
-            except (ValueError, TypeError):
-                pass
+    _finalize_due_bars_v1(producer, normalized.event_ts_unix)
 
     count, identities = _count_post_decision_finalized_bars_v1(
         producer,
@@ -325,14 +377,6 @@ def ingest_pending_outcome_mark_observation_v1(
         canonical_instrument_id=pending.canonical_instrument_id,
     )
     new_identities = [i for i in identities if i not in pending.finalized_bar_identities]
-    if not new_identities and count == pending.bars_observed:
-        return PendingOutcomeBarIngestResultV1(
-            ok=True,
-            advanced=False,
-            duplicate=True,
-            reason="DUPLICATE_OR_NO_NEW_BAR",
-            record=pending,
-        )
     status = STATUS_IN_PROGRESS if count > 0 else pending.status
     updated = replace_record_v1(
         pending,
@@ -340,21 +384,33 @@ def ingest_pending_outcome_mark_observation_v1(
         finalized_bar_identities=identities,
         status=status,
     )
-    persist_record_v1(
-        lane_state_root,
-        event_type=EVENT_BAR_INGESTED,
-        record=updated,
-        detail={
-            "evidence_class": evidence_class,
-            "new_bar_identities": new_identities,
-            "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
-            "mark_px": float(normalized.mark_px),
-            "event_ts_unix": float(normalized.event_ts_unix),
-            "receive_ts_unix": float(normalized.receive_ts_unix),
-            "venue_instrument_id": str(normalized.venue_instrument_id),
-            "mark_price_endpoint": str(normalized.mark_price_endpoint),
-        },
-    )
+    try:
+        persist_record_v1(
+            lane_state_root,
+            event_type=EVENT_BAR_INGESTED,
+            record=updated,
+            expected_record=pending,
+            detail={
+                "mark_observation_contract": MARK_OBSERVATION_CONTRACT_V2,
+                "evidence_class": evidence_class,
+                "new_bar_identities": new_identities,
+                "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
+                "mark_px": float(normalized.mark_px),
+                "event_ts_unix": float(normalized.event_ts_unix),
+                "receive_ts_unix": float(normalized.receive_ts_unix),
+                "venue_instrument_id": str(normalized.venue_instrument_id),
+                "venue": normalized.venue,
+                "mark_price_endpoint": str(normalized.mark_price_endpoint),
+            },
+        )
+    except NaturalEnterPendingOutcomeStoreError as exc:
+        return PendingOutcomeBarIngestResultV1(
+            ok=False,
+            advanced=False,
+            duplicate=False,
+            reason=str(exc),
+            record=pending,
+        )
     if evidence_root is not None:
         _append_closure_evidence_v1(
             evidence_root,
@@ -423,9 +479,52 @@ def try_close_pending_outcome_v1(
     resolver_state: _ResolverWallclockState | None = None,
 ) -> PendingOutcomeClosureResultV1:
     if pending.status == STATUS_CLOSED:
+        try:
+            load_pending_measurement_artifacts_v1(
+                lane_state_root,
+                pending,
+                expected_ref=pending.closure_refs.get("measurement_bundle_ref", ""),
+            )
+        except (DdoValidationError, OSError, ValueError, TypeError):
+            return PendingOutcomeClosureResultV1(
+                ok=False,
+                reason="PENDING_CLOSED_ARTIFACTS_UNVERIFIED",
+                record=pending,
+            )
         return PendingOutcomeClosureResultV1(ok=True, reason="ALREADY_CLOSED", record=pending)
     if pending.bars_observed < pending.n_bars_required:
         return PendingOutcomeClosureResultV1(ok=False, reason="HORIZON_INCOMPLETE", record=pending)
+    try:
+        history = _pending_mark_events_v2(lane_state_root, pending)
+        verified_producer = _replay_producer_from_pending_events_v1(
+            lane_state_root=lane_state_root,
+            pending=pending,
+            repository_sha=repository_sha,
+        )
+    except (DdoValidationError, ValueError, TypeError) as exc:
+        return PendingOutcomeClosureResultV1(ok=False, reason=str(exc), record=pending)
+    count, _identities = _count_post_decision_finalized_bars_v1(
+        verified_producer,
+        decision_timestamp_unix=pending.decision_timestamp_unix,
+        canonical_instrument_id=pending.canonical_instrument_id,
+    )
+    if count < pending.n_bars_required:
+        return PendingOutcomeClosureResultV1(ok=False, reason="HORIZON_INCOMPLETE", record=pending)
+    if not history or {source for _, source in history} != {EVIDENCE_CLASS_REAL_PUBLIC}:
+        return PendingOutcomeClosureResultV1(
+            ok=False,
+            reason="PENDING_OUTCOME_PROVENANCE_NOT_BOUND",
+            record=pending,
+        )
+    observed_at = time.time()
+    if not math.isfinite(observed_at) or observed_at < max(
+        norm.receive_ts_unix for norm, _ in history
+    ):
+        return PendingOutcomeClosureResultV1(
+            ok=False,
+            reason="PENDING_OBSERVATION_CLOCK_CONFLICT",
+            record=pending,
+        )
     ddo_ledger = lane_pending_lane_dir_v1(lane_state_root) / "ddo_learning_capture_v1.jsonl"
     try:
         decision = _load_decision_event_v1(ddo_ledger, pending.decision_event_ref)
@@ -441,13 +540,7 @@ def try_close_pending_outcome_v1(
         ddo_n_bars_horizon_n_bars=int(pending.n_bars_required),
     )
     state.ddo_n_bars_horizon_decision_event = decision
-    if state.ddo_canonical_public_md_bar_producer is None:
-        _ensure_producer_v1(
-            state,
-            lane_state_root=lane_state_root,
-            pending=pending,
-            repository_sha=repository_sha,
-        )
+    state.ddo_canonical_public_md_bar_producer = verified_producer
 
     decision_ref = str(decision.get("record_id") or pending.decision_event_ref)
     producer = state.ddo_canonical_public_md_bar_producer
@@ -470,7 +563,7 @@ def try_close_pending_outcome_v1(
         state,
         decision_event=decision,
         o4_snapshot=state.ddo_o4_n_bars_bar_evidence_snapshot,
-        event_ts_unix=float(pending.decision_timestamp_unix),
+        event_ts_unix=observed_at,
     )
     if horizon.get("ok") is not True:
         return PendingOutcomeClosureResultV1(
@@ -478,6 +571,25 @@ def try_close_pending_outcome_v1(
             reason=str(
                 horizon.get("reason") or horizon.get("horizon_observation_status") or "HORIZON_FAIL"
             ),
+            record=pending,
+        )
+    try:
+        artifact_refs = persist_pending_measurement_artifacts_v1(
+            lane_state_root=lane_state_root,
+            pending=pending,
+            horizon_result=horizon,
+            producer_observed_at_unix=observed_at,
+        )
+    except (
+        DdoValidationError,
+        NaturalEnterPendingOutcomeStoreError,
+        OSError,
+        ValueError,
+        TypeError,
+    ):
+        return PendingOutcomeClosureResultV1(
+            ok=False,
+            reason="PENDING_MEASUREMENT_PERSISTENCE_FAILED",
             record=pending,
         )
     eval_rt = invoke_productive_n_bars_evaluation_runtime_v1(
@@ -512,8 +624,6 @@ def try_close_pending_outcome_v1(
             learning_state,
             correlation_id=pending.correlation_id,
             cycle_id=pending.cycle_id,
-            code_sha=UNKNOWN,
-            config_hash=UNKNOWN,
         )
     except DdoValidationError as exc:
         return PendingOutcomeClosureResultV1(ok=False, reason=str(exc), record=pending)
@@ -529,6 +639,7 @@ def try_close_pending_outcome_v1(
 
     observation = horizon.get("evaluation_observation") or {}
     closure_refs = {
+        **artifact_refs,
         "outcome_record_ref": str(
             observation.get("record_id") or eval_rt.get("outcome_record_ref") or ""
         ),
@@ -545,6 +656,7 @@ def try_close_pending_outcome_v1(
         lane_state_root,
         event_type=EVENT_CLOSED,
         record=closed,
+        expected_record=pending,
         detail={
             "export_id": EXPORT_ID,
             "post_count": POST_COUNT,
@@ -585,6 +697,7 @@ def _mark_failed_v1(
         lane_state_root,
         event_type=EVENT_FAILED,
         record=failed,
+        expected_record=pending,
         detail={"reason": reason},
     )
     return failed
@@ -604,6 +717,7 @@ def advance_all_open_pending_from_mark_v1(
     native_id: str,
     mark_px: float,
     event_ts_unix: float,
+    receive_ts_unix: float,
     repository_sha: str,
     evidence_root: Path | None = None,
     evidence_class: str = EVIDENCE_CLASS_REAL_PUBLIC,
@@ -613,13 +727,24 @@ def advance_all_open_pending_from_mark_v1(
         list_open_pending_outcomes_v1,
     )
 
+    try:
+        if isinstance(event_ts_unix, bool) or isinstance(receive_ts_unix, bool):
+            raise ValueError
+        event_time, receive_time = float(event_ts_unix), float(receive_ts_unix)
+        if not (math.isfinite(event_time) and math.isfinite(receive_time)):
+            raise ValueError
+        if event_time <= 0 or receive_time < event_time:
+            raise ValueError
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("PENDING_MARK_TIMESTAMPS_INVALID") from exc
+
     norm = NormalizedPublicMarketDataV1(
         canonical_instrument_id=canonical_instrument_id,
         venue_instrument_id=native_id,
         venue="okx_eea",
         mark_px=float(mark_px),
         event_ts_unix=float(event_ts_unix),
-        receive_ts_unix=float(event_ts_unix) + 1.0,
+        receive_ts_unix=receive_time,
         mark_price_endpoint="/natural-enter-pending-outcome-advance",
         mark_price_field="markPx",
         mapping_digest="natural-enter-pending-outcome-v1",

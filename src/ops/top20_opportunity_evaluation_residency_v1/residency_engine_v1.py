@@ -1,4 +1,4 @@
-"""Residency lifecycle engine: admission, scheduling, expiry, completion."""
+"""Event-driven residency lifecycle: admission, scheduling, completion."""
 
 from __future__ import annotations
 
@@ -13,7 +13,6 @@ from src.ops.top20_opportunity_evaluation_residency_v1.admission_v1 import (
     validate_cap22_integrity_v1,
 )
 from src.ops.top20_opportunity_evaluation_residency_v1.constants_v1 import (
-    EARLY_RELEASE_ALLOWED,
     GOVERNED_CYCLE_SUCCESS_DISPOSITIONS,
     MAX_ACTIVE_EVALUATION_RESIDENTS,
     REASON_CAPACITY_QUEUE_FULL,
@@ -24,8 +23,6 @@ from src.ops.top20_opportunity_evaluation_residency_v1.constants_v1 import (
     STATE_CAPACITY_REJECTED,
     STATE_COMPLETED,
     STATE_EVALUATION_OBSERVED,
-    STATE_EXPIRED_ACTIVE,
-    STATE_EXPIRED_PENDING,
     STATE_INVALIDATED,
     TERMINAL_STATES,
 )
@@ -97,35 +94,6 @@ def _apply_clock_guard(
         raise ValueError(REASON_CLOCK_ROLLBACK)
 
 
-def _expire_due_records(
-    records: list[ResidencyRecordV1],
-    *,
-    now_unix: float,
-    metrics: ResidencyMetricsV1,
-) -> tuple[list[ResidencyRecordV1], ResidencyMetricsV1]:
-    updated: list[ResidencyRecordV1] = []
-    m = metrics
-    for row in records:
-        if row.state in TERMINAL_STATES:
-            updated.append(row)
-            continue
-        if now_unix >= row.residency_deadline_unix:
-            if row.state == STATE_ADMITTED_PENDING:
-                row.state = STATE_EXPIRED_PENDING
-                row.terminal_reason = "deadline"
-                row.active_slot = None
-                m = replace(m, expired_pending_total=m.expired_pending_total + 1)
-            elif row.state in {STATE_ACTIVE_RESIDENT, STATE_EVALUATION_OBSERVED}:
-                row.state = STATE_EXPIRED_ACTIVE
-                row.terminal_reason = "deadline"
-                row.active_slot = None
-                m = replace(m, expired_active_total=m.expired_active_total + 1)
-            else:
-                row.active_slot = None
-        updated.append(row)
-    return updated, m
-
-
 def observe_valid_cap22_ranking_snapshot_v1(
     *,
     state_root: Path,
@@ -142,7 +110,6 @@ def observe_valid_cap22_ranking_snapshot_v1(
     metrics = _load_metrics(state_root)
     _apply_clock_guard(store, now_unix=now_unix)
     records = list(store.records)
-    records, metrics = _expire_due_records(records, now_unix=now_unix, metrics=metrics)
 
     universe_id = str(ranking_snapshot.get("universe_snapshot_id") or "")
     ref = persist_admission_snapshot_v1(state_root, ranking_snapshot)
@@ -229,7 +196,6 @@ def observe_valid_cap22_ranking_snapshot_v1(
                     admission_snapshot_ref=ref,
                 ),
                 residency_started_at_unix=now_unix,
-                residency_deadline_unix=now_unix,
                 first_admission_sequence=seq,
                 queue_order_key=(seq, canonical),
                 terminal_reason=REASON_CAPACITY_QUEUE_FULL,
@@ -245,7 +211,6 @@ def observe_valid_cap22_ranking_snapshot_v1(
             )
             seq += 1
             continue
-        deadline = now_unix + float(config.duration_seconds)
         rec = ResidencyRecordV1(
             canonical_instrument_id=canonical,
             universe_snapshot_id=universe_id,
@@ -266,7 +231,6 @@ def observe_valid_cap22_ranking_snapshot_v1(
                 admission_snapshot_ref=ref,
             ),
             residency_started_at_unix=now_unix,
-            residency_deadline_unix=deadline,
             first_admission_sequence=seq,
             queue_order_key=(seq, canonical),
             last_observed_clock_unix=now_unix,
@@ -299,7 +263,6 @@ def run_scheduler_tick_v1(
     metrics = _load_metrics(state_root)
     _apply_clock_guard(store, now_unix=now_unix)
     records = list(store.records)
-    records, metrics = _expire_due_records(records, now_unix=now_unix, metrics=metrics)
     active = [r for r in records if r.state == STATE_ACTIVE_RESIDENT]
     slots_used = {r.active_slot for r in active if r.active_slot is not None}
     pending = sorted(
@@ -345,7 +308,9 @@ def apply_evaluation_completion_v1(
     witnesses: Sequence[EvaluationCompletionWitnessV1],
     now_unix: float,
 ) -> ResidencyStoreSnapshotV1:
+    config.validate_v1()
     store = load_only(state_root)
+    _apply_clock_guard(store, now_unix=now_unix)
     metrics = _load_metrics(state_root)
     records = list(store.records)
     for witness in witnesses:
@@ -353,6 +318,8 @@ def apply_evaluation_completion_v1(
             continue
         for idx, row in enumerate(records):
             if row.residency_epoch_id != witness.residency_epoch_id:
+                continue
+            if row.canonical_instrument_id != witness.canonical_instrument_id:
                 continue
             if row.state not in {STATE_ACTIVE_RESIDENT, STATE_EVALUATION_OBSERVED}:
                 continue
@@ -364,10 +331,9 @@ def apply_evaluation_completion_v1(
                 evaluation_observed_total=metrics.evaluation_observed_total + 1,
                 active_to_evaluation_observed_latency_samples=samples,
             )
-            if config.early_release_allowed and EARLY_RELEASE_ALLOWED:
-                row.state = STATE_COMPLETED
-                row.active_slot = None
-                row.terminal_reason = "evaluation_observed"
+            row.state = STATE_COMPLETED
+            row.active_slot = None
+            row.terminal_reason = "evaluation_observed"
             records[idx] = row
             persist_bundle_v1(
                 state_root,

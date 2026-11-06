@@ -1,0 +1,9 @@
+### CON-2089 — DDO: Erfassung, Outcome und Lernzustand
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Capture braucht aktive Session und für dauerhafte Ablage einen Ledger. Entscheidung, spätere Beobachtung, Outcome, Attribution, Counterfactual, Learning-State und Export sind verschiedene Stufen. Erhaltenes Journal enthält 47 verknüpfte Learning-States, wirtschaftliche und Folgezyklus-Labels aber UNKNOWN. State-Update/Fingerprint und opakes Next-Cycle-Label sind keine numerische Policy-Kalibrierung.
+
+**Grenze:** DDO-Export ist keine G2-Runtime-Primärevidenz. Existenz passender Recordtypen beweist nicht echte Ergebnisquelle oder vollständige Core-Attribution.
+
+Quellen: EVI-2236, EVI-2237, EVI-2247, EVI-2256, EVI-2257, EVI-2284, EVI-2285, EVI-2269, EVI-2289.

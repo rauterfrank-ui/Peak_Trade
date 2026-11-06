@@ -1,0 +1,28 @@
+{
+  "mission": "READ_ONLY_DATA_SOURCE_CHARTER_V1",
+  "mode": "FORENSIC_READ_ONLY",
+  "timestamp_utc": "2026-10-16T07:45:00Z",
+  "evidence_path": "evidence/ops/read_only_data_source_charter_v1/20261016T094000Z",
+  "artifacts": [
+    "READ_ONLY_DATA_SOURCE_CHARTER_V1.json",
+    "LOCAL_OBSERVATION_WORKSTATION_ARCHITECTURE_V1.md",
+    "READ_ONLY_DATA_SOURCE_CHARTER_V1_TERMINAL_REPORT.json"
+  ],
+  "COMPACT_ANSWERS": {
+    "1_why_little_visible_improvement_v6b_v6f": "PASS measured feature/tab availability and persisted layout JSON (incl. PlaceOrder), not trading-free UX; V6F proved transient hide of right column only; reload restored full trading chrome — matches Owner visual experience.",
+    "2_what_okx_native_can_do": "Public WS: tickers, trades, books5; REST: candles, trades, mark, instruments; private GET plane spec for positions/orders/fills when WP-B activated — all server-side; not a persistent observation-only Safari layout.",
+    "3_what_okx_native_cannot_do": "Persistent hide order UI; parallel OB+T&S in one terminal panel; integrated ranking screener in WS2; durable observation layout across reload/Safari restart (evidence: V6F reload fail).",
+    "4_architecture_fulfills_owner_goal": "LOCAL_READ_ONLY_WORKSTATION (target) with HYBRID interim (Landscape + bookmarks, no layout hacks).",
+    "5_required_data_sources": "Mandatory: OKX EEA public WS+REST (market). Optional: WP-B private observation GET/WS (account panel). Optional: Peak CURRENT snapshots for ranking/selection/runtime/safety (non-authorizing, stale-labeled). Rejected/positive trades: UNKNOWN producer — fail-closed.",
+    "6_security_risks": "Mislabeling simulated Peak portfolio as OKX; browser-held API keys; adapter scope creep to POST; accidental orchestrator coupling; UNKNOWN endpoints default must FAIL_CLOSED.",
+    "7_smallest_next_step": "M0: Owner ratifies charter + M1 decision on WP-B vs exchange-blind bottom panel; freeze OKX Safari layout experiments permanently."
+  },
+  "RECOMMENDATION": "LOCAL_READ_ONLY_WORKSTATION",
+  "INTERIM": "HYBRID",
+  "NATIVE_OKX_STEADY_STATE": "REJECTED",
+  "IMPLEMENTATION": "NONE",
+  "BROWSER_ACTIONS": "NONE",
+  "PEAK_TRADE_MUTATIONS": "NONE",
+  "COMMITS_PRS": "NONE",
+  "VERDICT": "CHARTER_COMPLETE — AWAIT_OWNER_GO_FOR_M1_ONWARD"
+}

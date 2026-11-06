@@ -159,6 +159,53 @@ def validate_meta_to_learning_research_adaptation_input_v1(
     )
 
 
+def validate_learning_research_adaptation_decision_v1(
+    payload: Mapping[str, Any],
+) -> MappingProxyType[str, Any]:
+    """Check the existing producer's complete decision, identity and authority fields."""
+    if not isinstance(payload, Mapping) or payload.get("schema_version") != SCHEMA_VERSION:
+        raise MetaToLearningResearchAdaptationInputError("DECISION_SCHEMA_MISMATCH")
+    disposition = payload.get("overall_disposition")
+    if disposition not in {DISPOSITION_NO_ACTION_FAIL_CLOSED, DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT}:
+        raise MetaToLearningResearchAdaptationInputError("DECISION_DISPOSITION_INVALID")
+    source_id = payload.get("source_meta_evidence_id")
+    if source_id is not None and not is_valid_sha256_hex(source_id):
+        raise MetaToLearningResearchAdaptationInputError("DECISION_SOURCE_ID_INVALID")
+    if disposition == DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT and source_id is None:
+        raise MetaToLearningResearchAdaptationInputError("DECISION_SOURCE_ID_REQUIRED")
+    items = payload.get("adaptation_items")
+    if not isinstance(items, (list, tuple)):
+        raise MetaToLearningResearchAdaptationInputError("DECISION_ITEMS_INVALID")
+    canonical_items = []
+    for item in items:
+        if not isinstance(item, Mapping) or not isinstance(item.get("payload"), Mapping):
+            raise MetaToLearningResearchAdaptationInputError("DECISION_ITEM_INVALID")
+        if item.get("disposition") != DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT:
+            raise MetaToLearningResearchAdaptationInputError("DECISION_ITEM_DISPOSITION_INVALID")
+        expected_outcome = OUTCOME_APPLICABLE if disposition == DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT else OUTCOME_FAIL_CLOSED
+        if item.get("outcome") != expected_outcome:
+            raise MetaToLearningResearchAdaptationInputError("DECISION_ITEM_OUTCOME_INVALID")
+        if not isinstance(item.get("reason"), str) or not item["reason"]:
+            raise MetaToLearningResearchAdaptationInputError("DECISION_ITEM_REASON_REQUIRED")
+        for flag in ("learning_state_mutation_authorized", "productive_apply_authorized"):
+            if flag in item["payload"] and item["payload"][flag] is not False:
+                raise MetaToLearningResearchAdaptationInputError("DECISION_ITEM_AUTHORITY_INVALID")
+        canonical_items.append(_adaptation_item(
+            disposition=item["disposition"], outcome=item["outcome"], reason=item["reason"], payload=item["payload"],
+        ))
+    reason = payload.get("overall_reason")
+    if not isinstance(reason, str) or not reason:
+        raise MetaToLearningResearchAdaptationInputError("DECISION_REASON_REQUIRED")
+    expected = _decision_payload(
+        meta_evidence=({"meta_evidence_id": source_id, "reproducibility_digest": payload.get("source_meta_reproducibility_digest")} if source_id is not None else None),
+        adaptation_items=canonical_items, overall_disposition=disposition, overall_reason=reason,
+    )
+    raw_digest = compute_content_sha256({key:value for key,value in payload.items() if key != "result_digest"})
+    if payload.get("result_digest") != raw_digest or dict(payload) != dict(expected):
+        raise MetaToLearningResearchAdaptationInputError("DECISION_CONTENT_OR_IDENTITY_MISMATCH")
+    return MappingProxyType(dict(payload))
+
+
 def derive_learning_adaptation_decision_identity_v1(
     *,
     meta_evidence_id: str,
@@ -236,6 +283,7 @@ def _decision_payload(
 
 __all__ = [
     "INPUT_DOMAIN",
+    "validate_learning_research_adaptation_decision_v1",
     "MetaToLearningResearchAdaptationInputError",
     "MetaToLearningResearchAdaptationInputRequestV1",
     "NO_DIRECT_FEATURE_DROP",

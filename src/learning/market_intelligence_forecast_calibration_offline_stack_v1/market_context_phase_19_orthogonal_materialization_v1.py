@@ -140,6 +140,7 @@ def derive_derivatives_state_slot_v1(
     *,
     inputs: Phase19OrthogonalMaterializationInputsV1,
     observed_at: str,
+    derivations: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     mark_fact = inputs.derivatives_mark_fact
     if mark_fact is None:
@@ -228,7 +229,9 @@ def derive_derivatives_state_slot_v1(
     }
     return _present_slot_from_derivation(
         field_name="derivatives_state_ref",
-        state_ref=_state_ref_for_family(family="derivatives_state", identity_body=identity),
+        state_ref=_state_ref_for_family(
+            family="derivatives_state", identity_body=identity, derivations=derivations
+        ),
         pit_observed_at_utc=mark_pit,
         producer_owner=WP_A_PRODUCER,
         feature_version=DERIVATIVES_FEATURE_VERSION,
@@ -258,6 +261,7 @@ def derive_cross_market_state_slot_v1(
     observed_at: str,
     instrument_ref: str,
     repo_root: Path | None = None,
+    derivations: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     if not inputs.cross_market_selected_marks or not inputs.cross_market_anchor_marks_by_ref:
         return None
@@ -328,7 +332,9 @@ def derive_cross_market_state_slot_v1(
     }
     return _present_slot_from_derivation(
         field_name="cross_market_state_ref",
-        state_ref=_state_ref_for_family(family="cross_market_state", identity_body=identity),
+        state_ref=_state_ref_for_family(
+            family="cross_market_state", identity_body=identity, derivations=derivations
+        ),
         pit_observed_at_utc=pit_iso,
         producer_owner=PHASE_19_OWNER,
         feature_version=CROSS_MARKET_FEATURE_VERSION,

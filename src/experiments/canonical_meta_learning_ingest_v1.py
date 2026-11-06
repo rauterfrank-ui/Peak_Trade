@@ -317,6 +317,15 @@ def ingest_meta_learning_evidence_from_federated_return_join_v1(
             reason="FEDERATED_RETURN_JOIN_SCHEMA_VERSION_MISMATCH",
             meta_evidence=None,
         )
+    if request.expected_optimization_evidence_schema_version not in (
+        None,
+        OPTIMIZATION_EXPERIMENT_EVIDENCE_SCHEMA_VERSION,
+    ):
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_STALE,
+            reason="OPTIMIZATION_EXPERIMENT_EVIDENCE_SCHEMA_VERSION_MISMATCH",
+            meta_evidence=None,
+        )
 
     if request.federated_return_join is None:
         return _ingest_result(

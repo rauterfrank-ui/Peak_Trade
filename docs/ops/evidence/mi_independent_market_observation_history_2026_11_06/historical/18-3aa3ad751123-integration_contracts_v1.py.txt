@@ -1,0 +1,127 @@
+"""Additive offline integration bindings. Existing identity/hash domains are unchanged."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, asdict
+from datetime import datetime, timezone
+import hashlib
+import json
+import math
+from typing import Any, Mapping
+
+
+class IntelligenceIntegrationError(ValueError):
+    """A concrete offline consumer contract cannot be satisfied."""
+
+
+def require_v1(condition: bool, reason: str) -> None:
+    if not condition:
+        raise IntelligenceIntegrationError(reason)
+
+
+def text_v1(value: Any, name: str) -> str:
+    require_v1(isinstance(value, str) and bool(value.strip()), f"{name}_REQUIRED")
+    return value
+
+
+def instant_v1(value: str) -> datetime:
+    text_v1(value, "UTC_INSTANT")
+    try:
+        result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        require_v1(result.utcoffset() is not None, "UTC_OFFSET_REQUIRED")
+        require_v1(result.utcoffset().total_seconds() == 0, "UTC_REQUIRED")
+        return result.astimezone(timezone.utc)
+    except (TypeError, ValueError) as exc:
+        raise IntelligenceIntegrationError("UTC_INSTANT_INVALID") from exc
+
+
+def finite_v1(value: Any, name: str) -> float:
+    require_v1(type(value) in (int, float), f"{name}_NUMERIC_REQUIRED")
+    require_v1(math.isfinite(value), f"{name}_FINITE_REQUIRED")
+    return float(value)
+
+
+def plain_v1(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        require_v1(all(isinstance(k, str) for k in value), "STRING_KEYS_REQUIRED")
+        return {k: plain_v1(v) for k, v in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [plain_v1(v) for v in value]
+    require_v1(type(value) in (type(None), str, int, bool, float), "JSON_VALUE_REQUIRED")
+    if type(value) is float:
+        finite_v1(value, "JSON_FLOAT")
+    return value
+
+
+def bytes_v1(value: Any) -> bytes:
+    """Versioned exact JSON values, including full float repr; no .12g normalization."""
+    return json.dumps(
+        plain_v1(value),
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
+
+
+def digest_v1(value: Any) -> str:
+    return hashlib.sha256(bytes_v1(value)).hexdigest()
+
+
+def strict_json_v1(data: bytes) -> Any:
+    def pairs(items):
+        require_v1(len(items) == len({k for k, v in items}), "DUPLICATE_JSON_KEY")
+        return dict(items)
+
+    def constant(value):
+        raise IntelligenceIntegrationError("NONFINITE_JSON_NUMBER")
+
+    try:
+        return json.loads(data, object_pairs_hook=pairs, parse_constant=constant)
+    except (ValueError, UnicodeError) as exc:
+        raise IntelligenceIntegrationError("ORIGINAL_JSON_INVALID") from exc
+
+
+def seal_v1(body: Mapping[str, Any]) -> dict[str, Any]:
+    result = plain_v1(body)
+    require_v1("exact_content_digest" not in result, "ALREADY_SEALED")
+    return {**result, "exact_content_digest": digest_v1(result)}
+
+
+def validate_seal_v1(record: Mapping[str, Any], schema: str) -> dict[str, Any]:
+    result = plain_v1(record)
+    digest = result.pop("exact_content_digest", None)
+    require_v1(result.get("schema_version") == schema, "INTEGRATION_SCHEMA_MISMATCH")
+    require_v1(digest == digest_v1(result), "EXACT_CONTENT_MISMATCH")
+    require_v1(result.get("authority") == "NONE", "INTEGRATION_AUTHORITY_FORBIDDEN")
+    return {**result, "exact_content_digest": digest}
+
+
+@dataclass(frozen=True)
+class IntelligenceIdentityV1:
+    """Full context identity; lane is one of five slots, never position authority."""
+
+    dataset_generation: str
+    venue: str
+    instrument_ref: str
+    native_instrument_ref: str
+    lane_id: str
+    epoch: str
+    decision_event_ref: str
+
+    def payload(self) -> dict[str, str]:
+        body = asdict(self)
+        for key, value in body.items():
+            text_v1(value, key)
+        require_v1(self.lane_id in {f"LANE_{i}" for i in range(1, 6)}, "FIVE_SLOT_ID_REQUIRED")
+        return body
+
+
+def assert_offline_v1() -> None:
+    from . import constants_v1 as pins
+
+    require_v1(pins.RUNTIME_REACHABILITY is False, "OFFLINE_ONLY")
+    require_v1(pins.EXTERNAL_EFFECT_AUTHORIZED is False, "EXTERNAL_EFFECT_FORBIDDEN")
+    require_v1(pins.MARKET_INTELLIGENCE_TRADING_AUTHORITY == "NONE", "MI_AUTHORITY_FORBIDDEN")
+    require_v1(pins.LEARNING_TRADING_AUTHORITY == "NONE", "SL_AUTHORITY_FORBIDDEN")
+    require_v1(pins.OPTIMIZATION_PRODUCTIVE_AUTHORITY == "NONE", "OPT_AUTHORITY_FORBIDDEN")

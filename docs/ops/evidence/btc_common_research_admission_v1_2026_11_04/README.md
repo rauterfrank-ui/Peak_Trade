@@ -1,0 +1,13 @@
+# Gemeinsame BTC-Zulassung im generischen Forschungspfad
+
+Nach der belegten Abweichung in Abschnitt 42 verwenden nun auch der generische PIT-Manifest-Validator und der Lifecycle-Registry-Validator die bereits bestehende gemeinsame Asset-Policy von Double Play. Die unabhängigen festen BTC-/Alias-Ausschlüsse entfallen dort. Normalisierung, Registryvalidierung, Binding und Manifestgenerierung stimmen wieder überein.
+
+Die ausdrücklich alte Non-Bitcoin-Kohorte bleibt separat gebunden: Ihr Materializer prüft die bereits vorhandene Source-Policy sowohl nach Registry-Assembly als auch am gelieferten Snapshot. Dadurch kann eine im Allgemeinen zulässige BTC-Registry nicht unter der alten Non-Bitcoin-Kohortenidentität materialisiert werden. Dies ist eine historische Datensatzgrenze, keine neue globale Asset-Sperre. Die alten Source-/Dataset-/Period-Konfigurationen werden nicht zu einer neuen BTC-Konfiguration umetikettiert.
+
+282 Tests bestehen. 13 neue Fälle verfolgen den tatsächlichen synthetischen Registry→Binding→Manifest-Pfad für ETH/BTC/SUI/XBT/WBTC, prüfen dieselben History-/Listing-Grenzen für ETH/BTC/SUI und verhindern beide Eingänge einer falschen Kohortenerweiterung. Drei vorher gescheiterte Generator-Erwartungen und weitere historische BTC-Ablehnungstests wurden nach dem Codeabgleich auf die autorisierte gemeinsame Zulassung ausgerichtet. Die dabei freigelegte Sortierungsanforderung für manuelle XBT-/WBTC-Listen bleibt erhalten. Positive Fixtures besitzen kohärente Instrumentnamen und gemeinsame Forschungsidentität.
+
+Die vollständige Ausgabe der bisherigen normalen Materializer-Fixture ist gegenüber dem alten Wrapper unter denselben heutigen generischen Abhängigkeiten identisch. Dies ist kein vollständiger historischer oder natürlicher Replay. Alte Rohfixtures und Belegpakete bleiben revisiongebunden erhalten.
+
+Das bestehende false-Direction-Flag bleibt als Vertrags-/Nichtautorisierungsmarker erhalten; es begründet in der allgemeinen Validierung keine Asset-Sperre mehr. Die tatsächliche BTC-Zulassung zu Handel verlangt weiterhin positive Instrumentdaten, Kapital-/Risiko-/Größenregeln. Es gibt keinen neuen Handel, Marktbezug oder Lern-Run. Das ursprüngliche Lern-Ledger ist unverändert. Der alte fest gebundene Source-/Period-Zweig ist weiterhin kein nachgewiesen neu konfigurierter BTC-Forschungslauf.
+
+[Vorherige Abweichung](../btc_research_scope_boundary_v1_2026_11_04/README.md), [Ergebnisse](receipt.json), [kontrollierte Kette](controlled_generic_chain.json), [Blueprint Abschnitt 43](../../blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md).

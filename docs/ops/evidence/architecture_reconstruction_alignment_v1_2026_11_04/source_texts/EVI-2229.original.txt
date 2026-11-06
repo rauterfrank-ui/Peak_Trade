@@ -1,0 +1,259 @@
+# Gesamtarchitektur: Abgleich historischer Strukturmodelle
+
+Arbeitsstand: teilweise quellenbelegt, weiterhin offen. Dieser Vergleich schafft keine neue Zielarchitektur oder System-SSOT. Die Auswahlgruppen dienen der Navigation und sind keine gezählten Originalbereiche.
+
+## Neue Einordnung
+
+Das 17/20er-Register ist eine datierte Map-Klassifikation. Ältere Übersichten beschreiben zusätzlich allgemeine Datenaufbereitung, Strategiebibliothek, Forschungsportfolios, Backtest/Forward, Experiment-Registry, Analytics, Scheduler und AI-/Dev-Workflow. Manche Aufgaben stehen in der Map als Intermediate oder als Teil eines größeren Eintrags; bei anderen bleibt die Zuordnung offen. Aus fehlendem First-Class-Eintrag folgt kein fachlicher Wegfall.
+
+Ein separates historisches Ebenenmodell ist L0–L6 der AI-/Autonomie-Matrix: Ops/Docs, DeepResearch, Market Outlook, Trade Plan Advisory, Governance/Policy Critic, deterministisches Risk Gate, Execution. Das sind Aufgaben-/Autonomieebenen und keine sieben inneren Ebenen des selbstlernenden Systems.
+
+Die spätere Owner-Klassifikation beschreibt Market Intelligence als unabhängiges Universum, Meta-Learning als Schnittstelle, Persistence als Querschnittsinvariante und N5/Full-Core als unterschiedliche Architektur- bzw. Orchestrierungssichten. Ein universelles Ebenenschema lässt sich aus diesen Quellen nicht ableiten.
+
+## Strukturen und offene Zuordnung
+
+### Grundlagen / Konfiguration
+
+Gemeinsame Konfiguration, Umgebungen und Identitäten bereitstellen.
+
+- **Konfiguration**: Basiswerte und konfigurierbare Bausteine laden. Quelle: `SC01:117-133`.
+- **Environment / Safety**: Paper-, Testnet- und Live-Umgebungen unterscheiden. Quelle: `SC03:92-108`.
+- **Registries / Capability Scopes**: Strategien und Modelle zuordnen; erlaubte Ein-/Ausgaben begrenzen. Quelle: `SC03:40-89; SC08:80-100`.
+
+Map-Abgleich: Kein eigener First-Class-Eintrag für die allgemeine Core-Konfiguration.
+
+Offen: Kein globaler Beweis eines gemeinsamen Config-/Identitätsvertrags über alle Varianten.
+
+### Datenaufnahme und Markt-/Kontozustand
+
+Quellen in normalisierte und nutzbare Datenprodukte überführen.
+
+- **Loader → Normalizer → Cache**: Marktdaten laden, OHLCV normalisieren und vorhalten. Quelle: `SC02:93-111`.
+- **Öffentliche Marktbeobachtung**: WS/REST, historische Daten und Replay in späterer Map beschrieben. Quelle: `MAP:peak_trade_public_market_data_runtime_wp_a`.
+- **Private Kontobeobachtung**: Baseline, laufende Beobachtung, Normalisierung und Reconciliation beschreiben. Quelle: `MAP:okx_eea_private_account_state_runtime_wp_b`.
+- **Consumer-Konvergenz**: Übergaben auf kanonische Fakten und Zustände beschreiben. Quelle: `MAP:market_data_private_state_runtime_convergence_wp_c`.
+
+Map-Abgleich: In der späteren Map als Intermediate-Einträge vertreten; nicht aus dem System verschwunden.
+
+Offen: Historische Loader und spätere Beobachtungsplanes sind nicht als identische Architektur bewiesen.
+
+### Strategien, Portfolios und Regimeforschung
+
+Strategien definieren, kombinieren und unter verschiedenen Bedingungen untersuchen.
+
+- **Strategie-Interface → Implementierungen → Registry**: Strategien austauschbar erzeugen und Signale liefern. Quelle: `SC01:82-103`.
+- **Portfolio-Manager / Rezepte**: Strategien kombinieren und vorkonfigurierte Portfolios beschreiben. Quelle: `SC02:132-163`.
+- **Robustness / Regime-Sweeps**: Szenarien, Monte-Carlo, Stress- und Regimevarianten untersuchen. Quelle: `SC02:167-184`.
+- **Regime / Switching**: Regime-Detection als eigenständiges Modul im historischen Baum führen. Quelle: `SC11:194-216`.
+
+Map-Abgleich: Fachliche Berührung mit Forschung/Optimierung; keine bewiesene Gleichsetzung mit Optimierungsuniversum oder Portfolio-Budget.
+
+Offen: Forschungsportfolio, produktive Reservierung und Master-V2-Entscheidung sind getrennt zu rekonstruieren.
+
+### Backtest, Forward und Experimentauswertung
+
+Entscheidungsvarianten simulieren und Ergebnisse nachvollziehbar auswerten.
+
+- **BacktestEngine**: Barweise Simulation mit Sizing, Risk, Trades und Ergebnisgrößen. Quelle: `SC01:192-220`.
+- **Walk-Forward / Stats**: Zeitliche Validierung und Auswertung beschreiben. Quelle: `SC02:113-128`.
+- **Forward-Signale → Ex-post-Auswertung**: Signale erzeugen und später bewerten. Quelle: `SC01:226-238`.
+- **Experiment-Registry → Analyse**: Verschiedene Run-Typen verfolgen, vergleichen und berichten. Quelle: `SC01:156-177;319-341;382-392`.
+
+Map-Abgleich: Step29M bildet einen spezifizierten späteren Auswertungsausschnitt ab; keine Gleichsetzung mit dem gesamten Backtest-/Forward-System.
+
+Offen: Abdeckung der älteren Simulations- und Forschungsfunktionen durch die späteren Pfade offen.
+
+### Vorauswahl und Bindung vor Master V2
+
+Instrumentkontext auswählen und an einen Lauf binden.
+
+- **Universe / Eligibility**: Zulässige Futures als Kontext bereitstellen. Quelle: `MAP:universe_cap21`.
+- **Ranking**: Kontext ordnen. Quelle: `MAP:ranking_cap22`.
+- **Selection**: Auswahlentscheidung als eigene Verantwortung führen. Quelle: `MAP:selection_cap23`.
+- **Runtime-Bindung**: Ausgewählte Identität und Herkunft validieren/binden. Quelle: `MAP:runtime_binding_cap24`.
+- **Profile / Explainability**: Auswahlkontext beobachten und erklären. Quelle: `MAP:future_profile_snapshot_b07;operator_profile_explainability_b11`.
+
+Map-Abgleich: Vier First-Class-Einträge, aber im späteren Owner-Modell ein Pre-Master-V2-Bereich.
+
+Offen: Keine daraus abgeleitete ursprüngliche Vier-Universen-Architektur.
+
+### Master V2 / Double Play / Scope
+
+Den fachlichen Entscheidungskern und seine innere Zustands-/Scope-Struktur rekonstruieren.
+
+- **Master V2 > Double Play > Dynamic Scope**: Explizite spätere Owner-Hierarchie. Quelle: `SC09:12-28`.
+- **Bull/Bear SideState**: In der Map ausdrücklich Subdomain unter mv2_double_play. Quelle: `MAP:bull_bear_sidestate`.
+- **Dynamic Scope**: In der Map ausdrücklich Subdomain unter mv2_double_play. Quelle: `MAP:dynamic_scope`.
+- **Survival / Suitability**: Post-confirmation-Komposition als explizite Subdomain der Map. Quelle: `MAP:survival_suitability_composition`.
+- **Input / Packet / Critic / Specialist**: April-Informationsübersicht nennt diese Entscheidungsunterstützungsbausteine. Quelle: `SC06:6. Transformations;8. Master V2 / Double Play Flow`.
+
+Map-Abgleich: Eine semantische Entscheidungsdomäne in späterer Map; frühere Beratungs-/Annotationvarianten separat erhalten.
+
+Offen: Ursprüngliche vollständige Ebenenfolge, GGE-Zuordnung und Änderungen aller Varianten bleiben offen.
+
+### Kapital, Risiko, Sizing, Treasury und Budget
+
+Menge, Zulässigkeit, Kapitalzustand und Reservierung auseinanderhalten.
+
+- **Historischer Position Sizer / Risk Manager**: Im frühen Core-Modell als getrennte austauschbare Bausteine beschrieben. Quelle: `SC01:134-153`.
+- **Sizing-relevante Autoritäten**: Eigenkapital, Referenzpreis und Instrumentmetadaten als getrennte spätere Einträge. Quelle: `MAP:governed_productive_account_equity_authority_v1;governed_productive_reference_price_authority_v1;governed_productive_instrument_metadata_authority_v1`.
+- **Treasury-Lifecycle**: Eigenständige Kapital-Lifecycle-Bedeutung; nicht gleich Equity-Quelle. Quelle: `MAP:treasury_29p`.
+- **Portfolio-Budget / Reservierung**: Funktionaler Hauptbereich; laut Owner-Dokument keine Equity-Quelle. Quelle: `SC09:30-54`.
+
+Map-Abgleich: Mehrere Verantwortungen; keine einheitliche Risiko-Ebene aus Namensähnlichkeit ableiten.
+
+Offen: Keine Formeln oder Laufzeitwirkung in diesem Strukturabgleich geprüft.
+
+### Order, Execution, Accounting und Reconciliation
+
+Entscheidung, Orderdarstellung, Ausführung und resultierenden Zustand unterscheiden.
+
+- **Orders / Broker-Abstraktion**: Orderobjekte, Dry-Run- und Paper-Broker beschreiben. Quelle: `SC01:258-284`.
+- **Execution Pipeline / Orchestrator**: April-Übersicht führt beide Ausführungsoberflächen getrennt. Quelle: `SC06:3. System Layers;9. Execution`.
+- **Intent / External Effect**: Spätere Map trennt Intent und externe Wirkung. Quelle: `MAP:order_intent;execution_external_effect`.
+- **Accounting / Reconciliation**: In späterer Map eigene Bindungseinträge. Quelle: `MAP:accounting_runtime_binding;reconciliation_runtime_binding`.
+
+Map-Abgleich: Ein späteres unabhängiges Execution-Universum enthält nicht automatisch jeden historischen Executor.
+
+Offen: Grenze des ursprünglichen Execution-Universums und alle Ausführungsvarianten noch nicht vollständig rekonstruiert.
+
+### Lernen, Meta-Learning und Optimierung
+
+Erfahrungen erfassen, Forschungskandidaten erzeugen und Lern-/Optimierungsrollen trennen.
+
+- **Historischer Learning Loop**: Domäneninputs → Patch-Normalisierung → Snippet-Dateien → Offline-Overrides. Quelle: `SC05:24-70`.
+- **Historischer Promotion Loop**: Patch-Kandidaten → Filter → Proposals → gesonderte Materialisierung. Quelle: `SC05:74-157`.
+- **DDO Learning / Optimierung**: Spätere Map führt getrennte First-Class-Einträge. Quelle: `MAP:learning_ddo;optimization_universe`.
+- **Meta-Learning**: Späteres Owner-Modell: Schnittstelle zwischen Self-Learning und Optimierung. Quelle: `SC09:30-54`.
+- **Primäre Evidence / Projektion / Learning-Input**: Spätere Map beschreibt gesonderte Übergabebausteine. Quelle: `MAP:bounded_runtime_primary_evidence;g2_runtime_primary_offline_projection;g2_runtime_learning_optimization_input_binding`.
+
+Map-Abgleich: Historischer Patch-/Promotion-Entwurf ist eine eigene Variante; keine Identität mit dem DDO-Blueprint behauptet.
+
+Offen: Vollständige ursprüngliche Lernarchitektur und Entwicklung zwischen Varianten offen; bestehende Blueprint-Gliederung bleibt erhalten.
+
+### AI-/Autonomieebenen und Market Intelligence
+
+Informationsverarbeitung, Beratung, deterministische Grenzen und fachliche Universen unterscheiden.
+
+- **L0 Ops/Docs; L1 DeepResearch**: Dokumentationshilfe sowie Methoden-/Evidenzrecherche. Quelle: `SC08:48-49`.
+- **L2 Market Outlook; L3 Trade Plan Advisory**: Makro/Regime/Szenarien und Trade-Hypothesen als Beratung. Quelle: `SC08:50-51`.
+- **L4 Governance / Policy Critic**: Vorschläge und Evidence prüfen. Quelle: `SC08:52`.
+- **L5 Risk Gate; L6 Execution**: Deterministisches Risk Gate und gesonderte Ausführungsebene. Quelle: `SC08:53-54`.
+- **Forecast / Calibration / Horizonte**: Spätere Offline-Market-Intelligence-Map beschreibt eigenen Evidenzstack. Quelle: `MAP:market_intelligence_forecast_calibration_offline_stack_d03`.
+
+Map-Abgleich: Market Intelligence im Owner-Modell unabhängiges Universum, im Map-Register nur ein Intermediate-Stack; keine widerspruchsfreie einheitliche Hierarchie daraus ableiten.
+
+Offen: AI L0-L6 sind weder die inneren Self-Learning-Ebenen noch automatisch die vollständige Market-Intelligence-Architektur.
+
+### Governance, Promotion und Änderungsfreigaben
+
+Vorschlag, Prüfung, Freigabe und Materialisierung als verschiedene Aufgaben führen.
+
+- **Learning-Promotion-Filter / Proposal**: Historischer Entwurf behandelt zulässige Kandidaten und dokumentierte Vorschläge. Quelle: `SC05:74-147`.
+- **Proposer / unabhängiger Critic**: Trennung von Vorschlag und Prüfung. Quelle: `SC07:3. Separation-of-Duties; SC08:104-115`.
+- **Produktivaktivierung / kontinuierlicher Lauf / External Effect**: Spätere Map hat dafür getrennte Policy-Einträge. Quelle: `MAP:current_productive_activation_policy;current_continuous_run_policy;external_effect_authorization_policy`.
+- **Owner-Klassen / Grenzen**: Spätere Architekturentscheidung klassifiziert Universen und übergreifende Aufgaben. Quelle: `SC09:30-54`.
+
+Map-Abgleich: Freigabeebenen sind nicht automatisch ein weiteres fachliches Universum.
+
+Offen: Keine historische Freigabe oder Statusmeldung als heutige Aktivierung übernommen.
+
+### Persistenz, Evidence und Wissensbestand
+
+Zustand, Nachvollziehbarkeit und Wissenssuche mit verschiedenen Aufgaben erhalten.
+
+- **Experiment-Registry**: Runs und ihre Ergebnisse historisch verfolgen. Quelle: `SC01:156-177`.
+- **Research Corpus**: Späteres Owner-Modell führt einen vorläufigen Offline-Plane. Quelle: `SC09:30-54`.
+- **Persistenz**: Später als universumsübergreifende Zustandsinvariante klassifiziert. Quelle: `SC09:30-54`.
+- **Wissenssuche / Vector DB**: April-Übersicht führt Retrieval gesondert, ohne Handelsautorität. Quelle: `SC06:7. AI-Layer Logic`.
+- **Durable State Carrier / Writer**: Map nennt Cursor, Auswahlzustand und Lane-Assignment als unterschiedliche Einträge. Quelle: `MAP:current_productive_sidestate_confirmation_cursor_v1;cap24_productivity_state_carrier_v1;n5_durable_lane_assignment_persistence_v1`.
+
+Map-Abgleich: Persistenz ist keine automatisch zusätzliche Universe-Zahl; Evidence und Wissenssuche ebenfalls nicht gleich Lernwirkung.
+
+Offen: Ursprünglicher Research-Corpus-Umfang und allgemeine Wiederanlaufarchitektur offen.
+
+### Orchestrierung, Betrieb und Außenring
+
+Abläufe koordinieren und die technischen Grenzen um den Fachkern sichtbar halten.
+
+- **Runner / CLI / Scheduler**: Aufrufe und periodische Jobs im frühen Schichtenmodell. Quelle: `SC03:40-108`.
+- **N5 / Full-Core**: Spätere Owner-Klassen unterscheiden Ziel-Stackarchitektur und technische Orchestrierung. Quelle: `SC09:30-54`.
+- **AI-Routing / zentrale Egress-Grenze**: Februar-Entwurf beschreibt Scopes/Registry, Normalisierung, Routing und Redaction. Quelle: `SC10:136-264`.
+- **Safety / Kill / Recovery**: Dezember-Audit beschreibt Pre-Trade-, Kill- und Recovery-Aufgaben. Quelle: `AS-952:Critical Data Flow Paths`.
+- **Input / Egress / Telemetry / Artefakte**: Februar-Übersicht führt diese Betriebsgrenzen getrennt. Quelle: `SC10:136-205`.
+
+Map-Abgleich: N5, Full-Core und AI-Orchestrator sind verschiedene Orchestrierungsbedeutungen.
+
+Offen: Der historische Außenring ist damit breiter belegt, aber noch nicht als vollständige ursprüngliche Ebenenarchitektur nachgewiesen.
+
+### Monitoring, Alerts, Reports und Nachweise
+
+Ergebnisse beobachten und erklären; Informationsprodukte von Entscheidungen trennen.
+
+- **Alerts / Notifications**: Risk-Verletzungen an kontrollierte Benachrichtigungskanäle geben. Quelle: `SC02:237-254`.
+- **Reporting / Analytics**: Backtest-/Experimentergebnisse und Live-Runs auswerten. Quelle: `SC02:256-274; SC01:319-392`.
+- **Profile / Explainability / Readmodels**: Spätere Map nennt mehrere abgeleitete Sichten. Quelle: `MAP:presentation_dashboard;future_profile_snapshot_b07;operator_profile_explainability_b11`.
+- **CI / Evals / Audit**: April-Übersicht trennt Regression, Policy-Gates, Evals und Auditprodukte. Quelle: `SC06:3. System Layers;12. Observability`.
+
+Map-Abgleich: Readmodels sind Teil der Übersicht; der bewusst entfernte alte Dashboard-Code wird nicht zur Wiederherstellung vorgemerkt.
+
+Offen: Beobachtbarkeit beweist keine fachliche oder kausale Vollständigkeit.
+
+## Quellen, Prüfumfang und Grenzen
+
+Alle SC-Quellen wurden per git show am lokalen Vergleichspin 5d1c838c15369507c5247834db4dd0df25592169 gelesen und unverändert gesichert. Reviewed-Ranges und Git-Blob/SHA256 stehen im Quellenmanifest. Dokumentdaten sind Selbstangaben und kein Erstentstehungsbeweis. Git log --diff-filter=A weist an der Shallow-Grenze scheinbare Neuanlagen aus; daraus wird kein Ursprung abgeleitet.
+
+Drei ergänzende Recovery-Kandidaten wurden ausschließlich aus dem datierten lokalen Index gesichert. Externe Originale wurden nicht erneut eingelesen. Der dortige System Atlas ist selbst als generierte Navigation mit authority NONE gekennzeichnet; seine Completeness-Labels werden nicht übernommen.
+
+Die gesamten 75 Map-Einträge und 90 Map-Kanten bleiben im JSON als Quellenbehauptungen erhalten. Nur ausdrücklich per parent_domain formulierte Elternbeziehungen werden als dokumentierte Hierarchie extrahiert. Die Zuordnung in Vergleichsgruppen ist analytisch und keine bewiesene Implementierungszugehörigkeit.
+
+Keine Produktdatei geändert, kein neuer Ledger-Run, kein Git-Fetch, kein Produktlauf. Vollständige ursprüngliche Ebenen, Semantik und Laufzeitintegration bleiben offen.
+
+## Quellenverzeichnis
+
+### Noch ohne Vergleichsgruppe
+
+28 Map-Einträge haben in diesem Durchgang noch keine analytische Gruppenzuordnung. Das bedeutet keine verwaisten Module oder fehlende Implementierung. Ihre Rollen bleiben vollständig im JSON erhalten.
+
+- `full_core_fresh_pretrade_runtime_get` (INTERMEDIATE)
+- `ranking_selection_profile_closure_b12` (INTERMEDIATE)
+- `venue_plan_td_mode` (INTERMEDIATE)
+- `c1_confirmation` (INTERMEDIATE)
+- `elementary_direction` (INTERMEDIATE)
+- `p5_layered_core` (INTERMEDIATE)
+- `p3_input_creator_binder` (INTERMEDIATE)
+- `p4_l6_productive_seam` (INTERMEDIATE)
+- `governed_runtime_apply_materialization` (INTERMEDIATE)
+- `f1_m9_scoped_owner_apply_execution` (INTERMEDIATE)
+- `f1_m9_scoped_owner_threshold_value_ratification` (INTERMEDIATE)
+- `f1_m9_scoped_owner_productive_runtime_apply_start` (INTERMEDIATE)
+- `f1_m9_productive_runtime_threshold_consumer_wiring` (INTERMEDIATE)
+- `external_effect_boundary_forensic_review` (INTERMEDIATE)
+- `standing_external_effect_lift_policy` (INTERMEDIATE)
+- `external_effect_permit_mint_policy` (INTERMEDIATE)
+- `checkout_independent_credential_access_policy` (INTERMEDIATE)
+- `real_keychain_access_or_credential_material_load_policy` (INTERMEDIATE)
+- `current_productive_k1_opaque_signing_handle_pre_post_policy` (INTERMEDIATE)
+- `productive_activation_boundary_forensic_review` (INTERMEDIATE)
+- `k1_credential_seam` (INTERMEDIATE)
+- `host_join_send_adapter` (INTERMEDIATE)
+- `double_play_capital_slot` (INTERMEDIATE)
+- `intent_compatibility_firewall` (INTERMEDIATE)
+- `m9_volatility_max_age` (INTERMEDIATE)
+- `g17_typed_vol_cmc_bind` (INTERMEDIATE)
+- `eea_universe_inventory_acquisition_v1` (INTERMEDIATE)
+- `cap21_cap23_productive_persistence_v1` (INTERMEDIATE)
+
+### Git-Quellen
+
+- **SC01**: `docs/ARCHITECTURE.md` — Phase-4 self-description; file at comparison pin has later edits. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC01-ARCHITECTURE.md>).
+- **SC02**: `docs/ARCHITECTURE_OVERVIEW.md` — Research/Live layered overview; historical document lineage, snapshot at comparison pin. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC02-ARCHITECTURE_OVERVIEW.md>).
+- **SC03**: `docs/PEAK_TRADE_OVERVIEW_PHASES_1_17.md` — Document says December 2024; this date is not independently validated. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC03-PEAK_TRADE_OVERVIEW_PHASES_1_17.md>).
+- **SC04**: `docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md` — Phase-track classification, not a count of universes. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC04-PEAK_TRADE_OVERVIEW_PHASES_1_40.md>).
+- **SC05**: `docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` — Different historical learning/promotion variant; current applicability open. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC05-LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md>).
+- **SC06**: `docs/ops/specs/MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md` — Draft dated 2026-04-27; informational source, not single proven runtime pipeline. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC06-MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md>).
+- **SC07**: `docs/architecture/ai_autonomy_layer_map_v1.md` — Specification dated 2026-01-08; historical model assignments not current recommendations. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC07-ai_autonomy_layer_map_v1.md>).
+- **SC08**: `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` — Matrix effective date 2026-01-08; L0-L6 roles only used here. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC08-AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md>).
+- **SC09**: `docs/governance/LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md` — Later owner classification; not used to erase earlier designs. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC09-LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md>).
+- **SC10**: `docs/ops/archives/PEAK_TRADE_INCOMING_DATA_OVERVIEW_20260207.md` — Archived input/egress and AI orchestration perspective dated 2026-02-07. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC10-PEAK_TRADE_INCOMING_DATA_OVERVIEW_20260207.md>).
+- **SC11**: `docs/PEAK_TRADE_COMPLETE_OVERVIEW_2025-12-07.md` — Historical narrative dated 2025-12-07; snapshot contains later epoch note. [Gesicherte Quelle](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-structural-crosswalk/SC11-PEAK_TRADE_COMPLETE_OVERVIEW_2025-12-07.md>).

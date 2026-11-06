@@ -1,0 +1,990 @@
+diff --git a/config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json b/config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json
+index 02a81f674..bdfa44258 100644
+--- a/config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json
++++ b/config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json
+@@ -1,58 +1,44 @@
+ {
+   "authority_effect": "NONE",
+-  "base_sha": "3714620db0ebfb3f6786e1b91923a7f32c0d3e08",
+-  "head_sha": "a0a8ca94bab17d59016f28b448331e8d64d42bd1",
++  "base_sha": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
++  "head_sha": "2bc3f3ad21177a9327fc1038d4033f22aaa7dab0",
+   "changed_paths": [
+     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+-    "docs/ops/KILL_SWITCH_RUNBOOK.md",
+-    "docs/risk/KILL_SWITCH.md",
+-    "docs/risk/KILL_SWITCH_ARCHITECTURE.md",
+-    "scripts/ops/kill_switch_ctl.sh",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+-    "src/ops/gates/risk_gate.py",
+-    "src/risk_layer/kill_switch/cli.py",
+-    "src/risk_layer/kill_switch/core.py",
+-    "src/risk_layer/kill_switch/persistence.py",
+-    "src/risk_layer/kill_switch/recovery_attestation.py",
+-    "tests/ops/_post_path_safety_fixtures_v1.py",
++    "scripts/ops/ci_test_selection_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
++    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
++    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
++    "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py",
++    "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
+     "tests/ops/_protected_surface_content_pins_v1.py",
+-    "tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py",
+-    "tests/ops/test_risk_gate.py",
+-    "tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py",
+-    "tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py",
+-    "tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py"
++    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
++    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
+   ],
+-  "changed_paths_sha256": "9f01b735ebeb256cc189b0386ad0765e61c44f305496271ab0f06b810db4dae8",
++  "changed_paths_sha256": "d0ef5c85c0f904481853ac4cf378578b3249a0b7f16a8e35c86b08fda4b0933c",
+   "covered_candidate_paths": [
+-    "docs/ops/KILL_SWITCH_RUNBOOK.md",
+-    "docs/risk/KILL_SWITCH.md",
+-    "docs/risk/KILL_SWITCH_ARCHITECTURE.md",
+-    "scripts/ops/kill_switch_ctl.sh",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+-    "src/ops/gates/risk_gate.py",
+-    "src/risk_layer/kill_switch/cli.py",
+-    "src/risk_layer/kill_switch/core.py",
+-    "src/risk_layer/kill_switch/persistence.py",
+-    "src/risk_layer/kill_switch/recovery_attestation.py",
+-    "tests/ops/_post_path_safety_fixtures_v1.py",
++    "scripts/ops/ci_test_selection_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
++    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
++    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
++    "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py",
++    "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
+     "tests/ops/_protected_surface_content_pins_v1.py",
+-    "tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py",
+-    "tests/ops/test_risk_gate.py",
+-    "tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py",
+-    "tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py",
+-    "tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py"
++    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
++    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
+   ],
+   "evidence_refs": [
+     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py",
+-    "src/ops/gates/risk_gate.py",
+-    "src/risk_layer/kill_switch/core.py",
+-    "src/risk_layer/kill_switch/recovery_attestation.py",
+-    "tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py"
++    "config/ops/current_full_core_capital_guard_v1.json",
++    "config/ops/current_live_canary_capital_guard_v1.json",
++    "scripts/ops/ci_test_selection_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
++    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
++    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
++    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
+   ],
+-  "reason": "WP-B5 closes kill-switch findings F1-F6 and the missing RECOVERING->ACTIVE entry inside the existing durable kill-switch authority: fail-closed env-secret approval, bound and HMAC-signed recovery requests, cooldown/timestamp integrity, inter-process flock with lock-free KILL journal latch, append-only transition journal, DISABLED and PEAK_KILL_SWITCH=1 always deny, and an attested ACTIVE that the existing productive POST kill-switch gate verifies. CSIA domain safety (DURABLE_KILL_SWITCH=src.ops.gates.risk_gate+durable_filegate_join_v1) and execution_external_effect (standing EXTERNAL_EFFECT_AUTHORIZED/POST_ALLOWED/REAL_VENUE_POST_ALLOWED false) stay accurate: the attestation and journal are internal integrity verifiers of the same authority; no domain owner, interaction or authority edge added or removed; no new POST path, credential or authority; ACTIVE grants no trading/POST authorization; source_v1.json and derived views unchanged; 7 previously undetermined kill-switch CLI/attestation/ops-script/doc/test paths added to impact_candidates_v1.json as exact files; NO_MAP_IMPACT; AUTHORITY=NONE.",
++  "reason": "BWP-LIVE-002 keeps the BWP-LIVE-001 capital-guard parser hardening and adds no domain owner, interaction, or authority edge. Offline E2E crash children re-anchor the existing kill-switch root in-process and the restart assertions follow the existing global ledger replay deny (OWNER_AUTHORIZATION_IDENTITY consumed at claim, orphan claim stays unresolved). The CI selector gains one exact PR_BOUNDED_FULL package so the existing B2/B4/B7 test file runs when its production paths change; a test-only edit of that file is CONTRACT_FOCUSED instead of NO_OP. Two previously undetermined paths (scripts/ops/ci_test_selection_v1.py, tests/ci/test_ci_diff_aware_test_selection_v1.py) are named as exact candidate files. source_v1.json and derived views unchanged. Standing POST pins stay false. NO_MAP_IMPACT. AUTHORITY=NONE.",
+   "verdict": "NO_MAP_IMPACT",
+   "selector_used_as_map_impact_authority": false
+ }
+diff --git a/config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json b/config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json
+index 8ce0d5807..fa7582441 100644
+--- a/config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json
++++ b/config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json
+@@ -291,6 +291,7 @@
+     "requirements.txt",
+     "scripts/obs/ai_live_exporter.py",
+     "scripts/ops/check_current_law_impact_v1.py",
++    "scripts/ops/ci_test_selection_v1.py",
+     "scripts/ops/complete_okx_inst_eth_usdt_perp_v3_raw_staging_funding_archive_v1.py",
+     "scripts/ops/current_law_impact_map_v1.py",
+     "scripts/ops/fast_reference_replay_v1.py",
+@@ -561,6 +562,7 @@
+     "static/vendor/lightweight-charts/4.2.2/lightweight-charts.standalone.production.js",
+     "templates/peak_trade_dashboard/",
+     "templates/peak_trade_dashboard/market_surface_greenfield_v1.html",
++    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+     "tests/ci/test_exact_head_ready_reuse.py",
+     "tests/evaluation/golden_vectors/",
+     "tests/execution/test_execution_reject_codes_mvp.py",
+diff --git a/scripts/ops/ci_test_selection_v1.py b/scripts/ops/ci_test_selection_v1.py
+index ca860a8db..bfa139d7b 100644
+--- a/scripts/ops/ci_test_selection_v1.py
++++ b/scripts/ops/ci_test_selection_v1.py
+@@ -1337,6 +1337,35 @@ PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS: tuple[str, ...] = (
+     "tests/scripts/test_backtest_returns_var_suite_offline_v1.py",
+ )
+ 
++PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TESTOWNER: str = (
++    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py"
++)
++
++PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TRIGGER_PATHS: frozenset[str] = (
++    frozenset(
++        {
++            "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
++            "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
++            "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
++            "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
++            "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
++            "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
++            "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
++            "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
++            "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
++            "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
++            "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
++            "config/ops/current_full_core_capital_guard_v1.json",
++            "config/ops/current_live_canary_capital_guard_v1.json",
++            PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TESTOWNER,
++        }
++    )
++)
++
++PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TARGETS: tuple[str, ...] = (
++    PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TESTOWNER,
++)
++
+ PR_BOUNDED_FULL_PACKAGE_A_META_TRIGGER_PATHS: frozenset[str] = frozenset(
+     {
+         "src/meta/learning_loop/contract_safety_v1.py",
+@@ -2441,6 +2470,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
+         for path in PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS:
+             add(path)
+ 
++    if normalized & PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TRIGGER_PATHS:
++        for path in PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TARGETS:
++            add(path)
++
+     if normalized & PR_BOUNDED_FULL_PACKAGE_A_META_TRIGGER_PATHS:
+         for path in PR_BOUNDED_FULL_PACKAGE_A_META_TARGETS:
+             add(path)
+@@ -6325,6 +6358,15 @@ def resolve_selection(
+     if categories <= NO_OP_CATEGORIES:
+         if _has_productive_src_python(normalized):
+             return SelectionResult("FULL", "productive_src_no_op_blocked_fail_closed", ())
++        bwp_live_testowner = (
++            PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TESTOWNER
++        )
++        if bwp_live_testowner in set(normalized):
++            return SelectionResult(
++                "FOCUSED",
++                "bwp_live_capital_guard_post_isolation_testowner_focused",
++                (bwp_live_testowner,),
++            )
+         return SelectionResult("NO_OP", "docs_workflow_or_static_contract_only", ())
+ 
+     strategy_focused = _try_strategy_regime_owner_focused(normalized)
+diff --git a/src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py b/src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py
+index 85333b5a1..4e4abe8d5 100644
+--- a/src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py
++++ b/src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py
+@@ -27,6 +27,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.current_live_canary
+     compute_canary_plan_digest_v1,
+     evaluate_canary_capital_guard_entry_v1,
+     parse_canary_capital_guard_config_v1,
++    parse_optional_finite_decimal_cap_v1,
+ )
+ 
+ CONTRACT_ID = "CURRENT_FULL_CORE_CAPITAL_GUARD_V1"
+@@ -135,6 +136,9 @@ def parse_full_core_capital_guard_config_v1(
+     schema = str(payload.get("schema_version") or "").strip()
+     if schema != SCHEMA_VERSION:
+         raise FullCoreCapitalGuardError(f"GUARD_SCHEMA_MISMATCH:{schema or '<empty>'}")
++    join_enabled = payload.get("full_core_guard_join_enabled")
++    if join_enabled is not None and not isinstance(join_enabled, bool):
++        raise CanaryCapitalGuardError("INVALID_BOOL_FLAG:full_core_guard_join_enabled")
+     canary = parse_canary_capital_guard_config_v1(
+         {
+             **payload,
+@@ -143,15 +147,12 @@ def parse_full_core_capital_guard_config_v1(
+         },
+         config_digest=config_digest,
+     )
+-    max_existing = payload.get("max_existing_exposure")
+-    existing_dec: Decimal | None
+-    if max_existing is None:
+-        existing_dec = None
+-    else:
+-        existing_dec = Decimal(str(max_existing))
++    existing_dec = parse_optional_finite_decimal_cap_v1(
++        payload.get("max_existing_exposure"), field="max_existing_exposure"
++    )
+     return FullCoreCapitalGuardConfigV1(
+         schema_version=schema,
+-        full_core_guard_join_enabled=bool(payload.get("full_core_guard_join_enabled")),
++        full_core_guard_join_enabled=canary.live_canary_allowed,
+         owner_caps_ratified=canary.owner_caps_ratified,
+         currency=canary.currency,
+         max_single_order_notional=canary.max_single_order_notional,
+diff --git a/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py b/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py
+index 7d5d5e64c..f57737c88 100644
+--- a/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py
++++ b/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py
+@@ -112,13 +112,37 @@ class CanaryCapitalGuardConfigV1:
+         }
+ 
+ 
+-def _parse_optional_decimal(raw: Any) -> Decimal | None:
++def _parse_strict_flag(raw: Any, *, field: str, default: bool) -> bool:
++    """Only a JSON boolean sets a guard flag; any other type fails closed."""
++    if raw is None:
++        return default
++    if isinstance(raw, bool):
++        return raw
++    raise CanaryCapitalGuardError(f"INVALID_BOOL_FLAG:{field}")
++
++
++def _parse_optional_decimal(raw: Any, *, field: str = "cap") -> Decimal | None:
+     if raw is None:
+         return None
++    if isinstance(raw, bool):
++        raise CanaryCapitalGuardError(f"INVALID_DECIMAL:{field}")
+     text = str(raw).strip()
+     if not text:
+         return None
+-    return _dec(text, field="cap")
++    value = _dec(text, field=field)
++    if not value.is_finite():
++        raise CanaryCapitalGuardError(f"NON_FINITE_CAP:{field}")
++    return value
++
++
++def parse_optional_finite_decimal_cap_v1(raw: Any, *, field: str) -> Decimal | None:
++    return _parse_optional_decimal(raw, field=field)
++
++
++def _parse_optional_non_negative_int(raw: Any, *, field: str) -> int | None:
++    if raw is None:
++        return None
++    return _parse_required_non_negative_int(raw, field=field)
+ 
+ 
+ def _parse_required_non_negative_int(raw: Any, *, field: str) -> int:
+@@ -175,31 +199,43 @@ def parse_canary_capital_guard_config_v1(
+         raise CanaryCapitalGuardError("GUARD_CURRENCY_MISSING")
+     return CanaryCapitalGuardConfigV1(
+         schema_version=schema,
+-        live_canary_allowed=bool(payload.get("live_canary_allowed")),
+-        owner_caps_ratified=bool(payload.get("owner_caps_ratified")),
++        live_canary_allowed=_parse_strict_flag(
++            payload.get("live_canary_allowed"), field="live_canary_allowed", default=False
++        ),
++        owner_caps_ratified=_parse_strict_flag(
++            payload.get("owner_caps_ratified"), field="owner_caps_ratified", default=False
++        ),
+         currency=currency,
+-        max_single_order_notional=_parse_optional_decimal(payload.get("max_single_order_notional")),
++        max_single_order_notional=_parse_optional_decimal(
++            payload.get("max_single_order_notional"), field="max_single_order_notional"
++        ),
+         max_incremental_initial_margin=_parse_optional_decimal(
+-            payload.get("max_incremental_initial_margin")
++            payload.get("max_incremental_initial_margin"), field="max_incremental_initial_margin"
+         ),
+-        max_aggregate_exposure=_parse_optional_decimal(payload.get("max_aggregate_exposure")),
+-        max_leverage=_parse_optional_decimal(payload.get("max_leverage")),
+-        max_open_positions=(
+-            None
+-            if payload.get("max_open_positions") is None
+-            else int(payload.get("max_open_positions"))
++        max_aggregate_exposure=_parse_optional_decimal(
++            payload.get("max_aggregate_exposure"), field="max_aggregate_exposure"
+         ),
+-        max_submitted_orders=(
+-            None
+-            if payload.get("max_submitted_orders") is None
+-            else int(payload.get("max_submitted_orders"))
++        max_leverage=_parse_optional_decimal(payload.get("max_leverage"), field="max_leverage"),
++        max_open_positions=_parse_optional_non_negative_int(
++            payload.get("max_open_positions"), field="max_open_positions"
++        ),
++        max_submitted_orders=_parse_optional_non_negative_int(
++            payload.get("max_submitted_orders"), field="max_submitted_orders"
+         ),
+         max_session_capital_commitment=_parse_optional_decimal(
+-            payload.get("max_session_capital_commitment")
++            payload.get("max_session_capital_commitment"), field="max_session_capital_commitment"
++        ),
++        scale_in_forbidden=_parse_strict_flag(
++            payload.get("scale_in_forbidden"), field="scale_in_forbidden", default=True
++        ),
++        automatic_retry_forbidden=_parse_strict_flag(
++            payload.get("automatic_retry_forbidden"),
++            field="automatic_retry_forbidden",
++            default=True,
++        ),
++        fee_buffer_usdc=_parse_optional_decimal(
++            payload.get("fee_buffer_usdc"), field="fee_buffer_usdc"
+         ),
+-        scale_in_forbidden=bool(payload.get("scale_in_forbidden", True)),
+-        automatic_retry_forbidden=bool(payload.get("automatic_retry_forbidden", True)),
+-        fee_buffer_usdc=_parse_optional_decimal(payload.get("fee_buffer_usdc")),
+         max_new_orders=_parse_required_non_negative_int(
+             payload.get("max_new_orders"), field="max_new_orders"
+         ),
+@@ -753,6 +789,7 @@ __all__ = [
+     "load_canary_capital_guard_config_v1",
+     "offline_proof_guard_config_v1",
+     "parse_canary_capital_guard_config_v1",
++    "parse_optional_finite_decimal_cap_v1",
+     "record_canary_capital_guard_entry_attempt_v1",
+     "refuse_canary_capital_guard_entry_unless_pass_v1",
+     "refuse_canary_capital_guard_flatten_unless_pass_v1",
+diff --git a/tests/ci/test_ci_diff_aware_test_selection_v1.py b/tests/ci/test_ci_diff_aware_test_selection_v1.py
+index dd0a184bc..d639c42ff 100644
+--- a/tests/ci/test_ci_diff_aware_test_selection_v1.py
++++ b/tests/ci/test_ci_diff_aware_test_selection_v1.py
+@@ -7590,3 +7590,52 @@ def test_selector_package_clock_trust_and_expiry_v1_combined_diff_pr_bounded_ful
+     for path in PACKAGE_CLOCK_TRUST_AND_EXPIRY_V1_ALL_TESTOWNERS:
+         assert path in bounded
+         assert bounded.count(path) == 1
++
++
++BWP_LIVE_CAPITAL_GUARD_PRODUCTION = (
++    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py"
++)
++BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER = (
++    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py"
++)
++
++
++def test_selector_bwp_live_capital_guard_production_pr_bounded_full_includes_testowner() -> None:
++    sel = _run_selector(BWP_LIVE_CAPITAL_GUARD_PRODUCTION)
++    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
++    assert sel["test_selection_reason"] == "category_central_src_requires_full"
++    bounded = _bounded_targets(sel)
++    assert BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER in bounded
++    assert bounded.count(BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER) == 1
++    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in bounded
++
++
++def test_selector_bwp_live_capital_guard_testowner_only_is_focused() -> None:
++    sel = _run_selector(BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER)
++    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
++    assert sel["test_selection_reason"] == (
++        "bwp_live_capital_guard_post_isolation_testowner_focused"
++    )
++    assert _targets(sel) == [BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER]
++
++
++def test_selector_bwp_live_capital_guard_combined_diff_includes_testowner_once() -> None:
++    sel = _run_selector(
++        BWP_LIVE_CAPITAL_GUARD_PRODUCTION,
++        BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER,
++    )
++    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
++    bounded = _bounded_targets(sel)
++    assert bounded.count(BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER) == 1
++
++
++def test_selector_central_src_without_bwp_live_path_excludes_testowner() -> None:
++    sel = _run_selector("src/core/foo.py")
++    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
++    assert BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER not in _bounded_targets(sel)
++
++
++def test_selector_empty_diff_does_not_add_bwp_live_testowner() -> None:
++    sel = _run_selector()
++    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
++    assert BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER not in _bounded_targets(sel)
+diff --git a/tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py b/tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py
+new file mode 100644
+index 000000000..9155843aa
+--- /dev/null
++++ b/tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py
+@@ -0,0 +1,40 @@
++#!/usr/bin/env python3
++"""Test-only child for the CURRENT full-system offline E2E crash segments.
++
++Re-anchors the kill-switch state root to the isolated per-test root (never the
++canonical root) in-process, then runs the unchanged offline E2E crash worker.
++"""
++
++from __future__ import annotations
++
++import argparse
++import runpy
++import sys
++from pathlib import Path
++
++_REPO_ROOT = Path(__file__).resolve().parents[2]
++if str(_REPO_ROOT) not in sys.path:
++    sys.path.insert(0, str(_REPO_ROOT))
++
++from src.ops.gates import risk_gate  # noqa: E402
++
++WORKER_SCRIPT = (
++    _REPO_ROOT / "scripts" / "ops" / "run_current_full_system_offline_e2e_crash_worker_v1.py"
++)
++
++
++def offline_e2e_kill_switch_root_v1(state_root: Path) -> Path:
++    return (state_root.parent / f"{state_root.name}__kill_switch").resolve()
++
++
++def main() -> None:
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--state-root", required=True)
++    args = parser.parse_args()
++    risk_gate._KILL_SWITCH_STATE_ROOT = offline_e2e_kill_switch_root_v1(Path(args.state_root))
++    sys.argv = [str(WORKER_SCRIPT)]
++    runpy.run_path(str(WORKER_SCRIPT), run_name="__main__")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py b/tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py
+index f33eec480..0166e8ebe 100644
+--- a/tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py
++++ b/tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py
+@@ -136,7 +136,7 @@ def prepare_offline_owner_authorization_for_one_shot_v1(
+     )
+     pretrade_id = str(closure.common_epoch_id or "offline-e2e")
+     native_id = str(bound.venue_native_id or _TEST_INST)
+-    atomic = state_root / "atomic" / "pilot_guard"
++    atomic = one_shot_root / "atomic" / "pilot_guard"
+     pilot_bind = enforce_pilot_capital_guard_before_enter_post_v1(
+         pilot_capital_guard_bind_go=OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1,
+         envelope=envelope,
+@@ -196,6 +196,8 @@ class _InstrumentAwarePilotReadTransport(PilotGuardReadTransport):
+         self._avail_eq = avail_eq
+         self._open_orders = False
+         self._balance_ccy = "USDC"
++        self._rr_payloads = None
++        self.get_cache_policies: list[str | None] = []
+         self._inst_family = str(native_inst_id).split("-")[0] + "-USDT"
+         tiers_raw = encode_fixture_position_tiers_payload_v1(
+             inst_family=self._inst_family,
+diff --git a/tests/ops/_protected_surface_content_pins_v1.py b/tests/ops/_protected_surface_content_pins_v1.py
+index b416c682e..10a40ef80 100644
+--- a/tests/ops/_protected_surface_content_pins_v1.py
++++ b/tests/ops/_protected_surface_content_pins_v1.py
+@@ -27,10 +27,18 @@ AUTHORIZATION_B6_LINUX_LEDGER_V5 = (
+ AUTHORIZATION_WP_B5_KILL_SWITCH_CLOSURE = (
+     "OWNER_IMPLEMENTATION_GO=WP_B5_KILL_SWITCH_SAFETY_AND_RECOVERY_CLOSURE"
+ )
++AUTHORIZATION_BWP_LIVE_001 = (
++    "OWNER_OFFLINE_IMPLEMENTATION_GO=BWP_LIVE_001_FULL_SYSTEM_LIVE_READINESS_CLOSURE"
++)
+ NEW_FILE_BASE_BLOB = None
+ 
+ # path -> (authorization, origin/main blob id or None for new file, content sha256)
+ AUTHORIZED_PROTECTED_SURFACE_CHANGES_V1: Mapping[str, tuple[str, Optional[str], str]] = {
++    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py": (
++        AUTHORIZATION_BWP_LIVE_001,
++        "85333b5a13814cf72b807d643c14dccef29d8116",
++        "f71e77fedf43bce32e58a06824915f4ea9a358d0ae0d9d8bf8ba789bb655950c",
++    ),
+     "src/ops/full_core_live_path_composition_root_v1/current_full_system_offline_e2e_integration_proof_v1.py": (
+         AUTHORIZATION_B5_B6_V1_V2,
+         "bc4bd326ab14b7aa2b74673e087958760794bf0c",
+diff --git a/tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py b/tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py
+new file mode 100644
+index 000000000..d7b79b7a4
+--- /dev/null
++++ b/tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py
+@@ -0,0 +1,283 @@
++"""BWP-LIVE-001: capital-guard config strictness and runner/POST boundary locks.
++
++Offline only. No network, no credentials, no venue POST, no productive state.
++"""
++
++from __future__ import annotations
++
++import ast
++import json
++from decimal import Decimal
++from pathlib import Path
++
++import pytest
++
++from src.ops.full_core_live_path_composition_root_v1 import constants_v1 as live_constants
++from src.ops.full_core_live_path_composition_root_v1.current_full_core_capital_guard_v1 import (
++    load_full_core_capital_guard_config_v1,
++    parse_full_core_capital_guard_config_v1,
++)
++from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.current_live_canary_capital_guard_v1 import (
++    CanaryCapitalGuardError,
++    load_canary_capital_guard_config_v1,
++    parse_canary_capital_guard_config_v1,
++)
++
++REPO_ROOT = Path(__file__).resolve().parents[2]
++FULL_CORE_CONFIG = REPO_ROOT / "config/ops/current_full_core_capital_guard_v1.json"
++CANARY_CONFIG = REPO_ROOT / "config/ops/current_live_canary_capital_guard_v1.json"
++
++NON_BOOL_FLAG_VALUES = ("false", "False", "0", "no", "true", 1, 0, "", [], {}, 0.0)
++NON_FINITE_CAPS = ("Infinity", "-Infinity", "inf", "NaN", "sNaN")
++NUMERIC_CAP_FIELDS = (
++    "max_single_order_notional",
++    "max_incremental_initial_margin",
++    "max_aggregate_exposure",
++    "max_leverage",
++    "max_session_capital_commitment",
++    "fee_buffer_usdc",
++)
++
++COMPOSITION_ROOT = REPO_ROOT / "src/ops/full_core_live_path_composition_root_v1"
++RUNNER_SURFACES = (
++    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
++    "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
++)
++FORBIDDEN_RUNNER_CALLS = frozenset(
++    {
++        "post_trade_order",
++        "FullCoreProductiveHttpTradeOrderTransportV1",
++        "attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1",
++        "execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
++        "attempt_envelope_bound_external_effect_send_v1",
++        "open_current_productive_k1_opaque_signing_handle_session_v1",
++        "issue_external_effect_permit_v1",
++    }
++)
++
++
++def _payload(path: Path) -> dict:
++    return json.loads(path.read_text(encoding="utf-8"))
++
++
++def _write(tmp_path: Path, payload: dict) -> Path:
++    path = tmp_path / "guard.json"
++    path.write_text(json.dumps(payload), encoding="utf-8")
++    return path
++
++
++# --- B2: canonical configs keep the Owner decision (unratified, disabled) ------------------
++
++
++def test_b2_canonical_full_core_config_stays_unratified_and_disabled() -> None:
++    cfg = load_full_core_capital_guard_config_v1(repo_root=REPO_ROOT)
++    assert cfg.owner_caps_ratified is False
++    assert cfg.full_core_guard_join_enabled is False
++    assert cfg.max_single_order_notional is None
++    assert cfg.max_existing_exposure is None
++
++
++def test_b2_canonical_canary_config_stays_unratified_and_disallowed() -> None:
++    cfg = load_canary_capital_guard_config_v1(repo_root=REPO_ROOT)
++    assert cfg.owner_caps_ratified is False
++    assert cfg.live_canary_allowed is False
++    assert cfg.scale_in_forbidden is True
++    assert cfg.automatic_retry_forbidden is True
++
++
++# --- B2: manipulated authorization flags fail closed ---------------------------------------
++
++
++@pytest.mark.parametrize("value", NON_BOOL_FLAG_VALUES)
++@pytest.mark.parametrize("field", ("owner_caps_ratified", "full_core_guard_join_enabled"))
++def test_b2_full_core_non_bool_authorization_flag_rejected(
++    tmp_path: Path, field: str, value: object
++) -> None:
++    payload = _payload(FULL_CORE_CONFIG)
++    payload[field] = value
++    with pytest.raises(CanaryCapitalGuardError, match=f"INVALID_BOOL_FLAG:{field}"):
++        load_full_core_capital_guard_config_v1(config_path=_write(tmp_path, payload))
++
++
++@pytest.mark.parametrize("value", NON_BOOL_FLAG_VALUES)
++@pytest.mark.parametrize(
++    "field",
++    (
++        "owner_caps_ratified",
++        "live_canary_allowed",
++        "scale_in_forbidden",
++        "automatic_retry_forbidden",
++    ),
++)
++def test_b2_canary_non_bool_flag_rejected(tmp_path: Path, field: str, value: object) -> None:
++    payload = _payload(CANARY_CONFIG)
++    payload[field] = value
++    with pytest.raises(CanaryCapitalGuardError, match=f"INVALID_BOOL_FLAG:{field}"):
++        load_canary_capital_guard_config_v1(config_path=_write(tmp_path, payload))
++
++
++def test_b2_string_false_never_ratifies_owner_caps() -> None:
++    payload = _payload(FULL_CORE_CONFIG)
++    payload["owner_caps_ratified"] = "false"
++    payload["full_core_guard_join_enabled"] = "false"
++    with pytest.raises(CanaryCapitalGuardError):
++        parse_full_core_capital_guard_config_v1(payload, config_digest="d" * 64)
++
++
++def test_b2_absent_flags_default_fail_closed() -> None:
++    payload = _payload(FULL_CORE_CONFIG)
++    for key in (
++        "owner_caps_ratified",
++        "full_core_guard_join_enabled",
++        "scale_in_forbidden",
++        "automatic_retry_forbidden",
++    ):
++        payload.pop(key)
++    cfg = parse_full_core_capital_guard_config_v1(payload, config_digest="d" * 64)
++    assert cfg.owner_caps_ratified is False
++    assert cfg.full_core_guard_join_enabled is False
++    assert cfg.scale_in_forbidden is True
++    assert cfg.automatic_retry_forbidden is True
++
++
++def test_b2_explicit_json_true_still_parses_for_offline_fixture() -> None:
++    payload = _payload(
++        REPO_ROOT / "config/ops/current_full_core_capital_guard_offline_e2e_natural_enter_v1.json"
++    )
++    cfg = parse_full_core_capital_guard_config_v1(payload, config_digest="d" * 64)
++    assert cfg.owner_caps_ratified is True
++    assert cfg.full_core_guard_join_enabled is True
++
++
++# --- B2: manipulated numeric caps fail closed -----------------------------------------------
++
++
++@pytest.mark.parametrize("value", NON_FINITE_CAPS)
++@pytest.mark.parametrize("field", NUMERIC_CAP_FIELDS)
++def test_b2_non_finite_cap_rejected(field: str, value: str) -> None:
++    payload = _payload(CANARY_CONFIG)
++    payload[field] = value
++    with pytest.raises(CanaryCapitalGuardError, match=f":{field}"):
++        parse_canary_capital_guard_config_v1(payload, config_digest="d" * 64)
++
++
++@pytest.mark.parametrize("value", NON_FINITE_CAPS)
++def test_b2_full_core_non_finite_existing_exposure_rejected(value: str) -> None:
++    payload = _payload(FULL_CORE_CONFIG)
++    payload["max_existing_exposure"] = value
++    with pytest.raises(CanaryCapitalGuardError, match="max_existing_exposure"):
++        parse_full_core_capital_guard_config_v1(payload, config_digest="d" * 64)
++
++
++@pytest.mark.parametrize("field", NUMERIC_CAP_FIELDS + ("max_existing_exposure",))
++def test_b2_bool_numeric_cap_rejected(field: str) -> None:
++    payload = _payload(FULL_CORE_CONFIG)
++    payload[field] = True
++    with pytest.raises(CanaryCapitalGuardError, match=f"INVALID_DECIMAL:{field}"):
++        parse_full_core_capital_guard_config_v1(payload, config_digest="d" * 64)
++
++
++@pytest.mark.parametrize("field", ("max_open_positions", "max_submitted_orders"))
++@pytest.mark.parametrize("value", (True, -1, "abc", "-2"))
++def test_b2_invalid_int_cap_rejected(field: str, value: object) -> None:
++    payload = _payload(CANARY_CONFIG)
++    payload[field] = value
++    with pytest.raises(CanaryCapitalGuardError, match=f"_INT_CAP:{field}"):
++        parse_canary_capital_guard_config_v1(payload, config_digest="d" * 64)
++
++
++def test_b2_finite_caps_parse_unchanged() -> None:
++    payload = _payload(CANARY_CONFIG)
++    payload.update(
++        {
++            "max_single_order_notional": "100",
++            "max_leverage": 20,
++            "fee_buffer_usdc": "1.5",
++            "max_open_positions": 1,
++            "max_submitted_orders": "1",
++        }
++    )
++    cfg = parse_canary_capital_guard_config_v1(payload, config_digest="d" * 64)
++    assert cfg.max_single_order_notional == Decimal("100")
++    assert cfg.max_leverage == Decimal("20")
++    assert cfg.fee_buffer_usdc == Decimal("1.5")
++    assert cfg.max_open_positions == 1
++    assert cfg.max_submitted_orders == 1
++
++
++# --- B4/B7: standing pins and runner-to-POST separation --------------------------------------
++
++
++def test_b4_standing_external_effect_pins_remain_false() -> None:
++    assert live_constants.EXTERNAL_EFFECT_AUTHORIZED is False
++    assert live_constants.POST_ALLOWED is False
++    assert live_constants.REAL_VENUE_POST_ALLOWED is False
++
++
++def _called_names(path: Path) -> set[str]:
++    tree = ast.parse(path.read_text(encoding="utf-8"))
++    names: set[str] = set()
++    for node in ast.walk(tree):
++        if isinstance(node, ast.Call):
++            func = node.func
++            if isinstance(func, ast.Attribute):
++                names.add(func.attr)
++            elif isinstance(func, ast.Name):
++                names.add(func.id)
++    return names
++
++
++def _one_shot_true_keywords(path: Path) -> int:
++    tree = ast.parse(path.read_text(encoding="utf-8"))
++    return sum(
++        1
++        for node in ast.walk(tree)
++        if isinstance(node, ast.keyword)
++        and node.arg == "one_shot_real_post"
++        and isinstance(node.value, ast.Constant)
++        and node.value.value is True
++    )
++
++
++@pytest.mark.parametrize("rel", RUNNER_SURFACES)
++def test_b7_runner_surface_never_calls_venue_post_seams(rel: str) -> None:
++    path = REPO_ROOT / rel
++    assert path.is_file(), rel
++    hits = _called_names(path) & FORBIDDEN_RUNNER_CALLS
++    assert hits == set(), f"{rel} calls POST seam(s): {sorted(hits)}"
++    assert _one_shot_true_keywords(path) == 0
++
++
++def test_b7_lifecycle_wiring_imports_only_post_result_type_from_transport() -> None:
++    path = COMPOSITION_ROOT / "full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py"
++    tree = ast.parse(path.read_text(encoding="utf-8"))
++    imported = [
++        alias.name
++        for node in ast.walk(tree)
++        if isinstance(node, ast.ImportFrom)
++        and (node.module or "").endswith("full_core_productive_http_post_transport_v1")
++        for alias in node.names
++    ]
++    assert imported == ["FullCoreTradeOrderPostResultV1"]
++
++
++def test_b4_only_one_shot_join_builds_send_capable_transport_with_pre_send_gate() -> None:
++    sites: list[str] = []
++    for path in sorted((REPO_ROOT / "src").rglob("*.py")):
++        tree = ast.parse(path.read_text(encoding="utf-8"))
++        for node in ast.walk(tree):
++            if (
++                isinstance(node, ast.Call)
++                and isinstance(node.func, ast.Name)
++                and node.func.id == "FullCoreProductiveHttpTradeOrderTransportV1"
++                and any(kw.arg == "pre_send_safety_gate" for kw in node.keywords)
++            ):
++                sites.append(str(path.relative_to(REPO_ROOT)))
++    assert sites == [
++        "src/ops/full_core_live_path_composition_root_v1/"
++        "current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
++    ]
+diff --git a/tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py b/tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py
+index b3bd4aaaf..e489d6c4a 100644
+--- a/tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py
++++ b/tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py
+@@ -72,12 +72,36 @@ from tests.ops.test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v
+     _order_row_join,
+     _origin_main,
+ )
++from src.ops.full_core_live_path_composition_root_v1.current_productive_global_venue_effect_authority_ledger_v1 import (
++    STATE_CLAIMED,
++    GlobalVenueEffectAuthorityLedgerV1,
++    GlobalVenueEffectReplayDeniedError,
++)
++from src.ops.gates.risk_gate import DEFAULT_KILL_SWITCH_STATE_PATH
++from tests.ops._current_full_system_offline_e2e_crash_child_runner_v1 import (
++    offline_e2e_kill_switch_root_v1,
++)
++from tests.ops._post_path_safety_fixtures_v1 import (
++    KILL_SWITCH_ENV,
++    KILL_SWITCH_ENV_ALT,
++    activate_isolated_kill_switch_state_v1,
++    write_kill_switch_state_v1,
++)
+ from tests.ops.test_full_core_exchange_reconciliation_v1 import CL
+ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_offline_provider_v1 import (
+     OfflineExchangeFixtureV1,
+ )
+ 
+ 
++@pytest.fixture(autouse=True)
++def _active_kill_switch_state(
++    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
++) -> None:
++    activate_isolated_kill_switch_state_v1(
++        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
++    )
++
++
+ @pytest.fixture(autouse=True)
+ def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
+     def _boom(*_args: Any, **_kwargs: Any) -> None:
+@@ -384,7 +408,7 @@ def test_negative_permit_reuse_fail_closed(tmp_path: Path) -> None:
+         capital_guard_prevalidated=True,
+         pilot_authorization_binding=pilot_auth,
+     )
+-    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="CONSUMED_PERMIT"):
++    with pytest.raises(GlobalVenueEffectReplayDeniedError, match=_GLOBAL_OWNER_AUTH_REPLAY):
+         run_production_pre_external_to_fake_post_chain_v1(
+             closure=closure,
+             bound_instrument=bound,
+@@ -403,6 +427,7 @@ def test_negative_permit_reuse_fail_closed(tmp_path: Path) -> None:
+     witness = default_fake_post_witness_path_v1(state_root)
+     assert witness.is_file()
+     assert int(json.loads(witness.read_text())["post_attempt_count"]) == 1
++    assert _offline_ledger_unresolved_v1(state_root) == []
+ 
+ 
+ def test_fake_exchange_transport_witness_is_mutable_and_persists_attempts(
+@@ -416,6 +441,23 @@ def test_fake_exchange_transport_witness_is_mutable_and_persists_attempts(
+     assert loaded.post_attempt_count == 1
+ 
+ 
++_GLOBAL_OWNER_AUTH_REPLAY = "GLOBAL_REPLAY_DENIED:OWNER_AUTHORIZATION_IDENTITY"
++
++
++def _fake_post_count_v1(state_root: Path) -> int:
++    witness = default_fake_post_witness_path_v1(state_root)
++    if not witness.is_file():
++        return 0
++    return int(json.loads(witness.read_text(encoding="utf-8"))["post_attempt_count"])
++
++
++def _offline_ledger_unresolved_v1(state_root: Path) -> list[dict[str, Any]]:
++    ledger = GlobalVenueEffectAuthorityLedgerV1(
++        root=state_root / "global_venue_effect_authority_ledger_offline"
++    )
++    return ledger.unresolved_claims_v1()
++
++
+ def _run_crash_worker_subprocess(
+     state_root: Path,
+     crash: OfflineE2eCrashPoint,
+@@ -423,7 +465,11 @@ def _run_crash_worker_subprocess(
+     extra_env: dict[str, str] | None = None,
+ ) -> int:
+     repo = Path(__file__).resolve().parents[2]
+-    env = os.environ.copy()
++    write_kill_switch_state_v1(
++        offline_e2e_kill_switch_root_v1(state_root) / DEFAULT_KILL_SWITCH_STATE_PATH,
++        state="ACTIVE",
++    )
++    env = {k: v for k, v in os.environ.items() if k not in {KILL_SWITCH_ENV, KILL_SWITCH_ENV_ALT}}
+     env["PEAK_TRADE_OFFLINE_E2E_STATE_ROOT"] = str(state_root)
+     env[CRASH_POINT_ENV_VAR] = crash.value
+     if extra_env:
+@@ -431,7 +477,9 @@ def _run_crash_worker_subprocess(
+     proc = subprocess.run(
+         [
+             str(repo / "scripts" / "pt"),
+-            "scripts/ops/run_current_full_system_offline_e2e_crash_worker_v1.py",
++            "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py",
++            "--state-root",
++            str(state_root),
+         ],
+         cwd=str(repo),
+         env=env,
+@@ -470,7 +518,7 @@ def test_crash_restart_no_duplicate_fake_post(tmp_path: Path) -> None:
+         default_fake_post_witness_path_v1(state_root).read_text(encoding="utf-8")
+     )["post_attempt_count"]
+     assert witness_count == 1
+-    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="CONSUMED_PERMIT"):
++    with pytest.raises(GlobalVenueEffectReplayDeniedError, match=_GLOBAL_OWNER_AUTH_REPLAY):
+         run_production_pre_external_to_fake_post_chain_v1(
+             closure=closure,
+             bound_instrument=bound,
+@@ -492,7 +540,9 @@ def test_crash_restart_no_duplicate_fake_post(tmp_path: Path) -> None:
+     assert witness_count_after == 1
+ 
+ 
+-def test_crash_before_durable_consume_allows_single_post_after_restart(tmp_path: Path) -> None:
++def test_crash_before_durable_consume_restart_denied_by_global_replay_no_post(
++    tmp_path: Path,
++) -> None:
+     bound, gap, origin_sha, _, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+     closure = gap.closure
+     state_root = tmp_path / "crash_before_consume"
+@@ -515,22 +565,29 @@ def test_crash_before_durable_consume_allows_single_post_after_restart(tmp_path:
+     )
+     rc = _run_crash_worker_subprocess(state_root, OfflineE2eCrashPoint.BEFORE_DURABLE_CONSUME)
+     assert rc == 91
+-    chain = run_production_pre_external_to_fake_post_chain_v1(
+-        closure=closure,
+-        bound_instrument=bound,
+-        origin_main_sha=origin_sha,
+-        state_root=state_root,
+-        read_only_get_transport=pilot_get_transport_v1(native_inst_id=str(bound.venue_native_id)),
+-        offline_recon_fixture=fixture,
+-        k1_backend=fake_k1_backend_v1(),
+-        post_owner_go_persisted=True,
+-        admission_seal_established=True,
+-        capital_guard_prevalidated=True,
+-        pilot_authorization_binding=pilot_auth,
+-    )
+-    assert chain.fake_post_witness_count == 1
+-    worker = load_offline_e2e_worker_result_v1(state_root=state_root)
+-    assert worker.get("status") in {None, "PASS", ""} or worker == {}
++    assert _fake_post_count_v1(state_root) == 0
++    [orphan] = _offline_ledger_unresolved_v1(state_root)
++    assert orphan["state"] == STATE_CLAIMED
++    with pytest.raises(GlobalVenueEffectReplayDeniedError, match=_GLOBAL_OWNER_AUTH_REPLAY):
++        run_production_pre_external_to_fake_post_chain_v1(
++            closure=closure,
++            bound_instrument=bound,
++            origin_main_sha=origin_sha,
++            state_root=state_root,
++            read_only_get_transport=pilot_get_transport_v1(
++                native_inst_id=str(bound.venue_native_id)
++            ),
++            offline_recon_fixture=fixture,
++            k1_backend=fake_k1_backend_v1(),
++            post_owner_go_persisted=True,
++            admission_seal_established=True,
++            capital_guard_prevalidated=True,
++            pilot_authorization_binding=pilot_auth,
++        )
++    assert _fake_post_count_v1(state_root) == 0
++    assert [c["claim_id"] for c in _offline_ledger_unresolved_v1(state_root)] == [
++        orphan["claim_id"]
++    ]
+ 
+ 
+ def test_crash_before_recon_complete_exits_94(tmp_path: Path) -> None:
+@@ -734,11 +791,14 @@ def test_gap_05_atomic_durable_apply_isolated_state(tmp_path: Path) -> None:
+     test_orchestrator_offline_unknown_restart_recovery(tmp_path / "gap_05_orchestrator_reproof")
+ 
+ 
+-def test_gap_05_crash_before_durable_consume_atomic_restart_single_post(tmp_path: Path) -> None:
+-    """Crash before external-effect durable consume; restart completes one fake POST.
++def test_gap_05_crash_before_durable_consume_atomic_restart_denied_no_post(
++    tmp_path: Path,
++) -> None:
++    """Crash before external-effect durable consume; the restart is denied, no fake POST.
+ 
+-    First segment runs full-core capital guard (single-use authorization). Restart
+-    uses pilot prevalidated provenance only — guard was already consumed pre-crash.
++    First segment runs full-core capital guard (single-use authorization). The
++    global ledger keeps the owner-authorization replay marker, so the restarted
++    process cannot reuse it; the orphaned claim stays unresolved for G004.
+     """
+ 
+     bound, gap, origin_sha, _, mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+@@ -772,6 +832,9 @@ def test_gap_05_crash_before_durable_consume_atomic_restart_single_post(tmp_path
+         },
+     )
+     assert rc_crash == 91
++    assert _fake_post_count_v1(state_root) == 0
++    [orphan] = _offline_ledger_unresolved_v1(state_root)
++    assert orphan["state"] == STATE_CLAIMED
+     rc_restart = _run_crash_worker_subprocess(
+         state_root,
+         OfflineE2eCrashPoint.NONE,
+@@ -779,8 +842,12 @@ def test_gap_05_crash_before_durable_consume_atomic_restart_single_post(tmp_path
+             APPLY_DURABLE_ATOMIC_ENV_VAR: "true",
+         },
+     )
+-    assert rc_restart == 0
+-    witness_count = json.loads(
+-        default_fake_post_witness_path_v1(state_root).read_text(encoding="utf-8")
+-    )["post_attempt_count"]
+-    assert witness_count == 1
++    assert rc_restart == 1
++    assert load_offline_e2e_worker_result_v1(state_root=state_root) == {
++        "error": "GlobalVenueEffectReplayDeniedError",
++        "status": "FAIL",
++    }
++    assert _fake_post_count_v1(state_root) == 0
++    assert [c["claim_id"] for c in _offline_ledger_unresolved_v1(state_root)] == [
++        orphan["claim_id"]
++    ]

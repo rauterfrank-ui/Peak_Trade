@@ -1,0 +1,30 @@
+{
+  "binding_epoch": "2026-10-12T18:08:43Z",
+  "cap24_reselection_performed": false,
+  "capture_timestamp": "2026-10-12T18:13:48.306182Z",
+  "continuous_run_id": "007a2a8e62fede2a",
+  "entry_confirmation_and_sidestate_carrier": {
+    "present": false,
+    "reason": "MISSING_BY_DESIGN_AFTER_ROTATION"
+  },
+  "expected_cursor_floor": 0.0,
+  "last_accepted_c1_venue_event_time_unix": null,
+  "owner": "full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1",
+  "ranking_integrity_digest": "24d7b241cf00fb94f39906af47e02f7dcb4d70144c08ce9de64cea83bac8243f",
+  "ranking_snapshot_id": "pfr_8da02cb6a65aac71aab7a115",
+  "repository_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+  "rotation_reconciliation": {
+    "action": "NO_PERSISTED_CURSOR",
+    "archived_cursor_path": null,
+    "current_native_instrument": "STRK-USDT-SWAP",
+    "previous_native_instrument": "",
+    "rotation_performed": false,
+    "same_instrument_continuation": false
+  },
+  "run_id": "007a2a8e62fede2a",
+  "schema_version": "continuous_run_entry_state_snapshot.v1",
+  "selected_canonical_instrument": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+  "selected_native_instrument": "STRK-USDT-SWAP",
+  "selection_id": "ssf_d42ffd395609b0ef5c97c880",
+  "universe_snapshot_id": "gfu_39ae623c2cab1ba7"
+}

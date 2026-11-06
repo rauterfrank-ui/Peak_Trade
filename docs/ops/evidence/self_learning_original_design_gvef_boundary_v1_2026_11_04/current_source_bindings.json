@@ -1,0 +1,65 @@
+{
+  "files": [
+    {
+      "path": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+      "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+      "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427"
+    },
+    {
+      "path": "tests/evaluation/golden_vectors/evaluator_fixtures_v1.py",
+      "sha256": "0232ef95f1a16a146b72140d513f9fea9ce24bce80f7c866f4d7aae0698ef474"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "sha256": "1507f008b47df920860b9c380d055cfac4ffe30c232429276568d9a9f5fdef5c"
+    },
+    {
+      "path": "src/experiments/canonical_research_result_to_meta_input_v1.py",
+      "sha256": "26e183dbb85a23a9e93077c828a4913240df4cb9ce50693082bcfc9ed13da67b"
+    },
+    {
+      "path": "docs/ops/specs/CANONICAL_AUTOMATED_OFFLINE_RESEARCH_LOOP_V1.md",
+      "sha256": "213bf48fe6381660ee81f21403fc60009042b041eeb2a4e66918b582ae85001c"
+    },
+    {
+      "path": "docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452"
+    },
+    {
+      "path": "docs/ops/specs/OPTIMIZATION_TO_SELF_LEARNING_RETURN_LOOP_NORMATIVE_V1.md",
+      "sha256": "24bb0e7f562b336eb904f7023ce343008435621c893e1478a45e105723242623"
+    },
+    {
+      "path": "docs/ops/specs/PEAK_TRADE_T016_LEARNING_BLUEPRINT_FAMILY_ABSORPTION_AND_PROVENANCE_V1.md",
+      "sha256": "c675be539d8012e01b9915b03870ff71336d7a4147d8f9cc10907ef187bf4c39"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "sha256": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py",
+      "sha256": "46df89bb6a8e704d9524aeb8a90b514b043bb4134e6e894650e4c7bb65314652"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py",
+      "sha256": "43a0ea328cfc148f73714bee766fcc12787caa7aa4ccc2d29b4f7300e383ad9a"
+    },
+    {
+      "path": "docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md",
+      "sha256": "311f47a91297b34a6394b4a39d999791ab65a531718cb2ebbb247ccae094b9a0"
+    },
+    {
+      "path": "config/governance/v32_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1_decision_v1.json",
+      "sha256": "79d630cc05f650200a669d20797cfc217133027f88cb7d5a44deac1c76a64074"
+    }
+  ],
+  "source_commit": "e938ddb3f5c3d1ecf797f2c27a8ceba5160097e2"
+}

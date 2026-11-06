@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from decimal import Decimal
 from typing import Mapping, Sequence
 
 from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
@@ -11,7 +12,12 @@ from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
     QUALITY_CURRENT,
     QUALITY_RECONCILIATION_REQUIRED,
 )
-from src.ops.okx_eea_private_account_state_runtime_v1.rest_baseline_v1 import RestBaselineSnapshotV1
+from src.ops.okx_eea_private_account_state_runtime_v1.rest_baseline_v1 import (
+    RestBaselineSnapshotV1,
+    _map_order_state,
+    _number,
+    PrivateRestBaselineError,
+)
 from src.ops.okx_eea_private_account_state_runtime_v1.state_contracts_v1 import (
     OrderSnapshotV1,
     PositionStateV1,
@@ -37,14 +43,20 @@ def compare_rest_ws_positions_v1(
     rest_positions: Sequence[PositionStateV1],
     ws_positions: Sequence[Mapping[str, str]],
 ) -> bool:
-    rest_map = {p.inst_id: p.pos for p in rest_positions}
-    for row in ws_positions:
-        inst = str(row.get("instId") or "")
-        if not inst:
-            continue
-        ws_pos = str(row.get("pos") or "0")
-        if inst in rest_map and rest_map[inst] != ws_pos:
-            return False
+    rest_map = {}
+    try:
+        for position in rest_positions:
+            key = (position.inst_id, position.pos_side or "net")
+            if key in rest_map:
+                return False
+            rest_map[key] = Decimal(_number(position.pos, "POSITION_QUANTITY"))
+        for row in ws_positions:
+            key = (str(row.get("instId") or ""), row.get("posSide") or "net")
+            quantity = Decimal(_number(row.get("pos"), "POSITION_QUANTITY"))
+            if key not in rest_map or rest_map[key] != quantity:
+                return False
+    except (PrivateRestBaselineError, AttributeError, TypeError):
+        return False
     return True
 
 
@@ -52,10 +64,23 @@ def compare_rest_ws_orders_v1(
     rest_orders: Sequence[OrderSnapshotV1],
     ws_orders: Sequence[Mapping[str, str]],
 ) -> bool:
-    rest_map = {(o.ord_id or "", o.cl_ord_id or ""): o.state for o in rest_orders}
+    rest_map = {}
+    for order in rest_orders:
+        key = (order.inst_id, order.ord_id or "", order.cl_ord_id or "")
+        if not key[0] or not (key[1] or key[2]):
+            return False
+        if key in rest_map and rest_map[key] != order.state:
+            return False
+        rest_map[key] = order.state
     for row in ws_orders:
-        key = (str(row.get("ordId") or ""), str(row.get("clOrdId") or ""))
-        if key in rest_map and rest_map[key] != str(row.get("state") or ""):
+        if not isinstance(row, Mapping):
+            return False
+        key = (
+            str(row.get("instId") or ""),
+            str(row.get("ordId") or ""),
+            str(row.get("clOrdId") or ""),
+        )
+        if key not in rest_map or rest_map[key] != _map_order_state(str(row.get("state") or "")):
             return False
     return True
 
@@ -72,6 +97,11 @@ def reconcile_rest_baseline_v1(
     if restored_from_durable:
         notes.append("RESTORED_STATE_NOT_TRUSTED_UNTIL_BASELINE")
     disagreement = False
+    if not compare_rest_ws_positions_v1(
+        rest_baseline.positions, []
+    ) or not compare_rest_ws_orders_v1(rest_baseline.orders, []):
+        disagreement = True
+        notes.append("REST_BASELINE_IDENTITY_AMBIGUOUS")
     if ws_positions is not None and not compare_rest_ws_positions_v1(
         rest_baseline.positions, ws_positions
     ):

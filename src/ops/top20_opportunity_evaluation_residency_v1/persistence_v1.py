@@ -13,7 +13,10 @@ from src.ops.top20_opportunity_evaluation_residency_v1.constants_v1 import (
     EVENTS_FILENAME,
     MANIFEST_FILENAME,
     METRICS_FILENAME,
+    NON_TERMINAL_STATES,
+    SCHEMA_VERSION,
     STATE_FILENAME,
+    TERMINAL_STATES,
 )
 from src.ops.top20_opportunity_evaluation_residency_v1.models_v1 import (
     ResidencyMetricsV1,
@@ -75,7 +78,14 @@ def load_store_v1(state_root: Path) -> ResidencyStoreSnapshotV1:
     if not path.is_file():
         return ResidencyStoreSnapshotV1.empty()
     payload = json.loads(path.read_text(encoding="utf-8"))
-    records = tuple(ResidencyRecordV1.from_dict(row) for row in (payload.get("records") or ()))
+    if payload.get("schema_version") != SCHEMA_VERSION:
+        raise ResidencyPersistenceError("UNSUPPORTED_RESIDENCY_SCHEMA")
+    try:
+        records = tuple(ResidencyRecordV1.from_dict(row) for row in (payload.get("records") or ()))
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ResidencyPersistenceError("INVALID_RESIDENCY_RECORD") from exc
+    if any(row.state not in NON_TERMINAL_STATES | TERMINAL_STATES for row in records):
+        raise ResidencyPersistenceError("UNSUPPORTED_RESIDENCY_STATE")
     return ResidencyStoreSnapshotV1(
         schema_version=str(payload.get("schema_version") or ""),
         next_first_admission_sequence=int(payload.get("next_first_admission_sequence") or 1),
@@ -88,7 +98,10 @@ def load_metrics_v1(state_root: Path) -> ResidencyMetricsV1:
     path = state_root / METRICS_FILENAME
     if not path.is_file():
         return ResidencyMetricsV1()
-    return ResidencyMetricsV1.from_dict(json.loads(path.read_text(encoding="utf-8")))
+    try:
+        return ResidencyMetricsV1.from_dict(json.loads(path.read_text(encoding="utf-8")))
+    except (TypeError, ValueError) as exc:
+        raise ResidencyPersistenceError("INVALID_RESIDENCY_METRICS") from exc
 
 
 def persist_bundle_v1(

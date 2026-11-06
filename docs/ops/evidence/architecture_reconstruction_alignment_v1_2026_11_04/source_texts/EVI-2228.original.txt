@@ -1,0 +1,232 @@
+# Relevanzfilter und fokussierte Architektur
+
+Frank hat am 01.11.2026 den vorgeschlagenen Relevanzfilter bestätigt. Die Hauptansicht zeigt relevante Untersuchungsbereiche; historische Quellmodelle werden nicht automatisch als Zielstruktur übernommen. Die heutige Architektur bleibt selbst Prüfgegenstand.
+
+## Arbeitsregel
+
+Je konkreter Konstruktion: fachlichen Zweck bestimmen, Owner-Entscheidungen und belegte Ablösungen suchen, verbleibende Abhängigkeiten und Semantik knapp prüfen, Einordnung und offene Fragen festhalten. Ein Dokument kann relevante und überholte Teile enthalten.
+
+- **Weiterhin relevant**: Fachlicher Zweck gehört zum Untersuchungsziel; konkrete Struktur, Implementierung und Wirkung separat prüfen.
+- **Historischer Kern, spätere Lösung**: Alte Konstruktion nicht als Ziel übernehmen; gewünschten Zweck und Ersatz mit Herkunft belegen.
+- **Bewusst verworfen**: Belegte konkrete Konstruktion nicht als Wiederherstellungsziel führen; nicht automatisch auch den fachlichen Zweck verwerfen.
+- **Relevanz ungeklärt**: Kein automatischer Zielbaustein; gezielt prüfen oder als historische Referenz zurückstellen.
+
+L0–L6 bleibt auf Owner-Hinweis vorerst ausschließlich historische Referenz. Das ist eine Entscheidung zur Darstellung und Untersuchungspriorität, kein bewiesener globaler Consumer-Ausschluss.
+
+## Konkrete Einordnungen
+
+### Altes AI-/Autonomiemodell L0–L6
+
+Einordnung: `UNCLEAR`; Sichtbarkeit: `HISTORICAL_REFERENCE_ONLY`.
+
+Frank stuft es als weit zurückliegend und vermutlich nicht mehr relevant ein; explizites GO für vorläufigen Ausschluss aus Hauptübersicht.
+
+Erhaltener Zweck: Kein automatischer Transfer der alten Layer, Modellzuordnungen oder Scopes.
+
+Begrenzter Zusammenhangscheck: SC08 definiert L0–L6; RF08 beschreibt die spätere Universums-/Querschnittssicht ohne dieses Modell als globale Hierarchie. Das ist eine begrenzte Dokumentprüfung, kein Beweis völliger Wirkungslosigkeit.
+
+Offen: Kein systemweiter Import-/Consumer-Ausschluss durchgeführt; nur bei konkreter Verbindung wieder priorisieren.
+
+Quellen: `Owner 2026-11-01`, `SC07`, `SC08`, `RF08`.
+
+### Bewusst entferntes altes Dashboard
+
+Einordnung: `DISCARDED`; Sichtbarkeit: `HISTORICAL_REFERENCE_ONLY`.
+
+Franks ausdrückliche Erklärung im bisherigen Gespräch: UI bewusst gelöscht; passende Funktionen und Anschlüsse sollen erhalten bleiben.
+
+Erhaltener Zweck: Informationsprodukte und spätere Anschlüsse können relevant bleiben; das alte UI ist kein Wiederherstellungsziel.
+
+Begrenzter Zusammenhangscheck: Map presentation_dashboard und RF01 führen weiterhin Präsentations-/Readmodel-Aufgaben. UI-Entfernung darf nicht als Verwerfung dieser Zwecke gelten.
+
+Offen: Vollständiger Nachweis aller erhaltenen Anschlüsse bleibt später zu prüfen.
+
+Quellen: `Owner-Kontext`, `MAP:presentation_dashboard`, `RF01:/surfaces/SURFACE:TD-PRESENTATION`.
+
+### Alter Promotion-Loop als Architekturvorlage
+
+Einordnung: `CORE_LATER_SOLUTION`; Sichtbarkeit: `HISTORICAL_REFERENCE_ONLY`.
+
+RF03 klassifiziert src/governance/promotion_loop/engine.py als HISTORICAL_DOMAIN_SCOPED / LEGACY_PROMOTION_LOOP / NOT_M10_CANONICAL.
+
+Erhaltener Zweck: Vorschlag, Zulässigkeitsprüfung, nachvollziehbare Freigabe und gesonderte Materialisierung bleiben getrennte Aufgaben.
+
+Begrenzter Zusammenhangscheck: RF03 nennt M10-Ingress, externe Autorisierung und M10-Grenze sowie eine separate Nachfolger-Materialisierung. Das belegt die dokumentierte Ablösung, nicht alle Laufzeitabhängigkeiten.
+
+Offen: Keine pauschale Einstufung aller Dateien unter promotion_loop als veraltet: promotion_economic_gate_v1 wird dort ausdrücklich CURRENT geführt.
+
+Quellen: `SC05`, `RF03:/entries`.
+
+### Historische Forschungs-Executors: erhalten, nicht aktivieren
+
+Einordnung: `RELEVANT`; Sichtbarkeit: `QUALIFIED_RESEARCH_CANDIDATE`.
+
+RF05 nennt automated offline research loop, regime evaluation und portfolio learning ausdrücklich preserve not activate.
+
+Erhaltener Zweck: Forschungsnutzen prüfen; keine automatische Aktivierung oder Zugehörigkeit zum Optimierungsuniversum.
+
+Begrenzter Zusammenhangscheck: RF04 schließt einige dieser Executors aus der damaligen Foundation-Registry aus; RF05 bewahrt sie trotzdem. Ausschluss aus diesem Slice ist kein fachliches Verwerfen.
+
+Offen: Spätere Rolle und konkrete originale Konstruktion sind noch abzugleichen.
+
+Quellen: `RF04:3`, `RF05:Reuse`.
+
+### Foundation/M1/M4-Nichtziele als globale Architekturgrenze
+
+Einordnung: `CORE_LATER_SOLUTION`; Sichtbarkeit: `HISTORICAL_REFERENCE_ONLY`.
+
+RF04/RF06 beschreiben frühe begrenzte Slices; RF02 ordnet den alten Konflikt ausdrücklich als M4-Nichtziele gegenüber Phase-9–13-Integration ein.
+
+Erhaltener Zweck: Typisierte Inputs, Identität und kontrollierte Forschung erhalten; spätere MI-/Meta-/Memory-Erweiterungen gesondert untersuchen.
+
+Begrenzter Zusammenhangscheck: RF02 nennt MI→Learning, MI→Optimierung, Optimierung→Meta, Meta→Optimierung, Multi-Cycle-Replay und Failure Memory. Daher alte Stop-Grenzen nicht als endgültiges Gesamtsystem übernehmen.
+
+Offen: Dokumentierte spätere Verbindungen sind in diesem Pass nicht am Code/Laufzeit verifiziert.
+
+Quellen: `RF04`, `RF05`, `RF06`, `RF02:/d01_topology_census`, `RF02:/d02_inter_loop_edges`.
+
+### Fünf benannte Owner-Universen als derzeitiger Suchanker
+
+Einordnung: `RELEVANT`; Sichtbarkeit: `PRIMARY_ARCHITECTURE`.
+
+RF08 hält Master V2, Execution, Self-Learning, Optimization und Market Intelligence als verschiedene Architekturuniversen fest; Franks aktueller Auftrag umfasst deren ursprünglichen Aufbau.
+
+Erhaltener Zweck: Fachliche Eigenständigkeit und innere Konstruktion untersuchen.
+
+Begrenzter Zusammenhangscheck: RF08 trennt Meta-Learning, Research Corpus, Portfolio-Budget, Persistenz, N5 und Full-Core davon. Deshalb sind fünf Universen keine vollständige Bereichszahl.
+
+Offen: Nicht abschließende Originalzählung; technische Grenzen und vollständige innere Ebenen bleiben offen.
+
+Quellen: `RF08`.
+
+### GGE / Scope-Geometrie im Master-V2-Kontext
+
+Einordnung: `RELEVANT`; Sichtbarkeit: `PRIMARY_ARCHITECTURE`.
+
+RF01 führt GGE ausdrücklich als NON_UNIVERSE_MV2_GEOMETRY_SUBSYSTEM mit Übergabe market_context→gge→scope→mv2_double_play.
+
+Erhaltener Zweck: Geometrie, Scope-Initialisierung und Layer-C-Distanzeingaben als zusammenhängende Struktur prüfen.
+
+Begrenzter Zusammenhangscheck: Struktureller Beleg für Zugehörigkeit auf diesem Map-Stand; keine eigene Universe-Zahl und keine Formelprüfung.
+
+Offen: Ursprünglicher Entwurf, historische Varianten und fachliche Gleichwertigkeit noch offen.
+
+Quellen: `RF01:/surfaces/SURFACE:TD-MV2-GGE-SCOPE-GEOMETRY`.
+
+### Alte Funktions-/Modulübersichten
+
+Einordnung: `UNCLEAR`; Sichtbarkeit: `SOURCE_DISCOVERY_ONLY`.
+
+Die zuvor erschlossenen frühen Übersichten enthalten keine pauschale heutige Relevanzratifikation.
+
+Erhaltener Zweck: Einzelne benötigte Aufgaben können sich darin finden; keine automatische Übernahme aller Layer, Bibliotheken oder Module.
+
+Begrenzter Zusammenhangscheck: Abgleich mit späteren Rollen möglich; Namensähnlichkeit allein beweist weder Fortbestand noch Ersatz.
+
+Offen: Relevanz je konkretem Baustein prüfen, bevor er als Teil der Hauptarchitektur erscheint.
+
+Quellen: `SC01`, `SC02`, `SC03`, `SC04`, `SC11`.
+
+### Market Intelligence: Owner-Universum und Offline-Stack auseinanderhalten
+
+Einordnung: `RELEVANT`; Sichtbarkeit: `PRIMARY_ARCHITECTURE`.
+
+RF08 klassifiziert MI als unabhängiges Universum, technische Grenze NOT_PROVEN; RF07 beschreibt nur den D03-Offline-Stack.
+
+Erhaltener Zweck: Prognose, Horizonte, Kalibrierung, Evidenzspeicherung und Forschungsübergaben untersuchen.
+
+Begrenzter Zusammenhangscheck: RF01s ältere MI-Nichtuniversums-Klassifikation ist laut RF08 historisch überlagert; sie bleibt Quellenkontext, keine aktuelle Schlussfolgerung.
+
+Offen: D03-Stack ist nicht als vollständige ursprüngliche MI-Architektur bewiesen.
+
+Quellen: `RF08`, `RF07`, `RF01:/surfaces/SURFACE:TD-MI-OFFLINE`.
+
+## Fortgesetzte Architekturarbeit
+
+Der Hauptanker sind die benannten Owner-Universen plus gesonderte Querschnittsaufgaben. Das ist keine vollständige Bereichszahl und kein festgeschriebenes Endsystem. Je Universum sind erste Aufgaben-/Bausteinsichten ergänzt; diese sind weder eine bewiesene ursprüngliche Ebenenfolge noch ein Laufzeitnachweis.
+
+### Master V2 / Double Play
+
+Handelsentscheidung und ihre innere Scope-/Zustandsstruktur.
+
+- **Master V2 > Double Play > Dynamic Scope** — Dokumentierte spätere Owner-Hierarchie. Quelle: `RF08:Closed owner bindings`.
+- **GGE → Scope-Initialisierung / Layer-C** — Marktkontext in Geometrie und Scope-Distanzeingaben überführen. Quelle: `RF01:SURFACE:TD-MV2-GGE-SCOPE-GEOMETRY`.
+- **Bull/Bear SideState / Bestätigung** — Zustands- und Bestätigungskonstruktion als Teil des Entscheidungskerns untersuchen. Quelle: `MAP:bull_bear_sidestate;c1_confirmation`.
+- **Survival / Suitability** — Post-confirmation-Komposition als dokumentierte Subdomain. Quelle: `MAP:survival_suitability_composition`.
+
+Offen: Ursprung, vollständige Ebenen, Übergänge und Varianten noch nicht vollständig rekonstruiert.
+
+### Selbstlernendes System
+
+Entscheidungen und spätere Folgen in nachvollziehbare Learning-Evidence überführen.
+
+- **Decision Capture / Beobachtung** — Ereignisse und Kontext aufnehmen. Quelle: `RF01:SURFACE:TD-DDO-LEARNING;RF02:learning_ddo`.
+- **Outcome-Horizont / Evaluation** — Spätere Folgen an einem definierten Horizont bewerten. Quelle: `RF02:learning_ddo;d02_loop_a_productive_learning_outcome`.
+- **Outcome Ingest / Learning State** — Auswertung in Lernzustandsnachweise überführen. Quelle: `RF02:learning_ddo`.
+- **Learning Evidence Export** — Lernnachweise als typisierte Übergabe für Forschung exportieren. Quelle: `RF06:2-4;RF02:d02_learning_to_optimization`.
+
+Offen: Dies ist eine dokumentierte Umsetzungssicht; der umfangreichere historische Blueprint bleibt getrennte, noch abzugleichende Absicht. Separate ursprüngliche Master-Runbook-Fassung weiterhin nicht gefunden.
+
+### Optimierungsuniversum
+
+Forschungsexperimente, Kandidaten und Qualitätsnachweise geordnet erzeugen.
+
+- **Identität / Capability Registry / Input-Grenze** — Forschungsidentität und zugelassene Nachweise beschreiben. Quelle: `RF04:2-3`.
+- **Experiment → Search → Kandidat** — Isolierte Forschungskandidaten erzeugen. Quelle: `RF05:Offline chain`.
+- **Challenger / Evaluation / OOS / Robustness** — Kandidaten durch Evidenz vergleichen. Quelle: `RF05:Offline chain`.
+- **MI-Input / Meta-Return / Failure Memory** — Später dokumentierte Ergänzungen über den frühen Foundation-Slice hinaus. Quelle: `RF02:d02_mi_to_optimization;d02_optimization_to_meta_learning;d02_failure_memory`.
+- **Proposal-Übergabe** — Forschungsergebnis von Promotion und Apply trennen. Quelle: `RF02:governance_promotion;RF03`.
+
+Offen: Relevanz der einzelnen wiederverwendbaren alten Executors offen; nicht aktivieren bedeutet nicht verwerfen. Keine vollständige Ursprungshierarchie belegt.
+
+### Market Intelligence
+
+Marktverhalten als Prognose-/Kalibrierungsevidence für weitere Forschung beschreiben.
+
+- **ForecastEvidence / Horizonte** — Prognosen mit explizitem Horizontbezug führen. Quelle: `RF07`.
+- **Kalibrierung / Evidence-Speicher** — Prognosen auswertbar und nachvollziehbar machen. Quelle: `RF07;RF02:d02_loop_b_market_intelligence_offline`.
+- **Offline-Orchestrierung** — Die dokumentierten Evidenzschritte zusammenführen. Quelle: `RF07`.
+- **Research-Projektion / Learning- und Optimierungsübergaben** — Evidence für verschiedene Consumer getrennt übergeben. Quelle: `RF02:d02_mi_to_learning;d02_mi_to_optimization`.
+
+Offen: Technische Universumsgrenze und gesamte ursprüngliche innere Architektur offen; dieser D03-Ausschnitt ist nicht das ganze Universum.
+
+### Execution
+
+Intent, kontrollierte Ausführung und nachgelagerte Zustandsabstimmung unterscheiden.
+
+- **Order Intent / External-Effect-Grenze** — Intent ist nicht automatisch Ausführungsrecht. Quelle: `MAP:order_intent;execution_external_effect;RF01:INTENT_TO_EXECUTION_BOUNDARY`.
+- **Host / Pipeline / Lifecycle** — Konkrete Ausführungsvarianten als separate Implementierungssichten prüfen. Quelle: `Bestehendes Execution-Dossier;MAP:ssf_cap72_host_live_execution_port_join_v1`.
+- **Accounting / Reconciliation** — Resultierenden Zustand und Abstimmung getrennt führen. Quelle: `MAP:accounting_runtime_binding;reconciliation_runtime_binding`.
+
+Offen: Vollständige Originalarchitektur und Zugehörigkeit der historischen Pipeline-Varianten noch offen; keine Laufzeitfreigabe.
+
+## Getrennte Querschnittsaufgaben
+
+- **Vor Master V2: Eligibility, Ranking, Selection, Binding** — Instrumentkontext wählen und binden; nicht als vier zusätzliche Originaluniversen zählen. Quelle: `RF08; MAP:universe_cap21→runtime_binding_cap24`.
+- **Public Facts / Private State / Konvergenz** — Markt- und Kontozustand bereitstellen und an Consumer übergeben. Quelle: `RF02:census_domains;RF01:TD-PUBLIC-MD/TD-PRIVATE-STATE/TD-MD-CONVERGENCE`.
+- **Kapital / Sizing / Treasury / Portfolio-Budget** — Mengenbestimmung, Eigenkapitalquelle, Lifecycle und Reservierung unterscheiden. Quelle: `MAP:capital_risk_sizing;treasury_29p;portfolio_reservation;RF08`.
+- **Safety / Kill / Notfallgrenzen** — Geschichtete Schutzaufgaben ohne erfundenen gemeinsamen Umbrella-Owner führen. Quelle: `RF08;MAP:safety`.
+- **Meta-Learning** — Schnittstelle zwischen Lernen und Optimierung; keine eigene zusätzliche Universe-Zahl. Quelle: `RF08;RF02:meta_learning`.
+- **Governance / M10 / gesonderte Materialisierung** — Proposal, Freigabe und Änderung der Runtime auseinanderhalten. Quelle: `RF03;RF02:authority_invariants`.
+- **Persistenz / Evidence / Research Corpus** — Zustandsinvarianten und Nachweise erhalten; Corpus-Zugehörigkeit bleibt offen. Quelle: `RF08`.
+- **N5 / Full-Core / Hosts** — Ziel-Stackarchitektur, technische Orchestrierung und fachliche Entscheidung trennen. Quelle: `RF08;RF01:TD-N5-ORCHESTRATION/TD-FULL-CORE`.
+- **Readmodels / Beobachtbarkeit** — Informationsprodukte und Anschlüsse erhalten; altes Dashboard nicht wiederherstellen. Quelle: `Owner-Kontext;MAP:presentation_dashboard`.
+
+## Grenzen und Herkunft
+
+Die Quellen RF01–RF08 sind unveränderte Git-Snapshots am lokal verfügbaren Vergleichspin 5d1c838c15369507c5247834db4dd0df25592169. RF01 und RF02 sind selbst Klassifikations-/Topologieartefakte. Deren PROVEN-, IMPLEMENTED- und CURRENT-Labels werden nicht als neu geprüfte Tatsachen übernommen. RF04–RF06 dokumentieren begrenzte Slices; ihre Nichtziele sind keine unveränderlichen Systemgrenzen. RF08s spätere Owner-Klassifikation wird als aktuelle Navigationshilfe verwendet, nicht als endgültiger fachlicher Zielbeweis.
+
+Ältere Forschungs-, Modul- und AI-Übersichten bleiben Quellenmaterial. Ihre Relevanz wird bausteinweise geprüft. Ungeklärt heißt weder verworfen noch automatisch Bestandteil der Hauptarchitektur.
+
+Keine Produktänderungen, Aktivierungen, neuen Recovery-Scans oder Ledger-Runs. Ursprüngliche Vollständigkeit, technische Integration und Laufzeitwirkung bleiben offen.
+
+## Quellen
+
+- **RF01**: `config/governance/current_universe_landscape_snapshot_v1/source_v1.json`. [Git-Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-relevance/RF01-source_v1.json>).
+- **RF02**: `config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json`. [Git-Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-relevance/RF02-unified_blueprint_d01_d02_topology_adjudication_v1.json>).
+- **RF03**: `config/governance/m10_promotion_topology_adjudication_v1.json`. [Git-Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-relevance/RF03-m10_promotion_topology_adjudication_v1.json>).
+- **RF04**: `docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md`. [Git-Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-relevance/RF04-META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md>).
+- **RF05**: `docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md`. [Git-Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-relevance/RF05-OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md>).
+- **RF06**: `docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md`. [Git-Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-relevance/RF06-META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md>).
+- **RF07**: `docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md`. [Git-Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-relevance/RF07-MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md>).
+- **RF08**: `docs/governance/LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md`. [Git-Snapshot](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-relevance/RF08-LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md>).

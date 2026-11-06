@@ -1,0 +1,14 @@
+[
+  {
+    "case": "future_fraction",
+    "evidence_time": "2026-08-18T14:00:00.100Z",
+    "analysis_time": "2026-08-18T14:00:00Z",
+    "before_result": "ACCEPTED"
+  },
+  {
+    "case": "future_nanosecond",
+    "evidence_time": "2026-08-18T14:00:00.000000002Z",
+    "analysis_time": "2026-08-18T14:00:00.000000001Z",
+    "before_result": "MetaLearningValidationError:evidence_created_at lookahead is forbidden"
+  }
+]

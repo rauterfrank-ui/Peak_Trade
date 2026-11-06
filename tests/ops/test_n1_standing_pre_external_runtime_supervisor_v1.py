@@ -73,7 +73,7 @@ from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 i
     bootstrap_s8_lane_via_s7_compose_v1,
     build_s8_occupied_lane_pairs_v1,
 )
-from tests.ops.test_okx_eea_private_account_state_runtime_v1 import _fixture_rest
+from tests.ops._host_private_rest_fixture_v1 import host_private_rest_fixture_v1 as _fixture_rest
 from tests.ops._wp02_universe_fixture_v1 import (
     wp02_eth_only_mark_price_payload_v1,
     wp02_eth_only_universe_source_payload_v1,
@@ -92,7 +92,7 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 
 REPO = Path(__file__).resolve().parents[2]
 # Owner-GO decision pins this baseline; descendant SHAs fail immutable-surface drift check.
-OWNER_GO_BASELINE_SHA = "049fc18cdf8061707185b075ec04dfb61a116c0c"
+OWNER_GO_BASELINE_SHA = "8da476238040545d2c1e5c1bf2e950d4388dba68"
 BASE_TS = 1_757_631_540_000
 
 
@@ -156,9 +156,9 @@ def _bootstrap_lane(tmp_path: Path) -> tuple[Any, Any, Any, str]:
     lane_state = tmp_path / "lane_state"
     pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_state, bound=bound)
     g17 = _lane_g17(pairs)
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
-    obs_boot = _observation_from_closes(closes=path[:14], event_ts=t0 - 60.0)
+    obs_boot = _observation_from_closes(closes=path[:104], event_ts=t0 - 60.0)
     bootstrap_s8_lane_via_s7_compose_v1(
         composed_pairs=pairs,
         origin_main_sha=OWNER_GO_BASELINE_SHA,
@@ -172,12 +172,16 @@ def _bootstrap_lane(tmp_path: Path) -> tuple[Any, Any, Any, str]:
 
 
 def _supervisor_config(tmp_path: Path) -> StandingSupervisorConfigV1:
+    from tests.ops._host_private_rest_fixture_v1 import initialize_synthetic_host_budget_v1
+
+    initialize_synthetic_host_budget_v1(tmp_path / "private_store", _bound_lane_1())
     return StandingSupervisorConfigV1(
         public_store_root=tmp_path / "public_store",
         private_store_root=tmp_path / "private_store",
         lane_state_root=tmp_path / "lane_state",
         evidence_root=tmp_path / "evidence",
         lock_root=tmp_path / "lock",
+        expected_account_identity="host-offline-account",
         wp02_universe_source_payload=wp02_eth_only_universe_source_payload_v1(),
         wp02_universe_mark_price_payload=wp02_eth_only_mark_price_payload_v1(),
     )
@@ -195,7 +199,7 @@ def test_t_plus_01_supervisor_single_cycle(tmp_path: Path) -> None:
     _seed_public_marks(tmp_path / "public_store")
     bound, g17, pairs, native_id = _bootstrap_lane(tmp_path)
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
@@ -211,7 +215,7 @@ def test_t_plus_01_supervisor_single_cycle(tmp_path: Path) -> None:
     )
     clock = _FakeClock()
     obs = ScriptedContinuousObservationSourceV1(
-        [_observation_from_closes(closes=path[:16], event_ts=t0)]
+        [_observation_from_closes(closes=path[:106], event_ts=t0)]
     )
     result = run_n1_standing_pre_external_supervisor_v1(
         config=_supervisor_config(tmp_path),
@@ -244,7 +248,7 @@ def test_t_plus_02_two_distinct_c1_epochs(tmp_path: Path) -> None:
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     t1 = t0 + 60.0
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     auth = _continuous_auth(native_id=native_id, max_cycles=2)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
         continuous_owner_go=auth.continuous_owner_go,
@@ -260,9 +264,9 @@ def test_t_plus_02_two_distinct_c1_epochs(tmp_path: Path) -> None:
     clock = _FakeClock()
     obs = ScriptedContinuousObservationSourceV1(
         [
-            _observation_from_closes(closes=path[:16], event_ts=t0),
+            _observation_from_closes(closes=path[:106], event_ts=t0),
             None,
-            _observation_from_closes(closes=path[:18], event_ts=t1),
+            _observation_from_closes(closes=path[:108], event_ts=t1),
         ]
     )
     result = run_n1_standing_pre_external_supervisor_v1(
@@ -301,10 +305,10 @@ def test_t_plus_03_terminal_dispositions_safe(tmp_path: Path) -> None:
         max_wait_for_next_c1_seconds=auth.max_wait_for_next_c1_seconds,
         stall_seconds=auth.stall_seconds,
     )
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     obs = ScriptedContinuousObservationSourceV1(
-        [_observation_from_closes(closes=path[:16], event_ts=t0)]
+        [_observation_from_closes(closes=path[:106], event_ts=t0)]
     )
     result = run_n1_standing_pre_external_supervisor_v1(
         config=_supervisor_config(tmp_path),
@@ -332,7 +336,7 @@ def test_t_plus_04_post_flags_false(tmp_path: Path) -> None:
     _seed_public_marks(tmp_path / "public_store")
     bound, g17, pairs, native_id = _bootstrap_lane(tmp_path)
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
@@ -352,7 +356,7 @@ def test_t_plus_04_post_flags_false(tmp_path: Path) -> None:
         bound=bound,
         authorization=auth,
         observation_source=ScriptedContinuousObservationSourceV1(
-            [_observation_from_closes(closes=path[:16], event_ts=t0)]
+            [_observation_from_closes(closes=path[:106], event_ts=t0)]
         ),
         g17_producers=g17,
         f1_m9_cycle_evaluator=_f1_m9_evaluator_factory(tmp_path),
@@ -371,7 +375,7 @@ def test_t_plus_06_recovery_before_continuous_on_restart_flag(tmp_path: Path) ->
     bound, g17, pairs, native_id = _bootstrap_lane(tmp_path)
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     cfg = replace(_supervisor_config(tmp_path), simulate_restart_before_continuous=True)
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
@@ -391,7 +395,7 @@ def test_t_plus_06_recovery_before_continuous_on_restart_flag(tmp_path: Path) ->
         bound=bound,
         authorization=auth,
         observation_source=ScriptedContinuousObservationSourceV1(
-            [_observation_from_closes(closes=path[:16], event_ts=t0)]
+            [_observation_from_closes(closes=path[:106], event_ts=t0)]
         ),
         g17_producers=g17,
         f1_m9_cycle_evaluator=_f1_m9_evaluator_factory(tmp_path),
@@ -431,7 +435,7 @@ def test_t_minus_03_stale_equal_c1_no_second_cycle(tmp_path: Path) -> None:
     bound, g17, pairs, native_id = _bootstrap_lane(tmp_path)
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     auth = _continuous_auth(native_id=native_id, max_cycles=2)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
         continuous_owner_go=auth.continuous_owner_go,
@@ -445,7 +449,7 @@ def test_t_minus_03_stale_equal_c1_no_second_cycle(tmp_path: Path) -> None:
         stall_seconds=auth.stall_seconds,
     )
     clock = _FakeClock()
-    dup = _observation_from_closes(closes=path[:16], event_ts=t0)
+    dup = _observation_from_closes(closes=path[:106], event_ts=t0)
     obs = ScriptedContinuousObservationSourceV1([dup, None, dup])
     result = run_n1_standing_pre_external_supervisor_v1(
         config=_supervisor_config(tmp_path),
@@ -471,7 +475,7 @@ def test_t_minus_04_hard_cap_max_cycles(tmp_path: Path) -> None:
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     t1 = t0 + 60.0
     t2 = t1 + 60.0
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
         continuous_owner_go=auth.continuous_owner_go,
@@ -487,11 +491,11 @@ def test_t_minus_04_hard_cap_max_cycles(tmp_path: Path) -> None:
     clock = _FakeClock()
     obs = ScriptedContinuousObservationSourceV1(
         [
-            _observation_from_closes(closes=path[:16], event_ts=t0),
+            _observation_from_closes(closes=path[:106], event_ts=t0),
             None,
-            _observation_from_closes(closes=path[:18], event_ts=t1),
+            _observation_from_closes(closes=path[:108], event_ts=t1),
             None,
-            _observation_from_closes(closes=path[:20], event_ts=t2),
+            _observation_from_closes(closes=path[:110], event_ts=t2),
         ]
     )
     result = run_n1_standing_pre_external_supervisor_v1(
@@ -518,7 +522,7 @@ def test_t_minus_02_kill_switch_file_present_run_stays_no_post(tmp_path: Path) -
     bound, g17, pairs, native_id = _bootstrap_lane(tmp_path)
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     cfg = replace(_supervisor_config(tmp_path), kill_switch_state_path=str(ks))
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
@@ -538,7 +542,7 @@ def test_t_minus_02_kill_switch_file_present_run_stays_no_post(tmp_path: Path) -
         bound=bound,
         authorization=auth,
         observation_source=ScriptedContinuousObservationSourceV1(
-            [_observation_from_closes(closes=path[:16], event_ts=t0)]
+            [_observation_from_closes(closes=path[:106], event_ts=t0)]
         ),
         g17_producers=g17,
         f1_m9_cycle_evaluator=_f1_m9_evaluator_factory(tmp_path),
@@ -553,7 +557,7 @@ def test_evidence_writer_after_successful_run(tmp_path: Path) -> None:
     _seed_public_marks(tmp_path / "public_store")
     bound, g17, pairs, native_id = _bootstrap_lane(tmp_path)
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
@@ -573,7 +577,7 @@ def test_evidence_writer_after_successful_run(tmp_path: Path) -> None:
         bound=bound,
         authorization=auth,
         observation_source=ScriptedContinuousObservationSourceV1(
-            [_observation_from_closes(closes=path[:16], event_ts=t0)]
+            [_observation_from_closes(closes=path[:106], event_ts=t0)]
         ),
         g17_producers=g17,
         f1_m9_cycle_evaluator=_f1_m9_evaluator_factory(tmp_path),
@@ -582,7 +586,7 @@ def test_evidence_writer_after_successful_run(tmp_path: Path) -> None:
         private_rest_fetch=_fixture_rest,
     )
     ev_path = write_standing_supervisor_closure_evidence_v1(
-        repo_root=REPO,
+        repo_root=tmp_path,
         tested_code_sha=OWNER_GO_BASELINE_SHA,
         baseline_sha=OWNER_GO_BASELINE_SHA,
         trace=result.trace,

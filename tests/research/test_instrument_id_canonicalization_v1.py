@@ -102,12 +102,12 @@ def test_synthetic_spot_blocked() -> None:
 
 
 @pytest.mark.parametrize("base_asset", ["BTC", "XBT", "WBTC"])
-def test_bitcoin_aliases_blocked(base_asset: str) -> None:
+def test_bitcoin_aliases_use_common_identity_validation(base_asset: str) -> None:
     result = canonicalize_instrument_id_v1(_input(base_asset=base_asset))
-    assert result.success is False
+    assert result.success is True
     assert (
         InstrumentIdCanonicalizationErrorCode.BITCOIN_DIRECTION_DISALLOWED.value
-        in result.error_codes
+        not in result.error_codes
     )
 
 

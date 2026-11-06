@@ -1,0 +1,18 @@
+{
+  "source_commit": "c5f1855206a72f68a776ceea7d2cecddb62556dc",
+  "scope": "Architecture visibility navigation supplement within existing reconstruction entry",
+  "documentation_files": [
+    "docs/ops/evidence/self_learning_reconstruction_resolution_v1_2026_11_04/README.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md"
+  ],
+  "reference_count": 275,
+  "token_policy": "PASS",
+  "reference_targets": "PASS",
+  "blueprint_bodies": "IDENTICAL",
+  "implementation": "UNCHANGED",
+  "scope_sources": "UNCHANGED",
+  "protected_ledger": "UNCHANGED",
+  "product_tests": "NOT_RERUN_DOCUMENTATION_ONLY",
+  "boundary": "Direct owner links are navigation, not proof of a scheduled complete learning cycle; previous evidence limits remain."
+}

@@ -1,0 +1,59 @@
+# Datenversorgung vor der Sperre vom 17 August
+
+Konkreter Teilweg vom 05.08.2026. Untersuchungsstand 02.11.2026.
+
+Ein historischer Rohdaten→Observation-Pack→Regime-Coverage-Teilweg ist jetzt anhand vorhandener Bytes und gespeicherter Ergebnisse nachvollzogen. Alle 299 Bars stimmen mit den Rohantworten überein; die Regime-Klassifikation blieb wegen offener Schwellen-/Lookback-Semantik auf missing.
+
+Surface-B-Kalibrierungsstrang, 05.08.2026, gemeinsam gelesen am August-Schnitt 899e154d. Keine automatische Zuordnung dieses Teilwegs zum gesamten Selbstlern- oder Optimierungsuniversum und kein Beweis ihrer Gesamtversorgung.
+
+## Vorhandene Dateien statt bloßer Schnittstellen
+
+Im bereits vorhandenen Recovery-Ordner `/Volumes/PeakDATARecovery/PeakTradeCodeRecovery01/$$$Ordner4295109101` liegen `observation_pack.json`, `materialization_proof.json` und eine Digest-Datei. Pack und Materialisierungsnachweis stimmen bytegenau mit den Dateien unter `docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_v1/` am August-Schnitt überein. Das ist ein tatsächlicher erhaltener Datenbestand, kein in diesem Durchgang neu erzeugter Fixture-Pack. [Quellenregister](sources.json).
+
+Die ursprünglichen Candle-/Mark-Rohantworten, HTTP-Metadaten und Tip-Nachweise sind ebenfalls in Git erhalten. Ihre Einführungen sind über GitHub nachgewiesen: [Rohdaten #5745](https://github.com/rauterfrank-ui/Peak_Trade/commit/037b48fb75f77dbec34468f8de189473d1849568), [Pack #5747](https://github.com/rauterfrank-ui/Peak_Trade/commit/13d9a12ed45cdf82ed93c38154a425a9fd8ca752), [Coverage-Ergebnis #5748](https://github.com/rauterfrank-ui/Peak_Trade/commit/216c6aa5c6f2a3e52fcf528f1374ca52194445d9). Alle drei Commits liegen am 05.08., also vor der Sperrentscheidung am 17.08. Die gelesenen Pfadhistorien sind auf den gepinnten Verlauf bis `899e154d…` begrenzt.
+
+## Herkunft und Zeitbezug
+
+Die HTTP-Metadaten nennen öffentliche OKX-Endpunkte für History-Candles und History-Mark-Price-Candles, Instrument `ETH-USDT-SWAP`, `bar=1m`, `limit=300`, HTTP 200 und Erfassungszeiten 05.08.2026 12:58:48–49 UTC. Die Antworten liegen als eigene Byte-Dateien vor. Ihre SHA256 und Bytelängen passen zu den Metadaten. Das belegt die erhaltenen Antworten und ihre konsistente dokumentierte Herkunft; es ist keine heute erneut ausgeführte Netzwerkabfrage. P01–P04.
+
+Die 299 verwendeten Bar-Open-Zeitpunkte reichen von 07:59 bis 12:57 UTC. Das halb offene Marktfenster endet um 12:58 UTC. Dieser Marktzeitbezug ist von der tatsächlichen dokumentierten Erfassung einige Sekunden später zu trennen. Ein zeitlich gültiger späterer Consumer müsste die Verfügbarkeit der Daten und nicht allein den historischen Bar-Zeitpunkt beachten.
+
+## Rohdaten und gespeicherte Verarbeitung unabhängig abgeglichen
+
+Die beiden Rohantworten haben jeweils 300 Zeilen, davon jeweils 299 mit Finalisierungsflag 1. Für alle 299 gespeicherten Bars wurden anhand des gemeinsamen Zeitbuckets Open, High, Low, Close und Volume gegen die Candle-Zeile und `mark_price` gegen den Close-Wert der separaten Mark-Antwort verglichen. Ergebnis: keine Abweichung. Alle gespeicherten Zeitpunkte sind eindeutig, minutenbündig und im Abstand von 60 Sekunden. [Zeilen- und Digestprüfung](source-to-pack-verification.json).
+
+250 der 299 Candle-Close-Werte unterscheiden sich vom jeweiligen Mark-Preis. Die separate Mark-Quelle ist damit im erhaltenen Datensatz auch inhaltlich erkennbar; Candle-Close wurde hier nicht pauschal als Mark-Preis eingesetzt. Die Volumenzahl ist die unveränderte Zahl aus Rohfeld 5. Eine darüber hinausgehende Umrechnung in USD-/Basisvolumen ist in dieser Übertragung nicht codiert oder von dieser Prüfung behauptet. P09/P11.
+
+Die gesamte kombinierte Raw-Source-Datei wurde nach ihrem ursprünglichen Format geprüft: `CANDLE\n` + Candle-Bytes + `\nMARK\n` + Mark-Bytes. Ihr Hash entspricht `9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57`. Der gespeicherte Observation-Pack-Digest über Bars und Provenance wurde unabhängig erneut berechnet und entspricht `268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676`. Auch der canonical-JSON-Hash des vollständigen Packs passt. Dabei bleiben die ursprünglichen JSON-Zahlenlexeme erhalten; Produktmodule wurden nicht importiert oder ausgeführt. P05–P07/P12/P13/P16.
+
+Der Materialisierungsnachweis enthält vier deklarierte Fold-Fenster für train/calibration/validation/holdout. Ihre Grenzen ordnen 75/75/75/74 Bars zu. Das belegt eine konkret vorgesehene Datenteilung; es ist kein Beweis, dass Training, Kalibrierung, Validierung oder Holdout-Auswertung anschließend durchgeführt wurden. Der Nachweis setzt `campaign_start=false`.
+
+## Der unmittelbar folgende Consumer ist gefunden
+
+Der Coverage-Executor lädt genau den gespeicherten Pack, prüft dessen Digest, bildet typisierte Bar-Inputs und ruft den Regime-Coverage-Producer auf. Das gespeicherte Coverage-Ergebnis bindet denselben Pack-Digest, dieselbe Instrumentidentität und denselben Zeitpunkt. Es enthält `observation_count=299`, `missing=299`, `unknown=0`, `regime_coverage_status=SEMANTICALLY_UNRESOLVED` und `productive_emission=false`. P08/P10.
+
+Der Grund ist im gelesenen Producer und in `label_semantics_v1.py` ausdrücklich codiert: Solange numerische Regimeschwellen und Lookback-Regeln nicht fachlich festgelegt sind, werden vollständige Inputs mit `missing` gekennzeichnet; unvollständig/nicht klassifizierbare Inputs erhalten `unknown`. Für den hier erhaltenen Bestand sind die Preis-/Mark-/Volumendaten vollständig und unabhängig geprüft. Die 299 missing-Labels sind daher kein Nachweis von 299 fehlenden Marktdatenzeilen. P14/P15.
+
+Die offene Klassifikationssemantik ist von der gewollten fehlenden Autorität für produktive Eingriffe zu unterscheiden. Diese Untersuchung setzt keine Schwellen und erteilt keine Freigabe. Ein bloßes Anheben von Autoritätsflags würde keine historische fachliche Definition oder erfolgreiche Lernberechnung nachweisen.
+
+## Bedeutung für die beiden untersuchten Universen
+
+Dieser Fund erweitert den nachgewiesenen historischen Datenbestand vor der August-Sperre. Er belegt einen konkreten Kalibrierungs-/Beobachtungsstrang und eine erreichte Consumer-Grenze. Das Modul- und Artifact-Scope heißt Surface B; daraus wird keine unbewiesene ursprüngliche Universe-Zugehörigkeit oder Gesamtarchitektur konstruiert.
+
+Der Pack selbst enthält keine Kosten-/Funding-Auswertung, Backtestmetriken, OOS-Ergebnisse oder aufbereiteten Meta-Learning-Versuchseinheiten. Ein Consumer der späteren August-Meta-Fragen benötigt mehr als diese Bar-Datei. Eine Übergabe an Experiment Memory, Meta-Learning und eine weitere Suchiteration ist für diesen konkreten Fund noch nicht belegt. Damit ist jetzt die Frage enger: Welche dieser vorhandenen Marktbeobachtungen wurden anschließend tatsächlich in fachliche Versuchsergebnisse und Forschungssignale überführt?
+
+## Suchraum präzisiert
+
+Der neue Fund liegt in einer Fläche, die von den früheren negativen Suchen in ausgewählten out/runtime/evidence-Verzeichnissen nicht erfasst war: versionierte Primärartefakte unter `docs/ops/artifacts`. Diese früheren Suchergebnisse sind deshalb kein Beweis, dass vor August generell keine gespeicherten Daten vorlagen.
+
+Im bestehenden Code-Recovery-Ordner wurden 6.336 vorhandene Pfade inventarisiert und 130 Dateinamen als erste Kandidaten ausgewählt. Das ist eine Dateisysteminventur bereits wiederhergestellter Dateien, kein neuer Recovery-Scan. Eine zusätzliche begrenzte Inhaltssuche in JSON/JSONL bis 8 MiB nach den zwei Juli-v1-Digests, der ersten DDO-Messreferenz sowie konkreten Meta-/Loop-Identitätsfeldern liefert keine Treffer. Die alten Juli-Dateien und DDO-Messartefakte bleiben damit offen; andere Recovery-Flächen sind nicht vollständig erschlossen. [Suchgrenze](recovered-content-search.json).
+
+## Nächste konkrete Nachweise
+
+- Vom gespeicherten Coverage-/Pack-Digest aus spätere echte Auswertungs- oder Kalibrierungsresultate verfolgen.
+- Weitere Recovery-JSONs nach konkreten Datensatz-/Messreferenzen prüfen; auf den bisherigen exakten Juli-/DDO-Zielen kein Treffer in der begrenzten Code-Recovery-Suche.
+- Je Ergebnis prüfen, ob es in Experiment Memory, eine Meta-Einheit oder einen späteren Such-Request tatsächlich übernommen wurde.
+
+## Prüfung
+
+16 historische Datei-Snapshots sind gesichert. Elf relevante geänderte Datei-Blobs an drei GitHub-Einführungscommits stimmen mit den lokal gelesenen August-Blobs überein. Zwei konkrete Recovery-Dateien sind bytegleich mit Git; 299 von 299 Bars sind gegen ihre Rohquellen geprüft. Alle drei Digest-Ebenen und die dokumentierten Datenzeiten sind getrennt erfasst. [Abschlussprüfung](verification.json). Keine Produkt-/Lernläufe, Wiederherstellung oder Änderung an Originalquellen, Repository oder Obsidian-Ledger.

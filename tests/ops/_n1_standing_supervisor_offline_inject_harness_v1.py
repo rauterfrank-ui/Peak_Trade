@@ -64,13 +64,17 @@ from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 i
 from tests.ops.test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1 import (
     _FakeClock,
 )
-from tests.ops.test_okx_eea_private_account_state_runtime_v1 import _fixture_rest
+from tests.ops._host_private_rest_fixture_v1 import host_private_rest_fixture_v1 as _fixture_rest
+from tests.ops._wp02_universe_fixture_v1 import (
+    wp02_eth_only_universe_source_payload_v1,
+    wp02_eth_only_mark_price_payload_v1,
+)
 from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_gate_v1 import (
     _valid_estimate,
 )
 
 # Owner-GO decision pins this baseline; descendant SHAs fail immutable-surface drift check.
-OWNER_GO_BASELINE_SHA = "049fc18cdf8061707185b075ec04dfb61a116c0c"
+OWNER_GO_BASELINE_SHA = "8da476238040545d2c1e5c1bf2e950d4388dba68"
 BASE_TS = 1_757_631_540_000
 
 
@@ -134,9 +138,9 @@ def bootstrap_lane(*, session_root: Path, repo_root: Path) -> tuple[Any, Any, An
     lane_state = session_root / "lane_state"
     pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_state, bound=bound)
     g17 = _lane_g17(pairs)
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
-    obs_boot = _observation_from_closes(closes=path[:14], event_ts=t0 - 60.0)
+    obs_boot = _observation_from_closes(closes=path[:104], event_ts=t0 - 60.0)
     bootstrap_s8_lane_via_s7_compose_v1(
         composed_pairs=pairs,
         origin_main_sha=OWNER_GO_BASELINE_SHA,
@@ -163,7 +167,10 @@ def supervisor_config_from_roots(
         lane_state_root=lane_state,
         evidence_root=evidence_root,
         lock_root=lock_root,
+        expected_account_identity="host-offline-account",
         transport_scope=TRANSPORT_SCOPE_OFFLINE_INJECT,
+        wp02_universe_source_payload=wp02_eth_only_universe_source_payload_v1(),
+        wp02_universe_mark_price_payload=wp02_eth_only_mark_price_payload_v1(),
     )
 
 
@@ -183,7 +190,7 @@ def run_offline_inject_supervisor_session_v1(
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     t1 = t0 + 60.0
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     auth = _continuous_auth(native_id=native_id, max_cycles=max_cycles)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
         continuous_owner_go=auth.continuous_owner_go,
@@ -200,14 +207,14 @@ def run_offline_inject_supervisor_session_v1(
     if max_cycles >= 2:
         obs = ScriptedContinuousObservationSourceV1(
             [
-                _observation_from_closes(closes=path[:16], event_ts=t0),
+                _observation_from_closes(closes=path[:106], event_ts=t0),
                 None,
-                _observation_from_closes(closes=path[:18], event_ts=t1),
+                _observation_from_closes(closes=path[:108], event_ts=t1),
             ]
         )
     else:
         obs = ScriptedContinuousObservationSourceV1(
-            [_observation_from_closes(closes=path[:16], event_ts=t0)]
+            [_observation_from_closes(closes=path[:106], event_ts=t0)]
         )
     cfg = supervisor_config_from_roots(
         public_store=public_store,
@@ -216,6 +223,9 @@ def run_offline_inject_supervisor_session_v1(
         evidence_root=session_root / "evidence",
         lock_root=session_root / "lock",
     )
+    from tests.ops._host_private_rest_fixture_v1 import initialize_synthetic_host_budget_v1
+
+    initialize_synthetic_host_budget_v1(private_store, bound)
     ledger_root = session_root / "f1_m9_ledgers"
     return run_n1_standing_pre_external_supervisor_v1(
         config=cfg,

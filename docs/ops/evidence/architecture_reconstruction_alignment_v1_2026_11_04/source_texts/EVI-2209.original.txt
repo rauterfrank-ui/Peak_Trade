@@ -1,0 +1,67 @@
+KEYCHAIN / K1 — EXTERNE QUELLEN UND OBSIDIAN, NACHTRAG 02.11.2026
+Auftrag: bestehende Keychain-/K1-/Treasury-Verbindungen und Umbaugrenzen in externen Backups, Recovery-Dokumenten und rekonstruiertem Desktop-Workspace suchen. Quellen nur gelesen. Keine Aktivierung, Keychain-Abfrage, Vault-/Environment-Wertprüfung oder Codeausführung der Produkte. Kein neuer Recovery-Scan, keine Quellenänderung.
+
+QUELLENIDENTITÄT
+M2DATA: VolumeUUID BFA81BFA-80C5-3634-84EE-17B3496EE123.
+PeakDATARecovery: VolumeUUID 53B45FBD-BBAC-4D62-B42C-A75BD6BD7C57.
+Mounts am Prüfzeitpunkt /dev/disk4s2 und /dev/disk6s1, nicht als read-only gemountet. Keine Schreibzugriffe auf diese Quellen. Enger Prozessnamencheck auf R-Studio/RStudio/photorec/testdisk/ddrescue ohne Treffer; nur Momentaufnahme.
+Desktop: /Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE ist zugleich der bekannte Obsidian-Vault. Beides ist in dieser Untersuchung derselbe Quellenbestand, keine unabhängige doppelte Bestätigung. README nennt RUN-0076, INDEX-Kopf noch RUN-0075; deshalb Navigationseinträge nicht als synchronen Gesamtzustand behandelt. Register, Blueprint und RUN-Dateien nicht geändert.
+
+1. HISTORISCHER K1-LAUFBERICHT WIEDERGEFUNDEN
+Original:
+ /Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo/evidence/research/k1_bounded_get_only_natural_enter_witness_v1/20261007T004808Z_witness_v1/K1_BOUNDED_GET_ONLY_NATURAL_ENTER_WITNESS_FINAL_SUMMARY_V1.json
+Zugehörig:
+ .../bounded_run/PRE_EXTERNAL_CONVERGENCE_REPORT.json
+Beide nennen Baseline 6ed52d01ac181e629b2839271f83b52fc7ffe61f. Summary: KEYCHAIN_SESSION_OPENED=true, K1_HANDLE_BOUND=true, K1_EPHEMERAL_SESSION_CLOSED=true, FRESH_C1_GET_CONSUMPTIONS=103, Natural Enter und PRE_EXTERNAL bei Cycle 10, SAME_CAUSAL_ENTER=true, ORDERS_SUBMITTED=0, POST_ATTEMPTS=0, PRIVATE_WRITE_CALLS=0. Convergence-Bericht bestätigt Baseline, PRE_EXTERNAL und POST_COUNT=0.
+Belegart: erhaltene historische Laufberichte mit zusammenpassenden Angaben. In dieser Untersuchung kein Nachspielen und keine unabhängige Prüfung aller damaligen Requests. Kein Nachweis für heutigen Betrieb, vollständige Treasury-/WS-Integration oder OS-Isolation. Ersetzt den pauschalen Eindruck, es lägen ausschließlich statische K1-Verbindungen vor. Die erste Untersuchung hatte selbst keine Runtime-Prüfung durchgeführt; das bleibt richtig.
+
+2. TREASURY: HISTORISCHE BEOBACHTUNG JA, DAMALIGE GESAMTKETTE OFFEN
+Originalverzeichnis:
+ /Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo/evidence/ops/treasury_productive_read_only_venue_observation_v1/20260921T011657Z/
+Gelesen: capture_summary.json, claims.json, adjudication.json und treasury_observation.sanitized.json; ausschließlich freigegebene Status-/Provenienzfelder exportiert. Alle vier Datei-Hashes stimmen mit dem vorhandenen MANIFEST.sha256 überein. Ein Hash-Manifest sichert hier die Zuordnung/Integrität relativ zum gespeicherten Manifest, nicht die Echtheit der damaligen Venue-Antwort.
+Bericht: NETWORK_READ_ONLY_USED=true, NETWORK_REQUESTS_PERFORMED=2, GET-Transportklasse FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1, Funding-Beobachtung mit HTTP-Status 200.
+Adjudication bindet ORIGIN_MAIN_SHA 8f1b2d846e518651d2d4fba25c13bf31843f2139 und nennt PRODUCTIVE_OBSERVATION_STATUS=VENUE_FACT_OBSERVED; RECONCILIATION_STATUS=UNKNOWN; EARLIEST_NEW_REAL_BLOCKER=E4_TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_PRODUCTIVE_HOST_JOIN_NOT_WIRED. risk_admissible mint bleibt false.
+Die spätere, bereits untersuchte capture-/chain-Implementierung enthält weitere Joins. Diese statische spätere Anbindung beweist nicht rückwirkend oder heute einen vollständigen End-to-End-Lauf. Datums- und Revisionsunterschied bleibt erhalten.
+
+3. PRIVATE WEBSOCKET: HISTORISCHE LÜCKE KONKRET BELEGT
+Original:
+ /Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/Peak_Trade_PRIVATE_WEBSOCKET_AUTHENTICATED_OBSERVATION_GOLDEN_VECTOR_V1.md
+Reportdatum 30.09.2026 03:28:22 UTC; untersuchter HEAD 10f601e6087c33334034b2e013a72ed46835e9e9; origin/main separat 5b606f6daf322995a7f26a7208bba70a43cdd392; damaliger Worktree dirty.
+Zeilen 102–122: SecretRef-Identity/Observation-Handle → eingespeistes login_payload → PrivateWsConnector.login. WS-Login-Produzent UNKNOWN_CURRENT; keine kanonische K1-Anbindung in WP-B belegt. Zeilen 39–43 und 175–186: keine belegte vollständige Kante POST/ACK → WS-Fill → Reservation → Treasury → nächster 29P. Report war ausdrücklich ohne Runtime-/Netzwerk-/Credential-Ausführung; sein Test-PASS ist nur eine berichtete damalige Prüfung.
+Abgleich: fünf genaue Codepfade in sechs M2-Ankern (30 Dateien) sind bytegleich mit den zuvor untersuchten Dateien des Hauptcheckouts, darunter ws_transport_v1.py und credentials_v1.py. Auch die zweite lokale Arbeitskopie nimmt im geprüften WS-Transport login_payload vom Aufrufer entgegen. Das stützt die konkrete offene Authentifizierungsnahtstelle. Kein systemweiter negativer Erreichbarkeitsbeweis und kein Nachweis, dass außerhalb dieser Dateien kein späterer Adapter existiert.
+
+4. SCHUTZABSICHT: KI DARF KEINE ECHTEN SECRETS ERHALTEN
+Recovery-Original:
+ /Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.Id_dc00001007eaadb.md
+Das Operator-Runbook erlaubt Namen/Referenzen und statische Prüfungen; echte Werte, Beschaffung, Rotation und Prüfaufrufe mit echten Credentials bleiben Human-Only bzw. für KI verboten. Es ist ausdrücklich Planning-First / docs-only und keine technische Umsetzungsfreigabe.
+Provisioning-Spec:
+ .../K1_PRODUCTIVE_MACOS_CREDENTIAL_STORE_PROVISIONING_AUTHORITY_V1.Id_dc00001007c6226.md
+Single bounded Operator-Provisioning, exakte Item-Identität, keine stehende Schreibfreigabe; alternative Backends sind in diesem Provisioning-Scope ausgeschlossen. Das ist kein Beweis, dass andere READ-Lader im Gesamtsystem keine Vault-Dateien verwenden.
+CREDENTIAL_LEAKAGE_TEST_REPORT.Id_dc00001006cfb74.md: historischer Package-PASS vom 11.08.2026, synthetische Redaction-/Hygiene-Probes; ausdrücklich kein Credential-Materialisieren und kein allgemeines Pre-Live-Sicherheitsgate. Belegt keinen agentensicheren Keychain-/Prozessschutz.
+
+5. NEGATIVE LAUFBERICHTE NICHT ALS ERFOLG ZÄHLEN
+Drei erhaltene BWP_LIVE_GET_003_K1_RUN_REPORT-Fassungen stoppen am Preflight/Runtime-Vertrag oder mit fehlendem binding_epoch vor Keychain und HTTP. Sie sind gesonderte Versuche/Fassungen, keine Widerlegung des Witness vom 07.10. und kein aktueller Erfolgsnachweis.
+Obsidian EVI-0537/EVI-0538, EVI-0817 und EVI-0832 behandeln Keychain-Perform/Policy-Texte historisch; die damaligen Ledger-Lesungen haben die Aktionen nicht ausgeführt. EVI-1576 hält den gestoppten K1-GET-Versuch fest. PASS-/PROVEN-/AUTHORIZED-Marken aus Texten werden nicht zu heutiger Betriebsfreigabe.
+
+M2-ABGLEICH UND HERKUNFTSGRENZE
+Sechs Anker: FINISH_2026_10_03 (HEAD 0410bd8b…), Stand2026_10_07 (14323f12…), FINAL_CURRENT_2026_10_06 (2bcf835a…), Backup_20261017/repo (242b7974…), exec_natural_enter_922167f (Git-HEAD nicht auflösbar), Recovery_20261016_V3/sources/home/Peak_Trade (242b7974…).
+Fünf feste Pfade: K1-Signer, Treasury-capture, WS-Transport, WS-Credential-Vertrag, Execute-network-Vault-Loader. Alle 30 Quellkopien bytegleich zum Hauptcheckout. Das sind Kopien derselben Implementierung, keine unabhängigen Funktionsbeweise. Ordnerdatum und gespeicherter Git-HEAD beweisen keinen sauberen, zeitlich unveränderten Snapshot.
+
+FOLGERUNG FÜR DEN GEDACHTEN UMBAU
+Der Umfang bleibt größer als Keychain-Lesen: SecretRef-/Vault-Eingänge, Operator-Provisioning, REST-GET, Order-PRE-POST/POST, Reconciliation und offene WS-Login-Produktion müssen berücksichtigt werden. Schutzgrenze muss Klartext, Session-Haltung, Headerbau und authentifizierten Versand einschließen; keine Roh-Header oder Materialrückgabe an den Agenten.
+Historische Teilpfad-Laufberichte sind gefunden. Vollständige heutige Integration, heutige OS-Zugriffsrechte und Verträglichkeit eines noch nicht implementierten Dienstes bleiben offen. Kein Umbau, keine Aktivierung und keine OS-/Credential-Berechtigungsänderung ausgeführt.
+
+NAVIGATION ZU MASCHINENLESBAREN BELEGEN
+Abgeschlossene Recovery-Textsuche: alle 4.388 vorhandenen Vertreter des bestehenden Markdown-Inventars auf Keychain, K1, login_payload, _SESSION_FIELDS und Private-WebSocket-Bezug durchsucht. 71 Inhalte mit Treffern; alle 71 Treffer hashgleich zum Inventar; kein fehlender Vertreter. Das ist eine Textsuche im datierten Inventar, keine vollständige semantische Auswertung aller Dokumente, aller physischen Duplikate oder nicht inventarisierter Quellen. 20 nach Titel ausgewählte Dokumente und 12 zusätzliche Treffer mit relevanten Abschnitten gezielt ausgewertet. Keine neue Datenrettung oder Sektorprüfung. Eine unzweckmäßige frühe Verzeichnisauflistung wurde beendet; die erfolgreiche Suche verwendet die bekannten Inventar-Dateipfade.
+
+Zusätzlicher Umbauvertrag aus zwei Fassungen von GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1 und GHV_CURRENT_OKX_PHASE7_ADVERSARIAL_CONTRACT_REVIEW_V1: Ein bereits laufender nativer macOS-Keychain-Aufruf ist laut erhaltenem Vertrag nicht zuverlässig unterbrechbar. Die beschriebenen Mock-Deadline-Prüfungen und HTTP-Zeitlimits garantieren deshalb keine harte Gesamtdauer oder garantierte Bereinigung, falls die native Keychain-Anfrage hängenbleibt. Ein geschützter Dienst muss diesen Fall gesondert begrenzen und fehlgeschlagene/ungewisse Operationen korrekt behandeln. Keine neue Prüfung dieses Betriebsverhaltens ausgeführt.
+
+external-volume-identities.json
+external-recovery-document-evidence.json
+external-recovery-content-search.json (separate dokumentierte Suchabdeckung)
+external-m2-code-comparison.json
+external-runtime-report-safe-fields.json
+external-treasury-manifest-check.json
+obsidian-source-manifest.json
+external-additional-document-excerpts.json
+

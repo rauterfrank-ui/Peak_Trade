@@ -1,0 +1,8 @@
+{
+  "scope": "Controlled factory-generated fixture plan; no natural feature measurement or live effect.",
+  "same_plan_identity": true,
+  "same_old_result_digest": true,
+  "original_outcome": "REJECTED_REDUNDANCY",
+  "tampered_outcome": "RESEARCH_EVIDENCE_SUPPORTED",
+  "tampered_payload_accepted_before_fix": true
+}

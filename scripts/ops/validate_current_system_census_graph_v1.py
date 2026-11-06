@@ -182,6 +182,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check-head-drift", action="store_true")
     args = parser.parse_args()
+    if (REPO / "docs/system_atlas/source/documentation-cleanup.json").is_file():
+        print("RETIRED_CENSUS_VIEW: use scripts/ops/validate_system_atlas_v1.py", file=sys.stderr)
+        return 2
 
     doc = load_json(SOURCE_PATH)
     errors: list[str] = []

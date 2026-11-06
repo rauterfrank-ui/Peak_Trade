@@ -1,0 +1,28 @@
+{
+  "absent_nodes": [
+    "current_full_core_capital_guard",
+    "29p fresh GET executor",
+    "K1 opaque signing handle"
+  ],
+  "authority": "NONE",
+  "code_authority": "origin/main 769d13663 supersedes missing graph edges",
+  "forward": {
+    "governed_productive_account_equity_authority_producer_v1": "portfolio_capital_reservation_budget_v1 -> treasury_phase_1_offline_contracts_v1 -> risk -> orders -> full_core_live_path",
+    "k1_productive_macos_credential_store_provisioning_authority_v1": "full_core_live_path_composition_root_v1 BLOCKS"
+  },
+  "graph_status": "STALE",
+  "reverse": {
+    "full_core_live_path_composition_root_v1": [
+      "okx_eea_private_account_state_runtime_v1",
+      "k1 keychain BLOCKS",
+      "orders BLOCKS",
+      "trading BLOCKS"
+    ],
+    "portfolio_capital_reservation_budget_v1": [
+      "equity producer",
+      "n5 orchestrator"
+    ]
+  },
+  "schema_version": "bwp_live_004_traversal.v1",
+  "transitive": "equity producer reaches full-core only through reservation, treasury offline contracts, risk, and orders on this stale census"
+}

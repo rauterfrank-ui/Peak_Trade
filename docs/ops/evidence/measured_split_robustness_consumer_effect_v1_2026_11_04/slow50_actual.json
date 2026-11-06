@@ -1,0 +1,356 @@
+{
+  "aggregate_status": "BLOCKED",
+  "candidate_ref": "candidate.ma-crossover.v1",
+  "canonical_trading_decision_core_bound": true,
+  "completeness": "COMPLETE",
+  "cost_model_ref": {
+    "digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+    "kind": "IDENTITY_DIGEST_BOUND"
+  },
+  "created_at": "2026-08-17T19:00:00Z",
+  "dataset_digest": "d62648b16e4d711fc4fecdb765b11fe14d2eaa3ba54fe07790c35d860ae75989",
+  "dataset_ref": {
+    "digest": "d62648b16e4d711fc4fecdb765b11fe14d2eaa3ba54fe07790c35d860ae75989",
+    "kind": "IDENTITY_DIGEST_BOUND"
+  },
+  "deterministic_randomness_contract": {
+    "kind": "NUMPY_GENERATOR_DEFAULT_RNG",
+    "monte_carlo_owner": "src.experiments.monte_carlo",
+    "seed": 7,
+    "stress_tests_owner": "src.experiments.stress_tests"
+  },
+  "digest_algorithm": "sha256",
+  "evidence_dimensions": {
+    "exposure": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "fee_drag": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "funding_sensitivity": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "max_dd": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "oos_stability": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "parameter_stability": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "profit_factor": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "regime_concentration": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "sample_size": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "sharpe": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "slippage_sensitivity": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "sortino": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "tail_risk": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    },
+    "turnover": {
+      "reason": "required evidence dimension was not provided",
+      "status": "MISSING"
+    }
+  },
+  "evidence_refs": [
+    {
+      "digest": "2e655e44aef3baf3580c91a2826a30a3c3bad59281e48b90ff3be466e7667cf8",
+      "kind": "EXPERIMENT_RECORD",
+      "ref": "306d46906d3d43ef2e92663db3231e5fed5f32e454b27df1ae1a4a4b79c4fca5"
+    }
+  ],
+  "experiment_id": "306d46906d3d43ef2e92663db3231e5fed5f32e454b27df1ae1a4a4b79c4fca5",
+  "experiment_identity": {
+    "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+    "canonical_trading_decision_core_bound": true,
+    "completeness": "COMPLETE",
+    "cost_model_digest": "04ad2daaa59dbb5184dd4ba913e2dacea4353f89945b3dafc4bf812fa614ebdf",
+    "dataset_digest": "d62648b16e4d711fc4fecdb765b11fe14d2eaa3ba54fe07790c35d860ae75989",
+    "digest_algorithm": "sha256",
+    "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+    "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+    "environment": {
+      "identity_schema_version": "canonical_experiment_identity_v1",
+      "python_implementation": "CPython",
+      "python_version": "3.11.15"
+    },
+    "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+    "experiment_identity_has_runtime_authority": false,
+    "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+    "fee_model_digest": "aa4aac90fc6e2772118b3e22dd1ea6d241b121d6f0b35c520fa78e36baf55f14",
+    "funding_model_digest": "eedc32a9c9d6780477088972a405cfc04c3b7d157d7d94a3ad583fcf77c001d0",
+    "git_sha": "e763bf1bf133afab1c3850a6bbaafde6f83e39d2",
+    "identity_digest": "2e655e44aef3baf3580c91a2826a30a3c3bad59281e48b90ff3be466e7667cf8",
+    "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+    "integrity": {
+      "content_sha256": "9259342464a7adc7d5b288bebb09c4cd1364cc07a771b9cc3fece0c85e139d6f"
+    },
+    "learning_may_autonomously_replace_core_logic": false,
+    "learning_may_research_core_logic_changes": true,
+    "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+    "parent_lineage": {
+      "kind": "ROOT",
+      "parent_lineage_ref": null
+    },
+    "portfolio_digest": "553699fcf0c57811a4b2c8c9fa08c747fe23986451b658430eb2cf33bdb3da9a",
+    "risk_policy_digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+    "runtime_authority_impact": "NONE",
+    "schema_version": "canonical_experiment_identity_v1",
+    "seed": 7,
+    "self_learning_must_learn_from_canonical_trading_decision_path": true,
+    "slippage_model_digest": "cd7c7b32a059a09d79e320f96b4ceeb546f840c1a3271462c82093656c8cb636",
+    "split_policy_digest": "2571bd703fe6d4f7cc7c38cadf208e07acfe4f5702e8218e9858409fbabafcd0",
+    "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+    "strategy_identity": "ma_crossover.v1",
+    "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+    "strategy_params_digest": "e91209ec68df32287150b74474e001e1d7937b9891710d809c3b21233f99ce60",
+    "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+    "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+    "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+    "working_tree_status": "CLEAN"
+  },
+  "failed_gates": [],
+  "hypothesis_id": "hyp.ma-crossover.v1",
+  "integrity": {
+    "content_sha256": "50b3fd67926c1e162623773ebd8832d9ef935d281e08853efe27fb73a892465b"
+  },
+  "learning_may_autonomously_replace_core_logic": false,
+  "metric_definition_version": "canonical_robustness_metrics_v1",
+  "observations_digest": "6fd4ee9a29dd735dbd416d923ed572819eebe87739ce45b20766bbc664d89320",
+  "parameter_region": {
+    "fast_window": 10,
+    "slow_window": 50
+  },
+  "promotion_authority": "NONE",
+  "promotion_intent": "FORBIDDEN",
+  "regime": "controlled_synthetic_hourly_simulator",
+  "risk_policy_ref": {
+    "digest": "804cbb8a713254e3d451fb3de121e2017ad6845880bf252af71445daece0a1c9",
+    "kind": "IDENTITY_DIGEST_BOUND"
+  },
+  "robustness_domain": "peak_trade.canonical_robustness_suite.v1",
+  "robustness_policy_digest": "589a6ca184a96e700c57e4340918cf604a01ea5c7e2cef2421823281b69dc6cd",
+  "robustness_suite_can_arm": false,
+  "robustness_suite_can_authorize_canary": false,
+  "robustness_suite_can_create_confirm_token": false,
+  "robustness_suite_can_enable": false,
+  "robustness_suite_can_fund": false,
+  "robustness_suite_can_increase_leverage": false,
+  "robustness_suite_can_increase_risk": false,
+  "robustness_suite_can_mutate_live_config": false,
+  "robustness_suite_can_promote": false,
+  "robustness_suite_can_promote_to_live": false,
+  "robustness_suite_can_submit_order": false,
+  "robustness_suite_can_use_confirm_token": false,
+  "robustness_suite_can_write_live_config": false,
+  "robustness_suite_has_runtime_authority": false,
+  "robustness_suite_identity": "6add89e59496387f8d2deaa5b28053349a1e634718c466efcb91c78063f77719",
+  "robustness_suite_version": "canonical_robustness_suite_v1",
+  "runtime_authority_impact": "NONE",
+  "seed": 7,
+  "self_learning_self_authorizing_separation": true,
+  "single_metric_promotion": false,
+  "split_policy_ref": {
+    "digest": "2571bd703fe6d4f7cc7c38cadf208e07acfe4f5702e8218e9858409fbabafcd0",
+    "kind": "IDENTITY_DIGEST_BOUND"
+  },
+  "test_results": [
+    {
+      "details": {
+        "holdout": {
+          "sample_size": 192.0,
+          "sharpe": 0.05228598850098903
+        },
+        "train": {
+          "sample_size": 384.0,
+          "sharpe": 0.03811009551571799
+        },
+        "validation": {
+          "sample_size": 192.0,
+          "sharpe": -0.015091380463017244
+        }
+      },
+      "implementation": "ADAPT:src.backtest.parameter_sensitivity_v1",
+      "reason": "train/validation/holdout remain within OOS collapse policy",
+      "status": "PASS",
+      "test_id": "TRAIN_VALIDATION_HOLDOUT"
+    },
+    {
+      "implementation": "ADAPT:src.backtest.walkforward.split_train_test_windows",
+      "reason": "walk-forward re-optimization runner is not bound to this contract; provide walk_forward_windows observations to evaluate a produced path",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "WALK_FORWARD"
+    },
+    {
+      "implementation": "ADAPT:src.backtest.walkforward",
+      "reason": "rolling OOS requires walk_forward_windows or a returns series of min_sample_size",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "ROLLING_OOS"
+    },
+    {
+      "reason": "purged split engine is not bound to Canonical Experiment Identity",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "PURGED_SPLIT"
+    },
+    {
+      "reason": "embargo split engine is not bound to Canonical Experiment Identity",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "EMBARGO"
+    },
+    {
+      "implementation": "REUSE:src.experiments.monte_carlo",
+      "reason": "MONTE_CARLO requires a returns series of min_sample_size",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "MONTE_CARLO"
+    },
+    {
+      "implementation": "REUSE:src.experiments.monte_carlo",
+      "reason": "BLOCK_BOOTSTRAP requires a returns series of min_sample_size",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "BLOCK_BOOTSTRAP"
+    },
+    {
+      "implementation": "ADAPT:src.backtest.parameter_sensitivity_v1",
+      "reason": "parameter sensitivity grid runner is not imported; provide parameter_sensitivity observations to evaluate stability",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "PARAMETER_SENSITIVITY"
+    },
+    {
+      "implementation": "REUSE:src.backtest.cost_config_v0",
+      "reason": "fee stress requires cost_stress.fee observations; cost grid runner is not imported",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "FEE_STRESS"
+    },
+    {
+      "implementation": "REUSE:src.backtest.cost_config_v0",
+      "reason": "slippage stress requires cost_stress.slippage observations",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "SLIPPAGE_STRESS"
+    },
+    {
+      "implementation": "REUSE:src.backtest.cost_config_v0",
+      "reason": "funding stress requires cost_stress.funding observations",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "FUNDING_STRESS"
+    },
+    {
+      "implementation": "REUSE:src.backtest.cost_config_v0",
+      "reason": "latency stress is deferred in mv2 research wiring; provide latency_stress observations",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "LATENCY_STRESS"
+    },
+    {
+      "implementation": "REUSE:src.backtest.cost_config_v0",
+      "reason": "spread model is not a bound suite capability; provide spread_stress observations",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "SPREAD_STRESS"
+    },
+    {
+      "implementation": "REUSE:src.backtest.cost_config_v0",
+      "reason": "liquidity stress has no bound market-impact owner; provide liquidity_stress observations",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "LIQUIDITY_STRESS"
+    },
+    {
+      "implementation": "REUSE:src.experiments.stress_tests",
+      "reason": "crash scenarios require a returns series of min_sample_size",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "CRASH_SCENARIOS"
+    },
+    {
+      "reason": "missing-data injector is not bound to this contract; provide missing_data_stress observations",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "MISSING_DATA_STRESS"
+    },
+    {
+      "reason": "bad-tick injector is not bound to this contract; provide bad_tick_stress observations",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "BAD_TICK_STRESS"
+    },
+    {
+      "reason": "regime-aware evaluation is a later phase; provide regime_stress.regimes to gate concentration",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "REGIME_STRESS"
+    },
+    {
+      "reason": "risk-stress execution is not bound to this research contract; provide risk_stress observations",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "RISK_STRESS"
+    },
+    {
+      "reason": "multiple-testing family is not owned by this suite unless explicitly provided",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "MULTIPLE_TESTING_CONTROLS"
+    },
+    {
+      "details": {
+        "promotion_authority": "NONE"
+      },
+      "reason": "single-metric promotion is forbidden and was not attempted",
+      "status": "PASS",
+      "test_id": "SINGLE_METRIC_PROMOTION_GUARD"
+    },
+    {
+      "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+      "reason": "Deflated Sharpe Ratio is not implemented: no bound non-centrality and trial-count contract exists for Canonical Experiment Identity",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "DEFLATED_SHARPE_RATIO"
+    },
+    {
+      "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+      "reason": "Probabilistic Sharpe Ratio is not implemented: no bound Sharpe sampling distribution owner is wired to this suite",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "PROBABILISTIC_SHARPE_RATIO"
+    },
+    {
+      "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+      "reason": "Probability of Backtest Overfitting is not implemented: CSCV/PBO requires a combinatorially partitioned trial matrix that this identity contract does not yet own",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "PROBABILITY_OF_BACKTEST_OVERFITTING"
+    },
+    {
+      "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+      "reason": "Combinatorial Purged Cross-Validation is not implemented: no purged combinatorial split engine is bound to experiment identity",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "CPCV"
+    },
+    {
+      "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+      "reason": "White Reality Check is not implemented: no bound benchmark-null and resampling family exists for this contract",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "WHITE_REALITY_CHECK"
+    },
+    {
+      "implementation": "NOT_IMPLEMENTED_METHOD_GUARD",
+      "reason": "Hansen SPA test is not implemented: no bound superior predictive ability resampling owner exists for this contract",
+      "status": "BLOCKED_MISSING_CAPABILITY",
+      "test_id": "SPA_TEST"
+    }
+  ]
+}

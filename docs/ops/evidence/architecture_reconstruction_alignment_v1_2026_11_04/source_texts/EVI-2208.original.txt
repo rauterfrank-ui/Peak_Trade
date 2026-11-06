@@ -1,0 +1,238 @@
+PEAKTRADE – QUELLENÜBERGREIFENDES GESAMTKONSTRUKT V1
+02.11.2026 · Lesende Rekonstruktion, kein freigegebenes Endsystem
+
+ERGEBNIS
+
+Ein erstes gemeinsames Arbeitsbild verbindet jetzt die fachlichen Anforderungen,
+die erreichbaren alten ChatGPT-Gespräche, historische Originalanhänge,
+bestehende Cursor-/Obsidian-Befunde, Git-/GitHub-Stände und bisherige begrenzte
+Offline-Nachweise. Die Verbindung ist quellengebunden, aber nicht vollständig
+semantisch oder in ihrer Gesamtfunktion bewiesen.
+
+Der wichtigste neue Fund ist das originale Self-Learning-Master-Runbook
+einschließlich der gesuchten Core-Logic-Bound-Fassung. Die bisherige Aussage
+„Original-Master noch nicht wiedergefunden“ ist für diese Fassung überholt.
+Der alte Bericht bleibt als datierter Suchstand erhalten.
+
+NEU GESICHERTE QUELLEN
+
+1. Die in dieser Desktop-Sitzung bereitgestellten ChatGPT-Verzeichnisse wurden
+   vollständig paginiert: 59 aktive Seiten mit 2.928 Gesprächen; neun Archiv-
+   seiten mit 440 Gesprächen. 3.368 unterschiedliche IDs. Beide Endcursor leer.
+   Das ist nur die Vollständigkeit der zurückgegebenen Listen, nicht sämtlicher
+   jemals geführter Gespräche, Nachrichten, Zweige, Anhänge oder Konten.
+   3.315 projektbezogene oder anhand des Titels passende Metadateneinträge
+   wurden lokal erhalten. 53 fachfremde oder unbestimmte Einträge nicht in den
+   lokalen Projektkatalog übernommen. Ihre Inhalte wurden nicht untersucht.
+   Die Änderungszeiten reichen von 01.02. bis 01.11.2026. Das sind keine
+   Erstellungszeiten und kein Beweis eines vollständigen Projektursprungs.
+
+   Inhaltlich wurden in diesem Schritt gezielt 17 unterschiedliche Gespräche
+   als Quellen gesichert: 19 zurückgegebene Seiten mit 64 unterschiedlichen
+   Turn-IDs. Ein längerer Antworttext ist im Rückgabeformat gekürzt und als
+   solcher registriert. Auch ein leerer Nachrichtencursor beweist nicht die
+   Vollständigkeit alternativer Zweige oder sämtlicher Anhänge.
+
+2. In „Forensische Analyse Phase 0“ und „Phase 0B Sicherheitsplanung“ liegen
+   zwei lesbare, bytegleiche frühe Master-Anhänge.
+   Länge: 27.371 Bytes.
+   SHA256: 119e27952c8174c9e800f772402d6b325d0ed823d062811d2dcaaea11ba35d94.
+   Ihre Herkunft ist direkt an die zurückgegebenen Gesprächs-IDs gebunden.
+
+3. In „Phase 9 bestätigt“ liegt die Core-Logic-Bound-Fassung.
+   Länge: 33.495 Bytes.
+   SHA256: 77eb523b165d3f534c10da86e55f105c10c3f91629d0a19795f2a5eeb02b6219.
+   Dieser Hash stimmt exakt mit dem früheren Cursor-Quelleninventar überein.
+   Damit liegt der damals inventarisierte Inhalt jetzt selbst wieder vor.
+   Es wird nicht behauptet, dies sei die frühestmögliche jemals verfasste Version.
+   Die gesicherten Originalkopien wurden nicht bearbeitet.
+
+WAS DAS ORIGINAL ÜBER DAS GESAMTZIEL KLÄRT
+
+Der historische Master will einen geschlossenen Forschungs- und Lernkreislauf:
+eindeutige Experimentidentität, unveränderliches Versuchsgedächtnis,
+Fehlergedächtnis, Robustheit, methodische Vergleichbarkeit, Champion/Challenger,
+Reality Gap, Regimebewertung, getrennte Strategy-/Portfolio-Bewertung,
+koordinierte Offline-Forschung, Meta-Learning und optionale erweiterte Suche.
+
+Phase 0–12 sind ein Entwicklungsprogramm, keine belegte Zahl übereinanderliegender
+Architekturebenen. Fast/Medium/Slow bezeichnen Feedback-Zeitskalen, nicht
+automatisch einen Scope- oder Handelshorizont.
+
+Die Core-Fassung ergänzt den entscheidenden fachlichen Anschluss:
+Das Lernen soll gerade aus der tatsächlich verwendeten kanonischen Kette von
+Market Context, Scope, Bull/Bear, State Switch, Survival, Suitability,
+Double Play, Entry/Position/Exit sowie Risiko-, Ausführungs- und Ergebnisbezug
+lernen. Versionen der Core-Komponenten müssen in der Experimentidentität
+unterscheidbar sein. Die Attribution soll Timing, Klassifikation, Gate-Wirkung,
+Kosten und Ausführung unterscheiden, soweit die Daten das tragen.
+
+Das ist breiter als „ein Return wird angenommen“. Zugleich sagt das Original:
+Forschung darf Verbesserungen am Core untersuchen und vorschlagen, aber keine
+produktiven Regeln oder Konfiguration eigenständig ersetzen. Fehlende
+produktive Änderungsautorität bedeutet nicht fehlenden fachlichen Lernnutzen.
+
+DAS GEMEINSAME ARBEITSBILD
+
+Markt und Kontext:
+Preisbeobachtung, Historien, Instrumentmetadaten, Zeit/Frische und Merkmale
+liefern verschiedene fachliche Objekte. Intelligente Analysen sind separat
+auf ihren tatsächlichen Beitrag zu untersuchen. Mark, letzter Handel und
+Bid/Ask werden nicht still gleichgesetzt.
+
+Auswahl und Mechanik:
+Universe/Eligibility, Ranking und Selection bestimmen und binden ein Future.
+G17/GGE liefert im gelesenen heutigen Pfad aus σ×M eine Preisdistanz.
+Ein L6-Passthrough validiert ausdrücklich geliefertes D_t; er berechnet nicht
+automatisch eine zusätzliche Scope-Formel. L1–L10 bleiben beabsichtigte
+Konstruktionsphasen. Der laufende Marktpreis M_t, die L5-Initialbasis,
+die laufende Referenz R_t und die Gegenbewegung CM_t sind verschiedene Größen.
+
+Entscheidung und Schutz:
+Scope-Ereignisse, Kandidat/Bestätigung, Bull/Bear, Survival, Suitability,
+Composition und Entry/Exit haben unterschiedliche Rollen. Risikoprüfung,
+Sizing, Kapital, tatsächlicher Positionszustand und Reconciliation dürfen
+dadurch nicht als automatisch erledigt gelten. Ein mechanischer Switch
+ist noch keine gesendete oder gefüllte Börsenorder.
+
+Gedächtnis und Forschung:
+Entscheidung, Beobachtung, Outcome, Attribution, Counterfactual und Lernzustand
+müssen an dieselbe fachliche Identität und den richtigen Zeitpunkt gebunden
+sein. Der bisherige Offline-Pilot belegt einen begrenzten Abschnitt von
+gespeicherten Ergebnissen bis zur Optimierungs-Eingangsannahme. Er belegt
+weder die gesamte vorgelagerte Versorgung noch Suchwirkung oder Live-Ökonomie.
+UNKNOWN bleibt UNKNOWN.
+
+Optimierung und Rückkopplung:
+Vergleichbare Evidenz, Failure Memory und Reality Gap können Forschung und
+Kandidaten beeinflussen. Der konkrete kausale Einfluss auf den jeweiligen
+Such-Consumer ist gesondert zu belegen. Metadatenweitergabe oder ein ACCEPTED
+genügen nicht. Eine wirksame produktive Verbesserung braucht einen getrennten,
+belegten Übernahmeweg. Dieser Bericht erfindet keinen solchen Automatismus.
+
+Betrieb und Nachvollziehbarkeit:
+Host, Config-Auflösung, Session, Epoche, Restore und persistenter Zustand
+bestimmen, welcher Pfad tatsächlich gilt. Preis-/Scope-Anzeige und
+Beobachtbarkeit sind eigene Consumer. Obsidian bleibt das bestehende
+Nachweisgerüst; dieser Arbeitsstand ändert weder Register noch Blueprint-Pins.
+
+Die 16 Bereiche und 20 Beziehungen in integrated-model.json sind eine
+analytische Navigation. Sie behaupten weder 16 kanonische Universen noch
+20 gleichzeitig aktive Runtime-Kanten. Jede Beziehung trägt Quellenart,
+Bedeutungsvertrag und offene Grenze.
+
+EIN ERSTER DIREKT GESCHLOSSENER CHAT–PR–CODE-ZUSAMMENHANG
+
+„Dynamic Scope Analyse“ enthält am 18.07.2026 Franks direkte Aussage:
+Er habe das ganze System wegen Double Play, Bull/Bear, Dynamic Scope und
+Switch aufgebaut; konkurrierende Funktionen müssten behandelt werden.
+Der vorangestellte PASS-Block bleibt eine übermittelte Fertigmeldung.
+
+Die dort genannte PR #5323 wurde über GitHub erneut gelesen:
+Merge 18.07.2026 14:54:10Z,
+Commit 02cc6dc72de04a6da248222b839ab9f1fcb3c0a7,
+13 geänderte Dateien, zwei PR-Commits.
+Der lokale Git-Merge und die historischen Quelltexte passen dazu.
+
+Im versionierten Replay ist direkt lesbar:
+- Zeile 1132: update_dynamic_boundaries vor dem Scope-Ereignis.
+- Zeile 1158: trailing_anchor_used an den Scope-Event-Input.
+- Zeile 1230: transition_state mit dem weitergeführten Scope.
+- Zeile 1238: Aktualisierung nach dem Zustandswechsel.
+- Zeile 1504: runtime_scope_state_after wird zurückgegeben.
+Im Research-Wiring:
+- Zeile 1260 übernimmt den ausgegebenen Zustand.
+- Zeile 1728 reicht ihn in den nächsten Replay-Input.
+
+Damit ist eine konkrete historische Zustandsverbindung statisch belegt.
+Der Commit enthält einen Bericht mit „135 passed“ und acht neuen Tests.
+Das ist eine erhaltene historische Testmeldung, keine hier neu ausgeführte
+Verifikation und kein Nachweis vollständiger damaliger Gesamtfunktion.
+
+Ein zeitnaher Chat-Audit meldet außerdem konkurrierende State-/Switch-Pfade.
+Dieser Meldung wird nicht ungeprüft heutige Gültigkeit zugeschrieben.
+Die Juli-Variante wird auch nicht rückwirkend mit der späteren L1–L10-
+Schichtenkonstruktion gleichgesetzt.
+
+FACHLICHE KLARSTELLUNGEN BLEIBEN ERHALTEN
+
+Zwei weitere direkte Chat-Funde verhindern eine vorschnelle Vereinheitlichung:
+In „Golden Geometry PrePR Validation“ korrigiert Frank am 06.10. die Annahme,
+dass verschiedene Volatilitätswerte kollidieren müssten. Unterschiedliche
+Berechnungsziele und Formeln benötigen einen Rollen-/Einheitenabgleich,
+keine numerische Gleichmachung. Auch das damalige Anschauungsbeispiel wurde
+ausdrücklich nicht als vollständige Spezifikation der GGE bestätigt.
+
+„Forensische Adjudikation Master V2“ kennzeichnet Selector-Felder als neue
+Owner-Policy und gerade nicht als historische Wiederentdeckung. Minimaler
+Selector, Ranking-Pfad und ursprüngliche Auswahlidee bleiben deshalb getrennte
+Varianten. Diese alten Nachrichten erteilen in diesem Auftrag keine neue
+Freigabe zur Umsetzung oder Aktivierung.
+
+Die laufende fachliche Nulllinie soll den aktuellen Future-Preis anzeigen
+und den Scope-Bezug in beiden Richtungen liefern. Das heutige feste L5-Feld
+ist nicht allein durch seinen Namen diese laufende Nulllinie.
+L1–L10 sind kein Fehler an sich.
+Naked MV2 ist ein fachlicher Anker, noch kein vollständiger Referenzsatz.
+Es wird kein fester Zwei-Stunden-Horizont unterstellt.
+Ein historischer Zeitpunkt vollständiger korrekter Zusammenarbeit ist
+weiterhin nicht belegt.
+
+Eine weitere begriffliche Unsicherheit wird sichtbar:
+Frank fragte am 24.08. nach dem „Stale Switch“, ausdrücklich im Zusammenhang
+mit Bull/Bear und Dynamic Scope. Die damalige Assistentenantwort behandelte
+auch Stale Data. Diese Deutung ist keine bestätigte Gleichsetzung der beiden
+Begriffe. Für die Rekonstruktion bleiben Datenfrische und Seitenwechsel getrennt.
+
+WAS JETZT VOR UMSETZUNG BELEGT WERDEN MUSS
+
+1. Laufende Preisbasis bis zum tatsächlich verwendenden Scope-Consumer:
+   M_t, D_t, R_t, Initialbasis und Confirmation je Richtung, mit Instrument,
+   Preisart, Quellzeit, Update-Regel und Reset-/Restore-Verhalten verbinden.
+
+2. Einen konkreten Kandidaten für einen Referenzsatz binden:
+   Code, Config, lokale Abweichungen, Host, Zustand und Daten. Erst danach
+   kann seine Zusammenarbeit neu geprüft werden. Er wird nicht vorab als
+   historisch funktionierend oder fachlich richtig ausgegeben.
+
+3. Den zurückgewonnenen Core-Lernauftrag gegen den vorhandenen Anschluss
+   legen: Welche Decision-Stufen werden wirklich erfasst und bewertet?
+   Welche Herkunft und Core-Version überlebt bis zum Lern-/Such-Consumer?
+
+4. Breiten Entwurf und begrenzte Umsetzung vergleichen:
+   Der Master verlangt vor Phase 10 Abschluss/Verifikation von 0–9.
+   Der historische Phase-10-Vertrag orchestriert 1–7 und führt 8/9 ausdrücklich
+   nicht als Loop-Schritte aus. Voraussetzung und tatsächlicher Aufruf sind
+   verschiedene Aussagen. Das ist eine konkrete Abgleichfrage, noch kein
+   pauschaler Bug- oder Widerspruchsnachweis.
+
+5. Intelligence-/Kontextübergaben und historische Varianten ergänzen,
+   ohne gleichnamige Golden-/Vector-/Bridge-Bausteine künstlich zu verbinden.
+
+6. Die noch ungelesenen relevanten Chat-Inhalte und fehlenden Anhänge
+   gezielt erschließen und mit Cursor/Git/Archiven abgleichen. Der neue
+   Katalog ist dafür eine Arbeitsgrundlage, kein Volltext-Gesamtexport.
+
+LIEFERUMFANG UND GRENZEN
+
+Neue lokale Dateien in diesem Untersuchungsordner:
+- gefilterter Gesprächskatalog und explizite Abdeckungsgrenzen;
+- unveränderte zurückgegebene Chat-Seiten als Quellen;
+- zwei gesicherte Original-Masterfassungen;
+- gehashte lokale/übernommene Quellen und historische Git-Blobs;
+- strukturiertes Arbeitsmodell mit 16 Bereichen, 20 Beziehungen und sieben
+  priorisierten Belegfragen;
+- interaktive Ansicht und dieser Ergebnisbericht.
+
+Quellmanifest und Verifikation halten Umfang und Grenzen maschinenlesbar fest.
+Vorhandene Berichte sind datierte Teilbefunde. Die externen Originalmedien
+wurden in diesem Integrationsschritt nicht neu gescannt oder beschrieben.
+Keine Repository-/Vault-/Archivänderung, kein Restore, keine Markt- oder
+Accountabfrage, kein Produktlauf, keine Orders, keine Commits/Pushes/PRs.
+Keine neuen Hintergrundaufgaben oder Obsidian-Runs.
+
+Der vollständige ChatGPT-Inhalt und sämtliche ursprünglichen Systembeziehungen
+sind noch nicht rekonstruiert. Geliefert ist ein prüfbares gemeinsames
+Arbeitskonstrukt mit neu wiedergewonnenen Originalquellen. Daraus folgt keine
+Gesamtbetriebs- oder Umsetzungsfreigabe.
+

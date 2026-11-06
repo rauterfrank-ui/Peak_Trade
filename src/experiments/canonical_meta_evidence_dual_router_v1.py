@@ -163,7 +163,10 @@ def run_meta_evidence_dual_routing_cycle_v1(
 ) -> MappingProxyType[str, Any]:
     """Classify → route → bounded consumer research input (deterministic replay chain)."""
     meta_evidence = classify_and_build_meta_evidence_v1(request)
-    routed = route_meta_evidence_v1(meta_evidence)
+    routed = route_meta_evidence_v1(
+        meta_evidence,
+        requested_consumer=request.requested_consumer_override,
+    )
     body = {
         "schema_version": SCHEMA_VERSION,
         "domain": ROUTER_DOMAIN,

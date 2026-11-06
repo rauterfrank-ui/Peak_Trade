@@ -1,0 +1,69 @@
+{
+  "after_proposed_region": {
+    "fast": 10,
+    "slow": 100
+  },
+  "before_proposed_region": {
+    "fast": 10,
+    "slow": 50
+  },
+  "comparison": "No-collapse control emits no repeated-overfit parameter-region proposal",
+  "limits": "Three declared trials on shared controlled data, not independent markets, original core learning, natural source authenticity or statistical improvement proof; other Phase10 scaffold fields are synthetic fixtures",
+  "parameter_region_proposals": [
+    {
+      "applies_to_champion": false,
+      "authority": "RESEARCH_ONLY",
+      "claim_type": "DESCRIPTIVE",
+      "kind": "DEPRIORITIZE_RESEARCH",
+      "promotion_authority": "NONE",
+      "proposal_id": "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d",
+      "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+      "reason": "REPEATED_OVERFIT",
+      "target": "aec334e287d62c605cfc2032e1f2b5f33aed91f9d87437dcae337a3b9ac0d975",
+      "target_kind": "parameter_region"
+    }
+  ],
+  "same_budget": 1,
+  "source_class": "SYNTHETIC_HOURLY_CONTROL_RETURNS_NOT_MARKET_OR_STRATEGY_RUN",
+  "source_experiments": [
+    {
+      "computed_split_sharpes": {
+        "test_sharpe": -77.85632371784388,
+        "train_sharpe": 77.85632371783784
+      },
+      "experiment_id": "62c49e2eec0ffffe026c7dcd57458bfce208afe691f81468f2fdd57ef2ef3be1",
+      "failed_robustness_tests": [
+        "TRAIN_VALIDATION_HOLDOUT"
+      ],
+      "metrics": {
+        "sharpe": -20.51372971441837
+      }
+    },
+    {
+      "computed_split_sharpes": {
+        "test_sharpe": -77.85632371784388,
+        "train_sharpe": 77.85632371783784
+      },
+      "experiment_id": "f2a225c3f7a29d8db7d087182addc061ac19d7f1fcd6107ec1f1f295712c949c",
+      "failed_robustness_tests": [
+        "TRAIN_VALIDATION_HOLDOUT"
+      ],
+      "metrics": {
+        "sharpe": -20.51372971441837
+      }
+    },
+    {
+      "computed_split_sharpes": {
+        "test_sharpe": -77.85632371784388,
+        "train_sharpe": 77.85632371783784
+      },
+      "experiment_id": "fc77899a6d900b1d5fec300bc00d67bec10bbba241283f85cef3a4ddad164fe7",
+      "failed_robustness_tests": [
+        "TRAIN_VALIDATION_HOLDOUT"
+      ],
+      "metrics": {
+        "sharpe": -20.51372971441837
+      }
+    }
+  ]
+}

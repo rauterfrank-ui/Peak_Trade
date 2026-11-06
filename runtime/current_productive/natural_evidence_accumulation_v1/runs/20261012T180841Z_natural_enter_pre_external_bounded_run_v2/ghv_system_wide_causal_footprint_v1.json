@@ -1,0 +1,13 @@
+{
+  "DISCOVERED_SURFACES_ACCOUNTED_FOR": true,
+  "GHV_CANARY_ROOT": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "GHV_SYSTEM_WIDE_FOOTPRINT": true,
+  "NO_FAIL_FAST": true,
+  "direct_consumers": [],
+  "observed_but_not_modeled_surfaces": [],
+  "observed_gates": [],
+  "observed_transformations": [],
+  "owner": "full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1",
+  "schema_version": "ghv_system_wide_causal_footprint.v1",
+  "transitive_consumers": []
+}

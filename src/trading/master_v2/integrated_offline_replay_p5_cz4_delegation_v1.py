@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any, Optional, Tuple
 
 if TYPE_CHECKING:
@@ -67,11 +67,18 @@ def _synthetic_noop_scope_event_v1(
     assert current_scope is not None
     confirmation = inp.scope_confirmation_state
     trailing = float(seal.r_t) if seal.r_t > 0 else float(current_scope.trailing_anchor)
+    from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+        resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1,
+    )
+
+    distances = resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(float(seal.d_t))
+    if not distances.ok:
+        raise ValueError("p5_delegated_layer_c_distance_invalid")
     thresholds = EvaluatedThresholdsV1(
         up_candidate_threshold=float(seal.d_t),
         downscope_candidate_threshold=float(seal.d_t),
-        adverse_exit_threshold=float(inp.adverse_exit_distance),
-        reversal_candidate_threshold=float(inp.reversal_distance),
+        adverse_exit_threshold=float(distances.adverse_exit_distance),
+        reversal_candidate_threshold=float(distances.reversal_distance),
     )
     binding = ScopeEventSemanticBindingV1(
         market_context_digest=inp.canonical_market_context.input_digest or "",
@@ -79,8 +86,8 @@ def _synthetic_noop_scope_event_v1(
         current_price=float(inp.current_price),
         trailing_anchor=trailing,
         up_distance=float(seal.d_t),
-        adverse_exit_distance=float(inp.adverse_exit_distance),
-        reversal_distance=float(inp.reversal_distance),
+        adverse_exit_distance=float(distances.adverse_exit_distance),
+        reversal_distance=float(distances.reversal_distance),
         confirmation_epochs=int(inp.confirmation_epochs),
         cooldown_active=bool(inp.scope_cooldown_state.active),
         cooldown_remaining_epochs=int(inp.scope_cooldown_state.remaining_epochs),
@@ -189,6 +196,16 @@ def try_build_p5_cz4_delegated_replay_context_v1(
             anchor_price=float(seal.r_t),
             now_tick=int(inp.now_tick),
         )
+    # The sealed Layered Core is the distance/reference owner in this branch.
+    # Never reuse a bootstrap/legacy band's magnitude in downstream Layer-C.
+    runtime_pre = replace(
+        runtime_pre,
+        anchor_price=float(seal.r_t),
+        current_hysteresis_band=float(seal.d_t),
+        current_upscope_boundary=float(seal.r_t) + float(seal.d_t),
+        current_downscope_boundary=float(seal.r_t) - float(seal.d_t),
+        scope_distance_mode="sealed_explicit_dt_v1",
+    )
     runtime_after = runtime_pre
     next_side_state = inp.side_state
     transition = TransitionDecision(False, P5_CZ4_DELEGATION_REASON)

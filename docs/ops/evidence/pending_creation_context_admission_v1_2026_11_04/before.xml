@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="12" skipped="0" tests="12" time="0.244" timestamp="2026-11-04T02:19:47.620682+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[0-decision_timestamp_unix]" time="0.002"><failure message="src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID">src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:74: in _validated_record_v2
+    raise ValueError
+E   ValueError
+
+The above exception was the direct cause of the following exception:
+tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:132: in maybe_create_natural_enter_pending_outcome_v1
+    persist_record_v1(
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:346: in persist_record_v1
+    _apply_event_v2(records, event)
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:126: in _apply_event_v2
+    record = _validated_record_v2(event["record"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:106: in _validated_record_v2
+    raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+E   src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[0-decision_reference_price]" time="0.001"><failure message="src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID">src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:74: in _validated_record_v2
+    raise ValueError
+E   ValueError
+
+The above exception was the direct cause of the following exception:
+tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:132: in maybe_create_natural_enter_pending_outcome_v1
+    persist_record_v1(
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:346: in persist_record_v1
+    _apply_event_v2(records, event)
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:126: in _apply_event_v2
+    record = _validated_record_v2(event["record"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:106: in _validated_record_v2
+    raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+E   src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[-1-decision_timestamp_unix]" time="0.001"><failure message="src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID">src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:74: in _validated_record_v2
+    raise ValueError
+E   ValueError
+
+The above exception was the direct cause of the following exception:
+tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:132: in maybe_create_natural_enter_pending_outcome_v1
+    persist_record_v1(
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:346: in persist_record_v1
+    _apply_event_v2(records, event)
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:126: in _apply_event_v2
+    record = _validated_record_v2(event["record"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:106: in _validated_record_v2
+    raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+E   src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[-1-decision_reference_price]" time="0.001"><failure message="src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID">src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:74: in _validated_record_v2
+    raise ValueError
+E   ValueError
+
+The above exception was the direct cause of the following exception:
+tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:132: in maybe_create_natural_enter_pending_outcome_v1
+    persist_record_v1(
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:346: in persist_record_v1
+    _apply_event_v2(records, event)
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:126: in _apply_event_v2
+    record = _validated_record_v2(event["record"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:106: in _validated_record_v2
+    raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+E   src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[nan-decision_timestamp_unix]" time="0.001"><failure message="src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID">src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:74: in _validated_record_v2
+    raise ValueError
+E   ValueError
+
+The above exception was the direct cause of the following exception:
+tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:132: in maybe_create_natural_enter_pending_outcome_v1
+    persist_record_v1(
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:346: in persist_record_v1
+    _apply_event_v2(records, event)
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:126: in _apply_event_v2
+    record = _validated_record_v2(event["record"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:106: in _validated_record_v2
+    raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+E   src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[nan-decision_reference_price]" time="0.001"><failure message="src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID">src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:74: in _validated_record_v2
+    raise ValueError
+E   ValueError
+
+The above exception was the direct cause of the following exception:
+tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:132: in maybe_create_natural_enter_pending_outcome_v1
+    persist_record_v1(
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:346: in persist_record_v1
+    _apply_event_v2(records, event)
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:126: in _apply_event_v2
+    record = _validated_record_v2(event["record"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:106: in _validated_record_v2
+    raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+E   src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[inf-decision_timestamp_unix]" time="0.001"><failure message="src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID">src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:74: in _validated_record_v2
+    raise ValueError
+E   ValueError
+
+The above exception was the direct cause of the following exception:
+tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:132: in maybe_create_natural_enter_pending_outcome_v1
+    persist_record_v1(
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:346: in persist_record_v1
+    _apply_event_v2(records, event)
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:126: in _apply_event_v2
+    record = _validated_record_v2(event["record"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:106: in _validated_record_v2
+    raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+E   src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[inf-decision_reference_price]" time="0.001"><failure message="src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID">src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:74: in _validated_record_v2
+    raise ValueError
+E   ValueError
+
+The above exception was the direct cause of the following exception:
+tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:132: in maybe_create_natural_enter_pending_outcome_v1
+    persist_record_v1(
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:346: in persist_record_v1
+    _apply_event_v2(records, event)
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:126: in _apply_event_v2
+    record = _validated_record_v2(event["record"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py:106: in _validated_record_v2
+    raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+E   src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.store_v1.NaturalEnterPendingOutcomeStoreError: PENDING_STORE_RECORD_INVALID</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[True-decision_timestamp_unix]" time="0.002"><failure message="AssertionError: assert (not True)&#10; +  where True = NaturalEnterPendingCreationResultV1(created=True, skipped=False, reason='CREATED', pending_outcome_id='neo.pending.f6a...t_utc='2026-11-04T01:19:47.856214Z', updated_at_utc='2026-11-04T01:19:47.856214Z', closure_refs={}, failure_reason='')).created">tests/ops/test_pending_creation_context_admission_v1.py:19: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    assert not out.created and out.skipped and out.reason=='PENDING_DECISION_CONTEXT_UNBOUND'
+E   AssertionError: assert (not True)
+E    +  where True = NaturalEnterPendingCreationResultV1(created=True, skipped=False, reason='CREATED', pending_outcome_id='neo.pending.f6a...t_utc='2026-11-04T01:19:47.856214Z', updated_at_utc='2026-11-04T01:19:47.856214Z', closure_refs={}, failure_reason='')).created</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[True-decision_reference_price]" time="0.001"><failure message="AssertionError: assert (not True)&#10; +  where True = NaturalEnterPendingCreationResultV1(created=True, skipped=False, reason='CREATED', pending_outcome_id='neo.pending.f6a...t_utc='2026-11-04T01:19:47.858669Z', updated_at_utc='2026-11-04T01:19:47.858669Z', closure_refs={}, failure_reason='')).created">tests/ops/test_pending_creation_context_admission_v1.py:19: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    assert not out.created and out.skipped and out.reason=='PENDING_DECISION_CONTEXT_UNBOUND'
+E   AssertionError: assert (not True)
+E    +  where True = NaturalEnterPendingCreationResultV1(created=True, skipped=False, reason='CREATED', pending_outcome_id='neo.pending.f6a...t_utc='2026-11-04T01:19:47.858669Z', updated_at_utc='2026-11-04T01:19:47.858669Z', closure_refs={}, failure_reason='')).created</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[None-decision_timestamp_unix]" time="0.001"><failure message="TypeError: float() argument must be a string or a real number, not 'NoneType'">tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:122: in maybe_create_natural_enter_pending_outcome_v1
+    decision_timestamp_unix=float(decision_timestamp_unix),
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: float() argument must be a string or a real number, not 'NoneType'</failure></testcase><testcase classname="tests.ops.test_pending_creation_context_admission_v1" name="test_unbound_or_invalid_decision_context_does_not_create_or_raise[None-decision_reference_price]" time="0.001"><failure message="TypeError: float() argument must be a string or a real number, not 'NoneType'">tests/ops/test_pending_creation_context_admission_v1.py:18: in test_unbound_or_invalid_decision_context_does_not_create_or_raise
+    out=maybe_create_natural_enter_pending_outcome_v1(**args)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py:123: in maybe_create_natural_enter_pending_outcome_v1
+    decision_reference_price=float(decision_reference_price),
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: float() argument must be a string or a real number, not 'NoneType'</failure></testcase></testsuite></testsuites>

@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
+from src.ops.local_single_writer_lock_recovery_v1 import acquire_exclusive_local_writer_lock_v1
+
 from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.constants_v1 import (
     SINGLE_WRITER_IDENTITY,
     WRITER_LOCK_FILENAME,
@@ -44,9 +46,10 @@ class DurableLaneAssignmentSingleWriterV1:
             "session_id": self.session_id,
             "writer_identity": self.writer_identity,
         }
-        flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
         try:
-            fd = os.open(str(lock), flags, 0o644)
+            acquire_exclusive_local_writer_lock_v1(
+                lock, writer_identity=self.writer_identity, payload=payload
+            )
         except FileExistsError as exc:
             existing: dict[str, Any] = {}
             try:
@@ -56,10 +59,6 @@ class DurableLaneAssignmentSingleWriterV1:
             raise DuplicateLaneAssignmentWriterError(
                 f"{FAILURE_DUPLICATE_WRITER}:existing={existing}"
             ) from exc
-        with os.fdopen(fd, "w", encoding="utf-8") as fh:
-            fh.write(json.dumps(payload, sort_keys=True, indent=2) + "\n")
-            fh.flush()
-            os.fsync(fh.fileno())
         self._held = True
 
     def release(self) -> None:

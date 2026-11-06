@@ -1,0 +1,105 @@
+# Historische Datenversorgung und belegte Teilwege
+
+Stand 02.11.2026. Suchauftrag: tatsächliche gespeicherte Versorgung finden, bevor aus Schnittstellen eine funktionierende Gesamtberechnung abgeleitet wird.
+
+Archivierte Daten sind jetzt konkret gefunden. Ein DDO-Teilweg bis zu 47 Learning-State-Records ist materiell nachvollziehbar; eine vollständige Versorgung der August-Berechnungs- und Optimierungskette ist damit noch nicht belegt.
+
+## Konkrete Funde
+
+### F01 · DDO-Journal
+
+Zeitbezug: 03.10.2026 laut Record-Zeitfeldern; erste/letzte Learning-Zeit 05:00–07:00 UTC.
+
+Bestand: 1.722 JSONL-Records: 1.416 Entscheidungen, 118 DPO-Beobachtungen, je 47 Outcomes/Attributions/Counterfactuals/Learning-States.
+
+Nachweisgrenze: Alle 47 State-Verweise auf die vier zugehörigen Recordtypen im Journal auflösbar. Wirtschaftlicher Wert und Next-Cycle-Label jeweils 47/47 UNKNOWN. Quellen: A01; archived-ddo-capture-profile.json.
+
+### F02 · Marktbeobachtungen eines Laufsegments
+
+Zeitbezug: 03.10.2026, seg_001, Run bbbb9f76fa7eb0d5.
+
+Bestand: 478 archivierte Capture-Zeilen; erste Antwort: öffentliche OKX-Mark-Price-Candles, SAND-USDT-SWAP, HTTP 200.
+
+Nachweisgrenze: Manifest/Flight-Recorder und Konvergenzbericht liegen bei. Keine bewiesene Zuordnung jeder Capture-Antwort zu jedem DDO-Outcome. Quellen: A02–A05.
+
+### F03 · ETH-Futures-Dataset v2
+
+Zeitbezug: Beschaffung/Staging 08.10.2026 laut Manifest.
+
+Bestand: bars.parquet vorhanden, 13.609.024 Byte; Manifest meldet 287.527 Zeilen.
+
+Nachweisgrenze: Quelldaten-/Kosten-/Splitmetadaten erhalten. Zeilenzahl ist Manifestangabe; Parquet-Zeilen nicht unabhängig erneut ausgewertet. Quellen: A06–A10; datasets-found.json.
+
+### F04 · ETH-Futures-Dataset v3
+
+Zeitbezug: Beschaffung/Staging 10.10.2026 laut Manifest.
+
+Bestand: bars.parquet vorhanden, 90.686.783 Byte; Manifest meldet 1.989.600 Zeilen.
+
+Nachweisgrenze: Vier Rohantwort-Stichproben für OHLCV/Funding/Index/Mark gelesen; jeweils 300 Datenzeilen, Dateiname passt zum SHA256-Präfix. Kein Beleg einer August-Verfügbarkeit. Quellen: A11–A15; R01–R04.
+
+### F05 · älteres Beweisarchiv
+
+Zeitbezug: Historische Verweise auf Archivwurzel 20260520T161443Z und Dataset v1.
+
+Bestand: Der damalige Documents-Archivpfad ist heute nicht vorhanden. Im gezielt gelesenen Datenarchiv liegen v2/v3; v1 ist dort nicht gefunden.
+
+Nachweisgrenze: Zeitgenössische Verweise und COMPLETE-Indexzeilen ersetzen die fehlenden referenzierten Dateien nicht. Quellen: sources.json; cursor-40695.md; I07/I08.
+
+## Ein archivierter Teilweg mit tatsächlich vorhandenen Records
+
+Das DDO-Journal stammt aus `runtime/natural_enter_overnight_long_run_v1/lane_state/LANE_1/ddo_learning_capture_v1.jsonl` im M2DATA-Backup vom 07.10. Seine 1.722 Zeilen wurden vollständig als JSON gelesen. Die 47 Learning-State-Records verweisen jeweils auf einen im Journal vorhandenen Decision-, Outcome-, Attribution- und Counterfactual-Record; der Decision-Bezug des referenzierten Outcome stimmt ebenfalls überein. Record-IDs sind im Register nachlesbar.
+
+Die Sequenznummern sind durchgängig und die gespeicherten `prev_ledger_hash`-Zeiger stimmen mit dem jeweils vorhergehenden `ledger_entry_hash` überein. Dies ist eine strukturelle Prüfung; die Inhalte und Ledger-Hashes wurden nicht nach dem vollständigen ursprünglichen Hashvertrag neu zertifiziert. Eine Backup-Kopie beweist außerdem nicht allein jede behauptete Eigenschaft ihres historischen Producers.
+
+Für alle 47 States stehen `last_economic_score` und `next_cycle_economic_score_label` auf `UNKNOWN`. Das erste untersuchte Outcome hat `decision_score=no_action`, `execution_mode_label=NO_EXECUTION`, `fill_source_type=NO_FILL`, `outcome_realization_kind=OBSERVATION_ONLY`, `accounting_source=SIMULATED_ECONOMICS_PARALLEL` und `market_observation_source=INJECTED_C1`. Das ist kein nachgewiesener wirtschaftlicher Tradeerfolg. Ein vorhandener `actual_outcome_ref` ist ein Verweis auf einen Messdatensatz, nicht schon dessen hier gefundener numerischer Inhalt.
+
+Die begrenzte Suche nach der vollständigen ersten Messreferenz im zugehörigen archivierten Laufordner findet sie nur im Journal. Das zugrunde liegende separate Messartefakt wurde dort bislang nicht gefunden. Die ursprüngliche Codefassung am Segment-Manifest-Pin `53a0164757dc7213f2b6dd7f891c81007f0b3f3e` wurde separat gesichert: Evaluation-Engine löst spätere Outcomes auf, und der Ingest kopiert deren Werte/Refs in den State. Sie erfindet damit keine fehlenden numerischen Messwerte. C01:267–280; C02:233–264; C03:168–207. Der Manifest-Pin bezieht sich auf das Segment; die Journal-Payloads tragen teils `code_sha=UNKNOWN`. Ein exakter Code-Pin jedes einzelnen Records ist dadurch nicht bewiesen.
+
+Im ersten Laufsegment sind zusätzlich Markt-Captures, Flight-Records, Manifest und Konvergenzbericht erhalten. Das Manifest bindet die Run-ID `bbbb9f76fa7eb0d5`. Der Bericht nennt 12 Zyklen, Public-GET-Nutzung, kein beobachtetes Natural Enter und keinen POST. Die erste gespeicherte Marktantwort betrifft SAND-Mark-Price-Kerzen. Das stützt einen konkreten Beobachtungskontext; es schließt nicht die noch fehlende Messwert-/Outcome-Zuordnung jedes Records. A02–A05.
+
+## Zwei tatsächliche Dataset-Dateien mit später Beschaffung
+
+Im gezielt erschlossenen Archiv `sources/home/Peak_Trade_data_archive/runtime_evidence/20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp` liegen `v2/bars.parquet`, `v3/bars.parquet` und deren Metadaten. Beide Binärdateien wurden gelesen und mit SHA256 erfasst; ihre Header/Trailer lauten `PAR1`. Die Zeilenzahlen stammen aus den Manifesten, nicht aus einer unabhängigen erneuten Auswertung der Parquet-Zeilen. [Dateiprüfung](datasets-found.json).
+
+v2 wurde laut Manifest am 08.10.2026 beschafft/gestaged und enthält einen Datenzeitraum ab März 2026. v3 wurde am 10.10.2026 beschafft/gestaged; sein manifestierter Zeitraum beginnt am 19.12.2022. Alte Marktzeitstempel bedeuten nicht, dass der Datensatz schon damals im System verfügbar war. Der Ordnername `20260520T161443Z` beweist insbesondere keine Versorgung im Mai oder August.
+
+Die zugehörigen Metadaten nennen reale Public-REST-Beschaffung, aber modellierte Ausführungskosten ohne historische L1-Bid-/Ask-Beobachtung. Im v3-Kostenvertrag stehen etwa Fee 10 bps, Slippage 5 bps und Half-Spread 5 bps pro Seite. Das sind Modellannahmen, keine in diesem Fund beobachteten Fills. Vier Rohantwort-Stichproben (OHLCV, Funding, Index, Mark) enthalten jeweils 300 Datensätze; ihre tatsächlich berechneten SHA256-Präfixe stimmen mit den Dateinamen überein. R01–R04. Eine erneute vollständige Qualitätsprüfung der gesamten Rohhistorie wurde nicht durchgeführt.
+
+ETH-Dataset und SAND-Beobachtungslauf werden nicht als ein gemeinsamer historischer Versorgungspfad behandelt. Ein gespeicherter Backtest-/Optimierungs-/Meta-Output mit identischer Dataset-Bindung ist dafür noch zu paaren.
+
+## Welche Kanten derzeit belegt sind
+
+**Gespeicherte Marktantwort — GEFUNDEN:** Archivierte Public-GET-Antworten sind vorhanden. Beleg/Grenze: A02.
+
+**Verwendung im konkreten Lauf — KONTEXT GEFUNDEN:** Manifest nennt SHA 53a01647; Flight-Record und Segmentbericht binden Run-ID. Beleg/Grenze: A03–A05; nicht jedes Journalrecord besitzt seinen eigenen Code-Pin..
+
+**Entscheidung → Outcome → Learning-State — TEILWEG MATERIELL NACHVOLLZIEHBAR:** 47 States besitzen passende lokale Recordverweise; Sequenzen/Hashzeiger ohne festgestellten Bruch. Beleg/Grenze: A01; Zeigerprüfung ist keine vollständige kryptografische Ledgerprüfung..
+
+**Ökonomischer Messwert — NUMERISCHE VERSORGUNG NICHT BELEGT:** 47 States: last_economic_score=UNKNOWN, next_cycle_economic_score_label=UNKNOWN. Beleg/Grenze: Es sind Beobachtungs-/NO_FILL-Daten; kein realisiertes Tradeergebnis..
+
+**Learning-State → Optimization-/Meta-Evidence — NICHT GEFUNDEN IM SUCHRAUM:** Begrenzte Suche nach Export-/Evidence-Verträgen in ausgewählten Ausgaben ohne Treffer. Beleg/Grenze: downstream-search.json; kein globaler Abwesenheitsbeweis..
+
+**Versorgung der August-Fragen — WEITER OFFEN:** Keine gespeicherten August-Meta-Einheiten oder Phase-10/11/12-Ergebnisdatensätze im bisherigen Suchraum gefunden. Beleg/Grenze: content-search.json; Oktober-Datensätze dürfen nicht rückdatiert werden..
+
+## Frühe Versorgung bleibt eine gezielte Suchfrage
+
+Der heutige Pfad `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z` ist nicht vorhanden. Die erhaltenen v2/v3-Manifeste verweisen teilweise auf Dataset v1; ein v1-Verzeichnis ist im hier inventarisierten Datenarchiv nicht enthalten. Der Run-Evidence-Index nennt zusätzlich einen Shadow-Run vom Mai und zwei Oktober-Runs als COMPLETE, deren referenzierte Runordner in der inventarisierten Archivkopie nicht vorliegen. Diese Indexeinträge liefern damit konkrete Suchanker, aber keinen Ersatz für die Dateien.
+
+Eine historische Originalnachricht mit Census zur Primary-Evidence-Persistenz wurde textgleich mit dem Original-JSONL abgeglichen: [Nachricht 40695](cursor-40695.md), Revision `dbf4a0ddd…`. Sie unterscheidet damals schon Primärdaten von Projektionen und bezeichnet automatische Runtime-Primary→Learning/Optimization-Wege teilweise als fehlend bzw. nur Fixture-bounded. Ihre Labels werden hier nicht als neue Wahrheit übernommen; sie dienen dem Auffinden der ursprünglichen Speicherpfade.
+
+## Suchraum und Grenzen
+
+Die Pfadinventare I01–I08 enthalten 177.389 Einträge mit mehrfach vorkommenden Backup-Kopien. Das ist keine Zahl unterschiedlicher Datenartefakte und keine semantische Vollprüfung. I01/I02 erfassen ausgewählte Daten-/Runtime-/Evidence-/Outputflächen der beiden Arbeitskopien; I03–I06 dieselben Flächen ausgewählter Backups; I07/I08 erfassen die konkret erschlossenen Daten-/Runarchive. [Quellenregister](sources.json).
+
+Die erste Inhaltssuche liest nur ausgewählte Text-/JSON-Formate bis 4 MiB in I01/I03/I05 und konkrete Vertragsmarker. Ihre Treffer bestehen aus eingebetteten Source-/Dokumentationskopien, nicht aus hier identifizierten gespeicherten August-Loop-/Meta-Ergebnisrecords. Die zusätzliche Downstream-Suche in I01/I03/I04/I05 sucht Export-/Evidence-Vertragsmarker, schließt zwei eingebettete Sourcekopie-Flächen aus und findet keine Treffer. Das ist kein globaler Abwesenheitsbeweis. [Erste Suche](content-search.json), [Downstream-Suche](downstream-search.json).
+
+M2DATA wurde als gemountetes HFS+-Volume mit UUID `BFA81BFA-80C5-3634-84EE-17B3496EE123` erneut identifiziert. Das Betriebssystem meldet es nicht schreibgeschützt; sämtliche Zugriffe dieser Untersuchung waren lesend. Eine enge Prozessnamensprüfung zeigte keinen der abgefragten Recovery-Prozesse. Recovery-Originale, Repository und Obsidian-Ledger wurden nicht verändert. Keine neuen Recovery-Scans, kein Wiederherstellen und kein Lern-/Optimierungslauf.
+
+## Nächste konkrete Suchanker
+
+- Das frühere Documents-Beweisarchiv und Dataset v1 über datierte Originalverweise, Backup-Manifeste und passende Recovery-Funde weiter lokalisieren.
+- Gespeicherte Messartefakte hinter actual_outcome_ref auffinden und zum konkreten Decision-/Bar-Fenster paaren.
+- Für denselben historischen State einen tatsächlichen Export, Optimization-Input und daraus erzeugte Ergebnis-/Meta-Dateien finden.
+
+Diese Untersuchung dokumentiert erste materielle Datenfunde und einen lokalen Record-Teilweg. Die historische Versorgung der gesamten Berechnungskette ist weiter offen.

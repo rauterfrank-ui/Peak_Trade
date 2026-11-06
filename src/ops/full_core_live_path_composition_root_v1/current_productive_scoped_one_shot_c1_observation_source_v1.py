@@ -70,6 +70,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_candidate_input_gate_v1 import (
+    REQUIRED_CANDIDATE_FINALIZED_CLOSES,
+)
+
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     REQUIRED_BAR,
     CurrentProductiveC1ObservationV1,
@@ -264,7 +268,9 @@ GET_HOST = AUTHORIZED_HOST
 GET_METHOD = METHOD_GET
 GET_PATH = ENDPOINT_MARKET_CANDLES
 GET_BAR = REQUIRED_BAR
-GET_LIMIT = "100"
+# One additional row accommodates an unfinished current candle. The historical
+# requirement is 100 finalized candles, not a wait for 100 future candles.
+GET_LIMIT = str(REQUIRED_CANDIDATE_FINALIZED_CLOSES + 1)
 GET_AUTH_REQUIRED = False
 GET_MAX_REQUEST_COUNT = 1
 GET_TIMEOUT_SECONDS = DEFAULT_TIMEOUT_SECONDS

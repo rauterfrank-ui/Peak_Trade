@@ -12,3 +12,7 @@ class GvefRunnerError(GvefSchemaError):
 class GvefNonDeterminismError(GvefRunnerError):
     failure_classification: str = "NON_DETERMINISM"
     reproof_class: str = "WHOLE_SYSTEM_REPROOF"
+
+
+class GvefResultMutationError(GvefRunnerError):
+    """A previously evaluated result changed during a downstream callback."""

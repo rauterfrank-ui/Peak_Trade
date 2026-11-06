@@ -1,0 +1,209 @@
+# PeakTrade: Gesamtstruktur der Architektur
+
+Diese Ansicht rückt Aufbau, Aufgaben, Ebenensichten und Grenzen in den Vordergrund. Sie enthält keine Untersuchung einzelner Berechnungen oder Implementierungsfehler. Historische Architekturabsicht, spätere Modellvarianten und heutige Betriebswirkung werden getrennt gehalten.
+
+## Zusammenhängendes Quellmodell
+
+Runtime liefert Evidence. Learning/Research liefert Kandidaten. Validierung und gesonderte Release-/Deployment-Verantwortung bestimmen ein erlaubtes Artefakt für spätere Runtime-Zyklen. Kein gleichzeitiger BUY/SELL-Befehl vom Learner.
+
+Die historische 66-seitige Blueprint-Fassung benennt eine schnelle operative und eine langsamere adaptive Ebene. Steuerung/Health/Recovery sowie Daten-/Ledger-Flächen ergänzen diese Sicht. Daraus werden keine neuen Universen oder abschließend nummerierten Systemebenen geschaffen.
+
+## Architekturzweige und Bereiche
+
+### Daten- und Instrumentgrundlage
+
+DATA_PLANES, PRE_MASTER
+
+Versorgt Entscheidung, Research und Auswertung mit gebundenem Kontext; ist keine Trading-Entscheidungsinstanz.
+
+### Operative Entscheidung und Wirkung
+
+MASTER_V2, CAPITAL_RISK, SAFETY_CONTROLS, EXECUTION
+
+Getrennte Decision-, Mengen-, Veto-, Plan-, Permission- und Ausführungsverantwortungen.
+
+### Lernen, Marktverständnis und Forschung
+
+SELF_LEARNING, MARKET_INTELLIGENCE, OPTIMIZATION, RESEARCH_ASSURANCE
+
+Outcome-/Markt- und Experimentwissen, Kandidaten und Nachweise; Übergabe in Runtime über gesonderte Release-Grenze.
+
+### Steuerung und Zustandskontinuität
+
+ORCHESTRATION, STATE_PERSISTENCE, SAFETY_CONTROLS
+
+Umschließt und koppelt die Abläufe; überlappende Querschnittssicht, kein zusätzlicher universeller Owner.
+
+## Operativer Ablauf (historisches Zielbild)
+
+### Daten und kanonische Snapshots
+
+Markt-, Account- und Venue-Beobachtungen mit Identität, Qualität und Zeitbezug bereitstellen.
+
+### Selection
+
+Das aktive Instrument nach gebundener Auswahlregel bestimmen.
+
+### Master V2 / Double Play
+
+Handelsentscheidung und Zustandswechsel erzeugen.
+
+### 29P: Risk / Sizing
+
+Risiko und zulässige Menge begrenzen.
+
+### Safety und unabhängige Guards
+
+Veto gegen unsichere Fortsetzung einlegen.
+
+### 29Q und Mapper
+
+Exakten Plan bilden und ohne neue Handelsentscheidung übersetzen.
+
+### Execution Permission
+
+Die Befugnis für genau diese Aktion prüfen.
+
+### Execution
+
+Den bereits gebundenen Auftrag ausführen.
+
+### Reconciliation und Beobachtung
+
+Resultierenden Zustand feststellen und Evidence für weitere Zyklen liefern.
+
+## Innere Learning-Verarbeitung im DDO-Entwurf
+
+### Evidence-Eingang und Herkunft
+
+Entscheidungen, bewusste Nichtentscheidungen, Incidents und Execution-Beobachtungen als unveränderliche Grundlage aufnehmen.
+
+Gegenstände: DecisionEvent / IncidentRecord / Snapshots
+
+Grenze: Eingangsgrenze zum bestehenden Runtime-/Research-Producer
+
+### Outcome Engine
+
+Spätere Folgen an einem ausdrücklich bestimmten Horizont beschreiben.
+
+Gegenstände: OutcomeRecord
+
+Grenze: Beobachtete Folgen bleiben von Bewertung und Annahmen getrennt.
+
+### Attribution und Counterfactuals
+
+Entscheidungs-/Safety-Korrektheit, Gründe und zulässige Alternativen untersuchen.
+
+Gegenstände: AttributionRecord / CounterfactualRecord
+
+Grenze: Unbeobachtete Alternativen werden nicht zu Tatsachen erklärt.
+
+### Cohort- und Fehleranalyse
+
+Mehrere Ereignisse und Experimente nach gemeinsamem Kontext, Fehlern und Qualitätsmustern untersuchen.
+
+Gegenstände: gebundene Ereignis-/Outcome-/Experimentkohorten
+
+Grenze: Vom einzelnen Outcome und von nachfolgender Freigabe getrennte Aufgabe.
+
+### Hypothesenbildung
+
+Erklärungs- und Verbesserungshypothesen aus der gesammelten Evidence ableiten.
+
+Gegenstände: LearningHypothesis
+
+Grenze: Hypothese ist weder neue Regel noch produktive Entscheidung.
+
+### Kandidatenbildung und isoliertes Training/Fitting
+
+Versionierte Modell-, Policy- oder Konfigurationskandidaten mit beabsichtigtem Scope erzeugen.
+
+Gegenstände: CandidateArtifact
+
+Grenze: Isolierte Research-Tätigkeit; nicht selbst produktiv freigeben.
+
+### Gedächtnis und Lineage
+
+Evidence, Hypothesen, Experimente, Kandidaten und verworfene Varianten nachvollziehbar verbinden.
+
+Gegenstände: Learning Registry + unveränderliche Quellreferenzen
+
+Grenze: Speicher-/Identitätssicht, keine zusätzliche Entscheidungsebene.
+
+## Angrenzende Validierungs-/Release-Aufgaben
+
+### Validierung
+
+Replay/Backtest, Walk-Forward, Monte Carlo, Stress/Fault, Safety-/Authority-Prüfung und Shadow-Evidence erzeugen.
+
+### Promotion Eligibility
+
+Evidence gegen eine benannte Policy prüfen; noch keine Aktivierung.
+
+### Promotion Policy und Controller
+
+Zulässige Kandidatenklassen und Grenzen getrennt von ihrer mechanischen Prüfung halten.
+
+### Release und Deployment
+
+Exaktes freigegebenes Artefakt an einer sicheren Zyklusgrenze aktivieren.
+
+### Monitoring und Rollback
+
+Verwendete Version, Zustand und Rückkehr zum bekannten guten Artefakt nachvollziehen.
+
+## Steuerung, Schutz und Kontinuität
+
+### Supervisor / Health
+
+Zyklus-Lifecycle, Voraussetzungen, Warten, Degradation, Recovery und Halt koordinieren.
+
+Grenze: Kein zweiter Trader oder Kandidaten-Promoter.
+
+### Unabhängiger Schutz
+
+KillSwitch, Datenvertrauen/Freshness, Risk- und Reconciliation-Sperren erhalten.
+
+Grenze: Keine Aufweichung durch spätere Profitabilität oder Learning.
+
+### State / Persistence
+
+Identität, Version, Single Writer, Restart und konsistente Fortsetzung sichern.
+
+Grenze: Fachlich unterschiedliche Zustände nicht in einen universellen State umdeuten.
+
+### Evidence- und Registry-Flächen
+
+Raw Evidence, Snapshots, Decision-/Incident-/Outcome-Ledger, Learning-/Validation-/Release-Registry verknüpfen.
+
+Grenze: Abgeleitete Interpretation ersetzt nicht die Quelle.
+
+## Mehrere Learning-Sichten erhalten
+
+### DDO-Entwurf und Full-Autonomy-Erweiterung
+
+Innere Evidence-/Outcome-/Attribution-/Analyse-/Kandidatenverarbeitung plus deutlich getrennte Release- und Runtime-Grenzen.
+
+Datierte Architekturvorstellung; Original-Runbook, technische Membership und vollständige Umsetzung nicht daraus bewiesen.
+
+### Experiment-/Research-Fähigkeiten
+
+Identity, Memory, Vergleichbarkeit, Failure, Robustness, Regime, Portfolio, Search und Meta-Analyse als Forschungsfähigkeiten.
+
+Die zitierte separate Master-Runbook-Datei fehlt am alten Pfad; ihre Phasen 0–12 sind nicht automatisch innere Ebenen.
+
+### Spätere Markt-/Optimization-/Meta-Erweiterung
+
+Marktverhalten, Forecast/Kalibrierung, Learning-Export, Optimization-Experimente, Meta-Rückgabe und Repräsentationsfeedback.
+
+Spätere Erweiterung; nicht rückwirkend zur ursprünglichen oder vollständig technisch bewiesenen Selbstlern-Architektur erklären.
+
+## Noch nicht vollständig offengelegt
+
+- Separate ursprüngliche Master-Runbook-Fassung und früheste Universumskonstruktionen nicht vollständig erschlossen.
+- Keine vollständige, quellenübergreifend adjudizierte Ebenentaxonomie für jedes Universum.
+- Membership, innere Unterebenen und Konflikte zwischen historischen Fassungen teilweise offen.
+- Außenring und alle indirekten Rückkopplungen noch nicht vollständig rekonstruiert.
+- Dies ist eine Architekturansicht; statische Verdrahtung und Laufzeit werden dadurch nicht bewiesen.
+
+Primärquelle: /Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/5dd84555-dd5e-488c-9e7b-e3cd6e4ab235/PEAK_TRADE_DETERMINISTIC_DECISION_OUTCOME_LEARNING_BLUEPRINT_FULL_AUTONOMY_CURRENT_SYSTEM_2026-09-05.pdf · SHA256 e002f8b87e667f2b48c4695d92ca0c6fb825d326d2f6bc5eccf06414ce682674. Fachlich gelesen wurden die im Quellenregister ausgewiesenen vollständigen Seiten; nicht alle 66 Seiten. Seiten 20,55,61 visuell geprüft. Der im Quellenverzeichnis genannte frühere Markdown-Master liegt nicht mehr am dortigen Pfad. Keine historische Anweisung ausgeführt.

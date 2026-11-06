@@ -8,8 +8,9 @@ PRODUCTION_PROVIDER_WIRING remains NOT_AUTHORIZED at integration boundary.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Mapping
+from dataclasses import dataclass, replace
+from datetime import datetime, timezone
+from typing import Any, Callable, Mapping
 from urllib.parse import urlencode
 
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
@@ -93,7 +94,7 @@ def _freshness_proven_from_get_v1(
     *,
     surface: str = "",
 ) -> bool:
-    if not result.get_performed:
+    if not result.get_performed or result.method != "GET" or result.auth_header_sent is not True:
         return False
     if result.historical_reuse:
         return False
@@ -188,7 +189,7 @@ def _record_order_row_identity_conflicts_v1(
             identity_conflicts.append(f"CLORDID_IDENTITY_MISMATCH:{source}")
             continue
         row_inst = str(row.get("instId") or "").strip()
-        if row_inst and row_inst != identity.instrument_id.strip():
+        if row_inst and row_inst != identity.native_id.strip():
             identity_conflicts.append(f"INSTRUMENT_IDENTITY_MISMATCH:{source}:instId={row_inst}")
             continue
         if identity.exchange_ord_id:
@@ -219,7 +220,7 @@ def _record_fill_row_identity_conflicts_v1(
     safe: list[dict[str, Any]] = []
     for row in matching:
         row_inst = str(row.get("instId") or "").strip()
-        if row_inst and row_inst != identity.instrument_id.strip():
+        if row_inst and row_inst != identity.native_id.strip():
             identity_conflicts.append(f"INSTRUMENT_IDENTITY_MISMATCH:fills:instId={row_inst}")
             continue
         if identity.exchange_ord_id:
@@ -240,11 +241,13 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
     pretrade_decision_id: str,
     options: OkxReadOnlyReconciliationQueryOptionsV1 | None = None,
     received_at: str = "injected_transport",
+    acquisition_clock: Callable[[], str] | None = None,
 ) -> FullCoreExchangeReconciliationSnapshotV1:
     """Issue bounded OKX read-only GET set and map into Full-Core reconciliation snapshot."""
     opts = options or OkxReadOnlyReconciliationQueryOptionsV1()
+    clock = acquisition_clock or (lambda: datetime.now(timezone.utc).isoformat())
     cl = identity.clordid.strip()
-    inst = identity.instrument_id.strip()
+    inst = identity.native_id.strip()
     itype = opts.inst_type.strip() or "SWAP"
     if not cl or not inst:
         raise OkxReadOnlyReconciliationProviderError("CLORDID_AND_INSTRUMENT_REQUIRED")
@@ -258,12 +261,17 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
 
     def _get(surface: str, path: str, query: dict[str, str]) -> FreshPretradeGetTransportResultV1:
         endpoint = f"{path}?{urlencode(query)}"
-        return read_only_get_transport.get(
+        result = read_only_get_transport.get(
             endpoint=endpoint,
             auth_required=True,
             pretrade_decision_id=pretrade_decision_id,
             get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
         )
+        if result.endpoint != endpoint:
+            return replace(
+                result, get_performed=False, error_class="RECONCILIATION_ENDPOINT_MISMATCH"
+            )
+        return result
 
     def _ingest_order_rows(
         *,
@@ -380,14 +388,35 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
         incomplete_pagination = True
     _ingest_fill_rows(result=fills_res, rows=fills_rows)
 
+    preceding_orders = tuple(
+        dict(item.payload) for item in items if item.layer == EvidenceLayer.EXCHANGE_ORDER_STATE
+    )
+    positions_started_at = clock()
     pos_res = _get(
         "positions",
         ENDPOINT_ACCOUNT_POSITIONS,
-        {"instType": itype, "instId": inst},
+        {"instId": inst},
     )
+    positions_completed_at = clock()
     pos_fresh = _freshness_proven_from_get_v1(pos_res, surface="positions")
     snapshot_freshness_flags.append(pos_fresh)
     pos_err = _collect_api_error_v1(pos_res, surface="positions")
+    from src.ops.full_core_live_path_composition_root_v1.position_query_coverage_v1 import (
+        build_position_query_coverage_v1,
+    )
+
+    expected_positions_endpoint = ENDPOINT_ACCOUNT_POSITIONS + "?" + urlencode({"instId": inst})
+    position_coverage = None
+    if pos_fresh and pos_res.auth_header_sent and pos_res.endpoint == expected_positions_endpoint:
+        position_coverage = build_position_query_coverage_v1(
+            identity=identity,
+            endpoint=pos_res.endpoint,
+            method=pos_res.method,
+            response=pos_res.payload,
+            started_at_utc=positions_started_at,
+            completed_at_utc=positions_completed_at,
+            preceding_orders=preceding_orders,
+        )
     if pos_err:
         api_errors.append(pos_err)
     else:
@@ -424,6 +453,21 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
     snapshot_freshness_proven = bool(snapshot_freshness_flags) and all(snapshot_freshness_flags)
 
     return FullCoreExchangeReconciliationSnapshotV1(
+        positions_observation={
+            "identity_digest": identity.identity_digest(),
+            "native_id": identity.native_id,
+            "freshness_proven": pos_fresh,
+            "response": pos_res.payload,
+            "query_coverage": position_coverage,
+        },
+        pending_orders_observation={
+            "identity_digest": identity.identity_digest(),
+            "native_id": identity.native_id,
+            "freshness_proven": _freshness_proven_from_get_v1(
+                pending_res, surface="orders_pending"
+            ),
+            "response": pending_res.payload,
+        },
         provider=RECONCILIATION_PROVIDER_OKX_EEA_READ_ONLY_GET,
         simulation_mode=SIMULATION_OKX_TRANSPORT_INJECTED,
         identity_digest=identity.identity_digest(),

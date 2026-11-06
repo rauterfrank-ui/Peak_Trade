@@ -1,0 +1,171 @@
+# Learning und Optimization: gemeinsame Entwicklung, Datenübergaben und Autoritäten
+
+Stand 02.11.2026. Gemeinsame historische Rekonstruktion. Keine neue System-SSOT, Policy oder Freigabe. Die frühen Funktionsstränge bleiben der fachliche Ausgangspunkt; spätere Universumsnamen datieren ihre explizite Abgrenzung, nicht ihre erstmalige Entstehung.
+
+## Ergebnis und Leseregel
+
+Die Zusammenarbeit ist als mehrere **versionierte Daten- und Wirkungsgrenzen** zu beschreiben. Learning stellt beobachtungsgebundene Erfahrung und später Meta-Evidence bereit. Optimization erzeugt innerhalb separater Forschungsvorgaben Kandidaten, Auswertungs-Evidence und Vorschläge. Governance/Risk setzt den erlaubten Raum und beurteilt gesonderte Änderungsübergaben. Runtime liefert Beobachtungen und besitzt weiterhin ihre jeweiligen Entscheidungs-/Ausführungszuständigkeiten.
+
+Das ist die belegte Rollentrennung der untersuchten September-Verträge, nicht die Behauptung, jede früher gebaute Funktion sei damals schon eindeutig einem Universum zugeordnet gewesen. Gemeinsame Python-Namespaces und wiederverwendete August-Bausteine bestimmen keine zusätzliche Autorität.
+
+**Für jede Übergabe werden beide Seiten geprüft:** Was kann der Producer tatsächlich liefern, was erwartet der Consumer an derselben Revision, welche Verarbeitung und lokale Wirkung folgen, und was darf daraus ausdrücklich nicht abgeleitet werden? Ein ACK, COMPLETE-Label, Herkunftsdigest oder gespeicherter Vorschlag beweist allein weder neue Erkenntnis noch Änderungsrecht.
+
+## 1. Gemeinsame Entwicklung beider Seiten
+
+### Ende Januar bis März: frühe Funktionsstränge, noch keine bewiesene gemeinsame Universumsgrenze
+
+Die früheren Untersuchungen belegen auf der Learning-Seite Test-/Training-/Textbeobachtungen, Patchtransport und einen optionalen Config-Consumer. Auf der Forschungsseite existieren Sweep-/Optuna-/Walk-Forward-Wege und später trainierbare Meta-Labeling-Primitive. Vorgesehen war eine Weitergabe begründeter Änderungsvorschläge an einen getrennten Promotion-Teil. Die frühere Standardverkettung war unvollständig; insbesondere sind fachliche Domänenableitung und tatsächliche Consumer-Anbindung lokal offen.
+
+Im damaligen Code konnte eine passende Promotion-Policy Override-Dateien schreiben. Diese historische Fähigkeit darf nicht als fortbestehende heutige Autorität übernommen werden. Quellen: voriger Bericht `early-strand-connections/`, insbesondere S01, S08, S09 und F04.
+
+### 27.06.: Übergabe wird als Manifest expliziter
+
+`c28e62df…` ergänzt einen Promotion-Input-Manifest-Pfad. Der CLI verlangt im kanonischen Offline-Pfad einen ConfigPatch-Manifest und lädt dessen typisierte Patches. Der alte Demo-Dateipfad bleibt als ausdrücklich nicht kanonische Alternative unterscheidbar. Die spätere Manifest-Bridge benutzt den vorhandenen Normalizer und verlangt explizite Patch-Identität und Status. [J22:42–64,145–186; voriger F21/F22]
+
+Gemeinsame Bedeutung: Eine tatsächliche Transportlücke wird enger. Die vorgelagerte fachliche Ableitung eines besseren Wertes aus Health-/Makro-/Timingdaten wird dadurch nicht bewiesen; auch wird kein pauschales Recht zur Anwendung geschaffen.
+
+### 17.08.: historische Schreib-/Overlay-Wirkung wird technisch entzogen
+
+Commit `a7f4502e…`, PR #5927, verändert konkrete Wirkung:
+
+- Der Learning-Apply-Schreibpfad verweigert Schreiben mit `PermissionError`; der Nicht-Dry-Run endet mit Ablehnung.
+- `load_config_with_live_overrides` gibt nur noch die Basisconfig zurück.
+- `apply_proposals_to_live_overrides` schreibt nicht mehr und gibt `None` zurück.
+
+Dies ist ein belegter Verhaltenswechsel, nicht nur eine neue Dokumentüberschrift. Frühere `bounded_auto`-Beispiele beschreiben deshalb einen anderen Entwicklungsstand. [J01/J02/J03; gesicherter Parent-Diff]
+
+### 17./18.08.: Forschung wird über explizite Inputs und getrennte Auswertungsbausteine gefasst
+
+Der August-Offline-Loop bekommt Beobachtungen und Scores vom Caller und bindet/bewertet sie. Meta-Learning verlangt eigene Experimentserien; Advanced Search nutzt eigene Suchvorgaben und kann Meta-/Failure-/Gap-Signale verarbeiten. Neue Suchanfragen sind noch keine ausgeführten Experimente. Die spätere Optimization-Strecke verwendet diese Forschungsbausteine teilweise weiter; sie ist nicht einfach derselbe August-Loop unter neuem Namen. [FLOW01/02/03]
+
+### 02.09.: sechs ausdrücklich getrennte Wirkungsklassen
+
+`b6734d91…` / #6213 unterscheidet `OBSERVATION`, `COMPARISON`, `PROPOSAL`, `PROMOTION_ELIGIBILITY`, `PRODUCTIVE_MUTATION`, `PRODUCTIVE_PROMOTION`. Der Vertrag weist dem Learning-Loop Offline-Beobachtung/Vergleich/Vorschlag zu; DDO ersetzt diesen Loop nicht. Der vorhandene Legacy-Promotion-Owner wird dadurch nicht zur wiederhergestellten Auto-Apply-Autorität. [J04:CONTRACT_LAYERS, LEARNING_LOOP_ALLOWED_ROLE, DDO_DOES_NOT_REPLACE_LEARNING_LOOP]
+
+Das ist eine historische Vertragsklassifikation von Wirkung, keine von uns behauptete vollständige Hierarchie der Universen. Die Existenz des Fence-Moduls beweist außerdem nicht, dass es vor jedem beliebigen Consumer tatsächlich aufgerufen wird.
+
+### 19.09.: Learning-Zustand, Export und bidirektionale Forschungs-Evidence
+
+`c889577b…` / #6634 ergänzt die Learning-State-Fortschreibung aus Outcome-/Attribution-/Counterfactual-Evidence. Die nächste Feedback-Verwendung ist eng auf ein opakes `economic_score`-Label begrenzt. [J05/J06]
+
+`25b0518b…` / #6635 ergänzt bzw. bündelt Export, Optimization-Annahme, Foundation, Envelope und Forschungs-/Rückgabefunktionen. Die Rollen werden ausdrücklich in Self-Learning, Optimization und Governance/Risk getrennt. Der einzelne M1-Eingang darf keine Suche auslösen; ein größerer M4-Aufruf darf mit separatem Forschungsrequest den Kandidatengenerator aufrufen. Diese Aussagen gelten für unterschiedliche Funktionsgrenzen und dürfen nicht zu einem globalen „Search läuft nie“ zusammengezogen werden. [J07; O06/O09]
+
+### 19.–24.09.: Proposal-Admission und eng gebundener Parametertransport
+
+Optimization-Vorschläge erhalten einen gesonderten Governance-Eingang. Später werden für den untersuchten F1/M9-Fall Owner-Input, genaue Kandidaten-/Ingressbindung, Konfigurationsmaterialisierung und eine typisierte Parameterübergabe getrennt. Die damalige Übergabe lässt einen Wert sichtbar werden, ohne damit Enforcement, produktives Apply oder Trading-Entscheidungsautorität zu verleihen. [O30; J09–J15]
+
+### 24.–27.09.: zusätzliche Rückwege und Runtime-/MI-Eingänge
+
+Föderierte Surface-Evidence, MI-Kontext und G2-Archiv-/Runtime-Bezüge erhalten eigene Anschlüsse. Ihre Records transportieren unterschiedliche Bedeutungen. Beispielsweise ist der G2-`economic_score_label` ein Review-Label; der ursprüngliche DDO-Export kopiert dagegen das Outcome-Economic-Label. Im G2-M4-Request bleiben außerdem Teile der Forschungsbewertung fest/synthetisch. [O15–O20; J21]
+
+### 30.09.: derselbe Austausch erhält stärkere Herkunftsanforderungen
+
+`881efd47…` / #6988 ergänzt Outcome-Semantik, Herkunftsblock/-digest und Evidence-Pool-Klasse. Learning-Export weist unbekannte/mehrdeutige Herkunft zurück; Optimization prüft Herkunftszulässigkeit vor Annahme. Diese Änderung trifft beide Seiten desselben Austauschs. Ein unter einem älteren Vertrag funktionierender Adapter muss deshalb erneut geprüft werden. [J16–J20]
+
+## 2. Welche Daten welches Universum liefern soll und tatsächlich liefert
+
+### A. Beobachtung/Runtime → Learning
+
+Im untersuchten DDO-Strang liefert ein EvaluationBundle drei zusammengehörige Records: Outcome, Attribution und Counterfactual. Learning validiert Querverweise, bildet den Bundle-Fingerprint und schreibt seinen Zustand pro Scope fort. Scope wird aus Session-/Accountbezug gebildet; Version/Sequenz steigen bei neuem Input, identischer Input bleibt idempotent, ältere Eventzeiten werden abgelehnt. [J05:§1–3; J06:35–59,113–196,204 ff.]
+
+**Zuständigkeit:** Herkunft und beobachtete Erfahrung nachvollziehbar erhalten. **Lokale Wirkung:** Learning-State und enges Folge-Label. **Keine daraus belegte Zuständigkeit:** eigenständig Handelsentscheidungen, Risiko, numerische Kalibrierung oder Modellschwellen ändern. Der Vertrag führt solche Analysen teilweise ausdrücklich als Observation-only/Schema-only/Unknown. [J05:§4–6]
+
+### B. Learning → Optimization
+
+Der ursprüngliche Export liefert `learning_evidence_record_v1` mit State-Referenz/-Version, Bundle-Fingerprint, Decision-Event, Beobachtungszeit, Outcome-/Horizontbezug sowie Economic-/Decision-/Safety-Labels. Diese Labels sind ausdrücklich opak; sie sind weder eine Renditeserie noch bereits kalibrierte numerische Forschungsziele. [O04/O05; J07:§3]
+
+Optimization M1 prüft Schema/Klasse, fehlende produktive Rechte und Digest und gibt ein Research-ACK mit Bezug auf genau diese Evidence aus. **Die Datenlieferung autorisiert Forschungseingang, nicht automatische Suche, Envelope-Mutation oder Deployment.** Zusätzliche Forschungsdaten – Identitätstemplate, Suchraum, Champion, Scores und gegebenenfalls Beobachtungen – werden beim M4-Request getrennt geliefert. Die Annahme eines Learning-Records erzeugt diese Daten nicht. [O06/O09]
+
+Seit Ende September gehören außerdem zu dieser Grenze die Outcome-Klasse, der geprüfte Herkunftsblock/-digest und die Pool-Klasse. Ein gleichbleibender Schemaname ersetzt nicht die Prüfung geänderter Pflichtfelder und Semantik. [J16/J17/J19]
+
+### C. Governance/Surface-Owner → Optimization
+
+Der Envelope beschreibt eine explizite Surface mit Owner, erlaubten Achsen/Wertebereichen sowie Risiko-/Evidence-/Versionsbezügen. Der untersuchte Resolver weist unter anderem fehlende/inkonsistente Owner-Angaben, fehlende explizite Autorisierung und unbekannte nicht zugelassene Surfaces zurück. [J08:257–425]
+
+**Zuständigkeit:** erlaubten Forschungs-/Änderungsraum vorgeben. **Consumer-Wirkung:** Forschung kann auf eine passende Surface begrenzt werden. **Grenze:** Registry-Mitgliedschaft, Forschungsfläche und produktiv autorisiertes Target sind unterschiedliche Verträge. Der frühe Foundation-Stand hat keine produktiven Targets; die spätere M9-Zielbindung ist ein gesonderter Ausbau. Daraus folgt keine allgemeine Freigabe für jede andere Surface. [O07; J09–J15; J23]
+
+### D. Optimization → Learning
+
+Optimization liefert Forschungs-Evidence: Kandidaten-/Suchidentität, Vergleichs-/Challenger-Aussagen, Robustheits-/OOS-Projektionen, Failure-Evidence und Herkunfts-/Reproduzierbarkeitsbezüge. Im frühen M4/M5-Pfad ist der Economic-Slice ausdrücklich nur eine opake Lineage-Referenz, der OOS-Slice eine Projektion vorhandener Robustheitsevidence. Diese Namen beweisen keine neue ökonomische Messung oder frisch ausgeführten OOS-Versuch. [O09/O10]
+
+M5 nimmt den Record als Offline-Evidence an. Angeforderte Learning-State-Mutation, Meta-Ingest, Promotion oder Search-Feedback werden an dieser Grenze ausdrücklich zurückgewiesen. Das ACK sagt sinngemäß: als Offline-Input akzeptiert, noch nicht gelernt oder angewandt. Ein separater M6-Aufruf kann anschließend daraus Meta-Evidence projizieren. [O11:60–162; O12]
+
+**Grenze:** Forschungsbefunde dürfen ankommen, ohne bereits den DDO-Learning-State, Modellgewichte oder eine produktive Policy zu verändern. Die M6-Projektion führt den August-Meta-Analysator im untersuchten Pfad nicht aus. [O12:177–280]
+
+### E. Learning/Meta → Optimization zurück
+
+M7 nimmt Meta-Evidence entgegen und kann Quell-Experimente priorisieren, begrenzte **Forschungsbudgeteinheiten** aus `support_count` bilden, Methoden zulassen/ablehnen und einen opaken Hypothesenbezug vorschlagen. Das ist keine Kapitalallokation. Der frühe M6-Pfad liefert eine unbekannte Suchmethode; deren Auswahl bleibt deshalb abgewiesen. [O12/O13]
+
+M8 komponiert diese Records über mehrere Zyklen und trägt frühere Dispositionen als Folgesemantik weiter. Der nächste Plane-Request stammt im untersuchten Code weiterhin vom Caller; die Weitergabe verändert dort nicht automatisch Suchraum, Budget oder Messwerte. **Evidence-/Lineage-Rückkopplung und wirksame Änderung der nächsten Forschungswahl sind getrennte Nachweise.** [O14:108–175,220–268,296–314]
+
+### F. Optimization → Governance/Risk → begrenzter Consumer
+
+Optimization liefert einen Vorschlag mit Parameterdelta, Kandidaten-/Experiment-/Evidence-Bezug und passenden Surface-/Constraint-Referenzen. Governance-Review-Admission bewertet den Eingang, erzeugt aber nicht automatisch eine Freigabe zum Anwenden. [O30]
+
+Im untersuchten M9-Pfad wird `candidate_max_age_seconds` an `numeric_max_age_seconds` in **Sekunden** gebunden. Autorisierung, Konfiguration und Übergabe erhalten Kandidatenwert und Herkunft exakt. Der Lern-/Optimierungsraum darf dabei keine neue Trading-/Risk-/Selection-/Execution-Autorität übernehmen. [J09–J15]
+
+## 3. Autorität an der konkreten Übergabe prüfen
+
+Die untersuchten Verträge führen unterschiedliche erlaubte Wirkungen. Sie dürfen nicht zu einem einzigen „autorisiert“-Flag verdichtet werden:
+
+1. **Evidence-Annahme:** Schema/Klasse/Integrität und Herkunft passen. Kein Änderungsrecht.
+2. **Forschungs-/Methodenentscheidung:** begrenzte Kandidaten-/Prioritäts-/Budgetwahl. Keine produktive Kapital- oder Handelsentscheidung.
+3. **Proposal-Review-Admission:** Vorschlag erreicht die Beurteilung. Noch kein produktives Apply.
+4. **Expliziter Owner-Input:** gesonderter Record, gebunden an den konkreten Eingang, Kandidatenwert, Surface, Target, Einheit und Evidence/Risk-Referenzen.
+5. **Materialisierung:** exakt gebundener Wert wird als geregelte Konfiguration dargestellt. Nicht automatisch verwendet.
+6. **Consumer-Bindung/Transport:** passende typisierte Gegenstelle kann den Wert sehen. Im geprüften frühen M9-Vertrag weiterhin ohne Enforcement oder produktives Apply.
+
+Diese Aufzählung ist unser Vergleichsraster für die gelesenen Vertragsstufen, keine neue Autoritätsvergabe oder vollständige Systemhierarchie.
+
+### Konkrete mechanische Sicherungen im M9-Beispiel
+
+Der Authorization-Code verlangt einen Owner-Input und prüft dessen Digest und erlaubte Authorization-ID. Zusätzlich müssen Ingress-Digest, Admission/Disposition, Surface/Target/Version, Parameter-/Einheitenbezug, Experiment/Kandidat, Learning-/Optimierungs-Evidence, Risk-Referenz und Kandidatenwertbezug übereinstimmen. Ein fehlender Owner-Input erzeugt einen Ablehnungsgrund. [J09:270 ff.; J10]
+
+Die Materialisierung prüft Authorization-/Owner-Digests und numerische Identität. Die Seam prüft Target/Surface/Einheit und verbietet unter anderem Records mit `runtime_applied=True` oder `enforcement_enabled=True`; sie gibt einen nicht durchsetzenden Policybezug aus. [J11:103–257; J12:83–192,219 ff.]
+
+Am 24.09. kommt die explizite Bindung je Ingress einschließlich Registry-Digest hinzu. Der damalige Vertrag lässt Expiry/Revocation offen und kennzeichnet produktives Apply als gesonderte Owner-/Policy-Grenze. Dieser datierte offene Punkt ist kein ungeprüfter Befund über alle späteren Owner-Systeme. [J14; J15:§2–6]
+
+**Beleggrenze:** Struktur-/Hashprüfungen beweisen die technische Übereinstimmung gelieferter Autorisierungsrecords. Die echte Berechtigung ihres Erzeugers und ein tatsächlich damals erteilter Owner-Entscheid müssen zusätzlich aus dem verantwortlichen Prozess bzw. Originalbeleg stammen. Eine Factory-Funktion für solche Records verleiht nicht allein menschliche Freigabeautorität. Die gesicherten Originalaufträge sind historische Belege und keine heutigen ausführbaren GOs.
+
+## 4. Gemeinsamer Vergleich deckt eine konkrete Vertragsinkompatibilität auf
+
+Der G2-Adapter `governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py` wurde Ende September gebaut. Er projiziert Primärevidence-/Sessionbezüge in das Learning-Evidence-Schema und ruft dessen Builder sowie danach den kanonischen Optimization-Input-Validator auf. [O17; J21:209–293,350–373]
+
+Mit #6988 verlangt dieser Builder zusätzliche Angaben:
+
+- `outcome_semantic_class`;
+- `outcome_evidence_provenance_digest`;
+- `outcome_evidence_provenance` als validierten Herkunftsblock;
+- `evidence_pool_class` passend zur Outcome-Klasse.
+
+Der neuere Export übernimmt diese Angaben aus dem Learning-State. Der neuere Optimization-Eingang prüft die Herkunftszulässigkeit; unbekannte/mehrdeutige Klassen werden abgewiesen. Unterscheidbar sind beispielsweise produktive Vor-External-Beobachtung, interne Simulation, Paper-Simulation, Shadow-Counterfactual und Replay. Die Klassennamen sind keine automatische Bestätigung realisierter Börsenausführung. [J16–J20]
+
+**Am erneut gegen GitHub bestätigten Vergleichspin `5d1c838c15369507c5247834db4dd0df25592169` ist die G2-Projektion aber noch bytegleich mit ihrer Einführung und baut ihren Record ohne diese neuen Pflichtangaben.** Der aktuelle Builder verlangt insbesondere den Herkunftsblock als Mapping und weist unzureichende Records zurück. Der Adapter fängt entsprechende Validierungsfehler und liefert `REJECTED`. [J21:209–293,350–365; J25:build_learning_evidence_record_v1; gespeicherte Datei-/Pfadhistorien]
+
+Daraus folgt **statisch**, dass dieser unverändert gebliebene Projektionsweg den strengeren Record-Vertrag an dieser Stelle nicht erfüllt, wenn er die Projektion erreicht. Kein Runtime-Lauf wurde dafür ausgeführt. Eine externe/dynamische Ersatzimplementierung oder andere Producer sind damit nicht ausgeschlossen.
+
+Dies ist genau eine Grenze, die nur bei gleichzeitigem Vergleich beider Seiten sichtbar wird: Learning-Schema und Optimization-Admission entwickeln sich weiter, ein älterer zugelieferter Adapter bleibt auf dem vorigen Vertrag. Seine historische erfolgreiche Codierung und spätere Dateiexistenz reichen nicht für heutige Kompatibilität. Es wurde nichts repariert oder aktiviert.
+
+## 5. Offene Punkte im gemeinsamen Register
+
+- **Fachliche Wertentstehung:** Welche echten Markt-/Session-/Experimentdaten erzeugen den Wert, der später als Vorschlag erscheint? Synthetische oder caller-supplied Scores bleiben entsprechend markiert.
+- **Zwei Meta-Bedeutungen:** August-Analyse über Versuchsserien und September-M6-Projektion nicht als dasselbe Verfahren behandeln; konkrete Verbindung weiter belegen.
+- **Feedback-Verwendung:** Einen Consumer nachweisen, der M7-Ergebnisse tatsächlich in die nächste Forschungswahl übernimmt.
+- **Outcome-Klasse und Identität:** Herkunftsart, Session/Account/Instrument, Zeit/Horizont, Experiment/Code/Policy und zugehörige Werte beim Übergang erhalten. Unterschiedliche Datenklassen nicht allein wegen desselben Feldnamens zusammenlegen.
+- **Owner-Herkunft und Lebensdauer:** Technische Recordbindung, tatsächlich berechtigter Erzeuger, Gültigkeit/Revocation und Consumption separat prüfen; historische offene Regeln nicht erfinden.
+- **Variantenreichweite:** Der untersuchte F1/M9-Authorization-Pfad darf nicht auf F2/F3/F5 oder alle heutigen Surface-Familien verallgemeinert werden.
+- **Aktuelle Anschlussfähigkeit:** Nach einer Änderung immer beide Enden am gleichen Vergleichspin lesen; historische Pipelinebehauptungen nicht unverändert fortschreiben.
+
+Dies sind quellengebundene Untersuchungsfragen und bestehende Vertragsanforderungen, keine neue parallel definierte Governance.
+
+## Quellen und Prüfung
+
+25 neue Snapshots und 20 wiederverwendete, erneut geprüfte Quellen bilden diesen Durchgang. Vollständige Revisionen, Pfade, Blob-IDs, SHA256, acht GitHub-Commit-Abgleiche, drei direkte Datei-Abgleiche, drei gepinnte Pfadhistorien und zwei gegen Original-JSONL abgeglichene historische Nachrichten stehen im [Quellenregister](sources.json). [Strukturierte gemeinsame Übersicht](joint-handoffs-authority.json).
+
+Remote-main wurde beim lesenden Abgleich als `5d1c838c15369507c5247834db4dd0df25592169` bestätigt; der lokale Checkout blieb an `242b7974fc93f0bdb47706556101bd6f0c497414`. Lokales Git ist shallow; fehlende lokale Ancestry ist kein Nichtabstammungsbeweis.
+
+Keine Produktimporte, Tests, Lern-/Optimierungs-/Runtime-Läufe, Orders, Config-/Repository-Änderungen oder neuen Freigaben. Dargestellte Wirkung ist statisch am Consumer codiert, soweit ausdrücklich beschrieben; tatsächlich beobachtete historische Laufzeit und Gesamtlernwirkung bleiben separat offen.
+
+GitHub-Primäranker: [Legacy-Schreibwirkung sperren #5927](https://github.com/rauterfrank-ui/Peak_Trade/commit/a7f4502e04e168b2dd12b56fecb745323bd6c783), [Learning-Outcome-State #6634](https://github.com/rauterfrank-ui/Peak_Trade/commit/c889577bef56300f74039d921472f0638cbb8810), [gemeinsame Boundary/Research-Verträge #6635](https://github.com/rauterfrank-ui/Peak_Trade/commit/25b0518b93f91a9609d70c30fb8cd3bf96401a46), [M9-Parameterbindung #6640](https://github.com/rauterfrank-ui/Peak_Trade/commit/5d701e1b5e18fb8d87ed282c35550a1e561c73f9), [Herkunftsgrenzen #6988](https://github.com/rauterfrank-ui/Peak_Trade/commit/881efd47285ebccd83c0e57691e5832730c017a9).
+
+Abschlussprüfung: 45/45 neue bzw. wiederverwendete Quellen stimmen mit Git und registriertem SHA256 überein. Die geprüften GitHub-Commit-/Datei-Blobs stimmen überein. Bisherige Übersichtsansichten und Daten erhalten; TypeScript mit tatsächlicher Canvas-Konfiguration ohne Diagnosen. Repository-Status unverändert. Details: [verification.json](verification.json). Kein visueller Laufzeittest.

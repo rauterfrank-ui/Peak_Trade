@@ -1,0 +1,9 @@
+### CON-2065 — Architekturvarianten und Außenring
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Research-Kern, spätere Universumsmodelle, N5, Full-Core, Evidence-Plane und Guardian-Entwürfe werden nebeneinander erhalten. Die historischen 17/20 First-Class-Einträge, 75 Map-Einträge und fünf fachlichen Identitäten haben verschiedene Grundgesamtheiten. Außenring bleibt eine zu prüfende Querschnittssicht; Shared Services und bisher unklassifizierte Module gehören dazu.
+
+**Grenze:** Keine feste achtteilige Ringarchitektur, neue Universe-Mitgliedschaft oder Guardian-Zuweisung ratifiziert. 799 früher nicht zugeordnete Module und 2115 zurückgestellte Recovery-Gruppen werden durch diese Dokumentation nicht erschlossen.
+
+Quellen: EVI-2227, EVI-2228, EVI-2229, EVI-2230, EVI-2231, EVI-2232, EVI-2233, EVI-2292, EVI-2293, EVI-2294, EVI-2217.

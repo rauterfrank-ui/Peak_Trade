@@ -1,0 +1,78 @@
+{
+  "authority": "NONE",
+  "class_A": [],
+  "class_B": [
+    {
+      "ACTIVE_CONTRACT": "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1 requires a fresh trusted read before a sizing value exists",
+      "ACTUAL_EFFECT": "No fresh availEq is attested. Guard evaluation appends MISSING_AVAILABLE_MARGIN_EVIDENCE when avail_eq_usdc is absent.",
+      "BLOCKER_ID": "B1_FRESH_USDC_SIZING_VALUE_UNATTESTED",
+      "CLASSIFICATION": "B",
+      "CURRENT_CODE_LOCATION": "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py CURRENT_PRODUCTIVE_FRESH_GET_EXECUTED=False; current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+      "EXECUTION_PATH": "equity producer -> capital guard margin evidence -> NEW-RISK admission",
+      "OWNER_AUTHORIZATION_BOUNDARY": "GET authorization does not authorize POST, cap ratification, or live trading.",
+      "REQUIRED_ACTION": "Separate Owner-GO for a read-only fresh GET and acceptance of that USDC value. No capital movement."
+    },
+    {
+      "ACTIVE_CONTRACT": "CURRENT_FULL_CORE_CAPITAL_GUARD_V1 owner_caps_ratified=false full_core_guard_join_enabled=false numeric caps null",
+      "ACTUAL_EFFECT": "NEW_RISK_POST_GUARD_JOIN_DISABLED and NEW_RISK_POST_OWNER_CAPS_UNRATIFIED. Reservation is not created.",
+      "BLOCKER_ID": "B2_OWNER_CAPS_UNRATIFIED_AND_ABSENT",
+      "CLASSIFICATION": "B",
+      "CURRENT_CODE_LOCATION": "config/ops/current_full_core_capital_guard_v1.json; current_productive_mandatory_new_risk_enter_post_admission_v1.py:226-229",
+      "EXECUTION_PATH": "Signal -> admission -> capital guard -> reservation only if guard_allowed",
+      "OWNER_AUTHORIZATION_BOUNDARY": "Ratification of caps does not by itself set POST_ALLOWED or consume the one-shot POST GO.",
+      "REQUIRED_ACTION": "Owner supplies finite cap values and an explicit ratification. This pass did not ratify."
+    },
+    {
+      "ACTIVE_CONTRACT": "REAL_KEYCHAIN_ACCESS_AUTHORIZED=false REAL_KEYCHAIN_ACCESS_IMPLEMENTED=false; identity does not imply possession or POST",
+      "ACTUAL_EFFECT": "Productive credential use is not authorized. This pass did not read the Keychain.",
+      "BLOCKER_ID": "B3_K1_REAL_KEYCHAIN_USE_UNAUTHORIZED",
+      "CLASSIFICATION": "B",
+      "CURRENT_CODE_LOCATION": "checkout_independent_credential_concrete_backend_item_identity_v1.py; checkout_independent_credential_os_native_store_acquisition_v1.py",
+      "EXECUTION_PATH": "K1 identity -> opaque signing handle only inside the one-shot join after Owner-GO",
+      "OWNER_AUTHORIZATION_BOUNDARY": "Credential load does not authorize venue POST.",
+      "REQUIRED_ACTION": "Separate Owner-GO before any real Keychain load."
+    },
+    {
+      "ACTIVE_CONTRACT": "Actual venue POST requires the exact unconsumed Owner-GO and still keeps standing pins false",
+      "ACTUAL_EFFECT": "No productive POST is authorized. Runners do not call the transport.",
+      "BLOCKER_ID": "B4_STANDING_POST_PINS_FALSE_ONE_SHOT_GO_UNCONSUMED",
+      "CLASSIFICATION": "B",
+      "CURRENT_CODE_LOCATION": "src/ops/full_core_live_path_composition_root_v1/constants_v1.py EXTERNAL_EFFECT_AUTHORIZED POST_ALLOWED REAL_VENUE_POST_ALLOWED; one-shot join POST_GO_STATUS=UNCONSUMED",
+      "EXECUTION_PATH": "envelope -> single-use permit -> global ledger claim -> kill-switch -> K1 handle -> HTTP transport",
+      "OWNER_AUTHORIZATION_BOUNDARY": "One-shot GO is not an autonomous mandate and does not flip standing pins.",
+      "REQUIRED_ACTION": "A future one-shot Owner-GO, after B1-B3 decisions, if the Owner wants a single manual POST."
+    }
+  ],
+  "class_C": [
+    {
+      "BLOCKER_ID": "C_PRODUCTION_KILL_SWITCH_FILE_NOT_OBSERVED",
+      "CLASSIFICATION": "C",
+      "note": "This checkout has no data/kill_switch/state.json. Missing file fail-closes in code. Production host state was not read."
+    },
+    {
+      "BLOCKER_ID": "C_ECO_PACK_NOT_REBOUND_TO_CURRENT_SHA",
+      "CLASSIFICATION": "C",
+      "note": "The 1/50 pack is bound to proven_source_sha 4b668c88, not 769d13663. It is not a live POST gate."
+    },
+    {
+      "BLOCKER_ID": "C_GHV_SNAPSHOT_STALE",
+      "CLASSIFICATION": "C",
+      "note": "Navigation gap only. Explicitly not an additional live blocker."
+    }
+  ],
+  "class_D": [
+    "GHV snapshot 6261c8f9e and failed historical census baseline match",
+    "Runbook 11.2.1.CR text that still names AVAILABLE_FOR_SIZING unbound; constants now select the producer",
+    "Legacy sealed equity kind-set reconstruction",
+    "STEP29N promotion economic gate as an execution authority"
+  ],
+  "class_E": [
+    "B5 kill-switch mechanism",
+    "B5-RR venue proof mechanism",
+    "B6 global replay ledger",
+    "B7 runner isolation",
+    "ECO as a live POST gate"
+  ],
+  "primary_rule": "exactly one primary class per finding",
+  "schema_version": "bwp_live_003_blocker_matrix.v1"
+}

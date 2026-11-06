@@ -1,0 +1,16 @@
+{
+  "c1_venue_event_time": 1792192380.0,
+  "consume_instance_id": "74a53b10c01af7257c0ab608900cdfd83cbe87a2b6ff5b093b9330b2b1acb632",
+  "continuous_owner_go": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1",
+  "cycle_index": 6,
+  "cycle_instance_id": "74a53b10c01af7257c0ab608900cdfd83cbe87a2b6ff5b093b9330b2b1acb632",
+  "evidence_root": "/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/runs/20261016T230301Z_bounded_live_c1_reproof_6261c8f/cycles/74a53b10c01af7257c0ab608900cdfd83cbe87a2b6ff5b093b9330b2b1acb632",
+  "logical_tokens": {
+    "EG": "OWNER_GO_S4A_EG_EXACTLY_ONE_RUNTIME_TRIGGER_V1",
+    "GET": "OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1",
+    "OCCUPANCY": "SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF",
+    "SEQUENCING": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1",
+    "T2": "OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1"
+  },
+  "post_owner_go_composed": "false"
+}

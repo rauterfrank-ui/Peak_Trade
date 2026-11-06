@@ -1,0 +1,18 @@
+{
+  "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+  "markdown_files": [
+    "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+    "docs/ops/evidence/representation_unknown_fixture_admission_v1_2026_11_04/README.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+  ],
+  "reference_count": 198,
+  "token_policy": "PASS",
+  "references": "PASS",
+  "blueprint_bodies": "IDENTICAL",
+  "protected_ledger": "UNCHANGED_SHA256",
+  "ruff": "PASS",
+  "atlas_structure_generated_drift": "PASS"
+}

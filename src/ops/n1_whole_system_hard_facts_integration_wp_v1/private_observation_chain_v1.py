@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
@@ -12,6 +13,7 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
 from src.ops.okx_eea_private_account_state_runtime_v1.mutation_prohibition_v1 import (
     assert_no_ws_mutation_operations_in_public_api_v1,
 )
+from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import QUALITY_CURRENT
 from src.ops.okx_eea_private_account_state_runtime_v1.runtime_orchestrator_v1 import (
     OkxEeaPrivateAccountStateRuntimeV1,
 )
@@ -43,14 +45,29 @@ def prove_private_restart_recovery_order_v1(
     *,
     store_root: Path,
     rest_fetch_json: Callable[[str, Mapping[str, str]], Mapping[str, Any]],
-    captured_at: str = "2026-09-26T00:00:00Z",
+    captured_at: str | None = None,
 ) -> dict[str, Any]:
     runtime = OkxEeaPrivateAccountStateRuntimeV1(
         store_root=store_root,
         rest_fetch_json=rest_fetch_json,
         ws_transport=None,
     )
-    return runtime.restart_sequence_v1(captured_at=captured_at)
+    return runtime.restart_sequence_v1(
+        captured_at=datetime.now(timezone.utc).isoformat() if captured_at is None else captured_at
+    )
+
+
+def private_restart_reconciliation_trusted_v1(restart: Mapping[str, Any]) -> bool:
+    reconciliation = restart.get("reconciliation")
+    quality = reconciliation.get("quality") if isinstance(reconciliation, Mapping) else None
+    return (
+        restart.get("trusted_current") is True
+        and isinstance(reconciliation, Mapping)
+        and reconciliation.get("trusted_boundary_established") is True
+        and isinstance(quality, Mapping)
+        and quality.get("state") == QUALITY_CURRENT
+        and quality.get("reconciliation_required") is False
+    )
 
 
 def prove_private_observation_chain_v1(
@@ -63,7 +80,7 @@ def prove_private_observation_chain_v1(
         store_root=store_root,
         rest_fetch_json=rest_fetch_json,
     )
-    restart_ok = "reconciliation" in restart
+    restart_ok = private_restart_reconciliation_trusted_v1(restart)
     hint = FRESHNESS_POLICY
     return PrivateObservationChainProofV1(
         ok=canonical and restart_ok,

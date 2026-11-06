@@ -1,0 +1,70 @@
+{
+  "schema": "pending_outcome_temporal_source_probe_v1",
+  "closure_probe": {
+    "input_evidence_class": "TEST_FIXTURE_EXPLICIT",
+    "samples": [
+      {
+        "sample_event_ts_unix": 1756732800.0,
+        "advanced": true,
+        "closed": false,
+        "reason": "HORIZON_INCOMPLETE",
+        "bars_observed": 1
+      },
+      {
+        "sample_event_ts_unix": 1756736400.0,
+        "advanced": true,
+        "closed": true,
+        "reason": "CLOSED",
+        "bars_observed": 2
+      }
+    ],
+    "last_supplied_sample_time_utc": "2025-09-01T14:20:00+00:00",
+    "measurement_last_bar_close_time_utc": "2025-09-01T15:00:00Z",
+    "bar_close_seconds_after_last_input_event": 2400.0,
+    "horizon_producer_observed_at_unix": 1756731000.0,
+    "embedded_classes_in_written_temporary_ledger": [
+      "OBSERVED_PRODUCTIVE_PRE_EXTERNAL"
+    ],
+    "measurement": {
+      "schema_name": "ddo_n_bars_outcome_measurement_evidence",
+      "schema_version": "ddo_n_bars_outcome_measurement_evidence_v1",
+      "outcome_scalar_kind": "LOG_RETURN",
+      "instrument_ref": "ddo.o4.inst.8e25f4c1c83b7ae0c8e4200391895c3faaa8698086b5025819e7631f470e070b",
+      "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+      "horizon_start_time_utc": "2025-09-01T13:00:00Z",
+      "n_bars": 2,
+      "bar_close_times_utc": [
+        "2025-09-01T14:00:00Z",
+        "2025-09-01T15:00:00Z"
+      ],
+      "bar_identity_refs": [
+        "ddo.o4.bar.77c946b93842964a3b9ff6b61d2435f34665b55b2f180a807dc84e8faedb740a",
+        "ddo.o4.bar.79632f100b1549af1b3831e7e6b7c0f4e2108606ee11d2bef7a203612b82733b"
+      ],
+      "evaluation_time_utc": "2025-09-01T15:00:00Z",
+      "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+      "start_bar_identity_ref": "ddo.o4.bar.77c946b93842964a3b9ff6b61d2435f34665b55b2f180a807dc84e8faedb740a",
+      "end_bar_identity_ref": "ddo.o4.bar.79632f100b1549af1b3831e7e6b7c0f4e2108606ee11d2bef7a203612b82733b",
+      "o4_provenance": {
+        "session_id": "neo.pending.f6a1f0f643908b4ad0499ef5df9da8d0",
+        "repository_sha": "abc12345deadbeef",
+        "config_digest": "natural-enter-pending-outcome-o4-v1"
+      },
+      "bridge_contract_id": "peak_trade.learning.ddo.o4_n_bars_bar_evidence_bridge_v1",
+      "measurement_producer_id": "peak_trade.learning.ddo.n_bars_bar_evidence_supplier_v1",
+      "start_price": 3500.0,
+      "end_price": 3510.0,
+      "log_return": 0.0028530689824064807,
+      "actual_outcome_ref": "ddo.outcome.measure.6e420859d55068c5634d35c3951ad8bb95a9cccab548922fdec36812203128b1"
+    },
+    "limit": "Synthetic explicit fixture, temporary state only. This demonstrates current mechanics, not a natural market witness."
+  },
+  "wrapper_clock_probe": {
+    "mark_price_payload_event_ts_unix": 1756738200.0,
+    "latest_candle_open_ts_unix": 1756736400.0,
+    "passed_mark_event_ts_unix": 1756736400.0,
+    "price": 3510.0,
+    "stated_input_evidence_class": "REAL_PUBLIC_OBSERVATION",
+    "limit": "Pure wrapper interception, no file/network call; supplied distinct clocks intentionally expose mapping."
+  }
+}

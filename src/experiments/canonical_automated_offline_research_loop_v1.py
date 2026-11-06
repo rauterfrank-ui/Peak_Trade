@@ -637,6 +637,12 @@ def validate_canonical_automated_offline_research_loop_v1(record: Mapping[str, A
         str(integrity.get("content_sha256", ""))
     ):
         raise AutomatedOfflineResearchLoopValidationError("integrity.content_sha256 is required")
+    if integrity["content_sha256"] != compute_content_sha256(
+        {key: value for key, value in payload.items() if key != "integrity"}
+    ):
+        raise AutomatedOfflineResearchLoopValidationError("integrity.content_sha256 mismatch")
+    if payload.get("loop_identity") != derive_loop_identity_v1(payload):
+        raise AutomatedOfflineResearchLoopValidationError("loop_identity mismatch")
 
 
 def _select_hypothesis(

@@ -11,11 +11,6 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.arc
     bind_active_archive_v1,
     resolve_selected_instrument_from_archive_v1,
 )
-from src.ops.productive_decision_host_active_archive_three_family_binding_v1.archive_session_pin_v1 import (
-    ArchiveUniverseSessionPinV1,
-    assert_archive_universe_session_pin_unchanged_v1,
-    establish_archive_universe_session_pin_v1,
-)
 from src.ops.productive_decision_host_active_archive_three_family_binding_v1.authorization_v1 import (
     ProductiveHostAuthorizationError,
     prove_network_and_order_boundary_v1,
@@ -130,7 +125,7 @@ def run_productive_host_smoke_session_v1(
     runtime_root: str | Path,
     runtime_session_id: str,
     mid_prices: Sequence[float],
-    expected_instrument: str | None = None,
+    expected_instrument: str | None = "SATS-USDT-SWAP",
     enable_activation: bool = True,
     require_selection_binding: bool = False,
     min_cycle_interval_seconds: float = DEFAULT_MIN_CYCLE_INTERVAL_SECONDS,
@@ -165,24 +160,11 @@ def run_productive_host_smoke_session_v1(
             expected_sha=expected_repository_sha,
         )
         boundary = prove_network_and_order_boundary_v1(repo_root=root)
-        archive = bind_active_archive_v1(
-            archive_root=archive_root,
-            allow_resolver_fallback=False,
-        )
-        universe_pin: ArchiveUniverseSessionPinV1 = establish_archive_universe_session_pin_v1(
-            archive_root=archive.archive_root,
-        )
-        assert_archive_universe_session_pin_unchanged_v1(universe_pin)
+        archive = bind_active_archive_v1(archive_root=archive_root)
         instrument_id, instrument_source = resolve_selected_instrument_from_archive_v1(
             archive_root=archive.archive_root,
             expected_symbol=expected_instrument,
-            require_instrument_pin=True,
         )
-        if instrument_id != universe_pin.selected_symbol:
-            raise ProductiveHostAuthorizationError(
-                "ARCHIVE_INSTRUMENT_IDENTITY_DIVERGENT",
-                f"pin={universe_pin.selected_symbol}:resolved={instrument_id}",
-            )
         # Runtime roots must not collapse into archive authority.
         runtime_binding = materialize_state_root_layout_v1(runtime_root=runtime_root)
         if Path(runtime_binding.runtime_root).resolve() == Path(archive.archive_root).resolve():
@@ -260,7 +242,6 @@ def run_productive_host_smoke_session_v1(
             for i, mid in enumerate(mids):
                 if i > 0 and min_cycle_interval_seconds > 0:
                     time.sleep(float(min_cycle_interval_seconds))
-                assert_archive_universe_session_pin_unchanged_v1(universe_pin)
                 result.cycles_attempted += 1
                 event_ts = float(start_ts_unix) + float(i)
                 cycle_id = f"{runtime_session_id}:cycle:{i}"

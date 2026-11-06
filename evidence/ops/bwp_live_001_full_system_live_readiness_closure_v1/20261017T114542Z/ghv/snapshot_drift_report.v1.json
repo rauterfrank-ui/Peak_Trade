@@ -1,0 +1,33 @@
+{
+  "census_baseline_is_ancestor_of_head": false,
+  "census_baseline_matches_head": false,
+  "census_source_baseline_head": "ae131a986e5f0106831b501203725cea7e30bc6c",
+  "classification_note": "Drift SHA mismatch does not alone prove semantic census/landscape incompatibility; validators assess schema integrity separately.",
+  "commits_since_census_baseline": [
+    {
+      "drift_class": "UNKNOWN",
+      "sha": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
+      "subject": "WP-B5: Kill-Switch Safety & Recovery Closure (#7139)"
+    },
+    {
+      "drift_class": "UNKNOWN",
+      "sha": "3714620db0ebfb3f6786e1b91923a7f32c0d3e08",
+      "subject": "fix(security): close B5/B5-RR/B6 post-path safety gaps (#7138)"
+    },
+    {
+      "drift_class": "UNKNOWN",
+      "sha": "3de380c8c0ed112ba726e0326e1ff5b83b51f802",
+      "subject": "fix: bind natural-enter DPO by instrument and candle time (#7137)"
+    },
+    {
+      "drift_class": "CURRENT_RELEVANT",
+      "sha": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+      "subject": "governance(census): close CD-010 archive-seam GHV coverage (#7136)"
+    }
+  ],
+  "git_head": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
+  "landscape_baseline_matches_head": false,
+  "landscape_evidence_baseline_sha": "e5d9296fb269208b06980518d410b4f2b616bf5b",
+  "schema_version": "snapshot_drift_report.v1",
+  "snapshot_drift_root_cause": "NON_LINEAR_OR_UNKNOWN_HISTORY"
+}

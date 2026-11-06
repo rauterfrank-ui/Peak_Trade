@@ -1,0 +1,24 @@
+{
+  "source_commit": "1151994dd982ff761e33b1150dc8bbaa9b2bd55b",
+  "tests": "Existing bound scopes650Learning/capture,254GVEF,178original-phases,17authority,3extractor retained; new commit readback PASS; no redundant suite rerun",
+  "ruff_status": "PASS; verifier format PASS",
+  "boundaries": "No source authentication, historical execution recovery, universal numeric quality, funding economics or productive authority claim; U04/GAP-0370 deferred",
+  "negative_revision_check": "PASS: predecessor lacking the restored adapter/contracts is rejected",
+  "verifier_sha256": "ebfcf2bac0e5b38f86fb45c5be6ae0a8bebda010ec4ed1f9426ac8908190c150",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/self_learning_restoration_committed_readback_and_question_reconciliation_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+    ],
+    "reference_count": 621,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; verifier format PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

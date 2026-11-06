@@ -1,0 +1,9 @@
+### CON-2071 — Volatilität, G17 und ursprüngliche GGE-Rechnung
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Ranking-/Feature-Volatilität und G17-Sigma können unterschiedliche Renditen, ddof und Skalierung verwenden. Die heutige GGE implementiert σ×Mark als Preisdistanz, nicht automatisch den vollständigen zustandsabhängigen Scope. Der historische Auftrag verlangte mehrere mathematische Kandidaten; die erinnerte vollständige ursprüngliche Herleitung ist weiter nicht gesichert.
+
+**Grenze:** σ×P wird nicht zur ratifizierten vollständigen Ursprungsformel hochgestuft. Unterschiedliche Sigmawerte allein sind kein Fehler; das Instrument und die konkrete Rolle müssen übereinstimmen.
+
+Quellen: EVI-2298, EVI-2299, EVI-2297, EVI-2203, EVI-2246, EVI-2213, EVI-2212.

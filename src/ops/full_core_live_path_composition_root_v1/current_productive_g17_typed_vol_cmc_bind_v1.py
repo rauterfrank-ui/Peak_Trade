@@ -16,6 +16,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from trading.master_v2.canonical_market_context_v1 import CanonicalMarketContextV1
 from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
@@ -80,6 +81,8 @@ def apply_current_productive_g17_typed_vol_cmc_bind_v1(
     context: CanonicalMarketContextV1,
     *,
     producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1 | None,
+    expected_venue_native_id: str | None = None,
+    expected_venue: str | None = None,
 ) -> CurrentProductiveG17CmcBindResultV1:
     """Bind typed G17 estimate into CMC per productive runtime typed-binding v1.
 
@@ -100,6 +103,12 @@ def apply_current_productive_g17_typed_vol_cmc_bind_v1(
             "G17_CMC_BIND_PRODUCER_TYPE_INVALID",
             type(producer).__name__,
         )
+    if producer.history.canonical_instrument_id != context.instrument_id:
+        raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_INSTRUMENT_MISMATCH")
+    if expected_venue_native_id is not None and producer.history.venue_instrument_id != expected_venue_native_id:
+        raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_NATIVE_INSTRUMENT_MISMATCH")
+    if expected_venue is not None and producer.history.venue != expected_venue:
+        raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_VENUE_MISMATCH")
     _ = producer.on_runtime_cycle_without_sample_v1()
     port = producer.output_port_v1()
     outcome_enum = port.outcome
@@ -135,6 +144,16 @@ def apply_current_productive_g17_typed_vol_cmc_bind_v1(
             outcome=outcome,
             estimate_present=estimate_present,
         )
+    try:
+        decision_time = datetime.fromisoformat(context.decision_time.replace("Z", "+00:00"))
+        if decision_time.tzinfo is None:
+            raise ValueError("timezone_missing")
+        if bind_estimate.as_of_event_time > decision_time:
+            raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_FUTURE_ESTIMATE")
+    except (ValueError, TypeError) as exc:
+        if isinstance(exc, CurrentProductiveG17CmcBindError):
+            raise
+        raise CurrentProductiveG17CmcBindError("G17_CMC_BIND_EVENT_TIME_INVALID") from exc
     bound = bind_typed_canonical_volatility_estimate_into_market_context_v1(
         context,
         bind_estimate,

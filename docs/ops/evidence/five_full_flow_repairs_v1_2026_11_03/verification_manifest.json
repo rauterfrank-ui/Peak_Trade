@@ -1,0 +1,73 @@
+{
+  "base_commit": "9afa1f651c74a2b9b51d414b9a900eb63f7a5baa",
+  "scope": "five existing failures; injected offline proofs only",
+  "final_tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "68",
+    "time": "8.823",
+    "timestamp": "2026-11-03T21:46:41.440106+01:00",
+    "hostname": "MacBook-Pro-von-Frank.local"
+  },
+  "production_changed_paths": [
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
+  ],
+  "bound_files_sha256": {
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md": "11da8ff08a2bbeb23c1f1279ffe140290da1be2c5663fde83c1ad8633e54e1f9",
+    "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md": "71e85ad51e2eda53b86a7e75f6545e23d8326971ba3cec1313a88dda983ca5be",
+    "docs/ops/evidence/FIVE_FULL_FLOW_REPAIRS_2026_11_03.md": "12d3ea3229363055e166e1e7294322038cdf634bcab502cc82311c953194a202",
+    "docs/ops/evidence/five_full_flow_repairs_v1_2026_11_03/before_owner_forward_diagnostic.json": "b6198387cd5b9113a84605ff6a37c941e518d04310bc0fe1019069eaf849e995",
+    "docs/ops/evidence/five_full_flow_repairs_v1_2026_11_03/initial_integration_diagnostic.xml.gz": "a1d23e3987a1a284511a24efcc9a2225d305bed34390efc2213763a3882014dd",
+    "docs/ops/evidence/five_full_flow_repairs_v1_2026_11_03/integration_final_tests.xml": "889848d36f06f10985706db02a7d4ee7e3799fe61bd1388d694eb6996b92a430",
+    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1.md": "b433471ae1290274559dfc254d9a21e36c1d9ed86ebe1cbf31a3b0687171827b",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md": "2bdb638062648a6f45bdcb9a3fa56745545c85299a4c27a9e2dfe12980cd2dd8",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md": "aa1fe892df260753196681a5e4b0df98ae2810a77552418848aca96ac1a8eb2b",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md": "0ba5b33d029ad3c6660bc86f28bd11f586bbf32a373f6cd47546d1a7980c3807",
+    "docs/system_atlas/entities/catalog.yaml": "d5634dae6838a0c019136f625b187f45cb0f7b067ed639f3e3b1f164a7a8887c",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md": "1ccd443803b54d2234e868c64774157f84bda42f95382aabd812c3effbbfd089",
+    "docs/system_atlas/generated/FULL_DEPENDENCY_GRAPH.md": "3464b7b27b30010c7f6abc27039baf50b4dd1042b14d8292813e9d5e88261b8e",
+    "docs/system_atlas/generated/RUNTIME_GRAPH.md": "16579c11c3d6ce6a4342f4e4d1905a97b902b994c6334858f50ec4817f028e1d",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md": "747a8bb9a9a935aa812f6d61f0e37501900f5aa71a7b94cc956afac39cd98f7a",
+    "docs/system_atlas/relations/runtime.yaml": "0aa883a3a4fed85b98fb50f7ecd18b10975597fd0c6be493924556ad7b93b737",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py": "02aeaf04f12b59f508862c4ca22e7554cbb0373279dcf6b6a59fc9ccaa0accd8",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py": "b84daf6f06867d7ce340028d8fdf8716dd1886aac097ff1c1acebc8f2f0e9a38",
+    "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py": "b8a3e0b178cc14089718c53e902bb16cfc0a2e5d2f353a6c0993b13132cfdf7c",
+    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py": "0ced1af4f75ed5610d8152bef35c06843c465c6ce9b55220a82fe3e846c9f6c4",
+    "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py": "73810080fcd3cced36eac2c16a0d9d8ade5abb801b8c279675f549ec2a4001c8",
+    "tests/ops/test_current_productive_pre_external_order_independence_v1.py": "d9d4dca07f31f51d4e1dc4ca3db6dda5a8ad60585e99d182419eeae15aa8a97e",
+    "tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py": "b4a500b8cfe4bbecad0de52e343c538b6ade126dcd6ef7afa86180fede04deb1"
+  },
+  "unchanged_u04_and_learning_sources_sha256": {
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py": "e26018835d6c1b24f3335dbef667efe9f40d144b9fde99f929a6bc22792fa2b1",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py": "321d64b2675b22ce5d6f68b36471fb2598113071be0086c2f982bbf74e7f9d80",
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "5423c78d031748da12e19fceb09a0cf2a016553eb800ee5714165b75ae229584",
+    "src/learning/deterministic_decision_outcome_v0/capture_v0.py": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": "4aff801579dd534182d94005a7f40b2b07b42a8feeb0e9bbd1e7be543cff1e95",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py": "28cd75aa25f0b59ba97581bc31c08c2f6624919b1f1fc4b3914d34f61efcac4b",
+    "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py": "b49a5e11a8037b384b5497abcc79c992c27d706b092805ef09c85228f8acd3c0"
+  },
+  "original_learning_ledger_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "desktop_blueprint_sha256": "3bb12168195681eaacc2f841d6108b8ce7430215e273b2f69256e24422ac6433",
+  "checks": {
+    "ruff_check": "PASS",
+    "atlas_validation": "PASS",
+    "generated_drift": [],
+    "ruff_format": "PASS",
+    "changed_markdown_token_policy": "PASS: 11 files",
+    "changed_markdown_reference_targets": "PASS: 11 files",
+    "git_diff_check": "PASS"
+  },
+  "remaining": [
+    "U04 deferred",
+    "real source provisioning",
+    "durable service configuration",
+    "complete repository documentation alignment",
+    "remote CI"
+  ],
+  "no_push": true,
+  "no_real_private_get_or_orders": true
+}

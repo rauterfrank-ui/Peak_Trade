@@ -1,0 +1,9 @@
+### CON-2074 — Residenz, Membership, Active Set und Kontinuität
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Top20-Evaluationsresidenz, POLICY_A-Membership, Authoritative Next Active Set, Cap23-Hold, Lane-Retention und Positions-Custody haben unterschiedliche Rechte und Lebenszyklen. Der direkte N1-Caller lädt Previous-Selection nicht; ein Per-Lane-Caller tut es. Residenz-Abschluss mit HOLD kann genügen und beweist keinen Natural Entry. Authoritative Active Set/Egress bleibt im untersuchten Vertrag produktiv ungebunden.
+
+**Grenze:** Der erinnerte B5/B05-Rechenhold und der konkrete Vor-Natural-Enter-Qualifizierer sind weiterhin nicht eindeutig zugeordnet. Weder „fehlt“ noch „ist bereits Residenz“ daraus ableiten. 28800 s ist beobachteter Evaluationsdefault, kein Handelsziel.
+
+Quellen: EVI-2221, EVI-2220, EVI-2222, EVI-2203.

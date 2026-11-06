@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "distinct_testcases": 786,
+  "new_independent_market_cases": 39,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "source_files_bound": 11358,
+  "source_bytes_changed_during_run": [],
+  "suite": "all tests/learning plus two recorded-source research modules and bounded E6 system episodes",
+  "whole_repository_claim": false
+}

@@ -1,849 +1,529 @@
-<!-- GENERATED/DO_NOT_EDIT -->
-<!-- generator: scripts/ops/generate_system_atlas_v1.py -->
-<!-- atlas_authority: NONE -->
-<!-- schema_version: system_atlas.v1 -->
-
-# Peak_Trade System Atlas
-
-`ATLAS_AUTHORITY=NONE`  
-`ATLAS_ROLE=EVIDENCE_BOUND_SYSTEM_TOPOLOGY_AND_NAVIGATION`  
-`CANONICAL_AUTHORITY_IS_EXTERNAL_TO_ATLAS=true`  
-`ATLAS_MUST_CITE_AUTHORITY=true`  
-`ATLAS_MUST_NOT_CREATE_AUTHORITY=true`
-
-Primary human entrypoint. This is an evidence-bound topology overview, not a business SSOT and not runtime authorization.
+<!-- GENERATED_CURRENT_FROZEN_VIEW -->
+# PeakTrade System Atlas
 
 ```text
-SYSTEM_ATLAS_PRIMARY_ENTRYPOINT=docs/system_atlas/generated/SYSTEM_ATLAS.md
-SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true
-GLOBAL_CENSUS_EXHAUSTED=false
-SYSTEM_ATLAS_DRILLDOWN_LINKS_VALID=true
-SYSTEM_ATLAS_ALL_MAJOR_DOMAINS_REPRESENTED=true
-SYSTEM_ATLAS_CURRENT_HISTORICAL_SPLIT_VALID=true
-SYSTEM_ATLAS_GRAPH_RELATIONS_BACKED_BY_MODEL=true
+ATLAS_AUTHORITY=NONE
+ATLAS_ROLE=CURRENT_FROZEN_SYSTEM_DESCRIPTION
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CURRENT_ONLY=true
+SOURCE_TAG=freeze/clean-system-2026-11-06-v1
+SOURCE_COMMIT=c742a23c964901c1353fcf3468e618db9cb6ef42
+SYSTEM_FREEZE_TAG=freeze/clean-system-complete-2026-11-06-v1
 ```
 
-Navigation: `README.md` explains Atlas authority. This file is the complete overview. Specialized generated files are drill-down. YAML under `docs/system_atlas/` is the source model. Canonical authority remains the Master Runbook, external to the Atlas.
-
-Census SHA: `6422bfde79fd5aa45d2939a821980abf9aa4e3df`. Worktree dirty records are not origin/main truth.
-
-## Integrated current topology (model-backed)
-
-Every edge below is a stored Atlas relation whose source and target are hub entities. No inferred inverses. OPEN and CONTRADICTED edges keep that label.
-
-```mermaid
-flowchart TB
-  n_ADAPTER_okx_public_md_client["ADAPTER:okx_public_md_client<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_AUTH_PRIMITIVE_okx_hmac_sign["AUTH_PRIMITIVE:okx_hmac_sign<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_BINDER_bound_instrument_v1["BINDER:bound_instrument_v1<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_CAPABILITY_cap_11_13_5_live_canary["CAPABILITY:cap_11_13_5_live_canary<br/>CURRENT_CANONICAL"]
-  n_CAPABILITY_cap_1_1_reconciliation["CAPABILITY:cap_1_1_reconciliation<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_CAPABILITY_cap_2_1_gfu["CAPABILITY:cap_2_1_gfu<br/>CURRENT_CANONICAL"]
-  n_CAPABILITY_cap_2_2_ranking["CAPABILITY:cap_2_2_ranking<br/>CURRENT_CANONICAL"]
-  n_CAPABILITY_cap_2_3_single_selected_future["CAPABILITY:cap_2_3_single_selected_future<br/>CURRENT_CANONICAL"]
-  n_CAPABILITY_cap_2_4_runtime_binding["CAPABILITY:cap_2_4_runtime_binding<br/>CURRENT_CANONICAL"]
-  n_CAPABILITY_cap_3_1_futures_accounting["CAPABILITY:cap_3_1_futures_accounting<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_CAPABILITY_cap_4_1_pre_activation_closure["CAPABILITY:cap_4_1_pre_activation_closure<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_CAPABILITY_cap_7_2_stateful_no_order["CAPABILITY:cap_7_2_stateful_no_order<br/>CURRENT_CANONICAL"]
-  n_FUNCTIONAL_CORE_double_play["FUNCTIONAL_CORE:double_play<br/>CURRENT_CANONICAL"]
-  n_GATE_btc_exclusion["GATE:btc_exclusion<br/>CURRENT_CANONICAL"]
-  n_GATE_flatten_execute_authority["GATE:flatten_execute_authority<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_GATE_live_authorized_false["GATE:live_authorized_false<br/>CURRENT_CANONICAL"]
-  n_HOST_cap72_stateful_host["HOST:cap72_stateful_host<br/>CURRENT_CANONICAL"]
-  n_HOST_wallclock_decision_economics_cycle["HOST:wallclock_decision_economics_cycle<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_INVARIANT_missing_metadata_never_defaulted["INVARIANT:missing_metadata_never_defaulted<br/>CURRENT_CANONICAL"]
-  n_NAVIGATION_INDEX_map_of_truth["NAVIGATION_INDEX:map_of_truth<br/>ADJUDICATED"]
-  n_OBSERVER_post_action_canary["OBSERVER:post_action_canary<br/>OPEN"]
-  n_OWNER_DECISION_btc_excluded["OWNER_DECISION:btc_excluded<br/>CURRENT_CANONICAL"]
-  n_OWNER_DECISION_cap23_exclusive_selection["OWNER_DECISION:cap23_exclusive_selection<br/>CURRENT_CANONICAL"]
-  n_PHASE_ddo_offline_foundation["PHASE:ddo_offline_foundation<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNBOOK_canonical_master_runbook["RUNBOOK:canonical_master_runbook<br/>CURRENT_CANONICAL"]
-  n_RUNBOOK_vollautonomie_v4_4_12["RUNBOOK:vollautonomie_v4_4_12<br/>SUPERSEDED"]
-  n_RUNTIME_COMPONENT_ddo_capture_v0["RUNTIME_COMPONENT:ddo_capture_v0<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_ddo_ledger_v0["RUNTIME_COMPONENT:ddo_ledger_v0<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_dp_composition["RUNTIME_COMPONENT:dp_composition<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_dp_core_wiring["RUNTIME_COMPONENT:dp_core_wiring<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_dp_state["RUNTIME_COMPONENT:dp_state<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_dp_suitability["RUNTIME_COMPONENT:dp_suitability<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_dp_survival["RUNTIME_COMPONENT:dp_survival<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_gfu_eligibility["RUNTIME_COMPONENT:gfu_eligibility<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_mv2_decision_packet["RUNTIME_COMPONENT:mv2_decision_packet<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_RUNTIME_COMPONENT_mv2_integrated_replay["RUNTIME_COMPONENT:mv2_integrated_replay<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_SCRIPT_run_cap23_policy["SCRIPT:run_cap23_policy<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_SCRIPT_run_gfu_producer["SCRIPT:run_gfu_producer<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_SELECTOR_productive_futures_ranking["SELECTOR:productive_futures_ranking<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_SELECTOR_single_selected_future_policy["SELECTOR:single_selected_future_policy<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_SUBSYSTEM_master_v2["SUBSYSTEM:master_v2<br/>CURRENT_CANONICAL"]
-  n_SYSTEM_peak_trade["SYSTEM:peak_trade<br/>CURRENT_CANONICAL"]
-  n_UNIVERSE_governed_futures_universe["UNIVERSE:governed_futures_universe<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_VENUE_okx["VENUE:okx<br/>ADJUDICATED"]
-  n_VENUE_okx_eea["VENUE:okx_eea<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_VENUE_ENDPOINT_okx_public_instruments["VENUE_ENDPOINT:okx_public_instruments<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_NAVIGATION_INDEX_map_of_truth -->|"DOCUMENTS"| n_RUNBOOK_canonical_master_runbook
-  n_OWNER_DECISION_btc_excluded -->|"BINDS"| n_GATE_btc_exclusion
-  n_OWNER_DECISION_cap23_exclusive_selection -->|"BINDS"| n_CAPABILITY_cap_2_3_single_selected_future
-  n_RUNBOOK_canonical_master_runbook -->|"DOES_NOT_AUTHORIZE"| n_GATE_live_authorized_false
-  n_RUNBOOK_canonical_master_runbook -->|"GOVERNS"| n_SYSTEM_peak_trade
-  n_CAPABILITY_cap_2_1_gfu -->|"CLAIMS_TO_IMPLEMENT (CONTRADICTED)"| n_INVARIANT_missing_metadata_never_defaulted
-  n_CAPABILITY_cap_11_13_5_live_canary -->|"SIGNS"| n_AUTH_PRIMITIVE_okx_hmac_sign
-  n_CAPABILITY_cap_2_1_gfu -->|"PRODUCES (ADJUDICATED)"| n_UNIVERSE_governed_futures_universe
-  n_SELECTOR_productive_futures_ranking -->|"RANKS (ADJUDICATED)"| n_UNIVERSE_governed_futures_universe
-  n_SELECTOR_single_selected_future_policy -->|"SELECTS (ADJUDICATED)"| n_SELECTOR_productive_futures_ranking
-  n_BINDER_bound_instrument_v1 -->|"BINDS (ADJUDICATED)"| n_SELECTOR_single_selected_future_policy
-  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_BINDER_bound_instrument_v1
-  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_RUNTIME_COMPONENT_mv2_integrated_replay
-  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_SELECTOR_productive_futures_ranking
-  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_SELECTOR_single_selected_future_policy
-  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_CAPABILITY_cap_2_1_gfu
-  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_HOST_wallclock_decision_economics_cycle
-  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"PERSISTS"| n_RUNTIME_COMPONENT_ddo_ledger_v0
-  n_RUNTIME_COMPONENT_dp_composition -->|"CONSUMES"| n_RUNTIME_COMPONENT_dp_suitability
-  n_RUNTIME_COMPONENT_dp_composition -->|"CONSUMES"| n_RUNTIME_COMPONENT_dp_survival
-  n_RUNTIME_COMPONENT_dp_core_wiring -->|"CALLS"| n_RUNTIME_COMPONENT_mv2_decision_packet
-  n_RUNTIME_COMPONENT_dp_core_wiring -->|"CALLS"| n_RUNTIME_COMPONENT_mv2_integrated_replay
-  n_RUNTIME_COMPONENT_dp_composition -->|"READS"| n_RUNTIME_COMPONENT_dp_state
-  n_GATE_flatten_execute_authority -->|"GATES"| n_CAPABILITY_cap_11_13_5_live_canary
-  n_RUNTIME_COMPONENT_gfu_eligibility -->|"FILTERS"| n_UNIVERSE_governed_futures_universe
-  n_HOST_cap72_stateful_host -->|"CONSUMES (ADJUDICATED)"| n_BINDER_bound_instrument_v1
-  n_GATE_live_authorized_false -->|"DENIES"| n_CAPABILITY_cap_11_13_5_live_canary
-  n_ADAPTER_okx_public_md_client -->|"FETCHES"| n_VENUE_ENDPOINT_okx_public_instruments
-  n_OBSERVER_post_action_canary -->|"OBSERVES (OPEN)"| n_GATE_flatten_execute_authority
-  n_SCRIPT_run_cap23_policy -->|"CALLS"| n_CAPABILITY_cap_2_3_single_selected_future
-  n_SCRIPT_run_gfu_producer -->|"CALLS"| n_CAPABILITY_cap_2_1_gfu
-  n_HOST_wallclock_decision_economics_cycle -->|"CALLS"| n_RUNTIME_COMPONENT_ddo_capture_v0
-  n_HOST_wallclock_decision_economics_cycle -->|"INJECTS"| n_RUNTIME_COMPONENT_ddo_capture_v0
-  n_CAPABILITY_cap_2_1_gfu -->|"GOVERNED_BY"| n_GATE_btc_exclusion
-  n_CAPABILITY_cap_2_1_gfu -->|"GOVERNED_BY"| n_INVARIANT_missing_metadata_never_defaulted
-  n_CAPABILITY_cap_2_2_ranking -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_1_gfu
-  n_CAPABILITY_cap_2_3_single_selected_future -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_2_ranking
-  n_CAPABILITY_cap_2_3_single_selected_future -->|"GOVERNED_BY"| n_OWNER_DECISION_cap23_exclusive_selection
-  n_CAPABILITY_cap_2_4_runtime_binding -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_3_single_selected_future
-  n_CAPABILITY_cap_3_1_futures_accounting -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_4_runtime_binding
-  n_CAPABILITY_cap_4_1_pre_activation_closure -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_1_1_reconciliation
-  n_CAPABILITY_cap_4_1_pre_activation_closure -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_4_runtime_binding
-  n_CAPABILITY_cap_4_1_pre_activation_closure -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_3_1_futures_accounting
-  n_CAPABILITY_cap_7_2_stateful_no_order -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_4_runtime_binding
-  n_PHASE_ddo_offline_foundation -->|"CONTAINS"| n_RUNTIME_COMPONENT_ddo_capture_v0
-  n_PHASE_ddo_offline_foundation -->|"CONTAINS"| n_RUNTIME_COMPONENT_ddo_ledger_v0
-  n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_composition
-  n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_core_wiring
-  n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_state
-  n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_suitability
-  n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_survival
-  n_NAVIGATION_INDEX_map_of_truth -->|"NAVIGATES_TO"| n_RUNBOOK_canonical_master_runbook
-  n_SUBSYSTEM_master_v2 -->|"HAS_FUNCTIONAL_CORE (ADJUDICATED)"| n_FUNCTIONAL_CORE_double_play
-  n_SUBSYSTEM_master_v2 -->|"CONTAINS"| n_RUNTIME_COMPONENT_dp_composition
-  n_SUBSYSTEM_master_v2 -->|"CONTAINS"| n_RUNTIME_COMPONENT_dp_core_wiring
-  n_SUBSYSTEM_master_v2 -->|"CONTAINS"| n_RUNTIME_COMPONENT_dp_state
-  n_SUBSYSTEM_master_v2 -->|"CONTAINS"| n_RUNTIME_COMPONENT_dp_suitability
-  n_SUBSYSTEM_master_v2 -->|"CONTAINS"| n_RUNTIME_COMPONENT_dp_survival
-  n_SUBSYSTEM_master_v2 -->|"CONTAINS"| n_RUNTIME_COMPONENT_mv2_decision_packet
-  n_SUBSYSTEM_master_v2 -->|"CONTAINS"| n_RUNTIME_COMPONENT_mv2_integrated_replay
-  n_RUNBOOK_canonical_master_runbook -->|"SUPERSEDES"| n_RUNBOOK_vollautonomie_v4_4_12
-  n_SYSTEM_peak_trade -->|"CONTAINS"| n_SUBSYSTEM_master_v2
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_1_1_reconciliation
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_11_13_5_live_canary
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_2_1_gfu
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_2_2_ranking
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_2_3_single_selected_future
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_2_4_runtime_binding
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_3_1_futures_accounting
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_4_1_pre_activation_closure
-  n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_7_2_stateful_no_order
-  n_VENUE_okx -->|"CONTAINS"| n_VENUE_okx_eea
-```
-Hub relations shown: `72`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md), [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
-
-| id | source | type | target | epistemic |
-| --- | --- | --- | --- | --- |
-| REL:a_map_documents_runbook | NAVIGATION_INDEX:map_of_truth | DOCUMENTS | RUNBOOK:canonical_master_runbook | STATUS=NAVIGATION_ONLY |
-| REL:a_owner_binds_btc | OWNER_DECISION:btc_excluded | BINDS | GATE:btc_exclusion | STATUS=CANONICAL_AUTHORITY |
-| REL:a_owner_binds_cap23 | OWNER_DECISION:cap23_exclusive_selection | BINDS | CAPABILITY:cap_2_3_single_selected_future | STATUS=CANONICAL_AUTHORITY |
-| REL:a_runbook_does_not_authorize_live | RUNBOOK:canonical_master_runbook | DOES_NOT_AUTHORIZE | GATE:live_authorized_false | STATUS=CANONICAL_AUTHORITY |
-| REL:a_runbook_governs_system | RUNBOOK:canonical_master_runbook | GOVERNS | SYSTEM:peak_trade | STATUS=CANONICAL_AUTHORITY |
-| REL:a_spec_claims_cap21 | CAPABILITY:cap_2_1_gfu | CLAIMS_TO_IMPLEMENT | INVARIANT:missing_metadata_never_defaulted | STATUS=CONTRADICTED (both sides preserved) |
-| REL:r_canary_uses_k1_hmac | CAPABILITY:cap_11_13_5_live_canary | SIGNS | AUTH_PRIMITIVE:okx_hmac_sign | STATUS=FORENSIC_RAW |
-| REL:r_cap21_produces_universe | CAPABILITY:cap_2_1_gfu | PRODUCES | UNIVERSE:governed_futures_universe | STATUS=ADJUDICATED |
-| REL:r_cap22_ranks_universe | SELECTOR:productive_futures_ranking | RANKS | UNIVERSE:governed_futures_universe | STATUS=ADJUDICATED |
-| REL:r_cap23_selects | SELECTOR:single_selected_future_policy | SELECTS | SELECTOR:productive_futures_ranking | STATUS=ADJUDICATED |
-| REL:r_cap24_binds | BINDER:bound_instrument_v1 | BINDS | SELECTOR:single_selected_future_policy | STATUS=ADJUDICATED |
-| REL:r_ddo_capture_observes_binding | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | BINDER:bound_instrument_v1 | STATUS=FORENSIC_RAW |
-| REL:r_ddo_capture_observes_integrated_replay | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | RUNTIME_COMPONENT:mv2_integrated_replay | STATUS=FORENSIC_RAW |
-| REL:r_ddo_capture_observes_ranking | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | SELECTOR:productive_futures_ranking | STATUS=FORENSIC_RAW |
-| REL:r_ddo_capture_observes_selection | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | SELECTOR:single_selected_future_policy | STATUS=FORENSIC_RAW |
-| REL:r_ddo_capture_observes_universe | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | CAPABILITY:cap_2_1_gfu | STATUS=FORENSIC_RAW |
-| REL:r_ddo_capture_observes_wallclock_cycle_producers | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | HOST:wallclock_decision_economics_cycle | STATUS=FORENSIC_RAW |
-| REL:r_ddo_capture_persists_ledger | RUNTIME_COMPONENT:ddo_capture_v0 | PERSISTS | RUNTIME_COMPONENT:ddo_ledger_v0 | STATUS=FORENSIC_RAW |
-| REL:r_dp_composition_consumes_suitability | RUNTIME_COMPONENT:dp_composition | CONSUMES | RUNTIME_COMPONENT:dp_suitability | STATUS=FORENSIC_RAW |
-| REL:r_dp_composition_consumes_survival | RUNTIME_COMPONENT:dp_composition | CONSUMES | RUNTIME_COMPONENT:dp_survival | STATUS=FORENSIC_RAW |
-| REL:r_dp_core_wiring_calls_decision_packet | RUNTIME_COMPONENT:dp_core_wiring | CALLS | RUNTIME_COMPONENT:mv2_decision_packet | STATUS=FORENSIC_RAW |
-| REL:r_dp_core_wiring_calls_integrated_replay | RUNTIME_COMPONENT:dp_core_wiring | CALLS | RUNTIME_COMPONENT:mv2_integrated_replay | STATUS=FORENSIC_RAW |
-| REL:r_dp_state_calls | RUNTIME_COMPONENT:dp_composition | READS | RUNTIME_COMPONENT:dp_state | STATUS=FORENSIC_RAW |
-| REL:r_flatten_gates | GATE:flatten_execute_authority | GATES | CAPABILITY:cap_11_13_5_live_canary | STATUS=FORENSIC_RAW |
-| REL:r_gfu_eligibility_filters | RUNTIME_COMPONENT:gfu_eligibility | FILTERS | UNIVERSE:governed_futures_universe | STATUS=FORENSIC_RAW |
-| REL:r_host72_consumes_binding | HOST:cap72_stateful_host | CONSUMES | BINDER:bound_instrument_v1 | STATUS=ADJUDICATED |
-| REL:r_live_auth_denies | GATE:live_authorized_false | DENIES | CAPABILITY:cap_11_13_5_live_canary | STATUS=CANONICAL_AUTHORITY |
-| REL:r_md_client_fetches_instruments | ADAPTER:okx_public_md_client | FETCHES | VENUE_ENDPOINT:okx_public_instruments | STATUS=FORENSIC_RAW |
-| REL:r_post_action_observes | OBSERVER:post_action_canary | OBSERVES | GATE:flatten_execute_authority | STATUS=OPEN (not proven) |
-| REL:r_script_cap23_calls | SCRIPT:run_cap23_policy | CALLS | CAPABILITY:cap_2_3_single_selected_future | STATUS=FORENSIC_RAW |
-| REL:r_script_gfu_calls_cap21 | SCRIPT:run_gfu_producer | CALLS | CAPABILITY:cap_2_1_gfu | STATUS=FORENSIC_RAW |
-| REL:r_wallclock_calls_ddo_cycle_capture | HOST:wallclock_decision_economics_cycle | CALLS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW |
-| REL:r_wallclock_injects_ddo_capture_session | HOST:wallclock_decision_economics_cycle | INJECTS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW |
-| REL:s_cap21_governed_by_btc | CAPABILITY:cap_2_1_gfu | GOVERNED_BY | GATE:btc_exclusion | STATUS=CANONICAL_AUTHORITY |
-| REL:s_cap21_governed_by_never_default | CAPABILITY:cap_2_1_gfu | GOVERNED_BY | INVARIANT:missing_metadata_never_defaulted | STATUS=CANONICAL_AUTHORITY |
-| REL:s_cap22_depends_cap21 | CAPABILITY:cap_2_2_ranking | DEPENDS_ON | CAPABILITY:cap_2_1_gfu | STATUS=ADJUDICATED |
-| REL:s_cap23_depends_cap22 | CAPABILITY:cap_2_3_single_selected_future | DEPENDS_ON | CAPABILITY:cap_2_2_ranking | STATUS=ADJUDICATED |
-| REL:s_cap23_governed_by_owner | CAPABILITY:cap_2_3_single_selected_future | GOVERNED_BY | OWNER_DECISION:cap23_exclusive_selection | STATUS=CANONICAL_AUTHORITY |
-| REL:s_cap24_depends_cap23 | CAPABILITY:cap_2_4_runtime_binding | DEPENDS_ON | CAPABILITY:cap_2_3_single_selected_future | STATUS=ADJUDICATED |
-| REL:s_cap31_depends_cap24 | CAPABILITY:cap_3_1_futures_accounting | DEPENDS_ON | CAPABILITY:cap_2_4_runtime_binding | STATUS=ADJUDICATED |
-| REL:s_cap41_depends_cap11 | CAPABILITY:cap_4_1_pre_activation_closure | DEPENDS_ON | CAPABILITY:cap_1_1_reconciliation | STATUS=ADJUDICATED |
-| REL:s_cap41_depends_cap24 | CAPABILITY:cap_4_1_pre_activation_closure | DEPENDS_ON | CAPABILITY:cap_2_4_runtime_binding | STATUS=ADJUDICATED |
-| REL:s_cap41_depends_cap31 | CAPABILITY:cap_4_1_pre_activation_closure | DEPENDS_ON | CAPABILITY:cap_3_1_futures_accounting | STATUS=ADJUDICATED |
-| REL:s_cap72_depends_cap24 | CAPABILITY:cap_7_2_stateful_no_order | DEPENDS_ON | CAPABILITY:cap_2_4_runtime_binding | STATUS=ADJUDICATED |
-| REL:s_ddo_phase_contains_capture | PHASE:ddo_offline_foundation | CONTAINS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW |
-| REL:s_ddo_phase_contains_ledger | PHASE:ddo_offline_foundation | CONTAINS | RUNTIME_COMPONENT:ddo_ledger_v0 | STATUS=FORENSIC_RAW |
-| REL:s_dp_contains_dp_composition | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_composition | STATUS=ADJUDICATED |
-| REL:s_dp_contains_dp_core_wiring | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_core_wiring | STATUS=ADJUDICATED |
-| REL:s_dp_contains_dp_state | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_state | STATUS=ADJUDICATED |
-| REL:s_dp_contains_dp_suitability | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_suitability | STATUS=ADJUDICATED |
-| REL:s_dp_contains_dp_survival | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_survival | STATUS=ADJUDICATED |
-| REL:s_map_navigates_runbook | NAVIGATION_INDEX:map_of_truth | NAVIGATES_TO | RUNBOOK:canonical_master_runbook | STATUS=NAVIGATION_ONLY |
-| REL:s_master_v2_has_dp | SUBSYSTEM:master_v2 | HAS_FUNCTIONAL_CORE | FUNCTIONAL_CORE:double_play | STATUS=ADJUDICATED |
-| REL:s_mv2_contains_dp_composition | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_composition | STATUS=FORENSIC_RAW |
-| REL:s_mv2_contains_dp_core_wiring | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_core_wiring | STATUS=FORENSIC_RAW |
-| REL:s_mv2_contains_dp_state | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_state | STATUS=FORENSIC_RAW |
-| REL:s_mv2_contains_dp_suitability | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_suitability | STATUS=FORENSIC_RAW |
-| REL:s_mv2_contains_dp_survival | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_survival | STATUS=FORENSIC_RAW |
-| REL:s_mv2_contains_mv2_decision_packet | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:mv2_decision_packet | STATUS=FORENSIC_RAW |
-| REL:s_mv2_contains_mv2_integrated_replay | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:mv2_integrated_replay | STATUS=FORENSIC_RAW |
-| REL:s_runbook_supersedes_vollautonomie | RUNBOOK:canonical_master_runbook | SUPERSEDES | RUNBOOK:vollautonomie_v4_4_12 | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_contains_master_v2 | SYSTEM:peak_trade | CONTAINS | SUBSYSTEM:master_v2 | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap11 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_1_1_reconciliation | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap11135 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_11_13_5_live_canary | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap21 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_2_1_gfu | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap22 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_2_2_ranking | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap23 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_2_3_single_selected_future | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap24 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_2_4_runtime_binding | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap31 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_3_1_futures_accounting | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap41 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_4_1_pre_activation_closure | STATUS=CANONICAL_AUTHORITY |
-| REL:s_system_has_cap72 | SYSTEM:peak_trade | HAS_CAPABILITY | CAPABILITY:cap_7_2_stateful_no_order | STATUS=CANONICAL_AUTHORITY |
-| REL:s_venue_okx_contains_eea | VENUE:okx | CONTAINS | VENUE:okx_eea | STATUS=FORENSIC_RAW |
-
-## 1. Authority model
-
-Canonical semantic SSOT is `RUNBOOK:canonical_master_runbook` (`DOCUMENT_CLASS=CANONICAL_MASTER_RUNBOOK`, `RUNTIME_AUTHORIZATION_EFFECT=NONE`). The Map of Truth is `NAVIGATION_ONLY` and must not be read as a second SSOT. Derived-domain runbooks (cybersecurity, presentation, runtime-ops) are not trading SSOT. Forensic persistence declares `AUTHORITY=NONE`. Implementation and tests cannot confer authority upward.
-
-Standing fail-closed: `LIVE_AUTHORIZED=false`, `TESTNET_AUTHORIZED=false` unless a scoped Owner-GO plus canonical evidence says otherwise. Drill-down: [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md).
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| RUNBOOK:canonical_master_runbook | RUNBOOK | Peak_Trade Master Runbook | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| NAVIGATION_INDEX:map_of_truth | NAVIGATION_INDEX | Map of Truth | ADJUDICATED | STATUS=NAVIGATION_ONLY |
-| FORENSIC_REFERENCE:information_corpus_persistence_base | FORENSIC_REFERENCE | Information Corpus Persistence Base | FORENSIC_ONLY | STATUS=FORENSIC_RAW |
-| OWNER_DECISION:cap23_exclusive_selection | OWNER_DECISION | CAP23 exclusive productive selection | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| OWNER_DECISION:btc_excluded | OWNER_DECISION | BTC productively excluded | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-
-## 2. Master V2 / Double Play relation
-
-Peak_Trade's trading core is named `Master V2 &#47; Double Play` on the Master Runbook SYSTEM header. They are Modul-Owner of **one** Trading Core (`SEPARATE_*_ALLOWED=false` in architecture text). They are not competing generations.
-
-Atlas kind `FUNCTIONAL_CORE` and relation type `HAS_FUNCTIONAL_CORE` are census labels. Exact tokens `FUNCTIONAL_CORE` / `inner core` were **not** found on origin/main. The stored edge `REL:s_master_v2_has_dp` is `ADJUDICATED`, not a Master Runbook token. Historical Vollautonomie ordering vs current §4.2 chain is CONTRADICTED (`C-DP-ORDER-001`). `ops.double_play.evaluate_double_play` is quarantined projection-only.
-
-Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
-
-## 3. System / subsystem hierarchy
-
-`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `246`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| FUNCTIONAL_CORE:double_play | FUNCTIONAL_CORE | Double Play | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| HOST:cap72_stateful_host | HOST | Cap 7.2 stateful no-order host | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SUBSYSTEM:master_v2 | SUBSYSTEM | Master V2 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| SYSTEM:peak_trade | SYSTEM | Peak_Trade | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-
-## 4. Family / Child / SSOT-CHILD / MMR model
-
-**There is no single Families ontology.** The same spellings mean incompatible things. Do not collapse them. `SSOT_CHILD` is not a formal in-repo literal. `HISTORICAL_CHILD_LEDGER` (88 `SRC-*` children) is forensic source-region indexing with `ssot_role=HISTORICAL_FORENSIC_REGION_NOT_CURRENT_SSOT`, not SSOT_CHILD. MMR in the Master Runbook is Maintenance Margin Requirement (venue/margin); an architectural Master-V2 MMR kind was not found in scoped specs.
-
-Observed Family senses include: projection-octet `family_id` (8 ids), OKX `instFamily`, `strategy_family`, confirm-token `FAMILY_*`, historical Gate-Familien F1–F6, obligation_families, and `NO_FAMILY_ONTOLOGY`. Drill-down: [FAMILY_CHILD_MMR_MAP.md](FAMILY_CHILD_MMR_MAP.md), [TERMINOLOGY_COLLISIONS.md](TERMINOLOGY_COLLISIONS.md).
-
-| id | parent | type | child | meaning | epistemic |
-| --- | --- | --- | --- | --- | --- |
-| FCM:architectural_mmr | SUBSYSTEM:master_v2 | HAS_MMR | TERM:mmr_polyvalent | architectural_unproven | STATUS=OPEN (not proven) |
-| FCM:dashboard_canonical_decision | SYSTEM:peak_trade | HAS_FAMILY | FAMILY:dashboard_canonical_decision | dashboard_family_id | STATUS=FORENSIC_RAW |
-| FCM:dashboard_double_play | SYSTEM:peak_trade | HAS_FAMILY | FAMILY:dashboard_double_play | dashboard_family_id | STATUS=FORENSIC_RAW |
-| FCM:dashboard_dynamic_scope | SYSTEM:peak_trade | HAS_FAMILY | FAMILY:dashboard_dynamic_scope | dashboard_family_id | STATUS=FORENSIC_RAW |
-| FCM:dashboard_econ | SYSTEM:peak_trade | HAS_FAMILY | FAMILY:dashboard_economic_summary | dashboard_family_id | STATUS=FORENSIC_RAW |
-| FCM:dashboard_exec_recon | SYSTEM:peak_trade | HAS_FAMILY | FAMILY:dashboard_execution_reconciliation | dashboard_family_id | STATUS=FORENSIC_RAW |
-| FCM:dashboard_regime | SYSTEM:peak_trade | HAS_FAMILY | FAMILY:dashboard_regime_bull_bear | dashboard_family_id | STATUS=FORENSIC_RAW |
-| FCM:dashboard_risk | SYSTEM:peak_trade | HAS_FAMILY | FAMILY:dashboard_risk_sizing_capital | dashboard_family_id | STATUS=FORENSIC_RAW |
-| FCM:dashboard_safety | SYSTEM:peak_trade | HAS_FAMILY | FAMILY:dashboard_safety_authority | dashboard_family_id | STATUS=FORENSIC_RAW |
-| FCM:falls_parent_child | FORENSIC_REFERENCE:information_corpus_persistence_base | HAS_CHILD | TERM:falls_parent_child | forensic_falls_coupling | STATUS=HISTORICAL |
-| FCM:master_v2_functional_core | SUBSYSTEM:master_v2 | HAS_FUNCTIONAL_CORE | FUNCTIONAL_CORE:double_play | owner_bound_atlas_label | STATUS=ADJUDICATED |
-| FCM:nested_structural_child | FORENSIC_REFERENCE:information_corpus_persistence_base | HAS_CHILD | CHILD:nested_structural_child | forensic_lossless_structure | STATUS=HISTORICAL |
-| FCM:okx_instfamily | VENUE:okx | HAS_FAMILY | VENUE_FIELD:instFamily | okx_venue_field | STATUS=FORENSIC_RAW |
-| FCM:okx_mmr_field | VENUE:okx | HAS_MMR | VENUE_FIELD:mmr | okx_venue_field | STATUS=FORENSIC_RAW |
-| FCM:ssot_child | SYSTEM:peak_trade | HAS_SSOT_CHILD | TERM:ssot_child_unproven | unproven_kind | STATUS=OPEN (not proven) |
-
-## 5. Capability map
-
-Capabilities are numbered packages with specs under `docs&#47;ops&#47;specs&#47;MASTER_V2_CAPABILITY_*`. Presence of code is not activation.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| CAPABILITY:cap21_feature_production_v1 | CAPABILITY | Cap 2.1 Ranking Feature Production V1 (B05) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap22_peak_trade_ranking_runtime_v1 | CAPABILITY | Cap 2.2 Peak_Trade Economic Ranking Runtime V1 (B06) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap22_research_backtest_live_parity_v1 | CAPABILITY | Cap 2.2 Research / Backtest / Shadow / Productive Parity V1  | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap22_robustness_and_stress_v1 | CAPABILITY | Cap 2.2 Robustness and Stress Proof V1 (B10) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_11_13_5_live_canary | CAPABILITY | LIVE_CANARY_MINIMUM_EXPOSURE | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_1_1_reconciliation | CAPABILITY | Productive Reconciliation Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_2_1_gfu | CAPABILITY | Governed Futures Universe Producer | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_2_2_ranking | CAPABILITY | Productive Futures Ranking Producer | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_2_3_single_selected_future | CAPABILITY | Single Selected Future Policy | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_2_4_runtime_binding | CAPABILITY | Single Selected Future Runtime Binding | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_3_1_futures_accounting | CAPABILITY | Productive Futures Accounting Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_4_1_pre_activation_closure | CAPABILITY | Single Future Canonical Runtime Pre-Activation Closure | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_7_2_stateful_no_order | CAPABILITY | Single-Future Canonical Stateful Runtime Activation | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_economic_md_input | CAPABILITY | Persisted Multi-Instrument Economic Market Data Input | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:future_profile_snapshot_v1 | CAPABILITY | Future Profile Snapshot V1 (B07) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:integrated_offline_economic_evidence_v1 | CAPABILITY | Integrated offline economic evidence and position-truth repl | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| CAPABILITY:integrated_offline_replay_correctness_head_bound_v1 | CAPABILITY | Integrated offline replay correctness HEAD-bound proof | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| CAPABILITY:market_data_private_state_runtime_convergence_v1 | CAPABILITY | Market Data & Private State Runtime Convergence (WP-C) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1 | CAPABILITY | Market Intelligence Forecast/Calibration Offline Stack (Trac | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:okx_eea_private_account_state_runtime_v1 | CAPABILITY | OKX EEA Private Account State Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:operator_profile_explainability_v1 | CAPABILITY | Operator Profile and Explainability View V1 (B11) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:peak_trade_public_market_data_runtime_v1 | CAPABILITY | OKX EEA Public Market Data Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:top20_opportunity_evaluation_residency_v1 | CAPABILITY | Top20 Opportunity Evaluation Residency And Scheduling | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-
-Drill-down: [BUILD_GUIDANCE.md](BUILD_GUIDANCE.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
-
-## 6. Productive selection / binding flow
-
-Canonical §4.5 chain (analytical host): Governed Futures Universe → Productive Ranking → Persisted Single Selected Future → Native Instrument Binding → Runtime Consumer.
-
-Stored wiring: Cap 2.1 `PRODUCES` universe; Cap 2.2 `RANKS` universe; Cap 2.3 `SELECTS` ranking; Cap 2.4 `BINDS` selection; Cap 7.2 host `CONSUMES` BoundInstrumentV1. Cap 2.3 is exclusive **for that analytical chain**. Section 11.13.5 canary is a **parallel** hardcoded instrument authority (`SUI-USD_UM_XPERP-310404`) with no Cap 2.3 import on origin/main (`C-CAP23-VS-CANARY-INSTRUMENT-001`). BTC remains productively excluded in Cap 2.1; `BTC_PRODUCTIVE_PROOF=DO_NOT_RUN` is a distinct canary-era flag.
-
-Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md), [DATA_LINEAGE_MAP.md](DATA_LINEAGE_MAP.md).
-
-## 7. Runtime call / data flow
-
-Runtime relation count: `103`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
-
-Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
-
-| id | name | class | network |
-| --- | --- | --- | --- |
-| EP:cap23_policy | Single selected future policy | PRODUCTIVE_OFFLINE_PRODUCER | none_in_policy_producer |
-| EP:flatten_execute | Flatten execute authority | GATED_MUTATION_PATH | may_exist_downstream_NOT_activated |
-| EP:full_core_live_path_offline | Offline Core-to-Live composition path | GATED_OFFLINE_COMPOSITION_PATH | none_hard_stop_before_wire |
-| EP:gfu_producer | Governed Futures Universe producer | PRODUCTIVE_OFFLINE_PRODUCER | Discovery is offline/injected payload in GFU producer itself; public MD client i |
-
-## 8. Safety / governance model
-
-Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm-tokens are purpose-scoped (flatten execute token is not the generic live token). Flatten transport exists with `DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false`. Kill-switch, max-positions=1, and BTC exclusion are separate gates.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| GATE:btc_exclusion | GATE | BTC_EXCLUDED | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| GATE:flatten_execute_authority | GATE | Flatten execute confirm-token authority | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_capital_admission_v1 | GATE | Full-core Pre-Live Capital Admission seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_durable_filegate_join_v1 | GATE | Full-core durable FILEGATE join seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_fresh_pretrade_runtime_get_v1 | GATE | Full-core fresh pretrade runtime GET seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_account_bound_v1 | GATE | Full-core LIVE_ACCOUNT_BOUND seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_execution_boundary_halt_before_wire_v1 | GATE | Offline Live execution boundary halt-before-wire v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | Frozen offline pretrade conjunction v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_identity_v1 | GATE | Full-core productive Live-path identity gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_owner_one_shot_permit_v1 | GATE | Full-core typed OWNER_ONE_SHOT permit seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:live_authorized_false | GATE | LIVE_AUTHORIZED=false standing | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | Treasury Phase-2 read-only reconciliation foundation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | Treasury Phase-3 shadow read-only enforcement v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-
-Safety chains recorded: `4`. Drill-down: [SAFETY_GOVERNANCE_MAP.md](SAFETY_GOVERNANCE_MAP.md).
-
-## 9. Configuration wiring
-
-Configuration records: `4`. Config enablement does not confer `LIVE_AUTHORIZED`. Drill-down: [CONFIGURATION_WIRING.md](CONFIGURATION_WIRING.md).
-
-| id | key | source | default | status |
-| --- | --- | --- | --- | --- |
-| CFG:exchange_okx_europe_eea | exchange.okx_europe_eea | config/config.toml | enabled=false validate_only=true (as historically observed on origin/main) | CURRENT_NONCANONICAL |
-| CFG:live_authorized | LIVE_AUTHORIZED | docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md | false | CURRENT_CANONICAL |
-| CFG:max_positions | CURRENT_MAX_POSITIONS | docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md | 1 | CURRENT_CANONICAL |
-| CFG:testnet_authorized | TESTNET_AUTHORIZED | docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md | false | CURRENT_CANONICAL |
-
-## 10. Data contract / identity / unit model
-
-SCHEMA is not automatically DATA_CONTRACT or dataclass. BoundInstrumentV1 carries identity/digests, not ctVal/base/quote/settle. Quote currency is derived in Cap 2.1 eligibility (`quoteCcy` else hyphen `instId`; `uly` fills BASE only). Fresh EEA rows often have empty `quoteCcy`; XPERP underscored ids fail the regex (`C-OKX-QUOTE-ULY-001`). Public XPERP `settleCcy=USD` vs account USDC must not be collapsed.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| DATA_CONTRACT:account_equity_orchestration_ingress_v1 | DATA_CONTRACT | Account-equity orchestration ingress v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:ghv_regression_corpus_provenance_v1 | DATA_CONTRACT | GHV regression corpus provenance v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-
-Lineage records: `4`. Drill-down: [DATA_CONTRACT_MAP.md](DATA_CONTRACT_MAP.md), [DATA_LINEAGE_MAP.md](DATA_LINEAGE_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md).
-
-## 11. Complete OKX domain overview
-
-OKX is a first-class venue domain. XPERP is `instType=FUTURES` + `ruleType=xperp`, not a separate instType and not the census organizing center. Productive EEA REST host is `eea.okx.com`. Public MD client often uses `www.okx.com`. WebSocket hosts are configured; no proven live WS client. Signed private REST exists after the 2026-07-17 audit (supersession, not silent overwrite).
-
-Product types below are Peak_Trade evidence, not generic OKX venue capability.
-
-| product_type | status | canonical_support | runtime_reachability |
-| --- | --- | --- | --- |
-| FUTURES | CURRENT_MODEL | venue/okx | CURRENT |
-| SWAP | CURRENT_MODEL | venue/okx | CURRENT |
-| XPERP_as_ruleType_or_instId_family | CURRENT_MODEL | venue/okx | CURRENT |
-
-- hosts: `0`
-- features: `1`
-- endpoints: `3`
-- fields: `3`
-- `OKX_CENSUS_COMPLETE=true`
-- `REPO_OKX_CENSUS_COMPLETE=true`
-
-Drill-down: [OKX_INTEGRATION_MAP.md](OKX_INTEGRATION_MAP.md), [OKX_FEATURE_MATRIX.md](OKX_FEATURE_MATRIX.md), [OKX_CHRONOLOGY.md](OKX_CHRONOLOGY.md).
-
-## 12. Current vs historical classification
-
-Do not treat historical or forensic material as current runtime wiring. Implementation without proven canonical support is not activation. `IMPLEMENTED` is not `ACTIVATED`. `ADJUDICATED` is an Atlas census label, not a Master Runbook token. `FORENSIC_ONLY` is not canonical. `SUPERSEDED`/`REJECTED` remain historical records.
-
-### CURRENT_CANONICAL
-
-Architectural-kind count in this bucket: `30`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| CAPABILITY:cap21_feature_production_v1 | CAPABILITY | Cap 2.1 Ranking Feature Production V1 (B05) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap22_peak_trade_ranking_runtime_v1 | CAPABILITY | Cap 2.2 Peak_Trade Economic Ranking Runtime V1 (B06) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap22_research_backtest_live_parity_v1 | CAPABILITY | Cap 2.2 Research / Backtest / Shadow / Productive Parity V1  | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap22_robustness_and_stress_v1 | CAPABILITY | Cap 2.2 Robustness and Stress Proof V1 (B10) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_11_13_5_live_canary | CAPABILITY | LIVE_CANARY_MINIMUM_EXPOSURE | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_2_1_gfu | CAPABILITY | Governed Futures Universe Producer | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_2_2_ranking | CAPABILITY | Productive Futures Ranking Producer | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_2_3_single_selected_future | CAPABILITY | Single Selected Future Policy | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_2_4_runtime_binding | CAPABILITY | Single Selected Future Runtime Binding | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_7_2_stateful_no_order | CAPABILITY | Single-Future Canonical Stateful Runtime Activation | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_economic_md_input | CAPABILITY | Persisted Multi-Instrument Economic Market Data Input | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:future_profile_snapshot_v1 | CAPABILITY | Future Profile Snapshot V1 (B07) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:market_data_private_state_runtime_convergence_v1 | CAPABILITY | Market Data & Private State Runtime Convergence (WP-C) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1 | CAPABILITY | Market Intelligence Forecast/Calibration Offline Stack (Trac | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:okx_eea_private_account_state_runtime_v1 | CAPABILITY | OKX EEA Private Account State Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:operator_profile_explainability_v1 | CAPABILITY | Operator Profile and Explainability View V1 (B11) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:peak_trade_public_market_data_runtime_v1 | CAPABILITY | OKX EEA Public Market Data Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| DOD:capability_closure_standard | DOD | Mandatory Capability Closure Standard | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| DOD:program_final | DOD | Program Definition of Done | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| FUNCTIONAL_CORE:double_play | FUNCTIONAL_CORE | Double Play | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| GATE:btc_exclusion | GATE | BTC_EXCLUDED | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| GATE:live_authorized_false | GATE | LIVE_AUTHORIZED=false standing | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| HOST:cap72_stateful_host | HOST | Cap 7.2 stateful no-order host | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| INVARIANT:missing_metadata_never_defaulted | INVARIANT | Cap 2.1 missing metadata never defaulted | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| OWNER_DECISION:btc_excluded | OWNER_DECISION | BTC productively excluded | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| OWNER_DECISION:cap23_exclusive_selection | OWNER_DECISION | CAP23 exclusive productive selection | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| RUNBOOK:canonical_master_runbook | RUNBOOK | Peak_Trade Master Runbook | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| SUBSYSTEM:master_v2 | SUBSYSTEM | Master V2 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| SYSTEM:peak_trade | SYSTEM | Peak_Trade | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-
-### CURRENT_IMPLEMENTED_NONCANONICAL
-
-Architectural-kind count in this bucket: `42`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| ADAPTER:okx_public_md_client | ADAPTER | OkxPublicMarketDataClientV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| BINDER:bound_instrument_v1 | BINDER | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
-| CAPABILITY:cap_1_1_reconciliation | CAPABILITY | Productive Reconciliation Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_3_1_futures_accounting | CAPABILITY | Productive Futures Accounting Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:cap_4_1_pre_activation_closure | CAPABILITY | Single Future Canonical Runtime Pre-Activation Closure | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
-| CAPABILITY:integrated_offline_economic_evidence_v1 | CAPABILITY | Integrated offline economic evidence and position-truth repl | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| CAPABILITY:integrated_offline_replay_correctness_head_bound_v1 | CAPABILITY | Integrated offline replay correctness HEAD-bound proof | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| CAPABILITY:top20_opportunity_evaluation_residency_v1 | CAPABILITY | Top20 Opportunity Evaluation Residency And Scheduling | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:account_equity_orchestration_ingress_v1 | DATA_CONTRACT | Account-equity orchestration ingress v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:ghv_regression_corpus_provenance_v1 | DATA_CONTRACT | GHV regression corpus provenance v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:flatten_execute_authority | GATE | Flatten execute confirm-token authority | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_capital_admission_v1 | GATE | Full-core Pre-Live Capital Admission seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_durable_filegate_join_v1 | GATE | Full-core durable FILEGATE join seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_fresh_pretrade_runtime_get_v1 | GATE | Full-core fresh pretrade runtime GET seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_account_bound_v1 | GATE | Full-core LIVE_ACCOUNT_BOUND seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_execution_boundary_halt_before_wire_v1 | GATE | Offline Live execution boundary halt-before-wire v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | Frozen offline pretrade conjunction v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_identity_v1 | GATE | Full-core productive Live-path identity gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:full_core_owner_one_shot_permit_v1 | GATE | Full-core typed OWNER_ONE_SHOT permit seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | Treasury Phase-2 read-only reconciliation foundation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | Treasury Phase-3 shadow read-only enforcement v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| PHASE:ddo_offline_foundation | PHASE | 11.13.5 Parallel-track DDO offline foundation | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:bound_instrument_dataclass_v1 | SCHEMA | BoundInstrumentV1 dataclass shape | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:gfu_snapshot_v1 | SCHEMA | governed_futures_universe_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:ranking_snapshot_v1 | SCHEMA | productive_futures_ranking_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:runtime_binding_v1 | SCHEMA | single_selected_future_runtime_binding.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:single_selected_future_selection_v1 | SCHEMA | single_selected_future_selection.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SELECTOR:productive_futures_ranking | SELECTOR | Productive futures ranking | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
-| SELECTOR:single_selected_future_policy | SELECTOR | Single selected future policy producer | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
-
-Truncated to 40 of `42` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
-
-### ADJUDICATED
-
-Architectural-kind count in this bucket: `4`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| NAVIGATION_INDEX:current_universe_landscape_snapshot_v1 | NAVIGATION_INDEX | CURRENT Universe Landscape Snapshot V1 | ADJUDICATED | STATUS=NAVIGATION_ONLY |
-| NAVIGATION_INDEX:current_whole_system_functional_causal_model_v1 | NAVIGATION_INDEX | CURRENT Whole-System Functional and Causal Model V1 | ADJUDICATED | STATUS=NAVIGATION_ONLY |
-| NAVIGATION_INDEX:map_of_truth | NAVIGATION_INDEX | Map of Truth | ADJUDICATED | STATUS=NAVIGATION_ONLY |
-| VENUE:okx | VENUE | OKX | ADJUDICATED | STATUS=ADJUDICATED |
-
-### HISTORICAL_REFERENCE_ONLY
-
-Architectural-kind count in this bucket: `0`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| _(none)_ | _ | _ | _ | _ |
-
-### SUPERSEDED
-
-Architectural-kind count in this bucket: `4`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| DOD:vollautonomie_economic_validity | DOD | Definition of Done — Economic Validity | SUPERSEDED | STATUS=HISTORICAL |
-| DOD:vollautonomie_safety_runtime | DOD | Definition of Done — Safety and Runtime | SUPERSEDED | STATUS=HISTORICAL |
-| DOD:vollautonomie_trading_logic | DOD | Definition of Done — Trading Logic | SUPERSEDED | STATUS=HISTORICAL |
-| RUNBOOK:vollautonomie_v4_4_12 | RUNBOOK | Kanonisches Vollautonomie-Runbook v4.4.12 | SUPERSEDED | STATUS=HISTORICAL |
-
-### REJECTED
-
-Architectural-kind count in this bucket: `0`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| _(none)_ | _ | _ | _ | _ |
-
-### FORENSIC_ONLY
-
-Architectural-kind count in this bucket: `0`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| _(none)_ | _ | _ | _ | _ |
-
-### OPEN
-
-Architectural-kind count in this bucket: `1`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| OBSERVER:post_action_canary | OBSERVER | Canary post-action evaluator | OPEN | STATUS=OPEN (not proven) |
-
-### CONTRADICTED
-
-Architectural-kind count in this bucket: `0`.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| _(none)_ | _ | _ | _ | _ |
-
-## 13. Provenance / timeline summary
-
-Timeline events: `5`. Document-internal dates are not git-introduction proof. Drill-down: [PROVENANCE_TIMELINE.md](PROVENANCE_TIMELINE.md).
-
-| id | when | what | epistemic |
-| --- | --- | --- | --- |
-| PROV:first_okx_named_adapter | 2026-02-16 | First OKX-named implementation (P108 mocks-only adapter | STATUS=ADJUDICATED |
-| PROV:july17_audit_doc | 2026-07-17 git introduction | OKX read-only audit document merged (#5298) | STATUS=FORENSIC_RAW |
-| PROV:origin_main_census_sha | census bound | Census baseline origin/main SHA afbae518b67eb1b789c835e219db37f5b15f308b | STATUS=ADJUDICATED |
-| PROV:unshallow_historical_census | 2026-08-30 owner GO unshallow | git fetch --unshallow origin; earliest local commit becomes 78979ed413 (2025-12-02); HEAD unchanged | STATUS=ADJUDICATED |
-| PROV:vollautonomie_superseded | OPEN | Vollautonomie v4.4.12 superseded as SSOT by Master Runbook | STATUS=CANONICAL_AUTHORITY |
-
-## 14. Contradictions
-
-Unresolved contradiction records: `8`. Both sides are preserved. Drill-down: [CONTRADICTION_REGISTER.md](CONTRADICTION_REGISTER.md).
-
-| id | subject | resolved |
-| --- | --- | --- |
-| C-CAP23-VS-CANARY-INSTRUMENT-001 | Productive selection exclusivity versus live canary instrument authority | False |
-| C-CYBER-GATE-PASS-VS-MANIFEST-001 | PRE_LIVE_CYBERSECURITY_GATE | False |
-| C-DP-ORDER-001 | Double Play versus Survival/Suitability order | False |
-| C-FAMILY-POLYVALENT-001 | Family | False |
-| C-FUNCTIONAL-CORE-TOKEN-001 | FUNCTIONAL_CORE / HAS_FUNCTIONAL_CORE as Atlas labels | False |
-| C-MMR-POLYVALENT-001 | MMR | False |
-| C-OKX-AUDIT-SIGNED-REST-001 | Signed private OKX REST | True |
-| C-OKX-QUOTE-ULY-001 | Cap 2.1 quote/base identity versus never-defaulted invariant | False |
-| C-VERSION-V2.2-V2.3-001 | Master Runbook display version token | False |
-
-## 15. Open gaps
-
-Named census gaps (not a closed universe):
-
-- Family usages enumerated; no unified Families ontology (C-FAMILY-POLYVALENT-001)
-- Vollautonomie vs Master Runbook Double Play order CONTRADICTED
-- quoteCcy empty on EEA public instruments; uly not used for quote
-- Canary/Flatten post-action and productive GFU membership of SUI XPERP unproven
-- origin/main OKX-named deletions are zero; in-repo fixture structures inspected (147/147); external corpus NOT_STARTED
-- WebSocket hosts configured; no proven live WS client
-- Acronym expansions OPEN (EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING); terminology inventory is otherwise closed
-- Remaining SCHEMA_VERSION tokens classified TYPE_ONLY/VERSION_TOKEN, not per-token SCHEMA entities
-- Cap23 analytical exclusivity vs 11.13.5 canary hardcoded SUI (parallel authority)
-- Master title V2.2 vs REVISION/Map V2.3 version-token mismatch
-- Cyber header PRE_LIVE_GATE=PASS vs ratification JSON NOT_PASSED
-- Exact token HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE not found; Modul-Owner of one Trading Core is proven
-- Flatten transport implemented but LIVE_WIRE_DISABLED; LIVE_FLATTEN_PROVABILITY not PROVEN
-
-Every remaining `*_COMPLETE=false` flag has exactly one primary incompleteness class (`GENUINELY_UNSEARCHED` | `SEARCHED_BUT_NO_EVIDENCE_FOUND` | `UNRESOLVED_CONTRADICTION` | `HISTORICAL_SOURCE_UNAVAILABLE` | `TERMINOLOGY_UNRESOLVED`). Closed file-inventory domains are not ontology-solved.
-
-| id | flag | primary_class | additional | remaining |
-| --- | --- | --- | --- | --- |
-| okx_historical_census_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | ATLAS_LEGACY_ERADICATION_V1 removed historical domain census payloads; CURRENT OKX model uses venue/okx/* plus okx_current_tree.yaml. |
-| historical_terminology_census_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | Historical terminology archaeology payload purged; CURRENT terminology remains in ontology/* and PROJECT_TERMINOLOGY view. |
-| master_v2_module_file_inventory_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | Master V2 module inventory census payload purged; CURRENT Master V2 entities remain in catalog and MASTER_V2_DOUBLE_PLAY_MAP. |
-| acronym_census_complete | false | TERMINOLOGY_UNRESOLVED | SEARCHED_BUT_NO_EVIDENCE_FOUND | Inventory complete (acronym_census_inventory_complete=true). OPEN expansions searched on origin/main full history without inventing: EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING. TERM_MEANING_KNOWN for venue/token usage; AC |
-| current_tree_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named files (381) and /api/v5 literals inventoried on origin/main. Not every src/ path is an Atlas entity. |
-| git_history_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | origin/main full history searched for OKX/uly/auth/WS/deletions/OPEN expansions. Unmerged-only branches not treated as product SSOT. |
-| forensic_corpus_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | In-repo OKX forensic inventories structure-inspected. EXTERNAL_FORENSIC_CORPUS_CENSUS_COMPLETE=NOT_STARTED. |
-| docs_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named docs (40) plus venue/audit/spec surfaces mapped. Unrelated prose mentions are reference-only, not new endpoints. |
-| tests_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named tests (73) plus fixture payloads inspected. Full tests/ universe is not every-file entity-mapped. |
-| config_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named config (48) plus config.toml exchange.okx_europe_eea mapped. Unrelated config keys remain out of OKX census. |
-| raw_response_fixture_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | All 147 candidates classified; JSON structures inspected; payloads not copied. External corpus NOT_STARTED. |
-| endpoint_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | 70 raw hits classified; 21 grep noise; 49 unique REST paths; 50 modeled rows (GET/POST /trade/order plus GET /asset/balances). finance/funding/system namespaces absent. |
-| field_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | 42 seed+observed tokens classified; 40 VENUE_FIELD rows; availPos zero hits; envelope data not a scalar field. Not every undocumented OKX v5 packet field. |
-| product_type_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | SWAP/FUTURES implemented; SPOT explicit GFU reject; MARGIN/OPTION no OKX instType evidence; xperp partial (not a separate instType). |
-| auth_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | HMAC signer, OK-ACCESS-* headers, x-simulated-trading, REST/WS hosts, LIVE_AUTHORIZED gate recorded. Credential values never stored. Other undocumented auth surfaces not claimed. |
-| historical_removal_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | origin/main OKX-named path deletions are zero. Non-okx-named historical API callers not every-file enumerated. |
-
-Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
-
-## 16. Orphan / missing-wiring findings
-
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `188`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
-
-| id | class | entity | epistemic |
-| --- | --- | --- | --- |
-| GAP:architectural_mmr | TERM_WITHOUT_FORMAL_KIND | TERM:mmr_polyvalent | STATUS=OPEN (not proven) |
-| GAP:cap23_not_wired_to_canary | PARALLEL_INSTRUMENT_AUTHORITY | CAPABILITY:cap_2_3_single_selected_future | STATUS=ADJUDICATED |
-| GAP:ct_sizing_u04_p01_eligibility_inputs_unbound | DEFINED_BUT_NO_CONSUMER | CAPABILITY:current_productive_available_for_sizing_producer_v1 | STATUS=ADJUDICATED |
-| GAP:ddo_declared_seams_without_host_decorator | DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=ADJUDICATED |
-| GAP:flatten_live_wire_disabled | IMPLEMENTED_BUT_UNREACHABLE | GATE:flatten_live_wire | STATUS=FORENSIC_RAW |
-| GAP:live_ws_client | CONFIGURED_BUT_NO_CLIENT | OKX_FEATURE:websocket_hosts_configured | STATUS=OPEN (not proven) |
-| GAP:no_family_ontology_projection | TERM_WITHOUT_FORMAL_KIND | TERM:family_polyvalent | STATUS=OPEN (not proven) |
-| GAP:okx_historical_removals | CENSUS_INCOMPLETE | VENUE:okx | STATUS=OPEN (not proven) |
-| GAP:post_action_not_wired | DEFINED_BUT_NO_CONSUMER | OBSERVER:post_action_canary | STATUS=OPEN (not proven) |
-| GAP:schema_field_enumeration | CENSUS_CLOSED_FOR_DECLARED_SCOPE | SCHEMA:pure_stack_numeric_policy_evidence_pack_v1 | STATUS=ADJUDICATED |
-| GAP:ssot_child_undefined | TERM_WITHOUT_FORMAL_KIND | TERM:ssot_child_unproven | STATUS=OPEN (not proven) |
-| GAP:sui_xperp_gfu_membership | PRODUCTIVE_MEMBERSHIP_UNPROVEN | UNIVERSE:governed_futures_universe | STATUS=OPEN (not proven) |
-
-## 17. Build guidance / dependency closures
-
-If you change a listed inspect target, also inspect its stored upstream/downstream. Closures do not authorize work. When wiring changes, update the matching YAML under `docs/system_atlas/` (relations, wiring, venue/okx, census), then run `./scripts/pt scripts/ops/generate_system_atlas_v1.py`. Do not hand-edit generated Markdown. Usage: `docs/system_atlas/ATLAS_AUTHORITY_AND_USAGE.md`.
-
-| id | title | inspect |
-| --- | --- | --- |
-| CLOSURE:canary | CANARY | CAPABILITY:cap_11_13_5_live_canary, GATE:live_authorized_false |
-| CLOSURE:flatten | FLATTEN | GATE:flatten_execute_authority, CAPABILITY:cap_11_13_5_live_canary |
-| CLOSURE:live_readiness | LIVE_READINESS | GATE:live_authorized_false, DOD:program_final, RUNBOOK:canonical_master_runbook |
-| CLOSURE:native_instrument_binding | NATIVE_INSTRUMENT_BINDING | CAPABILITY:cap_2_4_runtime_binding, BINDER:bound_instrument_v1, DATA_CONTRACT:bound_instrument_v1, SCHEMA:runtime_binding_v1, CAPABILITY:operator_profile_explainability_v1, EVIDENCE:ranking_selection_profile_blueprint_closure_v1 |
-| CLOSURE:order_submit | ORDER_SUBMIT | AUTH_PRIMITIVE:okx_hmac_sign, VENUE_ENDPOINT:okx_trade_order, GATE:live_authorized_false |
-| CLOSURE:position_observation | POSITION_OBSERVATION | AUTH_PRIMITIVE:okx_hmac_sign, VENUE_ENDPOINT:okx_account_positions |
-| CLOSURE:post_action_success | POST_ACTION_SUCCESS | OBSERVER:post_action_canary, GATE:flatten_execute_authority |
-| CLOSURE:productive_selection | PRODUCTIVE_SELECTION | CAPABILITY:cap_2_3_single_selected_future, SELECTOR:single_selected_future_policy, OWNER_DECISION:cap23_exclusive_selection, SCHEMA:single_selected_future_selection_v1, CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1, CAPABILITY:cap22_research_backtest_live_parity_v1, CAPABILITY:cap22_robustness_and_stress_v1, CAPABILITY:operator_profile_explainability_v1, EVIDENCE:ranking_selection_profile_blueprint_closure_v1 |
-| CLOSURE:productive_universe | PRODUCTIVE_UNIVERSE | CAPABILITY:cap_2_1_gfu, UNIVERSE:governed_futures_universe, INVARIANT:missing_metadata_never_defaulted, GATE:btc_exclusion, SCHEMA:gfu_snapshot_v1 |
-
-Drill-down: [BUILD_GUIDANCE.md](BUILD_GUIDANCE.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
-
-## 18. Terminology / acronym summary
-
-Acronyms: `3`. Terminology collisions: `9`. Never invent expansions; `OPEN` means unproven. Family/MMR/C1/DoD collisions are preserved. Drill-down: [PROJECT_TERMINOLOGY.md](PROJECT_TERMINOLOGY.md), [ACRONYM_REGISTER.md](ACRONYM_REGISTER.md), [TERMINOLOGY_COLLISIONS.md](TERMINOLOGY_COLLISIONS.md).
-
-| acronym | expansion | status |
-| --- | --- | --- |
-| CAP23 | Capability 2.3 Single Selected Future Policy | CURRENT_CANONICAL |
-| SSOT | Single Source of Truth | CURRENT_NONCANONICAL |
-| XPERP | OPEN | CURRENT_NONCANONICAL |
-
-## 19. Schema / DoD / contract summary
-
-DoD is a completion contract, not a synonym for tests. Mandatory Capability Closure Standard (§11) is related but not named DoD. Program DoD is Master Runbook §21. Vollautonomie §§37–39 are historical/superseded.
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| DOD:capability_closure_standard | DOD | Mandatory Capability Closure Standard | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| DOD:program_final | DOD | Program Definition of Done | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| DOD:vollautonomie_economic_validity | DOD | Definition of Done — Economic Validity | SUPERSEDED | STATUS=HISTORICAL |
-| DOD:vollautonomie_safety_runtime | DOD | Definition of Done — Safety and Runtime | SUPERSEDED | STATUS=HISTORICAL |
-| DOD:vollautonomie_trading_logic | DOD | Definition of Done — Trading Logic | SUPERSEDED | STATUS=HISTORICAL |
-
-| id | kind | name | bucket | epistemic |
-| --- | --- | --- | --- | --- |
-| SCHEMA:bound_instrument_dataclass_v1 | SCHEMA | BoundInstrumentV1 dataclass shape | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:gfu_snapshot_v1 | SCHEMA | governed_futures_universe_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:ranking_snapshot_v1 | SCHEMA | productive_futures_ranking_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:runtime_binding_v1 | SCHEMA | single_selected_future_runtime_binding.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:single_selected_future_selection_v1 | SCHEMA | single_selected_future_selection.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-
-Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONTRACT_MAP.md](DATA_CONTRACT_MAP.md).
-
-## 20. Coverage / completeness status
-
-```text
-CURRENT_ORIGIN_MAIN_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
-ENTITY_TOTAL=370
-HUB_RELATION_COUNT=72
-STRUCTURAL_RELATION_COUNT=246
-RUNTIME_RELATION_COUNT=103
-AUTHORITY_RELATION_COUNT=10
-UNRESOLVED_CONTRADICTION_COUNT=8
-OKX_CENSUS_COMPLETE=true
-MASTER_V2_CENSUS_COMPLETE=true
-DOUBLE_PLAY_CENSUS_COMPLETE=true
-FAMILY_CENSUS_COMPLETE=true
-CHILD_CENSUS_COMPLETE=true
-SSOT_CHILD_CENSUS_COMPLETE=true
-MMR_CENSUS_COMPLETE=true
-SCHEMA_FILE_INVENTORY_COMPLETE=true
-MASTER_V2_CAPABILITY_SPEC_INVENTORY_COMPLETE=true
-MASTER_V2_MODULE_FILE_INVENTORY_COMPLETE=false
-TERMINOLOGY_CENSUS_COMPLETE=true
-ACRONYM_CENSUS_COMPLETE=false
-DOD_CENSUS_COMPLETE=true
-SCHEMA_CENSUS_COMPLETE=true
-HISTORICAL_TERMINOLOGY_CENSUS_COMPLETE=false
-OKX_CURRENT_TREE_CENSUS_COMPLETE=true
-OKX_HISTORICAL_CENSUS_COMPLETE=false
-SCHEMA_FIELD_ENUMERATION_COMPLETE=true
-SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true
-GLOBAL_CENSUS_EXHAUSTED=false
-REPO_CURRENT_TREE_CENSUS_COMPLETE=true
-REPO_GIT_HISTORY_CENSUS_COMPLETE=true
-REPO_SCHEMA_CENSUS_COMPLETE=true
-REPO_TERMINOLOGY_INVENTORY_COMPLETE=true
-REPO_MASTER_V2_CENSUS_COMPLETE=true
-REPO_DOUBLE_PLAY_CENSUS_COMPLETE=true
-REPO_FAMILY_CHILD_CENSUS_COMPLETE=true
-REPO_DOD_CENSUS_COMPLETE=true
-REPO_OKX_CENSUS_COMPLETE=true
-REPO_ATLAS_CENSUS_COMPLETE=true
-EXTERNAL_FORENSIC_CORPUS_CENSUS_COMPLETE=NOT_STARTED
-ACRONYM_CENSUS_INVENTORY_COMPLETE=true
-ACRONYM_EXPANSIONS_RESOLVED=false
-```
-
-Closed census domains (scoped search or file inventory done; not ontology-solved):
-
-| id | flag | primary_class | additional | remaining |
-| --- | --- | --- | --- | --- |
-| ssot_child_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Literal absent. TERM:ssot_child_unproven and GAP:ssot_child_undefined remain as absence records, not missing search. |
-| mmr_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | UNRESOLVED_CONTRADICTION | Venue/margin MMR proven. Architectural Master-V2 MMR kind not found (not invented). C-MMR-POLYVALENT-001 preserved. |
-| schema_file_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Field-level enumeration is in census/schema_field_inventory.yaml (schema_field_enumeration_complete=true). Remaining src SCHEMA_VERSION tokens classified VERSION_TOKEN/TYPE_ONLY in census/schema_like_src.yaml. |
-| master_v2_capability_spec_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Spec files inventoried and entity-mapped. Cap 7.2 and 11.13.5 have no MASTER_V2_CAPABILITY_* spec file. |
-| master_v2_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Adapter/Surface-P runtime reachability remains library/offline/bound-not-activated. Not live activation. |
-| double_play_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | UNRESOLVED_CONTRADICTION | C-DP-ORDER-001 preserved. ops.double_play.evaluate_double_play remains quarantined projection. |
-| family_census_complete | true | UNRESOLVED_CONTRADICTION | TERMINOLOGY_UNRESOLVED | C-FAMILY-POLYVALENT-001 preserved. NO_FAMILY_ONTOLOGY blocker remains. |
-| child_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | TERMINOLOGY_UNRESOLVED | None of these is SSOT_CHILD. Literal SSOT_CHILD still absent. |
-| schema_field_enumeration_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Remaining SCHEMA_VERSION assignment lines are VERSION_TOKEN/TYPE_ONLY, not unadjudicated SCHEMA entities (schema_census_complete=true). |
-| okx_current_tree_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Grep path noise (trailing dots, prefix stubs) not promoted to VENUE_ENDPOINT rows. Historical archaeology is separate (okx_historical_census_complete=true). |
-| dod_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Individual PHASE_* heading criteria not copied verbatim. |
-| system_atlas_master_view_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | UNRESOLVED_CONTRADICTION | GLOBAL_CENSUS_EXHAUSTED=false. OPEN acronym expansions and owner-decision/runtime facts remain visible. In-repo fixture inspection is closed. External corpus is NOT_STARTED. Contradictions stay represented. |
-| terminology_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | TERMINOLOGY_UNRESOLVED | Inventory of material current-project tokens is closed. Unresolved acronym expansions remain OPEN (acronym_census_complete=false). Not an exhaustive all-caps blob-history of every Peak_Trade-native token. |
-| schema_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Per-field payloads of remaining SCHEMA_VERSION tokens are TYPE_ONLY/VERSION_TOKEN, not unadjudicated SCHEMA. |
-| okx_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | In-repo OKX census closed. External/temp forensic corpus is NOT_STARTED and is not a remaining in-repo search. Unresolved quote/XPERP/canary facts are preserved system records, not missing census. |
-
-Remaining census domains:
-
-| id | flag | primary_class | additional | remaining |
-| --- | --- | --- | --- | --- |
-| okx_historical_census_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | ATLAS_LEGACY_ERADICATION_V1 removed historical domain census payloads; CURRENT OKX model uses venue/okx/* plus okx_current_tree.yaml. |
-| historical_terminology_census_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | Historical terminology archaeology payload purged; CURRENT terminology remains in ontology/* and PROJECT_TERMINOLOGY view. |
-| master_v2_module_file_inventory_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | Master V2 module inventory census payload purged; CURRENT Master V2 entities remain in catalog and MASTER_V2_DOUBLE_PLAY_MAP. |
-| acronym_census_complete | false | TERMINOLOGY_UNRESOLVED | SEARCHED_BUT_NO_EVIDENCE_FOUND | Inventory complete (acronym_census_inventory_complete=true). OPEN expansions searched on origin/main full history without inventing: EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING. TERM_MEANING_KNOWN for venue/token usage; AC |
-
-| kind | count |
-| --- | --- |
-| ACRONYM | 3 |
-| ADAPTER | 1 |
-| AUTH_PRIMITIVE | 1 |
-| BINDER | 1 |
-| CAPABILITY | 23 |
-| CONTRACT | 66 |
-| DATA_CONTRACT | 7 |
-| DOD | 5 |
-| EVIDENCE_ARTIFACT | 1 |
-| EXPERIMENT | 1 |
-| FORENSIC_REFERENCE | 1 |
-| FUNCTIONAL_CORE | 1 |
-| GATE | 19 |
-| HOST | 2 |
-| INVARIANT | 1 |
-| NAVIGATION_INDEX | 3 |
-| OBSERVER | 1 |
-| OKX_FEATURE | 1 |
-| OWNER_DECISION | 2 |
-| PHASE | 1 |
-| RUNBOOK | 2 |
-| RUNTIME_COMPONENT | 196 |
-| SCHEMA | 5 |
-| SCRIPT | 3 |
-| SELECTOR | 2 |
-| SUBSYSTEM | 1 |
-| SYSTEM | 1 |
-| TERM | 9 |
-| TEST | 1 |
-| UNIVERSE | 1 |
-| VENUE | 2 |
-| VENUE_ENDPOINT | 3 |
-| VENUE_FIELD | 3 |
-
-One-question test: a new engineer can start here and see what exists, how hubs are wired, what Master V2/Double Play/Families/MMR mean (including polyvalence), where OKX/risk/safety live, which data crosses boundaries, current vs historical, and where to drill for proof. Remaining incompleteness is OPEN acronym expansions plus owner-decision/runtime facts that the Atlas faithfully records. External forensic corpus is `NOT_STARTED` and does not invalidate `REPO_ATLAS_CENSUS_COMPLETE`. Therefore `SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true` while `GLOBAL_CENSUS_EXHAUSTED=false`.
-
-Full counters: [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
-
-## Drill-down views
-
-- [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md)
-- [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md)
-- [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md)
-- [OKX_INTEGRATION_MAP.md](OKX_INTEGRATION_MAP.md)
-- [OKX_FEATURE_MATRIX.md](OKX_FEATURE_MATRIX.md)
-- [OKX_CHRONOLOGY.md](OKX_CHRONOLOGY.md)
-- [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md)
-- [FAMILY_CHILD_MMR_MAP.md](FAMILY_CHILD_MMR_MAP.md)
-- [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md)
-- [DATA_LINEAGE_MAP.md](DATA_LINEAGE_MAP.md)
-- [CONFIGURATION_WIRING.md](CONFIGURATION_WIRING.md)
-- [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md)
-- [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md)
-- [SAFETY_GOVERNANCE_MAP.md](SAFETY_GOVERNANCE_MAP.md)
-- [DATA_CONTRACT_MAP.md](DATA_CONTRACT_MAP.md)
-- [PROVENANCE_TIMELINE.md](PROVENANCE_TIMELINE.md)
-- [BUILD_GUIDANCE.md](BUILD_GUIDANCE.md)
-- [CONTRADICTION_REGISTER.md](CONTRADICTION_REGISTER.md)
-- [PROJECT_TERMINOLOGY.md](PROJECT_TERMINOLOGY.md)
-- [ACRONYM_REGISTER.md](ACRONYM_REGISTER.md)
-- [DOD_MAP.md](DOD_MAP.md)
-- [SCHEMA_MAP.md](SCHEMA_MAP.md)
-- [TERMINOLOGY_COLLISIONS.md](TERMINOLOGY_COLLISIONS.md)
-- [COVERAGE_REPORT.md](COVERAGE_REPORT.md)
-- [ATLAS_CHANGE_IMPACT.md](ATLAS_CHANGE_IMPACT.md)
+Dieser Atlas beschreibt den Dateibestand, die benannten Schnittstellen und die Fachgrenzen des fixierten Quellbaums. Die Fachgruppen sind Navigationsräume. Autorität und tatsächliche Zustandswirkung ergeben sich aus den zitierten Codeownern und dem [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md).
+
+## Vollständiger Quellenbestand
+
+Der Dateikatalog enthält **22.459 Dateien**. der Pythonkatalog **9.963 syntaktisch gelesene Module**. **100.915 benannte Definitionen** und **175.260 lexikalische Importreferenzen**. Die vollständigen Pfade, Git-Objekte, Größen und SHA256 stehen in [current-files.jsonl.gz](../source/current-files.jsonl.gz). [current-symbols.jsonl.gz](../source/current-symbols.jsonl.gz) enthält Funktionen, Klassen, Parameter und annotierte Felder mit Quellzeilen. [current-imports.jsonl.gz](../source/current-imports.jsonl.gz) enthält die syntaktischen Importstellen.
+
+Ein Import ist eine Quellreferenz. Ein definierter Parameter ist noch kein beobachteter Wertverbrauch. Diese Kataloge behaupten keine ausgeführte Laufzeitkette. Der vollständige Dateibestand umfasst auch Dokumentations-, Test- und Belegdateien, die im fixierten Baum vorhanden sind; deren Inhalte werden dadurch nicht zu Betriebsregeln.
+
+## Datenverträge und Größen
+
+- Instrumentidentität bindet kanonische/native ID, Venue und erforderliche Metadaten.
+- Rankingvolatilität ist die Populationsstreuung von 60 Logreturns aus 61 finalen PT1M-Marks. Amplitude ist `(Maximum−Minimum) ÷ ((Maximum+Minimum) ÷ 2)`. Die Scorebildung verwendet relative Perzentile mit jeweils Gewicht 0,5.
+- GGE-Magnitude ist `Volatilität × Markpreis` in der Preiseinheit. L6 nimmt einen vorgeschlagenen positiven endlichen `D_t` an seinem Generatorseam an.
+- L5-Initialpreis und L8-Laufreferenz `R_t` sind verschiedene Zustände. L10 schaltet das Regime bei `CM_t >= D_t`.
+- Entscheidung, Risk-Admissibility, finale native Menge, Reservation, Envelope, bestätigter Fill und Accountingzustand sind getrennte Übergaben.
+- Ein Markthorizont bindet Instrument, Preisfamilie, Zeitraum und Quellengeneration. N Schlusskurse bilden N−1 Returnintervalle. Realisierter Logreturn, Forecastfehler, Researchscore und Kontogewinn sind verschiedene Größen.
+
+Quellen: [src/ops/peak_trade_ranking_feature_production_v1/pure_compute_v1.py](../../../src/ops/peak_trade_ranking_feature_production_v1/pure_compute_v1.py); [src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py](../../../src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py); [src/trading/master_v2/golden_geometry_engine_v1.py](../../../src/trading/master_v2/golden_geometry_engine_v1.py); [src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py](../../../src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py).
+
+## Fachräume und innere Verarbeitung
+
+### RANK · Ranking-Universum
+
+Instrumente zulassen, ökonomisch ordnen, auswählen und binden.
+
+**Eingänge:** Venue-Metadaten und zweckgebundene finale Mark-Preisreihen.
+
+**Verarbeitung:** Universezulassung, B05-Merkmale, Cap22-Reihenfolge, Cap23-Auswahl, Cap24-Bindung.
+
+**Ausgänge:** Ranking-Snapshot, genau eine Auswahl und BoundInstrument.
+
+**Zustand:** Auswahl-/Bindungsbundle und Ersatz-Pendingzustand.
+
+**Grenze:** Auswahl liefert keine Order; Ranking und Bindung besitzen getrennte Aufgaben.
+
+**Innere Module und Schnittstellen:**
+
+- Universe / Cap21: [src/ops/governed_futures_universe_producer_v1/producer_v1.py](../../../src/ops/governed_futures_universe_producer_v1/producer_v1.py) · `produce_governed_futures_universe_v1` (Zeile 57), `run_governed_futures_universe_producer_v1` (Zeile 192), `prove_restart_load_v1` (Zeile 309), `build_universe_evidence_v1` (Zeile 341).
+- Economic-MD / B05-Merkmale: [src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py](../../../src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py) · `RankingFeatureProductionError` (Zeile 83), `authority_block_v1` (Zeile 92), `classify_peak_trade_ranking_feature_production_v1` (Zeile 113), `compute_b03_ratified_raw_features_pure_v1` (Zeile 179), `produce_raw_ranking_features_for_instrument_v1` (Zeile 196).
+- Ranking / Cap22: [src/ops/productive_futures_ranking_producer_v1/producer_v1.py](../../../src/ops/productive_futures_ranking_producer_v1/producer_v1.py) · `produce_productive_futures_ranking_v1` (Zeile 200), `produce_from_universe_state_root_v1` (Zeile 432), `run_productive_futures_ranking_producer_v1` (Zeile 484), `prove_restart_load_v1` (Zeile 636), `build_ranking_evidence_v1` (Zeile 669).
+- Relative ökonomische Scorebildung: [src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py](../../../src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py) · `FeatureNormalizationRowV1` (Zeile 21), `CandidateEconomicScoreV1` (Zeile 30), `midrank_higher_is_better_v1` (Zeile 43), `percentile_from_midrank_v1` (Zeile 63), `normalize_feature_cross_section_v1` (Zeile 71).
+- Auswahl / Cap23: [src/ops/single_selected_future_policy_v1/selection_v1.py](../../../src/ops/single_selected_future_policy_v1/selection_v1.py) · `produce_single_selected_future_v1` (Zeile 275).
+- Membership und Rotation: [src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py](../../../src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py) · `MfSelectorError` (Zeile 72), `EligibleCandidateV1` (Zeile 77), `MfSelectorResultV1` (Zeile 83), `parse_eligible_cap22_top20` (Zeile 96), `snapshot_identity_key` (Zeile 129).
+- Bindung / Cap24: [src/ops/single_selected_future_runtime_binding_v1/models_v1.py](../../../src/ops/single_selected_future_runtime_binding_v1/models_v1.py) · `canonical_json_dumps` (Zeile 35), `sha256_hex` (Zeile 39), `BoundInstrumentV1` (Zeile 46), `RuntimeBindingEvidenceV1` (Zeile 80), `RuntimeBindingGateResultV1` (Zeile 142).
+
+### CORE · Master V2 und Double Play
+
+Auf einem gebundenen Future Markt-/Scopezustand und Double-Play-Entscheidung berechnen.
+
+**Eingänge:** BoundInstrument, zulässiger Marktkontext, Volatilität, Cursor und Positions-/Reconciliationinput.
+
+**Verarbeitung:** L1–L10, Direction/Confirmation, Survival, Suitability, Composition und Entry/Positionsmanagement/Exit.
+
+**Ausgänge:** Decision-Evidence und fortgeschriebener Scope-/SideState-/Confirmationzustand.
+
+**Zustand:** Regime, Initialisierungsbasis, laufende Referenz, Scope, SideState, Cursor und Exitbezug.
+
+**Grenze:** Die Entscheidung erzeugt selbst weder Order noch finale Finanzmenge oder Fill.
+
+**Innere Module und Schnittstellen:**
+
+- Instrument-/Daten-/Restoreadmission: [src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py) · `CurrentProductiveMasterV2RuntimeCycleError` (Zeile 297), `CurrentProductiveMasterV2CycleResultV1` (Zeile 302), `extract_mark_and_index_from_payload_v1` (Zeile 352), `extract_ticker_fields_v1` (Zeile 369), `resolve_index_ticker_inst_id_v1` (Zeile 384).
+- GGE und Scopeanschluss: [src/trading/master_v2/golden_geometry_engine_v1.py](../../../src/trading/master_v2/golden_geometry_engine_v1.py) · `CanonicalGeometryInputV1` (Zeile 34), `CanonicalBaseGeometryMagnitudeV1` (Zeile 45), `GoldenGeometryEngineResultV1` (Zeile 59), `compute_current_control_base_geometry_magnitude_v1` (Zeile 90), `GoldenGeometryEngineV1` (Zeile 104).
+- Zehn native mechanische Layer: [src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py](../../../src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py) · `LayerIdV1` (Zeile 13), `LayerCatalogEntryV1` (Zeile 27).
+- Richtung und Confirmation: [src/trading/master_v2/directional_assessment_confirmation_integration_v1.py](../../../src/trading/master_v2/directional_assessment_confirmation_integration_v1.py) · `ParallelConfirmationAuthorityErrorV1` (Zeile 90), `assert_c3_confirmation_authority_exclusive_v1` (Zeile 94), `DirectionalConfirmationSideStateCarrierV1` (Zeile 117), `DirectionalAssessmentConfirmationIntegrationInputV1` (Zeile 184), `DirectionalAssessmentConfirmationIntegrationResultV1` (Zeile 199).
+- Survival Suitability Composition: [src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py](../../../src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py) · `PostC3DownstreamConfirmationAuthorityErrorV1` (Zeile 118), `assert_post_c3_downstream_confirmation_non_authority_v1` (Zeile 122), `assert_c4_c3_assessment_identity_binding_v1` (Zeile 154), `assert_c4_single_lane_assessment_identity_binding_v1` (Zeile 266), `collect_forbidden_downstream_confirmation_calls_v1` (Zeile 334).
+- Double Play Entry/Exit und Fortsetzung: [src/trading/master_v2/double_play_entry_exit_policy_v0.py](../../../src/trading/master_v2/double_play_entry_exit_policy_v0.py) · `EntryExitDirectionState` (Zeile 50), `PositionState` (Zeile 58), `ReconciliationState` (Zeile 68), `TradingGate` (Zeile 74), `SafetyMode` (Zeile 81).
+
+### SL · Selbstlern-Universum
+
+Entscheidungen, Outcomes und getrennte Learninginputs typisiert aufnehmen und weiterverarbeiten.
+
+**Eingänge:** Originaler Decisionparent, zulässige Outcome-/Messartefakte und adressierte Returnevidence.
+
+**Verarbeitung:** Capture, Pending/Retention, Bewertung, LearningState, Export sowie eigene Meta-/Repräsentationsadmission.
+
+**Ausgänge:** LearningEvidence, ACKs, Meta-/Researchrecords und getrennte Stateupdates.
+
+**Zustand:** DDO-Ledger, LearningState, Pendingjournal und jeweils eigener Learningrecordstore.
+
+**Grenze:** Forecast-Triade, DDO-LearningState und numerischer Modellstore sind verschiedene Zustände; Learningmaterial erteilt keine Tradingrechte.
+
+**Innere Module und Schnittstellen:**
+
+- Capture und exakter Decisionparent: [src/learning/deterministic_decision_outcome_v0/capture_v0.py](../../../src/learning/deterministic_decision_outcome_v0/capture_v0.py) · `SeamSpecV0` (Zeile 287), `HostDecoratorBindingV0` (Zeile 466), `DdoCaptureBindingV0` (Zeile 564), `current_capture_binding_v0` (Zeile 603), `ddo_replay_capture_disabled_isolation_reason_v0` (Zeile 615).
+- Retention und Pending: [src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/retention_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/retention_v1.py) · `OutcomeRetentionError` (Zeile 20), `canonical_bytes_v1` (Zeile 24), `digest_v1` (Zeile 30), `fsync_dir_v1` (Zeile 34), `durable_bytes_v1` (Zeile 42).
+- Spätere Messung: [src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py](../../../src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py) · `NbarsSupplierMaterializationV1` (Zeile 52), `validate_n_bars_measurement_evidence_v1` (Zeile 69), `validate_n_bars_measurement_artifacts_v1` (Zeile 101), `materialize_real_outcome_horizon_supplier_input_v1` (Zeile 224), `run_offline_n_bars_horizon_pipeline_v1` (Zeile 360).
+- Bewertung Attribution und LearningState: [src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py](../../../src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py) · `evaluate_offline_bundle_v0` (Zeile 177), `persist_evaluation_bundle_v0` (Zeile 452).
+- Scope Pool und Export: [src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py](../../../src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py) · `derive_learning_evidence_record_id_v1` (Zeile 31), `export_learning_evidence_from_state_v1` (Zeile 40), `export_learning_evidence_from_state_or_fail_v1` (Zeile 118).
+- Optimization-Return / M5-Eingang: [src/experiments/canonical_self_learning_optimization_return_input_v1.py](../../../src/experiments/canonical_self_learning_optimization_return_input_v1.py) · `SelfLearningOptimizationReturnInputError` (Zeile 47), `SelfLearningOptimizationReturnInputRequestV1` (Zeile 52), `validate_self_learning_optimization_return_input_v1` (Zeile 62).
+- M6 und typisierte Metaroute: [src/experiments/canonical_meta_learning_ingest_v1.py](../../../src/experiments/canonical_meta_learning_ingest_v1.py) · `MetaLearningIngestError` (Zeile 69), `MetaLearningIngestRequestV1` (Zeile 74), `ingest_meta_learning_evidence_from_return_input_v1` (Zeile 88), `build_meta_learning_evidence_from_optimization_experiment_v1` (Zeile 184), `FederatedMetaLearningIngestRequestV1` (Zeile 291).
+- Learning-Repräsentation und Loop-C-Research: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py) · `Phase24RepresentationFeedbackError` (Zeile 47), `LoopCRepresentationFeedbackRequestV1` (Zeile 52), `derive_loop_c_cycle_identity_v1` (Zeile 59), `build_learning_representation_research_evidence_v1` (Zeile 63), `run_loop_c_representation_feedback_closure_v1` (Zeile 106).
+
+### OPT · Optimierungs-Universum
+
+Explizite Researchrequests in identifizierte Suche, Messung und auswertbare Resultate umsetzen.
+
+**Eingänge:** Learning-/MI-Evidence, Searchspace, Parameterregion, Hypothese und freigegebener Offlineprovider.
+
+**Verarbeitung:** Preflight, Search, native oder Prepared-Messung, Experiment-/Failure-/Robustheitsverarbeitung und numerische Metaanalyse.
+
+**Ausgänge:** ExperimentEvidence, Messpakete, Vergleichs-/Robustheitsresultate und typisierte Rückgaben.
+
+**Zustand:** Experimentidentitäten, Researchmemory und Ergebnisarchive.
+
+**Grenze:** Researchresultat und tatsächlich ausgeführter Versuch sind verschieden; Apply ist ein fremder kontrollierter Übergang.
+
+**Innere Module und Schnittstellen:**
+
+- Identität Registry und Intake: [src/experiments/canonical_optimization_universe_v1.py](../../../src/experiments/canonical_optimization_universe_v1.py) · `CanonicalOptimizationUniverseError` (Zeile 163), `CanonicalOptimizationUniverseRequestV1` (Zeile 168), `build_optimization_universe_capability_registry_v1` (Zeile 182), `derive_optimization_universe_identity_v1` (Zeile 203), `lookup_registered_optimization_capability_v1` (Zeile 220).
+- Envelope und Preflight: [src/experiments/canonical_research_preflight_v1.py](../../../src/experiments/canonical_research_preflight_v1.py) · `research_preflight_v1` (Zeile 14).
+- Search und Experimentidentity: [src/experiments/canonical_advanced_search_v1.py](../../../src/experiments/canonical_advanced_search_v1.py) · `AdvancedSearchValidationError` (Zeile 242), `SearchAxisV1` (Zeile 247), `SearchSpaceV1` (Zeile 253), `SearchObjectiveV1` (Zeile 259), `SearchConstraintV1` (Zeile 267).
+- Native Messung / Prepared: [src/experiments/canonical_native_research_measurements_v1.py](../../../src/experiments/canonical_native_research_measurements_v1.py) · `NativeResearchMeasurementError` (Zeile 52), `NativeResearchMeasurementsV1` (Zeile 57), `native_research_identity_sources_v1` (Zeile 70), `native_research_input_hashes_v1` (Zeile 181), `measure_native_research_candidate_v1` (Zeile 197).
+- Automatisierter wissenschaftlicher Offline-Loop: [src/experiments/canonical_automated_offline_research_loop_v1.py](../../../src/experiments/canonical_automated_offline_research_loop_v1.py) · `AutomatedOfflineResearchLoopValidationError` (Zeile 163), `ResearchHypothesisCandidateV1` (Zeile 168), `OfflineExperimentObservationsV1` (Zeile 180), `CanonicalAutomatedOfflineResearchLoopRequestV1` (Zeile 190), `run_canonical_automated_offline_research_loop_v1` (Zeile 216).
+- Numerischer Meta Analyzer: [src/experiments/canonical_meta_learning_v1.py](../../../src/experiments/canonical_meta_learning_v1.py) · `MetaLearningValidationError` (Zeile 187), `MetaLearningLaterOutcomeV1` (Zeile 192), `MetaLearningExperimentUnitV1` (Zeile 200), `MetaLearningPolicyV1` (Zeile 221), `CanonicalMetaLearningRequestV1` (Zeile 230).
+- M4 M5 M7 M8 und föderierte Übergaben: [src/experiments/canonical_m4_m8_evidence_return_loop_v1.py](../../../src/experiments/canonical_m4_m8_evidence_return_loop_v1.py) · `M4M8EvidenceReturnLoopError` (Zeile 108), `M4M8EvidenceReturnLoopRequestV1` (Zeile 113), `run_m4_m8_evidence_return_loop_v1` (Zeile 124), `derive_m4_m8_loop_identity_v1` (Zeile 179).
+- Proposal zur Governance: [src/governance/optimization_proposal_governance_ingress_v1.py](../../../src/governance/optimization_proposal_governance_ingress_v1.py) · `OptimizationProposalGovernanceIngressError` (Zeile 110), `OptimizationProposalGovernanceAdmissionRequestV1` (Zeile 115), `OptimizationProposalGovernanceAdmissionResultV1` (Zeile 124), `build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1` (Zeile 135), `validate_optimization_proposal_governance_ingress_v1` (Zeile 261).
+
+### INT · Intelligenz-Universum
+
+Marktkontext, Forecast, realisierten Horizont und Prognosefehler mit derselben Zielidentität verbinden.
+
+**Eingänge:** Zugelassene Point-in-time-Facts, Forecastmodell/-payload und spätere Mark-Preisbeobachtungen.
+
+**Verarbeitung:** Kontextadmission, Forecastfreeze, Targetjoin, Calibration, Triadenstore und begrenzte numerische Modellinferenz.
+
+**Ausgänge:** Forecast-/Calibration-/Research-Triade und berechneter Offline-Folgeforecast.
+
+**Zustand:** MI-Originalstore, getrennte Providerreceipts und contentadressierte OLS-Modellartefakte.
+
+**Grenze:** Modellinferenz, empirische Fehlerstreuung und wirtschaftliche Verbesserung werden getrennt ausgewiesen.
+
+**Innere Module und Schnittstellen:**
+
+- Marktkontext und Familien: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py) · `ContextFamilyPresence` (Zeile 72), `MarketContextValidationError` (Zeile 77), `derive_context_id_v1` (Zeile 86), `derive_information_set_ref_v1` (Zeile 91), `build_market_context_v1` (Zeile 196).
+- Forecast: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py) · `ForecastEvidenceValidationError` (Zeile 65), `derive_outcome_horizon_end_utc_v1` (Zeile 74), `derive_forecast_evidence_id_v1` (Zeile 86), `build_forecast_evidence_v1` (Zeile 91), `optional_ref` (Zeile 182).
+- Outcomejoin und Kalibrierung: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py) · `ForecastOutcomeJoinError` (Zeile 29), `join_forecast_to_n_bars_outcome_v1` (Zeile 33), `assert_n_bars_observation_unmodified_v1` (Zeile 87).
+- Evidence Store und Export: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py) · `route_learning_evidence_for_consumer_v1` (Zeile 25), `export_mi_learning_evidence_onto_learning_path_v1` (Zeile 55).
+- B0–B5 Inkrementalzweig: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py) · `ResearchDisposition` (Zeile 86), `Phase22IncrementalResearchError` (Zeile 97), `ResearchDatasetIdentityRequestV1` (Zeile 102), `IncrementalStageResearchRequestV1` (Zeile 116), `derive_research_dataset_id_v1` (Zeile 130).
+- Attribution und optionale Advisoryäste: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py) · `Phase25DpAttributionError` (Zeile 81), `DpAttributionDisposition` (Zeile 85), `DpAttributionEvidenceRequestV1` (Zeile 92), `DpAttributionEvidenceResultV1` (Zeile 101), `compute_attribution_evidence_digest_v1` (Zeile 199).
+- Unabhängige Marktmessung und Calibration-Readback: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/independent_market_forecast_measurement_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/independent_market_forecast_measurement_v1.py) · `calibrate_frozen_market_forecast_v1` (Zeile 98), `read_independent_market_calibration_v1` (Zeile 164).
+- Numerischer OLS-Modellstore und berechneter Forecast: [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py) · `MarketOlsFeatureV1` (Zeile 72), `MarketOlsPolicyV1` (Zeile 82), `read_market_ols_model_v1` (Zeile 263), `train_market_ols_model_v1` (Zeile 387), `forecast_from_market_ols_model_v1` (Zeile 482).
+
+### FA · Vollautonomie-Universum
+
+Lane-/Slotzuordnung und vorhandene Fachaufrufe unter begrenzten Orchestrierungsverträgen verbinden.
+
+**Eingänge:** Lane-/Instrumentbindungen, isolierte Statewurzeln und injizierte Beobachtungen.
+
+**Verarbeitung:** Topologie, Bound-Ingest, adressierte Core-/Governedcycle-Aufrufe und Completionprüfung.
+
+**Ausgänge:** Lane-lokale Ergebnisse, Handoff-/Completionreceipts und Readinessresultate.
+
+**Zustand:** Laneadressen, zuständige Originalcursor und begrenzte Sessionzustände.
+
+**Grenze:** Vorbereitete Kardinalität 0..5 ist kein produktiv verbundener Fünf-Lane-Host; der benannte N1-Join hält HOST_JOIN=False.
+
+**Innere Module und Schnittstellen:**
+
+- Membership und Topologie: [src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py](../../../src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py) · `IsolatedLaneTopologyError` (Zeile 78), `lane_state_root_for` (Zeile 89), `IsolatedLaneSlotV1` (Zeile 164), `IsolatedLaneTopologyV1` (Zeile 186), `isolated_lane_topology_from_dict` (Zeile 358).
+- Delegierte Auswahl und Bindung: [src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py](../../../src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py) · `ProductiveFullAutonomyN5RuntimeOrchestratorError` (Zeile 115), `ProductiveFullAutonomyCap24BindContextV1` (Zeile 123), `ProductiveFullAutonomyN5LaneRollupV1` (Zeile 134), `ProductiveFullAutonomyN5RuntimeOrchestratorResultV1` (Zeile 146), `run_productive_full_autonomy_n5_runtime_orchestrator_v1` (Zeile 311).
+- Bound ingest und Coreadressierung: [src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/ingest_join_v1.py](../../../src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/ingest_join_v1.py) · `FullAutonomyOccupiedLaneBoundIngestJoinError` (Zeile 57), `admit_occupied_lane_bound_instruments_v1` (Zeile 114).
+- Governedcycle und Rollenübergabe: [src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py](../../../src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py) · `FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError` (Zeile 170), `OccupiedLaneGovernedCycleN1ConsumerResultV1` (Zeile 178), `non_v5_eg_dispatch_v1` (Zeile 256), `invoke_occupied_lane_governed_cycle_n1_consumer_v1` (Zeile 829).
+- Completion und Readiness: [src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py](../../../src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py) · `FullAutonomyRuntimeN5CompletionError` (Zeile 134), `OccupiedLaneN5JoinedHostV1` (Zeile 142), `OccupiedLaneRuntimeN5CompletionResultV1` (Zeile 172), `cardinality_joined_token_v1` (Zeile 192), `lane_host_activation_root_v1` (Zeile 198).
+- Bounded Session Stop und Recovery: [src/ops/bounded_peaktrade_system_composition_v1/session_v1.py](../../../src/ops/bounded_peaktrade_system_composition_v1/session_v1.py) · `BoundedOfflineEpisodeSessionV1` (Zeile 74).
+
+### TREASURY · Treasury
+
+Kontobeobachtung und Kapitaladmission an explizite Konten-/Quellenidentitäten binden.
+
+**Eingänge:** Frische Venue-/Accountbeobachtungen mit Währung, Zeitbezug und eigener Quellrolle.
+
+**Verarbeitung:** Read-only-Projektion, Treasuryreconciliation, CapitalAdmission und Account-Equity-Übergabe.
+
+**Ausgänge:** Klassifizierte Kapital-/Depletionevidence und gebundener Equityinput.
+
+**Zustand:** Treasurybeobachtung und Reconciliation-/Admissionrecord.
+
+**Grenze:** Beobachtete Geldmenge, zulässiger Sizinginput und reserviertes Kapital sind verschiedene Verträge.
+
+**Innere Module und Schnittstellen:**
+
+- Quell- und Kontorolle: [src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py](../../../src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py) · `treasury_venue_observation_evidence_fingerprint_v1` (Zeile 48), `map_funding_balance_to_treasury_venue_balance_raw_v1` (Zeile 70), `resolve_balance_freshness_from_funding_v1` (Zeile 83), `build_treasury_venue_observation_from_funding_balance_v1` (Zeile 96), `produce_treasury_venue_observation_via_funding_balance_get_v1` (Zeile 125).
+- Treasuryreconciliation: [src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py](../../../src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py) · `evaluate_treasury_read_only_reconciliation_v1` (Zeile 51), `clear_treasury_reconciliation_idempotency_cache_v1` (Zeile 268).
+- CapitalAdmission und C08-Egress: [src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py](../../../src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py) · `AccountEquityOrchestrationIngressV1` (Zeile 14), `TreasuryAccountEquityOrchestrationJoinV1` (Zeile 29).
+- Kapitalabnahme / Schutz: [src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/depletion_signal_v1.py](../../../src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/depletion_signal_v1.py) · `resolve_external_depletion_signal_for_decrease_context_v1` (Zeile 32).
+
+### RISK · Risk Sizing und Equityadmission
+
+Entscheidungsgebundene Finanzzulässigkeit und zulässige Menge bestimmen.
+
+**Eingänge:** Entscheidung, Account-Equity-Admissibility, Instrumentmetadaten, Preise und Risikoinputs.
+
+**Verarbeitung:** Q0-Admissibility, Decision-bound Modelle, Pre-/Post-Sizing, kanonische Mengenrechnung und Reservationseam.
+
+**Ausgänge:** Zugelassene oder blockierte Menge mit Bindungs-/Reason-Evidence.
+
+**Zustand:** Risikowitness und konkrete Mengen-/Decisionbindung.
+
+**Grenze:** USDC, Basismenge und native Kontrakte werden nicht gleichgesetzt; Close-only-Menge und Entry-Sizing bleiben getrennt.
+
+**Innere Module und Schnittstellen:**
+
+- Q0 und Kapitaladmission: [src/ops/governed_productive_account_equity_authority_producer_v1](../../../src/ops/governed_productive_account_equity_authority_producer_v1).
+- Decision-bound Risikomodelle: [src/risk/decision_bound_model_adapters_v1.py](../../../src/risk/decision_bound_model_adapters_v1.py) · `encoded` (Zeile 16), `number` (Zeile 20), `text` (Zeile 30), `instant` (Zeile 35), `ReturnObservationV1` (Zeile 41).
+- Kanonisches CRS / Q1: [src/governance/capital_risk_sizing_v1.py](../../../src/governance/capital_risk_sizing_v1.py) · `EnvelopeStatus` (Zeile 100), `PreSizingRiskStatus` (Zeile 106), `QuantityStatus` (Zeile 112), `PostSizingRiskStatus` (Zeile 118), `FinalQuantityStatus` (Zeile 124).
+- Reservierungsseam und Close-only-Zweig: [src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py) · `request_digest_v1` (Zeile 63), `ReservationSizingBindingV1` (Zeile 73).
+
+### BUDGET · Portfolio und Reservierung
+
+Portfolioübergreifende Restkapital-/Reservierungszustände führen.
+
+**Eingänge:** Zugelassener Kapitalinput, Account-/Laneidentität und Reservierungs-/Ausführungsereignisse.
+
+**Verarbeitung:** Start/Restore, Admission, Hold, Plan-/Submitbindung, Unknown-/Reconciliationbehandlung und Refresh.
+
+**Ausgänge:** Reservation, Restbudget, Release- oder blockierter Übergang.
+
+**Zustand:** Dauerhafter Budgetstore mit eigener Reservationstate-Maschine.
+
+**Grenze:** Eine lokale Flat-Position ist noch keine bestätigte Freigabe einer fremden Reservation.
+
+**Innere Module und Schnittstellen:**
+
+- Stabiler Start/Restore: [src/ops/portfolio_capital_reservation_budget_v1/host_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/host_v1.py) · `HostAccountObservationV1` (Zeile 40), `collect_host_account_observation_v1` (Zeile 47), `HostBudgetRecoveryContextV1` (Zeile 144), `PortfolioBudgetHostV1` (Zeile 189).
+- Admission / Rest / Hold: [src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py) · `PortfolioCapitalBudgetError` (Zeile 95), `ReservationStateV1` (Zeile 99), `ReserveDispositionV1` (Zeile 108), `ReleaseReasonV1` (Zeile 115), `SlotId` (Zeile 134).
+- Submit-/Unknownverknüpfung: [src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py) · `detached` (Zeile 27), `validate_link_v1` (Zeile 31), `bind_plan_locked_v1` (Zeile 91), `mark_submit_locked_v1` (Zeile 116), `reconcile_locked_v1` (Zeile 132).
+- Eigene Reconciliation / Refresh: [src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py) · `capital_scope_v1` (Zeile 24), `lane_bindings_v1` (Zeile 43), `validate_stored_bindings_v1` (Zeile 83), `verify_recovery_inputs_v1` (Zeile 103), `reconcile_durable_budget_startup_v1` (Zeile 152).
+
+### ACCOUNTING · Accounting Position und Reconciliation
+
+Positions-/Fill-/Accountingwahrheit und lokale Episodenfortsetzung getrennt nachvollziehen.
+
+**Eingänge:** Bestätigte oder ausdrücklich simulierte Accounting-/Venueevidence mit Identität und Menge.
+
+**Verarbeitung:** Reconciliation, Contract-Metadata-Rechnung, Partialclose-/Flat-Prüfung und Episodenfortschreibung.
+
+**Ausgänge:** PositionTruth, Accountingresultat, Close-/Flatwitness und fortgeschriebene Episode.
+
+**Zustand:** Originaler Accounting-/Reconciliationzustand und Episodenidentität.
+
+**Grenze:** Simulierte Accountingquellen des Offlinepfads werden nicht als echte Venue-Fills ausgegeben.
+
+**Innere Module und Schnittstellen:**
+
+- Originale Truth-/Reconciliationadmission: [src/ops/productive_reconciliation_runtime_binding_v1/models_v1.py](../../../src/ops/productive_reconciliation_runtime_binding_v1/models_v1.py) · `canonical_json_dumps` (Zeile 16), `sha256_hex` (Zeile 20), `PositionTruthV1` (Zeile 27), `PortfolioTruthSnapshotV1` (Zeile 79), `MutationPlanStepV1` (Zeile 110).
+- Lifecycle-/Fillbezug: [src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py) · `EvidenceLayer` (Zeile 50), `LocalSubmitOutcome` (Zeile 61), `FullCoreExchangeReconciliationIdentityV1` (Zeile 87), `ExchangeEvidenceItemV1` (Zeile 143), `FullCoreExchangeReconciliationSnapshotV1` (Zeile 177).
+- Originalaccounting: [src/ops/productive_futures_accounting_runtime_binding_v1/accounting_engine_v1.py](../../../src/ops/productive_futures_accounting_runtime_binding_v1/accounting_engine_v1.py) · `AccountingEngineError` (Zeile 41), `validate_contract_metadata_v1` (Zeile 58), `ProductiveFuturesAccountingSessionV1` (Zeile 111).
+- Episode Teilclose Flat und Egress: [src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py](../../../src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py) · `verify_simulated_accounting_progress_v1` (Zeile 52), `require_simulated_accounting_quantity_v1` (Zeile 102), `advance_position_episode_from_simulated_accounting_v1` (Zeile 124).
+
+### GOV · Governance Promotion und Applygrenze
+
+Vorschläge, Authorization und konkrete Applymaterialisierung getrennt prüfen.
+
+**Eingänge:** Typisierte Proposal-/Evidencepakete, Scope und ausdrückliche Authorizationinputs.
+
+**Verarbeitung:** Intake, Lineage-/Zeitprüfung, explizite Freigabe und gesonderte Applyentscheidung.
+
+**Ausgänge:** Admission-/Authorization-/Applyrecord oder begründeter Block.
+
+**Zustand:** Versionierte Governance-/Materialisierungsrecords.
+
+**Grenze:** Ein Proposal oder positives Researchergebnis verändert für sich keine produktive Konfiguration.
+
+**Innere Module und Schnittstellen:**
+
+- Proposalintake / M10: [src/governance/optimization_proposal_governance_ingress_v1.py](../../../src/governance/optimization_proposal_governance_ingress_v1.py) · `OptimizationProposalGovernanceIngressError` (Zeile 110), `OptimizationProposalGovernanceAdmissionRequestV1` (Zeile 115), `OptimizationProposalGovernanceAdmissionResultV1` (Zeile 124), `build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1` (Zeile 135), `validate_optimization_proposal_governance_ingress_v1` (Zeile 261).
+- Explizite Autorisierung: [src/governance/explicit_productive_authorization_v1.py](../../../src/governance/explicit_productive_authorization_v1.py) · `ExplicitProductiveAuthorizationError` (Zeile 96), `OwnerExplicitProductiveAuthorizationInputV1` (Zeile 101), `ExplicitProductiveAuthorizationEvaluateRequestV1` (Zeile 115), `ExplicitProductiveAuthorizationResultV1` (Zeile 123), `load_owner_boundary_v1` (Zeile 148).
+- Getrennte Applyentscheidung: [src/governance/governed_productive_configuration_apply_authority_v1.py](../../../src/governance/governed_productive_configuration_apply_authority_v1.py) · `ApplyAuthorityCallerClassV1` (Zeile 103), `GovernedProductiveConfigurationApplyEvaluateRequestV1` (Zeile 114), `GovernedProductiveConfigurationApplyEvaluateResultV1` (Zeile 124), `evaluate_governed_productive_configuration_apply_v1` (Zeile 301), `optimization_can_invoke_apply_authority_v1` (Zeile 435).
+
+### SAFETY · Safety und Sperrgrenzen
+
+Risk-/Safety-Veto und zulässige Positions-/Ausführungsgrenzen durchsetzen.
+
+**Eingänge:** Safety-/Riskstatus, Kill-/FILEGATE-Zustand und gebundene Fachkontexte.
+
+**Verarbeitung:** Safetyadapter, Gateprüfung und Ausführungs-/Positionsadmission.
+
+**Ausgänge:** Zulässigkeit, eingeschränkter Pfad oder Fail-closed-Grund.
+
+**Zustand:** Zustand der jeweiligen Originalgate-/Kill-Switch-Owner.
+
+**Grenze:** Ein anderer Bereich kann diese Veto-/Permitgrenzen nicht durch eine Grafik- oder Dokumentmarkierung ersetzen.
+
+**Innere Module und Schnittstellen:**
+
+- Replay-Safety: [src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py](../../../src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py) · `SafetyKernelOfflineReplayContextV0` (Zeile 68), `SafetyKernelOfflineReplayBoundaryV0` (Zeile 81), `SafetyKernelOfflineReplayBindingResultV0` (Zeile 106), `compute_safety_boundary_ref_v0` (Zeile 156), `evaluate_offline_safety_kernel_boundary_v0` (Zeile 162).
+- Durable Kill-/FILEGATE: [src/ops/gates/risk_gate.py](../../../src/ops/gates/risk_gate.py) · `kill_switch_state_path_from_env` (Zeile 23), `canonical_kill_switch_state_path` (Zeile 32), `RiskDenyReason` (Zeile 37), `RiskLimits` (Zeile 49), `RiskContext` (Zeile 60).
+- Positions-/External-Effect-Schutz: [src/ops/full_core_live_path_composition_root_v1](../../../src/ops/full_core_live_path_composition_root_v1).
+
+### EVAL · Evaluation GVEF und Qualitätsnachweise
+
+Baseline/Candidate, Corpus und erforderliche Domainresultate prüfbar zusammenführen.
+
+**Eingänge:** Gebundener Evaluationsplan, Originalmesspakete und explizite Constraints.
+
+**Verarbeitung:** Domainbinding, Runner/Fanout, Ergebnissammlung und Receiptvalidierung.
+
+**Ausgänge:** Evaluationsresultat, Registryeintrag und überprüfbarer Receipt.
+
+**Zustand:** EvaluationReceiptArchive und identifizierte Ergebnisartefakte.
+
+**Grenze:** Ein Evaluations-PASS ist keine Order-, Promotion- oder allgemeine Betriebsfreigabe.
+
+**Innere Module und Schnittstellen:**
+
+- Plan Korpus Constraints: [src/evaluation/golden_vectors/integration/domain_result_binding_v1.py](../../../src/evaluation/golden_vectors/integration/domain_result_binding_v1.py) · `EvaluationBindingError` (Zeile 14), `exact_bytes_v1` (Zeile 18), `binding_digest_v1` (Zeile 24), `source_tree_digest_v1` (Zeile 30), `DomainRequirementV1` (Zeile 71).
+- Domainrunner: [src/evaluation/golden_vectors/integration/bounded_required_domain_fanout_v1.py](../../../src/evaluation/golden_vectors/integration/bounded_required_domain_fanout_v1.py) · `BoundContextReplayV1` (Zeile 78), `BoundDeltaBuilderV1` (Zeile 88), `BoundContextEvidenceBuilderV1` (Zeile 96), `DomainExecutionInputV1` (Zeile 149), `dependency_binding_v1` (Zeile 155).
+- Ergebnis Registry und Receipt: [src/evaluation/golden_vectors/integration/evaluation_receipt_v1.py](../../../src/evaluation/golden_vectors/integration/evaluation_receipt_v1.py) · `EvaluationReceiptV1` (Zeile 16), `evaluation_receipt_binding_v1` (Zeile 25), `EvaluationReceiptArchiveV1` (Zeile 41), `retain_native_research_packet_v1` (Zeile 166), `validate_numeric_packet_v1` (Zeile 189).
+
+### DATA · Datenebene und Quellenadmission
+
+Quellfacts mit Instrument-, Zeit-, Qualitäts- und Zweckbezug bereitstellen.
+
+**Eingänge:** Öffentliche Marktdaten und gesonderte private Account-State-Quellen.
+
+**Verarbeitung:** Decoder, durable Factaufnahme, Replay, Freshness-/Purposeadmission und Consumeradapter.
+
+**Ausgänge:** Kanonische Facts und zweckgebundene Inputpakete.
+
+**Zustand:** Factstore, Replay-/Captureposition und jeweilige Quellenreceipts.
+
+**Grenze:** Mark, Index, Last, Quell-/Kenntniszeit und synthetische Eingaben besitzen verschiedene Bedeutungen.
+
+**Innere Module und Schnittstellen:**
+
+- Rohsource und Decoder: [src/ops/peak_trade_public_market_data_runtime_v1/canonical_fact_decoder_v1.py](../../../src/ops/peak_trade_public_market_data_runtime_v1/canonical_fact_decoder_v1.py) · `capture_order_key_v1` (Zeile 10), `fact_capture_timestamp_v1` (Zeile 25), `fact_event_time_ms_v1` (Zeile 39), `canonical_fact_source_v1` (Zeile 55).
+- Store Replay und Recovery: [src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py](../../../src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py) · `DurableStoreError` (Zeile 18), `DurableStorePathsV1` (Zeile 27), `default_store_paths_v1` (Zeile 33), `append_fact_v1` (Zeile 42), `load_all_facts_v1` (Zeile 72).
+- Zweckgate und Consumeradapter: [src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py](../../../src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py) · `PurposeBoundPublicFactSourceV1` (Zeile 27), `purpose_profile_digest_v1` (Zeile 279).
+- Private Beobachtungskonvergenz: [src/ops/okx_eea_private_account_state_runtime_v1](../../../src/ops/okx_eea_private_account_state_runtime_v1).
+
+### EXEC · Intent Ausführungsgrenze und Lifecycle
+
+Entscheidung und Finanzmenge über Intent/Envelope an eine gesondert erlaubte Ausführungsgrenze übergeben.
+
+**Eingänge:** Gebundene Decision, zulässige Menge, Venueplan, Scope und Capability-/Permitinputs.
+
+**Verarbeitung:** CanonicalIntent, Envelopeseal, gesonderte Send-/Consumeseams und Lifecycleübergaben.
+
+**Ausgänge:** Intent/Envelope, Ausführungsdisposition und Lifecycle-/Ungewissheitsevidence.
+
+**Zustand:** Envelope-/Permitverbrauch und jeweilige Lifecyclezustände.
+
+**Grenze:** Ein vorhandener sendefähiger Adapter beweist keinen aufgerufenen oder autorisierten Venue-POST.
+
+**Innere Module und Schnittstellen:**
+
+- CanonicalIntent: [src/governance/canonical_order_intent_v1.py](../../../src/governance/canonical_order_intent_v1.py) · `IntentAction` (Zeile 129), `PositionEffect` (Zeile 137), `IntentSide` (Zeile 143), `ValidationStatus` (Zeile 148), `CanonicalOrderIntentBuildOutcome` (Zeile 153).
+- Venueplan und Envelope: [src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py) · `FullCoreFinalOrderEnvelopeError` (Zeile 25), `FinalOrderEnvelopeV1` (Zeile 48), `compute_final_order_envelope_digest_v1` (Zeile 103), `build_final_order_envelope_v1` (Zeile 108), `bind_final_order_envelope_from_venue_plan_v1` (Zeile 186).
+- Gesonderte Send-/Consumegrenze: [src/ops/full_core_live_path_composition_root_v1](../../../src/ops/full_core_live_path_composition_root_v1).
+- Lifecycle-/Ungewissheitsübergabe: [src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py) · `detached` (Zeile 27), `validate_link_v1` (Zeile 31), `bind_plan_locked_v1` (Zeile 91), `mark_submit_locked_v1` (Zeile 116), `reconcile_locked_v1` (Zeile 132).
+
+### CRED · Credential und Capabilitygrenzen
+
+Berechtigungs- und Credentialreferenzen an konkrete Zwecke und Aufrufkontexte binden.
+
+**Eingänge:** Account-/Rollen-/Scopeidentität, Capabilityrequest und vorhandene Secret-/Keychainreferenz.
+
+**Verarbeitung:** Capability-/Lease-/Revocationprüfung und gesicherte Übergabe.
+
+**Ausgänge:** Gebundene Capability bzw. Fail-closed-Resultat.
+
+**Zustand:** Lease-/Revocation-/Handoffrecords der zuständigen Owner.
+
+**Grenze:** Secretbezug ist kein Finanz-, Auswahl- oder Handelsrecht; Mail-Keychain und Venuecredentials haben getrennte Zwecke.
+
+**Innere Module und Schnittstellen:**
+
+- Capabilityrequest und Rollenprüfung: [src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py) · `FullCoreGovernedCycleK1CredentialBindError` (Zeile 85), `FullCoreGovernedCycleK1CredentialBindProofV1` (Zeile 92), `bind_k1_credential_capability_for_governed_cycle_occupancy_v1` (Zeile 199).
+- Getrennter Mail-Keychain-Adapter: [src/ops/runtime_health_recovery_and_failure_injection_closure_v1/email_keychain_v1.py](../../../src/ops/runtime_health_recovery_and_failure_injection_closure_v1/email_keychain_v1.py) · `read_mail_keychain_password_v1` (Zeile 19), `provision_mail_keychain_v1` (Zeile 61), `main` (Zeile 142).
+
+### HOST · Host Session und Prozessbetrieb
+
+Begrenzte Sessions und vorhandene Fachowneraufrufe mit konkreten Statewurzeln ausführen.
+
+**Eingänge:** Manifest, effektive Config, Datenprofil, Ressourcen-/Versuchsgrenzen und Callbackinputs.
+
+**Verarbeitung:** Readiness, Attempt, Handoff, Readback, Continuation und Stop-/Recoveryverarbeitung.
+
+**Ausgänge:** Session-/Attempt-/Completionresultate und zuständige Journale.
+
+**Zustand:** Sessioncursor, Attemptzustand und Handoffjournal.
+
+**Grenze:** Fortgesetzte Sequenzierung und der fachliche Handelskreis sind verschiedene Dinge; der benannte S6-Pfad endet an PRE_EXTERNAL_EFFECT.
+
+**Innere Module und Schnittstellen:**
+
+- Manifest effektive Config und Ressourcen: [src/ops/bounded_peaktrade_system_composition_v1/session_v1.py](../../../src/ops/bounded_peaktrade_system_composition_v1/session_v1.py) · `BoundedOfflineEpisodeSessionV1` (Zeile 74).
+- Attempt und Originalaufruf: [src/ops/bounded_peaktrade_system_composition_v1/governed_attempt_v1.py](../../../src/ops/bounded_peaktrade_system_composition_v1/governed_attempt_v1.py) · `OfflineGovernedAttemptV1` (Zeile 21).
+- Handoff Readback und Stop: [src/ops/bounded_peaktrade_system_composition_v1/handoff_receipts_v1.py](../../../src/ops/bounded_peaktrade_system_composition_v1/handoff_receipts_v1.py) · `HandoffRequestV1` (Zeile 27), `OfflineHandoffJournalV1` (Zeile 55).
+- Gesonderte Runtime-Materialisierung: [src/governance/governed_runtime_apply_materialization_v1.py](../../../src/governance/governed_runtime_apply_materialization_v1.py) · `RuntimeApplyMaterializationCallerClassV1` (Zeile 47), `RuntimeApplyMaterializationIngressV1` (Zeile 56), `RuntimeApplyMaterializationEvaluateRequestV1` (Zeile 68), `RuntimeApplyMaterializationEvaluateResultV1` (Zeile 77), `validate_runtime_apply_materialization_ingress_v1` (Zeile 135).
+
+### STORE · Persistenz Identität und Transportmechanik
+
+Integrität und technische Speicherung für getrennte Fachzustände bereitstellen.
+
+**Eingänge:** Validierte Records, Identitäten, Append-/Read-/Replayrequests und Storagepolicy.
+
+**Verarbeitung:** Kanonisierung, Digest, fachlich zugeordneter Write/Append und verifizierter Readback.
+
+**Ausgänge:** Gespeicherte Bytes oder expliziter Integritäts-/Durabilityfehler.
+
+**Zustand:** Jeweilige Ledger-, WAL-, Journal- und Receiptdateien.
+
+**Grenze:** Eine gemeinsame Dateisystemmechanik vereinigt keine Fachwriter; Prozess-, Host- und Stromausfalldauerhaftigkeit sind getrennte Behauptungen.
+
+**Innere Module und Schnittstellen:**
+
+- Integrität und Identityhelper: [src/meta/learning_loop/contract_safety_v1.py](../../../src/meta/learning_loop/contract_safety_v1.py) · `ValidationPhase` (Zeile 97), `ContractValidationResult` (Zeile 110), `ContractSafetyError` (Zeile 118), `canonical_futures_scope_ref` (Zeile 129), `canonical_trading_logic_immutability_ref` (Zeile 138).
+- Writer und dauerhafter Handoff: [src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py) · `DurableBudgetStoreError` (Zeile 18), `canonical` (Zeile 22), `digest` (Zeile 26), `DurableBudgetStoreV1` (Zeile 30).
+
+### VIEW · Operator Anzeige Monitoring und Wissen
+
+Vorhandene Fachzustände als erklärende Operator-/Webansicht konsumieren.
+
+**Eingänge:** Readmodels, Futureprofile, Rankingsnapshots, Reasoncodes und beobachtete Betriebsdaten.
+
+**Verarbeitung:** Projektion, Zustands-/Profilanzeige und Explainability.
+
+**Ausgänge:** Operator-/Dashboarddarstellung und lesbarer Kontext.
+
+**Zustand:** Darstellungszustand und eigene Readmodelartefakte.
+
+**Grenze:** Anzeige erteilt weder Instrumentauswahl noch Trading-/Applyauthority.
+
+**Innere Module und Schnittstellen:**
+
+- Readmodel und Projektion: [src/ops/future_profile_snapshot_v1/producer_v1.py](../../../src/ops/future_profile_snapshot_v1/producer_v1.py) · `build_future_profile_snapshot_v1` (Zeile 716), `get_future_profile_for_instrument_v1` (Zeile 804), `get_selected_future_profile_v1` (Zeile 815), `missing_optional_profile_field_v1` (Zeile 827).
+- Anzeige und erklärender Kontext: [src/webui](../../../src/webui).
+
+### ENG · Entwicklung Tests CI und Auslieferung
+
+Versionierte Quellen mit gebundener Pythonumgebung bauen und gezielt prüfen.
+
+**Eingänge:** Quellbaum, pyproject/uv.lock, Konfigurationen und explizite Test-/CLIrequests.
+
+**Verarbeitung:** scripts/pt-Runtimeprüfung, Tests, CI-/Docs-/Packagingwerkzeuge.
+
+**Ausgänge:** Prüfergebnisse, gebundene Artefakte und Dokumentationsprojektionen.
+
+**Zustand:** Git-Dateibestand und jeweilige Build-/Testartefakte.
+
+**Grenze:** Ein gespeicherter Testbericht oder ein vorhandener Dateipfad beweist keine heutige Gesamtfunktion.
+
+**Innere Module und Schnittstellen:**
+
+- Delivery-/Policygrenzen: [scripts/ci](../../../scripts/ci).
+
+### EIP · Evidence Input Plane und G2-Querübergaben
+
+Optimization-/Metaevidence prüfen und an einen erlaubten typisierten Inputseam binden.
+
+**Eingänge:** Adressierte M4/M5/M6/M8-/P5-Evidence mit Identität, Lineage und zulässiger Zielrolle.
+
+**Verarbeitung:** Producerbridge, Adjudikation A, Inputcreator/Binder B und P4/L6-Seam.
+
+**Ausgänge:** Adjudication-/Bind-/Seamresultat oder Block.
+
+**Zustand:** Gebundene Evidence-/Materialisierungsrecords.
+
+**Grenze:** Evidenceannahme, tatsächlicher Zahlenverbrauch und produktive Freigabe sind getrennte Übergänge.
+
+**Innere Module und Schnittstellen:**
+
+- G2-Primärprojektion: [src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py](../../../src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py) · `GovernedRuntimeLearningInputBindingError` (Zeile 86), `RuntimeLearningInputOptimizationBindingRequestV1` (Zeile 91), `RuntimeLearningInputOptimizationBindingResultV1` (Zeile 102), `load_field_mapping_ledger_v1` (Zeile 113), `bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1` (Zeile 296).
+- P5-Producerbridges / A: [src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py](../../../src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py) · `build_optimization_binding_context_v1` (Zeile 24), `build_meta_learning_binding_context_v1` (Zeile 39), `bridge_m5_to_optimization_envelope_evidence_v1` (Zeile 54), `bridge_m6_to_meta_learning_routed_evidence_v1` (Zeile 71).
+- P3 Inputcreator/Binder: [src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py](../../../src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py) · `bind_layer_input_from_adjudication_v1` (Zeile 64), `run_component_b_runtime_v1` (Zeile 285).
+- P4/L6-Seam: [src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py](../../../src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py) · `run_productive_l6_seam_from_prior_adjudication_v1` (Zeile 179), `run_productive_l6_seam_binding_v1` (Zeile 245).
+
+### GATES · F1 M9 Schwellen und Laufzeitadmission
+
+F1/M9-Schwellenwerte und ihre konkreten Consumerbindungen prüfen.
+
+**Eingänge:** Scoped Threshold-/Age-/Volatilityinputs, Lineage und Authoritywitness.
+
+**Verarbeitung:** Owner-/Wertprüfung, Presence-/Transportprüfung und begrenztes Enforcement am MV2-Consumer.
+
+**Ausgänge:** Threshold-/Enforcementresultat mit Block- oder Zulässigkeitsgründen.
+
+**Zustand:** Scope-/Lineagegebundene Schwellen- und Admissionrecords.
+
+**Grenze:** Presence und korrekt gebundener numerischer Wert sind verschiedene Prüfungen; Defaultwerte ersetzen keine Quelle.
+
+**Innere Module und Schnittstellen:**
+
+- Scoped Owner-/Thresholdbindung: [src/governance/f1_m9_scoped_owner_threshold_value_authority_v1.py](../../../src/governance/f1_m9_scoped_owner_threshold_value_authority_v1.py) · `ThresholdValueAdjudicationStatusV1` (Zeile 87), `F1M9ScopedOwnerThresholdValueAdjudicationRequestV1` (Zeile 94), `F1M9ScopedOwnerThresholdValueAdjudicationResultV1` (Zeile 106), `transition_configuration_for_valid_threshold_v1` (Zeile 321), `evaluate_f1_m9_scoped_owner_threshold_value_authority_v1` (Zeile 358).
+- Transport und Presence: [src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py](../../../src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py) · `F1M9ProductiveRuntimeThresholdConsumerPathResultV1` (Zeile 74), `load_consumer_wiring_decision_v1` (Zeile 111), `consumer_wiring_authorized_v1` (Zeile 120), `evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1` (Zeile 160).
+- Bounded Enforcement / Cycleadmission: [src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py](../../../src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py) · `load_threshold_enforcement_closure_decision_v1` (Zeile 41), `threshold_enforcement_authorized_v1` (Zeile 52), `BoundedThresholdEnforcementResultV1` (Zeile 62), `evaluate_bounded_threshold_enforcement_at_mv2_consumer_v1` (Zeile 100), `apply_bounded_enforcement_to_double_play_alpha_v1` (Zeile 204).
+
+## Konkrete Konfigurationsgrenzen
+
+Cap23 führt `SELECTED_FUTURE_COUNT=1`, `MAX_POSITIONS_EFFECTIVE=1`, Default-Refresh 300 Sekunden, Default-Mindesthaltezeit 3.600 Sekunden und Hystereseverbesserung um einen Rang. Es konsumiert die vorgegebene Rangfolge. Ein Ersatz bei offener Position bleibt Pending; es erfolgt kein stiller Instrumentwechsel. Die Werte sind Moduldefaults, keine Behauptung eines laufenden Hosts.
+
+[src/ops/single_selected_future_policy_v1/constants_v1.py](../../../src/ops/single_selected_future_policy_v1/constants_v1.py) · [src/ops/single_selected_future_policy_v1/policy_v1.py](../../../src/ops/single_selected_future_policy_v1/policy_v1.py)
+
+Der benannte Occupied-Lane-N1-Join enthält False-Pins für `HOST_JOIN`, `FIVE_LANE_RUNTIME_CREATED`, `FIVE_LANE_CONTINUOUS_HOST_JOIN` und Mehrinstrument-Ausführungsfreigabe. Vorbereitete Laneadressen und ihre Existenz sind getrennt von diesem Hostjoin.
+
+[src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py](../../../src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py)
+
+Der Universefilter konsumiert die leere Menge `FORBIDDEN_FUTURES_BASE_ASSETS`. Der separate Literalwert `BTC_EXCLUDED=True` im Universe-Constantsmodul stimmt als Metadatenbezeichnung nicht mit diesem konsumierten Filterset überein. Assetzulassung folgt im gezeigten Filter dem Set und den übrigen Futures-/Qualitätsbedingungen.
+
+[src/trading/master_v2/double_play_futures_input.py](../../../src/trading/master_v2/double_play_futures_input.py) · [src/ops/governed_futures_universe_producer_v1/eligibility_v1.py](../../../src/ops/governed_futures_universe_producer_v1/eligibility_v1.py) · [src/ops/governed_futures_universe_producer_v1/constants_v1.py](../../../src/ops/governed_futures_universe_producer_v1/constants_v1.py)
+
+## Numerischer Marktmodellpfad
+
+`train_market_ols_model_v1` liest abgeschlossene Originaljobs, bindet zugelassene Featurewerte und den tatsächlichen realisierten Logreturn, trennt zeitliches Trainingspräfix und Validation und speichert numerische Koeffizienten mit Parent- und Inhaltsbindung. Neue kumulative Originalevidence ist für eine nächste Version erforderlich. `forecast_from_market_ols_model_v1` lädt diese Gewichte, berechnet einen Payload und verwendet den Original-Forecastfreeze. `read_market_ols_model_v1` und `read_market_model_forecast_v1` sind Cold-Read-Einstiege. Der Providerreceipt und der Freeze haben getrennte Inferenzrollen.
+
+Die gespeicherte Streuung ist eine empirische Held-out-Residualstreuung. Dieser caller-invoked Offlinepfad setzt keinen Trainingsscheduler, keine automatische Promotion und keine produktive Parameteränderung voraus.
+
+[src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py)
+
+## Quell- und Ausführungsgrenze
+
+S6 sequenziert begrenzte Governedcycles und beendet den benannten ENTER-Pfad an `PRE_EXTERNAL_EFFECT`. Budget-, Cursor-, Pending-, MI- und OLS-Stores haben eigene Identitäten und Writer. Im Dateikatalog vorhandene Reports ersetzen keine Beobachtung des laufenden Systems. Die Dokumentation aktiviert keinen Prozess und erteilt keine Order-, Kapital- oder Credentialberechtigung.
+
+[src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py)

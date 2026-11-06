@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from trading.master_v2.double_play_futures_input import FORBIDDEN_FUTURES_BASE_ASSETS
+
+
 CAPABILITY_ID = "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1"
 SCHEMA_VERSION = "governed_futures_universe_snapshot.v1"
 PRODUCER_VERSION = "governed_futures_universe_producer.v1"
@@ -69,8 +72,8 @@ FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
 ACTIVE_TRADING_STATES = frozenset({"live"})
 SUPPORTED_INST_TYPES = frozenset({"SWAP", "FUTURES"})
 SUPPORTED_CT_TYPES = frozenset({"linear"})
-FORBIDDEN_BASE_ASSETS = frozenset({"BTC", "XBT", "WBTC", "TBTC", "RBTC", "BTCB", "BITCOIN"})
-FORBIDDEN_INSTRUMENT_TOKENS = frozenset({"btc", "xbt", "bitcoin", "wbtc", "tbtc", "rbtc", "btcb"})
+FORBIDDEN_BASE_ASSETS = FORBIDDEN_FUTURES_BASE_ASSETS
+FORBIDDEN_INSTRUMENT_TOKENS = frozenset(v.lower() for v in FORBIDDEN_FUTURES_BASE_ASSETS)
 
 UNIVERSE_STATUS_ELIGIBLE = "ELIGIBLE_UNIVERSE_READY"
 UNIVERSE_STATUS_EMPTY = "NO_ELIGIBLE_INSTRUMENTS"

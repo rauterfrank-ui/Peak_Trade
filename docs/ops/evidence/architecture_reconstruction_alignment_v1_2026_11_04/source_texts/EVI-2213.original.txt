@@ -1,0 +1,114 @@
+PEAKTRADE – MARKTDATENEINGANG, ROHFEATURES UND RANKING-CONSUMER
+02.11.2026 | HEAD 242b7974fc93f0bdb47706556101bd6f0c497414 plus vorhandene Änderungen
+
+KERNAUSSAGE
+Die Erinnerung enthält eine im aktuellen Code belegbare Aufgabenteilung: vorgelagerte Rohfeature-Berechnung ohne Auswahl-/Tradingrechte, danach wirklicher Konsum dieser Werte im wirtschaftlichen Ranking. Autorität und kausale Wirkung sind verschiedene Dinge. Ein Datenproduzent kann das Ranking beeinflussen, ohne selbst Instrumentauswahl oder Handelsentscheidung zu besitzen.
+Die Formulierung „Vorauswahl durch Volatilitätsberechnung“ muss genauer aufgelöst werden: B05 berechnet Sigma UND Amplitude und kennzeichnet ihre Verfügbarkeit. Die erste hier belegte vergleichende wirtschaftliche Bewertung entsteht im Cap22-Consumer. READY ist keine Entscheidung „attraktiv genug“. Fehlende Rohfeatures schließen einen Kandidaten technisch aus dem wirtschaftlich bewertbaren Set aus; das ist nicht dasselbe wie ein eigener Low-Volatility-Attraktivitätsfilter.
+
+NACHVERFOLGTER WEG
+M01 Öffentliche WebSocket-Aufnahme
+Verarbeitung: tickers / trades / books5 über injizierten Connector
+Bedeutung: Preis-, Trade- und BestBidAsk-Fakten mit Identität, Zeit und Herkunft; keine Auswahlrechte
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_public_market_data_runtime_v1/ws_binding_v1.py
+
+M02 Normalisieren und speichern
+Verarbeitung: Raw Events → Sequence-/Gap-Kontrolle → Faktenstore
+Bedeutung: Ticker-Fakt ist nicht FinalizedPt1mMarkFact. Im Ticker-Normalizer wird markPx oder ersatzweise last genutzt; Preisarten daher gesondert prüfen.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_public_market_data_runtime_v1/runtime_orchestrator_v1.py
+
+M03 Finalisierte Markhistorie beziehen
+Verarbeitung: REST history-mark-price-candles beziehungsweise explizit vorhandene finalisierte Fakten
+Bedeutung: Finalisierte, zusammenhängende PT1M-Marks; REST-Gap-Recovery ist eigener Pfad. Kein im gelesenen Normalizer angeschlossener Ticker→finalisierte Mark-Minuten-Aggregator.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_public_market_data_runtime_v1/rest_recovery_v1.py
+
+M04 Economic-MD-Eingang
+Verarbeitung: PublicRuntimeEconomicMdPublicSourceV1 oder eigener öffentlicher REST-Adapter
+Bedeutung: Je Instrument RawMarkCandleV1 und Ticker-Daten; Qualitäts-/Fensterprüfung. Store-Adapter und direkte REST-Quelle sind Varianten.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/n1_whole_system_hard_facts_integration_wp_v1/public_runtime_economic_md_adapter_v1.py
+
+M05 B05-Rohfeatures
+Verarbeitung: 61 finalisierte PT1M-Markpreise →60 Logreturns
+Bedeutung: Population-Sigma und relative Amplitude (max−min)/((max+min)/2). READY bedeutet berechenbar/verfügbar; keine eigene Attraktivitätsauswahl und keine Trading-Authority.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_ranking_feature_production_v1/pure_compute_v1.py
+
+M06 Cap22 wirtschaftliches Ranking
+Verarbeitung: Strukturell geeignete Kandidaten mit vollständigen Features → S_STAR
+Bedeutung: Cross-Section-Midranks → Perzentile →0,5 Volatilität +0,5 Amplitude → Score absteigend → deterministische ID-Ties → Top20. Ranking-Authority, keine Orderentscheidung.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py
+
+M07 Nachgelagerte Auswahl und Core
+Verarbeitung: Ranking-Kontext → Membership/Residenz je Variante → Cap23 → Cap24
+Bedeutung: Ausgewählte Instrumentidentität und zulässige Provenienz; keine automatische Weiterverwendung des B05-Sigma als G17/Scope-Volatilität. Weitere aktuelle Marktbeobachtung des gewählten Futures ist eigener Datenpfad.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py
+
+QUELLVARIANTEN NICHT ZUSAMMENZIEHEN
+A. Öffentlicher Datenplane: wss://wseea.okx.com:8443/ws/v5/public; Kanäle tickers/trades/books5; normalisierte Fakten, persistierter Event-Zustand und REST-Recovery. Der Connector und seine Message-Quelle werden injiziert; die gelesene N1-Normalisierungsfunktion benutzt selbst einen No-op-Connector und übergebene WS-Nachrichten. Das ist eine Verarbeitungsfunktion, kein selbständig geöffneter realer Socket.
+B. Economic-MD kann direkt öffentliche REST-GETs für Markhistorie und Ticker verwenden. Dieser Adapter ist kein WebSocket.
+C. PublicRuntimeEconomicMdPublicSourceV1 liest finalisierte Markfakten aus dem Public-Store. WP02 und ein Supervisor referenzieren ihn konkret. Eine Verbindung ist damit statisch vorhanden; ihre dauerhafte Live-Versorgung ist damit nicht beobachtet.
+D. Der gewählte Future erhält im Natural-Enter-Pfad eigene aktuelle C1-/Mark-/Index-Beobachtungen und G17-Versorgung. B05-Sigma für die Rangordnung wird dadurch nicht automatisch zur Scope-Magnitude. Eine vereinheitlichte Marktdaten-SSOT-Wirkung über alle diese Pfade wurde nicht bewiesen.
+
+BERECHNUNG UND VERBRAUCH
+B05:
+61 positive zusammenhängende finalisierte Minuten-Markpreise;
+60 logarithmische Returns ln(p_i/p_(i−1));
+Sigma = Population-Standardabweichung dieser Returns, ddof0;
+Amplitude = (max(p)−min(p))/((max(p)+min(p))/2).
+Kein Annualisieren oder neuer Zwei-Stunden-Horizont wird hier hinzugedacht.
+
+Cap22:
+Strukturelle Eignung plus vollständige gültige Rohfeatures bilden S_STAR.
+Die beiden Rohfeatures werden innerhalb dieses Kandidatensatzes per Midrank in Perzentile überführt.
+balanced_movement_score=0,5×Volatilitätsperzentil+0,5×Amplitudenperzentil.
+Absteigende wirtschaftliche Ordnung; bei Gleichstand Venue-Native-ID, dann Canonical-ID; Begrenzung auf Top20.
+Bei nur einem bewertbaren Kandidaten entsteht ein neutraler Singleton-Score. Eine Rohwertänderung muss dann keinen Rangwechsel bewirken. Deshalb wurde die Verbraucherwirkung zusätzlich mit zwei Kandidaten kontrolliert.
+
+OFFLINE-BEOBACHTUNGEN
+1. Nur ein WS-Ticker:
+Ein explizites ETH-Payload mit last=123,45, ohne markPx, wurde mit dem vorhandenen Normalisierungszyklus verarbeitet. Es erzeugte einen gespeicherten MarkPriceFactV1 mit transport=ws. Der Economic-MD-Storeadapter fand0 FinalizedPt1mMark-Fakten und lieferte INSUFFICIENT_FINALIZED_PT1M_MARKS.
+Das zeigt weder einen tatsächlich fehlerhaften Börsenfeed noch einen realen Betrieb. Es zeigt die unterschiedliche Semantik der Faktenarten und den tatsächlich benutzten last-Fallback des Normalizers.
+
+2. Separat bereitgestellte61 finale Marks:
+Der vorhandene WP02-Testaufbau speichert konstruierte FinalizedPt1mMarkFactV1 und durchläuft dann echte Store-Adapter-, Economic-MD-, B05-, Cap22- und Membership-Handoff-Funktionen. Die ausgeführten Feature- und Score-Funktionen wurden profiliert; Werte und Ranking-Snapshot stehen in offline-lineage-probe.json.
+Feldnamen wie real_b05_built oder productive_real_assertion sind Produktlabels. Sie beweisen hier keine reale Exchange-Herkunft: die Historie wurde ausdrücklich konstruiert bereitgestellt.
+
+3. Consumer-Kontrolle:
+Zwei explizite Kandidaten A/B wurden mit unterschiedlichen Rohfeatures durch die echte Score-Konstruktion verarbeitet. Vertauschte Rohfeature-Werte vertauschten die Rangfolge. Die Rechnung ist kausal wirksam, obwohl der Rohfeature-Produzent selbst keine Selection-/Trading-Authority hat.
+
+HISTORISCHE EINORDNUNG
+Die Originalnachricht vom02.10.16:18 beschreibt ausdrücklich:
+Economic Market Data → B05 feature production → Cap22 ranking computation → ranking order → Cap23 authoritative Selection.
+Nach Auswahl sollen Identität und erlaubte Herkunft weitergetragen werden, keine B05-Features als zusätzliche produktive Signal-/Confirmation-/Scope-/Risk-Eingaben.
+Die Originalfrage um17:10 unterscheidet feature_production_ready von wirtschaftlicher Opportunity-Admission ausdrücklich. Damit ist die heutige Erinnerung als historische Suchspur wertvoll, die damalige Bezeichnung „Preselection“ war aber selbst Gegenstand einer Präzisierung.
+Ältere Berichte nannten WS→B05 noch NO_EDGE_CURRENT. Der aktuelle lokale Git-Ausschnitt zeigt danach konkrete Store-Adapter/Joins: #6983 f770a434 am30.09.06:43, WP02 #6985 75018452 um07:58. Diese zeitliche Änderung verbietet das pauschale Übernehmen alter Fehlkanten.
+Eine ursprüngliche eindeutige Zugehörigkeit aller genannten Bausteine zu einem damals bereits fachlich feststehenden intelligenten Universum ist nicht nachgewiesen.
+
+OFFENE SEMANTISCHE ÜBERGABEN
+Belegt: Rohwerte haben Wirkung ohne Auswahlrecht
+B05 berechnet Sigma und Amplitude. Cap22 konsumiert die tatsächlichen Werte und erzeugt daraus die vergleichende Ordnung. Im Kontrollfall führte Vertauschen beider Rohfeatures zum Vertauschen von A/B im tatsächlichen Score-Code.
+
+Belegt, aber begrenzter Pfad: Store→Economic-MD→B05→Cap22→Membership
+Der aktuelle WP02-Pfad verwendet einen Public-Store-Adapter. Der Offline-Lauf durchlief diese echten Funktionen mit explizit konstruierten finalisierten Fakten; keine neuen Exchange-Daten.
+
+Nicht gleichsetzen: WebSocket-Preisfakt und finale Minuten-Markhistorie
+Ein injiziertes WS-Ticker-Payload erzeugte einen MarkPriceFactV1. Der Economic-MD-Adapter fand darin0 finale Marks und meldete unzureichende Historie. Der beobachtete Wert kam in diesem Fall aus last, nicht markPx.
+
+Offen: Lückenlose reale WS-Versorgung der Volatilitätsfenster
+Die gelesenen WS-Kanäle/Normalizer erzeugen keine FinalizedPt1mMarkFactV1. Solche Fakten kommen hier aus REST-Recovery oder vorhandenen/extern bereitgestellten Fakten. Eine echte dauerhafte Quelle aller61 finalisierten Mark-Minuten bleibt je aktivem Einstieg zu belegen.
+
+Historisch getrennt: Alter NO_EDGE-Bericht versus spätere Adapter
+Public Runtime wurde am26.09. #6843 eingeführt. Aktuelle Store→Economic-MD-/WP02-Verbindungen kamen im untersuchten lokalen Git-Ausschnitt am30.09. #6983/#6985 hinzu. Ein alter fehlender Anschluss darf nicht pauschal als heutiger Stand übernommen werden; neue Adapter belegen noch keinen Socket-Gesamtbetrieb.
+
+Nicht abschließend identifiziert: Ursprüngliches Intelligentes Universum
+Die rekonstruierte Feature-/Ranking-Aufgabenteilung passt zur Erinnerung. Dass genau dieser WebSocket-Pfad damals zum so bezeichneten intelligenten Universum gehörte oder bereits wirtschaftlich vorauswählte, ist dadurch noch nicht bewiesen. Historische Begriffsvarianten bleiben getrennt.
+
+Zusätzlich: Die RawMarkCandleV1-Datenträger verwenden standardmäßig REST-Source-Class/-Endpoint. Die Umwandlung aus gespeicherten Public-Facts übernimmt Instrument, Zeit und Wert, aber nicht die vollständige ursprüngliche Transport-Provenienz als eigenes Feld. Eine durchgehend belastbare Herkunft darf nicht allein aus diesen Defaults abgeleitet werden.
+Der aktuelle Ticker-Normalizer benutzt markPx oder last. Wenn ein Consumer tatsächlich Markpreis benötigt, muss diese Preisart vom Originalpayload bis zum Consumer nachweisbar erhalten bleiben. Der hier geprüfte Economic-MD-Adapter nimmt den einzelnen Tickerpreis gerade nicht als finale Markhistorie an.
+
+WAS DAMIT FÜR DIE GESAMTREKONSTRUKTION FESTSTEHT
+Der Ranking-Bereich darf nicht als isolierter Block ab einer fertigen Zahl untersucht werden. Seine Eingangslieferanten, die tatsächlichen Preisarten, Finalisierung, Instrumentidentität, Zeitfenster und Herkunft gehören zur Untersuchung.
+Die Aussagen „kein Auswahlrecht“, „liefert einen Wert“, „Wert wird konsumiert“ und „bestimmt die Rangfolge“ müssen nebeneinander belegt werden. Keines ersetzt das andere.
+Die nächste ungeschlossene konkrete Übergabe ist die vollständige reale Versorgung und Herkunft der finalisierten Minuten-Markfenster je aktivem Instrument/Caller. Das ist enger als die pauschale Aussage „WebSocket fehlt“ und aussagekräftiger als „WebSocket vorhanden, daher Versorgung bewiesen“.
+
+ERHALT
+Kein Netzwerkzugriff und keine Credentials. Keine Orders, Aktivierung, Konfigurations- oder Produktänderung. Alle neuen Dateien liegen im separaten Analyseordner. Schreibzugriffe der Probe waren darauf beschränkt. HEAD, Git-Status und vorhandener versionierter Diff blieben unverändert. Historische Anweisungen wurden nur als Quellen gelesen.
+

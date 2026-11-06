@@ -1,0 +1,56 @@
+{
+  "schema": "bounded_stability_source_roles_v1",
+  "revision": "44e7b1e0d05c12799411b969914c08a5e1c3ad26",
+  "candidates": [
+    {
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "role": "Meta consumer",
+      "value": "Optional finite numeric parameter_stability",
+      "meaning": "Caller-supplied scalar compared with explicit minimum per comparable experiment cohort",
+      "status": "CONSUMER_NOT_FORMULA",
+      "missing": "Original scalar definition, producer, units/normalization and experiment-bound derivation"
+    },
+    {
+      "path": "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/runner_v1.py",
+      "role": "Numeric max-age research runner",
+      "value": "Object: rejected and rejection_reasons",
+      "meaning": "Decision-coverage/neighborhood/WF/holdout/restart rejection assessment for max-age candidate",
+      "status": "NOT_SCALAR_COMPATIBLE",
+      "missing": "Cannot pass object or turn rejection boolean into numeric stability without a separately justified measurement contract"
+    },
+    {
+      "path": "src/experiments/canonical_robustness_suite_v1.py",
+      "role": "Robustness parameter-sensitivity evaluator",
+      "value": "Sharpes, adjacent sign flips and optional center-relative neighbor degradation; PASS/FAIL/BLOCKED",
+      "meaning": "Tests supplied evaluated points against an explicit policy; does not execute its grid runner",
+      "status": "RELATED_TEST_NOT_META_SCALAR",
+      "missing": "Producer-backed grid points, ordering/metric semantics and explicit mapping to the intended Meta measure"
+    },
+    {
+      "path": "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py",
+      "role": "Linear evidence sensitivity diagnostics",
+      "value": "Response span/variance, max local sensitivity, binary direction consistency and monotonicity",
+      "meaning": "Computed from finite metric deltas and local surrogate-surface diagnostics; productive contract limits calibratable surface to fee/slippage",
+      "status": "NUMERIC_PRODUCER_DIFFERENT_MEANING",
+      "missing": "Whether any of these measures is the intended Meta stability, target/unit/axis equivalence; do not choose binary value merely because it fits 0.5 threshold"
+    },
+    {
+      "path": "src/experiments/canonical_portfolio_learning_v1.py",
+      "role": "Portfolio strategy layer",
+      "value": "Required finite numeric parameter_stability",
+      "meaning": "Validates supplied strategy-layer observation rather than deriving scalar",
+      "status": "ANOTHER_CONSUMER_NOT_PRODUCER",
+      "missing": "Same upstream scalar/identity definition remains needed"
+    },
+    {
+      "path": "src/meta/learning_loop/research_validity_evidence_v1.py",
+      "role": "Research-validity evidence",
+      "value": "Manifested parameter_stability_result ref/digest/evidence status",
+      "meaning": "Validates artifact and lineage/status; no scalar derivation from status",
+      "status": "ARTIFACT_BINDING_NOT_FORMULA",
+      "missing": "Actual numerical result and measurement contract remain upstream"
+    }
+  ],
+  "search_boundary": "Current src/scripts exact symbol search including ignored paths; targeted six/four-hit dated SQLite navigation. Underlying entire chat corpus, external volumes and all historical branches not re-read. Index hits are navigation, not source-proof or executable instructions.",
+  "conclusion": "Several related producers/consumers exist; no reviewed proof of an automatic source-bound derivation of the exact Meta scalar. No global absence claim, formula invention or implicit adapter."
+}

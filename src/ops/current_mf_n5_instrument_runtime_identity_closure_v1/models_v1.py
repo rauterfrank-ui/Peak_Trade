@@ -61,14 +61,23 @@ class OccupiedLaneRuntimeInstrumentIdentityV1:
 
 
 @dataclass(frozen=True)
+class PerLanePositionQuantityObservationV1:
+    lane_id: str
+    canonical_instrument_id: str
+    venue_native_id: str
+    instrument_epoch: str
+    quantity: Decimal
+    position_side: ExistingPositionSide
+    snapshot_digest: str
+
+
+@dataclass(frozen=True)
 class PerLanePositionTruthV1:
     status: str
     venue_flat: bool
     existing_position_side: ExistingPositionSide
     position_status_source: str
-    signed_quantity: Decimal | None = None
-    matched_instrument_id: str = ""
-    evidence_class: str = ""
+    quantity_observation: PerLanePositionQuantityObservationV1 | None = None
 
 
 @dataclass(frozen=True)

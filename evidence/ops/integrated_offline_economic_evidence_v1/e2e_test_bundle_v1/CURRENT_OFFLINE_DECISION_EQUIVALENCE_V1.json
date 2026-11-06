@@ -1,0 +1,57 @@
+{
+  "authority_effect": "NONE",
+  "comparison_rows": [
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "current_decision_v1": {
+        "canonical_order_intent_present": false,
+        "decision": "no_action",
+        "double_play_transition": "",
+        "risk_result": "NOT_APPLICABLE",
+        "scope_gge_outcome": "CompositionStatus.NO_ACTION",
+        "selected_strategy_ref": "",
+        "side": "none",
+        "sizing_result": "NOT_APPLICABLE",
+        "suitability_ranking_outcome": ""
+      },
+      "decision_input_binding_v1": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "capital_context_digest_sha256": "e19ac7c71aaab990bed4641ce297475cb970fc1c5570f574dbec627c95f59389",
+        "component_version_digest_sha256": "2747483dc5a375f482338aebdf489ed714f1215810a7f5bba8729e780f3d53b9",
+        "decision_config_digest_sha256": "c3265e0ac5b63afbe6c044806a564f425261d2253b409808bc6c7f4912450c78",
+        "market_data_bridge_attestation_digest_sha256": "86f16d1717233aac21d78fc5a7457df35730fd4c967e4bb3267a832cb0640460",
+        "policy_version_digest_sha256": "753a1610f3dc6a978a7660313620b16391cafbf1689c4b562b0724966fdfed12",
+        "productive_gate_bindings_digest_sha256": "0319a73d9e793714c3ffccc6e134d8334df6cd467234fd93e12d025d6ff12c43",
+        "strategy_registry_snapshot_digest_sha256": "b29b100f09dd84178480e8d58c38fe1092d571048eca541acddac15901ac1716"
+      },
+      "decision_input_fingerprint_digest_sha256": "aae6e00cbbaab0db7ff23a7b434bcc409143a738c59de2272125847ca94907b6",
+      "epoch_id": "epoch-44",
+      "observation_id": "obs-productive-0",
+      "offline_decision_v1": {
+        "canonical_order_intent_present": false,
+        "decision": "no_action",
+        "double_play_transition": "",
+        "risk_result": "NOT_APPLICABLE",
+        "scope_gge_outcome": "CompositionStatus.NO_ACTION",
+        "selected_strategy_ref": "",
+        "side": "none",
+        "sizing_result": "NOT_APPLICABLE",
+        "suitability_ranking_outcome": ""
+      },
+      "required": true,
+      "row_id": "obs-productive-0"
+    }
+  ],
+  "equivalence_class": "PRODUCTIVE_CURRENT",
+  "productive_cycle_delegate": "ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1",
+  "productive_gate_binding_v1": {
+    "cap61_observation_acceptance_binding_mode": "MUST_REPLAY",
+    "confirmation_progression_binding_mode": "MUST_REPLAY",
+    "g17_typed_volatility_binding_mode": "MUST_RECONSTRUCT"
+  },
+  "productive_offline_economic_semantics_v1": true,
+  "replay_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1",
+  "schema_id": "ops.current_offline_decision_equivalence.v1",
+  "schema_version": "v1",
+  "verifier_id": "ops.current_offline_decision_equivalence_verifier.v1"
+}

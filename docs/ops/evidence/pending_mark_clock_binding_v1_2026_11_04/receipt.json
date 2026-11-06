@@ -1,0 +1,38 @@
+{
+  "source_commit": "d85947ffe691e62cfed1cf5ab18a188d3dfee4a1",
+  "origin_commit": "29d4ccd52df524a4fbf180c4bc80ca54241a441c",
+  "source_paths_sha256": {
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py": "cd3e02d31277b41e509578be7538ce04424e4ba5f6baa68fdecc14c232bdce26",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/session_integration_v1.py": "ae25ca68d8846ef97524e28b4397357076ebb71d689eaa88f173b507e7776b20",
+    "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/mark_price_contract_v1.py": "369b25bbef3a7a3e88cb51cc4cd3ee5c3aafe0afa14e306133d60d7d2d19a7d3",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py": "8595d3acadaf01693804404e795b210b08c36c338389bd3080c784706431a50e"
+  },
+  "tests": {
+    "before": "16 FAIL / 2 PASS; six API-argument failures separately distinguished",
+    "after": "40 PASS",
+    "final_new_scope": "22 PASS; 44 distinct across overlapping runs"
+  },
+  "receipt_semantics": "Local epoch measured immediately after inner.poll returns; not exact HTTP/socket receipt or source freshness",
+  "remaining": [
+    "premature bar finalization",
+    "horizon producer observation knowledge time",
+    "fixture/productive classification",
+    "complete durable measurement retention/restart",
+    "direct normalized ingest validation"
+  ],
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "runtime_authorization_effect": "NONE",
+  "local_checks": {
+    "ruff": "PASS",
+    "format": "PASS",
+    "atlas_structure_and_generated_drift": "PASS",
+    "git_diff_check": "PASS with leaf-scoped original XML/text preservation attributes; original failure XML whitespace retained",
+    "docs": "PASS; seven exact staged Markdown paths, 531 refs, existing validators via canonical Python; empty changed-mode result was not counted",
+    "protected_learning_ledger": "UNCHANGED_SHA256",
+    "before_sources": "EXACT_GIT_BASELINE_BYTES"
+  },
+  "test_paths_sha256": {
+    "tests/ops/test_pending_outcome_mark_clock_v1.py": "83e909bffbaad8e683bf764c2306f21d4d8c8b4abd8b97ab2671e7321b5a8275",
+    "tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py": "4ccbf3463ae2ac8ed9a9a8c41b760a5192d90b0056ee035842e64626f0f431b4"
+  }
+}

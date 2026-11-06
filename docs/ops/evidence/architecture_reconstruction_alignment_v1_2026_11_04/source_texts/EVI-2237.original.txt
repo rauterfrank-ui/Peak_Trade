@@ -1,0 +1,73 @@
+# Historischer Entwurf und Einführung des O4-/N-Bars-Datenwegs
+
+Untersuchung 02.11.2026. Die gesuchte Absicht ist dokumentiert und an konkrete Implementierungsschritte bindbar. Für genau diesen N-Bars-/O4-Übergang liegen normative Fachverträge, Implementierungs-PRs, ein Originalauftrag, ein Runbook-Verweis und eine Blueprint-Einordnung vor. Die frühere Entstehung von Learning und Optimization insgesamt wird damit nicht auf September umdatiert.
+
+## Der fachliche Ausgangspunkt ist am 19. September ausdrücklich formuliert
+
+PR [#6626](https://github.com/rauterfrank-ui/Peak_Trade/pull/6626), Commit 31f869272982385fb9afecdfe98b6895b18729e1, dokumentiert am 19.09.2026 um 17:55 Berliner Zeit die REAL-Outcome-/Horizon-Semantik. Es ist zunächst ein reiner Dokumentationsschritt.
+
+Die Entscheidungen D1–D11 sagen unter anderem: Ein REAL Outcome ist eine nach vollständigem Horizon entstandene Messung und niemals der ursprüngliche decision_outcome oder decision_score. N_BARS verlangt N zusammenhängende, explizit gebundene Bar-Closes. Der Horizon beginnt nicht vor der Entscheidung. Evaluation-Time-Informationen werden getrennt von Decision-Time-Informationen gebunden. Fehlende, veraltete oder lückenhafte Beobachtungen ergeben keinen REAL-/COMPLETE-Anspruch. Preisart und Messgröße dürfen nicht stillschweigend aus mid/last/mark abgeleitet werden. Ein economic_score bleibt eine separate Bewertung und ist keine automatisch bestimmte Formel.
+
+Damit ist die Frage „Sollten spätere tatsächliche Daten kommen oder vorhandene Entscheidungsdaten reichen?“ für diesen Vertrag beantwortet: Die spätere, vollständig belegte Messung war ausdrücklich gewollt. Der Vertrag ist nicht gleichbedeutend mit einer damals schon funktionierenden Versorgung.
+
+Quelle: [ursprünglicher Fachvertrag](./intro-real-outcome-semantics.md), besonders Abschnitte 1–5 und 9; [GitHub-Pfadhistorie](./DDO_REAL_OUTCOME_EVALUATION_HORIZON_NORMATIVE_SEMANTICS_V1.md-history.json).
+
+## Ebenfalls am 19. September: eigene Brücke und eigener Supplier
+
+PR [#6628](https://github.com/rauterfrank-ui/Peak_Trade/pull/6628), Commit 3279f991e155a5fc0a31df521ab72e5edc279778, folgt um 18:30 Berliner Zeit mit zwei weiteren normativen Dokumenten und der Offline-Implementierung.
+
+Die Supplier-Entscheidung verwirft ausdrücklich die direkte Wiederverwendung eines O4-Envelopes als vollständige DDO-Eingabe. O4 darf Bar-Daten liefern; für den Domänenwechsel ist eine übersetzende Brücke nötig. Zusätzlich muss ein eigener DDO-Supplier die Messbelege und den Evaluation-Time-Informationssatz materialisieren. Capture und Horizon-Engine sind dafür keine Ersatzautoritäten.
+
+Der Brückenvertrag legt die tatsächliche gewünschte Messung fest: Preisbasis ist der Close des ersten und letzten gebundenen O4-Bars; LOG_RETURN ist ln(end_price/start_price). Das bestätigt unseren letzten Codebefund. Diese N-Bars-Messung war zunächst richtungsneutral und keine vollständige Netto-Trade-/Portfolio-PnL. POSITION_LIFECYCLE und eine Richtungszuordnung wurden im Vorgänger ausdrücklich zurückgestellt. Man darf deshalb nicht ohne weiteren Vertrag annehmen, jeder Outcome solle ein kostenbereinigtes Handelsergebnis sein.
+
+Der Offline-Pfad war damit implementiert. Die PR-Beschreibung sagt zugleich ausdrücklich, dass Capture noch blockiert und REAL_OUTCOME_HORIZON_ENGINE_WIRED=false blieb. Diese Aussagen beschreiben den damaligen Schritt, nicht automatisch den späteren Systemstand.
+
+Quellen: [Supplier-Autorität bei Einführung](./intro-supplier-authority.md), besonders S2–S3; [Brückenvertrag bei Einführung](./intro-o4-ddo-bridge.md), S1–S4; [Commit-Metadaten mit tatsächlich geänderten Pfaden](./commit-3279f991.json).
+
+## Die konkrete Versorgung wurde danach ausdrücklich ergänzt
+
+PR [#6632](https://github.com/rauterfrank-ui/Peak_Trade/pull/6632), Commit 18c16246445d4ee924d42ff29c2db8c43d3af88b, folgt am selben Tag um 19:32 Berliner Zeit. Seine Beschreibung ist der bislang direkteste Absichtsbeleg für den Eingang:
+
+Akzeptierte C1-Hostbeobachtungen sollen einen sessiongebundenen O4-Producer speisen. Der O4-Snapshot soll erneuert werden, bis genügend finalisierte Bars nach der Entscheidung vorliegen. Manuelle Producer-Injection wird dadurch für diesen Weg überflüssig. Eine explizit vorgegebene Snapshot-Injection bleibt allerdings vorrangig/gesperrt gegen automatisches Überschreiben. Das ist eine getrennte historische Variante und kein pauschaler Beweis, dass jeder Test oder Host reale Beobachtungen lieferte.
+
+Dazu ist der ursprüngliche Nutzerauftrag im Cursor-Chat 605c428d…, Zeile 1, erhalten. Die damalige Ergebnisantwort nennt als vorherige Lücke die notwendige manuelle Injection von DecisionEvent und O4-Snapshot. Die spätere Abschlussantwort meldet den C1-only-Weg und beschreibt seinen Terminus als Evaluation-Runtime, nicht als Promotion. Diese historischen Laufmeldungen wurden textgleich mit dem Suchindex abgeglichen; fehlende Prozessausgaben werden nicht erfunden und hier wurde kein Lauf wiederholt.
+
+Quellen: [PR-Metadaten](./pr-6632.json), [Einführungscode](./intro-session-producer.py), [Originalauftrag](./message-129638.txt), [damalige Lücken-/Implementierungsbeschreibung](./message-129743.txt), [damaliger Abschluss](./message-129826.txt), [Nachrichtenprovenienz](./messages.json).
+
+## Am 26. September wurde der Quellenpfad vereinheitlicht
+
+PR [#6846](https://github.com/rauterfrank-ui/Peak_Trade/pull/6846), Commit e8fd6d97515269fd672b6eb2608b1538fd6959b7, stellt um 09:27 Berliner Zeit den Consumer auf WP-A-Historien-Facts und WP-C-Convergence um. Der sessiongebundene Producer bleibt Schreiber der finalisierten PT1H-Bars. Der bisherige direkte Snapshot-Leser wird ausdrücklich als Legacy-/Test-/Paritätsweg erhalten und aus dem produktiven Wallclock-Aufruf ersetzt.
+
+Das ist nicht nur eine Dateiverschiebung: Die historische Änderung trennt Writer, dauerhafte Facts und Consumer-Sicht. Der Parent-Diff zeigt den konkreten Austausch des Aufrufs. Die richtige Frage lautet daher nicht mehr „direkter Producer oder ganz andere Marktquelle?“, sondern „welcher Producer schrieb welche Facts und welche davon liest die konkrete Consumer-Sicht?“
+
+Später begrenzt PR #7002 die O4-Sicht auf die Producer-Session. Dies erklärt, weshalb ein anderer vorhandener Storebestand nicht automatisch als Eingang benutzt wird. Es ist kein Beweis einer neu hinzugefügten Marktdatenquelle.
+
+Quellen: [PR #6846](./pr-6846.json), [Parent-Diff](./6846-parent-diff.txt), [Convergence-Pfadhistorie](./ddo_o4_n_bars_public_plane_convergence_v1.py-history.json).
+
+## Runbook und Blueprint ordnen den Nutzen ein
+
+Das Master-Runbook am Vergleichspin führt Learning/DDO als Beobachter und Evidence-Exporter ohne Reranking, Reselection, Resizing oder Handelsentscheidungsautorität. Es verweist auf die Unified-Blueprint-Phase 20: MARKET_CONTEXT(t) soll mit REALIZED_BEHAVIOR(t+N) über den kanonischen N-Bars-Backbone verbunden werden. Die dortige Spezifikation benennt denselben N-Bars-Supplier und dieselbe Horizon-Engine als vorhandene Basis; Join-Owner ist realized_behavior_v1.py.
+
+Phase 20 wurde lokal am Commit 6d4de46525d4348e053e7466e1c174ce5743fb31 / [#6863](https://github.com/rauterfrank-ui/Peak_Trade/pull/6863), 26.09.2026 um 17:13 Berliner Zeit, eingeführt. Hier ist damit auch eine fachliche Verwendung jenseits eines ACK benannt: damaliger Marktkontext zusammen mit später gemessenem Marktverhalten für Offline-MI/Learning. Die Phase-20-Implementierung und ihre tatsächliche Verwendung der Werte wurden in dieser Untersuchung nicht vollständig neu geprüft. Die Blueprint beschreibt keinen automatischen Beweis dieses Nutzens.
+
+Quellen: [Master-Runbook-Snapshot](./PEAK_TRADE_MASTER_RUNBOOK.md), Abschnitt CURRENT Learning, STEP29M, and Optimization Universe Boundaries, Zeilen 1532 ff.; [Phase-20-Vertrag](./UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md). Im Runbook beschriebene Phasen 21–26 bleiben gesonderte Untersuchungsgegenstände.
+
+## Der problematische Seed kam erst später hinzu
+
+PR [#6937](https://github.com/rauterfrank-ui/Peak_Trade/pull/6937), Commit b3af49d714cf0f248a572b5799bb5edef4b45fa6, fügt am 28.09.2026 um 07:37 Berliner Zeit den Export-Join hinzu. Committext und Paketunterlagen wollen die Capture→Offline-Export-Kante auf der Master-V2-Spur mechanisch schließen. Das Paket enthält zudem einen frischen Gesamt-E2E-Pfad aus synthetischen Treasury-Testwerten bis PRE_EXTERNAL. Dashboard-Wiring liegt ausdrücklich außerhalb seines Scopes.
+
+Der Seed ist bereits in genau dieser Einführung enthalten: vorhandene finalized_closes werden auf zukünftige Stundenzeitpunkte gesetzt und als Mark-Events in den O4-Producer eingespielt. Der zugehörige Test prüft insbesondere ein erfolgreiches Offline-ACK, Referenzen und ein geschriebenes Handoff-Artefakt. Das ist eine andere Nachweisfrage als die Echtheit der späteren Marktbeobachtungen.
+
+Die in den Paketunterlagen ausdrücklich als Fixture bezeichneten Werte betreffen synthetische Treasury-Werte. Daraus darf nicht ohne Weiteres geschlossen werden, dass jede Verwendung der marktseitigen Seed-Funktion ausdrücklich als reine Testversorgung definiert oder fachlich freigegeben war. In den hier gelesenen PR-/Paketunterlagen fand sich keine ausdrückliche Begründung, ältere Schlusskurse zu späteren realen Outcome-Bars umzudeuten. Die Funktion sitzt im eingebundenen Export-Join, nicht allein in einer Testdatei.
+
+Das Ergebnis ist deshalb präzise: Eine mechanische Verkettungsabsicht ist belegt. Eine vertragsgemäße reale Outcome-Versorgung durch diesen Seed ist nicht belegt. Wenn seine Ergebnisse als echte spätere Marktbeobachtung gewertet werden, steht das in Spannung zum ursprünglichen Horizon-/Quellenvertrag. Ob es dazu eine weitere historische ausdrückliche Ausnahme oder spätere Adjudikation gab, bleibt offen; es wurde kein globaler Nichtexistenzbeweis geführt.
+
+Quellen: [Paketvertrag](./WHOLE_SYSTEM_CAUSAL_CLOSURE_SYNTHETIC_TREASURY_PRODUCTIVE_JOIN_V1.md), [PR-Metadaten](./pr-6937.json), [Seed bei Einführung](./intro-export-seed.py), [zugehöriger Test am Vergleichspin](./test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py).
+
+## Ergebnis und Beleggrenzen
+
+Für den konkreten Übergang ist die gewünschte Konstruktion jetzt gut eingrenzbar: getrennte Decision- und Evaluation-Time-Sichten, explizite echte O4-Barherkunft, übersetzende Brücke, eigener Messsupplier und eine nachgelagerte Verarbeitung ohne produktive Handelsautorität. Das kann als historischer Maßstab dienen, wenn wir später entscheiden, welche vorhandenen Quellen und Transformationen diese Aufgabe tragen können.
+
+Die [Zeitleiste und Rollen](./historical-intent.json) sind eine externe Auswertung, keine neuen Vault-IDs und keine neue System-SSOT. Sieben gepinnte GitHub-Pfadhistorien wurden gelesen. Der lokale Checkout ist shallow; seine früheste sichtbare September-23-Grenze war deshalb kein belastbarer Ursprungsnachweis des Session-Producers. Die GitHub-Historie bindet ihn stattdessen an den 19.09.2026. Datierte Dokumente mit eingefrorenen Slice-Sperren werden nicht ungeprüft als heutige Implementierungswahrheit ausgegeben.
+
+[Quellenregister](./sources.json), [Originalnachrichten](./messages.json), [Verifikation](./verification.json). Kein Fetch, kein Checkout, keine Mutation am Repository/Vault, keine historischen Anweisungen ausgeführt, keine Tests oder Runtime-Funktionen gestartet.

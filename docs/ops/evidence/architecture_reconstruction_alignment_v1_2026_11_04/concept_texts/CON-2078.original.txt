@@ -1,0 +1,9 @@
+### CON-2078 — Survival, Suitability und Confirmation
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Survival verwendet bereitgestellte Kosten-/Ratio-/Sequenzgrößen und berechnet nicht automatisch deren gesamte Vorgeschichte. Suitability/Composition sind an ausgewählte C3-Assessment-Identität gebunden. Aufruf nach C3 bedeutet nicht, dass jeder Eingang bereits CONFIRMED ist. Der spätere Sequenzmetrik-/Shadow-Ausbau präzisiert frühere reine Presence-Verträge.
+
+**Grenze:** Wahrheit und Vollständigkeit der gelieferten Metriken, pairbezogene Überlebensfähigkeit und heutiger produktiver Anschluss bleiben je Variante zu belegen. Ein positiver Befund ist kein Signal an G17.
+
+Quellen: EVI-2214, EVI-2204, EVI-2203, EVI-2270.

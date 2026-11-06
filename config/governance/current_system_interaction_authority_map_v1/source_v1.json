@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "f91d2cf2fed95af09376c464489f0ca19734e7f7",
+  "baseline_sha": "1bac0d93302c6e589effafe46fccb055d82bd44e",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -379,8 +379,8 @@
     {
       "id": "mv2_double_play",
       "tier": "FIRST_CLASS",
-      "role": "DECISION_OWNER=run_integrated_offline_trading_logic_replay_v1; PRODUCTIVE_CYCLE_ENTRY=run_current_productive_master_v2_runtime_cycle_v1; Semantic trading-decision universe (MV2+DP inseparable). Productive cycle calls integrated offline replay. Terminal outcomes include VALID_NO_TRADE_TERMINAL (NO_EXECUTABLE_DECISION/HOLD/observe; POST_COUNT=0; not execution failure) and EXECUTABLE_PRE_EXTERNAL (EXECUTABLE_VENUE_PLAN_BOUND with eligibility; still no POST in cycle). HISTORICAL_CANONICAL_OWNER_REF=run_current_productive_master_v2_runtime_cycle_v1.",
-      "canonical_owner_ref": "run_integrated_offline_trading_logic_replay_v1",
+      "role": "Semantic trading-decision universe (MV2+DP inseparable). Productive cycle calls integrated offline replay. Terminal outcomes include VALID_NO_TRADE_TERMINAL (NO_EXECUTABLE_DECISION/HOLD/observe; POST_COUNT=0; not execution failure) and EXECUTABLE_PRE_EXTERNAL (EXECUTABLE_VENUE_PLAN_BOUND with eligibility; still no POST in cycle).",
+      "canonical_owner_ref": "run_current_productive_master_v2_runtime_cycle_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "CYCLE_CALLS_REPLAY_WITH_TERMINAL_OUTCOME_CLASSES",
       "status": "PARTIAL",
@@ -411,8 +411,7 @@
         "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/__init__.py",
         "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/__init__.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py",
-        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py",
-        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
+        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
@@ -441,17 +440,16 @@
         "tests/governance/test_master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1.py",
         "tests/governance/test_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py",
-        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py",
-        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
+        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py"
       ]
     },
     {
       "id": "dynamic_scope",
       "tier": "INTERMEDIATE",
-      "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play; STATE_OWNER=trading.master_v2.double_play_state.RuntimeScopeState; PRODUCTIVE_RESTART_CARRIER=current_productive_sidestate_confirmation_cursor_v1; BINDER_ROLE=SERIALIZATION_CODEC_ADAPTER; BINDER_RUNTIME_ACTIVATED=false; CHECKPOINT_WRITER_NOT_ON_PRODUCTIVE_MASTER_V2_CYCLE=true. Distributed scope owners. Serialization adapter has no decision authority. HISTORICAL_CANONICAL_OWNER_REF=ops.dynamic_scope_persistence_binding_v1.",
-      "canonical_owner_ref": "trading.master_v2.double_play_state.RuntimeScopeState",
+      "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Distributed scope owners. Serialization adapter has no decision authority.",
+      "canonical_owner_ref": "ops.dynamic_scope_persistence_binding_v1",
       "authority_class": "CANONICAL_AUTHORITY",
-      "lifecycle": "PRODUCTIVE_RESTART_CARRIER=current_productive_sidestate_confirmation_cursor_v1;BINDER_CHECKPOINT_WRITER_NOT_ON_PRODUCTIVE_CYCLE",
+      "lifecycle": "RESTART_PROVEN_DISTRIBUTED",
       "status": "PROVEN_CURRENT",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -459,13 +457,11 @@
       "contract_refs": [],
       "code_refs": [
         "src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py",
-        "src/trading/master_v2/double_play_state.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
+        "src/trading/master_v2/double_play_state.py"
       ],
       "evidence_refs": [
         "src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py",
-        "src/trading/master_v2/double_play_state.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
+        "src/trading/master_v2/double_play_state.py"
       ]
     },
     {
@@ -4446,13 +4442,13 @@
     {
       "id": "runbook_freshness_stamp",
       "epistemic_class": "PARTIAL",
-      "statement": "Master Runbook navigation review stamp CURRENT_REVIEWED_AT_SHA=9971ad8bcef222c6200d476c823de89820add7aa. This map baseline_sha remains f91d2cf2fed95af09376c464489f0ca19734e7f7 and is not that review stamp. Edge alignment of this map to 9971ad8b is NOT_PROVEN. The prior stamp sentence citing d26caea78d1a178fde0a9e91aee169d454eebcae is not the current review stamp. Representation-closure fixture SHA 744a9c896f53d33b2d3c24977da1891a2e8549f1 stays a historical test anchor, not this review stamp. Navigation only. map_authority=NONE.",
+      "statement": "RESOLVED_BY_CURRENT_RATIFICATION for review stamp: Master Runbook CURRENT_REVIEWED_AT_SHA=d26caea78d1a178fde0a9e91aee169d454eebcae ARCHITECTURE_NAVIGATION_METADATA_CONVERGENCE_V1; map baseline_sha rebound; navigation-only.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
-      "closure_note": "Prior d26caea7 review-stamp sentence retracted as the current stamp. Map baseline_sha unchanged. No edge added or removed. map_authority=NONE."
+      "closure_note": "Review stamp rebound POST_6925 navigation baseline rebind WP; navigation-only."
     },
     {
       "id": "treasury_import_wording",
@@ -4496,7 +4492,7 @@
     {
       "id": "mv2_proof_baseline_sha",
       "epistemic_class": "PARTIAL",
-      "statement": "MV2 plus double-play proof package pins historical baseline SHA in whole_system_connection_closure_bounded_wp_v1; map baseline_sha tracks origin/main f91d2cf2fed95af09376c464489f0ca19734e7f7. Navigation only; does not re-prove MV2 on CURRENT HEAD.",
+      "statement": "MV2 plus double-play proof package pins historical baseline SHA in whole_system_connection_closure_bounded_wp_v1; map baseline_sha tracks origin/main 070f8940b1ec027f903e9f55a5718dfee8cd35ab. Navigation only; does not re-prove MV2 on CURRENT HEAD.",
       "evidence_refs": [
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
@@ -4854,12 +4850,12 @@
     {
       "id": "repo_convergence_market_dashboard_historical_chrome_233_outer_shell_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Repository convergence WP: frozen-233 AUTHORITY=NONE market-dashboard historical chrome evidence outer-shell deletion is non-map-authority physical cleanup only (AUTHORITY=NONE). WP-R2B-R4 presentation infrastructure retirement retires remaining WebUI chrome evidence tests; diff-bound MAP_UPDATE_REQUIRED records atlas census/corpus stale-coupling decoupling and runbook locator updates; it does not alter CURRENT authority edges, owners, or trading semantics.",
+      "statement": "Repository convergence WP: frozen-233 AUTHORITY=NONE market-dashboard historical chrome evidence outer-shell deletion is non-map-authority physical cleanup only (AUTHORITY=NONE). Diff-bound MAP_UPDATE_REQUIRED records atlas census/corpus stale-coupling decoupling and runbook locator updates; it does not alter CURRENT authority edges, owners, or trading semantics.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "scripts/ops/fast_reference_replay_v1.py",
-        "src/ops/presentation_retirement_fail_closed_v1.py",
-        "tests/ops/test_canonical_runtime_operations_activation_v1.py"
+        "tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py",
+        "tests/webui/test_market_landscape_ops_narrow_viewport_containment_v1.py"
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
       "closure_note": "Repository convergence cleanup; AUTHORITY=NONE; no trading semantics change."
@@ -5461,15 +5457,14 @@
     {
       "id": "pr_7037_crs_boundary_mv2_wiring_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "HISTORICAL_AUTHORIZATION: PR #7037 authorized WIRING_ONLY propagation of build_simulated_economics_crs_boundary_state_file_v1 onto IntegratedOfflineReplayInputV1 before integrated replay. CURRENT_IMPLEMENTATION: that automatic productive wire is removed from current_productive_master_v2_runtime_cycle_v1; missing productive capital context remains CAPITAL_RISK_CONTEXT_UNRESOLVED and fail-closed; the same builder stays isolated in the offline historical adapter and the wallclock simulated-economics bridge. CURRENT_AUTHORITY=NONE. No new capital authority. POST_COUNT=0.",
+      "statement": "PR #7037: WIRING_ONLY MV2 CRS boundary propagation — build_simulated_economics_crs_boundary_state_file_v1 onto IntegratedOfflineReplayInputV1.current_instrument_capital_risk_sizing_boundary_state_file before integrated replay; closes CAPITAL_RISK_CONTEXT_UNRESOLVED on Full-Core GHV lane; no trading-decision, Scope, Layer-C, or POST authority change. Diff-bound MAP_UPDATE_REQUIRED + Atlas navigation review; AUTHORITY=NONE; POST_COUNT=0.",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/simulated_economics_crs_boundary_binding_v1.py",
-        "scripts/ops/productive_historical_replay_adapter_v1.py",
         "tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py"
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
-      "closure_note": "HISTORICAL_AUTHORIZATION preserved. CURRENT_IMPLEMENTATION removes the productive simulated CRS wire and leaves missing capital context fail-closed. Offline builder remains isolated. CURRENT_AUTHORITY=NONE. TRADING_SEMANTICS_CHANGED=false."
+      "closure_note": "Governance/map/atlas closure for CRS boundary wiring cut; TRADING_SEMANTICS_CHANGED=false at governance boundary."
     },
     {
       "id": "pr_7064_golden_geometry_engine_v1",

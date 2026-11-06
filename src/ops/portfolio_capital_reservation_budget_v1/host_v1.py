@@ -1,0 +1,371 @@
+"""N1 host lifecycle for the existing durable owner; no execution authority.
+
+Private REST observations are account-bound before opening the store. Recovery
+consumes the existing canonical capital producer only at the outer ENTRY seam.
+Order/fill history is bounded observation, not reservation-to-fill resolution.
+"""
+
+from dataclasses import dataclass, field, replace
+from datetime import datetime, timezone
+from decimal import Decimal
+from pathlib import Path
+import time
+
+from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
+    POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
+)
+from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    NUMERIC_EQUITY_TTL_SECONDS,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.rest_baseline_v1 import (
+    collect_rest_baseline_v1,
+    PrivateRestBaselineError,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.reconciliation_v1 import (
+    reconcile_rest_baseline_v1,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalReservationBudgetOwnerV1,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.recovery_v1 import (
+    reconcile_durable_budget_startup_v1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
+    PortfolioTruthSnapshotV1,
+    PositionTruthV1,
+)
+
+
+@dataclass(frozen=True)
+class HostAccountObservationV1:
+    account: str
+    observed: PortfolioTruthSnapshotV1
+    pending_orders: bool
+    occupancy_payloads: dict
+
+
+def collect_host_account_observation_v1(
+    *,
+    private_rest_fetch,
+    instrument_ids_by_native_id,
+    session_id,
+    clock=time.time,
+    expected_account=None,
+) -> HostAccountObservationV1:
+    """Reuse host baseline checks before any budget-store or binding mutation.
+
+    The caller supplies its existing private read capability. This collector
+    does not create a budget owner, reconcile persisted state or grant alpha.
+    """
+    started = clock()
+    uids = set()
+    pending = []
+    occupancy = {}
+
+    def fetch(path, params):
+        # Baseline defaults filter orders by one instrument. The shared
+        # budget must observe the account's SWAP scope instead.
+        query = {k: v for k, v in params.items() if k != "instId"}
+        payload = private_rest_fetch(path, query)
+        key = {
+            "/api/v5/account/config": "CONFIG",
+            "/api/v5/account/positions": "POSITIONS",
+            "/api/v5/trade/orders-pending": "PENDING",
+        }.get(path)
+        if key is not None:
+            occupancy[key] = payload
+        if path in {"/api/v5/account/config", "/api/v5/account/balance"}:
+            for row in payload.get("data", []):
+                uid = row.get("uid")
+                if uid is not None and str(uid).strip():
+                    uids.add(str(uid).strip())
+        if path == "/api/v5/trade/orders-pending":
+            pending.extend(payload.get("data", []))
+        return payload
+
+    try:
+        baseline = collect_rest_baseline_v1(
+            fetch,
+            captured_at=datetime.fromtimestamp(started, timezone.utc).isoformat(),
+            recovery=True,
+        )
+    except PrivateRestBaselineError as exc:
+        raise ValueError("HOST_BUDGET_PRIVATE_BASELINE_INVALID") from exc
+    if len(uids) != 1:
+        raise ValueError("HOST_BUDGET_PRIVATE_ACCOUNT_UNPROVEN")
+    account = next(iter(uids))
+    if expected_account is not None and account != expected_account:
+        raise ValueError("HOST_BUDGET_PRIVATE_ACCOUNT_CHANGED")
+    now = clock()
+    position_max_age = POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
+    if not 0 <= now - started <= position_max_age:
+        raise ValueError("HOST_BUDGET_PRIVATE_SNAPSHOT_STALE")
+    if not reconcile_rest_baseline_v1(
+        reconciliation_id=session_id,
+        rest_baseline=baseline,
+    ).trusted:
+        raise ValueError("HOST_BUDGET_PRIVATE_RECONCILIATION_REQUIRED")
+    native = dict(instrument_ids_by_native_id)
+    positions = []
+    seen = set()
+    for p in baseline.positions:
+        if p.inst_id not in native or p.inst_id in seen:
+            raise ValueError("HOST_BUDGET_POSITION_SCOPE_UNPROVEN")
+        seen.add(p.inst_id)
+        quantity = Decimal(p.pos)
+        if p.pos_side not in {"net", "long", "short"} or (p.pos_side != "net" and quantity < 0):
+            raise ValueError("HOST_BUDGET_POSITION_SIDE_UNPROVEN")
+        if p.pos_side == "short":
+            quantity = -quantity
+        positions.append(
+            PositionTruthV1.from_signed(
+                instrument_id=native[p.inst_id],
+                signed_quantity=quantity,
+                source_id="host-private-rest-swap",
+                event_time_unix=started,
+                wall_time_unix=now,
+            )
+        )
+    return HostAccountObservationV1(
+        account=account,
+        pending_orders=bool(pending),
+        occupancy_payloads=occupancy,
+        observed=PortfolioTruthSnapshotV1(
+            positions=tuple(positions),
+            source_id="host-private-rest-swap",
+            event_time_unix=started,
+            wall_time_unix=now,
+            max_age_seconds=position_max_age,
+        ),
+    )
+
+
+@dataclass(frozen=True)
+class HostBudgetRecoveryContextV1:
+    host: "PortfolioBudgetHostV1"
+    account: str
+    observed: PortfolioTruthSnapshotV1
+    pending_orders: bool
+    occupancy_payloads: dict
+    execution_reconciliation: dict = field(default_factory=dict)
+
+    def recover_v1(self, owner, output):
+        if owner is not self.host.owner:
+            raise ValueError("HOST_BUDGET_OWNER_MISMATCH")
+        owner.restart_fail_closed_v1()
+        if any(
+            not result.get("matched")
+            or result.get("decision", {}).get("reconciliation_complete") is not True
+            for result in self.execution_reconciliation.values()
+        ):
+            raise ValueError("HOST_BUDGET_EXECUTION_RECONCILIATION_UNRESOLVED")
+        if self.pending_orders:
+            raise ValueError("HOST_BUDGET_PENDING_ORDERS_UNRESOLVED")
+        if output.bound_account_identity != self.account:
+            raise ValueError("HOST_BUDGET_ACCOUNT_MISMATCH")
+        result = reconcile_durable_budget_startup_v1(
+            owner,
+            output=output,
+            observed=self.observed,
+            lane_bindings=self.host.bindings,
+            reconciliation_state_root=self.host.root / "reconciliation",
+            session_id=self.host.session_id,
+            repository_sha=self.host.repository_sha,
+            now_unix=self.host.clock(),
+            capital_max_age_seconds=NUMERIC_EQUITY_TTL_SECONDS,
+        )
+        if owner.budget_state_v1().recovery_required:
+            raise ValueError("HOST_BUDGET_RECOVERY_BLOCKED:" + ",".join(result.reason_codes))
+
+    def position_side_v1(self, bound):
+        if self.host.closed or bound not in self.host.bindings.values():
+            raise ValueError("HOST_BUDGET_POSITION_BINDING_MISMATCH")
+        position = next(
+            (p for p in self.observed.positions if p.instrument_id == bound.instrument_id), None
+        )
+        return position.side if position is not None else "FLAT"
+
+
+class PortfolioBudgetHostV1:
+    """One session, one writer, stable account scope outside lane/run roots."""
+
+    def __init__(
+        self,
+        *,
+        root: Path,
+        private_rest_fetch,
+        repository_sha: str,
+        session_id: str,
+        expected_account_identity: str,
+        durable_mode: str = "recover",
+        clock=time.time,
+        retry_sleep=time.sleep,
+        retry_interval_seconds=1,
+        reconciliation_transport=None,
+        execution_environment="LIVE",
+    ):
+        if (
+            not isinstance(expected_account_identity, str)
+            or not expected_account_identity
+            or expected_account_identity != expected_account_identity.strip()
+        ):
+            raise ValueError("HOST_BUDGET_EXPECTED_ACCOUNT_REQUIRED")
+        if durable_mode not in {"create", "recover"}:
+            raise ValueError("HOST_BUDGET_DURABLE_MODE_INVALID")
+        if not Path(root).is_absolute():
+            raise ValueError("HOST_BUDGET_ABSOLUTE_ROOT_REQUIRED")
+        self.root = Path(root).resolve()
+        if durable_mode == "recover" and not self.root.exists():
+            raise ValueError("DURABLE_BUDGET_STATE_MISSING")
+        if durable_mode == "create" and self.root.exists():
+            raise ValueError("HOST_BUDGET_BOOTSTRAP_SCOPE_ALREADY_EXISTS")
+        self.durable_mode = durable_mode
+        self.expected_account_identity = expected_account_identity
+        self.fetch = private_rest_fetch
+        self.repository_sha = repository_sha
+        self.session_id = session_id
+        self.clock = clock
+        self.owner = None
+        self.bindings = None
+        self.account = expected_account_identity
+        self.closed = False
+        self.retry_sleep = retry_sleep
+        self.retry_interval_seconds = retry_interval_seconds
+        self.transport_retry_count = 0
+        self.reconciliation_transport = reconciliation_transport
+        self.execution_environment = execution_environment
+
+    def observe_v1(self, bindings):
+        from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.recovery_v1 import (
+            bounded_retry_policy_v1,
+        )
+
+        attempt = 0
+        while True:
+            try:
+                return self._observe_once_v1(bindings)
+            except (TimeoutError, ConnectionError):
+                if not bounded_retry_policy_v1(
+                    attempt=attempt,
+                    automatic_recovery_allowed=True,
+                )["retry_allowed"]:
+                    raise
+                attempt += 1
+                self.transport_retry_count += 1
+                self.retry_sleep(self.retry_interval_seconds)
+
+    def _observe_once_v1(self, bindings):
+        if self.closed:
+            raise ValueError("HOST_BUDGET_SESSION_CLOSED")
+        if self.owner is None and self.durable_mode == "create" and self.root.exists():
+            raise ValueError("HOST_BUDGET_BOOTSTRAP_SCOPE_ALREADY_EXISTS")
+        # Fence before fetching: a failed refresh cannot retain old authority.
+        if self.owner is not None:
+            self.owner.restart_fail_closed_v1()
+        observation = collect_host_account_observation_v1(
+            private_rest_fetch=self.fetch,
+            instrument_ids_by_native_id={
+                b.venue_native_id: b.instrument_id for b in bindings.values()
+            },
+            session_id=self.session_id,
+            clock=self.clock,
+            expected_account=self.expected_account_identity,
+        )
+        account = observation.account
+        if self.bindings is not None and self.bindings != bindings:
+            raise ValueError("HOST_BUDGET_LANE_GENERATION_CHANGED")
+        if self.owner is None:
+            # Normal start/restart restores only. Missing/deleted state is not
+            # evidence of a fresh account. Creation is an explicit bootstrap.
+            store = self.root / "owner"
+            self.owner = PortfolioCapitalReservationBudgetOwnerV1(
+                durable_root=store,
+                durable_account_identity=account,
+                durable_mode=self.durable_mode,
+                durable_lane_bindings=bindings,
+            )
+            self.account = account
+            self.durable_mode = "recover"
+            self.bindings = dict(bindings)
+        context = HostBudgetRecoveryContextV1(
+            host=self,
+            account=account,
+            pending_orders=observation.pending_orders,
+            occupancy_payloads=observation.occupancy_payloads,
+            observed=observation.observed,
+        )
+        return replace(context, execution_reconciliation=self._reconcile_executions_v1(context))
+
+    def _reconcile_executions_v1(self, context):
+        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+            FullCoreExchangeReconciliationIdentityV1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
+            fetch_okx_read_only_reconciliation_snapshot_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+            GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+
+        submitted = {
+            rid: link
+            for rid, link in self.owner.execution_links_v1(active_only=True).items()
+            if link["phase"] == "SUBMIT_MAY_HAVE_OCCURRED"
+        }
+        if not submitted:
+            return {}
+        if self.reconciliation_transport is None:
+            return {
+                rid: {"matched": False, "reason_codes": ["HOST_EXECUTION_READ_PORT_MISSING"]}
+                for rid in submitted
+            }
+        transport = self.reconciliation_transport
+        config = transport.get(
+            endpoint="/api/v5/account/config",
+            auth_required=True,
+            pretrade_decision_id=f"{self.session_id}:execution-recovery",
+            get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+        payload = config.payload
+        if not (
+            config.get_performed
+            and config.method == "GET"
+            and config.endpoint == "/api/v5/account/config"
+            and config.auth_header_sent
+            and not config.historical_reuse
+            and config.http_status == 200
+            and not config.error_class
+            and isinstance(payload, dict)
+            and payload.get("code") == "0"
+            and isinstance(payload.get("data"), list)
+            and len(payload["data"]) == 1
+            and payload["data"][0].get("uid") == self.account
+        ):
+            raise ValueError("HOST_EXECUTION_READ_PORT_ACCOUNT_UNPROVEN")
+        result = {}
+        for rid, link in submitted.items():
+            raw = dict(link["identity"])
+            raw.pop("contract_id", None)
+            identity = FullCoreExchangeReconciliationIdentityV1(**raw)
+            if identity.execution_environment != self.execution_environment:
+                raise ValueError("HOST_EXECUTION_ENVIRONMENT_MISMATCH")
+            acquired = datetime.fromtimestamp(self.clock(), timezone.utc).isoformat()
+            snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
+                identity=identity,
+                read_only_get_transport=transport,
+                pretrade_decision_id=f"{self.session_id}:{rid}",
+                received_at=acquired,
+            )
+            result[rid] = self.owner.reconcile_execution_v1(
+                rid,
+                snapshot=snapshot,
+                observed=context.observed,
+                account=context.account,
+                now_unix=self.clock(),
+            )
+        return result
+
+    def close(self):
+        self.closed = True
+        if self.owner is not None:
+            self.owner.close()

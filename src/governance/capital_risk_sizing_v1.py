@@ -12,10 +12,13 @@ execution permission.
 
 from __future__ import annotations
 
+from trading.master_v2.double_play_futures_input import FORBIDDEN_FUTURES_BASE_ASSETS
+
+
 import ast
 import hashlib
 import json
-from dataclasses import dataclass, fields
+from dataclasses import asdict, dataclass, fields
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from pathlib import Path
@@ -42,7 +45,7 @@ SYNTHETIC_SPOT_ALLOWED = False
 AUTHORITY_EFFECT_NONE = "NONE"
 RUNTIME_EFFECT_NONE = "NONE"
 
-_FORBIDDEN_INSTRUMENT_MARKERS = frozenset({"btc", "xbt", "bitcoin"})
+_FORBIDDEN_INSTRUMENT_MARKERS = frozenset(v.lower() for v in FORBIDDEN_FUTURES_BASE_ASSETS)
 _FORBIDDEN_MARKET_TYPES = frozenset({"spot", "synthetic_spot", "synthetic-spot"})
 _ALLOWED_SIDES = frozenset({"LONG", "SHORT", "long", "short"})
 _ALLOWED_RECONCILIATION = frozenset({"RECONCILED", "reconciled"})
@@ -1083,6 +1086,159 @@ def export_bypass_scan_v1(*, repo_root: Optional[Path] = None) -> dict[str, Any]
     }
 
 
+FULL_POSITION_CLOSE_POLICY_V1 = "full_confirmed_remaining_position_close.v1"
+
+
+@dataclass(frozen=True)
+class CloseOnlyQuantityDecisionV1:
+    outcome: CapitalRiskSizingOutcome
+    decision_id: str
+    instrument_id: str
+    trading_epoch: str
+    position_side: str
+    open_quantity: Decimal
+    final_quantity: Decimal
+    position_snapshot_ref: str
+    binding_ref: str
+    instrument_metadata_ref: str
+    quantity_provenance: Optional[QuantityProvenanceV1]
+    reason_codes: tuple[str, ...]
+    semantic_digest: str = ""
+    policy_version: str = FULL_POSITION_CLOSE_POLICY_V1
+    authority_effect: str = AUTHORITY_EFFECT_NONE
+    runtime_effect: str = RUNTIME_EFFECT_NONE
+    execution_eligible: bool = False
+
+    def to_dict(self) -> dict[str, Any]:
+        """Evidence serialization; not a restore or execution authority."""
+        return json.loads(json.dumps(asdict(self), sort_keys=True, default=str))
+
+
+def compute_close_only_quantity_digest_v1(decision: CloseOnlyQuantityDecisionV1) -> str:
+    return _sha256_hex(
+        {
+            field.name: getattr(decision, field.name)
+            for field in fields(decision)
+            if field.name != "semantic_digest"
+        }
+    )
+
+
+def evaluate_full_position_close_quantity_v1(
+    *,
+    decision_id: str,
+    instrument_id: str,
+    trading_epoch: str,
+    decision_outcome: str,
+    position_side: str,
+    open_quantity: Decimal,
+    position_snapshot_ref: str,
+    binding_ref: str,
+    reconciliation_status: str,
+    instrument: InstrumentQuantityConstraintsV1,
+) -> CloseOnlyQuantityDecisionV1:
+    """Assess an EXIT against existing exposure, independently of entry budgets.
+
+    Full-position close only. No partial rounding, position flip, or REDUCE rule.
+    The envelope refs describe reducing exposure, not invented account capital.
+    """
+    reasons = []
+    side = position_side.upper()
+    if decision_outcome != "exit":
+        reasons.append("FULL_POSITION_CLOSE_REQUIRES_EXIT")
+    if not decision_id or not trading_epoch or not position_snapshot_ref or not binding_ref:
+        reasons.append("CLOSE_QUANTITY_SOURCE_BINDING_REQUIRED")
+    if reconciliation_status.lower() != "reconciled":
+        reasons.append(REASON_RECONCILIATION_REQUIRED)
+    if side not in {"LONG", "SHORT"}:
+        reasons.append(REASON_INVALID_DIRECTION)
+    if (
+        instrument.instrument_id != instrument_id
+        or instrument.market_type != "futures"
+        or instrument.contract_kind != "LINEAR"
+        or not instrument.instrument_metadata_version
+    ):
+        reasons.append(REASON_MISSING_INSTRUMENT_METADATA)
+    if (
+        not isinstance(open_quantity, Decimal)
+        or not open_quantity.is_finite()
+        or open_quantity <= 0
+    ):
+        reasons.append(REASON_NO_OPEN_POSITION_FOR_REDUCE)
+    elif (
+        not instrument.lot_size.is_finite()
+        or instrument.lot_size <= 0
+        or not instrument.minimum_quantity.is_finite()
+        or instrument.minimum_quantity <= 0
+    ):
+        reasons.append(REASON_INVALID_QUANTITY_STEP)
+    elif open_quantity % instrument.lot_size != 0 or open_quantity < instrument.minimum_quantity:
+        reasons.append("FULL_CLOSE_QUANTITY_NOT_VENUE_EXECUTABLE")
+    if instrument.maximum_quantity is not None:
+        if not instrument.maximum_quantity.is_finite() or instrument.maximum_quantity <= 0:
+            reasons.append(REASON_MISSING_INSTRUMENT_METADATA)
+        elif (
+            isinstance(open_quantity, Decimal)
+            and open_quantity.is_finite()
+            and open_quantity > instrument.maximum_quantity
+        ):
+            reasons.append("FULL_CLOSE_REQUIRES_ORDER_SPLIT")
+    if instrument_id and any(
+        token in instrument_id.lower() for token in _FORBIDDEN_INSTRUMENT_MARKERS
+    ):
+        reasons.append(REASON_BITCOIN_SPECIFIC_DIRECTION)
+    provenance = None
+    final = Decimal("0") if reasons else open_quantity
+    if not reasons:
+        source = dict(
+            policy=FULL_POSITION_CLOSE_POLICY_V1,
+            decision=decision_id,
+            instrument=instrument_id,
+            epoch=trading_epoch,
+            side=side,
+            quantity=str(open_quantity),
+            position_snapshot=position_snapshot_ref,
+            binding=binding_ref,
+            metadata=instrument.instrument_metadata_version,
+        )
+        digest = _sha256_hex(source)
+        provenance = QuantityProvenanceV1(
+            decision_id=decision_id,
+            source_contract_refs=(
+                FULL_POSITION_CLOSE_POLICY_V1,
+                position_snapshot_ref,
+                binding_ref,
+            ),
+            capital_envelope_ref=_contract_ref("CloseOnlyExposureEnvelopeV1", digest),
+            pre_sizing_risk_ref=_contract_ref("CloseOnlyPreRiskV1", digest),
+            sizing_ref=_contract_ref("CloseOnlyPositionQuantityV1", digest),
+            post_sizing_risk_ref=_contract_ref("ProjectedZeroRemainingQuantityV1", digest),
+            instrument_metadata_ref=instrument.instrument_metadata_version,
+            policy_version=FULL_POSITION_CLOSE_POLICY_V1,
+            config_digest=digest,
+            implementation_digest="full_position_close_quantity_v1",
+            final_quantity=final,
+            final_quantity_status=FinalQuantityStatus.PASS,
+        )
+    result = CloseOnlyQuantityDecisionV1(
+        outcome=CapitalRiskSizingOutcome.BLOCKED if reasons else CapitalRiskSizingOutcome.PASS,
+        decision_id=decision_id,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        position_side=side,
+        open_quantity=open_quantity,
+        final_quantity=final,
+        position_snapshot_ref=position_snapshot_ref,
+        binding_ref=binding_ref,
+        instrument_metadata_ref=instrument.instrument_metadata_version,
+        quantity_provenance=provenance,
+        reason_codes=tuple(reasons) or (REASON_PASS,),
+    )
+    from dataclasses import replace
+
+    return replace(result, semantic_digest=compute_close_only_quantity_digest_v1(result))
+
+
 def capital_risk_sizing_schema_v1() -> dict[str, Any]:
     """Return the offline contract schema and invariants."""
 
@@ -1092,6 +1248,15 @@ def capital_risk_sizing_schema_v1() -> dict[str, Any]:
         "schema_version": SCHEMA_VERSION,
         "package_marker": PACKAGE_MARKER,
         "implementation_digest": IMPLEMENTATION_DIGEST,
+        "full_position_close_contract": {
+            "policy_version": FULL_POSITION_CLOSE_POLICY_V1,
+            "api": "evaluate_full_position_close_quantity_v1",
+            "source": "reconciled_existing_position",
+            "entry_budget_independent": True,
+            "partial_rounding_allowed": False,
+            "reduce_fraction_defined": False,
+            "authority_effect": AUTHORITY_EFFECT_NONE,
+        },
         "invariants": {
             "futures_only": FUTURES_ONLY,
             "bitcoin_direction_allowed": BITCOIN_DIRECTION_ALLOWED,

@@ -1,0 +1,259 @@
+{
+  "continuation": {
+    "GRAPH_EDGES_TOTAL": 0,
+    "GRAPH_NODES_TOTAL": 0,
+    "OBSERVED_RUNTIME_GRAPH": true,
+    "UNACCOUNTED_DISCOVERED_SURFACES": 0,
+    "edges": [],
+    "nodes": [],
+    "owner": "full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1",
+    "schema_version": "ghv_system_wide_observed_runtime_graph.v1"
+  },
+  "product": {
+    "GRAPH_EDGES_TOTAL": 36,
+    "GRAPH_NODES_TOTAL": 3,
+    "OBSERVED_RUNTIME_GRAPH": true,
+    "UNACCOUNTED_DISCOVERED_SURFACES": 0,
+    "edges": [
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_f4c7f3950f8878f5084ed687"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_f4c7f3950f8878f5084ed687",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_a3405b6d8bafe7dfeaef9c39"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_a3405b6d8bafe7dfeaef9c39",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_8edf578c0c01c8b3013f8952"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_0fa073f2bd5d1747ebeecdf5"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_0fa073f2bd5d1747ebeecdf5",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_e93a96abdfd8da972fd1229c"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_e93a96abdfd8da972fd1229c",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_756b96f03a98e8622d90da45"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_564babf901519bb128d0f430"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_564babf901519bb128d0f430",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_cd234dca52846f7cbce5e1ca"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_cd234dca52846f7cbce5e1ca",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_1a99c292e8dd7479224fd460"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_d82c6880abe72c03a6e30b93"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_d82c6880abe72c03a6e30b93",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_2365a4be50b9fb5183af6354"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_2365a4be50b9fb5183af6354",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_57c9fb73c76f74175346c069"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_b417580ce1e39ff6af046bbf"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_b417580ce1e39ff6af046bbf",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_c10090d2530f26e41819deb4"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_c10090d2530f26e41819deb4",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_019a900236cb6bab082529e8"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_10066480d23d0ac82d00267a"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_10066480d23d0ac82d00267a",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_97ddcfcd55adabedb4754e3d"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_97ddcfcd55adabedb4754e3d",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_de46bd7c6c7b607b473ee1de"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_c116e061ebdbca39b4d43636"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_c116e061ebdbca39b4d43636",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_0c10eee98af24e802f7d661a"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_0c10eee98af24e802f7d661a",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_8bcf944db6521a02f831d09e"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_a7222449a9138683d7761d32"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_a7222449a9138683d7761d32",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_1965d76ba76a7d739ec5d9dc"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_1965d76ba76a7d739ec5d9dc",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_8622a6e2f7c3c5b66dd011d6"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_53bac5aeb2549db171213269"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_53bac5aeb2549db171213269",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_efce548fa4f685acb40cec45"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_efce548fa4f685acb40cec45",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_6b9400f7d2bee6aecac877cc"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_f340c272b8a0337d0962b35d"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_f340c272b8a0337d0962b35d",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_50b36295fca796c0826b3f9d"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_50b36295fca796c0826b3f9d",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_4cacc1cca43814a26203f79d"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_482b76e84e455f166150a850"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_482b76e84e455f166150a850",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_e266b5487aa340badb73cd6a"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_e266b5487aa340badb73cd6a",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_b4cccf7346e8ba6f7d9432b1"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_s7_mv2_output",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "to_generation": "gen_be0d761d1fbf2db661583d9e"
+      },
+      {
+        "edge_kind": "PRODUCES_TRACED_STATE",
+        "from_generation": "gen_be0d761d1fbf2db661583d9e",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "to_generation": "gen_a72d09d09aa65d45295a7bf7"
+      },
+      {
+        "edge_kind": "CONSUMES_TRACED_STATE",
+        "from_generation": "gen_a72d09d09aa65d45295a7bf7",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "to_generation": "gen_a0a15dc5ef8c34e60b9c5f7a"
+      }
+    ],
+    "nodes": [
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+        "symbol": "compose_occupied_lane_mv2_dp_durable_cycle_v1"
+      },
+      {
+        "causal_relation": "PRODUCES_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+        "symbol": "join_current_productive_enter_live_29p_before_venue_plan_v1"
+      },
+      {
+        "causal_relation": "CONSUMES_TRACED_STATE",
+        "execution_domain": "PRODUCT_RUNTIME",
+        "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+        "symbol": "persist_continuation_snapshot_v1"
+      }
+    ],
+    "owner": "full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1",
+    "schema_version": "ghv_system_wide_observed_runtime_graph.v1"
+  },
+  "schema_version": "ghv_system_wide_observed_runtime_graph.v1"
+}

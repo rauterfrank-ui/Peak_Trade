@@ -1,0 +1,9 @@
+### CON-2068 — Mehrere Zustands- und Entscheidungspfade
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Integrierter Replay, RuntimeScopeState und späterer Naked-Durable-State sind unterschiedliche Träger. Gültiger Delegations-Seal kann ältere Writer unterdrücken; P5.10B folgt als gesonderter Handoff. Ein historisch geplanter Authority-Cutover ist in späteren Verträgen entfallen. Daher kann kein einzelner Sole-Owner-Satz ohne Host-/State-Bedingung sämtliche Varianten beschreiben.
+
+**Grenze:** Kein pauschaler Fehler der L1–L10-Logik und keine vollständige Restart-/Paritätsbestätigung. Konkurrierende Writer, Erstzyklus und Restore müssen im später gewählten Umbaupfad gemeinsam geprüft werden.
+
+Quellen: EVI-2214, EVI-2293, EVI-2277, EVI-2208.

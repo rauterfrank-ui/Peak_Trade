@@ -1,0 +1,63 @@
+# Experimentidentität vor einem dauerhaften Anschluss
+
+Stand: 02.11.2026. Lesende Rekonstruktion; keine Schnittstelle, kein neuer Backtest und keine nachträglich erzeugte kanonische Experiment-ID.
+
+Die Experimentidentität war historisch kein einheitlicher Schlüssel. Mindestens drei unterschiedliche Verträge müssen unterschieden werden: die alte Identität einer Parameterstudie, das Package-N-Manifest derselben Studienebene und die spätere umfassendere Canonical Experiment Identity. Daneben stehen Ausführungskennungen, Messvertrags-Digests und Ergebnisdateien. Ihre Gleichsetzung würde gerade bei den erhaltenen Juli-Ergebnissen wesentliche Unterschiede verdecken.
+
+## 1. Der ältere Ursprung: Identität einer Parameterstudie
+
+Die gepinnte GitHub-Pfadhistorie von src/experiments/base.py reicht für diesen Pfad bis zum 06.12.2025 zurück. Bereits im dortigen Snapshot 7e10f418d5a30eccfe559ed1c877ad8c92c56ced berechnet get_experiment_id einen MD5-Hash, verkürzt auf zwölf Hexzeichen, aus genau fünf Bestandteilen: Name, Strategie, Sweep-Definitionen, Symbole und Timeframe. Derselbe Ausdruck steht noch im Juli-Snapshot 89104405. Dezember dient hier ausschließlich dem historischen Abgleich; daraus folgt weder ein damaliger Beginn der beiden Universen noch ein vollständiger Ursprungsnachweis außerhalb dieser Pfadhistorie.
+
+Wichtig ist die tatsächliche Reichweite: Start-/Enddatum, Anfangskapital und base_params gehen in diesen alten Ausdruck nicht ein. Datasetbytes, Codeversion, Kostenmodell und Seed ebenfalls nicht. Der Runner verwendet einige dieser nicht gebundenen Werte trotzdem für den Backtest. Änderungen solcher Eingaben können deshalb dieselbe Studien-ID behalten; dafür ist keine zufällige Hash-Kollision nötig.
+
+Ein Einzellauf erhält anschließend experiment_id plus laufende vierstellige Nummer. Diese Nummer ist ein Index innerhalb der betreffenden Ausführung, kein unabhängiger weltweiter Ausführungsnachweis. Aus einer solchen run_id lässt sich die tatsächlich verwendete Parameterkombination oder die vollständige Ausführungsprovenienz nicht allein zurückgewinnen.
+
+Quellen: [ältester hier belegter Snapshot](./legacy-origin-base.py), Zeilen 271–288 und 708–719; [Juli-Snapshot](./legacy-base.py), Zeilen 331–348 und 856–868; [vollständige abgefragte Pfadhistorie](./base.py-history.json). Diese Aussage betrifft ExperimentRunner; andere Sweep-/Optuna-Wege besitzen eigene Kennungen und werden damit nicht automatisch gleichgesetzt.
+
+## 2. Package N: präzisere Studienidentität, keine vollständige Laufidentität
+
+Am 27.06.2026 um 11:27:13 UTC führt be7f0ef193221d5e2183878a4607426aa26623fd mit PR #4610 experiment_identity_manifest_v1.py ein. Das identity_config enthält zusätzlich Zeitraum, Anfangskapital und base_params sowie Schema und Domain. SHA256 bindet diese Konfiguration. Der alte MD5-Wert bleibt als Legacy-Alias erhalten.
+
+Die historische Definition ist ausdrücklich eine reproduzierbar beschriebene Phase-29-Sweep-Studie auf Basis von ExperimentConfig. Ein einzelner Trial, eine konkrete Registry-Instanz und MLflow-Kennungen gehören nicht zu ihrer Identität. Run-IDs, Ergebniswerte, Equity, Trades und Autoritätsfelder sind vom Identity-Payload ausgeschlossen. Das ist eine beabsichtigte Ebenengrenze. Es erlaubt jedoch keinen Schluss, dass Rohdaten, ausgeführter Code oder die tatsächliche Kostenanwendung dadurch vollständig gebunden wären.
+
+Am 17.08.2026 um 14:52:39 UTC stellt c38cdfb4e8e1b3d5ff84021a682387dc8701beaf mit PR #5926 get_experiment_id auf diesen Package-N-SHA256-Weg um. Damit wird der Schlüssel länger und die Konfigurationsbindung stärker; er wird dadurch nicht zur späteren Phase-1-Identität. Eine nachträgliche Neuberechnung aller historischen Experimente folgt daraus nicht.
+
+Auch beim Übergabeverweis sind zwei Werte verschieden: Package M setzt LineageRef.ref_id auf experiment_identity_id, seinen digest aber auf integrity.content_sha256 des Manifests. Letzterer schützt den Manifestinhalt. Er ist kein austauschbarer Alias für die fachliche Studienidentität.
+
+Quellen: [Package-N-Einführung](./package-n-introduction.py), [Pfadhistorie mit Zeitpunkten](./experiment_identity_manifest_v1.py-history.json), [Cutover-Code](./cutover-base.py), [Package-M-Referenzbildung](./package-m-lineage.py), Zeilen 165–170. Die ursprüngliche fachliche Definition ist als [Originalnachricht](./message-211067.txt) gesichert; sie ist eine historische Assistentenaussage, die hier am Code abgeglichen wurde. Provenienz sämtlicher Nachrichten: [Register](./messages.json).
+
+## 3. Phase 1: mehr Eingaben, neue Hash-Domänen
+
+Erst am 17.08.2026 um 17:55:28 UTC führt ecbe5b7b4f8a71d3a81443a65949fcce6a5de350 mit PR #5928 die Canonical Experiment Identity ein. Sie verlangt Git-SHA und Arbeitsbaumstatus, Strategie und Parameter, Dataset-/Feature-/Kosten-/Risk-/Portfolio-/Split-Bindungen, Seed und Umgebung sowie sieben explizite Trading-Core-Komponenten: Market Context, Bull/Bear, State Switch, Survival, Suitability, Double Play und Entry/Position/Exit.
+
+Der damalige Nutzerauftrag verlangt, unbekannte kritische Digests nicht zu erfinden und alte Experimente nicht rückwirkend umzudeuten. Ein späterer Auftrag vom 19.08. unterscheidet ausdrücklich LEGACY_SWEEP_IDENTITY von CANONICAL_EXPERIMENT_IDENTITY und SWEEP_RUN_ID von EXPERIMENT_ID.
+
+Die spätere Identität benutzt eigene Hash-Domänen. Beispielsweise wird der übergebene Dataset-Quellhash nochmals als Dataset-Bindung gehasht. Das resultierende identity.dataset_digest ist deshalb nicht derselbe Wert wie der ursprüngliche Panel-Hash. Aus dem identity_digest leitet Phase 2 wiederum eine eigene experiment_id ab. Hinzu kommt der Integritätshash des gesamten Records. Vier 64-stellige Hexwerte können somit vier verschiedene Aufgaben erfüllen.
+
+Für die Rekonstruktion bleibt eine Grenze: Der Builder prüft unter anderem Formate und erforderliche Felder. Er inspiziert den angegebenen Git-SHA nicht automatisch gegen den tatsächlich geladenen Code. Dafür existiert eine separate Provenienzfunktion. Ebenso beweist ein syntaktisch gültiger Dataset-Hash noch nicht, welche Rohdaten beim Lauf verwendet wurden. Die Quellartefakte und die Bedeutung jedes Hashes müssen auflösbar bleiben. Die Identity-Ausgabe hält die abgeleiteten Bindungen fest, nicht sämtliche ursprünglichen Hash-Vorlagen. Die Umgebung ist in diesem Vertrag auf Python-Version und Python-Implementation begrenzt; COMPLETE bedeutet daher nicht automatisch eine vollständige Rechner-/Abhängigkeitsarchivierung.
+
+Quellen: [Phase-1-Einführungscode](./phase1-identity.py), insbesondere Zeilen 260–282, 341–364 und 452 ff.; [Phase-2-Ableitung](./phase2-memory.py), Zeilen 170–190; [Phase-1-Pfadhistorie](./canonical_experiment_identity_v1.py-history.json); ursprüngliche Nutzeraufträge [Phase 1](./message-165612.txt) und [Legacy-Abgrenzung](./message-61595.txt). Phase-2- und Package-M-Snapshots sind an Vergleichspin 5d1c838c gebunden, keine Behauptung ihres ursprünglichen Einführungsdatums.
+
+## 4. Was die realen Juli-Ergebnisse tatsächlich identifiziert
+
+Der erhaltene Juli-Nachweis ist ein eigener MV2-Forschungspfad: 118 Instrumente, danach eine gemeinsame Research-Portfolio-Equity aus normalisierten Sleeves. Er ist nicht allein wegen des Namens experiment eine einzelne ExperimentConfig-Ausführung. Datenbasis, instrumentbezogene Elternläufe, Portfolio-Aggregation und spätere Robustheitsauswertung sind unterschiedliche Herkunftsebenen.
+
+Der Snapshot 891044056537a4033e6136ba01652a0a2c6e76b7 enthält korrigierte Ergebnisse mit 454 Trades, Kostenanwendung und Netto-Return 0.00232538607176469. Daneben steht eine frühere ungültige Messung mit 464 Trades und nicht angewendeten Kosten. Der gleiche sprechende Konfigurationsname trennt diese Messversionen nicht ausreichend. Sie dürfen nicht als identisches Ergebnis oder identischer Codezustand zusammengeschoben werden.
+
+Besonders aufschlussreich ist die Ausführungsprovenienz: environment.txt nennt am 19.07. den Basis- und HEAD-SHA 8eb90ecf5b8f4a7cef4b7621aa146bfd6f1ffacc. Die spätere Reparatur ändert aber Engine und Position-Feedback-Adapter. Der Originalchat enthält den Reparaturauftrag, den erneuten Probe-Aufruf vor dem abschließenden Commit und eine Ergebnisnachricht mit PR-Head fb20b48cfe1169a9a624b64ab919429e3159dd36. Der anschließende Merge-Bericht nennt 89104405. Damit ist die Entstehungsfolge deutlich besser belegt. Weder die alte Umgebungsdatei noch der spätere Merge-SHA allein belegen jedoch den vollständigen Codezustand während des korrigierten Laufs. Historische Shell-Eingaben sind Aufrufspuren; die fehlenden Prozessausgaben werden nicht daraus erfunden.
+
+Auch die Konfiguration kommt aus mehreren Quellen: Der Probe-Driver lädt die vollständige Laufkonfiguration aus einer externen runtime_evaluation_config.json. Die Repo-Bindingdatei liefert dagegen die Instrumentliste. Ein eigener Codeblock erstellt das Kostenprofil mit fünf Basispunkten konservativem Half-Spread. config_snapshot.json hält nur ausgewählte Werte der externen Konfiguration fest. Die drei Quellen sind nicht identisch.
+
+Das Datasetmanifest übernimmt wiederum normalisierte Panel-, Config- und Implementation-Digests aus einem externen Panelmanifest. Diese Werte unterscheiden sich von gleichnamigen Feldern der Repo-Bindingdatei. Das beweist keinen Fehler: Die Quellen und Hash-Geltungsbereiche sind verschieden. Eine Gleichsetzung wäre aber unbelegt. Der Panel-Digest e8437bc2300f936e16b3d6b3510c880d2fe678d4f68ee4c215f6bbfae9246fd7 ist hier ein überlieferter Quellverweis, kein erneut an den fehlenden Rohdateien geprüfter Hash.
+
+Quellen: [erhaltenes Juli-Paket](../july-economic-result-lineage/canonical_economic_reevaluation_post_5348_v1/), insbesondere economic_reevaluation_probe_v1.py Zeilen 149–164, 879–899 und 948 ff., config_snapshot.json, environment.txt, metrics_integrity_summary.json und baseline_metrics_corrected.json; [Repo-Binding am Snapshot](./july-binding.json); [ursprünglicher Reparaturabschluss](./message-264614.txt); [Merge-Abschluss](./message-29211.txt); [historische Shell-Eingaben mit Originalzeilen](./july-shell-inputs.json). Lokale Originalnachrichten wurden exakt gegen den Suchindex abgeglichen.
+
+## 5. Folgerung für den Anschluss beider Universen
+
+Die numerische Verarbeitbarkeit der erhaltenen Juli-Returns ist bereits separat geprüft. Das beantwortet eine andere Frage als die vollständige Experimentzuordnung. Für einen dauerhaften Anschluss fehlen beim untersuchten Juli-Paket weiterhin die vollständige externe Laufkonfiguration, erneut überprüfbare Quelldaten und eine hinreichend genaue Bindung des historischen Ausführungscodes samt Mess-/Aggregationsversion. Die vorhandenen Funde bleiben verwertbare historische Evidenz; sie werden nicht nachträglich als Phase-1-COMPLETE ausgegeben.
+
+Die nächste Quellenarbeit lässt sich dadurch eingrenzen: zuerst die externe runtime_evaluation_config.json und den Panelmanifest-Ursprung wiederfinden; dann die Codeänderungen vor dem korrigierten Probe-Aufruf mit PR-Head und Ergebnisdateien abgleichen. Falls die Quellen fehlen, bleibt diese Lücke ausdrücklich bestehen. Ein neuer Lauf wäre ein neues, sauber zu identifizierendes Experiment und kein Beweis der alten Ausführung.
+
+Für beide Universen müssen dabei Studienidentität, konkrete Ausführung, Quelldataset, Messversion, abgeleitetes Portfolio und Robustheitsresultat getrennt nachvollziehbar bleiben. Welche vorhandenen Verträge das tragen, wird erst danach entschieden. Die gewünschte Grenze ohne produktive Eingriffsautorität bleibt bestehen.
+
+Prüfstatus: [Abdeckung je Eingabe](./identity-coverage.json), [Git-Snapshots und Hashes](./sources.json), [Originalnachrichten-Provenienz](./messages.json). Dateinamen-Inventare ohne Treffer belegen keine globale Nichtexistenz. Keine externen Laufwerke gelesen, kein historischer Befehl erneut ausgeführt und keine kanonische Identität erzeugt.

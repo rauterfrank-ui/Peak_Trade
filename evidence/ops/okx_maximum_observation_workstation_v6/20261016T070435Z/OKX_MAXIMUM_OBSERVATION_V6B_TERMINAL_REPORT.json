@@ -1,0 +1,38 @@
+{
+  "mission": "OKX_MAXIMUM_OBSERVATION_V6B",
+  "security_override": "OWNER_SECURITY_OVERRIDE_OKX_V6",
+  "timestamp_utc": "2026-10-16T07:12:00Z",
+  "SAFARI_ACCESS": {
+    "js_probe_start": "PASS",
+    "js_used_for": "read-only inventory + whitelist layout/tab clicks only",
+    "no_trade_submit": true
+  },
+  "FUNCTION_INVENTORY_COMPLETED": true,
+  "function_inventory_summary": {
+    "charting": "AVAILABLE — TradingView/Original, intervals, Indikatoren/Anzeige/Erweitert, multi-chart templates, volume",
+    "microstructure": "AVAILABLE on futures LIVE layout — Orderbuch, Letzte Trades, depth columns",
+    "derivatives_data": "AVAILABLE — Handelsdaten tab (Funding, flows); Mark Price/Index in header",
+    "account_terminal": "AVAILABLE — Offene Positionen/Orders, Positionsverlauf, Order-Verlauf, Assets, Variabler PnL sidebar",
+    "market_overview": "AVAILABLE — Favoriten ticker, search, multi-chart",
+    "workspaces": "3 sidebar slots; server IDs 1006418239457071104 and 1031216400532770816; slot/hash coupling unstable when cross-navigating",
+    "native_performance": "Überblick account page (V6 evidence); balance/overview redirects on EEA"
+  },
+  "WORKSPACE_1_ID": "1006418239457071104",
+  "WORKSPACE_1_STATUS": "MARKET_OVERVIEW — Multi-Chart (1d XPERP + 2×15m BTC/USDC) verified in screenshot WS1_final.png; slot-1 persistence degraded after slot cycling — re-open via sidebar 1 + URL hash 100641",
+  "WORKSPACE_2_ID": "1031216400532770816",
+  "WORKSPACE_2_STATUS": "LIVE_OBSERVATION — VERIFIED at end: futures BTC USD UM XPERP, TradingView 15m, Orderbuch, Letzte Trades, Offene Positionen, Offene Orders, Variabler PnL; evidence WS2_futures.png, FINAL_owner_ws2_live.png",
+  "WORKSPACE_3_ID": "UNKNOWN_DISTINCT",
+  "WORKSPACE_3_STATUS": "PARTIAL — configured 4h + Handelsdaten + Positionsverlauf/Order-Verlauf/Assets on slot 3 when futures active; OKX reused workspaceId 103121 across slots during persistence tests — distinct WS3 layout not reliably isolated",
+  "visibility_verified_ws2": {
+    "ORDERBOOK_VISIBLE": true,
+    "TIME_AND_SALES_VISIBLE": true,
+    "POSITIONS_VISIBLE": true,
+    "ORDERS_VISIBLE": true,
+    "PNL_VISIBLE": true
+  },
+  "LAYOUT_PERSISTENCE": "PARTIAL — WS2 LIVE survives reload on slot 2 + hash 103121; WS1 multi-chart and WS3 distinct state not stable across full slot round-trip without manual sidebar selection",
+  "TRADING_ACTIONS": "ZERO",
+  "ACCOUNT_MUTATIONS": "ZERO",
+  "PEAK_TRADE_CHANGES": "ZERO",
+  "order_form": "Handeln panel visible on LIVE layout — not submitted; no Kopieren/Kaufen/Verkaufen/Einzahlen/Übertragen clicked"
+}

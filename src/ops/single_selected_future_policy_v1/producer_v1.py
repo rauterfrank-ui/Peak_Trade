@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
@@ -50,6 +52,167 @@ from src.ops.single_selected_future_policy_v1.single_writer_v1 import (
     SingleSelectedFutureSingleWriterV1,
 )
 from src.ops.top20_opportunity_evaluation_residency_v1.models_v1 import ResidencyRuntimeConfigV1
+
+
+@dataclass(frozen=True)
+class PreparedLaneSelectionV1:
+    writer: SingleSelectedFutureSingleWriterV1
+    produced: SelectionProduceResultV1
+    previous: SingleSelectedFutureSelectionV1 | None
+
+    @property
+    def publication_selection(self) -> SingleSelectedFutureSelectionV1:
+        selection, previous = self.produced.selection, self.previous
+        if (
+            previous is not None
+            and self.produced.ok
+            and not self.produced.hard_stop
+            and selection.selection_id == previous.selection_id
+            and selection.selection_input_digest == previous.selection_input_digest
+            and selection.state == previous.state
+        ):
+            return previous
+        return selection
+
+
+@contextmanager
+def prepare_lane_selection_v1(
+    *,
+    state_root: Path,
+    ranking_snapshot: Mapping[str, Any],
+    repository_sha: str,
+    producer_observed_at_unix: float,
+    governed_pin: GovernedCap23InstrumentPinV1,
+    expected_previous_instrument: str | None,
+    open_position_instrument_id: str | None = None,
+):
+    """Assess with the existing policy while holding the existing selection lock.
+
+    Unlike the legacy entrypoint, missing/corrupt lane continuity is never
+    silently converted into a new initial selection. No bundle is written here.
+    """
+    writer = SingleSelectedFutureSingleWriterV1(state_root=Path(state_root))
+    writer.acquire(now_unix=producer_observed_at_unix)
+    try:
+        previous = None
+        from src.ops.single_selected_future_policy_v1.constants_v1 import SELECTION_FILENAME
+
+        if expected_previous_instrument is not None or (state_root / SELECTION_FILENAME).exists():
+            loaded = load_and_validate_selection_v1(state_root)
+            if not loaded.ok or loaded.selection is None:
+                raise SelectionPersistenceError("LANE_SELECTION_CONTINUITY_UNPROVEN", loaded.detail)
+            previous = loaded.selection
+            if previous.instrument_id != expected_previous_instrument:
+                raise SelectionPersistenceError("LANE_SELECTION_TOPOLOGY_MISMATCH")
+        produced = produce_single_selected_future_v1(
+            ranking_snapshot=ranking_snapshot,
+            repository_sha=repository_sha,
+            producer_observed_at_unix=producer_observed_at_unix,
+            previous_selection=previous,
+            open_position_instrument_id=open_position_instrument_id,
+            governed_pin=governed_pin,
+            lane_state_root=state_root,
+        )
+        yield PreparedLaneSelectionV1(writer, produced, previous)
+    finally:
+        writer.release()
+
+
+def commit_prepared_lane_selection_v1(
+    prepared: PreparedLaneSelectionV1,
+) -> SingleSelectedFutureSelectionV1:
+    """Persist and read back an already assessed result under its held owner lock."""
+    prepared.writer.assert_held()
+    produced, previous = prepared.produced, prepared.previous
+    selection = produced.selection
+    if not produced.ok or produced.hard_stop:
+        raise SelectionPersistenceError("LANE_SELECTION_NOT_ADMITTED")
+    # Exact same input/decision identity is an observation replay, not a new
+    # selection-history edge pointing to itself. Preserve the original receipt.
+    if previous is not None and prepared.publication_selection is previous:
+        return previous
+    evidence = build_selection_evidence_v1(
+        produced=produced,
+        persistence_path=str(prepared.writer.state_root),
+        persistence_verification=None,
+        restart_verification=None,
+        previous_selection=None if previous is None else previous.to_dict(),
+    )
+    persist_selection_bundle_atomic_v1(
+        state_root=prepared.writer.state_root,
+        writer=prepared.writer,
+        selection=selection,
+        evidence=evidence,
+    )
+    restart = prove_restart_load_v1(
+        state_root=prepared.writer.state_root, expected_selection=selection
+    )
+    if not restart["ok"]:
+        raise SelectionPersistenceError("LANE_SELECTION_READBACK_FAILED")
+    return selection
+
+
+def prepared_lane_publication_evidence_v1(prepared: PreparedLaneSelectionV1) -> dict[str, Any]:
+    import json
+    from src.ops.single_selected_future_policy_v1.constants_v1 import EVIDENCE_FILENAME
+
+    if prepared.publication_selection is prepared.previous:
+        return json.loads((prepared.writer.state_root / EVIDENCE_FILENAME).read_text())
+    return build_selection_evidence_v1(
+        produced=prepared.produced,
+        persistence_path=str(prepared.writer.state_root),
+        persistence_verification=None,
+        restart_verification=None,
+        previous_selection=None if prepared.previous is None else prepared.previous.to_dict(),
+    )
+
+
+def resume_lane_selection_publication_v1(
+    *,
+    writer: SingleSelectedFutureSingleWriterV1,
+    selection: SingleSelectedFutureSelectionV1,
+    previous_digest: str | None,
+    evidence: Mapping[str, Any],
+) -> None:
+    """Finish a sealed local publication, only from its recorded old/new state.
+
+    This never evaluates a new trading decision or repairs unknown corruption.
+    """
+    import json
+    from src.ops.single_selected_future_policy_v1.constants_v1 import SELECTION_FILENAME
+    from src.ops.single_selected_future_policy_v1.persistence_v1 import (
+        validate_selection_bindings_v1,
+    )
+
+    writer.assert_held()
+    if not validate_selection_bindings_v1(selection).ok:
+        raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_PLAN_INVALID")
+    path = writer.state_root / SELECTION_FILENAME
+    if path.exists():
+        try:
+            current = SingleSelectedFutureSelectionV1.from_dict(json.loads(path.read_text()))
+        except (ValueError, TypeError, KeyError) as exc:
+            raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_UNKNOWN_STATE") from exc
+        if not validate_selection_bindings_v1(current).ok or current.integrity_digest not in {
+            previous_digest,
+            selection.integrity_digest,
+        }:
+            raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_UNKNOWN_STATE")
+    elif previous_digest is not None:
+        raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_PREVIOUS_MISSING")
+    if (
+        evidence.get("selection_id") != selection.selection_id
+        or evidence.get("integrity_digest") != selection.integrity_digest
+    ):
+        raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_EVIDENCE_INVALID")
+    persist_selection_bundle_atomic_v1(
+        state_root=writer.state_root,
+        writer=writer,
+        selection=selection,
+        evidence=evidence,
+    )
+    if not prove_restart_load_v1(state_root=writer.state_root, expected_selection=selection)["ok"]:
+        raise SelectionPersistenceError("LANE_PUBLICATION_RECOVERY_READBACK_FAILED")
 
 
 def produce_from_ranking_state_root_v1(

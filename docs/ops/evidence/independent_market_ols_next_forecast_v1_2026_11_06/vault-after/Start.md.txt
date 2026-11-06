@@ -1,0 +1,43 @@
+---
+title: "PeakTrade · Aktuelles System"
+stand: "2026-11-06"
+rolle: "Abgeleitete Orientierung ohne Betriebsautorität"
+authoritaet: "NONE"
+---
+
+# PeakTrade · Aktuelles System
+
+> [!info] Punkt 2 als numerische Offline-Baseline umgesetzt · 06.11.2026
+> [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/14 Numerischer Folgeforecast und fortlaufender Double Play Betrieb|Originalmessungen → gespeicherter Modellkörper → tatsächlich berechneter Folgeforecast → nächste Originalmessung → nächste Modellversion]]. 798 unterschiedliche Tests bestanden, elf davon neu. Das fortlaufende Double-Play-Ziel und später fünf freigeschaltete Futures-Slots bleiben maßgeblich; Natural Enter mit Fortsetzung und Rotation wird später im Gesamtsystem geprüft.
+
+**[[00 Systemindex/System Cockpit|System-Cockpit]] · [[Systemkarte.canvas|Universen und Außenkanten]] · [[Systemkarte Offlineverbund.canvas|Die beiden Offlinepfade]] · [[00 Systemindex/Galaxy View|3D-Galaxie öffnen und verstehen]]**
+
+> [!success] Punkt 1 · Unabhängige Marktbeobachtung umgesetzt
+> [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/12 Unabhaengige Marktbeobachtung bis zum Calibration Readback|Marktkontext → eingefrorener Forecast → originale Messung → Calibration → nativer Cold Readback]]. Der begrenzte Offlinepfad benötigt keine Decision, Lane oder Trading-Epoche. **787 gebundene Tests bestanden, davon 40 neu**; bereitgestellte Modellbytes sind noch kein Training oder Modellaufruf.
+
+> [!todo] Hier geht die fachliche Arbeit weiter
+> [[00 Systemindex/Repoabgleich/Konkrete Luecken im Repository|Aktuelle konkrete Lücken im Repository]]. **Der numerische Modellanschluss ist als begrenzte Offline-Baseline umgesetzt; natürliche Qualität und Systemnutzen bleiben offen.** Der bedingte Phase-20/21-Returnpfad, natürliche Herkunft, wirtschaftliche Qualität und echter Wiederanlauf nach Stromausfall sind eigenständige offene Nachweise.
+
+## Drei Ansichten desselben Konstrukts
+
+- [[Systemkarte.canvas|Systemkarte]]: sechs Universen, innere Zuständigkeiten, eigene letzte Outputs und erste fremde Admission; Außenbereiche einzeln unter fünf Rubriken.
+- [[Systemkarte Offlineverbund.canvas|Systemkarte Offlineverbund]]: der ursprüngliche E6-Decisionpfad und die neue unabhängige Marktbeobachtung mit getrennten Belegständen.
+- [[00 Systemindex/Galaxy View|Galaxy View]]: Notizen, Dossiers und Karten räumlich erkunden. Graphkanten zeigen Dokumentverweise; ihre Laufzeitbedeutung steht im jeweiligen Dossier.
+
+## Semantik und Ursprung nachvollziehen
+
+[[00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT|Geklärte SL-/OPT-Außenkanten]] · [[00 Systemindex/SL OPT Trennung/Selbstlernen und Optimierung getrennt|Getrennte Originalaufgaben und Writer]] · [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT|Ursprung, innere Verarbeitung und Rückkopplungen von IU, SL und OPT]]
+
+[[00 Systemindex/Systempruefung/Systemweite Semantik|Bedeutung, Einheit, Identität, Informationszeit, Zustand und tatsächlicher Consumer]] · [[00 Systemindex/Semantische Ebenen|Mehrere semantische Ebenen]] · [[00 Systemindex/Architekturpruefung/Universen und innere Ebenen|Innere Architektur und Unterschiede]]
+
+[[00 Systemindex/Fallverlaeufe|Konkrete Fallverläufe]] · [[00 Systemindex/Aenderungsauswirkungen|Änderungsauswirkungen]] · [[00 Systemindex/Entscheidungen und Widersprueche|Entscheidungen und Bedeutungsgrenzen]] · [[PeakTrade-Systemindex|Vollständiger Systemindex]]
+
+## Den Belegstand richtig lesen
+
+**Stand dieser Einstiegsansichten: 06.11.2026.** Produktänderung `9150b9d129cc630ab214f87b56422f4962e3a34e`, letzter Repository-Checkpoint beim Abgleich `c2df25a4834ac3a3a05b7949cbdbdcea6d05cf1b`. [[00 Systemindex/Repoabgleich/Standabgleich mit dem Repository|Abgleich und Herkunft]] · [[00 Systemindex/System Cockpit|Genaue Reichweiten im Cockpit]].
+
+Die ursprünglichen **1.509 E6-Tests, 39 Pflichtfälle und 31 Schnittstellenbewertungen vom 05.11.2026** bleiben historische Nachweise ihres eigenen Scopes. Sie werden weder durch die neuen 787 ersetzt noch mit ihnen addiert. Auch der damalige Dokumentationsdurchgang über [[00 Systemindex/Systempruefung/Gesamtsystem Dokumentationsabgleich|22 Bereiche, 91 Gruppen und 62 Übergänge]] bleibt datiert; Architekturvollständigkeit folgt daraus nicht.
+
+[[00 Systemindex/Offene Punkte und Arbeitsfolge|Älterer breiter Arbeitsvorrat]] · [[00 Systemindex/Produktiver Pfad und Enforcement|Produktiver Pfad und Sperren]] · [[00 Systemindex/Karten/Produktiver Pfad.canvas|Pfadkarte]] · [[00 Systemindex/Enforcement Pruefung|Datierter Dokumentcheck]] · [[00 Systemindex/Execution und Betriebsarten|Betriebsarten]] · [[00 Systemindex/Externe Signalstroeme|Externe Eingänge]].
+
+Diese Sicht beobachtet keinen laufenden Host und erteilt keine Betriebs-, Order- oder Promotionfreigabe.

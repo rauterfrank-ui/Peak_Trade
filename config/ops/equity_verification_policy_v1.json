@@ -1,0 +1,14 @@
+{
+  "schema": "peaktrade.equity_verification_policy.v1",
+  "comparison_mode": "EXACT_LEDGER_BOUNDED_BINARY64_DISPLAY",
+  "max_display_gap_native": {
+    "USDC": "0.000000000001",
+    "EUR": "0.000000000001",
+    "BTC": "0.000000000001"
+  },
+  "unknown_currency": "EXACT_ONLY",
+  "ledger_adjustments_allowed": false,
+  "runtime_activation_authorized": false,
+  "capital_admission_authorized": false,
+  "real_continuous_observation_required": true
+}

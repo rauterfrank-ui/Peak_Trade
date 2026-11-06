@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Mapping, Sequence
 
+from trading.master_v2.double_play_futures_input import FORBIDDEN_FUTURES_BASE_ASSETS
+
 from src.research.instrument_id_canonicalization_v1 import (
     INSTRUMENT_ID_CANONICALIZATION_VERSION,
     validate_instrument_id_format_v1,
@@ -37,8 +39,10 @@ from src.research.pit_futures_universe_manifest_v1 import (
 
 PACKAGE_MARKER = "PIT_FUTURES_UNIVERSE_MANIFEST_VALIDATOR_V1=true"
 
-_FORBIDDEN_BASE_ASSETS = frozenset({"BTC", "XBT", "WBTC", "TBTC", "RBTC", "BTCB"})
-_FORBIDDEN_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "wbtc"})
+# General instrument admission shares the current common policy. Historical
+# cohort composition belongs to the explicitly bound source/materializer.
+_FORBIDDEN_BASE_ASSETS = FORBIDDEN_FUTURES_BASE_ASSETS
+_FORBIDDEN_SUBSTRINGS = frozenset(asset.lower() for asset in FORBIDDEN_FUTURES_BASE_ASSETS)
 _ABSOLUTE_PATH_PATTERN = re.compile(r"(^/|^\\\\|^[A-Za-z]:[/\\\\])")
 
 
@@ -118,7 +122,7 @@ def _parse_utc_instant(value: str) -> tuple[int, int] | None:
     return (year * 10_000 + month * 100 + day, hour * 10_000 + minute * 100 + second)
 
 
-def _is_bitcoin_member(member: Mapping[str, Any]) -> bool:
+def _is_excluded_asset_member(member: Mapping[str, Any]) -> bool:
     base_asset = str(member.get("base_asset", "")).upper()
     if base_asset in _FORBIDDEN_BASE_ASSETS:
         return True
@@ -166,7 +170,7 @@ def _validate_member_at_epoch(
     if eligibility == EligibilityStatus.ELIGIBLE.value:
         if member.get("reason_codes"):
             _add(reasons, ValidatorErrorCode.ELIGIBLE_WITH_REASON_CODES.value)
-        if _is_bitcoin_member(member):
+        if _is_excluded_asset_member(member):
             _add(reasons, ValidatorErrorCode.BITCOIN_MEMBER_REJECTED.value)
         if _is_spot_like_member(member):
             _add(reasons, ValidatorErrorCode.SPOT_MEMBER_REJECTED.value)

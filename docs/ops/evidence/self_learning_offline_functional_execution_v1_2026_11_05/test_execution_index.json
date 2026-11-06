@@ -1,0 +1,674 @@
+{
+  "baseline": [
+    {
+      "name": "test_success_state_sequence_includes_delta_manifest_built",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_failed_terminal_no_exit",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_pre_gate_blocks_evaluator",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_post_gate_blocks_evidence_complete",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_registry_failure_prevents_registered",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_baseline_immutable_during_run",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_deterministic_replay_stress",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_created_at_utc_volatile_excluded_from_protected_digest",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_protected_semantic_field_change_changes_manifest_digest",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_non_determinism_fails_closed",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_cross_process_determinism",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_runner_forbidden_imports",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_bwp1_schema_tests_still_importable",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_generic_runner_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_bwp9_canonical_identity",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_evidence_registry_duplicate_fail_closed",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_evidence_registry_digest_mismatch_fail_closed",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_whole_system_success_vector",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_whole_system_integrated_reproof_on_pre_gate_fail",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_whole_system_promotion_authority_preserves_failure_class",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_illegal_state_skip_rejected[CREATED-REPLAYED]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_illegal_state_skip_rejected[BOUND-EVALUATED]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_illegal_state_skip_rejected[PRE_CONSTRAINT_CHECKED-COMPARED]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_illegal_state_skip_rejected[REPLAYED-DELTA_MANIFEST_BUILT]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_illegal_state_skip_rejected[EVALUATED-POST_CONSTRAINT_CHECKED]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_illegal_state_skip_rejected[COMPARED-EVIDENCE_BUILT]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_illegal_state_skip_rejected[DELTA_MANIFEST_BUILT-REGISTERED]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_illegal_state_skip_rejected[POST_CONSTRAINT_CHECKED-REGISTERED]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_failed_terminal_no_success_transition",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_pre_constraint",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_nondeterminism",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_ptp_invariant",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_ru_authority",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_optimization_invariant",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_self_learning_authority",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_market_intelligence_invariant",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_corpus_drift",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_post_constraint",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_registry_boundary",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fail_matrix_duplicate_registration",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_whole_system_determinism_replay_25x",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_cross_process_whole_system_determinism",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_forbidden_productive_dependency_scan",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_external_governance_boundary_unchanged",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_promotion_adapter_authority_probes_fail_closed",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_evidence_complete_predicate",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_canonical_bwp8_identity",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_valid_adapt",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_post_gate_fail",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_authority_probes[claims_promotion_authority]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_authority_probes[claims_governance_self_approval]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_authority_probes[claims_post_authority]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_authority_probes[selection_mutation]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_authority_probes[productive_write]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_authority_probes[mutate_source_bundle]",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_digest_mismatch",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_external_eligibility_status_rejected",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_deterministic_adapt",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_runner_with_promotion_adapter_local_reproof_on_fail",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_runner_promotion_envelope_on_success",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_corpus_drift_unchanged",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_cross_process_promotion_adapt",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_forbidden_deps",
+      "classname": "tests.evaluation.golden_vectors.test_gvef_promotion_adapter_bwp8_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_bound_measured_vector_runs_existing_gvef_and_preserves_exact_later_meta",
+      "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_wrong_population_or_provenance_is_rejected[population]",
+      "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_wrong_population_or_provenance_is_rejected[class]",
+      "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_wrong_population_or_provenance_is_rejected[archive_ref]",
+      "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_wrong_population_or_provenance_is_rejected[same_id_wrong_location]",
+      "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_wrong_population_or_provenance_is_rejected[invariants]",
+      "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_wrong_population_or_provenance_is_rejected[selector]",
+      "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_actual_champion_comparison_and_owner_persistence",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_real_failure_memory_changes_next_search_before_engine",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_archive_idempotence_and_exact_meta_in_new_process",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_resume_reads_archived_numerical_evidence",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_session_rejects_incomplete_or_conflicting_context_before_execution[missing_stores]",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_session_rejects_incomplete_or_conflicting_context_before_execution[wrong_template]",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_session_rejects_incomplete_or_conflicting_context_before_execution[missing_meta]",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_session_rejects_incomplete_or_conflicting_context_before_execution[duplicate_prior]",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_session_rejects_incomplete_or_conflicting_context_before_execution[unbounded]",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_archive_rejects_tampered_bytes_and_path_escape",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_archive_rejects_rehashed_wrong_numeric_receipt",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_baseline_policy_conflict_rejected_before_measurement",
+      "classname": "tests.experiments.test_canonical_native_research_session_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_decision_config_m4_forbidden",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_join_module_does_not_import_m4_plane",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_federated_join_complete_and_deterministic",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_m6_ingest_from_federated_join_complete",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_rejects_plane_based_m5_foreign_evidence",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_rejects_duplicate_join_key",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_rejects_identity_mismatch",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_rejects_m4_re_execution_request",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_m6_rejects_digest_mismatch_after_join",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_foreign_malformed_evidence",
+      "classname": "tests.experiments.test_canonical_federated_m5_m6_return_join_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_replay_module_does_not_import_m4_plane",
+      "classname": "tests.experiments.test_canonical_federated_bounded_multi_cycle_offline_replay_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_two_cycle_federated_replay_closed_and_deterministic",
+      "classname": "tests.experiments.test_canonical_federated_bounded_multi_cycle_offline_replay_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_rejects_m4_plane_execution_flag",
+      "classname": "tests.experiments.test_canonical_federated_bounded_multi_cycle_offline_replay_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_rejects_out_of_order_cycle_indices",
+      "classname": "tests.experiments.test_canonical_federated_bounded_multi_cycle_offline_replay_v1",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_duplicate_join_key_across_cycles_fails_on_second_cycle",
+      "classname": "tests.experiments.test_canonical_federated_bounded_multi_cycle_offline_replay_v1",
+      "outcome": "PASS"
+    }
+  ],
+  "initial_probes": [
+    {
+      "name": "test_GF_T01_candidate_second_fail",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T02_candidate_second_result_drift",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T03_baseline_digest_drift",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T04_independent_replay_boundary",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T05_identical_inputs",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T06_measured_binding_rejections",
+      "classname": "",
+      "outcome": "FAIL"
+    },
+    {
+      "name": "test_GF_T07_numeric_meta_preserved",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T08_artifact_pass_is_not_quality",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T09_whole_system_wrapper_scope",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T10_registry_identity_and_restart",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T11_failure_after_registration",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T12_optional_and_explicit_handoff",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T13_registered_domain_projection",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T14_registered_corpus_projection",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T15_candidate_output_binding",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T16_measured_reference_class_preserved",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T17_meta_uses_archive_not_registry",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_GF_T18_digest_domains",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_NRC_T01_read_only_archive_replay",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_NRC_T02_same_identity_new_time",
+      "classname": "",
+      "outcome": "FAIL"
+    },
+    {
+      "name": "test_NRC_T03_retest_reason_does_not_override_memory",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_NRC_T04_distinct_canonical_seed_identity",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_NRC_T05_late_archive_failure_preserves_owner_records",
+      "classname": "",
+      "outcome": "FAIL"
+    },
+    {
+      "name": "test_NRC_T06_exhausted_region_no_forced_execution",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_FMC_T01_expected_version_is_not_consumed",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_FMC_T02_actual_payload_schema_rejected",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_FMC_T03_join_bindings",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_FMC_T04_federated_two_cycles_carry_feedback",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_FMC_T05_federated_projection_not_phase11",
+      "classname": "",
+      "outcome": "PASS"
+    }
+  ],
+  "corrected_probes": [
+    {
+      "name": "test_GF_T06_measured_binding_rejections",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_NRC_T02_same_identity_new_time",
+      "classname": "",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_NRC_T05_late_archive_failure_preserves_owner_records",
+      "classname": "",
+      "outcome": "PASS"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "baseline.xml",
+      "sha256": "30bc14fb69dc0b21214e1f4a0c602253ab49cb6b31ae14db6b071bb31f01e298"
+    },
+    {
+      "path": "probes.xml",
+      "sha256": "7b7e004d5690a9d0754c04ff87461170c4714f218624a32e5c9bab5c4c1cd06b"
+    },
+    {
+      "path": "probes_corrected.xml",
+      "sha256": "c59bbc82e644a9935952cda06c61915da26cd755c173912fd626bb5219cbc856"
+    },
+    {
+      "path": "baseline.log",
+      "sha256": "6d5a494b5823f5c8a376518ec5779448567c7e849d30c8b0861f72cb2cf00baa"
+    },
+    {
+      "path": "probes.log",
+      "sha256": "e87649a67ae83056f56c037e24f452552fd0bc01087799e2c4348eda4bb03d37"
+    },
+    {
+      "path": "probes_corrected.log",
+      "sha256": "5a6162f69e35547962d97b2c6727fb1e4e6710233867b6c07e311430b4bd7724"
+    }
+  ]
+}

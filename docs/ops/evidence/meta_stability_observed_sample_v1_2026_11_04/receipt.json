@@ -1,0 +1,37 @@
+{
+  "source_commit": "5dcc84a9c6d63202e47e8aacc71e7d58b0364abe",
+  "source_paths_sha256": {
+    "src/experiments/canonical_meta_learning_v1.py": "df0dd9ea8802469a6677bbb88e9615219052c1e5a41bc2058cdaaa0e29388105",
+    "tests/experiments/test_meta_stability_observed_sample_v1.py": "6ae8620cdcee726041bccb3588db88d12409a323b0b1fb3bbb0c95fb48f1ab36"
+  },
+  "tests": {
+    "before": "4 FAIL",
+    "after": "18 PASS",
+    "downstream": "50 PASS",
+    "positive_output": "IDENTICAL_FULL_KNOWN_INPUT_META_RECORD"
+  },
+  "boundaries": [
+    "Stability scalar formula, normalization, producer and evidence lineage remain open",
+    "Only parameter instability coverage changed; other question sample semantics not certified",
+    "U04/GAP-0370 deferred; no activation, original-ledger mutation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/meta_stability_observed_sample_v1_2026_11_04/README.md",
+      "docs/ops/specs/CANONICAL_META_LEARNING_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 188,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

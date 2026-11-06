@@ -6,6 +6,7 @@ does not bypass supplier authority, and does not reach trading or execution.
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any, Final, Mapping
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import observe_after_producer_v0
@@ -66,6 +67,16 @@ def produce_real_outcome_horizon_evaluation_observation_v1(
         "failure_codes": failure_codes,
         "horizon_observation_status": status,
         "evaluation_observation": dict(observation),
+        "measurement_evidence_artifact": (
+            deepcopy(dict(materialization.measurement_evidence_artifact))
+            if materialization.measurement_evidence_artifact
+            else None
+        ),
+        "evaluation_time_information_set_artifact": (
+            deepcopy(dict(materialization.evaluation_time_information_set_artifact))
+            if materialization.evaluation_time_information_set_artifact
+            else None
+        ),
         "supplier_input_ref_present": "actual_outcome_ref" in materialization.supplier_input,
         "measurement_producer_id": materialization.measurement_evidence_artifact.get(
             "measurement_producer_id"

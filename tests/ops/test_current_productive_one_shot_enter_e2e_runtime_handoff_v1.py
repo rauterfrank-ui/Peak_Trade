@@ -36,7 +36,6 @@ from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
     governed_c1_candles_payload_from_enter_closes_v1,
     prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
 )
-from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
 from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
     write_cap21_productivity_root_for_inst_v1,
 )
@@ -53,15 +52,6 @@ SPEC_PATH = (
     REPO_ROOT
     / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md"
 )
-
-
-@pytest.fixture(autouse=True)
-def _active_kill_switch_state(
-    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
-) -> None:
-    activate_isolated_kill_switch_state_v1(
-        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
-    )
 
 
 def _sample_envelope():
@@ -147,6 +137,8 @@ def test_spec_present() -> None:
 
 
 def test_fail_closed_when_cap24_runtime_missing(tmp_path: Path) -> None:
+    from tests.ops.test_single_selected_future_runtime_binding_v1 import _empty_portfolio
+
     origin_sha = _origin_main_sha()
     integrity = MockCurrentProductive29PIntegrityBackendV1(
         origin_main=origin_sha,
@@ -159,6 +151,7 @@ def test_fail_closed_when_cap24_runtime_missing(tmp_path: Path) -> None:
             post_owner_go=POST_OWNER_GO,
             k1_owner_go=K1_OPAQUE_SIGNING_OWNER_GO,
             productivity_root=tmp_path / "missing_cap24",
+            observed_portfolio=_empty_portfolio(),
             lane_state_root=tmp_path / "lane",
             post_durable_store_root=tmp_path / "post",
             origin_main_sha=origin_sha,
@@ -217,7 +210,9 @@ def test_prepare_handoff_from_pre_external_closure_without_post(tmp_path: Path) 
     assert result.manifest_verify_rc == 0
 
 
-def _run_layered_enter_e2e_handoff_once_v1(*, tmp_path: Path, cycle_id_prefix: str) -> None:
+def _run_layered_enter_e2e_handoff_once_v1(
+    *, tmp_path: Path, cycle_id_prefix: str, provide_budget_owner: bool = True
+) -> None:
     """Full compose: WP-2 layered ENTER closure → one-shot handoff prepare (no POST)."""
     origin_sha = _origin_main_sha()
     integrity = MockCurrentProductive29PIntegrityBackendV1(
@@ -240,6 +235,13 @@ def _run_layered_enter_e2e_handoff_once_v1(*, tmp_path: Path, cycle_id_prefix: s
     )
     cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     post_store = tmp_path / "post_durable"
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+
+    # Explicit temporary test owner. The prepare path must forward this same
+    # owner and must not construct a replacement when none was supplied.
+    budget_owner = PortfolioCapitalReservationBudgetOwnerV1() if provide_budget_owner else None
     result = prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
         owner_go=OWNER_GO,
         pre_external_owner_go=PRE_EXTERNAL_OWNER_GO,
@@ -269,6 +271,7 @@ def _run_layered_enter_e2e_handoff_once_v1(*, tmp_path: Path, cycle_id_prefix: s
             "funding_rate": 0.0001,
         },
         g17_typed_vol_producers={"LANE_1": g17},
+        portfolio_budget_owner=budget_owner,
         evidence_root=tmp_path / "handoff_evidence",
         prove_k1_pre_live=False,
     )
@@ -279,6 +282,21 @@ def _run_layered_enter_e2e_handoff_once_v1(*, tmp_path: Path, cycle_id_prefix: s
     payload = json.loads(handoff_path.read_text(encoding="utf-8"))
     assert payload["REAL_VENUE_POST_PERFORMED"] == "false"
     assert result.manifest_verify_rc == 0
+    assert budget_owner.active_sum_v1() > 0
+    assert budget_owner.active_sum_v1() <= 25
+    budget_owner.close()
+
+
+def test_natural_enter_without_shared_owner_reports_capital_blocker(tmp_path: Path) -> None:
+    with pytest.raises(
+        CurrentProductiveOneShotEnterE2ERuntimeHandoffError,
+        match="ENTRY_BUDGET_REQUIRES_SHARED_RESERVATION_OWNER",
+    ):
+        _run_layered_enter_e2e_handoff_once_v1(
+            tmp_path=tmp_path,
+            cycle_id_prefix="e2e-missing-budget-owner",
+            provide_budget_owner=False,
+        )
 
 
 def test_layered_enter_e2e_handoff_full_compose_without_closure_mock_v1(

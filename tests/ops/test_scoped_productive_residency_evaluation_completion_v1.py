@@ -81,7 +81,7 @@ def test_productive_completion_produces_single_witness_in_canonical_store(
     inst = "ETH-USDT-SWAP"
     ranking = _ranking(inst)
     res_root = tmp_path / "residency"
-    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=5, duration_seconds=600.0)
+    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=5)
     from src.ops.top20_opportunity_evaluation_residency_v1.residency_engine_v1 import (
         observe_valid_cap22_ranking_snapshot_v1,
         run_scheduler_tick_v1,

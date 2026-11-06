@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 
@@ -104,7 +103,7 @@ def _sha256_payload(payload: dict[str, object]) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _instruments_payload(*, inst_id: str = "inst-eth-usdt-perp") -> dict[str, object]:
+def _instruments_payload(*, inst_id: str = "ETH-USDT-SWAP") -> dict[str, object]:
     return combined_instruments_payload_v1(eth_usdt_swap_instruments_row_v1(inst_id=inst_id))
 
 
@@ -174,24 +173,32 @@ def _injected(
 
 
 def _join(*, replay, injected=None, bound=None):
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+        CurrentProductiveEnterLive29PPortfolioSlotContextV1,
+    )
+
     return join_current_productive_enter_live_29p_before_venue_plan_v1(
         replay=replay,
         bound_instrument=bound if bound is not None else _bound(),
         injected=injected,
         decision_epoch=EPOCH,
+        portfolio_budget_owner=PortfolioCapitalReservationBudgetOwnerV1(),
+        portfolio_slot=CurrentProductiveEnterLive29PPortfolioSlotContextV1(
+            slot_id="LANE_1",
+            decision_id=str(replay.evidence.decision_id),
+            cycle_id="offline-29p-join",
+        ),
     )
 
 
 def _enter_replay(cycle: object):
     replay = getattr(cycle, "replay", None)
     assert replay is not None
-    if current_productive_decision_class_v1(replay) == DECISION_ENTER:
-        return replay
-    evidence = replay.evidence
-    return replace(
-        replay,
-        evidence=replace(evidence, decision_outcome="enter_long", selected_side="long"),
-    )
+    assert current_productive_decision_class_v1(replay) == DECISION_ENTER
+    return replay
 
 
 def _assert_post_guard(result) -> None:

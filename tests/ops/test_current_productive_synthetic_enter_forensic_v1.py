@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.ops._entry_budget_join_fixture_v1 import join_with_portfolio_fixture_v1
+
 import json
 from dataclasses import replace
 from pathlib import Path
@@ -143,7 +145,7 @@ def test_synthetic_overlay_reaches_live_29p_join_without_get(tmp_path: Path) -> 
             observe_replay,
             cycle_index=1,
         )
-        join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        join = join_with_portfolio_fixture_v1(
             replay=overlay.replay,
             bound_instrument=_bound(),
             injected=None,

@@ -1,0 +1,78 @@
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
+from dataclasses import replace
+from collections.abc import Mapping
+import json,subprocess,math
+from tests.learning.test_ddo_o4_n_bars_productive_chain_v1 import _decision,_identity,_snapshot
+from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import build_decision_event_v0
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_productive_host_v1 import produce_real_outcome_horizon_evaluation_observation_v1 as horizon
+from src.learning.deterministic_decision_outcome_v0.evaluation_engine_v0 import evaluate_offline_bundle_v0
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
+from src.learning.deterministic_decision_outcome_v0.learning_outcome_evidence_ingest_v1 import ingest_evaluation_bundle_into_learning_state_v1 as ingest
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_learning_outcome_evidence_ingest_host_binding_v1 import apply_learning_state_feedback_to_next_cycle_v1 as feedback
+from tests.experiments.test_canonical_optimization_universe_mi_enriched_m4_intake_v1 import _intake_request
+from tests.learning.test_unified_blueprint_phase_8_mi_to_learning_integration_v1 import _mint_forecast,_observation_for_n
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.calibration_evidence_v1 import build_calibration_evidence_v1 as calibration
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_research_evidence_v1 import project_market_intelligence_research_evidence_v1 as projection
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_to_learning_evidence_bridge_v1 import compose_mi_to_learning_evidence_v1 as bridge
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_ingest_v1 import MiLearningEvidenceIngestRequestV1,ingest_mi_learning_evidence_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_store_v1 import MiLearningEvidenceStoreV1
+from src.experiments.canonical_optimization_universe_mi_enriched_m4_intake_v1 import run_mi_enriched_optimization_universe_experiment_plane_v1 as m4
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_learning_export_v1 import export_mi_learning_evidence_onto_learning_path_v1 as export_mi
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_offline_durable_evidence_persist_v1 import MiOfflineDurableEvidencePersistRequestV1,persist_mi_offline_durable_evidence_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_offline_durable_evidence_store_v1 import MiOfflineDurableEvidenceStoreV1
+
+def safe(x):
+ if isinstance(x,Mapping):return {k:safe(v)for k,v in x.items()}
+ if isinstance(x,(tuple,list)):return [safe(i)for i in x]
+ return x
+out={'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'scope':'Explicit controlled synthetic port/consumer interventions using existing code and test-input helpers. Temporary stores only; no product implementation changes, natural evidence or full host certification.','ddo':[],'mi':[]}
+with TemporaryDirectory(prefix='peaktrade-loop-a-')as tmp:
+ root=Path(tmp);code='a'*64;cfg='b'*64;decision=build_decision_event_v0(_decision(code_sha=code,config_hash=cfg))
+ for i,(price,label)in enumerate([(110.,'OPAQUE_A'),(90.,'OPAQUE_A'),(110.,'OPAQUE_B')]):
+  snap=_snapshot();snap['o4_bars'][1]['close']=price
+  h=horizon(decision,snap,economic_score=label);ledger=AppendOnlyDdoLedgerV0(root/f'ddo{i}.jsonl');ledger.append(decision)
+  bundle=evaluate_offline_bundle_v0(decision,h['evaluation_observation'],identity=_identity(code_sha=code,config_hash=cfg),ledger=ledger)
+  state=ingest(ledger,state_scope_id='ddo.lscope.causal-probe',outcome=bundle['outcome_record'],attribution=bundle['attribution_record'],counterfactual=bundle['counterfactual_record'],event_time_utc=bundle['outcome_record']['event_time_utc'],correlation_id='ddo.corr.causal-probe')['learning_state_record']
+  host=SimpleNamespace(last_ddo_learning_state=state,ddo_capture_binding=SimpleNamespace(capture_scope_config_hash=cfg),ddo_n_bars_economic_score='UNSET')
+  feedback(host)
+  out['ddo'].append({'input_price':price,'caller_supplied_label':label,'measured_fields':h['measurement_evidence_artifact'],'outcome_economic_score':bundle['outcome_record']['economic_score'],'state_label':state['next_cycle_economic_score_label'],'feedback_label':host.ddo_n_bars_economic_score,'state_version':state['state_version']})
+  assert host.ddo_n_bars_economic_score==label
+  host.ddo_capture_binding.capture_scope_config_hash='c'*64;feedback(host);assert host.ddo_n_bars_economic_score=='UNKNOWN'
+ out['ddo_config_mismatch_rejected_feedback']=True
+ assert out['ddo'][0]['state_label']==out['ddo'][1]['state_label']
+ assert out['ddo'][0]['measured_fields']['log_return']!=out['ddo'][1]['measured_fields']['log_return']
+ obs=_observation_for_n(n_bars=2);forecast=_mint_forecast(n_bars=2,bar_spec_ref=str(obs['bar_spec_ref']));request=_intake_request(root/'legacy')
+ planes=[];mi_ids=[]
+ for direction in ['UP','DOWN','FLAT']:
+  cal=calibration(forecast_evidence=forecast,evaluation_observation=obs,realized_direction=direction)
+  proj=projection(forecast_evidence=forecast,calibration_evidence=cal)
+  mi=bridge(forecast_evidence=forecast,evaluation_observation=obs,realized_direction=direction)
+  ingest_request=MiLearningEvidenceIngestRequestV1(forecast_evidence=forecast,evaluation_observation=obs,realized_direction=direction)
+  first=ingest_mi_learning_evidence_v1(root/'mi',ingest_request);second=ingest_mi_learning_evidence_v1(root/'mi',ingest_request)
+  assert second['ingest_status']=='IDEMPOTENT_REPLAY'
+  persisted=persist_mi_offline_durable_evidence_v1(root/'mi_triad',MiOfflineDurableEvidencePersistRequestV1(forecast_evidence=forecast,calibration_evidence=cal,research_evidence=proj))
+  loaded=MiOfflineDurableEvidenceStoreV1(root/'mi_triad').get(persisted['durable_evidence_id'])
+  assert loaded['calibration_evidence']['calibration_result']==cal['calibration_result']
+  mi_export=export_mi(mi,legacy_learning_evidence=request.legacy_learning_evidence)
+  plane=m4(replace(request,market_intelligence_research_evidence=proj,mi_learning_evidence_export=mi_export));plane=safe(plane);planes.append(plane);mi_ids.append(mi['mi_learning_evidence_id'])
+  out['mi'].append({'caller_supplied_direction':direction,'calibration':safe(cal),'mi_evidence':safe(mi),'research_projection':safe(proj),'m4_status':plane['status'],'m4_full_result':plane,'ingest':safe(first),'replay':safe(second),'triad_calibration_roundtrip':safe(loaded['calibration_evidence']),'triad_persist':safe(persisted)})
+ def numerical_chain(plane):return {k:v for k,v in plane['chain'].items()if k not in {'mi_enriched_m4_intake','mi_lineage_refs'}}
+ assert numerical_chain(planes[0])==numerical_chain(planes[1])==numerical_chain(planes[2])
+ assert len(set(mi_ids))==3
+ out['mi_intervention_result']={'all_non_mi_m4_chain_fields_identical':True,'mi_ids_differ':True,'calibration_scores':[x['calibration']['calibration_result']['score']for x in out['mi']],'single_fixed_observation_ref':obs['actual_outcome_ref'],'store_records':len(MiLearningEvidenceStoreV1(root/'mi').list_records()),'numeric_calibration_result_in_mi_record':'calibration_result'in out['mi'][0]['mi_evidence'],'numeric_calibration_result_in_research_projection':'calibration_result'in out['mi'][0]['research_projection']}
+ try:calibration(forecast_evidence=forecast,evaluation_observation=obs)
+ except ValueError as exc:out['mi_missing_direction_error']=str(exc)
+ else:raise AssertionError('Missing realized direction unexpectedly accepted')
+from tests.learning.test_loop_a_conditioned_learning_evidence_v1 import _realized_behavior
+from tests.learning.test_market_context_realized_behavior_join_v1 import _context_for_observation
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.loop_a_conditioned_learning_evidence_v1 import ConditionedLearningComposeInputsV1,run_loop_a_conditioned_learning_cycle_v1
+with TemporaryDirectory(prefix='peaktrade-conditioned-a-')as tmp:
+ ctx=_context_for_observation(obs);rb=_realized_behavior(obs=obs,ctx=ctx)
+ out['conditioned_loop_a']=safe(run_loop_a_conditioned_learning_cycle_v1(store_root=Path(tmp),inputs=ConditionedLearningComposeInputsV1(forecast_evidence=forecast,evaluation_observation=obs,market_context=ctx,realized_behavior=rb,realized_direction='UP')))
+ assert out['conditioned_loop_a']['loop_a_proven'] is True
+ assert out['conditioned_loop_a']['persistence_proven'] is True
+ assert out['conditioned_loop_a']['export_retrieval_proven'] is True
+Path('/tmp/peaktrade_loop_a_probe.json').write_text(json.dumps(safe(out),indent=2,ensure_ascii=False)+'\n')
+print(json.dumps({'ddo_cases':len(out['ddo']),'mi_cases':len(out['mi']),'mi_effect':out['mi_intervention_result'],'missing_label':out['mi_missing_direction_error']}))

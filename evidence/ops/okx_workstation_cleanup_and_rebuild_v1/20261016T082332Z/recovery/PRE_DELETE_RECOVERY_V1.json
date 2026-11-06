@@ -1,0 +1,55 @@
+{
+  "mission": "OKX_WORKSTATION_CLEANUP_AND_REBUILD_V1",
+  "timestamp_utc": "2026-10-16T08:24:00Z",
+  "phase": "PRE_DELETE_RECOVERY",
+  "safari_windows_before_cleanup": [
+    {
+      "window": 1,
+      "tabs": [
+        {
+          "index": 1,
+          "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+          "role": "WS2_futures"
+        },
+        {
+          "index": 2,
+          "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+          "role": "WS2_futures_duplicate"
+        },
+        {
+          "index": 3,
+          "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+          "role": "WS2_futures_duplicate"
+        },
+        {
+          "index": 4,
+          "url": "https://my.okx.com/de/markets/prices",
+          "role": "markets_prices"
+        },
+        {
+          "index": 5,
+          "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+          "role": "WS2_futures_duplicate"
+        },
+        {
+          "index": 6,
+          "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1006418239457071104",
+          "role": "WS1_multichart"
+        }
+      ]
+    }
+  ],
+  "bookmark_inventory_observed": {
+    "PEAK TRADE — OKX WORKSTATION": {
+      "type": "bookmark_folder",
+      "location": "Safari Lesezeichen bearbeiten root",
+      "child_count_displayed": 0,
+      "child_LIVE_Chart_Orderbuch": "NOT_VISIBLE_IN_EDITOR_SEARCH_live_NOT_FOUND"
+    },
+    "LIVE — Chart & Orderbuch": {
+      "type": "unknown_not_found_in_bookmark_search",
+      "note": "Owner-reported child; not found via bookmark search 'live' before delete"
+    }
+  },
+  "tab_group_favorites": "PENDING_INVENTORY"
+}

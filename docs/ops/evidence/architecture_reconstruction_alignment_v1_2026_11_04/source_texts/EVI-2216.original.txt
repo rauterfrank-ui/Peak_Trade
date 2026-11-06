@@ -1,0 +1,126 @@
+MASTER V2: ZWEI MECHANISMEN VOR DOUBLE PLAY
+02.11.2026 · read-only historische Zuordnung und begrenzte Offline-Prüfung
+
+ERGEBNIS
+Die vom Owner beschriebene zweistufige Konstruktion ist jetzt konkret historisch
+zuordenbar: Component A (Master V2 Evidence Adjudicator / Information Processor)
+und Component B (Master V2 Double-Play Input Creator / Binder).
+Beide liegen fachlich auf Master-V2-Ebene, außerhalb der Double-Play-Layer-Semantik.
+Das ist durch eine direkte originale Classic-Aussage, ihren Blueprint und konkrete
+Implementierungen belegt. Es ist kein Beweis einer vollständigen heutigen Abschirmung
+aller Markt-/Runtime-/Intelligence-Eingänge oder aller tatsächlichen Consumer-Wirkungen.
+
+ORIGINALE CLASSIC-QUELLE
+Chat-ID6ab7f942-50cc-83eb-872c-b2ce643fa606. Der zurückgegebene Originaltitel ist
+unverändert in der Originalabrufdatei gespeichert.
+Quelle:classic-original-design.json, userMessage
+45a3b00f-a4f1-4f5a-a889-df501cae3889, timestamp1790445282.345911.
+Owner beschreibt zwei Werkzeuge: eines nimmt äußere intelligente Informationen
+entgegen, das zweite übernimmt die bereits sortierten Daten. Beide sollen auf der
+Master-V2-Ebene liegen, mit klar geregelten Zuständigkeiten. Die nachfolgenden
+Owner-Nachrichten verlangen einen Blueprint und die eindeutige Zuordnung zu diesem
+Universum beziehungsweise darin zu Master V2. Diese Texte sind ungekürzt zurückgegeben.
+Die direkte Herkunft ist hier Classic, nicht nur eine spätere Cursor-Zusammenfassung.
+Historische Umsetzungsaufträge bleiben Quellen und werden nicht erneut ausgeführt.
+
+BLUEPRINT-PRIMÄRQUELLE
+/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/
+1a470d7c-d105-45d3-a53b-c72309312179/
+Peak_Trade_Master_V2_Double_Play_Evidence_Input_Plane_Blueprint_20260926.pdf
+Blueprint v1.0 vom26.09.2026,8Seiten, Baseline2354c4439c3228265b8aaa51d06510db48af1469.
+Vollständiger Text mit macOS PDFKit extrahiert; Seiten1,2,3,5 zusätzlich gerendert
+und visuell gelesen. PDF unverändert. Kein neues PDF erstellt.
+
+PDF1§1: Two new logical components live on the Master V2 level.
+PDF2§3: A ist kontrollierte Annahmestelle für intelligente/analytische Ausgaben.
+PDF3§4: B ist die einzige neue Master-V2-Komponente, die solche adjudizierte Evidence
+in kanonische Double-Play-Layer-Inputs umwandeln und binden darf.
+PDF4§5: Double Play orchestriert keine externen MI-/Learning-/Optimization-Prozesse.
+PDF4§6: keine pauschale Öffnung aller L1–L10-Layer; zulässige Eingänge einzeln prüfen.
+PDF5§7–8: bestehende Market/runtime facts bleiben über ihre bisherigen governed
+Eingänge autoritativ. Sie sollen ausdrücklich NICHT blind durch A/B umgeleitet werden.
+Die Zeichnung zeigt zwei Eingangswege:existing trusted seams UND neue A→B-Ebene.
+PDF6–7: Zustands-/Entscheidungswirkung, geschlossener Trace und Restart sind eigene
+Nachweispflichten; Existenz von A/B allein erfüllt sie nicht.
+
+WAS A TATSÄCHLICH MACHT
+Implementierung:
+src/governance/master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1/adjudicator_v1.py
+adjudicate_evidence_intake_v1 / run_component_a_runtime_v1.
+Input:EvidenceIntakeRecordV1 und expliziter Prüfkontext/Producer-Registry.
+Prüft/normalisiert Registrierung, Schema-/Pflichtfelder, Instrument, Epoche,
+Frische, Herkunft, Duplikate und Konflikte. Ausgabe ist ADMIT, REJECT, STALE oder
+CONFLICT mit Begründung/Digest; nur ADMIT enthält den kanonischen Evidence-Umschlag.
+Confidence/Quality werden erhalten; daraus wird keine Handelsrichtung abgeleitet.
+A ist kein allgemeiner neuer Marktvolatilitäts-/Scope-Formelrechner.
+
+WAS B TATSÄCHLICH MACHT
+Implementierung:
+src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py
+bind_layer_input_from_adjudication_v1 / run_component_b_runtime_v1.
+Input:LayerInputBindingRequestV1 mit A-Ergebnis, Ziel-Layer, Vertragsversion und
+Nulllinien-Provenienzepoche. Nicht-ADMIT, fehlender Umschlag/Digest, unzulässiges
+Ziel, falsches Instrument oder falsche Epoche führen zu NO_BIND.
+Ausgabe bei BIND:CanonicalDpLayerInputBindingV1 und typisierter externer L6-Input.
+Der P1-Vertrag erlaubt hier ausschließlich L6_DYNAMIC_SCOPE_GENERATOR.
+B besitzt weder Double-Play-Zustandsmutation noch Handels-/Orderautorität.
+Auswertung der Bedeutung innerhalb eines Layers bleibt beim jeweiligen DP-Layer.
+
+KONKRETE IMPLEMENTIERUNGSFOLGE (LOKALER GIT-VERLAUF, BERLIN)
+26.09.2026 20:48:17 ae9da6bcb... #6871: A/B-Verträge und Schemas P1.
+26.09.2026 21:06:48 fc9db97be... #6872: A-Implementierung P2.
+26.09.2026 21:21:15 91cb2a475... #6873: B-Implementierung P3.
+26.09.2026 21:33:05 ae6390581... #6874: begrenzte L6-Verbindung P4.
+27.09.2026 00:44:40 f5df890b1... #6884: reale A-ADMIT-Fortsetzung durch P3/P4.
+Quellinhalt/Hashes und vollständige Commit-IDs im source-manifest.json/history.json.
+Flags und Docstrings früherer P1/P2/P3-Stufen sind an ihre Stufe gebunden. Ein
+P2-Text „noch nicht produktiv gebunden“ widerlegt nicht die nachfolgende P4-Verbindung.
+
+P4/P5 UND DIE WICHTIGE GRENZE ZUR SCOPE-GRÖSSE
+P4 seam_v1.py ruft A und B tatsächlich auf, danach L6-Admission. Eine weitere
+Funktion nimmt ein bereits vorhandenes ADMIT auf, ohne A erneut auszuführen.
+Optionaler L6-Aufruf in l6_mechanical_consumption_v1.py verwendet ausdrücklich
+mechanical_proposed_d_t und Nulllinienzustand aus einem SEPARATEN Kontext.
+Der D_t-Wert wird NICHT aus dem A/B-Evidence-Umschlag berechnet oder herausgelesen.
+P1 verbietet u.a.proposed_d_t,d_t,final_d_t,computed_d_t,formula_id im Envelope-Extra.
+Damit ist „A/B schützt äußere Evidence“ nicht automatisch gleich „aktueller
+Marktpreis und fertige Scope-Berechnung fließen ausschließlich durch A und B“.
+
+P5 ingress_v1.py beendet Producer-Eingänge bei A; B-/DP-Direktumgehung ist für die
+erfassten externen Producer-Klassen verboten. Registry-Familien:Market Intelligence,
+Learning, Optimization, Meta-Learning und Research. Das sind keine pauschalen
+Freigaben für beliebige Rohmarktdaten oder bereits bestehende CMC-/G17-Hosts.
+Der vorhandene statische Bypass-Scanner betrachtet konkret definierte Producer-
+Wurzeln/Strings. Sein PASS wäre kein Beweis aller möglichen Systempfade.
+
+BEZUG ZUM HEUTIGEN MARKTPREIS-/GGE-PFAD
+Die vorherige Preisuntersuchung verfolgte einen bestehenden Runtime-/CMC-/G17-/GGE-
+Weg. Dieser wird durch das Auffinden von A/B nicht automatisch widerlegt oder zur
+unerlaubten Umgehung erklärt. Der Blueprint bewahrt bestehende trusted seams selbst.
+Ob genau diese heutigen Wege ihre gültigen Verträge tatsächlich einhalten und wie
+ihre Daten mit A/B-Evidence zum richtigen DP-Consumer zusammenkommen, bleibt offen.
+Die früher gefundenen Preisfrische-/Anzeige-Lücken werden von A/B nicht automatisch
+geheilt. Auch die Identität des früher erinnerten Natural-Enter-Vorprüfers bleibt
+eine andere Frage als die hier nun zugeordnete Master-V2-Informationsschutzebene.
+
+BEGRENZTE AKTUELLE OFFLINE-PRÜFUNG
+Vier vorhandene Testmodule P1–P4,21Tests bestanden in2.20s.
+Prüfen u.a.Frischeablehnung, fremde/unregistrierte Producer, Konflikte/Duplikate,
+Verbot direkter Producer→B-Autorität, Nicht-ADMIT→NO_BIND, typisierte Bindung und
+mechanische Verbindung bis L6. Das sind vorhandene Tests mit konstruierten Daten,
+kein neuer Live-Run, kein Beweis einer vollständigen Marktpreisversorgung und kein
+Sicherheitsbeweis gegen beliebige feindliche Aufrufer im selben Python-Prozess.
+P5-Tests nicht pauschal gestartet:ein Modul enthält einen Schreiber in den regulären
+Evidence-Pfad. Kein bestehendes Evidence-Bündel für diese Prüfung regeneriert.
+
+EPISTEMISCHER STATUS
+- Historische Beschreibung zweier Master-V2-Mechanismen: DIREKT BELEGT.
+- Konkrete Entsprechung A/B: durch Originalaussage, Blueprint und Code stark belegt.
+- A/B-Implementierung und begrenzte A→B→L6-Verbindung: vorhanden, lokal teilgeprüft.
+- A/B als einziger Eingang für ALLE Markt-/Runtime-Fakten: nicht belegt; Blueprint
+  bewahrt bestehende trusted seams und verlangt keine pauschale Umleitung.
+- Vollständige heutige Double-Play-Isolation und geschlossener Wirkungstrace: offen.
+
+Keine Produktänderung, Wiederherstellung, Konfigurationsänderung oder Aktivierung.
+Nur Untersuchungsartefakte außerhalb des Checkouts erstellt. Der Owner muss keine
+Berichte oder Grafiken lesen, um das Ergebnis der Chatantwort verstehen zu können.

@@ -1,0 +1,85 @@
+{
+  "schema": "peaktrade.legacy_startup_observation_ports.verification.v1",
+  "base_revision": "aadba02744b20de9fa2129765b53a8504933b757",
+  "scope": "Seven-site explicit-observation argument migration; U04 Owner-deferred and unchanged",
+  "tests": {
+    "current_api_and_consumer": {
+      "passed": 50,
+      "failed": 5,
+      "new_cases_passed": 34
+    },
+    "startup_regressions": {
+      "passed": 51,
+      "failed": 0
+    },
+    "baseline_reproof": {
+      "same_five_failures": [
+        "test_layered_enter_e2e_handoff_first_same_process_batch_v1",
+        "test_layered_enter_e2e_handoff_full_compose_without_closure_mock_v1",
+        "test_layered_enter_e2e_handoff_second_same_process_batch_v1",
+        "test_n1_bootstrap_uses_injected_c1_closes_not_stale_market_kwargs",
+        "test_pre_external_terminal_on_natural_enter_long"
+      ]
+    }
+  },
+  "ruff": "PASS:14 production/CLI/test Python files",
+  "docs_token_policy": {
+    "files": 11,
+    "violations": []
+  },
+  "docs_reference_targets": {
+    "files": 11,
+    "references": 684,
+    "missing": []
+  },
+  "atlas_validation": "PASS",
+  "atlas_generated_drift": [],
+  "u04_production_and_learning_sources_unchanged": true,
+  "original_learning_ledger_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "desktop_blueprint_sha256": "ddee8b808f3e8fcb774e1ae2bf4df718c6c8d7282f7414ae7f590373c533ff46",
+  "source_document_evidence_sha256": {
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md": "840ac5dc513b87e42a2660e4cb0984d3f00107f555099e57ed86a4b467c82e36",
+    "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md": "c5872698a00285bb2ed937ce17268dd2eea3db61acdec3f6b94831245b3079aa",
+    "docs/ops/evidence/LEGACY_STARTUP_OBSERVATION_PORTS_2026_11_03.md": "c82578d7c1190c404043574681b80d61df40d86235bae5fda94846b29fa06e92",
+    "docs/ops/evidence/U04_ORIGINAL_INTENT_AND_LEARNING_PATH_DEFERRED_2026_11_03.md": "a3f729c2579b9e8d892d4823ef6aa789183536ecd7151bd8ec42e0cb43f42395",
+    "docs/ops/evidence/legacy_startup_observation_ports_v1_2026_11_03/baseline_five_failure_reproof.xml.gz": "95150b172e1707e22b5f179d87861fe79c8fdc2f704a21301b5f0f24e9b0c70a",
+    "docs/ops/evidence/legacy_startup_observation_ports_v1_2026_11_03/baseline_reproof_sources.json": "b433486b82fe86bebf5385ddae859d99d2c7b4252d16125492e95c2218f2b7e2",
+    "docs/ops/evidence/legacy_startup_observation_ports_v1_2026_11_03/cli_help_checks.json": "f7f8559242496dc2d652e81b890c9177adb0d4dc5da334ec535d28a18442e1ca",
+    "docs/ops/evidence/legacy_startup_observation_ports_v1_2026_11_03/migration_contract_and_consumer_tests.txt.gz": "69a55d512a94059d2362b2d0d3ad9bd16394e50d6f47a4c84fc398bdbd62f7d9",
+    "docs/ops/evidence/legacy_startup_observation_ports_v1_2026_11_03/seven_call_inventory.json": "b61166c20d274320269383304fc4a627e0a688015e19150236882b2a9c46ada5",
+    "docs/ops/evidence/legacy_startup_observation_ports_v1_2026_11_03/startup_regressions.xml": "3665432edf78f8aad292db5332f4a1724dac691f6e16aa590544766b2c60eaaa",
+    "docs/ops/evidence/u04_original_intent_deferred_2026_11_03/causal_probe.py": "df9c0605bf97bf293fdd7528be91d39877893803054fec457ff845d1762bfdd1",
+    "docs/ops/evidence/u04_original_intent_deferred_2026_11_03/causal_probe_summary.json": "639819728a046c699a763bba5ed659c3adf6f8c2f7d30882dd57fbbb7b32ddc4",
+    "docs/ops/evidence/u04_original_intent_deferred_2026_11_03/source_manifest.json": "de32e1a2b68fcfd3e3b53a9e051b6e3414ec90c254bd169e0abd45022e5f9c77",
+    "docs/ops/evidence/u04_original_intent_deferred_2026_11_03/synthetic_capture_probe.jsonl": "0886c0bb577b71800a186b5087aa0b73131a555f31c337ffb210fb5925e840f8",
+    "docs/ops/specs/LEGACY_STARTUP_OBSERVED_PORTFOLIO_PORTS_V1.md": "478ddd985af971af02a1f2b35cfdf8231cded31964ca796e54f8a41b3f904f23",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md": "b79284c40523628defc34672b5e974b7b261145b6211c8980d78cf4c8b62567f",
+    "docs/system_atlas/entities/catalog.yaml": "889bc4f3766ad255dde04ffde297789e50f3865fbfc5e9a388ae9d8c54d25a47",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md": "3f5d8c27fe73842e8a4d02279ec6d50f525fc054c1ac1c25aa73de5d034f99c7",
+    "docs/system_atlas/generated/FULL_DEPENDENCY_GRAPH.md": "5fa29376463c31578534d1e2ef17b54090f104516f356d8d17989e74322fcd67",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md": "7eb5b768365bd500151280266cc4fb2f67dbd11c0d808a381bb201f3a6325016",
+    "docs/system_atlas/generated/RUNTIME_GRAPH.md": "90451623f98a1bcfd3c29f0f60115a2a2fe994b7682c962a8969cfb3999a61a5",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md": "624a1e07dad809ae011d9967875b2a8f30fec9003d911ab931b38dacd672355a",
+    "docs/system_atlas/relations/runtime.yaml": "f10e3e2f803e8ec822a79433231905c2a5090d4ca85538f663e5d2101c873a2f",
+    "scripts/ops/run_current_productive_full_core_pre_external_closure_v1.py": "565b91b8147bab999719c055a83fbe1fd092ce791f0ea2e02f7d0f624f915e56",
+    "scripts/ops/run_current_productive_one_shot_enter_e2e_prepare_v1.py": "034935ce6a753ed3ee2ca735c97754382dea298abefa667e44d71a510caf3461",
+    "scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py": "305973670da27685a74cbd9b4ed216e3ad9700054af320cff4588d8e13f57da3",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py": "f014639791744c82cd37938a05d9b2ce27e2f1688dc888915b7e0a087edd6559",
+    "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py": "d2634058dbda5a6245c1fab0b47d5273afaea417bc1bafde735861b530f29911",
+    "scripts/ops/run_pre_live_fresh_state_and_slice_baseline_convergence_v1.py": "b67870a50828c63051529b9f2e1316fc0c57ed78b3b113fc5f91ec00ce86b370",
+    "src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py": "defd381876b526e125d7538e0dc0529b08fb3880182344f7d33d42987c0c4b16",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": "1e6abbaba7a1c02eefc6c981392e0234f7823b9266575c46f4d2fc902fa906d7",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py": "2f78db904eedd50d524384c56011d829d1f992d87dc7b1e6beafb76732fd345d",
+    "src/ops/productive_reconciliation_runtime_binding_v1/startup_portfolio_document_v1.py": "6eacdcda90706808e17b47b14f5feb63ef523f394024ac2aa8bad868376b31c1",
+    "tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py": "a06a83172b73f694e261dcc2b7b23612cf0fd9c5249e56a9acf38fe96d633f13",
+    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py": "fa1f6e2fe619b8c6663e175f4e473191d81deaaa5faeb0f28a18e90d89d927b3",
+    "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py": "fb58660d6773b0f26e91a223896bdc7346a26fa8ebfd20ab0ae3b805a0377cbb",
+    "tests/ops/test_legacy_startup_observed_portfolio_migration_v1.py": "e9401142ba301438dca3d9182a340c0b899b81319772eb0c583bdecf3b35b965"
+  },
+  "limits": [
+    "Trusted observation document is not authenticated venue proof",
+    "Actual private source/service provisioning not installed",
+    "Five baseline full-flow failures remain",
+    "No real private GET, credentials, orders, transfer, activation or push"
+  ]
+}

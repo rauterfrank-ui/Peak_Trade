@@ -16,7 +16,7 @@ claims:
 
   - id: docs-truth-map-registry-present
     check: path_exists
-    path: docs/ops/registry/DOCS_TRUTH_MAP.md
+    path: docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
 
   - id: repo-truth-claims-registry-present
     check: path_exists

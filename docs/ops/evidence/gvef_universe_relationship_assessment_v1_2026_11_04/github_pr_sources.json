@@ -1,0 +1,50 @@
+[
+  {
+    "body": "## Summary\n- Adds observation-only DDO capture adapters that persist existing authoritative producer outputs into the append-only DDO ledger after the producer has returned.\n- Wires fail-open productive host hooks (universe, ranking, selection, runtime binding, reconciliation gate, simulated execution port, wallclock cycle) without changing selection, core, risk, safety, plan, or execution eligibility.\n- Capture failure is isolated; Learning remains without productive authority; `decision_result` stays `NO_ACTION`; stale root cause is not inferred.\n\n## Test plan\n- [x] `tests/learning/test_deterministic_decision_outcome_capture_spine_v0.py` (FA-01/02/04/05/15, IC-01/02/16 mapping)\n- [x] Existing DDO contract and control-plane tests\n- [x] Producer equivalence tests (universe/ranking/selection)\n- [x] PR_BOUNDED_FULL selector target batch (899 passed, ~39s)\n\nMERGE_AUTHORIZED=false\nNO_ADMIN_BYPASS=true\nNO_AUTO_MERGE=true\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/6206",
+    "merge_commit_sha": "0a8ec8e8d73558c7b8a340b514fc86c0157dc525",
+    "merged_at": "2026-09-01T18:26:00Z",
+    "number": 6206,
+    "title": "feat(learning): observation-only DDO decision-spine capture (WP-FA-04)"
+  },
+  {
+    "body": "## Summary\n- Persist CURRENT `RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1` in Master Runbook §4.5.14 with Cap 2.4 classified as `SHARED_BOUNDARY_SEAM` and `BoundInstrumentV1` as the Full-Core ingest object.\n- Add an assertion-only typed validator (`AUTHORITY_EFFECT=NONE`) over existing Cap 2.2/2.3/2.4 DTOs. No second ranking/selection/binding/trading/execution authority and no new runtime join.\n- Add contract tests for identity/provenance lineage, mismatch fail-closed, Master-V2 bound-identity consumption, and replay provenance drop.\n\n## Test plan\n- [x] `./scripts/pt -m pytest -q tests/test_ranking_universe_to_full_core_ssf_handoff_contract_v1.py` (18 passed)\n- [x] Cap 2.4 binding + MF handoff regressions (66 passed; 1 pre-existing `test_constants_and_authority` fail on origin/main, unchanged by this PR)\n- [x] ruff format --check / ruff check on new Python\n- [x] docs token policy + docs reference targets on the 3 changed markdown files\n- [ ] GitHub required checks on this PR (snapshot only; no merge)\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/6524",
+    "merge_commit_sha": "cd96b853dc8905757caaa6881cdc5145a430087a",
+    "merged_at": "2026-09-16T08:18:20Z",
+    "number": 6524,
+    "title": "docs(ops): persist ranking-universe to Full-Core SSF handoff contract"
+  },
+  {
+    "body": "## Summary\n- Add governed offline `ForecastEvidence` and `CalibrationEvidence` contracts with explicit horizon/`bar_spec_ref`, typed probabilistic payloads, and abstention dispositions (Option A: separate evidence objects; compose references, no new ownership).\n- Add deterministic offline orchestrator composing N_BARS outcome joins, additive MI research projection, optimization research intake, optional failure-memory replay, and read-only decision attribution queries.\n- Add normative spec + non-authorizing governance policy; prove safety boundaries and backward compatibility for existing learning export / N_BARS / optimization input seams.\n\n## Test plan\n- [x] `tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py` (12 tests)\n- [x] Regression: `test_learning_evidence_export_v1`, `test_canonical_optimization_universe_learning_input_v1`, `test_ddo_o4_n_bars_productive_chain_v1`\n- [x] CI selector PR-bounded targets + D03 module (756 tests, ~38s local)\n- [x] `ruff format --check` / `ruff check` on touched paths\n- [x] Docs reference targets + docs token preflight (changed-docs scope)\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/6847",
+    "merge_commit_sha": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+    "merged_at": "2026-09-26T08:24:37Z",
+    "number": 6847,
+    "title": "feat(learning): Track D03 offline MI forecast/calibration stack v1"
+  },
+  {
+    "body": "## Summary\n- Adds governed mechanical binding from `runtime_to_learning_input_v1` (G2 ingress) to `learning_evidence_record_v1` and the existing `validate_canonical_optimization_universe_learning_input_v1` consumer, without DDO fixture state on the real path.\n- Extends G2 closure/end-to-end summaries to distinguish `PROVEN_REAL_MECHANICAL_PATH` vs fixture-bounded M4–M8 continuation.\n- Updates Interaction Map, System Atlas, decision/field-mapping artifacts, and deterministic governance tests.\n\n## Test plan\n- [x] `./scripts/pt -m pytest tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`\n- [x] `./scripts/pt -m pytest tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py`\n- [x] `./scripts/pt -m pytest tests/ops/test_current_system_interaction_authority_map_v1.py`\n- [x] `./scripts/pt -m pytest tests/ops/test_system_atlas_v1.py`\n- [x] `./scripts/pt scripts/ops/current_system_interaction_authority_map_v1.py validate`\n- [ ] GitHub CI (await required checks)\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/6880",
+    "merge_commit_sha": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+    "merged_at": "2026-09-26T21:50:10Z",
+    "number": 6880,
+    "title": "feat(governance): G2 runtime learning input → canonical optimization binding v1"
+  },
+  {
+    "body": "## Summary\n- Implements canonical **Golden Vector Evaluation Fabric (GVEF) V1.5**: 16 contracts, deterministic generic runner/state machine, five domain evaluators (PTP, Ranking Universe, Optimization, Self-Learning, Market Intelligence), corpus integrity gate, canonical evidence registry, and promotion evidence adapter (handoff only).\n- **23/23** canonical components implemented or reused; **16/16** contracts covered by schema/runner tests; **182** GVEF tests pass locally (`tests/evaluation/golden_vectors/`).\n- Synthetic fixture corpus only (`config/evaluation/golden_vectors/fixture_corpus_v1/`); research evidence under `evidence/research/gvef_*` intentionally **not** committed.\n\n## Authority / safety (explicit)\n- `GVEF_TRADING_AUTHORITY=NONE`\n- `PROMOTION_GVEF_AUTHORITY=false`\n- `POST_ALLOWED=false`\n- No LIVE trading, no productive credentials, no productive writeback/apply, no PRE_EXTERNAL crossing in GVEF paths.\n- `REGISTERED` / evidence-complete ≠ promotion, deployment, or Owner-GO.\n\n## Test plan\n- [x] `./scripts/pt -m pytest tests/evaluation/golden_vectors/ -q` → 182 passed\n- [x] Ruff format/check on staged GVEF paths\n- [x] Forbidden productive dependency scan (0 violations)\n- [ ] GitHub required CI (awaiting owner adjudication)\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/7039",
+    "merge_commit_sha": "9539b55ee4e572b3a0607e97008375bccb36814e",
+    "merged_at": "2026-10-04T09:47:44Z",
+    "number": 7039,
+    "title": "GVEF V1.5 — Golden Vector Evaluation Fabric"
+  },
+  {
+    "body": "## Summary\n- Complete BWP-3-RU Appendix-C gap closure: Ranking Universe manifests (ordering, top-K, provenance, deltas/churn) and EvidenceBundle wiring via deterministic runner stubs.\n- Preserve Cap2.3 Selection as sole owner: AUTHORITY_FAILURE fail-closed with `DOWNSTREAM_IMPACT_EVALUATION`; extended negative and digest-separation proofs in tests.\n- Change-bound Law/CSIA adjudication (`NO_LAW_IMPACT` / `NO_MAP_IMPACT`, `authority_effect=NONE`).\n\n## Test plan\n- [x] `./scripts/pt -m pytest tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py -q`\n- [x] `./scripts/pt -m pytest tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py tests/evaluation/golden_vectors/test_gvef_generic_runner_v1.py -q`\n- [x] `./scripts/pt scripts/ops/current_law_impact_map_v1.py validate --diff-base origin/main`\n- [x] `./scripts/pt scripts/ops/current_system_interaction_authority_map_v1.py validate --diff-base origin/main`\n- [ ] GitHub required checks (Owner Merge Gate — do not merge without explicit GO)\n\n## Closure evidence (local, untracked harness)\nRun: `./scripts/pt evidence/research/gvef_bwp3_ru_ranking_universe_evaluator_v1/run_bwp3_ru_closure_evidence_v1.py`\n\nBaseline: `5d6663f5bb86a64c3b41dacab85c8218fa29a369` (PR #7043)\n\n**STOP at Owner Merge Gate — no auto-merge.**\n\n\nMade with [Cursor](https://cursor.com)",
+    "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/7044",
+    "merge_commit_sha": "46eb31040eb85623b533f04dcf4550640d562d1f",
+    "merged_at": "2026-10-04T16:29:24Z",
+    "number": 7044,
+    "title": "GVEF BWP-3-RU: Ranking Universe evaluator evidence and authority boundary"
+  }
+]

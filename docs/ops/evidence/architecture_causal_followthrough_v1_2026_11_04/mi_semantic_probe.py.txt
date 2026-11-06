@@ -1,0 +1,29 @@
+"""Synthetic MI calibration dependency probe, not a natural market/run witness.
+Execute from repository with scripts/pt on stdin; no archive or ledger is updated.
+"""
+from pathlib import Path
+import hashlib,json,socket,subprocess
+from tests.learning.test_unified_blueprint_phase_8_mi_to_learning_integration_v1 import _mint_forecast,_observation_for_n
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.calibration_evidence_v1 import build_calibration_evidence_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_to_learning_evidence_bridge_v1 import compose_mi_to_learning_evidence_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_learning_export_v1 import export_mi_learning_evidence_onto_learning_path_v1
+
+def deny(*args,**kwargs):
+ raise RuntimeError('NETWORK_FORBIDDEN_IN_CONTROLLED_PROBE')
+socket.create_connection=deny;socket.socket=deny
+r=Path.cwd();p=r/'runtime/current_productive/natural_evidence_accumulation_v1/lane_state/LANE_1/ddo_learning_capture_v1.jsonl';sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest();before=sha(p)
+observation=_observation_for_n(n_bars=2);original=dict(observation);forecast=_mint_forecast(n_bars=2,bar_spec_ref=str(observation['bar_spec_ref']))
+up=build_calibration_evidence_v1(forecast_evidence=forecast,evaluation_observation=observation,realized_direction='UP')
+down=build_calibration_evidence_v1(forecast_evidence=forecast,evaluation_observation=observation,realized_direction='DOWN')
+assert up['actual_outcome_ref']==down['actual_outcome_ref']
+assert up['calibration_result']['score']!=down['calibration_result']['score']
+joined=compose_mi_to_learning_evidence_v1(forecast_evidence=forecast,evaluation_observation=observation,realized_direction='UP')
+export=export_mi_learning_evidence_onto_learning_path_v1(joined)
+assert export['consumer_route']['consumer_route']=='MI_TYPED_LEARNING_EVIDENCE_ONLY'
+assert export['legacy_learning_evidence'] is None
+assert export['consumer_route']['legacy_ddo_export_compatible'] is False
+missing=compose_mi_to_learning_evidence_v1(forecast_evidence=forecast,evaluation_observation=None)
+assert missing['outcome_finalization_status']!='FINALIZED'
+assert observation==original and sha(p)==before
+out={'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'scope':'Synthetic fixture forecast/observation. Controlled in-memory MI builder/export calls, no natural forecast accuracy or real execution proof.','network':'socket creation/create_connection denied','fixture_sha256':{'tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py':sha(r/'tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py'),'tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py':sha(r/'tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py')},'same_forecast_and_outcome_ref':{'forecast':forecast['forecast_evidence_id'],'outcome':up['actual_outcome_ref']},'direction_up_result':dict(up['calibration_result']),'direction_down_result':dict(down['calibration_result']),'meaning':'The calibration owner uses separately supplied realized_direction. The joined outcome reference alone does not derive or verify that label. Caller/original measurement responsibility must be reconstructed before changing this contract.','typed_only_export':dict(export['consumer_route']),'missing_outcome':{'evaluability':missing['evaluability'],'finalization':missing['outcome_finalization_status']},'observation_unchanged':observation==original,'protected_learning_ledger_sha256':before,'assertions_passed':True}
+Path('/tmp/peaktrade_mi_semantic_probe_v1_result.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n');print(json.dumps({'assertions_passed':True,'up_brier':up['calibration_result']['score'],'down_brier':down['calibration_result']['score'],'typed_only_route':export['consumer_route']['consumer_route'],'legacy_payload':export['legacy_learning_evidence'],'observation_unchanged':True}))

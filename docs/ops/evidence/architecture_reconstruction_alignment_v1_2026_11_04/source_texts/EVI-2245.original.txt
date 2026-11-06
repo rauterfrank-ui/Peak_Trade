@@ -1,0 +1,280 @@
+# Rückweg vor Instrument Intelligence: Producer, Presence-Modelle und getrennte Datenwelten
+
+Stand: 02.11.2026. Fortsetzung des [vorherigen Rückwegs](../ddo-pre-foundation-pr-lineage/Vor_DDO_Producer_Instrument_Intelligence_und_Datenvertraege.md). 20 PRs eingeordnet: April-Konstruktion, ältere Scanner-Vergleichsanker, Juni-Observability sowie Ursprung des späteren Juli-Stagers. Dies ist kein vollständiger Census aller PeakTrade-PRs. Der Selector-Strang wird nicht ohne Nachweis mit dem Optimierungs- oder Selbstlernuniversum gleichgesetzt; er erklärt einen Teil der vorausgesetzten Daten und Empfänger.
+
+## 1. Der titelgebende Anschluss #3188 ist ein Dokumentationsschritt
+
+[PR #3188](https://github.com/rauterfrank-ui/Peak_Trade/pull/3188), 30.04.2026, ändert genau eine vorhandene Dokumentdatei. Der hinzugefügte Abschnitt bindet „Top-20 candidate intelligence“ an das schon vorhandene Futures-Input-Vokabular. Er implementiert weder Selector noch Producer, Rankingformel oder Übergabe. Die Formulierung bind im Titel ist deshalb kein Codeverbindungsbeweis.
+
+Die [Read-Model-Fassung an diesem Commit](./pr-3188-MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md), Zeilen 47–63, bezeichnet ausdrücklich vorbereiteten Kontext, Presence-Semantik und nicht autoritative Rankings. Die Bestandsaussage in §4 ist ein erhaltener Dokumentabschnitt und nicht allein ein aktueller oder vollständig synchronisierter Codebefund: reine DTOs waren durch #3047 schon vorhanden. Die tatsächlichen Bausteine werden unten getrennt geprüft.
+
+## 2. April: Die Anforderungen waren konkret, die ersten Empfänger blieben abstrakt
+
+Der frühere [Producer-Vertrag #3056](./pr-3056-MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md), §§4–6 und 16–19, hält fest: vorhandene Markt-Scanner, Experimentzeilen und Top-N-Helfer liefern nur Teilkontext. Vollständige Futures-Metadaten, Provenienz und Marktprofile werden durch einen externen Producer vorausgesetzt. Die reine Master-V2-Schicht soll sie vorbereitet erhalten. Registry-Zeilen sind Referenzen auf Runs, kein Beweis der Snapshot-Vollständigkeit.
+
+[Der Adapter #3058](./pr-3058-double_play_futures_input_producer.py), Zeilen 190–344, kopiert diese vorbereiteten Werte in das Snapshotmodell und ruft dessen Readiness auf. Er berechnet weder Volatilität/ATR noch Spread, Funding, Frische oder Opportunity. Die Runtime-Handle-Prüfung und live_authorization=false begrenzen Seiteneffekte; sie verifizieren keine damaligen Marktdaten. adapter_status=OK bezeichnet eine gelungene Abbildung und kann gemeinsam mit einer blockierten fachlichen Readiness auftreten.
+
+[Snapshot und Readiness #3047](./pr-3047-double_play_futures_input.py), Zeilen 100–273, unterscheiden Empfänger: Dynamic Scope braucht zusätzlich Volatilität/ATR; Capital braucht Liquidität und bei Perpetuals Funding; Suitability kombiniert diese Anforderungen. Survival-Readiness in diesem Modell verwendet dagegen den allgemeineren Metadaten-/Provenienz-/Frischestatus. Diese Labels sind nicht austauschbar. Die Vollständigkeitshilfen lesen teilweise direkt complete-Flags; sie beweisen nicht, dass jeder einzelne Metadatenwert extern korrekt gemessen wurde.
+
+[Frühe Suitability #3039](./pr-3039-double_play_suitability.py), Zeilen 63–138 und 223–295, erhält nur Presence-Flags für fünf Instrument-Intelligence-Dimensionen sowie Strategie-Seitenangaben und Survival-Status. Sie erzeugt daraus eine nicht autoritative Pool-Eignung. Sie bewertet an diesem Übergang keine gemessene Volatilitäts-/Spread-/Funding-Zahlenreihe. Die in #3038 gewünschte Instrumentabhängigkeit war damit zunächst wesentlich als Vorhandenseins-/Blockerprüfung codiert. Das lässt die fachliche Absicht nicht entfallen, belegt aber noch nicht ihre vollständige numerische Wirkung.
+
+[Survival #3037](./pr-3037-double_play_survival.py), Zeilen 45–220, benötigt bereits vorbereitete arithmetische Vollständigkeit, Seitendaten und sieben Sequenzmetriken: Path Survival, Early Loss Toxicity, Margin Buffer at Risk 99, Sequence Fragility, Liquidation Near Miss, Governance Breach Frequency und Chop Switch Survival. Der Evaluator prüft fehlende Werte und Limits; er berechnet diese Kennzahlen nicht aus ursprünglichen Trades. [Der Vertrag #3036](./pr-3036-MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md) ist der historische fachliche Vorläufer. Der Ursprung der jeweiligen Kennzahl muss deshalb als eigener Producerpfad verfolgt werden.
+
+[Composition #3040](./pr-3040-double_play_composition.py), insbesondere Zeilen 99–209, führt vorhandene Entscheidungen zusammen. BLOCKED, CHOP und KILL_ALL bleiben wirksam. ELIGIBLE_MODEL_ONLY ist auch bei bestandenen Prüfungen keine Order- oder Betriebsfreigabe. In diesen PRs wird weder ein realer Profilproducer eingeführt noch ein vollständiges numerisches Mapping vom Futures-Snapshot zur frühen Suitability geliefert.
+
+## 3. Noch weiter zurück: Warum vorhandene Scanner kein Ersatz waren
+
+Die GitHub-Pfadhistorien sind am April-Commit b5e5d710e097d6fad465364cd3ab1f3b9898a958 gepinnt und vollständig paginiert: [Scanner-Ursprünge](./scanner-origins.json). Die Dateien waren schon im Sammelcommit vom Dezember 2025 vorhanden. Das datiert ihr Vorhandensein in dieser Git-Linie, nicht ihre ursprüngliche Konzeption und nicht den Beginn der beiden Universen. Dezember wird hier nur historisch abgeglichen.
+
+Der spätere [Januar-PR #1080](https://github.com/rauterfrank-ui/Peak_Trade/pull/1080) ändert im betroffenen Scanner lediglich den Config-Defaultpfad. Von seinen 517 Dateien wurden die vollständige Dateiliste und die relevante Scanneränderung geprüft, nicht der ganze PR semantisch bewertet. [April-PR #2249](https://github.com/rauterfrank-ui/Peak_Trade/pull/2249) ändert nur die Beschreibung der später möglichen echten Datenanbindung des Dummy-Scanners.
+
+Der Quellcode erklärt die verschiedenen Bedeutungen:
+
+- [scan_markets.py](./at-april26-scan_markets.py), Zeilen 44–104: erstellt symbolabhängige Dummy-OHLCV und berechnet darauf Strategie-/Backtestkennzahlen. Ein hoher Rankingwert ist hier kein beobachtetes Futures-Marktprofil.
+- [run_market_scan.py](./at-april26-run_market_scan.py), Zeilen 193–300 und 440–480: forward lädt OHLCV über den Exchange-Client und erzeugt letztes Signal/Preis/Zeit; backtest-lite nutzt dagegen generierte Dummy-OHLCV und erzeugt Stats. Beide werden mit ihrem Modus als market_scan-Ergebnisse geloggt. Codevorhandensein ist kein Ausführungsnachweis.
+- [portfolio_builder.py](./at-april26-portfolio_builder.py), Zeilen 242–383: filtert gespeicherte Scan-Ergebnisse unter anderem nach Modus und sortiert Stats nach Sharpe oder Return. Er erzeugt Portfolio-Kandidaten, keine vollständigen Mark-/Index-/Funding-/Spread-/OI-Profile.
+
+Damit ist der Ausschluss im April-Producer-Vertrag technisch plausibel: Ein Run-/Rankingwert kann aus einer anderen Datenfamilie und einer anderen Berechnung stammen. Er darf nicht stillschweigend als Instrument-Intelligence-Profil weitergereicht werden.
+
+## 4. Juni: Ein weiterer Ausgang ist Observability
+
+[Producer #4048](./pr-4048-universe_selection_producer_v1.py) stellt einen Persistenzhelfer bereit. Ohne Upstream-Daten werden leere Universe-/Ranking-Arrays und explizite Missing-Truth-Gründe gespeichert. Der PR stellt noch keine Closeout-Hooks oder Dashboardintegration bereit.
+
+[Adapter #4052](./pr-4052-futures_universe_upstream_adapter_v1.py), Zeilen 199–245 und 250–421, verarbeitet bereits vorhandene FuturesProducerPackets. Er sortiert nach mitgeliefertem rank und Kandidaten-ID, begrenzt das Ranking auf 20 und kann ein vorausgewähltes oder das bestplatzierte geeignete Instrument anzeigen. Er berechnet keine eigene Markt-Scoreformel und ersetzt keinen Profilproducer. Spot- und unzulässige Market-Surface-Quellen werden abgegrenzt.
+
+[Fixture-Quelle #4053](./pr-4053-futures_producer_packet_fixture_source_v1.py) ergänzt einen JSON-Testloader. fixture_only=true, observability_truth_allowed=false und fixture_marked=true müssen mitgeführt werden. Ein erfolgreiches Fixture→Adapter-Ergebnis ist deshalb kein historischer Nachweis echter Versorgung. Die PR-Beschreibungen halten den operationalen Quellenmangel zum damaligen Stand ausdrücklich offen.
+
+Dieser Strang erklärt eine zusätzliche Verwechslungsgefahr: Universe/Top20/Selected-Future als Anzeige-/Persistenzmodell ist ein anderer Consumer als Scope-/Suitability-Berechnung. Ein gemeinsamer Packet-Typ beweist keine vollständige gemeinsame Versorgung.
+
+## 5. Ende Juni: Suitability bekommt eine andere konkrete Auswahlregel
+
+[SuitabilityResultV1 #4685](./pr-4685-suitability_binding_v1.py) bindet gelieferte DirectionalAssessment- und SurvivalResult-Objekte über Instrument, Seite, Epoch und Digests. Sie erhält außerdem Regime und Registry-Snapshot. Eligible Strategies werden nach unterstützter Seite/Regime und disabled gefiltert; Auswahl erfolgt nach priority_rank und strategy_id. unknown_regime blockiert.
+
+Das ist eine tatsächliche andere Ausgestaltung als die Presence-Projektion vom April. priority_rank ist ein angelieferter Strategierang, kein neu berechneter Instrument-/Top20-Marktscore. Es gibt hier keinen eigenständigen Regime-Estimator oder Beweis, dass diese Registry-Prioritäten aus Learning/Optimization stammen. Eine automatische Gleichsetzung oder vollständige Ablösung des April-Vertrags wäre deshalb unbelegt.
+
+## 6. Ursprung der Juli-Rohversorgung: Research und Runtime werden ausdrücklich getrennt
+
+[Ingestion #4726](./pr-4726-ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py) führt begrenzte OKX-Public-GET-Erfassung für OHLCV-, Mark-, Index- und Funding-Rohdaten samt Digestprotokoll ein. Der PR berichtet 20.161 Zeilen je Preisfamilie und 42 Funding-Zeilen eines historischen Fensters; wegen fehlender historischer Bid/Ask-Serie lautet der dortige Status schema-incomplete. Diese Mengen sind hier eine PR-Aussage und wurden nicht gegen Original-Raw-Dateien nachgerechnet.
+
+#4727 reagiert darauf mit einer expliziten Profiltrennung. [Datasetvertrag](./pr-4727-admissible_versioned_futures_dataset_v1.py) und [Research-Wiring](./pr-4727-mv2_research_wiring_v1.py), Zeilen 350–444, erlauben im Economic-Research-Profil eine gebundene Modellannahme statt beobachteter historischer Quotes: best_bid/ask können aus mark_price ± mark_price×half_spread_bps/10.000 entstehen. Der Status EXECUTION_MODEL_BOUND_NOT_OBSERVED und observed_l1_used=false kennzeichnen dies; wenn vorhandenes beobachtetes L1 verwendet wird, wechselt der zurückgegebene Status entsprechend. Das Runtime-Profil verlangt weiterhin beobachtetes L1. Ein identisch benanntes best_bid-Feld kann an dieser Stelle somit unterschiedliche Herkunft besitzen.
+
+Der damalige Wiring-Snapshot enthält zugleich noch Defaults: volatility_estimate=0.2, trend_slope=0.01, momentum=0.01, liq_score=0.9 und range_ratio=0.4 sowie weitere Fallbacks. Das erklärt den späteren Volatilitäts-Producer-/Quarantänestrang, beweist aber keine Aufarbeitung aller anderen Features. Die Quelle-/Berechnungsfrage für diese übrigen Features bleibt ein eigener offener Anschluss. Keine Bewertung des heutigen Codes allein aus diesem Juli-Snapshot.
+
+[Stager #4728](./pr-4728-stage_okx_economic_research_dataset_from_raw_staging_v1.py) normalisiert die getrennten Rohdaten, bindet Kosten und Splits und schreibt das Research-Dataset. Der Registry-Diff unterscheidet FOUND/PRESENT von BOUND und hält die damalige Evaluation noch offen. Die kanonische Minutenvolatilität kommt erst später durch #5148/#5149 hinzu, wie im vorherigen Bericht belegt.
+
+[Evaluation #4729](https://github.com/rauterfrank-ui/Peak_Trade/pull/4729) bindet konkrete Digests und Kosten; die PR-Beschreibung berichtet FAILED und trade_count=0. Der genannte ursprüngliche Evidence-Ordner /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_okx_real_admissible_futures_economic_evaluation_v1_20260701T150920Z ist am überprüften Ort nicht vorhanden. Deshalb wird die damalige Runmeldung hier nicht zu einem unabhängig geprüften Laufzeitnachweis hochgestuft. Gespeicherte Config und Registry-Diff bleiben konkrete historische Belege des gebundenen Versuchs.
+
+## 7. Konsequenz für den Gesamtanschluss
+
+Der historische Rückweg zeigt mehrere getrennte Anforderungen: reale Marktprofile für Scope/Suitability, vorbereitete Sequenz-/Arithmetikmetriken für Survival, Beobachtungsmodelle für die Anzeige und kostenmodellgebundene Daten für Economic Research. Sie teilen Begriffe und teilweise DTOs, aber weder automatisch dieselbe Quelle noch dieselbe numerische Bedeutung.
+
+Die nächste offene Kante ist damit präziser: Wer erzeugte die im April vorausgesetzten Profil-/Sequenzwerte tatsächlich, mit welcher Zeit-/Instrument-/Strategiebindung, und welche spätere Integration führte sie einem Consumer zu? Zusätzlich sind Regime, Trend, Momentum und Liquidity-Features des Juni/Juli-Wirings bis zu ihren eigenen Erzeugern zurückzuverfolgen. Die gefundenen Defaults sind kein Beweis dafür, dass niemals ein vollständigerer Weg existierte.
+
+## 8. Einzelregister der 20 PRs
+
+### #1080 · 30.01.2026, 16:36 Europe/Berlin · Scanner-Vorgeschichte, enger Diff
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/1080) · Merge-Commit f866de04769fa310e63bc663a3da9882738180c0.
+
+Am 30. Januar wird im vorhandenen run_market_scan.py nur der Config-Default von config.toml auf config/config.toml geändert.
+
+Grenze: Kein Ursprung des Scanners und keine Instrument-Intelligence-Versorgung. Nur relevanter Scanner-Diff geprüft; 517 PR-Dateien vollständig inventarisiert, nicht vollständig semantisch geprüft.
+
+[Metadaten](./pr-1080.json) · [vollständige Dateiliste/Diff-Patches](./pr-1080-files.json).
+
+### #2249 · 04.04.2026, 17:58 Europe/Berlin · Scanner-Dokumentation
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/2249) · Merge-Commit 2bacb5a31cbd7af1344c7398b5b06625539d50b9.
+
+Am 4. April wird die Beschreibung einer später möglichen echten Datenquelle angepasst. Die Funktion erzeugt weiterhin Dummy-Daten.
+
+Grenze: Kein Ersatz des Dummy-Producers und kein neues Futures-Feed.
+
+[Metadaten](./pr-2249.json) · [vollständige Dateiliste/Diff-Patches](./pr-2249-files.json).
+
+### #3036 · 25.04.2026, 23:47 Europe/Berlin · Ursprünglicher Survival-Vertrag
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3036) · Merge-Commit 8ae386ad0ba503f8a061a5eb55f90e40965c5a44.
+
+Definiert arithmetischen Fingerprint, Long-/Short-Parameter und Sequenzüberlebensmetriken als vorgelagerte Voraussetzungen.
+
+Grenze: Docs-only; keine Erzeugung der verlangten Pfad-/Sequenzmetriken.
+
+[Metadaten](./pr-3036.json) · [vollständige Dateiliste/Diff-Patches](./pr-3036-files.json).
+
+### #3037 · 26.04.2026, 00:10 Europe/Berlin · Survival-Empfänger
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3037) · Merge-Commit d8d1d1848ff9ea89533cd3c89748c30458451e82.
+
+Reiner Evaluator nimmt Fingerprint, Seitendaten, sieben Sequenzmetriken und Limits entgegen und prüft Vollständigkeit/Schwellen.
+
+Grenze: Berechnet diese Forschungsmetriken nicht aus Trades oder Marktserien; Status ist keine Trading-Freigabe.
+
+[Metadaten](./pr-3037.json) · [vollständige Dateiliste/Diff-Patches](./pr-3037-files.json).
+
+### #3038 · 26.04.2026, 00:46 Europe/Berlin · Suitability-Vertrag
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3038) · Merge-Commit 9b32abbec40f6f07bbd99d882b03b24ce37de1db.
+
+Verbindet Strategieeignung mit Instrument Intelligence und Survival. Namen, Registry-Labels und AI-Texte genügen nicht.
+
+Grenze: Docs-only; kein Profilproducer oder runtime wiring.
+
+[Metadaten](./pr-3038.json) · [vollständige Dateiliste/Diff-Patches](./pr-3038-files.json).
+
+### #3039 · 26.04.2026, 01:08 Europe/Berlin · Früher Suitability-Empfänger
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3039) · Merge-Commit e5c7b62c3af16a2638dfdf17b3dff7df0e83c04a.
+
+InstrumentIntelligenceSummary besteht aus Presence-Flags für Volatilität, Liquidität, Spread, Funding und Frische. Eignung nutzt zusätzlich explizite Seitenangaben und Survival-Status.
+
+Grenze: Keine Berechnung des Zahlenprofils und keine Verifizierung der realen Quellen durch diese Presence-Flags.
+
+[Metadaten](./pr-3039.json) · [vollständige Dateiliste/Diff-Patches](./pr-3039-files.json).
+
+### #3040 · 26.04.2026, 01:27 Europe/Berlin · Frühe Composition
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3040) · Merge-Commit fc2d38b6d5db0d397112cbee57c6c136c169f7d9.
+
+Führt bereits berechnete Transition-, Survival- und Suitability-Entscheidungen zusammen; Blocker behalten Wirkung.
+
+Grenze: Kein Aufruf eines Markt-/Research-Producers. ELIGIBLE_MODEL_ONLY ist Modellstatus.
+
+[Metadaten](./pr-3040.json) · [vollständige Dateiliste/Diff-Patches](./pr-3040-files.json).
+
+### #3046 · 26.04.2026, 15:58 Europe/Berlin · Futures-Input-Entwurf
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3046) · Merge-Commit 11fe97e08cee75672b9be7569fb3c03fcf513950.
+
+Beschreibt statischen Snapshot für Kandidat, Ranking, Provenienz, Volatilität/ATR, Liquidität, Derivate und Opportunity.
+
+Grenze: Entwurf des Übergabevertrags; keine vollständige automatische Versorgung.
+
+[Metadaten](./pr-3046.json) · [vollständige Dateiliste/Diff-Patches](./pr-3046-files.json).
+
+### #3047 · 26.04.2026, 16:19 Europe/Berlin · Futures-Input-Modell
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3047) · Merge-Commit 4274f9762e3b90fc6d423e11f7c8ae3b27ae4fed.
+
+Codiert die DTOs und differenzierte Readiness für Scope, Capital, Suitability und Survival.
+
+Grenze: complete-Flags werden übernommen. Readiness prüft ausgewählte Pflichtfelder/Status; kein Mess- oder Quellenverifikationssystem.
+
+[Metadaten](./pr-3047.json) · [vollständige Dateiliste/Diff-Patches](./pr-3047-files.json).
+
+### #3056 · 26.04.2026, 19:37 Europe/Berlin · Producer-Vertrag und historische Lückenaussage
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3056) · Merge-Commit b5e5d710e097d6fad465364cd3ab1f3b9898a958.
+
+Vorhandene Scanner-/Experiment-/Top-N-Ergebnisse sind ausdrücklich nur Teilkontext. Erwartet extern berechnete, vorbereitete Eingänge.
+
+Grenze: Keine konkrete Rankingformel, Venue-Anbindung oder vollständiger Snapshot-Producer.
+
+[Metadaten](./pr-3056.json) · [vollständige Dateiliste/Diff-Patches](./pr-3056-files.json).
+
+### #3058 · 26.04.2026, 20:18 Europe/Berlin · Statischer Producer-Adapter
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3058) · Merge-Commit 8d003a67c34099a823dfb6def7ad0aa192ea06db.
+
+Kopiert vorbereitete Packetfelder in FuturesInputSnapshot, verwirft Runtime-Handles, erzwingt live_authorization=false und ruft Readiness auf.
+
+Grenze: Kein Marktprofilberechner, kein Scanner, kein Fetch. adapter_status=OK ist von fachlicher readiness getrennt.
+
+[Metadaten](./pr-3058.json) · [vollständige Dateiliste/Diff-Patches](./pr-3058-files.json).
+
+### #3188 · 30.04.2026, 23:38 Europe/Berlin · Begriffliche Bindung
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/3188) · Merge-Commit d79b68379a482c5169a98dcfb37cc04a9ace76d7.
+
+Top-20 candidate intelligence wird als Arbeitsbegriff des bestehenden Snapshot-Vokabulars eingeordnet.
+
+Grenze: Eine bestehende Dokumentdatei geändert; keine Selector-Implementierung, kein Datenfluss.
+
+[Metadaten](./pr-3188.json) · [vollständige Dateiliste/Diff-Patches](./pr-3188-files.json).
+
+### #4048 · 08.06.2026, 16:50 Europe/Berlin · Observability-Persistenz
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/4048) · Merge-Commit 682a7f6a8b72e5aa954903f124331d4832a081bb.
+
+Schreibt bei fehlendem Upstream explizite Missing Truth mit leeren Universe-/Ranking-Arrays und Belegverweisen.
+
+Grenze: Keine Closeout-Hooks oder Dashboard-Integration in diesem PR; keine erfundenen Futures-Zeilen.
+
+[Metadaten](./pr-4048.json) · [vollständige Dateiliste/Diff-Patches](./pr-4048-files.json).
+
+### #4052 · 08.06.2026, 18:13 Europe/Berlin · Observability-Adapter
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/4052) · Merge-Commit 6196d61364c168e235b1c9a27378dbff45cf755d.
+
+Mappt vorhandene FuturesProducerPackets in Universe-/Top20-/Selected-Future-Readmodel; sortiert über angelieferte Ranks und begrenzt Top20.
+
+Grenze: Neue Ranking-/Profilberechnung fehlt. U1 ausdrücklich ohne operationalen Upstream-Producer; kein Runtime-wiring.
+
+[Metadaten](./pr-4052.json) · [vollständige Dateiliste/Diff-Patches](./pr-4052-files.json).
+
+### #4053 · 08.06.2026, 18:31 Europe/Berlin · Fixture-Quelle
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/4053) · Merge-Commit cd54aa0f88cd53f24266af18148efa323e335d41.
+
+Lädt gekennzeichnete Testpakete und prüft Kompatibilität mit U1.
+
+Grenze: fixture_only=true, observability_truth_allowed=false; keine echte Datenversorgung.
+
+[Metadaten](./pr-4053.json) · [vollständige Dateiliste/Diff-Patches](./pr-4053-files.json).
+
+### #4685 · 30.06.2026, 15:43 Europe/Berlin · Spätere Suitability-Variante
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/4685) · Merge-Commit 45bc596f52cab3bb5df39e47766740994e7a8ced.
+
+Bindet DirectionalAssessment und SurvivalResult über Instrument, Seite, Epoch und Digests; filtert angelieferte Registry nach Seite/Regime und sortiert priority_rank,strategy_id.
+
+Grenze: Registry und Regime werden bereitgestellt. Kein automatischer Nachweis, dass sie aus dem April-Instrumentprofil oder Learning stammen.
+
+[Metadaten](./pr-4685.json) · [vollständige Dateiliste/Diff-Patches](./pr-4685-files.json).
+
+### #4726 · 01.07.2026, 12:16 Europe/Berlin · OKX-Rohdaten-Ingestion
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/4726) · Merge-Commit 713db77d083197cc59b8ce4f3217b6b5f2935529.
+
+Implementiert begrenzte Public-GET-Erfassung von OHLCV, Mark, Index und Funding samt Raw-Digests. PR meldet echte Erfassung mit schema-incomplete wegen fehlender historischer Bid/Ask-Serie.
+
+Grenze: PR-Laufmeldung hier nicht gegen Original-Raw-Bundle verifiziert; noch kein admissibles vollständiges Dataset in diesem Schritt.
+
+[Metadaten](./pr-4726.json) · [vollständige Dateiliste/Diff-Patches](./pr-4726-files.json).
+
+### #4727 · 01.07.2026, 12:42 Europe/Berlin · Explizite Research-Variante
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/4727) · Merge-Commit 0291a499dbf73a93b992a85b73cd31c4cc7fbe25.
+
+Trennt economic_research_v1 mit gebundenen Modellkosten und nicht beobachtetem L1 vom strengeren runtime_market_context_v1.
+
+Grenze: Research-Code kann modellierte Bid/Ask aus Mark und Half-Spread bilden; nicht als beobachtete historische Quotes behandeln. Weitere numerische Defaults bestehen in diesem damaligen Snapshot.
+
+[Metadaten](./pr-4727.json) · [vollständige Dateiliste/Diff-Patches](./pr-4727-files.json).
+
+### #4728 · 01.07.2026, 13:05 Europe/Berlin · Offline-Staging
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/4728) · Merge-Commit 47cd7ca866c5cd0917e6400e44bc9026e7b380e5.
+
+Verarbeitet digestgeprüfte getrennte Raw-Familien, schreibt Dataset/Provenienz/Kosten/Splits und hält FOUND/PRESENT von BOUND getrennt.
+
+Grenze: Damals keine vollständig belegte Runtime-Versorgung; spätere kanonische Volatilität erst #5148/#5149.
+
+[Metadaten](./pr-4728.json) · [vollständige Dateiliste/Diff-Patches](./pr-4728-files.json).
+
+### #4729 · 01.07.2026, 17:21 Europe/Berlin · Historische Evaluation, berichteter Lauf
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/4729) · Merge-Commit cd30ec30d02513c5aab00fb79174aad2505723bf.
+
+Bindet konkrete Dataset-, Manifest-, Config- und Kosten-Digests. PR meldet Evaluation FAILED bei trade_count=0; Registry-Diff hält Nicht-Promotion fest.
+
+Grenze: Genannter Original-Evidence-Ordner am überprüften Pfad nicht vorhanden. Laufwirkung daher hier nur als PR-/Registry-Aussage, nicht unabhängig re-verifiziert.
+
+[Metadaten](./pr-4729.json) · [vollständige Dateiliste/Diff-Patches](./pr-4729-files.json).
+
+
+## Prüfgrenzen und Erhalt
+
+20 PR-Metadaten mit vollständigen Dateilisten; zentrale Quellen als revisionsgebundene Snapshots samt SHA256 in [sources.json](./sources.json). Fünf frühere Pfadhistorien am Juli-Commit und drei Scannerhistorien am April-Commit, jeweils vollständig paginiert. API-Ergebnisse sind eine datierte Erhebung, keine globale Geschichte unerreichbarer oder anderer Branches. Das lokale Repository ist shallow; seine lokale Historiengrenze wurde nicht als Ursprung verwendet.
+
+Lesender GitHub-Zugriff über gh api, weil der vorhandene GitHub-Connector erneut Unknown tool meldete. Keine Exchange-Aufrufe, keine neuen Scans oder Backtests, keine Python-Projektimporte, keine Repo-/Vault-Änderungen. Ergänzt werden nur dieses Untersuchungsartefakt und die vorhandene abgeleitete Architekturübersicht. Vorherige Canvas-Daten/Sichten bleiben erhalten. TypeScript-Prüfung ist keine visuelle Abnahme. [Verifikation](./verification.json).

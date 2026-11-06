@@ -1,0 +1,143 @@
+{
+  "id": "SL05",
+  "phase": 5,
+  "title": "Vergleichbarkeit und Vergleich",
+  "introduction_commit": "e1efa56f2bde5fefd48c62260c1f720d99138e71",
+  "introduction_date": "2026-08-17T19:59:59Z",
+  "commit_subject": "research: add canonical comparison SSOT v1 (#5932)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/e1efa56f2bde5fefd48c62260c1f720d99138e71",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_comparison_ssot_v1.py",
+  "code_blob": "8c229991e913ee75411b8d6279a75301aecee1a7",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "4154155a46990cb6abc9bd78d6cf2ead3c50ed157c43ea990bc0185fa94461ff",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL05-canonical_comparison_ssot_v1.source.py",
+  "source_lines": 819,
+  "module_docstring": "Phase 5 Canonical Comparison SSOT v1 (research evidence only).\n\nDeterministic comparability for Canonical Experiment Identity bound\ncandidates. Experiments may be ranked only when every required comparison\ndimension is identical or covered by an explicit versioned compatibility\ncontract. This layer reuses Phase 1 identity and Phase 2 experiment_id.\nIt has no runtime, order, live, funding, canary, promotion, champion-\nchallenger, or config-write authority.\n\nMissing fee, funding, split, robustness version, or market universe is\nnever treated as compatible.",
+  "public_functions": [
+    {
+      "name": "build_canonical_comparison_result_v1",
+      "line": 172
+    },
+    {
+      "name": "rank_comparable_candidates_v1",
+      "line": 247
+    },
+    {
+      "name": "derive_comparison_identity_v1",
+      "line": 349
+    },
+    {
+      "name": "validate_canonical_comparison_result_v1",
+      "line": 373
+    },
+    {
+      "name": "canonical_record_payload",
+      "line": 444
+    }
+  ],
+  "classes": [
+    {
+      "name": "ComparisonValidationError",
+      "line": 123
+    },
+    {
+      "name": "ComparisonRankingRejectedError",
+      "line": 127
+    },
+    {
+      "name": "ComparisonCandidateV1",
+      "line": 132
+    },
+    {
+      "name": "CompatibilityRuleV1",
+      "line": 143
+    },
+    {
+      "name": "ComparisonCompatibilityContractV1",
+      "line": 150
+    },
+    {
+      "name": "CanonicalComparisonRequestV1",
+      "line": 156
+    },
+    {
+      "name": "CanonicalComparisonRankingRequestV1",
+      "line": 164
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 450,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 731,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_COMPARISON_SSOT_V1.md",
+      "status": "added",
+      "sha": "49bad53232d3bfd9df5a3cc704096f180fcd65b6",
+      "additions": 134,
+      "deletions": 0,
+      "changes": 134
+    },
+    {
+      "filename": "src/experiments/canonical_comparison_ssot_v1.py",
+      "status": "added",
+      "sha": "8c229991e913ee75411b8d6279a75301aecee1a7",
+      "additions": 819,
+      "deletions": 0,
+      "changes": 819
+    },
+    {
+      "filename": "tests/experiments/test_canonical_comparison_ssot_v1.py",
+      "status": "added",
+      "sha": "22137a436849be1ac092a0f5d5feac79d1f9e707",
+      "additions": 348,
+      "deletions": 0,
+      "changes": 348
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_comparison_ssot_v1.py",
+      "status": "added",
+      "sha": "22137a436849be1ac092a0f5d5feac79d1f9e707",
+      "additions": 348,
+      "deletions": 0,
+      "changes": 348
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_comparison_ssot_v1.py",
+      "status": "added",
+      "sha": "8c229991e913ee75411b8d6279a75301aecee1a7",
+      "additions": 819,
+      "deletions": 0,
+      "changes": 819
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "e1efa56f2bde5fefd48c62260c1f720d99138e71",
+      "date": "2026-08-17T19:59:59Z",
+      "subject": "research: add canonical comparison SSOT v1 (#5932)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/e1efa56f2bde5fefd48c62260c1f720d99138e71",
+      "parents": [
+        "2cd8f6b6e1c8051decb3506abc3a2250b4f228c5"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

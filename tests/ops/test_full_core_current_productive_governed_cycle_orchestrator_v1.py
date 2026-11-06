@@ -210,6 +210,7 @@ def _run(tmp_path: Path, **kwargs):
         perform_get=kwargs.pop("perform_get", False),
         eg_cycle_dispatch=kwargs.pop("eg_cycle_dispatch", _eg_stub),
         t2_cycle_dispatch=kwargs.pop("t2_cycle_dispatch", _t2_hold),
+        position_management_cycle_dispatch=kwargs.pop("position_management_cycle_dispatch", None),
     )
 
 

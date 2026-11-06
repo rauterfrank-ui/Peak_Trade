@@ -1,0 +1,9 @@
+### CON-2086 — Execution-Modi und vollständiger Handelslebenszyklus
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Future ist ein Instrumenttyp; Shadow, interne Simulation, Paper, Testnet, Canary und Live sind verschiedene Pfade/Autorisierungen. N5-ENTER-Join setzt im untersuchten Weg LIVE und führt andere Klassen HOLD. Submit, ACK, Teilfill, Fill, Cancel, UNKNOWN, Accounting und Reconciliation bleiben getrennt. Unklarer POST-Ausgang erfordert Abgleich statt blindem Retry.
+
+**Grenze:** Vorhandenes Modustoken ist kein universeller Dispatcher. Long-/Short-Intent aus Fixture ist keine Venue-Order. Vollständige Reduce-/Exit-/Rotation-/Reservierungsfreigabe bleibt offen.
+
+Quellen: EVI-2220, EVI-2295, EVI-2234, EVI-2240, EVI-2273.

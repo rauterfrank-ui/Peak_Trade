@@ -1,0 +1,177 @@
+# PeakTrade: systemweiter Rekonstruktionsstand — 01.11.2026
+
+Der erste systemweite Quellen- und Navigationsdurchgang ist abgeschlossen. Die vollständige fachliche und kausale Rekonstruktion ist offen. Dieses Dokument erweitert den Quellenzugang und verknüpft vorhandene Untersuchungen. Es ersetzt weder Obsidian-Register noch eine kanonische Systemarchitektur.
+
+## Geprüfte Quellen und Grenzen
+
+- Vergleichsrevision: `5d1c838c15369507c5247834db4dd0df25592169`. Lokaler origin/main-Pin, keine neue Remote-Verifikation; kein automatisch maßgeblicher Betriebsstand.
+- `src/`: 4987 Python-Dateien strukturell gelesen; 38119 Definitionen, 16051 interne Importdatensätze. Statische Aufrufkandidaten sind keine bewiesenen Datenflüsse. Diese globale Inventur überschneidet sich bewusst mit früheren Bestandsaufnahmen und zählt nicht als neuer Funktionsnachweis.
+- Vier externe Git-Sicherungen plus lokales Repository: 8736 verschiedene erreichbare Commit-IDs, davon zwölf zusätzlich zur bisherigen lokalen Menge. Alle untersuchten Repositories sind shallow; vollständige Ursprungshistorie bleibt unbewiesen.
+- Recovery-Code: 809 Python-Dateien lesbar/parsbar, 230 verschiedene Inhalte. 302 Dateien stimmen exakt mit bekannten lokalen Git-Blobs überein; 507 sind noch nicht zugeordnet, nicht automatisch verlorene PeakTrade-Funktionen.
+- Markdown-Recovery: 4388 von 4388 historischen Inhaltsgruppen aktuell per SHA256 bestätigt. 0 bleiben ungeklärt. Fehlende Repräsentanten belegen noch keinen endgültigen Inhaltsverlust.
+- Architekturarchiv: 300 Dokument-/JSON-/JSONL-Dateien technisch gelesen und durchsuchbar; Syntaxprüfung beweist keine Integrität aller Manifestverweise und keine Richtigkeit ihrer Aussagen.
+
+## Bereits belastbare Unterscheidungen
+
+1. Das ursprüngliche Self-Learning-Ziel war mehr als Reporting. Ein enger statischer Score-Feedbackpfad ist belegt; daraus folgt kein vollständiges adaptives Lernsystem.
+2. Die 14 IU-Ebenen eines späteren Ausgrabungsskripts dürfen nicht als ursprüngliche Gesamtstruktur des Self-Learning-Universums übernommen werden.
+3. Vorhandene Architekturregister, spätere Konsolidierungen und heutige Codepfade gehören zu unterschiedlichen Revisionen. Ein alter offener Befund muss am zutreffenden aktuellen Pfad erneut geprüft werden.
+4. Die Konsolidierung vom 31.10. beschreibt wichtige offene Übergänge bei Universe/Selection, Reconciliation, Treasury und Learning. Sie dokumentiert Voruntersuchungen, ersetzt hier aber keine frische Verifikation der Funktionskörper.
+5. Zwölf zusätzliche Backup-Commits enthalten unter anderem Stash-/Index-Objekte und einen älteren Branch mit Governance-/Bridge-Arbeit. Die beiden gesuchten originalen IU-/GVEF-Ausgabeordner wurden dadurch bisher nicht wiedergefunden.
+
+## Untersuchungsfelder — keine neue Universe-Taxonomie
+
+### Q01: Universe, Ranking, Selection und Binding
+
+Welche Instrumente werden warum betrachtet, gewichtet und gebunden?
+
+Historischer/vorheriger Stand: Alte Konsolidierung vom 31.10.: Cap 2.1–2.4 vorhanden; durchgehende Producer-Kette am S5-Host unbewiesen.
+Semantischer Prüfbedarf: Identität, Venue, Future/Spot, Auswahl-Epoche, Ranking-Einheit, Hysterese und Rotation.
+Nächste konkrete Lesefrage: Producer-Erzeugung, persistierter Snapshot und tatsächlicher Host-Verbrauch getrennt verfolgen.
+Technische Navigationskandidaten am Pin: 121 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q02: Intelligentes Universum und Semantik-Ebenen
+
+Welche ursprünglichen inneren Ebenen erzeugen welche Bedeutung?
+
+Historischer/vorheriger Stand: Pilot: 14 Ebenen aus einem IU-Ausgrabungsskript sind eine analytische Tabelle für einen bestimmten Domain-Scope; kein Beweis der Gesamtarchitektur.
+Semantischer Prüfbedarf: Bedeutung jeder Ebene, Eingangs-/Ausgangsvertrag, Zeitbasis, Identität und kausale Wirkung.
+Nächste konkrete Lesefrage: Originalgespräche und frühe Konstruktion gegen spätere Ebenenmodelle und konkrete Consumer abgleichen.
+Technische Navigationskandidaten am Pin: 82 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q03: Marktdaten, G17, CMC, GGE und Dynamic Scope
+
+Wie werden Marktbeobachtungen zu Volatilität, Geometrie und Scope?
+
+Historischer/vorheriger Stand: Konsolidierung 31.10. beschreibt GGE indirekt über Layer C; L6-Verbindung zum belegten Cycle bleibt offen.
+Semantischer Prüfbedarf: Volatilitätseinheit, Mark-/Index-Referenz, PT1M-Finalität, Zeitstempel, Warmup und Instrumentbindung.
+Nächste konkrete Lesefrage: Reale Producer je Host verfolgen; L6 und deterministischen Scope-Generator nicht gleichsetzen.
+Technische Navigationskandidaten am Pin: 58 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q04: Master V2, Double Play und Confirmation
+
+Wie entstehen Richtung, Bestätigung, Entry, Exit und Reversal?
+
+Historischer/vorheriger Stand: Konsolidierung 31.10.: Policy, Composition, SideState und Positionszustand sind unterschiedliche Träger; Confirmation zählt distinkte Beobachtungen.
+Semantischer Prüfbedarf: Epochensemantik, Richtungswechsel, Priorität von Safety/Reconciliation, Cursor und Neustart.
+Nächste konkrete Lesefrage: Ursprüngliche Zustandsmaschine und spätere Versionen einschließlich Vorrangregeln gegenüberstellen.
+Technische Navigationskandidaten am Pin: 247 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q05: Kapital, Treasury, Governance-Risk und Sizing
+
+Welche Kapitalbasis darf welche Entscheidung begrenzen?
+
+Historischer/vorheriger Stand: Konsolidierung 31.10.: 29P-Join und lokale Guards beschrieben; Treasury vor jedem Host-Join nicht belegt.
+Semantischer Prüfbedarf: Equity vs verfügbare Margin, Risiko-Einheit, Positionsgrenzen, Rundung und Handoff-Identität.
+Nächste konkrete Lesefrage: Kapitalherkunft, Freshness und Admission vor dem Venue-Plan je Host verfolgen.
+Technische Navigationskandidaten am Pin: 170 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q06: Execution, Order-Lifecycle und Adapter
+
+Wie wird aus einer Entscheidung eine nachvollziehbare Orderabsicht?
+
+Historischer/vorheriger Stand: Vorheriger Git-Pilot: execution_simple entfernt, einzelne RiskGate-Typen verlagert; keine vollständige Migration daraus ableitbar.
+Semantischer Prüfbedarf: Idempotenz, Client-ID, Retry, Timeout, Partial Fill, Ablehnung und Abschlussstatus.
+Nächste konkrete Lesefrage: Intent, Freigabe, Plan, Adapter und externe Wirkung als getrennte Schritte rekonstruieren.
+Technische Navigationskandidaten am Pin: 797 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q07: Positionen und Reconciliation
+
+Was bedeutet tatsächlicher Positionszustand auf jedem Pfad?
+
+Historischer/vorheriger Stand: Konsolidierung 31.10.: leere injizierte Occupancy ist kein Venue-Flat-Beweis; Closure und S6 nutzen unterschiedliche Quellen.
+Semantischer Prüfbedarf: Missing vs leer, lokale vs Venue-Wahrheit, Fremdposition, Pending Orders und FLAT_RECONCILED.
+Nächste konkrete Lesefrage: Injektion, Parser, Gate und hostabhängige Consumer getrennt lesen.
+Technische Navigationskandidaten am Pin: 130 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q08: Selbstlernendes Universum und DDO
+
+Was sollte gelernt werden und wie beeinflusst es spätere Entscheidungen?
+
+Historischer/vorheriger Stand: Pilot belegt engen statischen Score-Feedbackpfad; produktives adaptives Modelllernen und vollständiger Loop bleiben offen.
+Semantischer Prüfbedarf: Outcome-Zurechnung, Score-Einheit, Zustandsversion, verzögertes Feedback und Lern-/Validierungsgrenze.
+Nächste konkrete Lesefrage: Frühe Promotion-/Patch-Konstruktion und DDO-Varianten gegen aktuelle Feedback-Consumer verfolgen.
+Technische Navigationskandidaten am Pin: 219 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q09: Optimierungsuniversum, Meta-Learning und Experimente
+
+Welche Änderungen werden vorgeschlagen, validiert und übernommen?
+
+Historischer/vorheriger Stand: AEV3-Checkpoint 010 am älteren Pin f3b33f9: Optimization akzeptiert Offline-Research-Input; produktives Feedback UNPROVEN.
+Semantischer Prüfbedarf: Patch-Scope, Akzeptanzentscheidung, Holdout, Drift, Rollback und tatsächlicher Apply-Consumer.
+Nächste konkrete Lesefrage: Self-Learning und Optimization getrennt rekonstruieren; Meta-Learning als historische Schnittstelle prüfen.
+Technische Navigationskandidaten am Pin: 181 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q10: Strategien, Research, Backtests und Portfolio
+
+Welche fachlichen Handelsideen und Prüfverfahren sind erhalten?
+
+Historischer/vorheriger Stand: Frühere Bestandsaufnahme findet historische Research-/Portfolio-Bausteine und aktuelle Werkzeuge; keine pauschale Reaktivierung.
+Semantischer Prüfbedarf: Signal vs System-Replay, Kosten, Lookahead, Datensatzidentität, Aggregation und Robustheit.
+Nächste konkrete Lesefrage: Historische Kandidaten, Datenverträge und heutige Research-Werkzeuge über Revisionen verbinden.
+Technische Navigationskandidaten am Pin: 1071 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q11: Governance, Promotion und Safety
+
+Wer darf welche Entscheidung unter welchen Grenzen verändern?
+
+Historischer/vorheriger Stand: Git-Pilot: entfernte Auto-Risk-Trigger wurden mit fehlenden produktiven Consumern begründet; heutiger Kill-Switch-Kern vorhanden.
+Semantischer Prüfbedarf: Autorität vs Diagnoseflag, Fail-Closed, Override, Scope, Policy-Version und Auditbeleg.
+Nächste konkrete Lesefrage: Normative Regeln gegen tatsächlich aufgerufene Gates und Commit-Epochen abgleichen.
+Technische Navigationskandidaten am Pin: 387 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q12: Persistenz, Recovery und Zustandskontinuität
+
+Welche Identität und welcher Zustand überleben Neustarts?
+
+Historischer/vorheriger Stand: Konsolidierung 31.10.: MV2-Cycle mit persist=False und umgebender Durable-Compose sind unterschiedliche Schreibschritte.
+Semantischer Prüfbedarf: Atomizität, Sequenz, Schema-Version, instrument_id/venue_native_id, Replay und Zustandsverlust.
+Nächste konkrete Lesefrage: Prozesslokale Zustände gegen durable Stores und Restore-Consumer verfolgen.
+Technische Navigationskandidaten am Pin: 327 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+### Q13: Observability, Operator und Architekturwerkzeuge
+
+Welche Beobachtung erklärt das System, ohne Wirkung nur zu behaupten?
+
+Historischer/vorheriger Stand: Architekturarchiv technisch lesbar; seine PROVEN-Labels und gespeicherten Graphen sind keine neuen Laufzeitbeweise.
+Semantischer Prüfbedarf: Messpunkt vs Wirkung, Artefaktidentität, Belegvollständigkeit und reproduzierbare Quellenbindung.
+Nächste konkrete Lesefrage: Reports, Readmodels und Ausgrabungswerkzeuge auf ihre tatsächlichen Belege und Epochengrenzen zurückführen.
+Technische Navigationskandidaten am Pin: 194 (überlappend, anhand von Pfadbegriffen). Vollständige Kandidaten mit Blob-ID in system-overview.json.
+
+## Reihenfolge des Nachweises
+
+Pro Bereich: datierte Originalabsicht und Varianten → konkrete Implementierung an Revisionen → Änderungsgrund und Consumer-Vertrag → aktueller Pfad je Host → begrenzter Laufzeitnachweis. Ein vorhandener Baustein kann erhalten, ersetzt, absichtlich verworfen oder verloren sein; diese Klassifikation bleibt bis zu eigenen Belegen offen. Sowohl Anpassung historischer Bausteine als auch Weiterentwicklung der heutigen Architektur bleiben mögliche Ergebnisse.
+
+Die Untersuchung folgt zusammenhängenden Fragen über Bereiche hinweg. Ein leerer Positionssnapshot, ein Ranking-Flag oder ein gespeicherter Outcome darf nicht still als anderer semantischer Zustand weitergereicht werden. Offene historische Details blockieren unabhängige Teilprüfungen nicht.
+
+## Weiterverwendbare Dateien
+
+- [Gesamtübersicht als strukturierte Daten](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-overview.json)
+- [Quellenindex des Architekturarchivs und Recovery-Markdowns](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/archive-recovery-sources.sqlite)
+- [Abgleich jedes Markdown-Inhalts](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/recovered-markdown-verification.json)
+- [Zusätzliche Backup-Commits](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/additional-backup-commits.json)
+- [Bisheriger Quellenzugang und Suchskript](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/2026-11-01/README.md)
+- [Self-Learning-Semantikpilot](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/2026-11-01/semantic-probe/SelfLearning_Semantik_Pilot.md)
+- [Vorherige Konsolidierung, 31.10.](/Volumes/M2DATA/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md)
+
+## Was unverändert offen ist
+
+Vollständige Git-Ursprungshistorie; Inhalte nicht exportierter Cursor-Tool-Ergebnisse; originale Ausgrabungsartefakte; die fachliche Zuordnung aller Module; echte hostübergreifende Kausalität; belegte produktive Lernwirkung; vollständige semantische Kohärenz. Indexierte Texte wurden technisch erschlossen, nicht sämtlich fachlich gelesen. Keine Produktcodeänderung, Aktivierung, neue Recovery, externe Wirkung oder Laufzeitprüfung ist Bestandteil dieses Durchgangs.
+
+
+## Ergänzung: auch unbenannte und übergreifende Funktionen
+
+Die Untersuchungsfelder bilden keine geschlossene Systemgrenze. Der Owner hat ausdrücklich ebenso alle Funktionen außerhalb benannter Universen und bisher undefinierter Bereiche einbezogen. Verfolgt werden Werte, Einheiten, Zeit-/Identitätsbezüge, Konfiguration, Zustand, Autorität, Umrechnungen und nachgelagerte Überschreibungen über Bereichsgrenzen hinweg. Keine einzelne lineare Pipeline wird vorausgesetzt.
+
+Erster konkreter Fall: [Risk-Sizing-Querschnitt](crosscutting-sizing/RiskSizing_Querschnittsrekonstruktion.md). Dieser erweitert den bisherigen Capital/Risk-Einstieg um gelesene Berechnung und Übergaben an konkreter Revision.
+
+
+## Aktuelle Reihenfolge nach Owner-Präzisierung: Gesamtüberblick vor Einzeltiefe
+
+Frank hat am 01.11.2026 ausdrücklich den systemweiten Überblick vor weiteren tiefen Untersuchungen von Double Play oder anderen Einzelbereichen priorisiert. Die vollständige Rekonstruktion bleibt das Gesamtziel. Bereits vorliegende Detailbefunde sind Pilotbefunde; sie ersetzen keine breite Abdeckung.
+
+Als Nächstes werden Funktionen und bisher unzugeordnete Bestandteile, ihre Schnittstellen und Zustände, übergreifende Verbindungen sowie historische Varianten auf Übersichtsebene zusammengeführt. Benannte Universen sind ein Einstieg, keine Systemgrenze. GGE, Berechnungen, Positions-/Bestätigungszustände, Risiko, Config und andere Abhängigkeiten bleiben bei Double Play sichtbar, ohne den gesamten Überblick von dessen vollständiger Tiefenprüfung abhängig zu machen.
+
+Jede Verbindung unterscheidet mindestens dokumentierte Absicht, statischen Codebezug und beobachtete Wirkung. Unbekannte Beziehungen bleiben offen. Dateizählungen, Importlisten und alte PROVEN-Labels gelten nicht als fachliche Abdeckung.
+
+Die bisherigen Detailfragen bleiben vollständig in reconstruction-status.json unter deferred_detail_questions erhalten. Die dortigen next_questions bestimmen jetzt die Reihenfolge für den breiten Überblick. Codeänderungen und Endsystementscheidungen folgen daraus nicht.

@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "path": "/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/README.md",
+      "sha256": "0a36fca23cafff2468af22ffd9d56cff05cad4a97d5ca1d634af3c76fd1ab4bb"
+    },
+    {
+      "path": "/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/INDEX.md",
+      "sha256": "181bd5f545a15e9d808dbfb806f5c6bd1811e012923677c9661eeae0eff05407"
+    },
+    {
+      "path": "/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/contracts_edges.md",
+      "sha256": "c7463cf8b570a1fb989a00a175bbac609ca427a25396863a90ccf0a2f0b193a6"
+    }
+  ],
+  "historical_register_is_current_runtime_proof": false,
+  "ledger_mutation": false,
+  "read_contracts": [
+    "CON-2089",
+    "CON-2093",
+    "CON-2095",
+    "CON-2097"
+  ]
+}

@@ -125,6 +125,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     STATE_SELECTED_ACTIVE,
 )
+from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import PortfolioTruthSnapshotV1
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
 OWNER_GO = "CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_TO_FIRST_REAL_BLOCKER_V1"
@@ -763,6 +764,7 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
     inst_type: str = "FUTURES",
     offline_compose_only: bool = True,
     cap24_productivity_root: Path | None = None,
+    cap24_observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
     cap21_public_inst_type: str | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductive29PCommonEpochHandoffExecuteResultV1:
@@ -831,6 +833,7 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
                         productivity_root=prod_root,
                         repository_sha=cap24_repository_sha,
                         binding_epoch=decision_epoch,
+                        observed_portfolio=cap24_observed_portfolio,
                     )
                 )
                 bound_input = cap24_handoff.bound_instrument

@@ -1,0 +1,231 @@
+SAFETY-BAUPLÄNE UND RUNBOOKS – HISTORISCHER QUELLENABGLEICH
+02.11.2026 · Ergänzung zur Master-V2-/Außenring-Untersuchung
+
+ERGEBNIS
+Ja: Für alle vier Suchfelder existieren fachliche Planungsquellen. Mehrere bisher
+offene Absichten lassen sich präzisieren. Ein einzelner vollständiger, widerspruchs-
+freier und nachweislich produktiv angeschlossener Endsystem-Bauplan wurde in der
+untersuchten Auswahl nicht gefunden. Ein integriertes Zielbild lässt sich aus den
+nachstehenden Originalquellen rekonstruieren; seine spätere Abnahme bleibt offen.
+
+1. UNTERSUCHUNG UND PROVENIENZ
+Read-only geprüft: Recovery-Originale, zwei gezielt ausgewählte M2DATA-Backups,
+lokal erreichbare Git-Historie und GitHub-PR-Metadaten. Keine Produktimporte,
+Runtime, Testnet-/Live-Aufrufe, Orders, Credentials oder tatsächlichen Kill-Switch-
+Zustandsdateien. Kein Fetch, Scan oder Recovery-Schreibzugriff.
+GitHub main erneut abgefragt und unverändert:
+5d1c838c15369507c5247834db4dd0df25592169.
+Lokale Git-Historie ist shallow; „frühester erreichbarer Commit“ ist deshalb nicht
+gleich ursprüngliche Entstehung. Dokument-Kopfdatum ist nicht automatisch Commit-
+oder Freigabedatum. Backup-Ordnernamen wurden nicht als Inhaltszeitstempel gewertet.
+
+Externe Identität erneut geprüft:
+M2DATA UUID BFA81BFA-80C5-3634-84EE-17B3496EE123, HFS+, OS-seitig beschreibbar;
+PeakDATARecovery UUID 53B45FBD-BBAC-4D62-B42C-A75BD6BD7C57, APFS, beschreibbar.
+Narrow Prozessnamenprüfung zeigte keinen Treffer für R-Studio/PhotoRec/ddrescue/
+TestDisk; das ist keine fortdauernde Garantie über alle Hintergrundaktivitäten.
+Die Originale wurden ausschließlich gelesen.
+
+Quellenpaket:
+- recovery-manifest.json: 16 nach Dateinamen ausgewählte eindeutige Recovery-Texte,
+  gegen vorhandenes Inventar gehasht und als Quellkopien gesichert; relevante
+  Abschnitte gezielt ausgewertet, keine globale semantische Gesamterfassung.
+- m2-source-comparison.json: jeweils acht Dokumente aus
+  /Volumes/M2DATA/PeakTradeDisasterBackUp_FINISH_2026_10_03 und
+  /Volumes/M2DATA/PeakTrade_DisasterBackup_2026_10_06_FINAL_CURRENT.
+- git-source-manifest.json und additional-source-manifest.json: gepinnte Quellen
+  und zwei historische Fassungen, inklusive Revision/Pfad/SHA256.
+- sources/github-pr-*.json: vollständige Metadaten der ausgewählten sechs PRs.
+Recovery-, Backup- und Git-Kopien desselben Textes sind keine drei unabhängigen
+Funktionsbeweise. Die Dokumente dienen der Rekonstruktion, nicht der Aktivierung.
+
+Obsidian README/INDEX erneut zur Navigation gelesen. Register/Run-Zähler und
+historische Blueprint-Pins unverändert; kein neuer Ledger-Run gestartet.
+
+2. GEFUNDENE BAUPLÄNE
+
+A) EMERGENCY-ROADMAP: URSPRÜNGLICHE AUSLÖSER UND SCHUTZSCHICHTEN
+docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md
+Kopfdatum 27.12.2025, Version 1.0, Status GEPLANT.
+Frühester hier erreichbarer Quellstand:
+14d58ec3b9d7acac26720d1aa4cf5ce46acfb725 (28.12.2025).
+Recovery: ROADMAP_EMERGENCY_KILL_SWITCH.Id_dc000010092a730.md.
+Beide untersuchten M2DATA-Kopien stimmen bytegleich mit dem heutigen Git-Pin
+überein. Ein alter Plan kann also weiterhin unverändert im heutigen Baum stehen.
+
+Der Plan bezeichnet Emergency Kill Switch als Layer 4 eines Defense-in-Depth-
+Modells; die ergänzende Architekturübersicht nennt davor Pre-Trade-, Position-
+und Portfolio-Risk. Das ist eine ursprüngliche Schutzstaffelung und darf nicht
+mit einer späteren analytischen Außenring-Gruppierung gleichgesetzt werden.
+Die sieben geplanten Phasen: Zustandsmaschine, Trigger, Recovery, Persistenz/
+Audit, Integration, Chaos-/Fehlertests, Runbooks.
+Geplante Auslöser: manueller Operator, Portfolio-Drawdown, Tagesverlust,
+Volatilität, Exchange-/Netzwerkprobleme, API-Limits und Heartbeat/Systemgesundheit.
+Geplant waren außerdem Approval/Cooldown und schrittweise Wiederaufnahme.
+
+Grenze: Die Triggerbibliothek wurde später mangels produktiver Verdrahtung
+entfernt (PR6278). Die historischen Prozentwerte sind Beispiele dieser Variante,
+keine freigegebenen aktuellen Limits. Die Roadmap verwendet z.B. negativen
+portfolio_drawdown; ein anderes altes Runbook verwendet positiven
+current_drawdown_pct und andere Grenzen. Metrikidentität, Vorzeichen, Bezugszeit
+und Einheit müssen vor Wiederverwendung explizit vereinheitlicht werden.
+
+B) VOLLАUTONOMIE-RUNBOOK: ZUSAMMENHÄNGENDES SAFETY-/EXECUTION-ZIELBILD
+docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md
+Historische Fassung gesichert aus:
+2400c3b0b958f91f7d35f25df72857b94104449b, 05.07.2026.
+Die heutige Fassung und beide gelesenen Backup-Kopien stimmen untereinander
+bytegleich überein. Historische Juli-Fassung separat erhalten.
+
+Bereits die Juli-Fassung enthält die wesentlichen Regeln:
+- Safety/Authority-Widerruf vor Hard-Risk-Reduktion, Reconciliation, normalen
+  Exits, Positionsverwaltung, Reversal und neuem Entry.
+- Safety Kernel prüft unter anderem Governance, Datenqualität, Clock Trust,
+  Kill-Switch, Position/Reconciliation, Risikolimits, Authority Lease, Epochs,
+  Venue-Metadaten, Single Writer und Duplicate/Unknown Outcome.
+- Safety darf nur begrenzen oder ablehnen, keine neue Handelsautorität erzeugen.
+- Getrennte Kill-Modi: BLOCK_NEW, CANCEL_PENDING, REDUCE_TO_FLAT,
+  EMERGENCY_FLATTEN. Keine eindeutige Policy bedeutet keine neuen Positionen/
+  Erhöhungen, keine neue Handelsfreigabe und Reconciliation erforderlich.
+- Kein automatischer Resume.
+- Getrennte Permissions für TradingExecution, SafetyExit, Cancel und
+  ReconciliationQuery; gebunden an Venue, Konto, Instrument, Positions-/Margin-
+  Modus sowie Writer-/Lease-/Fencing-/Epoch-Identität.
+- Dauerhaftes Intent-/Submission-Material vor möglichen Netzwerk-Bytes.
+- Timeout nach möglicher Übertragung: kein blinder Resubmit; zuerst per
+  Client-Order-ID, offenen/recent Orders, Fills und Position abgleichen.
+
+Das ist der stärkste hier gefundene zusammenhängende fachliche Bauplan für die
+Grenze zwischen MV2-Entscheidung und äußerer Safety-/Execution-Verantwortung.
+Es ist eine Absicht und ein Vertragsziel, kein Beweis vollständiger Umsetzung.
+
+C) FUTURES-SICHERHEITSVERTRAG: WELCHE INFORMATIONEN SAFETY BRAUCHT
+docs/ops/specs/FUTURES_RISK_SAFETY_KILLSWITCH_CONTRACT_V0.md
+Historischer Git-Anker 28908e6c3 / PR3030, 25.04.2026.
+Recovery: FUTURES_RISK_SAFETY_KILLSWITCH_CONTRACT_V0.Id_dc00001008605c5.md.
+Beide Backup-Kopien bytegleich zum aktuellen Git-Pin.
+Der Text ist ausdrücklich docs-only und implementiert keine Risikologik.
+
+Er fordert instrument-, venue-, strategie- und portfolioübergreifende Limits
+sowie Futures-Semantik: Contract Size, Settlement-Währung, Notional, Markpreis,
+Margin-Modus/-Puffer, Maintenance Margin, Liquidationsabstand, Funding,
+Positionsmodus und tatsächlich unterstütztes Reduce-/Close-Verhalten.
+Fehlende notwendige Angaben müssen ausführungsfähige Pfade sperren.
+RiskGate bewertet, SafetyGuard schützt vor Orderfähigkeit, KillSwitch sperrt
+Hard-Stop-Fälle; Dashboard/Diagnostik beobachten und besitzen keine Enforcement-
+Autorität. Das präzisiert Zuständigkeiten, belegt aber keine realen Producer.
+
+D) MULTI-FUTURE: GLOBALE SAFETY UND GEMEINSAME WRITER-GRENZE
+PR5895, Merge 89e66bb75c0aed6f3af5b6caefddc55ab7771428, 15.08.2026.
+src/ops/canonical_r6_s3_multi_future_runtime_architecture_v1/
+orchestrator_v1.py und global_safety_v1.py, am heutigen Git-Pin gelesen.
+
+Der implementierte Offline-Graph ordnet:
+isolierte Instrument-Kontexte → per-Instrument-Pipeline/Reconciliation →
+Portfoliorisiko → globale Safety → Arbitration → gemeinsame Writer-Grenze.
+apply_global_safety_v1 erhält ein global_kill_switch-Boolean; bei True wird jedes
+übergebene Intent mit Menge 0 und GLOBAL_KILL_SWITCH blockiert. Safety darf keine
+bereits gesperrte Absicht freigeben oder Menge erhöhen.
+Das ist eine konkrete globale Modellwirkung, nicht nur ein Pfeil im Dokument.
+Es ist aber ausdrücklich ein Offline-/nicht autorisierter Graph. Der Boolean-
+Eingang beweist keinen angeschlossenen dauerhaften Kill-Switch-Producer und keine
+produktive Wirkung über die fünf heutigen Lanes. Die generische Sperre jedes
+Intents ist zudem enger als spätere erlaubte Risikoreduktionsausnahmen. Beide
+Modelle müssen semantisch abgeglichen werden, statt sie ungeprüft gleichzusetzen.
+
+E) FÜNF SLOTS: GEMEINSAME FEHLERBEWERTUNG UND RECOVERY-GRENZE
+PR6623, Merge 26492d4fb4acb3184630ff78bb7285eb9ee0fc3f, 19.09.2026.
+docs/ops/specs/CURRENT_MF_N5_STAGED_PRODUCTIVE_RUNTIME_ADMISSION_RECOVERY_AUDIT_CONTRACT_V1.md
+und src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/.
+
+Architektur 1..5 mit weiterhin auf 1 begrenzter produktiver Admission ist
+ausdrücklich dokumentiert. aggregate_admission_v1.py bildet bereits dann eine
+gemeinsame FAIL_CLOSED-Disposition, wenn mindestens eine Lane FAIL_CLOSED meldet.
+Diese Aggregation bewertet Lane-Ergebnisse; sie ist kein Beweis eines Stop-
+Broadcasts, keiner Venue-Cancel-Aktion und keiner Positionsschließung aller Lanes.
+
+recovery_classification_v1.py klassifiziert Lane-Recovery als dauerhaften Pfad;
+Portfolio-Recovery bleibt FAIL_CLOSED_NO_UNPROVEN_RESTORE. Die Funktion versucht
+keinen Portfolio-Wiederaufbau (portfolio_reconstruction_attempted=False).
+Damit ist eine wichtige offene Frage präzisiert: Es gibt eine bewusste Recovery-
+Grenze, keine belegte automatische Komplettwiederherstellung des Portfolios.
+
+F) NEUSTART-/EMERGENCY-SZENARIEN SIND KONKRET BESCHRIEBEN
+Capability 11.5 und die zugehörigen Python-Verträge nennen Unknown-Submit,
+Reconnect, Neustart mit offener Order und offener Position. Die gelesenen
+Verträge sind ausdrücklich FIXTURE_ONLY; z.B. wird exchange_query_completed=True
+im Szenario gesetzt, nicht durch einen echten Venue-Read belegt.
+Sie verlangen Query-before-retry, keinen stillen Reset auf null, Reconciliation
+vor neuen Strategieaktionen und keine eigenmächtige Aufhebung durch die Runtime.
+Cancel-All und Exit/Reduce sollen unabhängig von Alpha funktionieren.
+Diese Quellen liefern Abnahmefälle für den Umbau, keinen realen Betriebsbeweis.
+
+Die spätere aktuelle RiskReductionVenueProof-Implementierung bindet den exakten
+Orderinhalt an frische authentifizierte Read-only-Venue-Evidenz. Net- und Hedge-
+Modus sind getrennt; Menge darf die offene Position nicht überschreiten, Pending
+Orders sperren den gelesenen Nachweispfad, fehlende/widersprüchliche/veraltete
+Evidenz sperrt. Hier wurde nur Code gelesen, keine Kontoabfrage ausgeführt.
+
+3. KONKRET NEU EINGEGRENZTE OFFENE STELLE: SAME-TICK-ÜBERGABE
+PR6559, Merge 38625340fcc10ae82fd1a6744047869f4fedc515, 17.09.2026,
+dokumentiert ausdrücklich einen erhaltenen PARTIAL/DEVIATES-Befund:
+Entry/Exit liest next_side_state, Safety-/KillSwitch-Binder lesen inp.side_state.
+Der PR behauptet bewusst keine Reparatur und hält den Replay-Producer von
+KILL_ALL_REQUIRED als UNWIRED offen.
+
+Am aktuellen Git-Pin erneut am Quelltext nachgeprüft:
+integrated_offline_trading_logic_replay_v1.py:
+- Zeile 1996: Entry/Exit-Richtungsmapping verwendet next_side_state.
+- Zeile 2158: Safety-Kill-Bewertung prüft inp.side_state.
+- Zeilen 2217 und 2229: KillSwitch-Mode/-Context bekommen inp.side_state.
+- _canonical_scope_event_to_scope_event ab Zeile 859 bildet Scope-Events ab,
+  erzeugt aber kein KILL_ALL_REQUIRED.
+Damit besteht der untersuchte statische Zustandsunterschied weiter.
+Konsequenz: Nicht alle Sicherheitsprojektionen sehen allein aufgrund einer
+neuen State-Transition schon denselben Nachzustand. Daraus folgt weder, dass
+eine gefährliche Order produktiv versandt wurde, noch ein Beweis über sämtliche
+anderen Safety-Eingänge. Kein heutiger Runtime- oder Fehlertest durchgeführt.
+
+4. WELCHE FRAGEN SIND JETZT WIE WEIT GEKLÄRT?
+Auslöser: ursprüngliche Kategorien und gedachte Triggerstruktur gefunden;
+heutige reale Quellen und Verdrahtung nicht vollständig belegt.
+Reichweite: globale Safety ist ausdrücklich gedacht und in einem Offline-Graph
+implementiert; fünf-Lane-Aggregation vorhanden; globaler produktiver Stop-/Cancel-
+Fanout bleibt offen.
+Cancel/Reduce/Flatten: unterschiedliche Modi, Permissions und Futures-Semantik
+gefunden; ein realer Emergency-Gesamtablauf ist dadurch nicht nachgewiesen.
+Wiederanlauf: ursprüngliches Cooldown-/Approval-Ziel, später ausdrückliches Verbot
+automatischen Resume, Fixture-Szenarien und aktuelle Recovery-Grenze gefunden;
+vollständige Portfolio-Wiederherstellung bleibt bewusst unbelegt/gesperrt.
+Zustandsübergabe: historisch ausdrücklich bekannter und heute statisch weiterhin
+sichtbarer Unterschied konkret lokalisiert.
+
+5. QUELLENBASIERTE ARBEITSREIHENFOLGE FÜR DEN SPÄTEREN UMBAU
+Die folgende Reihenfolge ist eine aus Quellen abgeleitete Untersuchungsempfehlung,
+kein als Original ausgegebener neuer Blueprint und keine Aktivierungsfreigabe:
+1) Pro Sicherheitsfall Quelle, Metrik/Einheit/Zeitbezug, Schwelle und betroffene
+   Instrument-/Lane-/Portfolio-/Venue-Reichweite festhalten.
+2) Pro Fall klare Wirkung und Berechtigung zuordnen: Entry sperren, Cancel,
+   Reduce, Flatten, Reconciliation; Risikoreduktionsausnahmen explizit abgleichen.
+3) Eine konsistente Zustandsübergabe im selben Tick festlegen; die nachgewiesene
+   incoming/next-State-Abweichung und den Kill-All-Event-Producer bearbeiten.
+4) Globale Safety, gemeinsame Writer-/Permit-Grenze und alle fünf Lanes an
+   konkreten Consumern verbinden; die heutige N=1-Freigabe getrennt erhalten.
+5) Neustart aus dauerhaftem Order-/Positions-/Membership-/Kapitalzustand behandeln;
+   Unsicherheit sperren und Recovery nicht als selbst erzeugte Freigabe nutzen.
+6) Nach Umbau die daraus folgenden Fehler-/Recovery-/Fanout-Szenarien und die
+   vollständige Wirkungskette beweisen, wie mit dem Owner vereinbart.
+
+6. DOKUMENTQUALITÄT UND SUCHGRENZEN
+Einige verheißungsvolle Namen enthalten praktisch keinen Plan:
+docs/runbooks/KILL_SWITCH_EMERGENCY.md ist am heutigen Pin nur Placeholder/TBD;
+KILLSWITCH_RECOVERY_OBSERVATIONS im Recovery umfasst lediglich 39 Bytes.
+Das alte risk/KILL_SWITCH_RUNBOOK.md beschreibt einen entfernten metrics-basierten
+Evaluator; seine Inhalte nicht mit dem heutigen dauerhaften Core gleichsetzen.
+Das ältere Architekturdiagramm enthält Gradual-Restart-Ideen und Formulierungen
+wie „ACTIVE erlaubt Trading“, die nicht als heutige Orderfreigabe gelten.
+
+Keine vollständige Suche in allen Recovery-Code-Duplikaten, sämtlichen externen
+Backups oder allen GitHub-Branches/PRs behauptet. Die Suche war auf diese offenen
+Safety-Fragen und bekannte Quellen eingegrenzt. Kein Fund ist kein globaler
+Nichtexistenzbeweis. Alle Originale und vorhandene lokale Arbeit blieben erhalten.

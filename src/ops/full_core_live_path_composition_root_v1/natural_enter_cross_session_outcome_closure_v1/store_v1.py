@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import json
+import fcntl
+import math
 import os
+from contextlib import contextmanager
+from dataclasses import fields
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -13,6 +17,15 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
     INDEX_BASENAME,
     OPEN_STATUSES,
     SCHEMA_VERSION,
+    EVENT_CREATED,
+    EVENT_BAR_INGESTED,
+    EVENT_HORIZON_PROGRESS,
+    EVENT_CLOSED,
+    EVENT_FAILED,
+    STATUS_PENDING,
+    STATUS_IN_PROGRESS,
+    STATUS_CLOSED,
+    STATUS_FAILED_TERMINAL,
 )
 from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.types_v1 import (
     NaturalEnterPendingOutcomeRecordV1,
@@ -39,10 +52,186 @@ def _index_path(lane_dir: Path) -> Path:
     return lane_dir / INDEX_BASENAME
 
 
-def _atomic_write_json_v1(path: Path, payload: Mapping[str, Any]) -> None:
+def _validated_record_v2(raw: Any) -> NaturalEnterPendingOutcomeRecordV1:
+    if not isinstance(raw, dict) or set(raw) != {
+        f.name for f in fields(NaturalEnterPendingOutcomeRecordV1)
+    }:
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_SHAPE_INVALID")
+    try:
+        if raw["schema_version"] != SCHEMA_VERSION:
+            raise ValueError
+        for key in ("n_bars_required", "bars_observed"):
+            if isinstance(raw[key], bool) or not isinstance(raw[key], int):
+                raise ValueError
+        if raw["n_bars_required"] <= 0 or raw["bars_observed"] < 0:
+            raise ValueError
+        for key in ("decision_timestamp_unix", "decision_reference_price"):
+            if (
+                isinstance(raw[key], bool)
+                or not math.isfinite(float(raw[key]))
+                or float(raw[key]) <= 0
+            ):
+                raise ValueError
+        if not isinstance(raw["finalized_bar_identities"], list):
+            raise ValueError
+        ids = raw["finalized_bar_identities"]
+        if (
+            any(not isinstance(item, str) or not item for item in ids)
+            or len(set(ids)) != len(ids)
+            or len(ids) != raw["bars_observed"]
+        ):
+            raise ValueError
+        if raw["status"] not in {
+            STATUS_PENDING,
+            STATUS_IN_PROGRESS,
+            STATUS_CLOSED,
+            STATUS_FAILED_TERMINAL,
+        }:
+            raise ValueError
+        for key in (
+            "pending_outcome_id",
+            "decision_event_ref",
+            "canonical_instrument_id",
+            "native_id",
+            "created_at_utc",
+            "updated_at_utc",
+        ):
+            if not isinstance(raw[key], str) or not raw[key]:
+                raise ValueError
+        record = NaturalEnterPendingOutcomeRecordV1.from_index_dict_v1(raw)
+        if record.to_index_dict_v1() != raw:
+            raise ValueError
+        return record
+    except (ValueError, TypeError, OverflowError, KeyError) as exc:
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_RECORD_INVALID") from exc
+
+
+def _apply_event_v2(records: dict[str, NaturalEnterPendingOutcomeRecordV1], event: Any) -> None:
+    keys = {
+        "schema_version",
+        "event_type",
+        "event_time_utc",
+        "pending_outcome_id",
+        "decision_event_ref",
+        "record",
+        "detail",
+    }
+    if (
+        not isinstance(event, dict)
+        or set(event) != keys
+        or event["schema_version"] != SCHEMA_VERSION
+        or not isinstance(event["detail"], dict)
+    ):
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_EVENT_INVALID")
+    record = _validated_record_v2(event["record"])
+    if (
+        event["pending_outcome_id"] != record.pending_outcome_id
+        or event["decision_event_ref"] != record.decision_event_ref
+    ):
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_EVENT_IDENTITY_MISMATCH")
+    prior = records.get(record.decision_event_ref)
+    kind = event["event_type"]
+    if prior is None:
+        if (
+            kind != EVENT_CREATED
+            or record.status != STATUS_PENDING
+            or record.bars_observed
+            or record.closure_refs
+        ):
+            raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_GENESIS_INVALID")
+    else:
+        mutable = {
+            "status",
+            "updated_at_utc",
+            "bars_observed",
+            "finalized_bar_identities",
+            "closure_refs",
+            "failure_reason",
+        }
+        for key, value in prior.to_index_dict_v1().items():
+            if key not in mutable and record.to_index_dict_v1()[key] != value:
+                raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_IDENTITY_CHANGED")
+        if prior.status in {STATUS_CLOSED, STATUS_FAILED_TERMINAL}:
+            raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_TERMINAL_IMMUTABLE")
+        expected_status = {
+            EVENT_BAR_INGESTED: {STATUS_PENDING, STATUS_IN_PROGRESS},
+            EVENT_HORIZON_PROGRESS: {STATUS_PENDING, STATUS_IN_PROGRESS},
+            EVENT_CLOSED: {STATUS_CLOSED},
+            EVENT_FAILED: {STATUS_FAILED_TERMINAL},
+        }
+        if record.status not in expected_status.get(kind, set()):
+            raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_TRANSITION_INVALID")
+        if (
+            record.bars_observed < prior.bars_observed
+            or record.finalized_bar_identities[: prior.bars_observed]
+            != prior.finalized_bar_identities
+        ):
+            raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_PROGRESS_REGRESSION")
+        if kind == EVENT_CLOSED and (
+            record.bars_observed < record.n_bars_required or not record.closure_refs
+        ):
+            raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_CLOSURE_INVALID")
+    records[record.decision_event_ref] = record
+
+
+def _read_history_v2(
+    lane_state_root: Path,
+) -> tuple[list[dict[str, Any]], dict[str, NaturalEnterPendingOutcomeRecordV1]]:
+    lane_dir = lane_pending_lane_dir_v1(lane_state_root)
+    path = _events_path(lane_dir)
+    if path.is_symlink() or _index_path(lane_dir).is_symlink():
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_SYMLINK_FORBIDDEN")
+    if not path.is_file():
+        if _index_path(lane_dir).exists():
+            raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_JOURNAL_MISSING")
+        return [], {}
+    data = path.read_bytes()
+    if not data or not data.endswith(b"\n"):
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_JOURNAL_INCOMPLETE")
+    events = []
+    records: dict[str, NaturalEnterPendingOutcomeRecordV1] = {}
+    try:
+        for line in data.decode("utf-8").splitlines():
+            event = json.loads(line)
+            _apply_event_v2(records, event)
+            events.append(event)
+    except (ValueError, UnicodeError, TypeError) as exc:
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_JOURNAL_INVALID") from exc
+    return events, records
+
+
+def load_pending_outcome_events_v1(lane_state_root: Path) -> tuple[Mapping[str, Any], ...]:
+    """Validated append history; index is never read as runtime authority."""
+    events, _records = _read_history_v2(lane_state_root)
+    return tuple(events)
+
+
+@contextmanager
+def _writer_v2(lane_state_root: Path):
+    lane_dir = lane_pending_lane_dir_v1(lane_state_root)
+    lane_dir.mkdir(parents=True, exist_ok=True)
+    path = lane_dir / "natural_enter_pending_outcome_writer_v1.lock"
+    if path.is_symlink():
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_SYMLINK_FORBIDDEN")
+    with path.open("a+b") as handle:
+        try:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_WRITER_BUSY") from exc
+        try:
+            yield
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+def _atomic_write_json_v1(path: Path, payload: Mapping[str, Any], *, fsync: bool = False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(payload, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    with tmp.open("w", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, sort_keys=True, indent=2, allow_nan=False) + "\n")
+        handle.flush()
+        if fsync:
+            os.fsync(handle.fileno())
     os.replace(tmp, path)
 
 
@@ -66,7 +255,9 @@ def append_pending_outcome_event_v1(
     }
     events = _events_path(lane_dir)
     with events.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(event, sort_keys=True) + "\n")
+        handle.write(json.dumps(event, sort_keys=True, allow_nan=False) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
 
 
 def upsert_pending_outcome_index_v1(
@@ -75,19 +266,16 @@ def upsert_pending_outcome_index_v1(
 ) -> None:
     lane_dir = lane_pending_lane_dir_v1(lane_state_root)
     index_path = _index_path(lane_dir)
-    index: dict[str, Any]
-    if index_path.is_file():
-        index = json.loads(index_path.read_text(encoding="utf-8"))
-    else:
-        index = {"schema_version": SCHEMA_VERSION, "records_by_decision_event_ref": {}}
-    by_ref = index.setdefault("records_by_decision_event_ref", {})
-    existing = by_ref.get(record.decision_event_ref)
-    if isinstance(existing, dict):
-        prior_status = str(existing.get("status") or "")
-        if prior_status == "CLOSED" and record.status != "CLOSED":
-            raise NaturalEnterPendingOutcomeStoreError("CLOSED_PENDING_OUTCOME_IMMUTABLE")
-    by_ref[record.decision_event_ref] = record.to_index_dict_v1()
-    index["updated_at_utc"] = _utc_now_iso_v1()
+    _events, records = _read_history_v2(lane_state_root)
+    if records.get(record.decision_event_ref) != record:
+        raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_INDEX_NOT_IN_JOURNAL")
+    index = {
+        "schema_version": SCHEMA_VERSION,
+        "records_by_decision_event_ref": {
+            ref: item.to_index_dict_v1() for ref, item in records.items()
+        },
+        "updated_at_utc": _utc_now_iso_v1(),
+    }
     _atomic_write_json_v1(index_path, index)
 
 
@@ -95,35 +283,20 @@ def load_pending_outcome_by_decision_ref_v1(
     lane_state_root: Path,
     decision_event_ref: str,
 ) -> NaturalEnterPendingOutcomeRecordV1 | None:
-    lane_dir = lane_pending_lane_dir_v1(lane_state_root)
-    index_path = _index_path(lane_dir)
-    if not index_path.is_file():
-        return None
-    index = json.loads(index_path.read_text(encoding="utf-8"))
-    by_ref = index.get("records_by_decision_event_ref") or {}
-    raw = by_ref.get(decision_event_ref)
-    if not isinstance(raw, dict):
-        return None
-    return NaturalEnterPendingOutcomeRecordV1.from_index_dict_v1(raw)
+    _events, records = _read_history_v2(lane_state_root)
+    return records.get(decision_event_ref)
 
 
 def list_open_pending_outcomes_v1(
     lane_state_root: Path,
 ) -> tuple[NaturalEnterPendingOutcomeRecordV1, ...]:
-    lane_dir = lane_pending_lane_dir_v1(lane_state_root)
-    index_path = _index_path(lane_dir)
-    if not index_path.is_file():
-        return ()
-    index = json.loads(index_path.read_text(encoding="utf-8"))
-    by_ref = index.get("records_by_decision_event_ref") or {}
-    out: list[NaturalEnterPendingOutcomeRecordV1] = []
-    for raw in by_ref.values():
-        if not isinstance(raw, dict):
-            continue
-        rec = NaturalEnterPendingOutcomeRecordV1.from_index_dict_v1(raw)
-        if rec.status in OPEN_STATUSES:
-            out.append(rec)
-    return tuple(sorted(out, key=lambda r: r.created_at_utc))
+    _events, records = _read_history_v2(lane_state_root)
+    return tuple(
+        sorted(
+            (record for record in records.values() if record.status in OPEN_STATUSES),
+            key=lambda r: r.created_at_utc,
+        )
+    )
 
 
 def pending_outcome_has_closed_outcome_in_ddo_ledger_v1(
@@ -155,14 +328,27 @@ def persist_record_v1(
     event_type: str,
     record: NaturalEnterPendingOutcomeRecordV1,
     detail: Mapping[str, Any] | None = None,
+    expected_record: NaturalEnterPendingOutcomeRecordV1 | None = None,
 ) -> None:
-    upsert_pending_outcome_index_v1(lane_state_root, record)
-    append_pending_outcome_event_v1(
-        lane_state_root,
-        event_type=event_type,
-        record=record,
-        detail=detail,
-    )
+    with _writer_v2(lane_state_root):
+        _events, records = _read_history_v2(lane_state_root)
+        if records.get(record.decision_event_ref) != expected_record:
+            raise NaturalEnterPendingOutcomeStoreError("PENDING_STORE_EXPECTED_RECORD_MISMATCH")
+        event = {
+            "schema_version": SCHEMA_VERSION,
+            "event_type": event_type,
+            "event_time_utc": _utc_now_iso_v1(),
+            "pending_outcome_id": record.pending_outcome_id,
+            "decision_event_ref": record.decision_event_ref,
+            "record": record.to_index_dict_v1(),
+            "detail": dict(detail or {}),
+        }
+        _apply_event_v2(records, event)
+        # The authoritative append must complete/fsync before any derived publication.
+        append_pending_outcome_event_v1(
+            lane_state_root, event_type=event_type, record=record, detail=detail
+        )
+        upsert_pending_outcome_index_v1(lane_state_root, record)
 
 
 def replace_record_v1(

@@ -10,6 +10,11 @@ addressing, not a host or productive MF join.
 
 from __future__ import annotations
 
+from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+    PositionEpisodeBindingV1,
+    PositionEpisodeScopeV1,
+)
+
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Mapping, NoReturn, Sequence
@@ -713,6 +718,8 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
+    position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
+    position_episode_scope: PositionEpisodeScopeV1 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
@@ -730,6 +737,8 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
     producers = _resolve_lane_g17_producers(tuple(bound_seam), g17_typed_vol_producers)
     restored: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
+    if position_episode_bindings is not None and set(position_episode_bindings) - set(bound_seam):
+        _fail(FAILURE_MISMATCHED_LANE_STATE, "foreign_position_episode_lane")
     for lane_id in LANE_IDS:
         item = bound_seam.get(lane_id)
         if item is None:
@@ -750,6 +759,21 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             lane_id=lane_id,
             override=master_v2_reconciliation_admission,
         )
+        episode = (
+            None if position_episode_bindings is None else position_episode_bindings.get(lane_id)
+        )
+        if episode is not None:
+            episode.prepare_for_cycle_v1(
+                instrument_id=str(bound.instrument_id),
+                venue_native_id=str(bound.venue_native_id),
+                position_side=str(existing_position_side.value),
+                venue_flat=venue_flat,
+                event_time=float(last_finalized_event_ts_unix),
+                lane_id=lane_id,
+                expected_scope=position_episode_scope,
+            )
+        elif position_episode_bindings is not None and venue_flat is not True:
+            _fail(FAILURE_MISMATCHED_LANE_STATE, "position_episode_missing:" + lane_id)
         cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,
             cycle_id=f"{prefix}:{lane_id}",
@@ -775,6 +799,8 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             ),
             canonical_price_provenance=canonical_price_provenance,
             master_v2_reconciliation_admission=harness_admission,
+            position_episode_binding=episode,
+            position_episode_scope=position_episode_scope,
         )
         restored[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -848,6 +874,8 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
+    position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
+    position_episode_scope: PositionEpisodeScopeV1 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Load, run the existing N=1 cycle, then persist when outgoing_cursor is produced.
 
@@ -877,6 +905,8 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         g17_typed_vol_producers=g17_typed_vol_producers,
         canonical_price_provenance=canonical_price_provenance,
         master_v2_reconciliation_admission=master_v2_reconciliation_admission,
+        position_episode_bindings=position_episode_bindings,
+        position_episode_scope=position_episode_scope,
     )
     _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)

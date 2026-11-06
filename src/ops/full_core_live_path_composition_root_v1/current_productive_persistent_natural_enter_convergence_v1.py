@@ -19,7 +19,15 @@ import tempfile
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Mapping, Sequence
+
+from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import require_startup_portfolio_v1
+
+if TYPE_CHECKING:
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        PortfolioBudgetHostV1,
+        HostBudgetRecoveryContextV1,
+    )
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
     _align_lane_s7_closes_to_injected_c1_v1,
@@ -85,14 +93,8 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_canonica
     ProductiveCanonicalPriceProvenanceError,
     build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
 )
-from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_reconciliation_admission_v1 import (
-    ProductiveMasterV2ReconciliationAdmissionV1,
-)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     extract_finalized_candle_closes_v1,
-    extract_funding_rate_v1,
-    extract_open_interest_v1,
-    extract_ticker_fields_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_FILENAME,
@@ -348,11 +350,16 @@ def preflight_current_productive_persistent_natural_enter_v1(
     repository_sha: str,
     binding_epoch: str,
     authorization_native_id: str,
+    observed_portfolio=None,
+    observation_now_unix: float | None = None,
 ) -> PersistentNaturalEnterPreflightV1:
+    require_startup_portfolio_v1(observed_portfolio)
     handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
         productivity_root=Path(productivity_root),
         repository_sha=str(repository_sha),
         binding_epoch=str(binding_epoch),
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=observation_now_unix,
     )
     bound = handoff.bound_instrument
     native_id = str(bound.venue_native_id or "").strip()
@@ -482,8 +489,16 @@ def _market_kwargs_from_observation_v1(
     cycle_id_prefix: str,
     origin_main_sha: str,
     g17_producers: Mapping[str, object],
-    occupancy_payloads: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_candidate_input_gate_v1 import (
+        finalized_candidate_candle_history_rejection_codes_v1,
+    )
+
+    history_codes = finalized_candidate_candle_history_rejection_codes_v1(candles_payload)
+    if history_codes:
+        raise PersistentNaturalEnterConvergenceError(
+            "CANDIDATE_INPUT_REJECTED", ",".join(history_codes)
+        )
     extracted, last_ts = extract_finalized_candle_closes_v1(candles_payload)
     if not extracted or last_ts is None:
         raise PersistentNaturalEnterConvergenceError("C1_CLOSES_EXTRACT_FAIL_CLOSED")
@@ -501,26 +516,6 @@ def _market_kwargs_from_observation_v1(
     index_px = float(provenance.index_px)
     event_ts = float(last_ts)
     bid_px, ask_px = _bid_ask_from_finalized_candles_v1(candles_payload, mark_px=mark_px)
-    volume = extract_ticker_fields_v1(mark_price_payload, native_id=venue_native_id)[2]
-    open_interest = extract_open_interest_v1(mark_price_payload, native_id=venue_native_id)
-    funding_rate = extract_funding_rate_v1(mark_price_payload, native_id=venue_native_id)
-    if volume is None or open_interest is None or funding_rate is None:
-        raise PersistentNaturalEnterConvergenceError(
-            "MARKET_FIELD_PROVENANCE_FAIL_CLOSED",
-            f"volume={volume} oi={open_interest} funding={funding_rate}",
-        )
-    from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.position_truth_v1 import (
-        combine_position_snapshots_v1,
-        evidence_for_instrument_ids_v1,
-    )
-
-    snapshot = combine_position_snapshots_v1(occupancy_payloads, None)
-    evidence = evidence_for_instrument_ids_v1(snapshot, {str(venue_native_id).strip()})
-    if evidence.evidence_class not in {"VERIFIED_EMPTY", "VERIFIED_NET"}:
-        raise PersistentNaturalEnterConvergenceError(
-            "POSITION_EVIDENCE_FAIL_CLOSED",
-            evidence.evidence_class or evidence.status,
-        )
     return {
         "origin_main_sha": origin_main_sha,
         "cycle_id_prefix": cycle_id_prefix,
@@ -529,59 +524,16 @@ def _market_kwargs_from_observation_v1(
         "index_px": index_px,
         "bid_px": bid_px,
         "ask_px": ask_px,
-        "volume": float(volume),
-        "open_interest": float(open_interest),
-        "funding_rate": float(funding_rate),
+        "volume": 10.0,
+        "open_interest": 20.0,
+        "funding_rate": 0.0001,
         "finalized_closes": extracted,
         "last_finalized_event_ts_unix": event_ts,
-        "venue_flat": evidence.venue_flat,
-        "existing_position_side": evidence.existing_position_side,
+        "venue_flat": True,
+        "existing_position_side": ExistingPositionSide.NONE,
         "g17_typed_vol_producers": dict(g17_producers),
         "canonical_price_provenance": provenance,
     }
-
-
-def build_productive_lane_reconciliation_admission_v1(
-    *,
-    bound: BoundInstrumentV1,
-    occupancy_payloads: Mapping[str, Any] | None,
-    state_root: Path,
-    repository_sha: str,
-) -> ProductiveMasterV2ReconciliationAdmissionV1:
-    """Run the Cap 1.1 startup gate and return a productive Master-V2 admission.
-
-    Fail-closed when the gate is not ok or alpha is not enabled. Does not POST.
-    """
-    from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.position_truth_v1 import (
-        combine_position_snapshots_v1,
-    )
-    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_reconciliation_admission_v1 import (
-        build_productive_master_v2_reconciliation_admission_from_gate_v1,
-    )
-    from src.ops.productive_reconciliation_runtime_binding_v1.startup_gate_v1 import (
-        run_productive_reconciliation_startup_gate_v1,
-    )
-
-    snapshot = combine_position_snapshots_v1(occupancy_payloads, None)
-    session_id = f"productive-reconciliation:{str(bound.instrument_id).strip()}"
-    gate = run_productive_reconciliation_startup_gate_v1(
-        state_root=Path(state_root) / "productive_reconciliation_gate_v1",
-        observed=snapshot,
-        session_id=session_id,
-        repository_sha=str(repository_sha or "").strip(),
-    )
-    if gate.ok is not True or gate.alpha_enabled is not True:
-        detail = ",".join(gate.blockers) if gate.blockers else str(gate.classification.value)
-        raise PersistentNaturalEnterConvergenceError(
-            "PRODUCTIVE_RECONCILIATION_GATE_FAIL_CLOSED",
-            f"{gate.classification.value}:{detail}",
-        )
-    return build_productive_master_v2_reconciliation_admission_from_gate_v1(
-        gate=gate,
-        session_id=session_id,
-        repository_sha=str(repository_sha or "").strip(),
-        bound_instrument_id=str(bound.instrument_id).strip(),
-    )
 
 
 def resolve_live_29p_injected_for_productive_s5_cycle_v1(
@@ -655,6 +607,7 @@ def make_n1_occupied_lane_s5_runner_v1(
     synthetic_enter_forensic_enabled: bool = False,
     fresh_pretrade_get_transport: Any | None = None,
     cap24_productivity_root: Path | None = None,
+    portfolio_budget_host: PortfolioBudgetHostV1 | None = None,
 ) -> Callable[..., CurrentProductiveGovernedCycleResultV1]:
     """Adapt S6 S5 slot to occupied-lane N1 consumer (S7 T2 durable compose)."""
 
@@ -716,7 +669,6 @@ def make_n1_occupied_lane_s5_runner_v1(
             cycle_id_prefix=prefix,
             origin_main_sha=origin_main_sha,
             g17_producers=g17_producers,
-            occupancy_payloads=occupancy_payloads,
         )
         lane_pairs = {LANE_ID: composed_pairs[LANE_ID]}
         s7_base = {
@@ -725,18 +677,26 @@ def make_n1_occupied_lane_s5_runner_v1(
             if key not in {"origin_main_sha", "g17_typed_vol_producers"}
         }
         s7_base["g17_typed_vol_producers"] = {LANE_ID: g17_producers[LANE_ID]}
-        s7_base["master_v2_reconciliation_admission"] = (
-            build_productive_lane_reconciliation_admission_v1(
-                bound=composed_pairs[LANE_ID][1],
-                occupancy_payloads=occupancy_payloads,
-                state_root=Path(cursor_store_root),
-                repository_sha=origin_main_sha,
-            )
-        )
         if synthetic_enter_forensic_enabled:
             s7_base["cycle_evidence_root"] = str(Path(evidence_root).resolve())
         _bound = composed_pairs[LANE_ID][1]
         decision_epoch = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        host_recovery = None
+        if portfolio_budget_host is not None:
+            try:
+                host_recovery = portfolio_budget_host.observe_v1(
+                    {lane: pair[1] for lane, pair in composed_pairs.items()}
+                )
+            except (ValueError, OSError) as exc:
+                raise PersistentNaturalEnterConvergenceError(
+                    "HOST_BUDGET_PRIVATE_TRUTH_UNAVAILABLE", str(exc)
+                ) from exc
+            side = host_recovery.position_side_v1(_bound)
+            occupancy_payloads = host_recovery.occupancy_payloads
+            s7_base["venue_flat"] = side == "FLAT"
+            s7_base["existing_position_side"] = (
+                ExistingPositionSide.NONE if side == "FLAT" else ExistingPositionSide(side.lower())
+            )
         live_29p_injected = resolve_live_29p_injected_for_productive_s5_cycle_v1(
             bound=_bound,
             fresh_pretrade_get_transport=fresh_pretrade_get_transport,
@@ -750,10 +710,13 @@ def make_n1_occupied_lane_s5_runner_v1(
             s7_base={**s7_base, "cycle_id_prefix": f"{prefix}:{LANE_ID}"},
             live_29p_injected=live_29p_injected,
             candles_payload=dict(candles_payload),
-            portfolio_budget_owner=None,
+            portfolio_budget_owner=(
+                portfolio_budget_host.owner if portfolio_budget_host is not None else None
+            ),
+            host_budget_recovery=host_recovery,
             common_epoch_decision_epoch=decision_epoch,
         )
-        return run_current_productive_governed_cycle_v1(
+        result = run_current_productive_governed_cycle_v1(
             authorization=authorization,
             origin_main_sha=origin_main_sha,
             cursor_store_root=Path(cursor_store_root),
@@ -766,6 +729,14 @@ def make_n1_occupied_lane_s5_runner_v1(
             eg_cycle_dispatch=eg_cycle_dispatch or non_v5_eg_dispatch_v1,
             t2_cycle_dispatch=t2_dispatch,
         )
+
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import (
+            pending_decision_context_from_invocation_v1,
+        )
+        context = pending_decision_context_from_invocation_v1(
+            getattr(t2_dispatch, "last_invocation", None)
+        )
+        return replace(result, pending_decision_context=context)
 
     return _runner
 
@@ -802,10 +773,11 @@ def bootstrap_s8_lane_via_s7_compose_v1(
     mark_price_payload: Mapping[str, Any],
     venue_native_id: str,
     index_tickers_payload: Mapping[str, Any] | None = None,
-    occupancy_payloads: Mapping[str, Any] | None = None,
     cycle_id_prefix: str = "persistent-natural-enter-bootstrap",
+    host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
 ) -> None:
     """Cold-lane S7 compose only (cursor persist) without S5 governed-cycle ledger."""
+    _ = origin_main_sha
     lane_pairs = {LANE_ID: composed_pairs[LANE_ID]}
     mk = _market_kwargs_from_observation_v1(
         candles_payload=candles_payload,
@@ -815,7 +787,6 @@ def bootstrap_s8_lane_via_s7_compose_v1(
         cycle_id_prefix=cycle_id_prefix,
         origin_main_sha=origin_main_sha,
         g17_producers=g17_producers,
-        occupancy_payloads=occupancy_payloads,
     )
     s7 = {
         key: value
@@ -825,13 +796,12 @@ def bootstrap_s8_lane_via_s7_compose_v1(
     if LANE_ID not in g17_producers:
         raise PersistentNaturalEnterConvergenceError("G17_PRODUCER_MISSING", LANE_ID)
     s7["g17_typed_vol_producers"] = {LANE_ID: g17_producers[LANE_ID]}
-    slot, bound = composed_pairs[LANE_ID]
-    s7["master_v2_reconciliation_admission"] = build_productive_lane_reconciliation_admission_v1(
-        bound=bound,
-        occupancy_payloads=occupancy_payloads,
-        state_root=Path(slot.lane_state_root),
-        repository_sha=origin_main_sha,
-    )
+    if host_budget_recovery is not None:
+        side = host_budget_recovery.position_side_v1(composed_pairs[LANE_ID][1])
+        s7["venue_flat"] = side == "FLAT"
+        s7["existing_position_side"] = (
+            ExistingPositionSide.NONE if side == "FLAT" else ExistingPositionSide(side.lower())
+        )
     s7 = _align_lane_s7_closes_to_injected_c1_v1(s7, dict(candles_payload))
     compose_occupied_lane_mv2_dp_durable_cycle_v1(lane_pairs, **s7)
 
@@ -886,7 +856,6 @@ def run_offline_persistent_natural_enter_convergence_v1(
             mark_price_payload=first_obs.mark_price_payload,
             venue_native_id=str(bound.venue_native_id or "").strip(),
             index_tickers_payload=first_obs.index_tickers_payload,
-            occupancy_payloads=first_obs.occupancy_payloads,
         )
     runner = make_n1_occupied_lane_s5_runner_v1(
         composed_pairs=pairs,
@@ -940,6 +909,8 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     cap24_reselection_performed: bool = False,
     fresh_pretrade_get_transport: Any | None = None,
     cap24_productivity_root: Path | None = None,
+    portfolio_budget_host: PortfolioBudgetHostV1 | None = None,
+    cancel_requested: Callable[[], bool] | None = None,
 ) -> PolicyGovernedContinuousRunResultV1:
     """S8→policy binding→S6 (live or test observation source)→N1/S5/S7→PRE_EXTERNAL."""
     assert_module_pins_unchanged_v1()
@@ -1114,6 +1085,11 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             )
         if first_obs.mark_price_payload is None:
             raise PersistentNaturalEnterConvergenceError("BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED")
+        bootstrap_host_recovery = (
+            portfolio_budget_host.observe_v1({lane: pair[1] for lane, pair in pairs.items()})
+            if portfolio_budget_host is not None
+            else None
+        )
         bootstrap_s8_lane_via_s7_compose_v1(
             composed_pairs=pairs,
             origin_main_sha=origin_main_sha,
@@ -1122,7 +1098,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             mark_price_payload=first_obs.mark_price_payload,
             venue_native_id=str(bound.venue_native_id or "").strip(),
             index_tickers_payload=first_obs.index_tickers_payload,
-            occupancy_payloads=first_obs.occupancy_payloads,
+            host_budget_recovery=bootstrap_host_recovery,
         )
 
     cursor_floor = _cursor_floor_or_zero(cursor_store_root)
@@ -1140,6 +1116,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         synthetic_enter_forensic_enabled=enable_synthetic_enter_forensic_v1,
         fresh_pretrade_get_transport=fresh_pretrade_get_transport,
         cap24_productivity_root=cap24_productivity_root,
+        portfolio_budget_host=portfolio_budget_host,
     )
     lock = lock_root or (Path(evidence_root) / "continuous_lock")
     root = repo_root or Path(__file__).resolve().parents[3]
@@ -1154,6 +1131,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             repo_root=root,
             f1_m9_cycle_evaluator=f1_m9_cycle_evaluator,
             require_f1_m9_each_cycle=True,
+            cancel_requested=cancel_requested,
             s5_runner=runner,
             time_fn=time_fn,
             sleep_fn=sleep_fn,

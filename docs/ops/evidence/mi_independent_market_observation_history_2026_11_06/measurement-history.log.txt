@@ -1,0 +1,4 @@
+28515d9693acbcaa28e94b3b1d6c1c864a6d62b3 2026-11-04T02:43:50+01:00 fix: validate supplier measurement before MI behavior consumption
+4960b43c2d3e7ee599dca929e366505ed12cf43d 2026-11-04T01:16:09+01:00 fix: retain N_BARS measurement artifacts through evaluation
+2dba1355c9907c57fa330aed01a4072faeaf048f 2026-09-23T22:11:03+02:00 Governance: V3.2 naked MV2 baseline-first lifecycle resolution (#6764)
+3279f991e155a5fc0a31df521ab72e5edc279778 2026-09-19T18:30:18+02:00 Add DDO N_BARS O4 bridge, supplier authority, and offline REAL chain.

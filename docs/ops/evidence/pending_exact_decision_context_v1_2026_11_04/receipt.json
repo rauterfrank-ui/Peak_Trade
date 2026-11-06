@@ -1,0 +1,43 @@
+{
+  "source_commit": "5161a5c8656069ac301220f2cf84ad535c284345",
+  "source_paths_sha256": {
+    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py": "38230473b1a3c8fad696ff7c805a4dbcf70244bcd2e07e445c70c8b252dddd47",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py": "c949f8230aa92e549e95a2202f993120118f63a8b5cf875d56ccda08007e7624",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py": "5047f4320a9152aa101c7ae703d16213336a64be6bd78f6786ea26e812b623bc",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": "a90cfcf61eb53c9634dd653d630f40d8ce67b1bad248f96b607b058c66fadd63",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": "2972ba9c7e1b61af31a1075a08e755d4665126e46e8585cdf8157efa0d6151ed",
+    "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py": "da5c8091b3b7604f0e26c6849fe16167ea8b4f9698f4112316e484efc7034100",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py": "6f359e816acffca8ff45ad324b4ba2bf24eef8310f155d07925653a1bb16ef43",
+    "tests/ops/test_pending_exact_decision_context_v1.py": "6848735f7e35a1521b8bc437d5234b7b6ef78872310fc0850a653f39114ccf6d"
+  },
+  "tests": {
+    "transport": "79 PASS / 4 baseline prerequisite failures out of 83",
+    "pending": "25 PASS",
+    "new_exact_context": "17 PASS",
+    "full_offline_chain": "existing S8/S7/S5/S6 test extended through real local DPO capture and Pending creation"
+  },
+  "boundaries": [
+    "Offline injected inputs do not prove natural public-source authenticity or GAP-0370 freshness.",
+    "Exact canonical DP/cycle equality does not by itself validate DecisionEvent parent content, episode construction or economic target equivalence.",
+    "U04 remains deferred. No network, orders, service activation or push."
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/pending_exact_decision_context_v1_2026_11_04/README.md",
+      "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 185,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "authority": "NONE",
+  "automatic_live_enable": false,
+  "automatic_ratification": false,
+  "decisions": [
+    {
+      "decision": "Authorize a fresh read-only USDC availEq GET on the bound OKX EEA account and accept or reject that value as RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING.",
+      "id": "OD-B1",
+      "not_authorized_by_this_pass": true,
+      "required_before_any_live_sizing_value": true
+    },
+    {
+      "decision": "Set finite USDC caps and explicitly ratify owner_caps_ratified. Separately decide whether full_core_guard_join_enabled becomes true. Canonical file stays unratified.",
+      "id": "OD-B2",
+      "not_authorized_by_this_pass": true,
+      "required_before_any_new_risk_post": true
+    },
+    {
+      "decision": "Authorize real macOS Keychain use for the bound identity. This pass did not read or write the Keychain.",
+      "id": "OD-B3",
+      "not_authorized_by_this_pass": true,
+      "required_before_any_private_call": true
+    },
+    {
+      "decision": "A future exact one-shot POST Owner-GO. Standing pins stay false. Not granted here.",
+      "id": "OD-B4",
+      "not_authorized_by_this_pass": true,
+      "required_before_any_venue_post": true
+    },
+    {
+      "decision": "Optional. Decide later whether the offline 50 completed round-trip rule becomes a live POST prerequisite, or whether the offline threshold changes. Current live path does not consult it.",
+      "id": "OD-ECO",
+      "not_authorized_by_this_pass": true,
+      "required_before_any_venue_post": false
+    }
+  ],
+  "schema_version": "bwp_live_003_owner_decision_register.v1"
+}

@@ -155,20 +155,18 @@ Details:
 
 Das Script fragt nach:
 1. **Reason for recovery**: Kurze Beschreibung (z.B. "Issue behoben, System stabil")
-2. **Approval code** (Prompt; erwarteter Wert aus `KILL_SWITCH_APPROVAL_CODE`, nie als argv)
+2. Verwendet automatisch `KILL_SWITCH_APPROVAL_CODE` aus Environment
 
 **Erwartete Ausgabe:**
 ```
 ⏳ RECOVERY STARTED
 Reason: Issue behoben, System stabil
-Recovery request id: <id>
 Cooldown active. Use 'status' to check progress.
 
 Next steps:
-  1. Wait for the cooldown period
+  1. Wait for cooldown period (5 minutes)
   2. Monitor status: kill_switch_ctl.sh status
-  3. Complete: kill_switch_ctl.sh complete-recovery <request-id>
-Nothing completes automatically. ACTIVE is not a trading authorization.
+  3. System will gradually restart with reduced position limits
 ```
 
 **Schritt 4: Cooldown abwarten**

@@ -1,0 +1,488 @@
+{
+  "schema": "architecture_causal_followthrough_v1",
+  "date_berlin": "2026-11-04",
+  "reviewed_at_commit": "f69fc6f6d2cd5276d6447b24c0cff9b250a535f0",
+  "authority": "DERIVED_INVESTIGATION_ONLY",
+  "runtime_authorization_effect": "NONE",
+  "product_code_config_or_learning_changed": false,
+  "full_causal_reconstruction_complete": false,
+  "final_target_architecture_decided": false,
+  "historical_sources": [
+    {
+      "id": "G2_INTRODUCED",
+      "revision": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+      "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+      "snapshot": "historical_sources/G2_INTRODUCED.txt",
+      "sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "G2_ORIGINAL_MAPPING",
+      "revision": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+      "path": "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_field_mapping_ledger_v1.json",
+      "snapshot": "historical_sources/G2_ORIGINAL_MAPPING.txt",
+      "sha256": "209034aac331c7fe9ce443a113c49fd605b6841b685320d3661105bcc76dc34a",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "G2_ORIGINAL_CONTRACT",
+      "revision": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+      "path": "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
+      "snapshot": "historical_sources/G2_ORIGINAL_CONTRACT.txt",
+      "sha256": "c9d2a3b62feeb702a6fccada5640ee5933bbd9f9dd9482e4cb851b3c7ae8885f",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "LEARNING_SCHEMA_BEFORE_PROVENANCE",
+      "revision": "cbce80bc2fb62c1218b143d36c55db8c5f609bc3",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+      "snapshot": "historical_sources/LEARNING_SCHEMA_BEFORE_PROVENANCE.txt",
+      "sha256": "75d5372bf77913f1931f4b25b2b93f054141e48ee118c493532576f67dffc995",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "LEARNING_SCHEMA_AFTER_PROVENANCE",
+      "revision": "881efd47285ebccd83c0e57691e5832730c017a9",
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+      "snapshot": "historical_sources/LEARNING_SCHEMA_AFTER_PROVENANCE.txt",
+      "sha256": "b57f3370e85c730cb88f2861ced973b06dad26f3175c9e1a1290ebfb5e98929b",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "OPTIMIZATION_PROVENANCE_GUARD",
+      "revision": "881efd47285ebccd83c0e57691e5832730c017a9",
+      "path": "src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py",
+      "snapshot": "historical_sources/OPTIMIZATION_PROVENANCE_GUARD.txt",
+      "sha256": "7f34ada4f0e6e5c83417767bff59031aae18ff8ed0da37a109f077f97775c582",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "MI_PHASE8_ORIGINAL_CONTRACT",
+      "revision": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+      "snapshot": "historical_sources/MI_PHASE8_ORIGINAL_CONTRACT.txt",
+      "sha256": "2a26e70165c6aa1530a620fa2cac959f4c3260d7aa647295637b2c486fadd41c",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "MI_PHASE9_ORIGINAL_CONTRACT",
+      "revision": "3a50f1f944accf9a4dc9867d19016b3931227a5d",
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
+      "snapshot": "historical_sources/MI_PHASE9_ORIGINAL_CONTRACT.txt",
+      "sha256": "72971a51da0c72dc36ba0c7aa0d12b518d731972474f1f8cfedc6a6e0819ebb8",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "MI_PHASE8_ORIGINAL_BRIDGE",
+      "revision": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "snapshot": "historical_sources/MI_PHASE8_ORIGINAL_BRIDGE.txt",
+      "sha256": "085c4f87d3954eb8d479ad3b8d96df90c19bd5019f56a5dc2e810a55b718b73c",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    },
+    {
+      "id": "MI_PHASE9_ORIGINAL_INTAKE",
+      "revision": "3a50f1f944accf9a4dc9867d19016b3931227a5d",
+      "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "snapshot": "historical_sources/MI_PHASE9_ORIGINAL_INTAKE.txt",
+      "sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53",
+      "method": "local git show exact revision:path; no fetch or checkout"
+    }
+  ],
+  "previous_sub_artifacts": [
+    {
+      "id": "G2_PAIRED_PREVIOUS_CHECK",
+      "original_path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/learning-optimization-history/joint-handoffs-authority/paired-g2-contract-check.json",
+      "snapshot": "previous_reconstruction/G2_PAIRED_PREVIOUS_CHECK.txt",
+      "sha256": "ee967eee9870c06c809886f2009aaa8e42092487904d369045eaf6ff29a9986f"
+    },
+    {
+      "id": "META_SEARCH_PREVIOUS_FINDINGS",
+      "original_path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/meta-search-semantic-effect/semantic-findings.json",
+      "snapshot": "previous_reconstruction/META_SEARCH_PREVIOUS_FINDINGS.txt",
+      "sha256": "8af86bbd5492a3a9d30077dea5431e00f53462ce7a48fb8ad49f6b49775ba229"
+    },
+    {
+      "id": "META_SEARCH_PREVIOUS_SOURCES",
+      "original_path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/meta-search-semantic-effect/sources.json",
+      "snapshot": "previous_reconstruction/META_SEARCH_PREVIOUS_SOURCES.txt",
+      "sha256": "b4306c399dc1990d1717a20cbb3774e1f9dfb878b69c09ddeeec77d214db4b87"
+    },
+    {
+      "id": "META_RETURN_MESSAGES",
+      "original_path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/learning-optimization-history/meta-return-causal-use/messages.json",
+      "snapshot": "previous_reconstruction/META_RETURN_MESSAGES.txt",
+      "sha256": "038c8db631bd882396c48dd8fc27f863ad391cba1c4658b3a0ed7c8cd04492f8"
+    }
+  ],
+  "current_anchors": [
+    {
+      "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+      "symbol": "_project_learning_evidence_from_runtime_v1",
+      "line": 209,
+      "end_line": 293,
+      "sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec"
+    },
+    {
+      "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+      "symbol": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
+      "line": 296,
+      "end_line": 417,
+      "sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+      "symbol": "build_learning_evidence_record_v1",
+      "line": 209,
+      "end_line": 282,
+      "sha256": "b57f3370e85c730cb88f2861ced973b06dad26f3175c9e1a1290ebfb5e98929b"
+    },
+    {
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "symbol": "_overfit_proposals",
+      "line": 1272,
+      "end_line": 1285,
+      "sha256": "b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331"
+    },
+    {
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "symbol": "_question_repeated_overfit",
+      "line": 741,
+      "end_line": 782,
+      "sha256": "b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331"
+    },
+    {
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "symbol": "_canonicalize_meta_signals",
+      "line": 1121,
+      "end_line": 1179,
+      "sha256": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad"
+    },
+    {
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "symbol": "_priority_from_signals",
+      "line": 1225,
+      "end_line": 1257,
+      "sha256": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad"
+    },
+    {
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "symbol": "_signal_applies",
+      "line": 1260,
+      "end_line": 1280,
+      "sha256": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad"
+    },
+    {
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "symbol": "_assign_proposal_budget",
+      "line": 787,
+      "end_line": 797,
+      "sha256": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "symbol": "run_optimization_universe_experiment_plane_v1",
+      "line": 155,
+      "end_line": 350,
+      "sha256": "468bd79c771bdd1cea3e8e81c99b197285c2b71cedea3da93ffb5e49e853114c"
+    },
+    {
+      "path": "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "symbol": "build_bounded_research_feedback_decision_v1",
+      "line": 157,
+      "end_line": 320,
+      "sha256": "c964b2c077017d249736d4563f84bc094685284111b23fc9897b974fc6801155"
+    },
+    {
+      "path": "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+      "symbol": "run_federated_offline_evidence_cycle_v1",
+      "line": 97,
+      "end_line": 178,
+      "sha256": "b26f83ad53ab53d663c5131012ee1734391bf574966c6915d339f618ba7acfc1"
+    },
+    {
+      "path": "src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
+      "symbol": "run_mi_crossing_offline_evidence_cycle_v1",
+      "line": 125,
+      "end_line": 255,
+      "sha256": "2b52a395e159c6812fec59eb2eb309cb95560b335047fa19991d7e85c16554e0"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
+      "symbol": "join_forecast_to_n_bars_outcome_v1",
+      "line": 31,
+      "end_line": 73,
+      "sha256": "be924030beee05f9b59fc0cc89906471c69a6f26144ed00754e609a337883ea8"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+      "symbol": "build_calibration_evidence_v1",
+      "line": 78,
+      "end_line": 208,
+      "sha256": "94fae7b7516630a99f18f33f253b9301bfeaf46f3d93fe845fe98f6f70359b74"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "symbol": "compose_mi_to_learning_evidence_v1",
+      "line": 95,
+      "end_line": 233,
+      "sha256": "085c4f87d3954eb8d479ad3b8d96df90c19bd5019f56a5dc2e810a55b718b73c"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "symbol": "_assert_temporal_integrity_v1",
+      "line": 51,
+      "end_line": 77,
+      "sha256": "085c4f87d3954eb8d479ad3b8d96df90c19bd5019f56a5dc2e810a55b718b73c"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "symbol": "_assert_instrument_alignment_v1",
+      "line": 80,
+      "end_line": 92,
+      "sha256": "085c4f87d3954eb8d479ad3b8d96df90c19bd5019f56a5dc2e810a55b718b73c"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+      "symbol": "route_learning_evidence_for_consumer_v1",
+      "line": 25,
+      "end_line": 52,
+      "sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+      "symbol": "export_mi_learning_evidence_onto_learning_path_v1",
+      "line": 55,
+      "end_line": 80,
+      "sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+      "symbol": "run_market_intelligence_offline_orchestrator_cycle_v1",
+      "line": 105,
+      "end_line": 263,
+      "sha256": "19abf38618000e12a8d81a3b9c5db2ccd78f4c490a6b36fd80f49aac379099bb"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py",
+      "symbol": "ingest_mi_learning_evidence_v1",
+      "line": 32,
+      "end_line": 88,
+      "sha256": "de74237164f1f77f22db63289dbdca1113c4cf8c56f3e191df21b023fd125f64"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
+      "symbol": "compose_conditioned_mi_learning_evidence_v1",
+      "line": 121,
+      "end_line": 208,
+      "sha256": "9c5e66d4fc9d6a1a48797c4d6fe890dbebbddc169702f39d6521496923ce63b3"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "symbol": "validate_mi_enriched_m4_intake_v1",
+      "line": 163,
+      "end_line": 265,
+      "sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "symbol": "run_mi_enriched_optimization_universe_experiment_plane_v1",
+      "line": 268,
+      "end_line": 305,
+      "sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53"
+    }
+  ],
+  "investigated_boundaries": [
+    {
+      "id": "CF01",
+      "area": "G2 original mechanical adapter",
+      "state": "PURPOSE_AND_HISTORICAL_CONTRACT_BREAK_CONFIRMED_TARGET_DECISION_OPEN",
+      "historical_evidence": [
+        "EVI-2258",
+        "G2_PAIRED_PREVIOUS_CHECK",
+        "G2_ORIGINAL_CONTRACT",
+        "G2_ORIGINAL_MAPPING",
+        "LEARNING_SCHEMA_AFTER_PROVENANCE"
+      ],
+      "intended_role": "Validated runtime-to-learning input → reuse then-current Learning-Evidence shape → existing Optimization offline-input ACK, without DDO fixture rescue or promotion/runtime execution.",
+      "actual_chain": [
+        "durable G2 primary archive",
+        "review metrics/verdict and identity/provenance projection",
+        "runtime observation bundle",
+        "runtime_to_learning_input",
+        "review-label Learning-Evidence projection",
+        "current schema builder rejects missing semantic provenance",
+        "canonical Optimization admission is not reached in this rejected case"
+      ],
+      "semantic_changes": [
+        "Review verdict becomes opaque g2.review label; it is not a measured realized-trade result.",
+        "source observation reference becomes actual_outcome_ref; reference naming does not create an economic outcome.",
+        "State version 1 describes projection snapshot, not an ingested DDO state progression."
+      ],
+      "historical_finding": {
+        "adapter_introduction": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+        "date_berlin": "2026-09-26",
+        "guard_commit": "881efd47285ebccd83c0e57691e5832730c017a9",
+        "guard_date_berlin": "2026-09-30",
+        "adapter_equal_to_introduction": true,
+        "current_schema_equal_to_guard_revision": true,
+        "missing_fields": [
+          "outcome_semantic_class",
+          "outcome_evidence_provenance_digest",
+          "outcome_evidence_provenance",
+          "evidence_pool_class"
+        ],
+        "new_double_play_configuration_caused_this_mismatch": false
+      },
+      "decision": "PRESERVE_REJECTION_NO_FABRICATED_CLASS_NO_GUARD_WEAKENING",
+      "next_proof": "Determine whether review/observation context belongs to a separate research input class, or whether a genuine outcome-producing intermediate exists for the intended branch. Trace all fields and actual use before any final contract decision.",
+      "not_claimed": "No proof of a globally absent adapter; no repair or new signal class ratified."
+    },
+    {
+      "id": "CF02",
+      "area": "SL11 scientific finding → proposal → SL12 target",
+      "state": "LOCAL_ADDRESS_AND_SELECTION_EFFECT_CONFIRMED_ROUTING_OPEN",
+      "historical_evidence": [
+        "EVI-2265",
+        "META_SEARCH_PREVIOUS_FINDINGS"
+      ],
+      "actual_chain": [
+        "comparable synthetic experiment units + failure/gap records",
+        "SL11 findings and claim_type",
+        "research_proposals with target_kind/target/proposal_id",
+        "SL12 normalizer retains smaller signal shape",
+        "target matching",
+        "priority sum",
+        "budget admission",
+        "unexecuted experiment request"
+      ],
+      "semantic_changes": [
+        "Whole-region digest and individual value text are different addresses.",
+        "Descriptive/associative claim is a scientific statement; prioritized research instruction is another level.",
+        "Priority points are not return, confidence, capital or evidence support.",
+        "Score change, relative ranking, budget-selected set, output order and executed experiment are separate effects."
+      ],
+      "controlled_probe": "meta_search_probe_result.json",
+      "observations": [
+        "Actual SL11 whole-region digest proposal gives no priority contribution in the tested SL12 matcher.",
+        "Actual family proposal adds +20 uniformly and does not change the tested budget-1 selection.",
+        "Combined actual fixture-generated family/hypothesis proposals cancel to zero in this fixture.",
+        "Synthetic single-value positive control changes chosen candidate, showing the budget consumer can have a selection effect.",
+        "key=value target control is rejected by the token validator before reaching that matcher branch.",
+        "claim_type is dropped by the explicit smaller normalizer; proposal ID and meta identity remain references."
+      ],
+      "decision": "PRESERVE_EXISTING_TARGET_SEMANTICS_MARK_POSSIBLE_MAPPER_OR_DISTINCT_RECIPIENTS",
+      "next_proof": "Find original intended consumer/dispatcher for each proposal target and any translator that preserves whole-region identity. Cost/regime/metric/path proposals may belong to different recipients; do not force all into one search matcher."
+    },
+    {
+      "id": "CF03",
+      "area": "M7 budget and three M8 variants",
+      "state": "LOCAL_METADATA_VS_NEXT_REQUEST_BOUNDARY_CONFIRMED_GLOBAL_ADAPTATION_OPEN",
+      "historical_evidence": [
+        "EVI-2261",
+        "META_RETURN_MESSAGES"
+      ],
+      "actual_chain": [
+        "M6 meta evidence",
+        "M7 source experiment IDs, method decision, budget and hypothesis reference",
+        "prior-feedback consistency checks",
+        "normal/federated/MI-crossing next supplied input",
+        "next evidence cycle"
+      ],
+      "observations": [
+        "M7 budget=min(1,max(support_count,1)) under current default: exactly one research unit, not capital.",
+        "Standard M8 consumes caller plane_request.",
+        "Federated cycle consumes already produced surface evidence and does not run M4.",
+        "MI-crossing cycle executes caller orchestrator_input, then emits feedback semantics.",
+        "In these read functions predecessor feedback is carried as metadata/identity without rewriting that supplied next input."
+      ],
+      "decision": "PRESERVE_PARALLEL_EXECUTORS_AND_FAIL_CLOSED_METHOD_SELECTION",
+      "next_proof": "Original M8 asked for existing-contract composition without a new algorithm. Trace outer planners and external/dynamic request producers before treating local lineage closure as adaptive research or demanding a new global executor."
+    },
+    {
+      "id": "CF04",
+      "area": "MI forecast → calibration → typed learning evidence",
+      "state": "LOCAL_ROUTING_AND_LABEL_DEPENDENCY_CONFIRMED_MEASUREMENT_PRODUCER_OPEN",
+      "historical_evidence": [
+        "EVI-2248",
+        "MI_PHASE8_ORIGINAL_CONTRACT",
+        "MI_PHASE8_ORIGINAL_BRIDGE"
+      ],
+      "actual_chain": [
+        "information-set/model/horizon-bound probabilistic forecast",
+        "N_BARS observation reference + horizon/bar-spec join",
+        "separately caller-supplied realized_direction/scalar",
+        "calibration record",
+        "typed MI learning evidence",
+        "MI-only or MI-plus-separate-legacy export",
+        "consumer-specific intake"
+      ],
+      "semantic_changes": [
+        "Forecast probability is not direction/trade authority.",
+        "Outcome reference/horizon join is not the numerical measurement or its extraction.",
+        "Calibration error/Brier value depends on supplied realized label/scalar.",
+        "Typed MI evidence and canonical DDO evidence remain different records."
+      ],
+      "controlled_probe": "mi_semantic_probe_result.json",
+      "observations": [
+        "The same fixture forecast and outcome reference yield Brier 0.5 for supplied UP, 0.7 for supplied DOWN. This proves local caller-label dependence, not a natural outcome inconsistency.",
+        "MI-only export has no canonical DDO payload and explicitly marks legacy export compatibility false.",
+        "Missing outcome remains incomplete/non-evaluable; original observation and ledger unchanged.",
+        "Direct temporal/instrument checks exist in the MI bridge; mapping of all upstream measurement/time/identity fields still needs reconstruction.",
+        "Offline scenario, ingest and conditioned compose paths explicitly pass supplied realized_direction; they do not derive it from bars in the bodies read."
+      ],
+      "decision": "PRESERVE_DISTINCT_RECORDS_AND_EXISTING_JOINS_NO_INFERRED_NUMERIC_TRUTH",
+      "next_proof": "Find and verify the realized label/scalar producer and unit/horizon convention per forecast kind, including conditioned context, information availability and actual measurement lineage."
+    },
+    {
+      "id": "CF05",
+      "area": "MI → M4",
+      "state": "LOCAL_ADMISSION_AND_LINEAGE_EFFECT_CONFIRMED_ECONOMIC_EFFECT_OPEN",
+      "historical_evidence": [
+        "EVI-2248",
+        "MI_PHASE9_ORIGINAL_CONTRACT",
+        "MI_PHASE9_ORIGINAL_INTAKE"
+      ],
+      "actual_chain": [
+        "typed MI research evidence",
+        "separate canonical Learning-Evidence validation",
+        "plane learning-evidence digest alignment",
+        "run existing M4 with request.plane_request",
+        "attach MI lineage to plane result"
+      ],
+      "semantic_changes": [
+        "Acceptance of MI context, association with an experiment and changed experiment choice/score are different effects.",
+        "The argument name legacy denotes a separate canonical learning path; it does not waive current provenance validation."
+      ],
+      "observations": [
+        "The read intake requires a separate valid canonical Learning-Evidence record for M4. MI-only export is not a substitute.",
+        "The read MI runner passes request.plane_request unchanged to the existing M4 function and attaches lineage afterwards."
+      ],
+      "decision": "PRESERVE_SEPARATE_INTAKES_NO_SCORE_OR_SCOPE_REWRITE",
+      "next_proof": "Trace Loop-A/Loop-B dual routing, representation feedback, outer request builders and intended use of forecast/calibration context; this local wrapper does not rule out other causal consumers."
+    }
+  ],
+  "semantic_layers_rule": "The listed stages are per-chain analytical distinctions. They are not a claimed original universal layer hierarchy. Signals may carry several meanings; source units/identity/time/authority and actual consumer effect remain separate.",
+  "verification": {
+    "new_local_mi_tests": "28 passed",
+    "new_junit": "mi_tests.xml",
+    "prior_tests_reused": "242 passed / 9 failed from previous evidence package; not rerun or silently repaired. No source/test change in that scope.",
+    "controlled_probes": [
+      "meta_search_probe_result.json",
+      "mi_semantic_probe_result.json"
+    ],
+    "controlled_probes_are_not_natural_runtime_witnesses": true,
+    "new_network_or_credential_calls": 0,
+    "no_runtime_activation": true
+  },
+  "protected_learning_ledger": {
+    "path": "runtime/current_productive/natural_evidence_accumulation_v1/lane_state/LANE_1/ddo_learning_capture_v1.jsonl",
+    "sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b"
+  },
+  "next_independent_work": [
+    "Explicit target routing/outer planner for nine SL11 proposal kinds; whole-region versus value address.",
+    "MI Loop-A/Loop-B conditioned and representation-feedback consumer chains, including actual request modification.",
+    "Actual numeric outcome/measurement provenance, N_BARS and comparison horizons; retain GAP0370/U04/P01 boundaries."
+  ],
+  "unresolved_handling": "Preserve, mark question with missing proof and evidence, continue independent chains; do not repair solely because a direct connection is missing."
+}

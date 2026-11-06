@@ -109,7 +109,7 @@ def _seed_completed_residency(
     *,
     ranking: dict,
 ) -> EvaluationCompletionWitnessV1:
-    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=5, duration_seconds=600.0)
+    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=5)
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root,
         ranking_snapshot=ranking,
@@ -191,7 +191,7 @@ def test_missing_witness_fail_closed(tmp_path: Path, residency_pin_on) -> None:
 def test_non_terminal_residency_fail_closed(tmp_path: Path, residency_pin_on) -> None:
     res_root = tmp_path / "residency"
     ranking = _ranking()
-    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=5, duration_seconds=600.0)
+    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=5)
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=res_root,
         ranking_snapshot=ranking,

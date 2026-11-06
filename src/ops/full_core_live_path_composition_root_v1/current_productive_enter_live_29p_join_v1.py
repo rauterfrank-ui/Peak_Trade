@@ -12,9 +12,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from dataclasses import dataclass, replace
 from decimal import Decimal, InvalidOperation
-from typing import Any, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Mapping, Optional
+
+if TYPE_CHECKING:
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     NUMERIC_EQUITY_TTL_SECONDS,
@@ -105,6 +109,11 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import DecisionOutcome
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayResultV1,
 )
+from .current_productive_entry_budget_policy_v1 import (
+    EntryBudgetPolicyV1,
+    EntryBudgetPolicyError,
+    load_entry_budget_policy_v1,
+)
 
 JOIN_SEAM_ID = "CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_SEAM_V1"
 FALSE_TOKEN = "false"
@@ -118,6 +127,9 @@ STATUS_MISSING = "MISSING"
 DECISION_HOLD = "HOLD"
 DECISION_ENTER = "ENTER"
 DECISION_OTHER = "OTHER"
+DECISION_POSITION_MANAGEMENT = "POSITION_MANAGEMENT"
+STATUS_NOT_CALLED_POSITION_MANAGEMENT = "NOT_CALLED_POSITION_MANAGEMENT"
+POSITION_MANAGEMENT_HANDOFF_REQUIRED = "POSITION_MANAGEMENT_EXECUTION_HANDOFF_REQUIRED"
 ENDPOINT = CURRENT_PRODUCTIVE_29P_FRESH_GET_ENDPOINT
 _ENTER = frozenset({DecisionOutcome.ENTER_LONG.value, DecisionOutcome.ENTER_SHORT.value})
 _HOLD = frozenset(
@@ -128,8 +140,6 @@ _HOLD = frozenset(
         DecisionOutcome.RECONCILE_ONLY.value,
         DecisionOutcome.CANCEL_PENDING.value,
         DecisionOutcome.BLOCKED.value,
-        DecisionOutcome.REDUCE.value,
-        DecisionOutcome.EXIT.value,
     }
 )
 
@@ -182,6 +192,8 @@ class CurrentProductiveEnterLive29PJoinResultV1:
     replay: Optional[IntegratedOfflineReplayResultV1]
     post_count: str = "0"
     permit_created: str = "false"
+    entry_budget_policy_id: str = ""
+    entry_budget_policy_digest: str = ""
     portfolio_reservation_id: str = ""
     portfolio_reservation_disposition: str = ""
     reason_codes: tuple[str, ...] = ()
@@ -204,6 +216,8 @@ def current_productive_decision_class_v1(
     outcome = str(getattr(raw_outcome, "value", raw_outcome) or "").strip().lower()
     if outcome in _ENTER:
         return DECISION_ENTER
+    if outcome in {DecisionOutcome.REDUCE.value, DecisionOutcome.EXIT.value}:
+        return DECISION_POSITION_MANAGEMENT
     if outcome in _HOLD:
         return DECISION_HOLD
     return DECISION_OTHER
@@ -343,20 +357,20 @@ def _rebound_replay_with_sizing_decision_v1(
 def resolve_current_productive_live_29p_adverse_exit_distance_v1(
     replay: IntegratedOfflineReplayResultV1 | None,
 ) -> tuple[float | None, tuple[str, ...]]:
-    """Layer-C σ×P adverse exit distance aligned with productive MV2 replay (not Cap-6.3 fixed 80)."""
-    from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
-        resolve_layer_c_event_distances_from_canonical_market_context_v1,
-    )
+    """Consume the same effective Layer-C distance as the evaluated decision.
 
+    Includes explicit legacy comparisons and CHOP-frozen scope states. Never
+    recompute a different fresh raw distance behind the decision owner's back.
+    """
     if replay is None or replay.intermediate is None:
         return None, ("replay_intermediate_missing",)
-    binding = resolve_layer_c_event_distances_from_canonical_market_context_v1(
-        replay.intermediate.market_context
-    )
-    if not binding.ok or binding.adverse_exit_distance is None:
-        codes = binding.failure_codes or ("layer_c_adverse_exit_unresolved",)
-        return None, tuple(str(code) for code in codes)
-    return float(binding.adverse_exit_distance), ()
+    try:
+        distance = float(replay.intermediate.scope_event.semantic_binding.adverse_exit_distance)
+    except (AttributeError, TypeError, ValueError):
+        return None, ("layer_c_adverse_exit_unresolved",)
+    if not math.isfinite(distance) or distance <= 0.0:
+        return None, ("layer_c_adverse_exit_unresolved",)
+    return float(distance), ()
 
 
 def _classify_fail_status(reasons: tuple[str, ...], *, error_class: str) -> str:
@@ -377,6 +391,10 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     portfolio_slot: CurrentProductiveEnterLive29PPortfolioSlotContextV1 | None = None,
     cycle_index: int | None = None,
+    entry_budget_policy: EntryBudgetPolicyV1 | None = None,
+    host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
+    restrictive_risk: object | None = None,
+    handoff_journal: object | None = None,
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
     """Consume Live-29P only on ENTER. HOLD does not private-GET."""
     reject_direct_avail_eq_29p_claim_v1(claimed="producer")
@@ -392,8 +410,83 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     if ENDPOINT != AVAILABLE_MARGIN_ENDPOINT_PATH:
         raise CurrentProductiveEnterLive29PJoinError("ENDPOINT_DRIFT")
     decision_class = current_productive_decision_class_v1(replay)
+    if decision_class == DECISION_POSITION_MANAGEMENT:
+        return replace(
+            _hold_result(replay=replay),
+            decision_class=DECISION_POSITION_MANAGEMENT,
+            status=STATUS_NOT_CALLED_POSITION_MANAGEMENT,
+            venue_plan_authorized=False,
+            first_blocker=POSITION_MANAGEMENT_HANDOFF_REQUIRED,
+            reason_codes=(
+                JOIN_SEAM_ID,
+                STATUS_NOT_CALLED_POSITION_MANAGEMENT,
+                POSITION_MANAGEMENT_HANDOFF_REQUIRED,
+            ),
+        )
     if decision_class != DECISION_ENTER:
         return _hold_result(replay=replay)
+
+    if handoff_journal is not None and restrictive_risk is None:
+        return _deny(
+            status=STATUS_FAIL,
+            blocker="HANDOFF_REQUIRES_BOUND_RISK_RESERVATION",
+            replay=replay,
+            get_count=0,
+        )
+
+    if restrictive_risk is not None:
+        # Explicit injected offline entry only. Do not add productive risk
+        # activation or acquire a new private port to validate this profile.
+        from src.risk.decision_bound_model_adapters_v1 import OfflineRiskRequestV1
+
+        try:
+            if (
+                type(restrictive_risk) is not OfflineRiskRequestV1
+                or injected is None
+                or host_budget_recovery is None
+                or portfolio_budget_owner is not host_budget_recovery.host.owner
+                or host_budget_recovery.host.closed
+            ):
+                raise ValueError("OFFLINE_RISK_BOUND_EXISTING_HOST_AND_INJECTED_PORT_REQUIRED")
+            observed = host_budget_recovery.observed
+            expected_positions = {
+                p.instrument_id: p.signed_quantity
+                for p in observed.positions
+                if p.signed_quantity != 0
+            }
+            actual_positions = {
+                p.canonical_id: p.signed_contracts
+                for p in restrictive_risk.data.positions
+                if p.signed_contracts != 0
+            }
+            if (
+                len({p.canonical_id for p in restrictive_risk.data.positions})
+                != len(restrictive_risk.data.positions)
+                or actual_positions != expected_positions
+                or restrictive_risk.data.account != host_budget_recovery.account
+                or restrictive_risk.data.portfolio_source_ref
+                != "original-portfolio-truth:" + observed.digest()
+                or restrictive_risk.data.portfolio_event_ms != int(observed.event_time_unix * 1000)
+                or restrictive_risk.data.portfolio_known_ms != int(observed.wall_time_unix * 1000)
+            ):
+                raise ValueError("RISK_ORIGINAL_HOST_PORTFOLIO_BINDING_MISMATCH")
+        except (ValueError, TypeError, AttributeError) as exc:
+            return _deny(status=STATUS_FAIL, blocker=str(exc), replay=replay, get_count=0)
+
+    # An outer Ops policy, not an E2E profile or a Double-Play producer input.
+    try:
+        policy = (
+            entry_budget_policy
+            if entry_budget_policy is not None
+            else load_entry_budget_policy_v1()
+        )
+        if not isinstance(policy, EntryBudgetPolicyV1):
+            raise EntryBudgetPolicyError("ENTRY_BUDGET_POLICY_TYPE_INVALID")
+        policy.validate_v1()
+        if portfolio_budget_owner is None:
+            raise EntryBudgetPolicyError("ENTRY_BUDGET_REQUIRES_SHARED_RESERVATION_OWNER")
+    except EntryBudgetPolicyError as exc:
+        return _deny(status=STATUS_FAIL, blocker=str(exc), replay=replay, get_count=0)
 
     get_count = 0
     payload: Mapping[str, Any] | None = None
@@ -813,9 +906,39 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             reasons=(blocker,),
         )
 
+    try:
+        # Q0 equity/metadata/price witness above stays unchanged. Only the
+        # downstream sizing ceilings are constrained; DP is never rerun here.
+        live_ctx = policy.constrain_entry_context_v1(live_ctx)
+    except EntryBudgetPolicyError as exc:
+        return _deny(
+            status=STATUS_FAIL,
+            blocker=str(exc),
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+        )
+
+    if host_budget_recovery is not None:
+        try:
+            host_budget_recovery.recover_v1(portfolio_budget_owner, output)
+        except (ValueError, OSError) as exc:
+            return _deny(
+                status=STATUS_FAIL,
+                blocker=str(exc),
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+            )
+
     portfolio_reservation_id = ""
     portfolio_reservation_disposition = ""
     sizing_decision: CapitalRiskSizingDecisionV1 | None = None
+    reservation_for_final_check = None
     if portfolio_budget_owner is not None and portfolio_slot is not None:
         assert replay is not None and replay.evidence is not None
         sizing_input, build_errors = build_capital_risk_sizing_input_from_decision_v0(
@@ -848,14 +971,13 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             live_account_bound_status=lab_status,
             fresh_evidence_fetched=True,
             fresh_evidence_validated=produced,
+            restrictive_risk=restrictive_risk,
+            handoff_journal=handoff_journal,
         )
         portfolio_reservation_disposition = str(seam.disposition.value)
+        reservation_for_final_check = seam.reservation
         if seam.disposition is ReserveDispositionV1.IDEMPOTENT_REPLAY:
-            sizing_binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
-                replay.evidence,
-                capital_context=live_ctx,
-            )
-            sizing_decision = sizing_binding.sizing_decision
+            sizing_decision = seam.sizing_decision
             if seam.reservation is not None:
                 portfolio_reservation_id = str(seam.reservation.reservation_id)
         elif seam.disposition is ReserveDispositionV1.ADMITTED:
@@ -948,6 +1070,24 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         rebound = override_result.replay
         sizing_decision = override_result.sizing_decision
         sizing_outcome = override_result.sizing_outcome
+    final_sizing = (
+        sizing_decision.canonical_position_sizing if sizing_decision is not None else None
+    )
+    if (
+        final_sizing is None
+        or final_sizing.resulting_notional > policy.per_entry_notional_limit
+        or reservation_for_final_check is None
+        or final_sizing.resulting_notional != reservation_for_final_check.amount
+    ):
+        return _deny(
+            status=STATUS_FAIL,
+            blocker="ENTRY_BUDGET_FINAL_SIZING_RESERVATION_MISMATCH",
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+        )
     return CurrentProductiveEnterLive29PJoinResultV1(
         decision_class=DECISION_ENTER,
         called=True,
@@ -965,4 +1105,6 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         portfolio_reservation_id=portfolio_reservation_id,
         portfolio_reservation_disposition=portfolio_reservation_disposition,
         reason_codes=(JOIN_SEAM_ID, STATUS_PASS, PRODUCER_IDENTITY),
+        entry_budget_policy_id=policy.policy_id,
+        entry_budget_policy_digest=policy.digest_v1(),
     )

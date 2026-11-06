@@ -12,6 +12,7 @@ import logging
 import math
 import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from types import MappingProxyType
 from typing import Any, Final, Mapping, Sequence
 
@@ -499,7 +500,7 @@ def _canonicalize_units(
             robustness_suite_version,
         )
         evidence_created_at = _require_created_at(unit.evidence_created_at)
-        if evidence_created_at > created_at:
+        if _utc_order_key(evidence_created_at) > _utc_order_key(created_at):
             raise MetaLearningValidationError("evidence_created_at lookahead is forbidden")
         later = _canonicalize_later_outcome(unit.later_outcome, evidence_created_at, created_at)
         bound.append(
@@ -543,7 +544,11 @@ def _canonicalize_later_outcome(
     if outcome is None:
         return None
     observed_at = _require_created_at(outcome.observed_at)
-    if observed_at < evidence_created_at or observed_at > created_at:
+    if not (
+        _utc_order_key(evidence_created_at)
+        <= _utc_order_key(observed_at)
+        <= _utc_order_key(created_at)
+    ):
         raise MetaLearningValidationError("later_outcome lookahead is forbidden")
     return {
         "metric_name": _require_token("later_outcome.metric_name", outcome.metric_name),
@@ -750,14 +755,7 @@ def _question_repeated_overfit(**kwargs: Any) -> dict[str, Any]:
                 if not failures:
                     missing += 1
                 continue
-            key = compute_content_sha256(
-                {
-                    "digest_algorithm": DIGEST_ALGORITHM,
-                    "digest_domain": f"{META_LEARNING_DOMAIN}.parameter_region",
-                    "payload": unit["parameter_region"],
-                    "schema_version": SCHEMA_VERSION,
-                }
-            )
+            key = derive_meta_parameter_region_digest_v1(unit["parameter_region"])
             counts[key] = counts.get(key, 0) + len(overfit)
             regions[key] = unit["parameter_region"]
         min_recurrence = int(kwargs["policy"]["min_recurrence_count"])
@@ -1020,6 +1018,7 @@ def _question_parameter_instability(**kwargs: Any) -> dict[str, Any]:
         kwargs["cohorts"],
         kwargs["policy"],
         proposal_builder=_instability_proposals,
+        exclude_missing_units=True,
     )
 
 
@@ -1108,6 +1107,7 @@ def _cohort_descriptive_question(
     policy: Mapping[str, Any],
     *,
     proposal_builder: Any,
+    exclude_missing_units: bool = False,
 ) -> dict[str, Any]:
     return _cohort_question(
         question_id,
@@ -1116,6 +1116,7 @@ def _cohort_descriptive_question(
         policy,
         associative=False,
         sample_key=None,
+        exclude_missing_units=exclude_missing_units,
         proposal_builder=proposal_builder,
     )
 
@@ -1149,6 +1150,7 @@ def _cohort_question(
     associative: bool,
     sample_key: str | None,
     proposal_builder: Any,
+    exclude_missing_units: bool = False,
 ) -> dict[str, Any]:
     comparable_n = sum(len(cohort["units"]) for cohort in cohorts)
     missing = 0
@@ -1159,9 +1161,23 @@ def _cohort_question(
         units = list(cohort["units"])
         cohort_findings, cohort_missing = collector(units)
         missing += cohort_missing
+        if associative and sample_key is not None:
+            supported_findings = []
+            for finding in cohort_findings:
+                bucket_status, _, _ = _claim_gate(
+                    sample_size=int(finding.get(sample_key, 0)),
+                    findings=[finding], policy=policy, associative=True,
+                )
+                statuses.append(bucket_status)
+                if bucket_status == EVIDENCE_COMPUTED:
+                    supported_findings.append(finding)
+            cohort_findings = supported_findings
         sample_size = (
             len(units) if sample_key is None else _finding_sample(cohort_findings, sample_key)
         )
+        if exclude_missing_units:
+            # The stability collector counts exactly one missing value per unit.
+            sample_size -= cohort_missing
         evidence_status, claim_type, _claim_strength = _claim_gate(
             sample_size=sample_size,
             findings=cohort_findings,
@@ -1206,7 +1222,7 @@ def _cohort_question(
         "question_id": question_id,
         "rejected_comparability_count": comparable_n if len(cohorts) > 1 else 0,
         "research_proposals": proposals,
-        "sample_size": comparable_n,
+        "sample_size": comparable_n - missing if exclude_missing_units else comparable_n,
     }
 
 
@@ -1267,6 +1283,22 @@ def _oos_proposals(findings: Sequence[Mapping[str, Any]], **kwargs: Any) -> list
                 )
             )
     return proposals
+
+
+def derive_meta_parameter_region_digest_v1(parameter_region: Mapping[str, Any]) -> str:
+    """Address the complete canonical region using the existing Phase-11 identity.
+
+    Both the Meta producer and its Search consumer use this address. It is not
+    the identity of an individual parameter value or an experiment.
+    """
+    return compute_content_sha256(
+        {
+            "digest_algorithm": DIGEST_ALGORITHM,
+            "digest_domain": f"{META_LEARNING_DOMAIN}.parameter_region",
+            "payload": parameter_region,
+            "schema_version": SCHEMA_VERSION,
+        }
+    )
 
 
 def _overfit_proposals(
@@ -1537,11 +1569,22 @@ def _require_phase4_token(field_name: str, value: Any, expected: str) -> str:
     return token
 
 
+def _utc_order_key(value: str) -> tuple[datetime, int]:
+    """Compare validated UTC instants without losing the supported nanoseconds."""
+    try:
+        whole_second = datetime.fromisoformat(value[:19]).replace(tzinfo=timezone.utc)
+    except ValueError as exc:
+        raise MetaLearningValidationError("created_at must be a valid UTC calendar instant") from exc
+    fraction = value[20:-1] if value[19:20] == "." else ""
+    return whole_second, int(fraction.ljust(9, "0"))
+
+
 def _require_created_at(value: Any) -> str:
     if not isinstance(value, str) or not _CREATED_AT_RE.fullmatch(value):
         raise MetaLearningValidationError(
             "created_at must be an explicit UTC timestamp ending with Z"
         )
+    _utc_order_key(value)
     return value
 
 
@@ -1637,5 +1680,6 @@ __all__ = [
     "build_canonical_meta_learning_v1",
     "canonical_meta_learning_policy_v1",
     "canonical_record_payload_v1",
+    "derive_meta_parameter_region_digest_v1",
     "validate_canonical_meta_learning_v1",
 ]

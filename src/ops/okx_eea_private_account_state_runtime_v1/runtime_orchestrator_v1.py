@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional
 
@@ -29,6 +29,9 @@ from src.ops.okx_eea_private_account_state_runtime_v1.rest_baseline_v1 import (
     collect_rest_baseline_v1,
 )
 from src.ops.okx_eea_private_account_state_runtime_v1.ws_transport_v1 import PrivateWsTransportV1
+from src.ops.okx_eea_private_account_state_runtime_v1.state_contracts_v1 import (
+    ReconciliationSnapshotV1,
+)
 
 
 @dataclass
@@ -41,13 +44,14 @@ class OkxEeaPrivateAccountStateRuntimeV1:
     trusted_current: bool = False
 
     def restore_durable_state_v1(self) -> list[Mapping[str, Any]]:
+        self.trusted_current = False
         paths = default_private_store_paths_v1(self.store_root)
         restored = load_all_private_state_v1(paths)
         self.lifecycle_events.append({"phase": "durable_restore", "count": len(restored)})
-        self.trusted_current = False
         return restored
 
     def run_rest_baseline_v1(self, *, captured_at: str, recovery: bool = False) -> dict[str, Any]:
+        self.trusted_current = False
         snap = collect_rest_baseline_v1(
             self.rest_fetch_json, captured_at=captured_at, recovery=recovery
         )
@@ -69,6 +73,7 @@ class OkxEeaPrivateAccountStateRuntimeV1:
         ws_orders: list[Mapping[str, str]] | None = None,
         restored_from_durable: bool = False,
     ) -> dict[str, Any]:
+        self.trusted_current = False
         result = reconcile_rest_baseline_v1(
             reconciliation_id=reconciliation_id,
             rest_baseline=rest_snapshot,
@@ -76,9 +81,9 @@ class OkxEeaPrivateAccountStateRuntimeV1:
             ws_orders=ws_orders,
             restored_from_durable=restored_from_durable,
         )
-        self.trusted_current = result.trusted
         paths = default_private_store_paths_v1(self.store_root)
         append_private_state_v1(paths, result.snapshot.to_dict())
+        self.trusted_current = result.trusted
         self.lifecycle_events.append(
             {
                 "phase": "reconciliation",
@@ -93,11 +98,14 @@ class OkxEeaPrivateAccountStateRuntimeV1:
         known_fills = load_known_fill_trade_ids_v1(paths)
         written = 0
         for fact in facts:
+            tid = ""
             if fact.get("fact_kind") == "FillFactV1":
                 tid = str(fact.get("tradeId") or "")
                 if tid and tid in known_fills:
                     continue
             append_private_state_v1(paths, fact)
+            if tid:
+                known_fills.add(tid)
             written += 1
         return written
 
@@ -129,16 +137,29 @@ class OkxEeaPrivateAccountStateRuntimeV1:
 
     def restart_sequence_v1(self, *, captured_at: str) -> dict[str, Any]:
         restored = self.restore_durable_state_v1()
+        metadata_fields = {item.name for item in fields(ReconciliationSnapshotV1)} | {"fact_kind"}
+        # A previous reconciliation result is metadata, not an economic state
+        # snapshot. Only this exact known shape may be superseded by a fresh
+        # baseline. Positions/orders/balances and unknown records stay untrusted.
+        restored_economic_state = any(
+            row.get("fact_kind") != "ReconciliationSnapshotV1" or set(row) != metadata_fields
+            for row in restored
+        )
         baseline = self.run_rest_baseline_v1(captured_at=captured_at, recovery=True)
         recon = self.reconcile_after_restore_or_ws_v1(
             reconciliation_id="restart_v1",
             rest_snapshot=baseline["snapshot"],
-            restored_from_durable=bool(restored),
+            restored_from_durable=restored_economic_state,
         )
         if self.ws_transport is not None:
-            self.ws_transport.connect_login_subscribe()
+            try:
+                self.ws_transport.connect_login_subscribe()
+            except Exception:
+                self.trusted_current = False
+                raise
         return {
             "restored_count": len(restored),
+            "restored_economic_state_present": restored_economic_state,
             "reconciliation": recon,
             "trusted_current": self.trusted_current,
         }

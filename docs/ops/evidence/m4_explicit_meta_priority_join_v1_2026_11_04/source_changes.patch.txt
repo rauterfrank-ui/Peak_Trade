@@ -1,0 +1,49 @@
+diff --git a/src/experiments/canonical_optimization_universe_experiment_plane_v1.py b/src/experiments/canonical_optimization_universe_experiment_plane_v1.py
+index 669b45587..bf67188ff 100644
+--- a/src/experiments/canonical_optimization_universe_experiment_plane_v1.py
++++ b/src/experiments/canonical_optimization_universe_experiment_plane_v1.py
+@@ -124,6 +124,8 @@ class OptimizationUniverseExperimentPlaneRequestV1:
+     robustness_policy_digest: str | None = None
+     robustness_observations: Mapping[str, Any] | None = None
+     learning_input_schema_version: str | None = LEARNING_INPUT_SCHEMA_VERSION
++    meta_learning_signals: Sequence[Mapping[str, Any]] = ()
++    meta_learning_identity: str | None = None
+ 
+ 
+ def build_offline_research_context_v1(
+@@ -209,6 +211,8 @@ def run_optimization_universe_experiment_plane_v1(
+             strategy_family=request.strategy_family,
+             regime=request.regime,
+             robustness_policy_digest=policy_digest,
++            meta_learning_signals=request.meta_learning_signals,
++            meta_learning_identity=request.meta_learning_identity,
+         )
+     )
+ 
+@@ -333,6 +337,26 @@ def run_optimization_universe_experiment_plane_v1(
+         "failure_evidence": failure_records,
+         "proposal": dict(proposal),
+     }
++    if request.meta_learning_signals:
++        chain["search_meta_priority_evidence"] = {
++            "source_meta_learning_identity": search_record["input_lineage"][
++                "meta_learning_identity"
++            ],
++            "supplied_proposal_ids": sorted(
++                str(signal["proposal_id"]) for signal in request.meta_learning_signals
++            ),
++            "candidates": [
++                {
++                    "parameter_region": dict(candidate["parameter_region"]),
++                    "search_priority_score": candidate["search_priority_score"],
++                    "status": candidate["status"],
++                    "matched_proposal_ids": list(candidate["matched_meta_learning_proposal_ids"]),
++                }
++                for candidate in search_record["candidates"]
++            ],
++            "research_priority_only": True,
++            "productive_apply_authorized": False,
++        }
+ 
+     return MappingProxyType(
+         _plane_payload(

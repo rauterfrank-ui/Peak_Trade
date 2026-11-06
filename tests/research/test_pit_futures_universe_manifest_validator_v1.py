@@ -159,15 +159,8 @@ def test_insufficient_history_rejected() -> None:
     assert ValidatorErrorCode.INSUFFICIENT_HISTORY.value in result.reason_codes
 
 
-@pytest.mark.parametrize(
-    "base_asset,expected",
-    [
-        ("BTC", ValidatorErrorCode.BITCOIN_MEMBER_REJECTED.value),
-        ("XBT", ValidatorErrorCode.BITCOIN_MEMBER_REJECTED.value),
-        ("WBTC", ValidatorErrorCode.BITCOIN_MEMBER_REJECTED.value),
-    ],
-)
-def test_bitcoin_members_rejected(base_asset: str, expected: str) -> None:
+@pytest.mark.parametrize("base_asset", ["BTC", "XBT", "WBTC"])
+def test_bitcoin_members_use_common_admission(base_asset: str) -> None:
     members = list(synthetic_eligible_members())
     members[0] = _member(
         instrument_id=f"okx:linear_perpetual:{base_asset}:USDT:USDT:perp",
@@ -181,13 +174,21 @@ def test_bitcoin_members_rejected(base_asset: str, expected: str) -> None:
                 build_synthetic_epoch(
                     score_epoch=0,
                     finalized_bar_close="2024-06-01T01:00:00Z",
-                    members=tuple(members),
+                    members=tuple(sorted(members, key=lambda item: item.instrument_id)),
                 ),
             )
         )
     )
+    manifest = attach_computed_digests(
+        replace(
+            manifest,
+            universe_policy_id="synthetic_common_futures_v1",
+            hypothesis_id="SYNTHETIC_COMMON_FUTURES_V1",
+        )
+    )
     result = _validate(manifest)
-    assert expected in result.reason_codes
+    assert result.valid is True
+    assert result.reason_codes == ()
 
 
 def test_spot_member_rejected() -> None:

@@ -1,0 +1,72 @@
+{
+  "files": [
+    {
+      "path": "artifacts/bars.csv",
+      "sha256": "54b86e631ee74cdf7037566d9cdc62a0fab3acc2339ccb04eeba3564890ee0bd"
+    },
+    {
+      "path": "artifacts/cfg.canonical.json",
+      "sha256": "b3e963573708c90474eaa3ca4184a564885d281f85ecf89acd2c006737fb4f87"
+    },
+    {
+      "path": "artifacts/execution.json",
+      "sha256": "989f040dc98a3a6bb82cd649475ada6538cd34f2e0dc38d92f64ebc7192af9eb"
+    },
+    {
+      "path": "artifacts/funding_binding_effect_probe.json",
+      "sha256": "835284fe79ee113cccd3f0076b4c623f38a49933d4b16a019263acc9fa42f963"
+    },
+    {
+      "path": "artifacts/gvef_reference.json",
+      "sha256": "d0ee4bccbdd1bec55cac70022a8cff2c3b5cf25b7f0ebb99e2fc2dd15f379721"
+    },
+    {
+      "path": "artifacts/later_meta.json",
+      "sha256": "dd8b728800d524086c6d0770eddcdc84eea62c07a4d3080faa676f6645806c11"
+    },
+    {
+      "path": "artifacts/later_meta_after_reference_reload.json",
+      "sha256": "dd8b728800d524086c6d0770eddcdc84eea62c07a4d3080faa676f6645806c11"
+    },
+    {
+      "path": "artifacts/measured_execution.canonical.json",
+      "sha256": "143902ea6ff607f4862d3f35c7acfed6c6c714f24c2d3023a71a8d71997dae64"
+    },
+    {
+      "path": "artifacts/measurement_receipt.json",
+      "sha256": "eff0980570d4f8bc6f375672c7ad3d09e2a7632ae9fee2e0d2c9e07cf3c85f2c"
+    },
+    {
+      "path": "artifacts/regular_provider_execution.json",
+      "sha256": "2e4b522a0918be9c24ac9c7627b443336ab3697b987b465f749c2fc1b3be5303"
+    },
+    {
+      "path": "artifacts/regular_provider_feedback_execution.canonical.json",
+      "sha256": "f9b079ebb7e882882fa0f5b3b4a8f59afe14bf6c97857f923668115539edfa78"
+    },
+    {
+      "path": "artifacts/regular_provider_feedback_execution.json",
+      "sha256": "f01cc6e67f91d9a386bfeccd942b829c024e402b2d3eb6d50d147eec6eae46e9"
+    },
+    {
+      "path": "artifacts/regular_provider_feedback_gvef_reference.json",
+      "sha256": "ce4cede3aa1ea386cce83e30a301a64faced8239bb1202b2ec0e1cd9b9ec61fb"
+    },
+    {
+      "path": "artifacts/regular_provider_feedback_later_meta.json",
+      "sha256": "2eedc5679699b1b8038c741da97af3852e15b2a9f2ea2b6eded055501043d572"
+    },
+    {
+      "path": "artifacts/regular_provider_feedback_later_meta_after_reload.json",
+      "sha256": "2eedc5679699b1b8038c741da97af3852e15b2a9f2ea2b6eded055501043d572"
+    },
+    {
+      "path": "artifacts/regular_provider_feedback_measurement.json",
+      "sha256": "3ec26958269686cd02f72e406f64e3baab740c88ef16316b0aea2a87ef6b511a"
+    },
+    {
+      "path": "artifacts/regular_provider_measurement.json",
+      "sha256": "0e433240f221bb5f80f43920f67fc549124e1d0d3e7675007b8e6cb0d09cc9fc"
+    }
+  ]
+}

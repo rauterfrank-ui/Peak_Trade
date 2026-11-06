@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -115,7 +116,18 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    owner_go_baseline = "049fc18cdf8061707185b075ec04dfb61a116c0c"
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_continuous_run_owner_go_wiring_v1 import (
+        load_bounded_continuous_run_owner_go_decision_v1,
+    )
+
+    # Reuse the declared scope; never replace it with HEAD or mint a new GO.
+    # The supervisor and consume owner still validate the complete decision.
+    owner_go_baseline = str(
+        load_bounded_continuous_run_owner_go_decision_v1(repo_root=REPO_ROOT).get(
+            "baseline_origin_main_sha"
+        )
+        or ""
+    )
     origin_for_owner_go = args.origin_main_sha or owner_go_baseline
 
     if args.dry_run_config:
@@ -136,6 +148,17 @@ def main() -> int:
         return 0
 
     if args.offline_inject_session:
+        if re.fullmatch(r"[0-9a-fA-F]{40}", owner_go_baseline) is None:
+            print(
+                json.dumps(
+                    {
+                        "ok": False,
+                        "error": "OWNER_GO_BASELINE_INVALID",
+                        "launcher_invoked_supervisor": False,
+                    }
+                )
+            )
+            return 1
         max_cycles = max(1, int(args.max_cycles))
         if args.public_store and args.private_store and args.lane_state and args.evidence_root:
             session_root = args.public_store.parent
@@ -154,7 +177,7 @@ def main() -> int:
         with tempfile.TemporaryDirectory(prefix="n1_standing_supervisor_") as tmp:
             return _run_offline_inject_session(
                 session_root=Path(tmp),
-                origin_main_sha=owner_go_baseline,
+                origin_main_sha=origin_for_owner_go,
                 max_cycles=max_cycles,
             )
 

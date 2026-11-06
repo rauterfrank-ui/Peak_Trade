@@ -7,7 +7,12 @@ WP-1 handoff and governed-cycle orchestration. PRE_EXTERNAL requires canonical M
 
 from __future__ import annotations
 
+from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalReservationBudgetOwnerV1,
+)
+
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -258,6 +263,8 @@ def test_wp2_consumer_compose_layered_store_then_c1_orchestrator_consumed(tmp_pa
 
     pairs = {"LANE_1": _pair(tmp_path, "LANE_1")}
     slot, bound = pairs["LANE_1"]
+    bound = replace(bound, venue_native_id="ETH-USDT-SWAP")
+    pairs["LANE_1"] = (slot, bound)
     g17_map = _lane_g17(pairs)
     bootstrap_minimal_productive_p5_store_for_lane_slot_v1(
         slot=slot,
@@ -265,7 +272,10 @@ def test_wp2_consumer_compose_layered_store_then_c1_orchestrator_consumed(tmp_pa
         g17_typed_vol_producer=g17_map["LANE_1"],
     )
     last_ts = float(C1_TS)
-    kwargs = _market_kwargs(cycle_id_prefix="wp2-consumer-compose", last_ts=last_ts)
+    kwargs = _market_kwargs(
+        cycle_id_prefix="wp2-consumer-compose", last_ts=last_ts,
+        venue_native_id=bound.venue_native_id,
+    )
     kwargs["g17_typed_vol_producers"] = g17_map
     results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
     record = results["LANE_1"]
@@ -350,6 +360,7 @@ def test_wp2_deterministic_pre_external_effect_full_compose_transport_bound(
             "funding_rate": 0.0001,
         },
         g17_typed_vol_producers={"LANE_1": g17},
+        portfolio_budget_owner=PortfolioCapitalReservationBudgetOwnerV1(),
         execution_integrity_backend=integrity,
     )
     assert result.wp1_status == "PASS"

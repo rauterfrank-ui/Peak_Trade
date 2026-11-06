@@ -1,0 +1,96 @@
+{
+  "ALL_CHANGE_EVENTS_FANOUT_TRAVERSED": true,
+  "GHV_ROOT_CHANGE_EVENT_ID": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "change_events": [
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_23e33a6199c84edf941a20e9"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_b1cf639ff2544e4a032ea558"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_1553ed7e7dd528df3802a81d"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_3a549ee3cd456f4e129e87d3"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_88e5fd759719c69a17a60aed"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_c7b1fc403dd013dcd2ec4ff5"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_578c76767310b40366e3c792"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "replay_execution_safety"
+      ],
+      "CHANGE_EVENT_ID": "PR7013_FINAL_REPROJECTION",
+      "DIRECT_CONSUMERS": [
+        "try_bind_current_productive_venue_plan_v1"
+      ],
+      "object_generation_id": "gen_75c800325feaaf201e73404d"
+    }
+  ],
+  "ghv_explicit_root": true,
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "schema_version": "ghv_pre_external_change_impact.v1"
+}

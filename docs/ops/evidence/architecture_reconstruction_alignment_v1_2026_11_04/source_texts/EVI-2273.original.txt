@@ -1,0 +1,107 @@
+# Architekturfortsetzung: Auswahl, Fakten, Zustand und Ausführung
+
+## Einordnung
+
+Vier weitere historische PDF-Fassungen wurden auf 17 vollständigen ausgewählten Seiten gelesen. Zwei zentrale Tabellen-/Vertragsseiten wurden zusätzlich gerendert und visuell geprüft. Insgesamt sind damit acht PDF-Fassungen auf 36 Seiten inhaltlich ausgewertet; die 269 extrahierten Seiten sind weiterhin nicht vollständig fachlich geprüft.
+
+Diese Quellen liefern Zielkonstruktionen und datierte Snapshots. Sie werden weder als erste ursprüngliche Idee jedes Bereichs noch als Beweis heutiger Umsetzung behandelt. Der Bezug zum früheren Universe-Selector-Befund bleibt differenziert: Instrumentwissen bereitstellen, Zulässigkeit prüfen, relativ ranken, auswählen und eine gebundene Identität weiterreichen sind verschiedene Rollen. Die Beziehung einer Information zum Consumer muss je Rolle und Revision belegt werden.
+
+## Ergänzte Anforderungen und Beweisfragen
+
+### B10: Eignung, Rangfolge und ausgewählte Identität erfüllen verschiedene Aufgaben
+
+Die Ranking-Planung vom 26.09. trennt harte Zulässigkeit von systemspezifischem Marktwert und beschreibendem Future Profile. Cap 2.3 soll die Auswahl/Anti-Churn-Entscheidung übernehmen, Cap 2.4 die gewählte Identität binden; Execution und Trading sollen nicht neu ranken.
+
+**Nachweisfrage:** Für jede Eingangsgröße ihre Rolle und tatsächlich konsumierte Wirkung nachweisen. Beschriebene Pfeile nicht als gesamte produktive Kette übernehmen.
+
+- P06: [Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/1216d5df-a016-41c2-a1f7-2edf06140632/Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf), physische PDF-Seiten 1, 2, 3, SHA256 `0417f7ca4215ad03eb4ab222c8cf0a308f6f15ee3e21fc48417ff91fe2604e7b`.
+
+### B11: Ein eigener ökonomischer Rang benötigt eine eigene Bedeutung
+
+Volatilität und Amplitude sind im September-Blueprint Kandidaten für den Rankingzweck; genaue Metrik, Fenster, Richtung, Normalisierung und Missing-Verhalten bleiben dort explizit zu entscheiden. Readiness-Binärwerte sollen nicht einfach um weitere Summanden ergänzt werden.
+
+**Nachweisfrage:** Ursprüngliches Rankingziel mit späteren Ratifikationen, Formeln und Consumern verbinden. Die damalige Aussage über sechs Binärkomponenten nicht als heutigen Ist-Stand behandeln.
+
+- P06: [Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/1216d5df-a016-41c2-a1f7-2edf06140632/Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf), physische PDF-Seiten 1, 2, 5, SHA256 `0417f7ca4215ad03eb4ab222c8cf0a308f6f15ee3e21fc48417ff91fe2604e7b`.
+
+### B12: Faktenwiederverwendung darf keine versteckte Rollenübertragung sein
+
+Raw Facts und versionierte Feature-Inputs sollen an ihrer Produktionsgrenze entstehen. Ranking-Witness, beschreibendes Profil und Selected-Future-Binding sollen dieselben gemessenen Fakten wiederverwenden, ohne konkurrierende Neuberechnung oder implizite Auswahlwirkung.
+
+**Nachweisfrage:** Gemeinsame Quellen, Ableitungen und Identitäten belegen. Verfügbarkeit einer Zahl allein beweist weder ihre Zulässigkeit als Score noch ihre Verwendung im Scope oder Trading.
+
+- P06: [Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/1216d5df-a016-41c2-a1f7-2edf06140632/Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf), physische PDF-Seiten 3, SHA256 `0417f7ca4215ad03eb4ab222c8cf0a308f6f15ee3e21fc48417ff91fe2604e7b`.
+- P08: [Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/c2ccaa7a-16ca-4c4c-9833-2577826a0707/Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf), physische PDF-Seiten 2, 4, 6, SHA256 `8cbaae1fbee61e81e761c94b54fee9676223448aebc59374b920e71fba6496d0`.
+
+### B13: Single-Future, isolierter Active Set und Beobachtungsumfang sind getrennt
+
+Der frühe Snapshot beschreibt einen isolierten MF-/Active-Set-Strang neben der produktiven Single-Selected-Future-Auswahl. Die spätere Fassung hält diese Varianten und ihre offenen Übergaben getrennt. Mehrere beobachtete Futures sollen nicht automatisch mehrere produktiv gehandelte Futures bedeuten.
+
+**Nachweisfrage:** Je Variante Cardinality, Policy-Übernahme, Membership-Owner, Handoff und Host-Consumer belegen. Keine alte Active-Set-Lücke pauschal zum heutigen globalen Blocker machen.
+
+- P05: [Peak_Trade_01_Ranking_Selection_Active_Set_20260911.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/25061af2-17ba-47d8-9a4d-c1c36cc6e459/Peak_Trade_01_Ranking_Selection_Active_Set_20260911.pdf), physische PDF-Seiten 1, 2, SHA256 `5472cb07b9ecc330aa3622bd1dee64dd4c22dba79e88b577dac9e224043cb4bf`.
+- P06: [Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/1216d5df-a016-41c2-a1f7-2edf06140632/Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf), physische PDF-Seiten 5, SHA256 `0417f7ca4215ad03eb4ab222c8cf0a308f6f15ee3e21fc48417ff91fe2604e7b`.
+- P08: [Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/c2ccaa7a-16ca-4c4c-9833-2577826a0707/Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf), physische PDF-Seiten 6, SHA256 `8cbaae1fbee61e81e761c94b54fee9676223448aebc59374b920e71fba6496d0`.
+
+### B14: Preisart, Intervall und Finalität sind Teil der Datenbedeutung
+
+Der Runtime-Blueprint unterscheidet Markpreis, letzten Handelspreis, OHLCV-Intervall und finalisierte PT1M-Mark-Beobachtung. Fehlende Bars, in-progress Daten und Korrekturen bleiben explizit; Mark-Aggregat-Nullvolumen darf nicht als gehandeltes Volumen erscheinen.
+
+**Nachweisfrage:** Source Price Kind, Volumeneinheit, Event-/Capture-Zeit, Finalität und Korrekturrevision bis zu Ranking, Geometrie, Forschung und Learning prüfen.
+
+- P08: [Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/c2ccaa7a-16ca-4c4c-9833-2577826a0707/Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf), physische PDF-Seiten 4, SHA256 `8cbaae1fbee61e81e761c94b54fee9676223448aebc59374b920e71fba6496d0`.
+
+### B15: Verschiedene Consumer dürfen unterschiedliche Zeithorizonte behalten
+
+Der Entwurf nennt für Ranking 61 zusammenhängende finalisierte PT1M-Mark-Beobachtungen, für O4/N_BARS eine semantische Transformation zu PT1H-Bar-Envelopes. Historische Query-Adapter sollen für Learning, Forschung, Replay und Optimierung verfügbar sein.
+
+**Nachweisfrage:** Aggregation, Horizontidentität, Kontinuität und korrekte Fensterzahl am tatsächlichen Producer/Consumer nachweisen. Gemeinsame Quelle nicht mit identischem Datenvertrag gleichsetzen.
+
+- P08: [Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/c2ccaa7a-16ca-4c4c-9833-2577826a0707/Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf), physische PDF-Seiten 4, 6, SHA256 `8cbaae1fbee61e81e761c94b54fee9676223448aebc59374b920e71fba6496d0`.
+
+### B16: Recovery und Gültigkeit sind Bestandteil des Faktenvertrags
+
+Vorgesehen sind WS für laufende Beobachtungen und REST für Bootstrap, Historie und kontrollierte Lückenbehebung. Wiederanlauf soll durable Daten, Reconciliation und aktuelle Grenzen verbinden. Live-Zustandsalter und Gültigkeit finalisierter Intervalle haben unterschiedliche Regeln.
+
+**Nachweisfrage:** Reale Zustandsübergaben, Gap-/Duplicate-/Out-of-order-Behandlung und Regeln je Faktenklasse prüfen. Ein globales TTL oder bloß vorhandene Persistenzdateien genügen nicht als Semantiknachweis.
+
+- P08: [Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/c2ccaa7a-16ca-4c4c-9833-2577826a0707/Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf), physische PDF-Seiten 2, 3, 4, 5, 6, SHA256 `8cbaae1fbee61e81e761c94b54fee9676223448aebc59374b920e71fba6496d0`.
+
+### B17: Privater Zustand ist keine neu erfundene Kapitalwahrheit
+
+Private Baseline-Snapshots und WS-Deltas sollen Account-, Balance-, Positions-, Order- und Fill-Zustände normalisieren. Accepted, partial, filled, canceled und rejected bleiben getrennt. Der gesonderte Account-Equity-Authority-Pfad darf nicht still durch beobachtete Balancewerte ersetzt werden.
+
+**Nachweisfrage:** Feldgesetz, Account-/Instrumentidentität, Vollständigkeit, Kapitalart und Freshness am jeweiligen Übergang belegen. Beobachtetes availEq und fürs Sizing verwendete Equity nicht ohne datierten Bindungsbeleg gleichsetzen.
+
+- P08: [Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/c2ccaa7a-16ca-4c4c-9833-2577826a0707/Peak_Trade_Market_Data_Private_State_Runtime_Implementation_Blueprint_20260926_TRACK_D_UPDATED.pdf), physische PDF-Seiten 6, 7, SHA256 `8cbaae1fbee61e81e761c94b54fee9676223448aebc59374b920e71fba6496d0`.
+- P07: [Peak_Trade_02_Full_Core_Execution_Autonomy_20260916_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/edd9d4b3-454a-44e2-a7b0-7c93f84c6d66/Peak_Trade_02_Full_Core_Execution_Autonomy_20260916_UPDATED.pdf), physische PDF-Seiten 1, 2, SHA256 `7286a528821fcf6e3f6a5ba37f5890998a5535cfec497abf809e6cb6668198ac`.
+
+### B18: Autonomie bedeutet Ablaufsteuerung bei getrennter Entscheidungszuständigkeit
+
+Der Full-Core-Snapshot beschreibt deterministische Trading-Entscheidung, Risiko/Sizing, Intent, Admission und externe Ausführungsgrenzen. Ein autonomer Executor soll das vorbereitete Ergebnis operationalisieren, nicht Instrumente auswählen oder eine zweite Trading-Entscheidung erzeugen. Technische Authentifizierung allein ist keine Sendefreigabe.
+
+**Nachweisfrage:** Orchestrierung, Entscheidung, Mengenbindung, Admission, Transport und Venue-/Reconciliation-Wirkung jeweils belegen. DDO, AI-Orchestrierung, Flatten-Nebenpfad und Full-Core nicht allein wegen gleicher Begriffe verschmelzen.
+
+- P07: [Peak_Trade_02_Full_Core_Execution_Autonomy_20260916_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/edd9d4b3-454a-44e2-a7b0-7c93f84c6d66/Peak_Trade_02_Full_Core_Execution_Autonomy_20260916_UPDATED.pdf), physische PDF-Seiten 1, 2, 4, 5, SHA256 `7286a528821fcf6e3f6a5ba37f5890998a5535cfec497abf809e6cb6668198ac`.
+
+### B19: Ergänzungen aktualisieren nicht automatisch alle früheren Aussagen
+
+Die Full-Core-PDF bewahrt ihren 11.09.-Snapshot und ergänzt am 12.09. und 16.09. begrenzte Entscheidungen/Beobachtungen. Die Rangfolgefassung vom 26.09. klassifiziert frühere Active-Set-Schritte neu und hält offene isolierte Übergaben getrennt.
+
+**Nachweisfrage:** Aussagen pro Seite, Baseline und Änderungsdatum führen. Frühe Lücken und spätere Fertigmeldungen nicht unbesehen auf die gesamte heutige Architektur übertragen.
+
+- P07: [Peak_Trade_02_Full_Core_Execution_Autonomy_20260916_UPDATED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/edd9d4b3-454a-44e2-a7b0-7c93f84c6d66/Peak_Trade_02_Full_Core_Execution_Autonomy_20260916_UPDATED.pdf), physische PDF-Seiten 1, 2, 3, 4, 5, SHA256 `7286a528821fcf6e3f6a5ba37f5890998a5535cfec497abf809e6cb6668198ac`.
+- P05: [Peak_Trade_01_Ranking_Selection_Active_Set_20260911.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/25061af2-17ba-47d8-9a4d-c1c36cc6e459/Peak_Trade_01_Ranking_Selection_Active_Set_20260911.pdf), physische PDF-Seiten 1, 2, SHA256 `5472cb07b9ecc330aa3622bd1dee64dd4c22dba79e88b577dac9e224043cb4bf`.
+- P06: [Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/1216d5df-a016-41c2-a1f7-2edf06140632/Peak_Trade_01_Ranking_Selection_Active_Set_BLUEPRINT_20260926_FINAL.pdf), physische PDF-Seiten 5, SHA256 `0417f7ca4215ad03eb4ab222c8cf0a308f6f15ee3e21fc48417ff91fe2604e7b`.
+
+## Bedeutung für die gesamte Konstruktion
+
+Die geplante Gesamtarchitektur lässt sich nicht aus einer einzigen Score-/Signal-Pipeline erklären. Fakten werden für unterschiedliche Zeit-/Preisverträge verwendet, Auswahl bindet ein Instrument, der Trading-Kern entscheidet innerhalb seiner Zustands-/Schutzverträge, Ressourcen und Admission begrenzen die ausführbare Handlung, und Outcomes/Experimente liefern getrennte Feedback-Arten. Das sind zunächst quellengebundene Zielrollen und bereits teilweise untersuchte Verbindungen, kein vollständig bewiesener Gesamtablauf.
+
+Besonders kritisch bleiben Übergänge, an denen Namen oder Zahlen gleich aussehen, ihre Bedeutung aber wechselt: Mark vs Last/Close; PT1M-Beobachtung vs PT1H-Outcome-Bar; Rankingwert vs Eligibility; Snapshot vs aktueller Zustand; verfügbare Margin vs Sizing-Equity; Orderabsicht vs Venue-Ausführung. Diese Übergänge betreffen mehrere Bereiche zugleich und bleiben in der breiten Rekonstruktion sichtbar.
+
+## Weiterer Abgleich
+
+Für diese Anforderungen werden als Nächstes die vorhandenen historischen Implementierungs-/Veränderungsregister quellengebunden zugeordnet. Wo keine Verbindung belegt ist, bleibt sie offen. Historische Nutzenentscheidungen benötigen zusätzlich Ersatz-/Verzichtsfolgen und Semantikerhalt. Keine tiefen Einzelrefactorings, Dashboard-Arbeit oder Runtime-Aktivierungen folgen daraus.
+
+Dateien: historical-architecture-requirements.json enthält jetzt B01–B19; reviewed-sources-and-pages.json enthält die acht Quellen; cross-domain-semantic-handoffs.json hält die übergreifenden Nachweisfragen zusammen.

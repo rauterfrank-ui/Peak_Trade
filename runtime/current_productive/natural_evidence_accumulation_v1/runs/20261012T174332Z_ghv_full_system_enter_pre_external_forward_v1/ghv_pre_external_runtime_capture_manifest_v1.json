@@ -1,0 +1,10 @@
+{
+  "continuation_snapshot_dir": "ghv_pre_external_continuation_snapshot_v1",
+  "continuous_run_id": "4669cd98802a3ba2",
+  "flight_record": "ghv_pre_external_runtime_flight_record_v1.jsonl",
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1",
+  "recorder_authority": "NONE",
+  "repository_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+  "run_id": "4669cd98802a3ba2",
+  "schema_version": "ghv_pre_external_runtime_capture_manifest.v1"
+}

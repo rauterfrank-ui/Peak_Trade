@@ -1,0 +1,9 @@
+### CON-2083 — Kill-All, persistenter Kill-Switch und Safety-Exit
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Core-KillAll ist ein Entscheidungszustand; persistenter Kill-Switch hat ACTIVE/KILLED/RECOVERING, Journal und kontrollierte Recovery. Safety kann Reduce-only-EXIT-Intent erzeugen. PRE-POST erlaubt eng belegte Risikoreduktion trotz KILLED/RECOVERING; expliziter Emergency-Veto bleibt sperrend. Offline-global_safety blockiert dagegen alle Intents. Diese Policies werden nicht vereinheitlicht.
+
+**Grenze:** Intent ist keine bestätigte Flat-Position; Kill-Aggregation nach Lane-Ergebnissen ist kein bewiesener Fan-out-Stopp. Fehlender persistenter Zustand und generischer Bool-Eingang haben verschiedene Defaults.
+
+Quellen: EVI-2215, EVI-2223, EVI-2234, EVI-2214.

@@ -1,0 +1,102 @@
+{
+  "schema": "self_learning_retained_result_integrity_probe_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "execution_head": "5ab28112440218fe0f6eb85aad299de38ae0da9d",
+  "additional_probe_cases": 3,
+  "existing_early_guard_confirmed": 1,
+  "additional_controlled_gaps_reproduced": 2,
+  "observations": [
+    {
+      "probe": "baseline_first",
+      "status": "EXISTING_GUARD_CONFIRMED",
+      "final_state": "FAILED",
+      "failure_classification": "INVARIANT_FAILURE",
+      "retained_baseline_differs_from_bound_snapshot": true,
+      "retained_candidate_differs_from_initial_snapshot": true,
+      "protected_output_equal_to_unchanged_control": false,
+      "scope": "Adversarial injected offline evaluator mutates nested metric lists; not observed productive corruption",
+      "product_implementation_changed": false
+    },
+    {
+      "probe": "baseline_second",
+      "status": "ADDITIONAL_OFFLINE_GAP_REPRODUCED",
+      "final_state": "REGISTERED",
+      "failure_classification": null,
+      "retained_baseline_differs_from_bound_snapshot": true,
+      "retained_candidate_differs_from_initial_snapshot": false,
+      "protected_output_equal_to_unchanged_control": true,
+      "scope": "Adversarial injected offline evaluator mutates nested metric lists; not observed productive corruption",
+      "product_implementation_changed": false
+    },
+    {
+      "probe": "candidate_during_baseline_repeat",
+      "status": "ADDITIONAL_OFFLINE_GAP_REPRODUCED",
+      "final_state": "REGISTERED",
+      "failure_classification": null,
+      "retained_baseline_differs_from_bound_snapshot": false,
+      "retained_candidate_differs_from_initial_snapshot": true,
+      "protected_output_equal_to_unchanged_control": true,
+      "scope": "Adversarial injected offline evaluator mutates nested metric lists; not observed productive corruption",
+      "product_implementation_changed": false
+    }
+  ],
+  "source_bindings": [
+    {
+      "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+      "line_start": 112,
+      "line_end": 265,
+      "snippet_sha256": "e18d5abf037fd2016a838f4c40af5da049710e1c1e77f8889df3d5f189763835"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+      "line_start": 267,
+      "line_end": 285,
+      "snippet_sha256": "79513b28e3eb413fcd87a83687e49b85862cb2eb3be80316f3091fbbc8046c62"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+      "line_start": 287,
+      "line_end": 310,
+      "snippet_sha256": "46d7d9284758347105bf51b841d7779567d9c158930dc3e38839605cd9cd19a3"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/contracts/models.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "c9fd96c72aadeec712f7e2644db2a25875659413cd1ce8b4a7a6ddc868599005",
+      "line_start": 50,
+      "line_end": 51,
+      "snippet_sha256": "7849743c9b3fdd2da97f90d4e474e0d7ce5e82142cb04fb4a9d3b7c85d509673"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/contracts/models.py",
+      "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+      "sha256": "c9fd96c72aadeec712f7e2644db2a25875659413cd1ce8b4a7a6ddc868599005",
+      "line_start": 295,
+      "line_end": 304,
+      "snippet_sha256": "72adcaeb9e7ea7043065e8cbade74700c96e8308fb4faed990b170ab34b726a3"
+    }
+  ],
+  "refinement": "Compare stable original Baseline and Candidate snapshots not only against repeat returns but also against the retained Runrecord objects after repeat evaluation and before comparator/post-gate/registration.",
+  "scope": "Adversarial injected offline evaluator mutates nested metric lists. No observed productive corruption and no productive source/authority.",
+  "implementation_changed": false,
+  "execution_artifacts": [
+    {
+      "path": "retained.xml",
+      "sha256": "082e98387207ad11ec4853aadff90b3dec4e57ecd36e602672729b9ba3872968"
+    },
+    {
+      "path": "retained.log",
+      "sha256": "5154dd76729fdb8439f98fe520256ab9512713375c98cf9505a0c462175d6c47"
+    },
+    {
+      "path": "test_retained_result_mutation.py",
+      "sha256": "6ffc261cb948a3b469306ac20c9aa7b02bd1d6aaa7665bc95470ced71e1a643d"
+    }
+  ]
+}

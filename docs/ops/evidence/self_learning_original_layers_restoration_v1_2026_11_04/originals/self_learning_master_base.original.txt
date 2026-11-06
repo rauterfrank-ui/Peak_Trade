@@ -1,0 +1,1373 @@
+# Peak_Trade Self-Learning System – Master Implementation Runbook
+
+**Status:** Architektur-/Implementierungs-Runbook  
+**Zweck:** Aufbau eines geschlossenen, reproduzierbaren, Safety-First Self-Learning Systems für Peak_Trade  
+**Grundprinzip:** `SELF_LEARNING != SELF_AUTHORIZING`
+
+---
+
+## 1. Executive Objective
+
+Peak_Trade soll von einem fragmentierten Experiment-/Feedback-Framework zu einem **geschlossenen Learning System** weiterentwickelt werden, das aus Research-, Shadow-, Testnet- und später bounded Live-Evidence systematisch lernt, ohne jemals selbstständig Trading Authority zu erhalten.
+
+Das System soll autonom:
+
+- beobachten,
+- Experimente ausführen,
+- Ergebnisse reproduzierbar bewerten,
+- Robustness prüfen,
+- Fehler und widerlegte Hypothesen erinnern,
+- Champion und Challenger vergleichen,
+- Reality Gaps zwischen Backtest und beobachteter Realität erkennen,
+- Cost-/Execution-Model-Kandidaten erzeugen,
+- Research-Hypothesen priorisieren,
+- Offline-Research automatisieren,
+- seinen eigenen Research-Prozess später meta-analysieren.
+
+Das System darf niemals autonom:
+
+- `LIVE_AUTHORIZED=true` setzen,
+- `enabled` oder `armed` setzen,
+- Confirm-Tokens erzeugen oder verwenden,
+- Canary autorisieren,
+- Orders senden,
+- Funding ausführen,
+- Risk Limits erhöhen,
+- Leverage erhöhen,
+- produktive Runtime-Config mutieren,
+- einen Challenger eigenständig zum Live-Champion promoten.
+
+### Kerninvariante
+
+```text
+SELF_LEARNING != SELF_AUTHORIZING
+```
+
+Die Learning Plane erzeugt ausschließlich **Evidence, Candidates, Comparisons, Research Priorities und Proposals**.
+
+Die Authority / Execution Plane bleibt separat und wird weiterhin ausschließlich durch bestehende Governance, Safety Gates und explizite Owner-Autorisierung kontrolliert.
+
+---
+
+# 2. Forensischer Ist-Zustand
+
+Die bisherige forensische Bestandsaufnahme klassifiziert Peak_Trade als:
+
+```text
+CURRENT_LEARNING_SYSTEM_CLASSIFICATION=
+EXPERIMENT_FRAMEWORK_WITH_FEEDBACK_COMPONENTS
+```
+
+Heute existieren drei teilweise getrennte Welten:
+
+## 2.1 Productive Runtime Plane
+
+Produktive bzw. kanonische Laufzeit:
+
+```text
+Market Data
+→ Features / Regime
+→ Strategy / Master Decision
+→ Risk
+→ Safety
+→ Intent
+→ Simulated Execution
+→ Evidence
+→ Verification
+```
+
+Dieser Graph besitzt heute **keinen geschlossenen Learning Loop**.
+
+## 2.2 Neue Learning-Plane Contracts
+
+Neuere Komponenten unter anderem in:
+
+```text
+src/meta/learning_loop/*
+```
+
+arbeiten fail-closed und offline.
+
+Sie können vorhandene Evidence:
+
+- projizieren,
+- vergleichen,
+- klassifizieren,
+- als Learning Input darstellen,
+- als Candidate-/Comparison-Evidence strukturieren.
+
+Sie trainieren oder promoten jedoch bewusst nicht autonom.
+
+Das ist aus Safety-Sicht die richtige Richtung.
+
+## 2.3 Legacy Learning / Promotion Plane
+
+Ältere Pfade umfassen unter anderem:
+
+```text
+src/meta/learning_loop/bridge.py
+src/meta/learning_loop/emitter.py
+scripts/run_learning_apply_cycle.py
+scripts/run_promotion_proposal_cycle.py
+src/governance/promotion_loop/*
+src/core/peak_config.py
+config/auto/*
+config/live_overrides/*
+```
+
+Diese Komponenten besitzen fachlich potenziell wertvolle Mechanismen, enthalten aber auch eine **latente Config-Mutationsarchitektur**.
+
+Besonders kritisch zu adjudizieren:
+
+```text
+Learning / Promotion Proposal
+→ bounded_auto
+→ config/live_overrides/auto.toml
+→ load_config_with_live_overrides()
+```
+
+Nach bisherigem Befund ist dieser Pfad aktuell **nicht produktiv an den Host verdrahtet**.
+
+Das reduziert das akute Risiko, beseitigt aber nicht das Architekturproblem.
+
+Die Legacy-Komponenten dürfen deshalb weder blind übernommen noch blind entfernt werden.
+
+---
+
+# 3. Zielarchitektur
+
+Die empfohlene Zielarchitektur besteht aus einer strikt separierten:
+
+1. **Learning Plane**
+2. **Authority / Execution Plane**
+
+---
+
+## 3.1 Learning Plane
+
+```text
+Market / Venue / Execution Data
+              │
+              ▼
+Canonical Versioned Data
+              │
+              ▼
+Research Hypothesis
+              │
+              ▼
+Canonical Experiment Identity
+              │
+              ▼
+Experiment Runner
+              │
+              ▼
+Immutable Experiment Memory
+              │
+              ▼
+Robustness Suite
+              │
+              ▼
+Comparison SSOT
+              │
+              ▼
+Champion–Challenger Evaluation
+              │
+        ┌─────┴─────┐
+        │           │
+      reject     candidate
+        │           │
+        ▼           ▼
+Failure Memory    Shadow
+                    │
+                    ▼
+              Reality Gap
+                    │
+                    ▼
+                 Testnet
+                    │
+                    ▼
+              Promotion Evidence
+                    │
+                    ▼
+            Owner / Governance Gate
+                    │
+                    ▼
+             bounded production
+                    │
+                    ▼
+        Execution / Risk / PnL Telemetry
+                    │
+                    └───────────────┐
+                                    ▼
+                              Feedback Store
+                                    │
+          ┌─────────────────────────┼──────────────────────┐
+          ▼                         ▼                      ▼
+   Failure Memory             Reality Gap            Meta-Learning
+          │                         │                      │
+          └───────────────→ New Research Hypotheses ←─────┘
+```
+
+---
+
+## 3.2 Authority / Execution Plane
+
+Diese Plane bleibt separat:
+
+```text
+Strategy Candidate
+→ Promotion Evidence
+→ Economic / Safety Gates
+→ Owner-GO
+→ Existing Live Gates
+→ Confirm Token / Armed / Enabled
+→ Execute
+```
+
+Kein Learning-Modul erhält direkten Schreibzugriff auf diese Authority-Schicht.
+
+---
+
+# 4. Architectural Invariants
+
+Die folgenden Invarianten gelten während des gesamten Programms.
+
+```text
+SELF_LEARNING_SELF_AUTHORIZING_SEPARATION=true
+
+LEARNING_CAN_WRITE_LIVE_CONFIG=false
+LEARNING_CAN_INCREASE_RISK=false
+LEARNING_CAN_INCREASE_LEVERAGE=false
+LEARNING_CAN_FUND=false
+LEARNING_CAN_SUBMIT_ORDER=false
+LEARNING_CAN_ARM=false
+LEARNING_CAN_ENABLE=false
+LEARNING_CAN_CREATE_CONFIRM_TOKEN=false
+LEARNING_CAN_USE_CONFIRM_TOKEN=false
+LEARNING_CAN_AUTHORIZE_CANARY=false
+LEARNING_CAN_PROMOTE_TO_LIVE=false
+```
+
+Zusätzlich:
+
+- Historical Evidence ist immutable.
+- Experimente dürfen keine historischen Registry-Einträge überschreiben.
+- Kein stiller Default auf `0` für Fees, Slippage oder Funding.
+- Keine produktive Promotion allein auf Basis von Sharpe.
+- Keine impliziten Experiment-Inputs.
+- Keine automatische Risk-Erhöhung als Resultat einer Optimierung.
+- Keine direkte Verbindung `model output → order submit`.
+- Kein Research-System darf Live-/Testnet-Config als normalen Output behandeln.
+
+---
+
+# 5. Phase 0 – Legacy Learning Plane Adjudication
+
+## Ziel
+
+Den Legacy-Learning-/Promotion-Stack vollständig verstehen und entscheiden, welche Bestandteile:
+
+```text
+KEEP_AND_HARDEN
+REUSE_AS_RESEARCH_ONLY
+DEPRECATE_REMOVE_LATER
+UNKNOWN
+```
+
+sind.
+
+## Zu untersuchender Kernscope
+
+```text
+src/meta/learning_loop/bridge.py
+src/meta/learning_loop/emitter.py
+scripts/run_learning_apply_cycle.py
+scripts/run_promotion_proposal_cycle.py
+src/governance/promotion_loop/*
+src/core/peak_config.py
+config/auto/*
+config/live_overrides/*
+```
+
+Zusätzlich alle:
+
+- Imports,
+- Call Sites,
+- Tests,
+- Config Keys,
+- CLI Entry Points,
+- Docs,
+- generated artifacts,
+- loader paths,
+- hidden consumers.
+
+## Fragen
+
+Für jede Komponente:
+
+- Welches Problem löst sie?
+- Welche fachliche Logik ist erhaltenswert?
+- Was ist nur Transport?
+- Was ist nur CLI?
+- Was schreibt Dateien?
+- Was mutiert Config?
+- Welche Felder sind schreibbar?
+- Kann `leverage`, `risk`, `strategy`, `portfolio` oder andere Authority-relevante Config verändert werden?
+- Wer konsumiert diese Outputs?
+- Gibt es produktive Host-Consumer?
+- Gibt es Demo-/Export-only Consumer?
+- Welche Tests sichern das Verhalten?
+- Welche Docs behaupten produktive Nutzung?
+- Besteht Drift zwischen Docs und tatsächlichem Call Graph?
+
+## Zielzustand
+
+Learning darf ausschließlich schreiben:
+
+```text
+immutable evidence
+candidate records
+research configs
+offline reports
+research-priority records
+```
+
+Learning darf niemals produktive Runtime-Konfiguration schreiben.
+
+## Empfohlene Architekturentscheidung
+
+Legacy-Transformationslogik kann erhalten bleiben, wenn sie rein funktional / research-only gemacht werden kann.
+
+Legacy-Auto-Apply-Mechanismen sollten nicht zur Grundlage des neuen Systems werden.
+
+## Exit Gate
+
+```text
+LEGACY_LEARNING_PLANE_ADJUDICATED=true
+LEGACY_LIVE_MUTATION_PATH_CANONICALLY_BLOCKED=true
+VALUABLE_LEGACY_COMPONENTS_CLASSIFIED=true
+```
+
+---
+
+# 6. Phase 1 – Canonical Experiment Identity
+
+## Ziel
+
+Jedes Experiment erhält eine vollständige, deterministische und immutable Identität.
+
+Ein Ergebnis ist nur dann vertrauenswürdig, wenn exakt rekonstruierbar ist:
+
+- welcher Code,
+- welche Strategie,
+- welche Parameter,
+- welche Daten,
+- welches Feature Set,
+- welche Kostenmodelle,
+- welche Risk Policy,
+- welche Portfolio-Zusammensetzung,
+- welche Splits,
+- welcher Seed,
+- welche Runtime-/Environment-Version
+
+verwendet wurden.
+
+## Canonical Experiment Identity
+
+Mindestens:
+
+```text
+experiment_identity
+├── git_sha
+├── strategy_identity
+├── strategy_params_digest
+├── dataset_digest
+├── feature_pipeline_digest
+├── cost_model_digest
+│   ├── fee_model_digest
+│   ├── slippage_model_digest
+│   └── funding_model_digest
+├── risk_policy_digest
+├── portfolio_digest
+├── split_policy_digest
+├── seed
+├── environment_digest
+└── parent_lineage_ref
+```
+
+## Keine impliziten Inputs
+
+Folgende Inputs dürfen nicht mehr außerhalb der Identity leben:
+
+- Fee assumptions
+- Slippage assumptions
+- Funding assumptions
+- Seeds
+- Dataset version
+- Split policy
+- Risk policy
+- Portfolio definition
+- critical feature settings
+
+## Exit Gate
+
+```text
+EXPERIMENT_IDENTITY_COMPLETE=true
+EXPERIMENT_REPRODUCIBILITY=COMPLETE
+IMPLICIT_CRITICAL_INPUTS=0
+```
+
+---
+
+# 7. Phase 2 – Immutable Experiment Memory
+
+## Ziel
+
+Experiment Tracking wird zu echtem Research Memory.
+
+Jeder Versuch erhält einen immutable Record.
+
+## Mindestfelder
+
+```text
+experiment_id
+experiment_identity
+hypothesis_id
+hypothesis_fingerprint
+parent_experiment
+strategy_family
+candidate_role
+dataset_ref
+cost_model_ref
+risk_policy_ref
+portfolio_ref
+metrics
+robustness_results
+regime_results
+comparison_status
+disposition
+rejection_reason
+created_at
+artifacts
+lineage
+```
+
+## Anforderungen
+
+- append-only / immutable
+- kein Overwrite historischer Runs
+- reproduzierbarer Artifact-Pointer
+- deterministic identity
+- referenzierbarer Parent
+- vollständige Disposition
+
+## Exit Gate
+
+```text
+IMMUTABLE_EXPERIMENT_MEMORY_PRESENT=true
+EXPERIMENT_LINEAGE_COMPLETE=true
+```
+
+---
+
+# 8. Phase 3 – Failure Memory
+
+## Ziel
+
+Peak_Trade soll nicht nur Gewinner erinnern, sondern auch widerlegte Ideen.
+
+## Canonical Failure Record
+
+```text
+failure_record
+├── hypothesis_fingerprint
+├── experiment_identity
+├── failure_class
+├── failed_gate
+├── rejection_reason
+├── dataset_digest
+├── regime
+├── parameter_region
+├── cost_sensitivity
+├── instability_indicators
+├── evidence_refs
+└── timestamp
+```
+
+## Nutzungsfälle
+
+Vor einem neuen Experiment:
+
+- wurde exakt dieselbe Hypothese bereits getestet?
+- wurde derselbe Suchraum verworfen?
+- wurde dieselbe Parameterregion wiederholt instabil?
+- existiert derselbe Failure Mode?
+- scheitert diese Strategiefamilie regelmäßig an denselben Robustness-Gates?
+
+## Wichtig
+
+Failure Memory darf Research priorisieren oder warnen.
+
+Es darf keine Hypothese ohne nachvollziehbare Policy unsichtbar blockieren.
+
+## Exit Gate
+
+```text
+FAILURE_MEMORY_PRESENT=true
+DUPLICATE_HYPOTHESIS_DETECTION=true
+REJECTION_REASON_CANONICALIZED=true
+```
+
+---
+
+# 9. Phase 4 – Canonical Robustness Suite
+
+## Ziel
+
+Jeder Candidate durchläuft dieselbe standardisierte Robustness-Pipeline.
+
+## Pflichtprüfungen
+
+Mindestens:
+
+- train / validation / holdout
+- walk-forward
+- rolling OOS
+- purged split
+- embargo
+- Monte Carlo
+- block bootstrap
+- parameter sensitivity
+- fee stress
+- slippage stress
+- funding stress
+- latency stress
+- spread stress
+- liquidity stress
+- crash scenarios
+- missing-data stress
+- bad-tick stress
+- regime stress
+- risk stress
+- multiple-testing controls
+
+## Advanced Statistical Controls
+
+Nach Eignungsprüfung:
+
+- Deflated Sharpe Ratio
+- Probabilistic Sharpe Ratio
+- Probability of Backtest Overfitting
+- CPCV
+- White Reality Check
+- SPA Test
+
+Nicht jedes Verfahren muss zwingend eingesetzt werden.
+
+Die endgültige Auswahl muss ökonomisch und statistisch begründet werden.
+
+## Kein Single-Metric Promotion
+
+Verbot:
+
+```text
+BEST_SHARPE => PROMOTE
+```
+
+Bewertung muss mindestens berücksichtigen:
+
+- Sharpe / Sortino
+- MaxDD
+- Profit Factor
+- turnover
+- fee drag
+- slippage sensitivity
+- funding sensitivity
+- tail risk
+- exposure
+- parameter stability
+- OOS stability
+- regime concentration
+- sample size
+
+## Exit Gate
+
+```text
+CANONICAL_ROBUSTNESS_SUITE_PRESENT=true
+SINGLE_METRIC_PROMOTION=false
+```
+
+---
+
+# 10. Phase 5 – Comparison SSOT
+
+## Ziel
+
+Nur ökonomisch und methodisch vergleichbare Experimente dürfen gegeneinander gerankt werden.
+
+## Comparability Gate
+
+Vor Champion/Challenger-Vergleich müssen identisch oder explizit kompatibel sein:
+
+```text
+dataset identity
+split policy
+fee model
+slippage model
+funding model
+risk policy
+portfolio constraints
+robustness suite version
+metric definitions
+time horizon
+market universe
+```
+
+Wenn nicht:
+
+```text
+COMPARISON_REJECTED
+```
+
+## Exit Gate
+
+```text
+COMPARISON_SSOT_MANDATORY=true
+NON_COMPARABLE_CANDIDATES_NOT_RANKED=true
+```
+
+---
+
+# 11. Phase 6 – Champion–Challenger System
+
+## Ziel
+
+Neue Kandidaten ersetzen niemals still den aktuellen Champion.
+
+## Modell
+
+```text
+Champion
+   ├── Challenger A
+   ├── Challenger B
+   ├── Challenger C
+   └── Challenger D
+```
+
+## Gleiche Bedingungen
+
+Alle Challenger müssen gegenüber dem Champion unter identischen Bedingungen bewertet werden:
+
+- Dataset
+- Kosten
+- Risk Budget
+- Robustness Suite
+- Metriken
+- Regime-Strata
+- Evaluation Horizon
+
+## Promotion
+
+Learning darf:
+
+- Challenger erzeugen
+- Challenger ranken
+- Evidence bereitstellen
+- Promotion empfehlen
+
+Learning darf NICHT:
+
+- produktiven Champion automatisch ersetzen.
+
+## Exit Gate
+
+```text
+CHAMPION_CHALLENGER_PRESENT=true
+AUTONOMOUS_CHAMPION_SWAP=false
+```
+
+---
+
+# 12. Phase 7 – Reality Gap Store
+
+## Ziel
+
+Der wichtigste geschlossene Feedback-Kanal:
+
+```text
+expected backtest behaviour
+vs
+observed shadow/testnet/live behaviour
+```
+
+## Beispiele
+
+```text
+expected_slippage     vs observed_slippage
+expected_fee_drag     vs observed_fee_drag
+expected_funding_drag vs observed_funding_drag
+expected_fill_rate    vs observed_fill_rate
+expected_turnover     vs observed_turnover
+expected_drawdown     vs observed_drawdown
+expected_sharpe       vs observed_sharpe
+expected_latency      vs observed_latency
+expected_reject_rate  vs observed_reject_rate
+```
+
+## Datenquellen
+
+- Shadow
+- Paper / simulated runtime
+- Testnet
+- Live read-only
+- Dry-run
+- später bounded live evidence
+
+## Speicherung
+
+Reality Gaps werden versioniert und immutable gespeichert.
+
+## Keine Hot Calibration
+
+Verbot:
+
+```text
+observed slippage
+→ overwrite production slippage model
+```
+
+Stattdessen:
+
+```text
+Reality Gap
+→ Cost Model Candidate
+→ Research Validation
+→ Comparison
+→ Governance
+→ mögliche spätere Promotion
+```
+
+## Exit Gate
+
+```text
+REALITY_GAP_STORE_PRESENT=true
+AUTOMATIC_HOT_PATCHING=false
+```
+
+---
+
+# 13. Phase 8 – Regime-Aware Evaluation
+
+## Ziel
+
+Strategien werden nicht nur global bewertet.
+
+## Zu analysierende Kontexte
+
+Mindestens:
+
+- trend / range
+- high / low volatility
+- bull / bear
+- liquidity state
+- spread regime
+- funding regime
+- crash state
+- risk-on / risk-off
+- volatility clustering
+- venue microstructure state
+
+## Je Strategie
+
+Speichern:
+
+- return per regime
+- Sharpe per regime
+- drawdown per regime
+- turnover per regime
+- fee drag per regime
+- slippage per regime
+- failure rate per regime
+- sample size per regime
+
+## Architekturproblem
+
+Research-Regime und Runtime-Regime dürfen nicht still als identisch behandelt werden.
+
+Es braucht entweder:
+
+1. einen expliziten Mapping Contract,
+2. oder eine bewusst dokumentierte Trennung.
+
+## Exit Gate
+
+```text
+REGIME_AWARE_EVALUATION_PRESENT=true
+REGIME_MAPPING_EXPLICIT=true
+REGIME_LOOKAHEAD_BLOCKED=true
+```
+
+---
+
+# 14. Phase 9 – Portfolio Learning
+
+## Ziel
+
+Strategy Learning und Portfolio Learning werden getrennte Ebenen.
+
+## Strategy Layer
+
+Optimiert / bewertet:
+
+- signal quality
+- execution robustness
+- parameter stability
+- regime suitability
+
+## Portfolio Layer
+
+Bewertet:
+
+- correlation
+- covariance
+- diversification
+- concentration
+- marginal risk
+- risk contribution
+- portfolio drawdown
+- turnover
+- capacity
+- allocation stability
+
+## Wichtig
+
+Eine bessere Einzelstrategie ist nicht automatisch ein besserer Portfolio-Bestandteil.
+
+Portfolio Learning darf ebenfalls keine Runtime Authority erhalten.
+
+## Exit Gate
+
+```text
+PORTFOLIO_LEARNING_PRESENT=true
+STRATEGY_AND_PORTFOLIO_OPTIMIZATION_SEPARATED=true
+```
+
+---
+
+# 15. Phase 10 – Automated Offline Research Loop
+
+## Voraussetzung
+
+Erst nach Abschluss und Verifikation der Phasen 0–9.
+
+## Scheduler darf
+
+- Hypothesen auswählen
+- neue Research-Hypothesen vorbereiten
+- Experimente starten
+- Robustness Suite ausführen
+- Comparability prüfen
+- Challenger Reports erzeugen
+- Failure Memory aktualisieren
+- Reality Gap Reports erzeugen
+- Meta-Daten aggregieren
+
+## Scheduler darf nicht
+
+- produktive Config schreiben
+- Live aktivieren
+- `enabled` / `armed` setzen
+- Risk erhöhen
+- Leverage erhöhen
+- Funding ausführen
+- Orders senden
+- Confirm Tokens erzeugen
+- Canary autorisieren
+- Promotion finalisieren
+
+## Exit Gate
+
+```text
+AUTOMATED_OFFLINE_RESEARCH_LOOP=true
+AUTOMATED_RUNTIME_AUTHORITY=false
+```
+
+---
+
+# 16. Phase 11 – Meta-Learning
+
+## Ziel
+
+Peak_Trade lernt nicht nur den Markt, sondern seinen eigenen Research-Prozess.
+
+## Fragen
+
+- Welche Strategiefamilien überleben OOS?
+- Welche Parameterregionen overfitten?
+- Welche Suchräume produzieren False Positives?
+- Welche Robustness-Tests sagen Shadow-/Testnet-Erfolg voraus?
+- Welche Backtest-Metriken besitzen reale Prognosekraft?
+- Welche Cost Models unterschätzen Realität?
+- Welche Regime verursachen wiederkehrende Failure Modes?
+- Welche Parameter sind langfristig instabil?
+- Welche Hypothesenarten erzeugen wiederholt schlechte Ergebnisse?
+- Welche Research-Pfade liefern den höchsten Informationsgewinn?
+
+## Beispiel
+
+Später könnte Meta-Learning feststellen:
+
+```text
+Backtest Sharpe          -> geringe Prognosekraft
+OOS stability           -> mittlere Prognosekraft
+fee stress stability    -> hohe Prognosekraft
+parameter plateau width -> hohe Prognosekraft
+regime concentration    -> negative Prognosekraft
+```
+
+Das erlaubt Peak_Trade, bessere Research-Prioritäten zu setzen.
+
+Meta-Learning erzeugt jedoch weiterhin keine Live Authority.
+
+## Exit Gate
+
+```text
+META_LEARNING_READY=true
+META_LEARNING_AUTHORITY=RESEARCH_ONLY
+```
+
+---
+
+# 17. Phase 12 – Optional Advanced Search
+
+Diese Phase ist bewusst spät.
+
+Mögliche Tools:
+
+- Bayesian Optimization
+- Optuna
+- evolutionary search
+- genetic algorithms
+- ML models
+- agentic hypothesis generation
+- eventuell Reinforcement Learning
+
+## Prinzip
+
+Diese Systeme sind:
+
+```text
+SEARCH_MECHANISMS
+```
+
+und niemals:
+
+```text
+AUTHORITY_MECHANISMS
+```
+
+Sie dürfen nur innerhalb der kanonischen:
+
+- Identity,
+- Robustness,
+- Comparability,
+- Failure-Memory,
+- Champion–Challenger
+
+Architektur arbeiten.
+
+---
+
+# 18. Fast / Medium / Slow Learning Loops
+
+Ein optimales System trennt Feedback nach Geschwindigkeit.
+
+## FAST LOOP
+
+Zeithorizont:
+
+```text
+Minuten → Tage
+```
+
+Daten:
+
+- fill quality
+- slippage
+- fees
+- latency
+- rejects
+- reconciliation
+- order lifecycle
+- venue behaviour
+
+Output:
+
+- Execution Evidence
+- Reality Gap
+- Cost-Model Candidate
+
+Keine Strategy-Replacement Authority.
+
+---
+
+## MEDIUM LOOP
+
+Zeithorizont:
+
+```text
+Tage → Wochen
+```
+
+Daten:
+
+- signal quality
+- regime dependence
+- turnover
+- drawdowns
+- forecast quality
+- execution-adjusted performance
+
+Output:
+
+- strategy evaluation
+- challenger status
+- robustness updates
+
+---
+
+## SLOW LOOP
+
+Zeithorizont:
+
+```text
+Wochen → Monate
+```
+
+Daten:
+
+- strategy family performance
+- portfolio structure
+- feature research
+- risk architecture
+- search-space quality
+
+Output:
+
+- new research hypotheses
+- portfolio candidates
+- research priorities
+
+---
+
+# 19. Canonical Candidate Lifecycle
+
+Empfohlener Lifecycle:
+
+```text
+HYPOTHESIS
+   ↓
+PREREGISTERED
+   ↓
+EXPERIMENT_CREATED
+   ↓
+BACKTESTED
+   ↓
+ROBUSTNESS_PASS / REJECTED
+   ↓
+COMPARABLE
+   ↓
+CHALLENGER
+   ↓
+SHADOW
+   ↓
+REALITY_GAP_EVALUATED
+   ↓
+TESTNET
+   ↓
+PROMOTION_EVIDENCE_READY
+   ↓
+OWNER / GOVERNANCE DECISION
+   ↓
+BOUNDED PRODUCTION
+```
+
+Jeder Übergang erzeugt immutable Evidence.
+
+---
+
+# 20. Canonical Dispositions
+
+Empfohlene terminale oder semiterminale Zustände:
+
+```text
+REJECTED_DATA_QUALITY
+REJECTED_REPRODUCIBILITY
+REJECTED_OVERFIT
+REJECTED_COST_SENSITIVITY
+REJECTED_TAIL_RISK
+REJECTED_REGIME_CONCENTRATION
+REJECTED_COMPARABILITY
+REJECTED_REALITY_GAP
+REJECTED_POLICY
+RETEST_WITH_NEW_COST_MODEL
+RESEARCH_ONLY
+CHALLENGER_ELIGIBLE
+SHADOW_ELIGIBLE
+TESTNET_ELIGIBLE
+PROMOTION_EVIDENCE_READY
+```
+
+Keiner dieser Zustände autorisiert Live.
+
+---
+
+# 21. Goodhart / Optimizer Safety
+
+Optimierer dürfen keine bessere Bewertung erreichen, indem sie lediglich:
+
+- Risk erhöhen,
+- Leverage erhöhen,
+- Turnover erhöhen,
+- Tail Risks verstecken,
+- illiquide Situationen ausnutzen,
+- Fill-Annahmen ausnutzen,
+- Kostenmodelle umgehen,
+- Regime overfitten,
+- Holdout leaken,
+- Parametergrenzen ausreizen.
+
+Deshalb müssen Risk-, Cost- und Robustness-Grenzen außerhalb des Optimizer-Objectives liegen und policy-seitig fixiert sein.
+
+---
+
+# 22. Minimal Closed Loop
+
+Der kleinste wirtschaftlich sinnvolle echte Closed Loop ist:
+
+```text
+Canonical Experiment Identity
+        ↓
+Immutable Experiment Memory
+        ↓
+Mandatory Robustness
+        ↓
+Comparison SSOT
+        ↓
+Candidate
+        ↓
+Shadow Evidence
+        ↓
+Reality Gap
+        ↓
+Failure / Cost-Model Memory
+        ↓
+Next Research Hypothesis
+```
+
+Dies ist bereits ein echtes selbstlernendes System, obwohl keine autonome Live-Promotion existiert.
+
+---
+
+# 23. Maximum-Utility Implementation Order
+
+Empfohlene Reihenfolge:
+
+```text
+Phase 0  Legacy Adjudication / Authority Firewall
+Phase 1  Canonical Experiment Identity
+Phase 2  Immutable Experiment Memory
+Phase 3  Failure Memory
+Phase 4  Canonical Robustness Suite
+Phase 5  Comparison SSOT
+Phase 6  Champion–Challenger
+Phase 7  Reality Gap Store
+Phase 8  Regime-Aware Evaluation
+Phase 9  Portfolio Learning
+Phase 10 Automated Offline Research Loop
+Phase 11 Meta-Learning
+Phase 12 Advanced Search
+```
+
+Diese Reihenfolge ist bewusst gewählt.
+
+Nicht zuerst Optuna, ML oder RL erweitern.
+
+Erst:
+
+```text
+memory
+provenance
+robustness
+comparison
+feedback
+```
+
+schließen.
+
+---
+
+# 24. File-Level Architectural Direction
+
+Aus dem bisherigen Repo-Befund:
+
+## Weiterverwenden / Hardening
+
+```text
+src/meta/learning_loop/comparison_*
+src/meta/learning_loop/research_validity_*
+src/meta/learning_loop/deploy_inactive_*
+src/meta/learning_loop/runtime_observation_feedback_v1.py
+
+src/governance/promotion_loop/promotion_economic_gate_v1.py
+
+src/backtest/admissible_versioned_futures_dataset_v1.py
+src/backtest/cost_config_v0.py
+src/backtest/funding_model_v1.py
+src/backtest/parameter_sensitivity_v1.py
+
+src/experiments/base.py
+src/sweeps/engine.py
+
+src/live_eval/live_session_eval.py
+```
+
+## Erweitern
+
+```text
+src/experiments/experiment_identity_manifest_v1.py
+src/backtest/walkforward.py
+src/experiments/monte_carlo.py
+src/experiments/stress_tests.py
+```
+
+## Adjudizieren / Isolieren
+
+```text
+src/meta/learning_loop/bridge.py
+src/meta/learning_loop/emitter.py
+scripts/run_learning_apply_cycle.py
+scripts/run_promotion_proposal_cycle.py
+src/governance/promotion_loop/*
+src/core/peak_config.py
+config/auto/*
+config/live_overrides/*
+```
+
+## Neu erforderlich
+
+Konzeptionell:
+
+```text
+FailureMemory
+RealityGapStore
+ChampionChallengerEvaluation
+CanonicalCandidateRecord
+ResearchHypothesisRegistry
+MetaLearningEvaluation
+```
+
+Die endgültigen Modulnamen werden erst nach File-Level-Design festgelegt.
+
+---
+
+# 25. Definition of Done – Gesamtsystem
+
+Peak_Trade darf erst als vollständig geschlossenes Learning System gelten, wenn mindestens gilt:
+
+```text
+LEARNING_LOOP_CLOSED=true
+
+EXPERIMENT_REPRODUCIBILITY=COMPLETE
+EXPERIMENT_LINEAGE_COMPLETE=true
+IMMUTABLE_EXPERIMENT_MEMORY_PRESENT=true
+FAILURE_MEMORY_PRESENT=true
+CANONICAL_ROBUSTNESS_SUITE_PRESENT=true
+COMPARISON_SSOT_MANDATORY=true
+CHAMPION_CHALLENGER_PRESENT=true
+REALITY_GAP_STORE_PRESENT=true
+REGIME_AWARE_EVALUATION_PRESENT=true
+PORTFOLIO_LEARNING_PRESENT=true
+AUTOMATED_OFFLINE_RESEARCH_LOOP=true
+
+SELF_LEARNING_SELF_AUTHORIZING_SEPARATION=true
+LEARNING_CAN_WRITE_LIVE_CONFIG=false
+LEARNING_CAN_INCREASE_RISK=false
+LEARNING_CAN_INCREASE_LEVERAGE=false
+LEARNING_CAN_FUND=false
+LEARNING_CAN_SUBMIT_ORDER=false
+LEARNING_CAN_ARM=false
+LEARNING_CAN_ENABLE=false
+LEARNING_CAN_CREATE_CONFIRM_TOKEN=false
+LEARNING_CAN_AUTHORIZE_CANARY=false
+LEARNING_CAN_PROMOTE_TO_LIVE=false
+```
+
+Meta-Learning und Advanced Search sind wertvoll, aber nicht zwingend für den ersten `LEARNING_LOOP_CLOSED=true`-Zustand.
+
+---
+
+# 26. Immediate Next Step
+
+Der nächste sinnvolle Implementierungsschritt ist:
+
+```text
+PHASE_0_LEGACY_LEARNING_PLANE_ADJUDICATION
+```
+
+Nicht sofort Legacy „nachziehen“.
+
+Nicht sofort Legacy löschen.
+
+Nicht sofort das gesamte Learning System implementieren.
+
+Zuerst:
+
+1. vollständigen Legacy-Call-Graph bestimmen,
+2. wertvolle Bestandteile identifizieren,
+3. alle Config-Mutationspfade klassifizieren,
+4. produktive Erreichbarkeit beweisen oder ausschließen,
+5. Legacy-Komponenten in:
+   - `KEEP_AND_HARDEN`
+   - `REUSE_AS_RESEARCH_ONLY`
+   - `DEPRECATE_REMOVE_LATER`
+   - `UNKNOWN`
+   klassifizieren,
+6. Authority Firewall definieren,
+7. danach Phase 1 starten.
+
+---
+
+# 27. Final Architectural Principle
+
+Der größte Nutzen entsteht nicht dadurch, dass Peak_Trade immer komplexere Optimierer besitzt.
+
+Der größte Nutzen entsteht dadurch, dass das System langfristig beantworten kann:
+
+```text
+Was haben wir ausprobiert?
+Warum?
+Unter welchen Daten und Kosten?
+Wie robust war es?
+Warum wurde es verworfen?
+Wie verhielt es sich in Shadow/Testnet?
+Wo wich Realität vom Backtest ab?
+Welche Research-Muster funktionieren langfristig?
+Welche eigenen Research-Ergebnisse verdienen überhaupt Vertrauen?
+```
+
+Das Ziel ist daher nicht:
+
+```text
+AUTONOMOUS TRADER
+```
+
+sondern:
+
+```text
+AUTONOMOUS RESEARCHER
++
+STRICTLY GOVERNED TRADING AUTHORITY
+```
+
+Das ist die empfohlene bestmögliche Zielarchitektur für das Peak_Trade Self-Learning System.

@@ -1,0 +1,1494 @@
+{
+  "method": "Only funding config bound/unbound changed; same bars/params/risk/cash, distinct source-bound experiment identities",
+  "model_status_when_bound": "backtest_funding_perpetual_interval_v1",
+  "full_equity_identical": true,
+  "signals_identical": true,
+  "actual_closed_trade_quantities": [
+    9.899947659083931,
+    10.348220336271233
+  ],
+  "strictly_held_at_funding_timestamps": [
+    {
+      "timestamp": "2026-06-04T08:00:00+00:00",
+      "actual_quantity": 9.899947659083931,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-04T16:00:00+00:00",
+      "actual_quantity": 9.899947659083931,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-05T00:00:00+00:00",
+      "actual_quantity": 9.899947659083931,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-05T08:00:00+00:00",
+      "actual_quantity": 9.899947659083931,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-05T16:00:00+00:00",
+      "actual_quantity": 9.899947659083931,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-06T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-07T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-07T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-07T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-08T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-08T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-08T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-09T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-09T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-09T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-10T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-10T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-10T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-11T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-11T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-11T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-12T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-12T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-12T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-13T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-13T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-13T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-14T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-14T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-14T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-15T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-15T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-15T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-16T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-16T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-16T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-17T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-17T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-17T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-18T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-18T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-18T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-19T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-19T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-19T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-20T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-20T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-20T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-21T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-21T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-21T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-22T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-22T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-22T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-23T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-23T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-23T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-24T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-24T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-24T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-25T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-25T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-25T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-26T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-26T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-26T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-27T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-27T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-27T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-28T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-28T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-28T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-29T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-29T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-29T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-30T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-30T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-06-30T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-07-01T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-07-01T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-07-01T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-07-02T00:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-07-02T08:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    },
+    {
+      "timestamp": "2026-07-02T16:00:00+00:00",
+      "actual_quantity": 10.348220336271233,
+      "mapped_signal_proxy": 0,
+      "funding_rate": 0.0001
+    }
+  ],
+  "unit_signal_proxy_only": {
+    "model_version": "backtest_funding_perpetual_interval_v1",
+    "owner": "backtest.funding_model_v1",
+    "config_digest": "54385197c338fdb5d47febdff65b2d5c77c7c1de63e74dfe77b94ab77a6471f6",
+    "data_digest": "54b86e631ee74cdf7037566d9cdc62a0fab3acc2339ccb04eeba3564890ee0bd",
+    "implementation_digest": "076649603199a36128d8c4d4d265a30f69aa25e1b282ba7b5676d65d536e8c6a",
+    "total_payment_amount": 0.0,
+    "funding_drag": 0.0,
+    "payment_count": 96,
+    "explicit_zero_rate_count": 0,
+    "missing_rate_count": 0,
+    "payment_events": [
+      {
+        "timestamp": "2026-06-01T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.0,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 0
+      },
+      {
+        "timestamp": "2026-06-01T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 103.17184901534868,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 1
+      },
+      {
+        "timestamp": "2026-06-01T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 105.01968950681656,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 2
+      },
+      {
+        "timestamp": "2026-06-02T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 104.78648713412841,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 3
+      },
+      {
+        "timestamp": "2026-06-02T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 102.60636313317906,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 4
+      },
+      {
+        "timestamp": "2026-06-02T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 99.44716018562258,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 5
+      },
+      {
+        "timestamp": "2026-06-03T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 96.69598752346036,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 6
+      },
+      {
+        "timestamp": "2026-06-03T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 95.56522541451037,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 7
+      },
+      {
+        "timestamp": "2026-06-03T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 96.5733530421621,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 8
+      },
+      {
+        "timestamp": "2026-06-04T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 99.32292250900537,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 9
+      },
+      {
+        "timestamp": "2026-06-04T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 102.6707561528561,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 10
+      },
+      {
+        "timestamp": "2026-06-04T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 105.21748434809402,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 11
+      },
+      {
+        "timestamp": "2026-06-05T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 105.9067912331169,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 12
+      },
+      {
+        "timestamp": "2026-06-05T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 104.47775607556531,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 13
+      },
+      {
+        "timestamp": "2026-06-05T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 101.57658617777375,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 14
+      },
+      {
+        "timestamp": "2026-06-06T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 98.47989444555316,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 15
+      },
+      {
+        "timestamp": "2026-06-06T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 96.54802121580946,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 16
+      },
+      {
+        "timestamp": "2026-06-06T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 96.64250186492258,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 17
+      },
+      {
+        "timestamp": "2026-06-07T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 98.75713540999783,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 18
+      },
+      {
+        "timestamp": "2026-06-07T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 102.02063992773286,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 19
+      },
+      {
+        "timestamp": "2026-06-07T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 105.06975767288527,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 20
+      },
+      {
+        "timestamp": "2026-06-08T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.63303677847436,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 21
+      },
+      {
+        "timestamp": "2026-06-08T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.0752993398401,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 22
+      },
+      {
+        "timestamp": "2026-06-08T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 103.66964077676465,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 23
+      },
+      {
+        "timestamp": "2026-06-09T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.48048341667467,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 24
+      },
+      {
+        "timestamp": "2026-06-09T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 97.90776373421028,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 25
+      },
+      {
+        "timestamp": "2026-06-09T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 97.08744388457818,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 26
+      },
+      {
+        "timestamp": "2026-06-10T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 98.40506376614161,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 27
+      },
+      {
+        "timestamp": "2026-06-10T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 101.33064301298367,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 28
+      },
+      {
+        "timestamp": "2026-06-10T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 104.64563209066908,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 29
+      },
+      {
+        "timestamp": "2026-06-11T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.96472625363815,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 30
+      },
+      {
+        "timestamp": "2026-06-11T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 107.3290883326675,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 31
+      },
+      {
+        "timestamp": "2026-06-11T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 105.6169472404129,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 32
+      },
+      {
+        "timestamp": "2026-06-12T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 102.59574345354798,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 33
+      },
+      {
+        "timestamp": "2026-06-12T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 99.59349144746186,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 34
+      },
+      {
+        "timestamp": "2026-06-12T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 97.93009006215222,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 35
+      },
+      {
+        "timestamp": "2026-06-13T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 98.35210818996687,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 36
+      },
+      {
+        "timestamp": "2026-06-13T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.71308495448517,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 37
+      },
+      {
+        "timestamp": "2026-06-13T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 104.0362479893968,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 38
+      },
+      {
+        "timestamp": "2026-06-14T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.93279225239802,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 39
+      },
+      {
+        "timestamp": "2026-06-14T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 108.19660172890049,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 40
+      },
+      {
+        "timestamp": "2026-06-14T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 107.32073903943993,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 41
+      },
+      {
+        "timestamp": "2026-06-15T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 104.71452894153934,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 42
+      },
+      {
+        "timestamp": "2026-06-15T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 101.52827503957897,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 43
+      },
+      {
+        "timestamp": "2026-06-15T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 99.16067047345227,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 44
+      },
+      {
+        "timestamp": "2026-06-16T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 98.65984187953569,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 45
+      },
+      {
+        "timestamp": "2026-06-16T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.27451486035436,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 46
+      },
+      {
+        "timestamp": "2026-06-16T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 103.34750334443885,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 47
+      },
+      {
+        "timestamp": "2026-06-17T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.59713340620846,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 48
+      },
+      {
+        "timestamp": "2026-06-17T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 108.6660886959647,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 49
+      },
+      {
+        "timestamp": "2026-06-17T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 108.70264788314381,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 50
+      },
+      {
+        "timestamp": "2026-06-18T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.72541343060011,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 51
+      },
+      {
+        "timestamp": "2026-06-18T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 103.61534554604994,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 52
+      },
+      {
+        "timestamp": "2026-06-18T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.7385125756303,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 53
+      },
+      {
+        "timestamp": "2026-06-19T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 99.36110573278441,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 54
+      },
+      {
+        "timestamp": "2026-06-19T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.10722376008056,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 55
+      },
+      {
+        "timestamp": "2026-06-19T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 102.69161794657829,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 56
+      },
+      {
+        "timestamp": "2026-06-20T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.04184289354693,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 57
+      },
+      {
+        "timestamp": "2026-06-20T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 108.75750495844449,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 58
+      },
+      {
+        "timestamp": "2026-06-20T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 109.70994649250795,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 59
+      },
+      {
+        "timestamp": "2026-06-21T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 108.52556580239674,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 60
+      },
+      {
+        "timestamp": "2026-06-21T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 105.74580291407175,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 61
+      },
+      {
+        "timestamp": "2026-06-21T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 102.59528115862832,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 62
+      },
+      {
+        "timestamp": "2026-06-22T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.45739226042184,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 63
+      },
+      {
+        "timestamp": "2026-06-22T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.28189275402701,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 64
+      },
+      {
+        "timestamp": "2026-06-22T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 102.17819403781253,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 65
+      },
+      {
+        "timestamp": "2026-06-23T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 105.36850962552707,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 66
+      },
+      {
+        "timestamp": "2026-06-23T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 108.52092313650319,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 67
+      },
+      {
+        "timestamp": "2026-06-23T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 110.31974882501888,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 68
+      },
+      {
+        "timestamp": "2026-06-24T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 110.02894173824404,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 69
+      },
+      {
+        "timestamp": "2026-06-24T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 107.80729091832404,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 70
+      },
+      {
+        "timestamp": "2026-06-24T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 104.64042188883496,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 71
+      },
+      {
+        "timestamp": "2026-06-25T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 101.91872669338167,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 72
+      },
+      {
+        "timestamp": "2026-06-25T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 100.84196259749723,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 73
+      },
+      {
+        "timestamp": "2026-06-25T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 101.90548545959108,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 74
+      },
+      {
+        "timestamp": "2026-06-26T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 104.68812573148035,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 75
+      },
+      {
+        "timestamp": "2026-06-26T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 108.03254398966759,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 76
+      },
+      {
+        "timestamp": "2026-06-26T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 110.54083316369238,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 77
+      },
+      {
+        "timestamp": "2026-06-27T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 111.17313796020242,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 78
+      },
+      {
+        "timestamp": "2026-06-27T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 109.69294739346415,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 79
+      },
+      {
+        "timestamp": "2026-06-27T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.76837481538614,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 80
+      },
+      {
+        "timestamp": "2026-06-28T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 103.68605475574192,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 81
+      },
+      {
+        "timestamp": "2026-06-28T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 101.80017323507232,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 82
+      },
+      {
+        "timestamp": "2026-06-28T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 101.95257080813445,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 83
+      },
+      {
+        "timestamp": "2026-06-29T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 104.11224498956544,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 84
+      },
+      {
+        "timestamp": "2026-06-29T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 107.38862630800998,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 85
+      },
+      {
+        "timestamp": "2026-06-29T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 110.412942844081,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 86
+      },
+      {
+        "timestamp": "2026-06-30T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 111.92436324042268,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 87
+      },
+      {
+        "timestamp": "2026-06-30T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 111.30991681295413,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 88
+      },
+      {
+        "timestamp": "2026-06-30T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 108.86698321533319,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 89
+      },
+      {
+        "timestamp": "2026-07-01T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 105.67594689448892,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 90
+      },
+      {
+        "timestamp": "2026-07-01T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 103.13754894392939,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 91
+      },
+      {
+        "timestamp": "2026-07-01T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 102.37305407879526,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 92
+      },
+      {
+        "timestamp": "2026-07-02T00:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 103.74409651675388,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 93
+      },
+      {
+        "timestamp": "2026-07-02T08:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 106.69781899211618,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 94
+      },
+      {
+        "timestamp": "2026-07-02T16:00:00+00:00",
+        "position_sign": 0,
+        "mark_price": 110.00362032294886,
+        "funding_rate": 0.0001,
+        "rate_presence": "PRESENT",
+        "notional": 0.0,
+        "payment_amount": 0.0,
+        "payment_index": 95
+      }
+    ],
+    "reason_codes": [
+      "FUNDING_MODEL_BOUND"
+    ]
+  },
+  "actual_quantity_cashflow_applied_to_engine_equity_proven": false
+}

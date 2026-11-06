@@ -1,0 +1,21 @@
+{
+  "status": "OBSERVED_WINDOW_EXPLAINED_WITH_EXPLICIT_PRESENTATION_RESIDUALS",
+  "report_sha256": "1ebacbce7afccaba7146785549be7e05d76cbff998c51f4f333eb0ea8e52c928",
+  "observed_at": "2026-11-03T22:02:21.217568+00:00",
+  "trading_window_posting_count": 11,
+  "funding_window_posting_count": 5,
+  "internal_transfer_counterparts": 3,
+  "funding_bilateral_reconstruction_exact": true,
+  "exact_snapshot_equality": false,
+  "exact_source_blockers": [
+    "VENUE_NUMERIC_REPRESENTATION_CONTRACT_UNPROVEN"
+  ],
+  "credential_access_or_network_in_replay": false,
+  "orders_or_transfers": 0,
+  "capital_admitted": false,
+  "exit_code": 3,
+  "replay_result_hash_matched": true,
+  "k1_open_call_count": 0,
+  "socket_connect_call_count": 0,
+  "proof": "Fresh process, actual sealed private bodies, acquisition and socket ports denied during replay"
+}

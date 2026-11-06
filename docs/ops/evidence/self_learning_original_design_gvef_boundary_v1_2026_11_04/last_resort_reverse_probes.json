@@ -1,0 +1,220 @@
+{
+  "source_commit": "e938ddb3f5c3d1ecf797f2c27a8ceba5160097e2",
+  "scope": "Controlled mechanism probes only; existing fixture identity/context and deterministic test doubles, no natural source or actual learning model",
+  "cases": [
+    {
+      "case": "empty_dictionary_not_source_authenticated",
+      "baseline_input": {},
+      "candidate_input": {},
+      "runner_state": "REGISTERED",
+      "baseline_result": {
+        "domain": "self_learning",
+        "verdict": "PASS",
+        "metrics": [
+          {
+            "metric_id": "sl.artifact_digest",
+            "value": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "unit": null,
+            "baseline_value": null
+          }
+        ],
+        "invariants": [
+          {
+            "invariant_id": "sl.no_productive_writeback",
+            "pass": true,
+            "detail": "SELF_LEARNING_PRODUCTIVE_WRITEBACK=false"
+          },
+          {
+            "invariant_id": "sl.baseline_candidate_bound",
+            "pass": true,
+            "detail": null
+          }
+        ],
+        "boundary_results": [],
+        "decision_deltas": null,
+        "semantic_digest_deltas": {
+          "learning_artifact": {},
+          "learning_artifact_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "evidence_source_class": "SEALED_EXISTING_EVIDENCE"
+        },
+        "evidence_refs": [
+          "evidence/sl/baseline"
+        ],
+        "failure_classification": null
+      },
+      "candidate_result": {
+        "domain": "self_learning",
+        "verdict": "PASS",
+        "metrics": [
+          {
+            "metric_id": "sl.artifact_digest",
+            "value": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "unit": null,
+            "baseline_value": null
+          }
+        ],
+        "invariants": [
+          {
+            "invariant_id": "sl.no_productive_writeback",
+            "pass": true,
+            "detail": "SELF_LEARNING_PRODUCTIVE_WRITEBACK=false"
+          },
+          {
+            "invariant_id": "sl.baseline_candidate_bound",
+            "pass": true,
+            "detail": null
+          }
+        ],
+        "boundary_results": [],
+        "decision_deltas": null,
+        "semantic_digest_deltas": {
+          "learning_artifact": {},
+          "learning_artifact_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "evidence_source_class": "SEALED_EXISTING_EVIDENCE"
+        },
+        "evidence_refs": [
+          "evidence/sl/candidate"
+        ],
+        "failure_classification": null
+      },
+      "failure_classification": null
+    },
+    {
+      "case": "explicit_synthetic_different_artifacts",
+      "baseline_input": {
+        "TEST_ONLY_SYNTHETIC": true,
+        "model_id": "m1",
+        "epoch": 1
+      },
+      "candidate_input": {
+        "TEST_ONLY_SYNTHETIC": true,
+        "model_id": "m1",
+        "epoch": 2
+      },
+      "runner_state": "REGISTERED",
+      "baseline_result": {
+        "domain": "self_learning",
+        "verdict": "PASS",
+        "metrics": [
+          {
+            "metric_id": "sl.artifact_digest",
+            "value": "d8891f74d440651f7fb1187c06e866fa36bc457f728d782be366697ea8531ce1",
+            "unit": null,
+            "baseline_value": null
+          }
+        ],
+        "invariants": [
+          {
+            "invariant_id": "sl.no_productive_writeback",
+            "pass": true,
+            "detail": "SELF_LEARNING_PRODUCTIVE_WRITEBACK=false"
+          },
+          {
+            "invariant_id": "sl.baseline_candidate_bound",
+            "pass": true,
+            "detail": null
+          }
+        ],
+        "boundary_results": [],
+        "decision_deltas": null,
+        "semantic_digest_deltas": {
+          "learning_artifact": {
+            "TEST_ONLY_SYNTHETIC": true,
+            "model_id": "m1",
+            "epoch": 1
+          },
+          "learning_artifact_digest": "d8891f74d440651f7fb1187c06e866fa36bc457f728d782be366697ea8531ce1",
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE"
+        },
+        "evidence_refs": [
+          "evidence/sl/baseline"
+        ],
+        "failure_classification": null
+      },
+      "candidate_result": {
+        "domain": "self_learning",
+        "verdict": "PASS",
+        "metrics": [
+          {
+            "metric_id": "sl.artifact_digest",
+            "value": "edc586daf2d419efdb505803e4fb07f81407be77ad7493440d49505bf853cde2",
+            "unit": null,
+            "baseline_value": null
+          }
+        ],
+        "invariants": [
+          {
+            "invariant_id": "sl.no_productive_writeback",
+            "pass": true,
+            "detail": "SELF_LEARNING_PRODUCTIVE_WRITEBACK=false"
+          },
+          {
+            "invariant_id": "sl.baseline_candidate_bound",
+            "pass": true,
+            "detail": null
+          }
+        ],
+        "boundary_results": [],
+        "decision_deltas": null,
+        "semantic_digest_deltas": {
+          "learning_artifact": {
+            "TEST_ONLY_SYNTHETIC": true,
+            "model_id": "m1",
+            "epoch": 2
+          },
+          "learning_artifact_digest": "edc586daf2d419efdb505803e4fb07f81407be77ad7493440d49505bf853cde2",
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE"
+        },
+        "evidence_refs": [
+          "evidence/sl/candidate"
+        ],
+        "failure_classification": null
+      },
+      "failure_classification": null
+    },
+    {
+      "case": "malformed_artifact",
+      "baseline_input": {},
+      "candidate_input": [],
+      "runner_state": "FAILED",
+      "baseline_result": {
+        "domain": "self_learning",
+        "verdict": "PASS",
+        "metrics": [
+          {
+            "metric_id": "sl.artifact_digest",
+            "value": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "unit": null,
+            "baseline_value": null
+          }
+        ],
+        "invariants": [
+          {
+            "invariant_id": "sl.no_productive_writeback",
+            "pass": true,
+            "detail": "SELF_LEARNING_PRODUCTIVE_WRITEBACK=false"
+          },
+          {
+            "invariant_id": "sl.baseline_candidate_bound",
+            "pass": true,
+            "detail": null
+          }
+        ],
+        "boundary_results": [],
+        "decision_deltas": null,
+        "semantic_digest_deltas": {
+          "learning_artifact": {},
+          "learning_artifact_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "evidence_source_class": "SEALED_EXISTING_EVIDENCE"
+        },
+        "evidence_refs": [
+          "evidence/sl/baseline"
+        ],
+        "failure_classification": null
+      },
+      "candidate_result": null,
+      "failure_classification": "INVARIANT_FAILURE"
+    }
+  ],
+  "interpretation": "No-marker source-class label is not source authentication. Current canonical evaluator hashes generic artifacts and checks explicit authority flags; no numerical outcome/stability criterion reconstructed from this surface alone. No full Blueprint defect verdict without missing machine manifests/reconciliation."
+}

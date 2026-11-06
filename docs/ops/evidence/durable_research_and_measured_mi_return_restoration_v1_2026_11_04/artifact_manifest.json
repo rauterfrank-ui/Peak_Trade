@@ -1,0 +1,100 @@
+{
+  "files": [
+    {
+      "path": "artifacts/mi/110.0/mi.offline.durable.0210dd67241220ba50de2c1c2d07288344216242da37f7e6/mi_offline_durable_evidence_record_v1.json",
+      "sha256": "03c5294192d0adaf72384f50a9342134f404f93ddae6c72572864d430415685f"
+    },
+    {
+      "path": "artifacts/mi/90.0/mi.offline.durable.e51e6409253b9f90d7fd0717b3258288e886bf4512e22c93/mi_offline_durable_evidence_record_v1.json",
+      "sha256": "d12f0dcd3870f356c511a0e010bca874d055c6683897bbcd803da466a2d8dde3"
+    },
+    {
+      "path": "artifacts/mi/measured_return_intervention.json",
+      "sha256": "78141ed242d364caccc6bf9b461f9b60f28192788184928bc9689086f7dd048f"
+    },
+    {
+      "path": "artifacts/research/archive/092fe43dc4a8b3d88040082dd853e429c7c0862ca7c32474354067946f46ff99.json",
+      "sha256": "092fe43dc4a8b3d88040082dd853e429c7c0862ca7c32474354067946f46ff99"
+    },
+    {
+      "path": "artifacts/research/archive/7735bcf778627c8628ecfad83416fcc986c0a5ba944b75346a6966ab77b3523a.json",
+      "sha256": "7735bcf778627c8628ecfad83416fcc986c0a5ba944b75346a6966ab77b3523a"
+    },
+    {
+      "path": "artifacts/research/archive/83cf2a0c3d2892d6235b7b3f7b37452b2c9074d23557804e12f4f5b5453682cd.json",
+      "sha256": "83cf2a0c3d2892d6235b7b3f7b37452b2c9074d23557804e12f4f5b5453682cd"
+    },
+    {
+      "path": "artifacts/research/champion_measurement.json",
+      "sha256": "eff0980570d4f8bc6f375672c7ad3d09e2a7632ae9fee2e0d2c9e07cf3c85f2c"
+    },
+    {
+      "path": "artifacts/research/champion_robustness.json",
+      "sha256": "63cecbbe38a75617cb9565b57f2f26d0015d38e6255d143583ce8042d588093e"
+    },
+    {
+      "path": "artifacts/research/failure_informed_next_execution.json",
+      "sha256": "2085ef23f19f0a97e8ac8f6e1b9c09a1fb9cb722ad94724b49520ae6863d178b"
+    },
+    {
+      "path": "artifacts/research/failures/8132b18fe16f570b2bfb5f68c040c88fbb6cdf9658c987933f121421126862c1/canonical_failure_memory_record_v1.json",
+      "sha256": "0ff170a45f3a2bbbe443324936f5138c515f4558c0ad091701bf1e219c9a776c"
+    },
+    {
+      "path": "artifacts/research/failures/9f11e8b8097536469290d709bd3b21d5779f65eb2f51e29651ccf39af4b0acbb/canonical_failure_memory_record_v1.json",
+      "sha256": "246ef9f74d51689f8208b9f2c50397a7b59e6e80b72d71772906e07cc523e114"
+    },
+    {
+      "path": "artifacts/research/failures/d8f0c67706c685bc5b41e190883c7c2ed228e08e648891c4b86511084874001b/canonical_failure_memory_record_v1.json",
+      "sha256": "51968c0be0beb737027794deae58bb92f8c7e59b364c30fa447e2a1da632b818"
+    },
+    {
+      "path": "artifacts/research/gaps/706fd93cb1acc4e0ef6bb365d2ad4f738c5ee2669a5efb66d082e4bf21df87fb/canonical_reality_gap_record_v1.json",
+      "sha256": "4c1e017faefdb6984e36a0ff3a71a6bc8cd6d073865a89b64ab1c368241ba1dd"
+    },
+    {
+      "path": "artifacts/research/gaps/91b8b865ef5b5401e8d1a2089701bcaa2f0a86f6e5a4359a8a9c5d42c393348c/canonical_reality_gap_record_v1.json",
+      "sha256": "27ce2b380bfaebe78effa9700bba5f149a0f59f9129f6d5a0be5369f16d95a20"
+    },
+    {
+      "path": "artifacts/research/gaps/a135e8577268f4f1ac5bd3950191c592f959362ec9131af612f597c27338ae3a/canonical_reality_gap_record_v1.json",
+      "sha256": "59f2d0982d6005f455b4018dc848201e5703c13921ee9c4f733bd045d7769a4a"
+    },
+    {
+      "path": "artifacts/research/later_meta_fresh_process.json",
+      "sha256": "8e8e7da22ec38ef7f14ab6b3fdc19adec0ed454bfeec922e1c1398f0e79b609d"
+    },
+    {
+      "path": "artifacts/research/memory/0a09ebd7d1b803c34746abf6ce39f02ad4916c8a4564fa476d095b442f306767/canonical_experiment_memory_record_v1.json",
+      "sha256": "c47864632936e8f2ed1ffeffc91551735edcc156186abe4163bf9769a776b53f"
+    },
+    {
+      "path": "artifacts/research/memory/23ce252fb4e4880bf6bb0a4172725e55a74b187ad85284fede94f450121ae51e/canonical_experiment_memory_record_v1.json",
+      "sha256": "354bf57b55c9d319b2a60766d72baed72a76c2db20c73989cae6f44fad6eb71b"
+    },
+    {
+      "path": "artifacts/research/memory/718d0afb358bb35a727663299014068bb36fe16c2ca41221cdf5bb4d7a806867/canonical_experiment_memory_record_v1.json",
+      "sha256": "ca109c4b01d3f6bde359785ae29953862606e3ca1ae4680044ae5e2a64fdb41d"
+    },
+    {
+      "path": "artifacts/research/resumed_feedback_execution.json",
+      "sha256": "1328fd74f1d74fbf63eaf3fd31cdf62da558ac820030a54f65ac56d851276f7b"
+    },
+    {
+      "path": "artifacts/research/resumed_meta_feedback.json",
+      "sha256": "0265ef5c3dff588e2100127877071d6af39bf429d7f9895a3b67c5994e1b7e7b"
+    },
+    {
+      "path": "artifacts/research/session_artifact_id.txt",
+      "sha256": "115e68bcfa07bd9f456346f4a1c82ddb4ca07c48e70f569726a8bd76a53cc4e7"
+    },
+    {
+      "path": "artifacts/research/session_execution.json",
+      "sha256": "2d6b5c984ab967eece710df81fec8374328d015c8d1065159cc752ac29f9edbf"
+    },
+    {
+      "path": "artifacts/research/session_measurement.json",
+      "sha256": "0e433240f221bb5f80f43920f67fc549124e1d0d3e7675007b8e6cb0d09cc9fc"
+    }
+  ]
+}

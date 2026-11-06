@@ -1,0 +1,9 @@
+### CON-2107 — Alte CONFLICT-Etiketten brauchen Aussagepaar und Scope
+
+Status im Quellenabgleich: **UNPROVEN** · Klasse: `DERIVED_INFERENCE`.
+
+Implementiert bei Authority NONE, historischer GET-Erfolg ohne Live-Freigabe und Materialisierung ohne Apply können gleichzeitig korrekt sein. Frühere Registerzeilen mit CONFLICT werden deshalb nicht als pauschale Produktbugs gelesen. Echte Gegensätze wie verlorener Zeitbezug oder nicht passende Value-Consumer bleiben davon getrennt.
+
+**Grenze:** Bestehende Konflikte bleiben erhalten; keine Sammelschließung. Eine spätere Einzelrevision braucht das konkrete widersprechende Aussagepaar und seine Gültigkeit.
+
+Quellen: EVI-2201, EVI-2202, EVI-2204, EVI-2205, EVI-2206, EVI-2207, EVI-2209, EVI-2210, EVI-2211, EVI-2214, EVI-2215, EVI-2216, EVI-2217, EVI-2220, EVI-2221, EVI-2223, EVI-2224, EVI-2227, EVI-2228, EVI-2229, EVI-2230, EVI-2231, EVI-2232, EVI-2233, EVI-2234, EVI-2258, EVI-2269, EVI-2270, EVI-2278, EVI-2290, EVI-2291, EVI-2292, EVI-2293, EVI-2294, EVI-2295, EVI-2299.

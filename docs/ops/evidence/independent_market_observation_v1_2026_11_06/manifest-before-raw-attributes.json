@@ -1,0 +1,158 @@
+{
+  "schema": "peaktrade.independent_market_observation_evidence.v1",
+  "source_head_before": "8cfb04ec17e2f6d2c85559ebf89cfb3283accad9",
+  "actual_product_implementation": true,
+  "runtime_activation": false,
+  "global_semantic_recertified": false,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "2e1ca20f34e99cce8a8d2ab8349c240fb60c3b992d7a207adf4a4e581b2e7fec",
+      "bytes": 6909
+    },
+    {
+      "path": "connected-786.xml",
+      "sha256": "7d5ba713ffe459b11437be417539acfbd7e9bb333138190e5d6b276840e42783",
+      "bytes": 131511
+    },
+    {
+      "path": "connected-final.xml",
+      "sha256": "d88aa9ffb4740698c3b6b4ae1a71d099d6670acd32feac24c524916ada6eefa1",
+      "bytes": 131677
+    },
+    {
+      "path": "connected.xml",
+      "sha256": "c71a15e217c794fd8420126d0dd915d46ae8aca0275282af2987019a609fc223",
+      "bytes": 130926
+    },
+    {
+      "path": "example/store/.intelligence-integration-v1/c7967cbe1bccd9d6899846567baef4f463e0614899698b9d2a463ef383fddbac/calibration_ack.json",
+      "sha256": "7d59275880507efcd779d5e0d2718a5d7b7748d5158f556129451c06da8f8014",
+      "bytes": 1662
+    },
+    {
+      "path": "example/store/.intelligence-integration-v1/c7967cbe1bccd9d6899846567baef4f463e0614899698b9d2a463ef383fddbac/forecast.json",
+      "sha256": "a14082e171e4e00f9563d6f0cd04b0cf3fbe54d5246b39854dcbbc54d69b98a2",
+      "bytes": 9618
+    },
+    {
+      "path": "example/store/.intelligence-integration-v1/c7967cbe1bccd9d6899846567baef4f463e0614899698b9d2a463ef383fddbac/measurement.json",
+      "sha256": "0d18c10413cdda2bc87e9afb10338c92811e7b026ccc94e715dc218594e90324",
+      "bytes": 4762
+    },
+    {
+      "path": "example/store/mi.offline.durable.0af314d63ad0b6c0b603d352559eea3081b6148dab62d633/mi_offline_durable_evidence_record_v1.json",
+      "sha256": "fecc2bff638ba826ca35b433e058611e9215d7624d9a9bbd0b4a9471c1de199e",
+      "bytes": 7321
+    },
+    {
+      "path": "example/witness.json",
+      "sha256": "12d6d5dfae9879f0f825079601d0fe3aadcf68b423634f75bd5cc1609959d51b",
+      "bytes": 2659
+    },
+    {
+      "path": "obsidian-view.json",
+      "sha256": "0ba2f04cd02824997b22098f3b0be63e771196a0619e806f1d9d70961f41e76c",
+      "bytes": 8428
+    },
+    {
+      "path": "source-changes.json",
+      "sha256": "a4d9ad57f0769f150aa66c2213471a18343de2746357bb01898667740b032f41",
+      "bytes": 15426
+    },
+    {
+      "path": "source-test-bindings-786-before.json",
+      "sha256": "48b93ac12ecf3bc069be0ce2082a4e1f23e2293296fdf3223187aeecfd1ccedc",
+      "bytes": 2143599
+    },
+    {
+      "path": "source-test-bindings-before.json",
+      "sha256": "e537b0e8461f908360b3fa799e1a5a3eacb1c49ea1fa3a494f2a26b91d9fded5",
+      "bytes": 2143599
+    },
+    {
+      "path": "test-result-786.json",
+      "sha256": "2821548610b4e75ef86cbd3b90cb4ba21d9e601be424e3f0ab4321d52d85a06e",
+      "bytes": 349
+    },
+    {
+      "path": "test-result.json",
+      "sha256": "a49c08b97b26abccfbcc4f5f622c37cd6a9bd1e1772c36974e5d48a08e305440",
+      "bytes": 349
+    },
+    {
+      "path": "validation.json",
+      "sha256": "dfc97b497d8b3c8f9d10e04127e37a3ac5870ff4aa5d0102b84450c81e65c27c",
+      "bytes": 706
+    },
+    {
+      "path": "vault-before/plan/00 Einstieg/Repo und Erkenntnisstand 2026-11-06.md.txt",
+      "sha256": "563abe18d9c0b329b01a19e66a5df7c3909035d4dac5ef05cb80aa98c31c7257",
+      "bytes": 4184
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt",
+      "sha256": "a0b99df3037fa3abea5933e65cc324d2e7adc653c7dd705d4691a991b2dafb8c",
+      "bytes": 9328
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt",
+      "sha256": "b99840f9df20355c7dc45371a95a227d4f73a3d946a5b4668e8c0644defa0a92",
+      "bytes": 11382
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Repoabgleich/Standabgleich mit dem Repository.md.txt",
+      "sha256": "5ad6bcf95fb8c8e31defa967b82042810ed5ee7d569e3ddca19a235215d8f462",
+      "bytes": 6221
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Semantik/S02.md.txt",
+      "sha256": "3deb8211253c71d35209b9298922775c939ded9b0062142e7e230ffd101b9b6a",
+      "bytes": 5314
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Semantik/S06.md.txt",
+      "sha256": "35ab8bf800c9e7a5eb0f9547002bbcd8b5667bb543f72341f666878e88519089",
+      "bytes": 4815
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Universen/INT.md.txt",
+      "sha256": "a082fdba1cc41ffeb4df641c072cffa606df923e4b55498b14d458cb75eccc08",
+      "bytes": 17160
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Universen/SL.md.txt",
+      "sha256": "24e3b2f30c0de379490e927682b51b8113c721971216d6154e3f4a31277a3503",
+      "bytes": 13609
+    },
+    {
+      "path": "vault-before/system/Systemindexbindung.json",
+      "sha256": "d18e396c13a313ceecc5d00f6b4d957da6a9f10f9ff86d61f68bb599c2f16208",
+      "bytes": 3819400
+    },
+    {
+      "path": "vault-changes.json",
+      "sha256": "7a60b33a1fe8c4b5f12457e61457356fbeeccfbfe0ca616f0054651f9b9a4c15",
+      "bytes": 3944
+    },
+    {
+      "path": "verify_evidence.py",
+      "sha256": "e55632bc934074dd5e1b86c6aa61c4554cc73d3c8d2e21d1a3282d7a55d10cae",
+      "bytes": 3409
+    }
+  ],
+  "external_documents": [
+    {
+      "path": "docs/ops/specs/INDEPENDENT_MARKET_OBSERVATION_V1.md",
+      "sha256": "e456cd964b14eaba50c8c9d3ecb35e930eaf877a4cf369aa4036b3698d510092"
+    },
+    {
+      "path": "docs/ops/evidence/README.md",
+      "sha256": "de936a2ea9605949e428b5b2c7b35d4b8a8a385eb87dcb3e41a19c850d7e351a"
+    },
+    {
+      "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "sha256": "873827fde8865ed84aae4318aaa17284333c4ba597549c9cfdf6db10473466dc"
+    }
+  ]
+}

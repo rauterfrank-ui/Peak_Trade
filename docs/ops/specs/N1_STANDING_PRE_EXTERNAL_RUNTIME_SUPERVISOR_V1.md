@@ -12,6 +12,7 @@
 Production/scoped runs require:
 
 - Durable store roots (public, private, lane state, evidence)
+- Explicit expected account identity and an already initialized private budget owner; normal startup is recover-only. See [Treasury budget-owner startup contract](TREASURY_BUDGET_OWNER_START_CONTRACT_V1.md) for absolute/disjoint roots, bootstrap separation and remaining deployment limits.
 - Valid `config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json` for the pinned baseline lineage
 - Consumed Owner-GO evidence written under the evidence root (supervisor delegates to existing persistent natural-enter wiring)
 - Read-only transport scope explicitly configured (no credential auto-discovery)

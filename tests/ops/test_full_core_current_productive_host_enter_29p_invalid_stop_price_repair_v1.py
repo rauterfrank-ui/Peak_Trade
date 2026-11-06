@@ -15,7 +15,7 @@ from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_
 from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
     DECISION_ENTER,
     STATUS_PASS,
-    join_current_productive_enter_live_29p_before_venue_plan_v1,
+    resolve_current_productive_live_29p_adverse_exit_distance_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     try_bind_current_productive_venue_plan_v1,
@@ -170,7 +170,7 @@ def test_fixture_stop_against_host_mark_is_invalid_stop_price() -> None:
     assert cycle_b.decision_outcome == "enter_long"
     assert cycle_b.replay is not None
     mark = Decimal(str(path[-1]))
-    assert mark == Decimal("1635")
+    assert mark == Decimal(str(cycle_b.replay.intermediate.market_context.mark_price))
     assert ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP >= mark
     fixture_ctx = isolated_offline_replay_fixture_capital_context_v0(
         instrument_id=cycle_b.replay.evidence.instrument_id,
@@ -192,14 +192,18 @@ def test_fixture_stop_against_host_mark_is_invalid_stop_price() -> None:
         None,
         Decimal("NaN"),
         Decimal("Infinity"),
-        Decimal("1635"),
-        Decimal("1640"),
+        "at-mark",
+        "above-mark",
         Decimal("3400"),
     ],
 )
-def test_invalid_or_direction_invalid_stop_cannot_pass_29p(stop: Decimal | None) -> None:
+def test_invalid_or_direction_invalid_stop_cannot_pass_29p(stop: Decimal | str | None) -> None:
     _, cycle_b, path = _host_enter_cycle()
     mark = Decimal(str(path[-1]))
+    if stop == "at-mark":
+        stop = mark
+    elif stop == "above-mark":
+        stop = mark + Decimal("5")
     ctx = isolated_offline_replay_fixture_capital_context_v0(
         instrument_id=cycle_b.replay.evidence.instrument_id,
         reference_price=mark,
@@ -226,17 +230,27 @@ def _join_enter_live_29p(*, replay):
     from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
         _balance_payload,
         _injected,
+        _join,
     )
 
-    return join_current_productive_enter_live_29p_before_venue_plan_v1(
+    return _join(
         replay=replay,
-        bound_instrument=_bound(),
+        bound=_bound(),
         injected=_injected(payload=_balance_payload()),
-        decision_epoch=EPOCH,
     )
 
 
-def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope() -> None:
+def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope(monkeypatch) -> None:
+    import src.ops.governed_productive_monetary_normalization_v1.normalize_v1 as seam
+
+    monetary_inputs = []
+    original = seam.build_capital_risk_sizing_monetary_context_v1
+
+    def observed_monetary_context(**kwargs):
+        monetary_inputs.append(kwargs)
+        return original(**kwargs)
+
+    monkeypatch.setattr(seam, "build_capital_risk_sizing_monetary_context_v1", observed_monetary_context)
     cycle_a, cycle_b, path = _host_enter_cycle()
     assert cycle_a.outgoing_cursor is not None
     assert cycle_b.cursor_restore_status == "restored"
@@ -259,12 +273,21 @@ def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope() -> None:
     assert str(getattr(sizing.outcome, "value", sizing.outcome)) == "PASS"
     assert REASON_INVALID_STOP_PRICE not in sizing.reason_codes
     mark = Decimal(str(path[-1]))
+    distance, reasons = resolve_current_productive_live_29p_adverse_exit_distance_v1(replay)
+    assert reasons == ()
+    assert distance is not None
+    distance = Decimal(str(distance))
+    assert distance != Decimal(str(CANONICAL_ADVERSE_EXIT_DISTANCE))
     expected_stop = derive_protective_stop_price_from_adverse_exit_v0(
         selected_side=str(rebound.evidence.selected_side),
         reference_price=mark,
-        adverse_exit_distance=CANONICAL_ADVERSE_EXIT_DISTANCE,
+        adverse_exit_distance=distance,
     )
-    assert expected_stop == Decimal("1555")
+    assert expected_stop == mark - distance
+    assert Decimal("0") < expected_stop < mark
+    assert len(monetary_inputs) == 1
+    assert monetary_inputs[0]["native_reference_price"] == mark
+    assert monetary_inputs[0]["native_protective_stop_price"] == expected_stop
     assert expected_stop != ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP
     intent = rebound.intermediate.canonical_order_intent
     assert intent is not None
@@ -288,7 +311,8 @@ def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope() -> None:
     )
     assert envelope.envelope_id
     assert envelope.envelope_digest
-    assert envelope.instrument_id == rebound.evidence.instrument_id
+    assert rebound.evidence.instrument_id == _bound().instrument_id
+    assert envelope.instrument_id == _bound().venue_native_id
 
 
 def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> None:
@@ -296,7 +320,8 @@ def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> No
     _, cycle_b, _path = _host_enter_cycle()
     assert cycle_b.decision_outcome == "enter_long"
     assert cycle_b.replay is not None
-    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is None
+    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is not None
+    assert cycle_b.replay.intermediate.capital_risk_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
     join = _join_enter_live_29p(replay=cycle_b.replay)
     assert join.status == STATUS_PASS
     rebound = join.replay
@@ -326,18 +351,12 @@ def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> No
     assert rebound.intermediate.canonical_order_intent.execution_eligible is False
 
 
-def test_protected_algorithm_files_unchanged_vs_origin_main() -> None:
-    import subprocess
-
-    diff = subprocess.run(
-        ["git", "diff", "--name-only", "origin/main", "--", *PROTECTED_ALGORITHM_FILES],
-        cwd=REPO_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-        timeout=30,
+def test_protected_algorithm_files_match_approved_reconfiguration() -> None:
+    from tests.ops._reconfiguration_protected_sources_v1 import (
+        assert_approved_reconfiguration_sources_v1,
     )
-    assert diff.stdout.strip() == ""
+
+    assert_approved_reconfiguration_sources_v1(REPO_ROOT, PROTECTED_ALGORITHM_FILES)
 
 
 def test_ssot_docs_once_present() -> None:
@@ -359,5 +378,5 @@ def test_ssot_docs_once_present() -> None:
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_V1"
     ) in spec
-    assert "11.2.1.DS" in atlas
+    assert "id: RUNTIME_COMPONENT:CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_SEAM_V1" in atlas
     assert json.loads(json.dumps({"POST_COUNT": "0"}))["POST_COUNT"] == "0"

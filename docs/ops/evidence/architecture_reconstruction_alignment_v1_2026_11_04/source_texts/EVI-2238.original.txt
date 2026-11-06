@@ -1,0 +1,97 @@
+# Vor der DDO-Grundlage: ältere Producer, ursprünglicher Kontext und konkrete Datenverträge
+
+Stand: 02.11.2026. Fortsetzung des [Rückwegs ab #6626](../ddo-backward-pr-6626/Rueckwaertskette_ab_PR_6626_Entwurf_Datenbedeutung_und_31_PRs.md). Die hier betrachteten 15 älteren PRs betreffen die bereits vorhandenen Decision-Producer, Volatilitätsversorgung und Research-Evidenzowner. Es handelt sich nicht um 15 weitere Änderungen am DDO-Paket. Zwei Identitäts-/Robustheitsanker waren schon bekannt und wurden für den Zusammenhang erneut eingeordnet.
+
+## Der ältere fachliche Anschluss beginnt außerhalb des DDO-Pakets
+
+Die September-Capture-/Consumer-PRs nehmen bestehende Master-V2-/Double-Play-Ausgaben auf. Deren Ursprung liegt deutlich früher: Ein docs-only Manifest #3034 vom 25.04.2026 beschreibt die fachliche Konstruktion; #3035 führt anschließend ein reines Scope-/Zustandsmodell ein. Juni-PRs ergänzen Markt-Kontext, Composition und Entry-/Positions-/Exit-Entscheidungen. Diese Bausteine hatten zunächst keine eigene tatsächliche Markt-/Execution-Versorgung. Ihre fachlichen Zustands- und Entscheidungswerte sind deshalb von beobachteten Positionen, Fills oder späterem PnL getrennt zu lesen.
+
+Im ursprünglichen Manifest steht ein für die Gesamtarchitektur wesentlicher Datenweg: Der Selector beziehungsweise Instrument-Intelligence-Bereich soll Marktprofile liefern, die Scope-Bandbreite, Trailing, Hysterese, Confirmation, Cooldown, Chop-Guard und Funding-/Spread-/Liquidity-Blocks prägen. Genannt werden Volatilität, ATR/Range, Liquidität, Spread, Open Interest, Funding, Verfügbarkeit von Mark/Index/Last und Frische. Selector und AI-Kontext handeln oder autorisieren dabei nicht.
+
+Das ist eine historische Konstruktion, keine belegte damalige Wirkungskante. Insbesondere darf der alte Begriff Universe Selector nicht ohne Prüfung mit einer heutigen Cap-2.3-Auswahlfunktion gleichgesetzt werden. Ebenso sind die im Manifest vorgeschlagenen ATR-/Realized-Volatility-Varianten nicht automatisch der später ratifizierte Markpreis-Schätzer.
+
+Quelle: [April-Manifest am frühen Modellstand](./april-double-play-manifest.md), insbesondere §§8–12 und §17; [PR #3034](https://github.com/rauterfrank-ui/Peak_Trade/pull/3034), Commit 1972c706ae8b962f1f23fc9b5c71886b40100e9e; [frühes Zustandsmodell](./pr-3035-double_play_state.py). Die spätere CHOP-Präzisierung #5325 ist eine eigene historische Variante und wird nicht rückwirkend in das April-Manifest hineingelesen.
+
+## Eine konkrete ursprüngliche Datenversorgung ist im Juli codiert
+
+#5148 und #5149 vom 13.07.2026 schließen eine engere Quelle-/Berechnungsfrage: volatility_estimate soll die nicht annualisierte Population-Standardabweichung von 60 Log-Returns aus 61 finalen PT1M-Markpreisen sein. Es ist ein dimensionsloses Return-Volatilitätsfeature pro Bar, kein Prozentwert und keine bereits in Preiseinheiten ausgedrückte Banddistanz. Der Vertrag verlangt explizite Warmup-/Lücken-/Quellenbehandlung. Gewöhnliche OHLCV-Kerzen-Schlusskurse sind kein zulässiger Ersatz für die geforderte Markpreisquelle.
+
+Der Materializer ist in den vorhandenen Economic-Research-Stager eingebunden. Dieser lädt aus raw_staging_root/raw getrennte Rohfamilien ohlcv_p*.json, mark_p*.json, index_p*.json und funding_p*.json. Für die Preisreihen liest er den Close des jeweiligen Preis-Candle-Feeds. Mark-Candle-Close wird also zu mark_price; der normale OHLCV-Close bleibt separat. Der Feldname close allein entscheidet folglich nicht über die Preisart – die ursprüngliche Feedfamilie ist wesentlich.
+
+Die Normalisierung ordnet Mark, Index und Funding dem OHLCV-Zeitgitter per rückwärtsgerichtetem As-of-Join mit expliziten Staleness-Toleranzen zu. Fehlende Pflichtwerte werden nicht einfach aus OHLCV ersetzt. Vorher wird ein vorhandenes Request-Log gegen die referenzierten Raw-Dateidigest geprüft. Danach folgen Integritätsprüfung, Volatilitätsmaterialisierung und Dataset-/Kosten-/Split-Bindung.
+
+Das belegt einen vorhandenen Codeweg von getrennten Raw-Quellen zu einem berechenbaren Feature. Es beweist nicht, dass eine konkrete historische Datasetdatei heute vollständig vorhanden ist oder dass jeder damalige Research-/Runtime-Host diese Stufe durchlief. Auch die Verfügbarkeit eines finalen Candles gegenüber seiner Baröffnungszeit und dem tatsächlichen Consumer-Zeitpunkt muss für einen vollständigen PIT-Nachweis separat verfolgt werden. Hier wurden die Raw-Dateien nicht neu geladen und kein Stager ausgeführt.
+
+Quellen: [Featurevertrag bei Ratifikation](./pr-5148-canonical_volatility_estimate_feature_contract_v1.py), [gebundene Konfiguration](./pr-5148-canonical_volatility_estimate_feature_contract_v1.json), [Materializer](./pr-5149-canonical_volatility_estimate_materializer_v1.py), Zeilen 95–150, sowie [Stager bei Einführung der Materialisierung](./pr-5149-stage_okx_economic_research_dataset_from_raw_staging_v1.py), Zeilen 95–140, 175–217, 233–295 und 442–483.
+
+## Wiederverwendung war ausdrücklich keine Gleichsetzung
+
+Der Juli-Vertrag nennt als Wiederverwendungsbasis src/analytics/regimes.py::_compute_rolling_volatility, begrenzt die Wiederverwendung aber ausdrücklich auf Rolling-Window-Mechaniken. Der ältere Helfer berechnet Log-Return-Standardabweichung mit min_periods=1 und dem std-Default und annualisiert mit sqrt(annualization_factor), standardmäßig 365. Der neue Materializer verlangt dagegen 60 Return-Beobachtungen, ddof=0 und keine Annualisierung.
+
+Die Rechnung im engeren Vertrag ist also bewusst anders gebunden. Der alte Funktionsname oder ein numerisch ähnlicher Float beweist keine gleiche Bedeutung. Die Pfadhistorie des älteren Helfers reicht in den vorhandenen GitHub-Ergebnissen bis Dezember 2025; Dezember bleibt hier nur geerbter Vergleich, kein neu behaupteter Ursprung des Lernsystems.
+
+Quelle: [älterer Regime-Helfer am Juli-Snapshot](./legacy-regimes-at-july13.py), Zeilen 266–286, sowie die expliziten REUSE_BASIS-/REUSE_LIMITATION-Felder des [neuen Vertrags](./pr-5148-canonical_volatility_estimate_feature_contract_v1.py).
+
+## Ende Juli werden Herkunft und Transport zusätzlich abgesichert
+
+#5608 führt einen getypten Carrier ein, der außer dem Wert Quelle, Einheit, Frequenz, Lookback, Horizon, Beobachtungszahl und Provenienz trägt. #5609 transportiert diese Identität über CanonicalMarketContext bis zur einen benannten Float-Adaptergrenze. Ein allgemeiner input_digest allein wird ausdrücklich als unzureichend behandelt.
+
+#5610 trennt anschließend 0.2-Fallback, 0.02-Replaydefault, 1.0-Konstruktorwert und 1e-9-Floor nach Herkunft und Funktion. Die Zahlen sind nicht allein aufgrund ihres Werts unzulässig: Derselbe numerische Wert kann bei kanonisch belegter Herkunft zulässig sein. Verboten ist die unbewiesene Substitution. Explizite Legacy-Replay-/Research-Werte können mit Quarantäne-/Provenienzstatus erhalten bleiben, statt als gemessener Marktinput zu erscheinen.
+
+Diese PRs erklären damit einen Teil unserer heutigen Interface-Frage historisch: Wertgleichheit genügte schon damals nicht. Der Producer-Cutover in den tatsächlichen Runtime-Hot-Path war in den genannten Schritten zugleich ausdrücklich noch nicht geschlossen. Typcarrier und korrekt gebundene Provenienz ersetzen keine belegte Quellversorgung.
+
+Quellen: [Carrier bei Einführung](./pr-5608-canonical_volatility_estimate_typed_consumption_contract_v1.py), [Transport bei Einführung](./pr-5609-canonical_volatility_binding_and_provenance_transport_v1.py), [Quarantäne bei Einführung](./pr-5610-canonical_volatility_default_quarantine_v1.py).
+
+## Was vor dem September-DDO schon an Research-Evidenz existierte
+
+#5928–#5931 vom 17.08.2026 liefern nacheinander kanonische Forschungsidentität, append-only Experiment Memory, Failure Memory und Robustheitsbewertung. Diese Bausteine erklären die späteren DDO-Verweise auf vorhandene Identitäts-/Validierungsowner. Sie werden durch die September-DDO-Adapter nicht neu erfunden.
+
+Ihre Datenrollen bleiben unterschiedlich: Identität beschreibt die Bindung eines Experiments; Memory nimmt gelieferte Evidenz auf; Failure Memory nimmt gelieferte Negativbefunde auf; die Suite verarbeitet Beobachtungen und vorhandene Checks. Weder ein Identitätsrecord noch ein Memory-Eintrag beweist, dass der betreffende ursprüngliche Markt-/Backtestproducer ausgeführt wurde. Die frühere separate Prüfung der realen Juli-Returns bleibt genau ein begrenzter numerischer Anschluss, kein Nachweis sämtlicher hierfür verlangter Dimensionen.
+
+## Der 24.-August-Schritt ist jetzt unabhängig vom PDF-Datum belegt
+
+Eine datierte ursprüngliche Nutzernachricht vom 24.08.2026 um 15:50 Berliner Zeit fordert ausdrücklich einen read-only Current-State-/Timing-Abgleich gegen die DDO-Blueprint. Die damalige Antwort beschreibt vorhandene Research-/Repro-/Governance-Bausteine als wiederverwendbar, aber keinen fertigen Decision-Outcome-Kreis. Eine Implementation wurde in diesem Auftrag nicht durchgeführt.
+
+Damit ist die damalige Befassung mit genau diesem Blueprint-Thema durch eine Originalnachricht belegt, zusätzlich zur Datumsangabe in der später angehängten kombinierten PDF. Die damaligen Baseline-/Checkpoint-Aussagen bleiben historischer Kontext und werden nicht als heutige Systemwahrheit übernommen. Der in der Nachricht erwartete Downloads-PDF-Pfad wurde hier nicht neu als Quelle geöffnet; die historischen Anweisungen darin sind kein aktueller Auftrag.
+
+Quellen: [Originalauftrag](./aug24-original-request.txt), [damalige Auswertung](./aug24-original-assessment.txt), [Auftragsprovenienz](./aug24-request-provenance.json), [Antwortprovenienz](./aug24-assessment-provenance.json).
+
+## Konsequenz für die Gesamtarchitektur
+
+Wir haben nun einen fachlich benannten älteren Eingang: Instrument Intelligence soll die Eigenschaften des ausgewählten Instruments an Scope/Suitability liefern. Für eine konkrete Teilgröße existiert seit Juli ein präziser Quell- und Materialisierungsvertrag. Die späteren DDO-Outcomes sind ein anderer zeitlicher und mathematischer Gegenstand. Mark-Volatilität aus einem historischen Fenster, späterer Bar-Return, tatsächliche Portfolio-Nettoequity und Zustands-/Entscheidungsausgaben dürfen daher nicht als austauschbare Versorgung gelten.
+
+Die nächsten verbleibenden Kanten sind enger benannt: der tatsächliche Instrument-Intelligence-Producer zum Scope-/Suitability-Handoff; die tatsächlichen gespeicherten Raw-/Feature-Artefakte; der spätere G17-/CMC-Hot-Path gegenüber dem Offline-Materializer; und die eigenständigen Quellen für die im breiten Lernziel verlangten Execution-/Positions-/Netto-PnL-Outcomes. Die historischen Varianten werden zuerst an ihren eigenen Revisionen verstanden, bevor über Anpassung oder Weiterentwicklung entschieden wird.
+
+Die [strukturierte Zuordnung](./older-lineage-review.json) führt alle 15 PRs und vier nicht austauschbare Datenfamilien. [Quellenregister](./sources.json) und [Verifikation](./verification.json) grenzen den Nachweis ein. Keine Gesamtvollständigkeit aller PeakTrade-PRs, keine neue Integration oder Runtime-Ausführung. Repository und Vault bleiben unverändert.
+
+## Die 15 PRs im Einzelnen
+
+- [#3034](https://github.com/rauterfrank-ui/Peak_Trade/pull/3034), 25.04.2026 — **Ursprünglicher fachlicher Entwurf:** Selector/Instrument Intelligence soll unter anderem Volatilität, Liquidität, Spread, Funding, Frische und Chop-Kontext liefern. Scope/Suitability verwenden diesen Kontext; Seitenwechsel bleibt getrennt von Kill-All. Grenze: Konzept, keine damalige Producer-Consumer-Laufzeitverbindung. Die damalige Selector-Rolle ist nicht ungeprüft identisch mit heutigem Cap 2.3.
+
+- [#3035](https://github.com/rauterfrank-ui/Peak_Trade/pull/3035), 25.04.2026 — **Reines Zustands-/Scope-Modell:** SideState, ScopeEvent, RuntimeEnvelope, Regeln, Grenzen und reine Transition-Funktionen werden eingeführt. Grenze: Kein I/O, keine Exchange-/Market-Data-Versorgung. LONG_ACTIVE ist ein Modellzustand und kein alleiniger Nachweis einer real eröffneten Position.
+
+- [#4676](https://github.com/rauterfrank-ui/Peak_Trade/pull/4676), 30.06.2026 — **Canonical Market Context:** STEP 29B bindet einen strukturierten Futures-Marktinput an den bestehenden Futures-Input-Owner; Markpreis ist primärer Entscheidungspreis. Grenze: Ein validierter Kontext muss vom Aufrufer mit richtigen Daten versorgt werden. Scope-Initialisierung und wirtschaftliche Backtest-Anbindung sind ausgeschlossen.
+
+- [#4687](https://github.com/rauterfrank-ui/Peak_Trade/pull/4687), 30.06.2026 — **Composition / Eignung:** STEP 29G verbindet Directional Assessments, Survival und Suitability; widersprüchliche Bestätigungen werden fail-closed behandelt. Grenze: Offline-Matrix, keine Handelsausführung. Started-Registereintrag ist keine vollständige Fertigmeldung.
+
+- [#4689](https://github.com/rauterfrank-ui/Peak_Trade/pull/4689), 30.06.2026 — **Fachliche Entry-/Positions-/Exit-Policy:** STEP 29H entscheidet aus Composition und expliziten Zustands-/Gate-/Signalinputs über fachliche Aktionen und Reversal-Vorbereitung. Grenze: Keine Orders, keine gebundene Quantity und keine Ausführungswirkung. Dieser spätere DDO-Producer liefert eine Entscheidung, nicht automatisch deren tatsächliche Folge.
+
+- [#5148](https://github.com/rauterfrank-ui/Peak_Trade/pull/5148), 13.07.2026 — **Volatilitätssemantik zuerst:** Vertrag: finale PT1M-Markpreise; 60 Log-Returns aus 61 Preisen; Population-Standardabweichung ddof=0; keine Annualisierung und kein stiller Fallback. Grenze: Zunächst Definition/Validierung, keine Dataset-Erzeugung. Historischer Regime-Helfer wird nur hinsichtlich Rolling-Mechanik wiederverwendet.
+
+- [#5149](https://github.com/rauterfrank-ui/Peak_Trade/pull/5149), 13.07.2026 — **Materialisierung und Research-Persistenz:** Materializer berechnet die definierte Volatilität; der Research-Stager lädt getrennte OHLCV-, Mark-, Index- und Funding-Rohdaten und schreibt das Feature mit Warmup-/Vertragsbindung. Grenze: Die Codeverbindung ist belegt; konkrete damalige Rohdateien und deren tatsächliche Verarbeitung wurden hier nicht erneut nachgewiesen.
+
+- [#5325](https://github.com/rauterfrank-ui/Peak_Trade/pull/5325), 18.07.2026 — **CHOP-Semantik präzisiert:** CHOP wird Scope-Policy auf RuntimeScopeState; es ist keine eigene Richtungs-/Switch-Autorität und schreibt SideState nicht um. Grenze: CHOP, Composition-Konflikt, SideState und ausgewählte Seite dürfen nicht als dasselbe Ergebnis gelesen werden.
+
+- [#5608](https://github.com/rauterfrank-ui/Peak_Trade/pull/5608), 31.07.2026 — **Getypter Wert am Consumer:** Trägt Wert samt Quelle, Einheit, Frequenz, Lookback, Horizon und Provenienz; unbewiesene Substitution wird abgelehnt. Grenze: Kein zweiter Estimator und keine fertige Hot-Path-Versorgung. Zahlen wie 0.2 sind nicht an sich falsch, sondern ohne richtigen Nachweis kein Ersatz.
+
+- [#5609](https://github.com/rauterfrank-ui/Peak_Trade/pull/5609), 31.07.2026 — **Provenienztransport:** Getypter Träger gelangt über CanonicalMarketContext zu genau einer Validierungs-/Legacy-Float-Grenze; separate Provenienz-Digests binden die Bedeutung. Grenze: Allgemeiner input_digest allein reicht nicht. Noch kein Runtime-Producer-Cutover.
+
+- [#5610](https://github.com/rauterfrank-ui/Peak_Trade/pull/5610), 31.07.2026 — **Stille Defaults entfernen / quarantänisieren:** 0.2-Fallback, 0.02-Replaydefault, 1.0-Konstruktorwert und 1e-9-Floor werden nach Herkunft getrennt behandelt. Grenze: Explizite alte Replay-/Research-Werte können als Legacy-Eingaben erhalten bleiben; sie werden nicht zu gemessener Marktvolatilität umgedeutet.
+
+- [#5928](https://github.com/rauterfrank-ui/Peak_Trade/pull/5928), 17.08.2026 — **Bestehender Identitätsowner:** Phase 1 bindet eine kanonische Forschungsidentität; Package N bleibt ausdrücklich unvollständige historische Projektion. Grenze: Identität allein erzeugt keine Backtestdaten und verifiziert nicht die tatsächliche Nutzung jedes angegebenen Inputs. Dieser Ursprung wurde früher bereits gesondert untersucht.
+
+- [#5929](https://github.com/rauterfrank-ui/Peak_Trade/pull/5929), 17.08.2026 — **Experiment Memory:** Phase 2 speichert identitätsgebundene Forschungsevidenz append-only und idempotent. Grenze: Memory ist Empfänger gelieferter Versuchsevidenz und kein eigenständiger Markt-/Versuchsergebnisproducer.
+
+- [#5930](https://github.com/rauterfrank-ui/Peak_Trade/pull/5930), 17.08.2026 — **Failure Memory:** Phase 3 hält abgelehnte Hypothesen und vergleichbare Fingerprints nachvollziehbar fest; Duplikate können Forschungshinweise beeinflussen. Grenze: Keine automatische Forschungssperre und keine produktive Handelsautorität. Die Negativ-Evidenz muss zuvor geliefert worden sein.
+
+- [#5931](https://github.com/rauterfrank-ui/Peak_Trade/pull/5931), 17.08.2026 — **Robustheitseingang:** Phase 4 bewertet gelieferte Beobachtungen unter expliziten Policies; fehlende Fähigkeiten bleiben BLOCKED oder NOT_EVALUATED. Grenze: Bestehende Checks und Returns-Consumer sind kein Beweis, dass der tatsächliche Backtest-/Marktdatenproducer automatisch davor angeschlossen war.

@@ -1,0 +1,28 @@
+{
+  "schema_version": "okx_multi_window_foundation_v1",
+  "workstation": {
+    "title_substring": "PEAK TRADE – OKX WORKSTATION",
+    "required_tab_count": 7
+  },
+  "registry": {
+    "workstation_window_id": 1342,
+    "slot_window_ids": {
+      "SLOT_1": 3192,
+      "SLOT_2": 3194,
+      "SLOT_3": 3196,
+      "SLOT_4": 3198
+    },
+    "slot_fingerprints": {
+      "SLOT_1": "Startseite|1|favorites://",
+      "SLOT_2": "Startseite|1|favorites://",
+      "SLOT_3": "Startseite|1|favorites://",
+      "SLOT_4": "Startseite|1|favorites://"
+    }
+  },
+  "url_bindings": {
+    "SLOT_1_URL": "",
+    "SLOT_2_URL": "",
+    "SLOT_3_URL": "",
+    "SLOT_4_URL": ""
+  }
+}

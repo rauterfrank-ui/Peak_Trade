@@ -182,13 +182,10 @@ def test_spot_exclusion() -> None:
     )
 
 
-def test_btc_exclusion() -> None:
+def test_btc_uses_common_futures_admission() -> None:
     result = _produce([_perp(inst_id="BTC-USDT-SWAP", base="BTC", ct_val_ccy="BTC")])
-    assert result.snapshot.eligible_instrument_count == 0
-    assert (
-        UniverseFailureCodeV1.BTC_INSTRUMENT.value
-        in result.excluded_instruments[0].exclusion_reason_codes
-    )
+    assert result.snapshot.eligible_instrument_count == 1
+    assert not result.excluded_instruments
 
 
 def test_inactive_suspended_exclusion() -> None:
@@ -288,7 +285,7 @@ def test_duplicate_and_conflicting_ids() -> None:
 
 
 def test_empty_eligible_universe_fail_closed() -> None:
-    result = _produce([_perp(inst_id="BTC-USDT-SWAP", base="BTC", ct_val_ccy="BTC")])
+    result = _produce([_perp(state="suspend")])
     assert result.snapshot.universe_status == UNIVERSE_STATUS_EMPTY
     assert result.snapshot.alpha_allowed is False
     assert UniverseFailureCodeV1.EMPTY_ELIGIBLE_UNIVERSE.value in result.failure_codes

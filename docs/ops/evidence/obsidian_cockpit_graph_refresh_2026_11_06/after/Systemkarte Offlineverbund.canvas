@@ -1,0 +1,316 @@
+{
+  "nodes": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 0,
+      "y": -290,
+      "width": 1960,
+      "height": 200,
+      "text": "# PeakTrade · Zwei getrennte Offlinepfade\n\n**Ansichtsstand 06.11.2026.** Oben: ursprüngliche synthetische E6-Episode, 05.11.2026 (1.509 Tests / 39 Pflichtfälle / 31 Bewertungen). Unten: neue unabhängige Marktbeobachtung, 06.11.2026 (787 gebundene Tests / davon 40 neu). Keine Addition, keine Gesamtzertifizierung.\n\n[[Start|Start]] · [[00 Systemindex/System Cockpit|Genaue Reichweite]] · [[Systemkarte.canvas|Universen und Außenkanten]]"
+    },
+    {
+      "id": "data",
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 410,
+      "height": 350,
+      "text": "## 1 · Marktdaten & MI\n\nOriginalfacts → Zweckadmission → echte numerische Consumer.\n\nEvent / Capture / KnownAt und Instrument bleiben gebunden.\n\n[[10 Fachbereiche/Marktdaten und Marktintelligenz|Daten und Forecast/Kalibrierung öffnen]]"
+    },
+    {
+      "id": "rank",
+      "type": "text",
+      "x": 515,
+      "y": 0,
+      "width": 410,
+      "height": 350,
+      "text": "## 2 · Ranking & Auswahl\n\nB05 → Cap22 → Membership → stabile Lanes → Cap23/24.\n\n**5 Slots ≠ 5 Positionen. MaxPos bleibt 1.**\n\n[[10 Fachbereiche/Ranking und Auswahl|Auswahl und Instrumentbindung öffnen]]"
+    },
+    {
+      "id": "core",
+      "type": "text",
+      "x": 1030,
+      "y": 0,
+      "width": 410,
+      "height": 350,
+      "text": "## 3 · Double Play & Position\n\nObservation / C3 / Survival / Suitability / Composition / Scope / Entry-Exit.\n\nOriginaler Cursor und bestätigte Episode.\n\n[[10 Fachbereiche/Double Play und Positionsfuehrung|Core und Exit öffnen]]"
+    },
+    {
+      "id": "money",
+      "type": "text",
+      "x": 1545,
+      "y": 0,
+      "width": 410,
+      "height": 350,
+      "text": "## 4 · Kapital, Risiko, Accounting\n\nOriginales Sizing → Riskveto → dauerhafter Hold → Envelope → interner Fill.\n\nTeilclose / Reload / bestätigtes Flat.\n\n[[10 Fachbereiche/Kapital Risiko Ausfuehrung und Accounting|Kapital- und Positionsfluss öffnen]]"
+    },
+    {
+      "id": "ops",
+      "type": "text",
+      "x": 1545,
+      "y": 520,
+      "width": 410,
+      "height": 380,
+      "text": "## Gemeinsame Runtime\n\nManifest · Source/Configgeneration · originale Owner · Leases · Stop · Attemptgrenzen.\n\nKeine Budgeterneuerung durch Restart.\n\n[[01 System/Laufzeit und Persistenz|Laufzeit und Persistenz]]\n\n[[00 Systemindex/Betrieb/Wiederanlauf und Stromausfall|Echter Stromausfall separat offen]]"
+    },
+    {
+      "id": "learn",
+      "type": "text",
+      "x": 1030,
+      "y": 520,
+      "width": 410,
+      "height": 380,
+      "text": "## 5 · Outcome & Lernen\n\nExakte Decision → Pending → spätere O4-Messung → echte DDO-/Optimization-/MI-Consumer → ACK.\n\n[[20 Wirkungsketten/C Entscheidung Outcome und Lernen|Wirkungskette C öffnen]]"
+    },
+    {
+      "id": "research",
+      "type": "text",
+      "x": 515,
+      "y": 520,
+      "width": 410,
+      "height": 380,
+      "text": "## Forschung & Rückkopplung · E6\n\nConsumer-ACK → Admission / Elternlineage. Research-Zahlen kommen aus separaten synthetischen Inputs.\n\n**E6 50→100: Duplicatefilter.** Separate E4-Kontrolle: Meta-Priorisierung wirksam, voller Folgescore niedriger.\n\n[[20 Wirkungsketten/D Gemessene Forschung und naechster Versuch|Historischer E6-Pfad]] · [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT|Kausalitätskorrektur]]"
+    },
+    {
+      "id": "eval",
+      "type": "text",
+      "x": 0,
+      "y": 520,
+      "width": 410,
+      "height": 380,
+      "text": "## Evaluation & Governance · E6\n\n5 originale Evaluatoren · 20 Returns · volle Resultate und native Zahlen nachladbar.\n\n**Mechanismus PASS / Qualität BLOCKED** für den ursprünglichen E6-Scope. Der neue Market-only-Pfad ist dadurch nicht automatisch eigenständig GVEF-abgenommen.\n\n[[10 Fachbereiche/Evaluation und Governance|Bewertung und Grenzen]]"
+    },
+    {
+      "id": "semantics",
+      "type": "text",
+      "x": 0,
+      "y": 2190,
+      "width": 925,
+      "height": 250,
+      "text": "## Bedeutungen bleiben getrennt\n\nLane / Instrument / Episode · Event / Capture / KnownAt · Mark / Fill / Entry · Equity / Sizingkapital / Reservierung · Marktreturn / Forecastfehler / PnL / Researchmetrik\n\n[[01 System/Identitaeten und Zahlenbedeutung|Semantik und Verbindungen ansehen]]"
+    },
+    {
+      "id": "limits",
+      "type": "text",
+      "x": 1030,
+      "y": 2190,
+      "width": 925,
+      "height": 250,
+      "text": "## Offene Folgewirkungen\n\nNächste tatsächlich benutzte Modellversion, natürlicher Herkunfts-/Qualitätsnachweis und Wirtschaftlichkeit offen. Bedingter Phase-20/21-Return ist ein separater Pfad. Kein Livehost, Training oder produktiver Apply durch diese Callerkomposition.\n\n[[00 Systemindex/Repoabgleich/Konkrete Luecken im Repository|Aktuelle Lücken]] · [[01 System/Offene Grenzen|Ursprüngliche Grenzen]]",
+      "color": "2"
+    },
+    {
+      "id": "market-track",
+      "type": "text",
+      "x": 0,
+      "y": 1030,
+      "width": 1955,
+      "height": 170,
+      "text": "## Unabhängige Marktbeobachtung · neu implementiert\n\nExpliziter Offlineaufruf ohne Decision, Lane oder Trading-Epoche. **Derselbe ursprüngliche N_BARS-Owner und dieselbe Messmathematik** wie im DDO-Pfad. Kein künstliches DecisionEvent.\n\n[[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/12 Unabhaengige Marktbeobachtung bis zum Calibration Readback|Vollständiger Vertrag, Zahlen und Nachweise]]",
+      "color": "5"
+    },
+    {
+      "id": "market-context",
+      "type": "text",
+      "x": 0,
+      "y": 1300,
+      "width": 410,
+      "height": 370,
+      "text": "## Identität & Ziel\n\nSourcegeneration, Venue, kanonisches/native Instrument. Explizite Brücke zur vorhandenen opaque Messreferenz.\n\nStündliche Mark-Price-Bar, UTC-Start, N≥2 Schlusswerte, Einheiten, Endpunktbasis und Altersgrenze."
+    },
+    {
+      "id": "market-freeze",
+      "type": "text",
+      "x": 515,
+      "y": 1300,
+      "width": 410,
+      "height": 370,
+      "text": "## Forecast einfrieren\n\nBereitgestellte Forecast-/Modellbytes und Providerbindungen prüfen und unverwechselbar bewahren.\n\n**Kein Training und kein erzeugter Modellaufruf.** Freeze muss vor Messung vorhanden sein; Konflikte blockieren."
+    },
+    {
+      "id": "market-measure",
+      "type": "text",
+      "x": 1030,
+      "y": 1300,
+      "width": 410,
+      "height": 370,
+      "text": "## Original messen\n\nSpätere zugelassene Original-Receipts → gemeinsamer N_BARS-Messkörper. N Schlusswerte = N−1 Intervalle.\n\n110→120: Logreturn 0,0870113769896297. Keine PnL-Ersetzung; identische native Messung und Outcome-ID im Beispiel."
+    },
+    {
+      "id": "market-calib",
+      "type": "text",
+      "x": 1545,
+      "y": 1300,
+      "width": 410,
+      "height": 370,
+      "text": "## Eigener MI-Consumer\n\nOriginal RETURN_ERROR: realisierter Logreturn minus bereitgestellter Forecastmittelwert.\n\n0,0870113769896297 − 0,02 = **0,0670113769896297**. Dieser Forecastfehler ist kein Researchscore und kein Positions-PnL."
+    },
+    {
+      "id": "market-store",
+      "type": "text",
+      "x": 1545,
+      "y": 1810,
+      "width": 410,
+      "height": 260,
+      "text": "## Nativer Cold Readback\n\nOriginaler Forecast-/Calibration-/Research-Triadstore. Exakte Zahlen nach Neustart ohne Neuberechnung.\n\n787 gebundene Tests einschließlich 40 neuer Market-only-Fälle.",
+      "color": "4"
+    },
+    {
+      "id": "next-model",
+      "type": "text",
+      "x": 1030,
+      "y": 1810,
+      "width": 410,
+      "height": 260,
+      "text": "## Nächster Modellstand · OFFEN\n\nAus bewahrtem Lernzustand ein Folgemodell erzeugen und tatsächlich verwenden: noch kein belegter Anschluss.\n\n[[00 Systemindex/Repoabgleich/Konkrete Luecken im Repository|Punkt 2 und weitere Lücken]]",
+      "color": "2"
+    },
+    {
+      "id": "market-clock",
+      "type": "text",
+      "x": 0,
+      "y": 1810,
+      "width": 925,
+      "height": 260,
+      "text": "## Wissen, Zeit und Kausalität\n\nLogische Horizontgrenze ≠ tatsächliche Receipt-Verfügbarkeit ≠ spätere Auswertung. Im Beispiel: Horizont 09:00:00 UTC, Auswertung 09:00:02 UTC.\n\nMarkt- und Decisionidentitäten bleiben getrennt. Eine ACK-Verbindung ist noch kein Beweis, dass die Fehlerzahl numerisch einen Forschungsversuch oder das nächste Modell steuert."
+    },
+    {
+      "id": "point1-dossier",
+      "type": "file",
+      "file": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/12 Unabhaengige Marktbeobachtung bis zum Calibration Readback.md",
+      "x": 0,
+      "y": 2540,
+      "width": 925,
+      "height": 150
+    },
+    {
+      "id": "open-gaps-dossier",
+      "type": "file",
+      "file": "00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md",
+      "x": 1030,
+      "y": 2540,
+      "width": 925,
+      "height": 150
+    }
+  ],
+  "edges": [
+    {
+      "id": "a1",
+      "fromNode": "data",
+      "fromSide": "right",
+      "toNode": "rank",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "Facts"
+    },
+    {
+      "id": "a2",
+      "fromNode": "rank",
+      "fromSide": "right",
+      "toNode": "core",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "Bindung"
+    },
+    {
+      "id": "a3",
+      "fromNode": "core",
+      "fromSide": "right",
+      "toNode": "money",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "Decision"
+    },
+    {
+      "id": "a4",
+      "fromNode": "core",
+      "fromSide": "bottom",
+      "toNode": "learn",
+      "toSide": "top",
+      "toEnd": "arrow",
+      "label": "Capture"
+    },
+    {
+      "id": "a5",
+      "fromNode": "learn",
+      "fromSide": "left",
+      "toNode": "research",
+      "toSide": "right",
+      "toEnd": "arrow",
+      "label": "ACK"
+    },
+    {
+      "id": "a6",
+      "fromNode": "research",
+      "fromSide": "left",
+      "toNode": "eval",
+      "toSide": "right",
+      "toEnd": "arrow",
+      "label": "Pakete"
+    },
+    {
+      "id": "a7",
+      "fromNode": "money",
+      "fromSide": "bottom",
+      "toNode": "ops",
+      "toSide": "top",
+      "toEnd": "arrow",
+      "label": "Zustand"
+    },
+    {
+      "id": "a8",
+      "fromNode": "ops",
+      "fromSide": "left",
+      "toNode": "learn",
+      "toSide": "right",
+      "toEnd": "arrow",
+      "label": "Kontext"
+    },
+    {
+      "id": "a9",
+      "fromNode": "data",
+      "fromSide": "bottom",
+      "toNode": "eval",
+      "toSide": "top",
+      "toEnd": "arrow",
+      "label": "Prüfdaten"
+    },
+    {
+      "id": "m1",
+      "fromNode": "market-context",
+      "toNode": "market-freeze",
+      "fromSide": "right",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "Ziel"
+    },
+    {
+      "id": "m2",
+      "fromNode": "market-freeze",
+      "toNode": "market-measure",
+      "fromSide": "right",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "Freeze"
+    },
+    {
+      "id": "m3",
+      "fromNode": "market-measure",
+      "toNode": "market-calib",
+      "fromSide": "right",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "Messung"
+    },
+    {
+      "id": "m4",
+      "fromNode": "market-calib",
+      "toNode": "market-store",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "toEnd": "arrow",
+      "label": "Readback"
+    }
+  ]
+}

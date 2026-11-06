@@ -1,0 +1,67 @@
+{
+  "authority": "NONE",
+  "checks": [
+    {
+      "case": "missing availEq",
+      "effect": "AVAILABLE_MARGIN_FIELD_MISSING or EMPTY; producer FREE_MARGIN_OBSERVATION_MISSING; guard MISSING_AVAILABLE_MARGIN_EVIDENCE",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "stale observation",
+      "effect": "age > freshness_max_age or max_age > 5 seconds appends OBSERVATION_STALE",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "wrong currency or USD treated as USDC",
+      "effect": "AVAILABLE_MARGIN_CCY_MISMATCH or USD_USDC_EQUIVALENCE_ASSUMED",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "wrong account uid",
+      "effect": "ACCOUNT_IDENTITY_SCOPE_MISMATCH",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "NaN Infinity negative availEq",
+      "effect": "AVAILABLE_MARGIN_FIELD_NON_NUMERIC or negative rejection",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "account-level eq or availEq used as source",
+      "effect": "ACCOUNT_LEVEL_AVAILEQ_FORBIDDEN; eq is reconciliation target only",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "non-finite caps",
+      "effect": "NON_FINITE_CAP at parse",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "negative finite decimal caps",
+      "effect": "parser accepts; positive notional exceeds the cap and is denied; canonical caps are null so MISSING_NUMERIC_CAP dominates",
+      "result": "FAIL_CLOSED_AT_EVALUATION"
+    },
+    {
+      "case": "unratified config",
+      "effect": "OWNER_CAPS_UNRATIFIED and NEW_RISK_POST_OWNER_CAPS_UNRATIFIED",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "wrong keychain identity or missing item",
+      "effect": "acquisition fail closed; no default backend",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "signing treated as POST",
+      "effect": "MAY_POST remains false; header builder raises if that pin becomes true; transport proof expects REAL_VENUE_POST_FORBIDDEN",
+      "result": "FAIL_CLOSED"
+    },
+    {
+      "case": "reservation and execution",
+      "effect": "reservation is created only after guard_allowed; canonical config does not get there",
+      "result": "NOT_REACHED"
+    }
+  ],
+  "new_capital_loss_defect": false,
+  "schema_version": "bwp_live_004_adversarial.v1"
+}

@@ -1,0 +1,9 @@
+### CON-2094 — G2-Projektion und M4-Werteversorgung
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+G2-/Runtime-Import und DDO sind unterschiedliche Evidenzfamilien. Mehrere G2-Referenzfelder zeigen auf denselben Review statt separate Messpayloads; Kosten-/Execution-/Risk-/Recon-Listen bleiben an einem Learning-Input leer. g2.review.PASS ist ein Statuslabel, kein ökonomischer Gewinn; state_version=1 bildet dort nicht automatisch DDO-Zustand ab. Konkreter M4-Demonstrationsbuilder verwendet feste Scores 1/1.05 und synthetischen Suchkontext.
+
+**Grenze:** Herkunft/ACK allein machen die Scores nicht zu aus tatsächlicher Execution abgeleiteten Ergebnissen. Originalziel Kosten, Slippage, Funding, OOS, Robustheit und Failure nur soweit wirklich geliefert.
+
+Quellen: EVI-2211, EVI-2263, EVI-2258, EVI-2224.

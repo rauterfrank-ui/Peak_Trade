@@ -1,0 +1,16 @@
+{
+  "parent_commit": "607210def6105e9964379c91bcc17ccdb3b90706",
+  "original_implementation_baseline": "df645ae88eddd2b207ff94de9f75ddbd17634b94",
+  "changed_source_test_paths_since_baseline": [
+    "src/experiments/canonical_native_research_measurements_v1.py",
+    "tests/experiments/test_canonical_native_research_measurements_v1.py"
+  ],
+  "all_changed_paths_absent_at_baseline": true,
+  "existing_implementations_preserved": true,
+  "current_files": {
+    "src/experiments/canonical_native_research_measurements_v1.py": "19ebfcb6bb5e8347e053606faf45300f8f4673e77188f369939020e366a0907a",
+    "tests/experiments/test_canonical_native_research_measurements_v1.py": "e7c00f4e5d96e706c3100011fbe8fc9e14b0880e478763b2bd828fd0519e4e84"
+  },
+  "historical_recovered_executable_bytes": false,
+  "implementation_status": "New additive implementation following recovered design and existing owner contracts; not falsely presented as exact recovered historical code"
+}

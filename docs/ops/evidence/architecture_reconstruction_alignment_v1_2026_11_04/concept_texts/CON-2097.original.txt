@@ -1,0 +1,9 @@
+### CON-2097 — Vorschlag, Governance und tatsächliche Parameteranwendung
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Self-Learning/Optimization besitzen keine eigene produktive Eingriffsautorität. Historisch kann ihr Ziel trotzdem bessere produktive Parameter über separate Genehmigung sein. Der P4-Materialisierungsrecord hat Digests/Lineage, keinen eigentlichen Parametername/-wert und configuration_applied=False trotz configuration_materialized=True. Proposal-Ingress mit konkretem Delta und M10-Hard-Stop ist ein anderer Übergabepunkt.
+
+**Grenze:** Fehlende autonome Autorität ist kein Defekt; fehlender zugelassener Value-to-Consumer-Nachweis bleibt eine fachliche Anschlussfrage. Keine Selbstdeployment-Freigabe oder heutige TARGET-Ratifizierung aus historischen Zieltexten.
+
+Quellen: EVI-2211, EVI-2224, EVI-2216, EVI-2258, EVI-2293, EVI-2207.

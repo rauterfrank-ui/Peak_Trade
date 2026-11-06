@@ -1,0 +1,681 @@
+<timestamp>Thursday, Oct 1, 2026, 3:41 PM (UTC+2)</timestamp>
+<user_query>
+PEAK_TRADE — INTELLIGENT UNIVERSE → DYNAMIC SCOPE → DOUBLE PLAY
+AUTHORITY RECONSTRUCTION V1
+
+MODE=STRICT_READ_ONLY_FORENSIC
+IMPLEMENTATION_AUTHORIZED=false
+AUTHORITY_CHANGE_AUTHORIZED=false
+CONFIG_CHANGE_AUTHORIZED=false
+COMMIT_AUTHORIZED=false
+PR_AUTHORIZED=false
+
+EXPECTED_BASELINE_ORIGIN_MAIN=
+bd40621e0ceaf6fb7faace978f2a0b0f0ee1a819
+
+============================================================
+0. PURPOSE
+============================================================
+
+Reconstruct the CURRENT and historical/canonical authority chain for:
+
+INTELLIGENT UNIVERSE
+→ Dynamic Scope calculation
+→ Scope-value handoff/binding
+→ Double Play consumption
+
+This WP exists because the Owner has now explicitly adjudicated the
+INTENDED authority boundary.
+
+NO implementation or authority mutation is authorized yet.
+
+============================================================
+1. OWNER AUTHORITY DECISION
+============================================================
+
+OWNER_GO_INTELLIGENT_UNIVERSE_SCOPE_CALCULATION_AUTHORITY=true
+
+OWNER INTENT:
+
+The Intelligent Universe SHALL be allowed to calculate the Dynamic Scope
+for the currently selected Future and SHALL have exactly the authority
+required to make that calculated Scope value available to / effective
+for Double Play.
+
+This authority is STRICTLY LIMITED to:
+
+A) calculating the Dynamic Scope value;
+B) emitting/providing that Scope value through the canonical interface;
+C) allowing that Scope value to become the effective Dynamic Scope input
+   consumed by Double Play.
+
+The Intelligent Universe MUST NOT thereby receive authority to:
+
+- select the Future;
+- rank Futures;
+- bind the selected Future;
+- choose BULL or BEAR;
+- choose trading direction;
+- decide a switch;
+- confirm a switch;
+- change confirmation_epochs;
+- bypass candidate/confirmation logic;
+- create an Entry;
+- create an Exit;
+- change Entry/Exit policy;
+- change Double Play state-transition semantics;
+- control DPO;
+- size positions;
+- authorize capital;
+- authorize execution;
+- authorize POST;
+- access real credentials;
+- introduce another productive trading signal.
+
+SCOPE AUTHORITY ONLY.
+
+============================================================
+2. OWNER DYNAMIC-SCOPE SEMANTICS
+============================================================
+
+OWNER_GO_DYNAMIC_SCOPE_BOUND_SEMANTICS=true
+OWNER_GO_DYNAMIC_CANDIDATE_SCOPE_SOURCE=true
+
+Owner target behavior:
+
+BULL:
+- favorable upward movement must remain free to continue;
+- no fixed upper boundary shall terminate/cap the favorable trend;
+- relevant Scope boundary trails behind the favorable movement;
+- sufficiently meaningful reversal toward BEAR may create the existing
+  downstream switch candidate.
+
+BEAR:
+- favorable downward movement must remain free to continue;
+- no fixed lower boundary shall terminate/cap the favorable trend;
+- relevant Scope boundary trails behind the favorable movement;
+- sufficiently meaningful reversal toward BULL may create the existing
+  downstream switch candidate.
+
+The Dynamic Scope therefore represents a dynamic trailing
+REVERSAL DISTANCE / ENVELOPE appropriate to:
+
+- the selected instrument;
+- its current price scale;
+- its current market movement/volatility.
+
+Global fixed monetary Scope distances across arbitrary instruments are
+NOT the Owner target.
+
+Natural Enter is NOT a calibration target.
+
+============================================================
+3. IMMUTABLE AUTHORITY BOUNDARIES
+============================================================
+
+The following CURRENT boundaries MUST remain unchanged unless this
+forensic investigation proves an explicit existing canonical relation:
+
+Cap 2.2 Ranking = context only
+Cap 2.3 Selection = sole selection owner
+Cap 2.4 Binding = bind-only
+
+Master V2 decision semantics = immutable
+Double Play decision/state semantics = immutable
+Entry/Exit policy = immutable
+Confirmation semantics = immutable
+DPO semantics = immutable
+
+Learning / Optimization / Market Intelligence / Evidence:
+
+NO new productive trading authority.
+
+MAX_POSITIONS=1
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+
+PRE_EXTERNAL remains terminal.
+
+============================================================
+4. PRIMARY QUESTIONS
+============================================================
+
+Answer exactly:
+
+Q1.
+What CURRENT repository component corresponds to the Owner's term
+"Intelligent Universe"?
+
+Q2.
+Is there one component, or does the Owner concept map to multiple
+CURRENT components?
+
+Q3.
+Did any historical/canonical design assign Dynamic-Scope calculation to
+that universe?
+
+Q4.
+Does CURRENT Intelligent-Universe code already calculate/propose any
+Scope-related quantity?
+
+Q5.
+If yes:
+what exact value, unit, contract and authority?
+
+Q6.
+If no:
+where is Dynamic Scope CURRENT actually calculated?
+
+Q7.
+Where is the legitimate Double Play Scope-consumption boundary?
+
+Q8.
+Does an existing port/interface/contract already exist through which an
+external Scope calculator can supply the value WITHOUT obtaining Double
+Play decision authority?
+
+Q9.
+What is the MINIMUM authority change required to satisfy Owner intent?
+
+Q10.
+Can the architecture enforce:
+
+CALCULATE/PROVIDE SCOPE = Intelligent Universe
+CONSUME SCOPE = Double Play
+DECIDE SWITCH = existing Candidate/Confirmation/Double Play semantics
+
+without authority leakage?
+
+============================================================
+5. IDENTIFY "INTELLIGENT UNIVERSE"
+============================================================
+
+Perform repository-wide forensic reconstruction for terms/concepts such
+as:
+
+intelligent universe
+intelligent_universe
+universe
+adaptive universe
+scope generator
+dynamic scope
+scope proposal
+scope provider
+scope authority
+universe intelligence
+instrument intelligence
+market intelligence
+selection universe
+learning universe
+optimization universe
+
+Do NOT infer identity from naming alone.
+
+For every plausible component return:
+
+COMPONENT=
+PATH=
+PURPOSE=
+CURRENT_PRODUCTIVE=
+INPUTS=
+OUTPUTS=
+AUTHORITY=
+TRADING_AUTHORITY=
+SELECTION_AUTHORITY=
+SCOPE_AUTHORITY=
+DOUBLE_PLAY_REACHABILITY=
+EVIDENCE=
+
+Classify each:
+
+PROVEN_CURRENT
+UNKNOWN_CURRENT
+CONFLICTING_CURRENT
+NOT_THE_OWNER_CONCEPT
+
+============================================================
+6. HISTORICAL / ARCHITECTURAL RECONSTRUCTION
+============================================================
+
+Search repository history, specs, canonical docs, tests, prior
+implementations and superseded architecture where available.
+
+Determine whether Dynamic Scope was ever intended to be calculated by:
+
+- Intelligent Universe;
+- Master V2;
+- Double Play;
+- L6 Dynamic Scope Generator;
+- another universe/component.
+
+Trace renames, migrations, delegation and authority movement.
+
+Important:
+
+Historical evidence is NOT automatically CURRENT authority.
+
+Return separately:
+
+HISTORICAL_INTENT=
+CURRENT_IMPLEMENTATION=
+CURRENT_AUTHORITY=
+
+If they differ, classify CONFLICTING_CURRENT or an explicit migration,
+depending on evidence.
+
+============================================================
+7. CURRENT DYNAMIC-SCOPE PRODUCER CHAIN
+============================================================
+
+Trace the exact CURRENT producer chain for:
+
+volatility_estimate
+reference_price
+mark_price
+initial_volatility_distance
+scope_band
+current_hysteresis_band
+trailing_anchor
+neutral boundaries
+scope proposal / d_t
+candidate distances
+
+For every node return:
+
+NODE=
+PRODUCER=
+CONSUMER=
+UNIT=
+AUTHORITY_OWNER=
+CAN_BE_EXTERNALLY_INJECTED=
+CURRENT_BINDING=
+PRODUCTIVE_REACHABILITY=
+
+Do not conflate:
+
+A) Dynamic Scope Band
+B) trailing boundary
+C) candidate distance
+D) Cap-6.3 frozen distances
+E) confirmation
+F) Double Play state transition.
+
+============================================================
+8. L6 DYNAMIC SCOPE GENERATOR
+============================================================
+
+Deep-trace:
+
+ExplicitPassthroughDynamicScopeGeneratorV1
+
+and every related L6 scope generator / port / contract.
+
+Determine:
+
+- intended producer;
+- intended consumer;
+- proposed_d_t ownership;
+- whether it calculates or merely validates/passes through;
+- why CURRENT proposed_d_t becomes CANONICAL_UP_DISTANCE=200;
+- whether it was designed as the boundary through which Intelligent
+  Universe should provide Scope;
+- whether another generator implementation existed historically;
+- whether its authority is NONE / passthrough / calculation / binding.
+
+Return:
+
+L6_CURRENT_ROLE=
+L6_CURRENT_AUTHORITY=
+L6_CALCULATES_SCOPE=
+L6_ACCEPTS_EXTERNAL_SCOPE_PROPOSAL=
+L6_INTELLIGENT_UNIVERSE_RELATION=
+L6_DOUBLE_PLAY_RELATION=
+
+============================================================
+9. DOUBLE PLAY SCOPE CONSUMPTION
+============================================================
+
+Trace Double Play from Scope input to state behavior.
+
+Identify exactly:
+
+- what Scope-related values Double Play consumes;
+- where they enter;
+- whether values are copied, bound, validated or recalculated;
+- what component owns the value;
+- what component owns the switch decision.
+
+Return:
+
+DOUBLE_PLAY_SCOPE_INPUT=
+DOUBLE_PLAY_SCOPE_INPUT_PATH=
+DOUBLE_PLAY_SCOPE_INPUT_UNIT=
+DOUBLE_PLAY_RECALCULATES_SCOPE=
+DOUBLE_PLAY_CONSUMES_ONLY=
+DOUBLE_PLAY_SWITCH_OWNER=
+DOUBLE_PLAY_CONFIRMATION_OWNER=
+
+We need a clean separation between:
+
+VALUE AUTHORITY
+
+and
+
+DECISION AUTHORITY.
+
+============================================================
+10. AUTHORITY LEAKAGE ANALYSIS
+============================================================
+
+Assume future architecture:
+
+Intelligent Universe
+→ Scope value
+→ canonical validation/binding boundary
+→ Double Play
+
+Determine every possible authority leakage risk.
+
+Explicitly test whether providing Scope could indirectly allow the
+Intelligent Universe to:
+
+- force BULL;
+- force BEAR;
+- force immediate switch;
+- bypass confirmation;
+- create candidate state directly;
+- control Entry/Exit;
+- control selected instrument;
+- control DPO;
+- influence capital/risk authority;
+- inject arbitrary non-market-derived values;
+- create a covert second trading strategy.
+
+For each risk:
+
+RISK=
+CURRENT_GUARD=
+MISSING_GUARD=
+STATUS=
+
+============================================================
+11. MINIMUM CAPABILITY MODEL
+============================================================
+
+Construct the narrowest capability/authority model satisfying Owner
+intent.
+
+Use conceptual capabilities such as:
+
+READ_SELECTED_INSTRUMENT_CONTEXT
+READ_CANONICAL_MARK_PRICE
+READ_CANONICAL_VOLATILITY
+CALCULATE_DYNAMIC_SCOPE
+PROPOSE_DYNAMIC_SCOPE_VALUE
+VALIDATE_DYNAMIC_SCOPE_VALUE
+BIND_DYNAMIC_SCOPE_VALUE
+CONSUME_DYNAMIC_SCOPE_VALUE
+
+Then explicitly assign:
+
+Intelligent Universe
+Canonical boundary/validator
+Double Play
+Candidate generator
+Confirmation
+DPO
+
+For every capability classify:
+
+OWNER=
+ALLOWED=
+FORBIDDEN=
+CURRENT=
+TARGET=
+
+Do not implement.
+
+============================================================
+12. CRITICAL QUESTION — "SET SCOPE AT DOUBLE PLAY"
+============================================================
+
+The Owner phrase:
+
+"Das intelligente Universum darf den Scope bei Double Play setzen."
+
+must be semantically normalized WITHOUT broadening authority.
+
+Determine which interpretation is architecturally correct:
+
+A)
+Intelligent Universe directly mutates Double Play internal state.
+
+B)
+Intelligent Universe calculates/proposes Scope; canonical boundary
+validates/binds; Double Play consumes the bound Scope.
+
+C)
+Another already-existing architecture.
+
+Preference MUST NOT be assumed.
+
+Adjudicate from repository architecture.
+
+The target must preserve Double Play as owner of its own state/decision
+semantics.
+
+============================================================
+13. CANDIDATE SOURCE RELATION
+============================================================
+
+Existing Owner decision:
+
+OWNER_GO_DYNAMIC_CANDIDATE_SCOPE_SOURCE=true
+
+Target previously stated:
+
+valid canonical Dynamic Scope Band
+→ derive_scope_event_distances_v1(band)
+→ up = 1.0 × band
+→ adverse = 0.4 × band
+→ reversal = 0.6 × band
+→ deterministic scope-event generator
+→ confirmation
+→ Double Play
+→ DPO
+
+Determine how an Intelligent-Universe Scope producer would connect to
+this chain.
+
+Do NOT bind it.
+
+Return the exact conceptual seam.
+
+============================================================
+14. AUTHORITY INVARIANTS
+============================================================
+
+A future implementation MUST be capable of mechanically enforcing:
+
+INVARIANT_1:
+Only Cap 2.3 selects the Future.
+
+INVARIANT_2:
+Intelligent Universe can calculate Scope only for the already-selected
+Future.
+
+INVARIANT_3:
+Intelligent Universe cannot change selected instrument.
+
+INVARIANT_4:
+Scope output must be typed, finite, positive, causal and associated with
+the selected instrument/current epoch.
+
+INVARIANT_5:
+Scope producer cannot directly emit BULL/BEAR/SWITCH/ENTRY/EXIT.
+
+INVARIANT_6:
+Candidate generation remains deterministic from the accepted Scope.
+
+INVARIANT_7:
+Confirmation remains downstream and unchanged.
+
+INVARIANT_8:
+Double Play retains state-transition authority.
+
+INVARIANT_9:
+DPO retains its CURRENT authority.
+
+INVARIANT_10:
+No POST/external-effect authority is created.
+
+For each invariant return:
+
+CURRENTLY_ENFORCED=
+FUTURE_GUARD_REQUIRED=
+EVIDENCE=
+
+============================================================
+15. FORBIDDEN
+============================================================
+
+STRICT READ ONLY.
+
+DO NOT:
+
+- edit code;
+- edit config;
+- edit docs;
+- assign authority;
+- add authority;
+- create new ports;
+- bind Intelligent Universe;
+- bind derive_scope_event_distances_v1;
+- change 50/500/1.0;
+- change 200/80/120;
+- change 1.0/0.4/0.6;
+- implement Scope formula;
+- tune Scope;
+- modify Master V2;
+- modify Double Play;
+- modify Entry/Exit;
+- modify Bull/Bear;
+- modify Confirmation;
+- modify DPO;
+- modify Selection;
+- modify Binding;
+- modify Ranking;
+- run Natural Enter observation;
+- touch CONTROL evidence;
+- commit;
+- push;
+- create PR.
+
+FILES_CHANGED=NONE.
+
+============================================================
+16. REQUIRED ADJUDICATION
+============================================================
+
+Choose exactly one:
+
+OUTCOME_A=
+CURRENT architecture already contains the exact intended Intelligent
+Universe → Scope → Double Play authority chain; only activation/binding
+is missing.
+
+OUTCOME_B=
+Intelligent Universe already computes/proposes Scope but CURRENT
+authority/binding is incomplete.
+
+OUTCOME_C=
+Owner concept exists historically/canonically but CURRENT implementation
+moved Scope calculation elsewhere; explicit authority reconciliation is
+required.
+
+OUTCOME_D=
+No existing Intelligent-Universe Scope-calculation architecture exists;
+implementing Owner intent would require a genuinely new authority and
+component responsibility.
+
+OUTCOME_E=
+Evidence insufficient / conflicting; implementation must remain blocked.
+
+============================================================
+17. REQUIRED FINAL OUTPUT
+============================================================
+
+Return:
+
+WP=INTELLIGENT_UNIVERSE_DYNAMIC_SCOPE_DOUBLE_PLAY_AUTHORITY_RECONSTRUCTION_V1
+
+BASELINE_SHA=
+BASELINE_MATCH=
+FILES_CHANGED=
+
+OWNER_GO_INTELLIGENT_UNIVERSE_SCOPE_CALCULATION_AUTHORITY=true
+OWNER_GO_DYNAMIC_SCOPE_BOUND_SEMANTICS=true
+OWNER_GO_DYNAMIC_CANDIDATE_SCOPE_SOURCE=true
+
+INTELLIGENT_UNIVERSE_CURRENT_COMPONENT=
+INTELLIGENT_UNIVERSE_CURRENT_STATUS=
+INTELLIGENT_UNIVERSE_CURRENT_AUTHORITY=
+
+HISTORICAL_SCOPE_OWNER=
+CURRENT_SCOPE_CALCULATION_OWNER=
+CURRENT_SCOPE_VALUE_OWNER=
+
+L6_CURRENT_ROLE=
+L6_CURRENT_AUTHORITY=
+L6_INTELLIGENT_UNIVERSE_RELATION=
+
+DOUBLE_PLAY_SCOPE_INPUT=
+DOUBLE_PLAY_SCOPE_CONSUMPTION_BOUNDARY=
+DOUBLE_PLAY_SWITCH_OWNER=
+DOUBLE_PLAY_DECISION_AUTHORITY_PRESERVED=
+
+EXISTING_SCOPE_HANDOFF_PORT=
+EXISTING_SCOPE_HANDOFF_PORT_STATUS=
+
+VALUE_AUTHORITY_OWNER_CURRENT=
+VALUE_AUTHORITY_OWNER_TARGET=
+DECISION_AUTHORITY_OWNER_CURRENT=
+DECISION_AUTHORITY_OWNER_TARGET=
+
+MINIMUM_REQUIRED_AUTHORITY_CHANGE=
+
+DIRECT_DOUBLE_PLAY_MUTATION_REQUIRED=
+CAN_USE_VALIDATED_BINDING_BOUNDARY=
+
+AUTHORITY_LEAKAGE_RISKS=
+AUTHORITY_LEAKAGE_GUARDS_REQUIRED=
+
+TARGET_CONCEPTUAL_CHAIN=
+
+CANDIDATE_SOURCE_CONNECTION_SEAM=
+
+INVARIANT_1_STATUS=
+INVARIANT_2_STATUS=
+INVARIANT_3_STATUS=
+INVARIANT_4_STATUS=
+INVARIANT_5_STATUS=
+INVARIANT_6_STATUS=
+INVARIANT_7_STATUS=
+INVARIANT_8_STATUS=
+INVARIANT_9_STATUS=
+INVARIANT_10_STATUS=
+
+ADJUDICATED_OUTCOME=
+
+IMPLEMENTATION_AUTHORIZED=false
+AUTHORITY_CHANGE_AUTHORIZED=false
+PR_AUTHORIZED=false
+
+TRUE_BLOCKER=
+NEXT_BOUNDED_ACTION=
+
+Then provide exact code/spec/history/test evidence for every material
+authority conclusion.
+
+STOP AFTER REPORT.
+NO MUTATION.
+</user_query>

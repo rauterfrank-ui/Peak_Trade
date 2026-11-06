@@ -1,0 +1,35 @@
+{
+  "source_commit": "e3edad28226cbd764af973a4e6632590eeb01725",
+  "reviewed_commits": [
+    "614a00f8df64cf8391e3901ecae6718b3e907a87",
+    "28515d9693acbcaa28e94b3b1d6c1c864a6d62b3",
+    "5dcc84a9c6d63202e47e8aacc71e7d58b0364abe"
+  ],
+  "assessment": "Original interval/provenance/no-duplicate-source invariants support the reviewed measurement checks, not full original/current behavior closure",
+  "tests": "No new run or whole-system PASS; earlier scoped tests retain their original pins.",
+  "ruff_status": "NOT_APPLICABLE_NO_CHANGED_PYTHON",
+  "boundaries": [
+    "Forecast remains optional for realized behavior; no forced new dependency",
+    "Endpoint consistency does not authenticate interior prices or public source",
+    "Target end and knowledge/evaluation time are different; full forecast information-set association not certified",
+    "Direction-neutral close-path excursion is not classical trade MFE/MAE; U04/GAP-0370 deferred"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/prior_mi_measurement_contract_review_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 216,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_NO_CHANGED_PYTHON",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

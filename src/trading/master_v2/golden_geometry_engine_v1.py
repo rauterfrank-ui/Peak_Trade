@@ -63,9 +63,12 @@ class GoldenGeometryEngineResultV1:
 
 
 def _positive_finite(value: object) -> bool:
-    if not isinstance(value, (int, float)):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
         return False
-    f = float(value)
+    try:
+        f = float(value)
+    except (OverflowError, TypeError, ValueError):
+        return False
     return math.isfinite(f) and f > 0.0
 
 
@@ -77,6 +80,8 @@ def _input_digest_material(inp: CanonicalGeometryInputV1) -> str:
         "volatility_estimate": float(inp.volatility_estimate),
         "model_id": GGE_MODEL_ID,
         "model_version": GGE_MODEL_VERSION,
+        "observation_lineage_id": str(inp.observation_lineage_id or ""),
+        "reference_timestamp": str(inp.reference_timestamp or ""),
     }
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
@@ -177,6 +182,12 @@ def compute_canonical_base_geometry_magnitude_from_market_context_v1(
             output=None,
             failure_codes=("market_context_invalid",),
         )
+    if not str(market_context.instrument_id or "").strip():
+        return GoldenGeometryEngineResultV1(False, None, ("instrument_id_missing",))
+    from trading.master_v2.canonical_market_context_v1 import canonical_market_type_allowed
+
+    if not canonical_market_type_allowed(market_context.market_type):
+        return GoldenGeometryEngineResultV1(False, None, ("instrument_kind_forbidden",))
 
     if not _positive_finite(market_context.mark_price):
         return GoldenGeometryEngineResultV1(

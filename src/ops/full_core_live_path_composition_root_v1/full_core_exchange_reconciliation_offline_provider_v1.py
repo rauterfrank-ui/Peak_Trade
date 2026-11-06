@@ -34,6 +34,10 @@ class OfflineExchangeFixtureV1:
     transport_failures: tuple[str, ...] = ()
     api_errors: tuple[str, ...] = ()
     response_status: str = "200"
+    # Explicit simulated acquisition interval. Missing values prove no empty read.
+    positions_query_started_at_utc: str = ""
+    positions_query_completed_at_utc: str = ""
+    positions_query_endpoint: str = ""
 
 
 def _rows(payload: Mapping[str, Any] | None) -> list[dict[str, Any]]:
@@ -80,6 +84,27 @@ def build_offline_exchange_reconciliation_snapshot_v1(
     items: list[ExchangeEvidenceItemV1] = []
     cl = identity.clordid
     status = fixture.response_status
+    from src.ops.full_core_live_path_composition_root_v1.position_query_coverage_v1 import (
+        build_position_query_coverage_v1,
+    )
+
+    coverage = None
+    if (
+        fixture.snapshot_freshness_proven
+        and fixture.item_freshness_proven
+        and status == "200"
+        and not fixture.api_errors
+        and not fixture.transport_failures
+    ):
+        coverage = build_position_query_coverage_v1(
+            identity=identity,
+            endpoint=fixture.positions_query_endpoint,
+            method="GET",
+            response=fixture.positions,
+            started_at_utc=fixture.positions_query_started_at_utc,
+            completed_at_utc=fixture.positions_query_completed_at_utc,
+            preceding_orders=_rows(fixture.order_history),
+        )
 
     for row in _rows(fixture.pending_orders):
         if str(row.get("clOrdId") or "") == cl:
@@ -153,6 +178,18 @@ def build_offline_exchange_reconciliation_snapshot_v1(
         )
 
     return FullCoreExchangeReconciliationSnapshotV1(
+        positions_observation=(
+            None
+            if fixture.positions is None
+            else {
+                "identity_digest": identity.identity_digest(),
+                "native_id": identity.native_id,
+                "freshness_proven": fixture.snapshot_freshness_proven
+                and fixture.item_freshness_proven,
+                "response": dict(fixture.positions),
+                "query_coverage": coverage,
+            }
+        ),
         provider=RECONCILIATION_PROVIDER_OFFLINE_STUB,
         simulation_mode=SIMULATION_OFFLINE,
         identity_digest=identity.identity_digest(),
@@ -163,6 +200,17 @@ def build_offline_exchange_reconciliation_snapshot_v1(
         transport_failures=tuple(fixture.transport_failures),
         api_errors=tuple(fixture.api_errors),
         identity_conflicts=(),
+        pending_orders_observation=(
+            None
+            if fixture.pending_orders is None
+            else {
+                "identity_digest": identity.identity_digest(),
+                "native_id": identity.native_id,
+                "freshness_proven": fixture.snapshot_freshness_proven
+                and fixture.item_freshness_proven,
+                "response": dict(fixture.pending_orders),
+            }
+        ),
     )
 
 

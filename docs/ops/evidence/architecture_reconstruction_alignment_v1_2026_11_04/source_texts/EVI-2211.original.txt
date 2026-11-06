@@ -1,0 +1,268 @@
+WAS ANKOMMEN SOLL: LEARNING, OPTIMIZATION UND ÄUSSERER RING
+Quellen- und Semantikbefund, 02.11.2026
+
+Ergänzung aus den fünf jüngsten lokal verfügbaren Cursor-Hauptprotokollen:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/cursor-last-five-2026-11-02/Letzte_fuenf_Cursor_Chats_Einordnung.txt
+Sie ergänzt einen älteren Research-/Registry-/Forward-Pfad mit konkreten
+Identitäts- und Payload-Brüchen. Eine Verbindung in DDO/G2/M4–M8 ist dadurch
+noch nicht belegt.
+
+AUFTRAG
+Ursprüngliche fachliche Absicht, erwartete Inhalte, Verarbeitung und tatsächliche
+Consumer-Wirkung rekonstruieren. Die Owner-Dateiablage steht nicht im Mittelpunkt.
+Der vollständige Laufzeitbeweis bleibt wie vereinbart für nach dem Umbau.
+
+HAUPTERGEBNIS
+Der Zusammenhang wurde ausdrücklich geplant: zwei Evidence-Schleifen und eine
+getrennte produktive Rückführung autorisierter Parameter. Das Ziel war nicht bloß
+Archivierung und auch keine dauerhaft folgenlose Research-Insel. Learning sollte
+beobachtetes Verhalten aufbereiten; Optimization sollte daraus geprüfte Kandidaten
+für relevante Parameter erzeugen; Meta-Learning sollte lernen, welche Experimente
+und Suchmethoden unter welchen Bedingungen sinnvoll sind. Governance/Risk sollte
+über ihre produktive Verwendung entscheiden, MV2/Double Play weiterhin über Trades.
+
+Der geprüfte Code besitzt mehrere dieser Übergaben. Teilweise kommen jedoch
+Herkunftsreferenzen, Labels und synthetische Demonstrationswerte an, wo der
+fachliche Zielvertrag reichhaltige Beobachtungs- und Vergleichsinhalte beschreibt.
+„Geschlossene mechanische Schleife“ beweist deshalb noch keinen fachlich lernenden
+oder produktiv wirksamen Gesamtkreislauf.
+
+1. PRIMÄRQUELLEN UND ZEITBEZUG
+Original-PDF, als historischer Architektur-/Evidence-Blueprint am 26.09.2026 vom
+Owner in einem damaligen Auftrag benannt:
+/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/940fceba-69fe-4f73-9fdc-40babc1bf5d0/Peak_Trade_Meta_Learning_Optimization_Universe_Concept_v3_4_Current_System_Aligned_20260926.pdf
+27 Seiten. Hash und Originalpfad in pdf-source.json; vollständiger Text mit
+Seitenmarkierungen unter sources/original-concept-v3-4-pages.txt. Relevante
+Tabellen auf Seiten 9 und 10 zusätzlich gerendert und visuell geprüft.
+Seiten 1–22 enthalten historische Architektur-/Evidence-Schichten; 23–27 den
+damals neuesten Status-/Umsetzungsauftrag. Ihre Statusaussagen sind nicht heutiger
+Stand. Auch das Repo-Addendum meldet einen späteren Stand als der externe PDF-Text;
+Versionen werden deshalb nicht zu einer gemeinsamen damaligen Momentaufnahme vermischt.
+
+Originalnachricht: Cursor-Chat 940fceba-69fe-4f73-9fdc-40babc1bf5d0, Zeile 1.
+Sie fordert echte M4-Experimentbefunde, M5-Rückgabe, M6-Meta-Evidence, M7 bounded
+Research-Wahl und M8-Replay. Fehlende instrument/epoch/time-Felder dürfen nicht
+erfunden werden. historical-owner-request.json enthält diese historische Nachricht.
+Deren Implementierungsbefehle wurden nicht als neue Aufträge ausgeführt.
+
+Heutiger abgefragter GitHub-main und Quellpin:
+5d1c838c15369507c5247834db4dd0df25592169.
+Uncommittete Arbeit in der älteren Hauptarbeitskopie bleibt erhalten; maßgebliche
+Codebefunde unten beziehen sich auf Git-Quellkopien des genannten Pins.
+Manifeste: git-source-manifest.json, additional-source-manifest.json,
+payload-source-manifest.json. Ausgewählte Recovery-Originale gehasht gesichert,
+14 einschlägige Dokumente im Oktober-17-M2DATA-Backup verglichen. Kopien desselben
+Textes sind keine unabhängigen Funktionsbeweise. Kein globaler Vollständigkeitsanspruch.
+
+2. URSPRÜNGLICHER FACHLICHER PLAN
+PDF Seite 2 beschreibt:
+LOOP A: Produktiver Stack → Outcome-/System-Evidence → Self-Learning →
+Learning Evidence → Optimization.
+LOOP B: Optimization → Experiment-/Challenger-/OOS-/Robustness-Evidence →
+Self-/Meta-Learning → Meta-Evidence → nächste bessere Research-/Suchwahl.
+
+PDF Seiten 14–16 präzisieren das produktive Ziel:
+Surface → Kandidatenwert → geprüfte Evidence → Proposal → Governance/Risk →
+explizite Autorisierung → produktive Konfiguration → typisierte Parameterübergabe
+→ konkret identifizierter produktiver Consumer.
+Der Optimizer soll relevante reale Parameter untersuchen, darf sie aber nicht
+selbst aktivieren. Ein guter Kandidat wird nicht automatisch zur Konfiguration.
+Die spätere Baseline-first-Ergänzung verlangt vor Rückwirkungen einen eigenständig
+arbeitsfähigen MV2-/Double-Play-Kern. Das ist beim geplanten Umbau zu berücksichtigen.
+
+3. ÜBERGABE A: WAS AUS EINEM LAUF ANKOMMEN SOLL
+Zielinhalt im RuntimeObservationBundleInput und zugehörigen Verträgen:
+- Identität: Session, Instrument, Venue, Laufmodus, Strategie-/Modell-/Parameter-
+  und Signalversion; Trading-/Executor-Epoch; Deployment-/Promotion-Referenzen.
+- Handels-/Wirtschaftsnachweise: Order, Fill, Position, PnL, Gebühren, Funding,
+  Slippage, Latenz.
+- System-/Sicherheitsnachweise: Risk Events, Kill-Switch-Ereignisse,
+  Reconciliation und Runtime Health.
+- Herkunft: Referenz, Digest, Status je Nachweis; Quelle, Manifest und Elternrefs.
+
+Quelle: runtime_observation_feedback_v1.py, RuntimeObservationBundleInput.
+Zweck: Verhalten und Ergebnis einem konkreten System-/Zeit-/Versionskontext
+zuordnen; wirtschaftliche und technische Qualität unterscheiden können.
+Ein vorhandenes Datenfeld ist noch kein angeschlossener Ereignis-Producer.
+
+Heutige Belegung im konkret untersuchten G2-Adapter:
+RUN_METADATA liefert unter anderem Run-/Instrument-/Venue-/Config-Identität;
+Review liefert metrics, ersatzweise nur primary_review_verdict. Robustness- und
+Regime-Resultate werden als leere Dictionaries weitergegeben. Das Mapping-Ledger
+klassifiziert diese Ergebnisflächen explizit als NOT_APPLICABLE.
+Für Order, Fill, PnL, Fees, Funding, Slippage, Latency, Risk und Kill-Switch verweist
+der Adapter überwiegend auf dieselbe REVIEW_RESULT.json mit Gesamtmanifest-Digest.
+Position verweist auf RUN_METADATA. Modell-/Parameter-/Signalversion werden aus
+derselben strategy_config_identity gesetzt; executor_epoch wird aus trading_epoch
+übernommen, market_type auf FUTURES gesetzt.
+
+Semantische Grenze: Das sind teils Paket-/Herkunftsbindungen, keine hier belegte
+Extraktion eigener Fill-, Kosten- oder Kill-Switch-Ereignisse. Die Identitätsfelder
+beweisen dadurch auch keine unabhängig erhobene Modell-/Executor-Identität.
+Ob die jeweilige Review-Datei sämtliche behaupteten Detailinformationen enthält,
+ist pro Producer/Run zu prüfen. Ein PASS oder ein Manifest ersetzt diese Prüfung nicht.
+
+4. ÜBERGABE B: WAS ALS LERN-INPUT ANKOMMEN SOLL
+RuntimeToLearningInputRequest enthält:
+Quellbeobachtung + Digest, Performance-, Kosten-, Ausführungsqualitäts-, Risiko-
+und Reconciliation-Referenzen, Datenqualität, Vollständigkeit und Herkunft.
+Der Vertrag überträgt/verifiziert Evidence; er selbst trainiert kein Modell.
+Training, Selection, Promotion und Modell-/Parameteränderung werden an dieser
+Boundary ausdrücklich zurückgewiesen.
+
+Der G2-Adapter übergibt als Performance-Referenz ein Review-Verzeichnis; cost_refs,
+execution_quality_refs, risk_event_refs und reconciliation_refs bleiben dort leer.
+Damit sind die reichhaltigen Vertragsslots vorhanden, aber in diesem Übergang
+nicht entsprechend detailliert befüllt. „LEARNING_INPUT_VALID“ ist deshalb nicht
+gleich „alle gewünschten Fachinformationen extrahiert“.
+Weitere konkrete Grenze aus der vorigen Untersuchung: die Offline-Artefaktreferenz
+verlangt einen Repository-internen Pfad. Der normale Owner-Home-Pfad ist dort nicht
+automatisch zulässig. Das ist eine Integrationsfrage, keine fachliche Ablagespezifikation.
+
+5. PARALLELER DDO-PFAD: WAS LEARNING STATE HIER BEDEUTET
+Nicht mit G2-Primärevidenz vermischen:
+Decision-Capture → Outcome + Attribution + Counterfactual → Provenienzprüfung →
+append-only learning_state_record → Learning-Evidence-Export → Research-Annahme.
+
+Das Ingest prüft Record-Verknüpfungen, Zeitreihenfolge und Fingerprint; neue Bundles
+erhöhen die State-Version, identische Bundles werden idempotent behandelt.
+Gespeichert werden Outcome-/Entscheidungs-/Bewertungsreferenzen, Horizont,
+Herkunftsklasse und Score-Labels. Der nächste Zyklus bekommt im untersuchten
+Bridge-Consumer nur next_cycle_economic_score_label als unverändertes Label.
+Das ist ein tatsächlicher Zustands-/Label-Rückfluss, keine belegte Neuberechnung
+von Handelsparametern, Regimen oder Modellgewichten.
+
+Provenienzklassen unterscheiden beobachtete Pre-External-Outcomes, interne
+Simulation, Paper, Shadow, Testnet, Replay, Canary und Observation-only. Externe
+Ein-/Auszahlungen und Transfers dürfen nicht als Strategielern-Erfolg gelten.
+Die Klassen sind im Gate zugelassen, bleiben aber semantisch getrennt; Zulassung
+beweist keinen vorhandenen Producer für jede Klasse und keinen gemeinsamen Pool.
+G2 unterstützt nur Paper/Shadow/Testnet; dessen Scope ist enger als der DDO-Gate-Scope.
+Produktiver DDO-Offline-Export ist ausdrücklich kein Ersatz für G2-Laufprimärevidenz.
+
+6. ÜBERGABE C: WAS OPTIMIZATION ERHALTEN UND ZURÜCKGEBEN SOLL
+Eingang: validierte Learning Evidence mit Quellzustand/Outcome, Horizont,
+wirtschaftlicher/Entscheidungs-/Safety-Einordnung, Identität und Provenienz.
+Vor Experimenten zusätzlich: explizit zugelassene Optimierungsfläche, Suchraum,
+Constraints, Baseline und Experimentidentität.
+
+PDF Seite 9 fordert als Rückgabe:
+SEARCH: Suchfamilie, Suchraum, Seed/Determinismus, Budget und Kandidatenmenge.
+CHALLENGER: Champion-/Challenger-Identität, Baseline und Vergleichsergebnis.
+OOS: Entwicklungs-/Validierungs-/Out-of-Sample-Zeiträume, Leakage-Schutz, Resultate.
+ROBUSTNESS: Monte-Carlo, Stress, Sensitivität, Cross-Instrument-/Regime-Prüfungen.
+ECONOMIC: Return, Drawdown, Tail Risk, Turnover, Fees und Slippage.
+FAILURE: Ablehnungsgrund, Constraint-Verletzung, Instabilität, Reproduzierfehler.
+Das Ziel bewertet mehr als PnL; harte Risikogrenzen sind Ausschlusskriterien.
+
+Heutiger Befund: M4 hat eine typisierte Research-Kette, M5 sechs entsprechend
+benannte Evidence-Slices. Im untersuchten G2→M4-Aufbau sind jedoch Suchraum
+fast=(10,15), Budget=1, champion_score=1.0 und challenger_score=1.05 vorgegeben;
+die Markt-/Zeithüllen sind synthetischer Offline-Forschungskontext.
+Die Runtime-Quelle liefert Identität/Lineage für diese Fortsetzung. Die feste
+Score-Vorgabe belegt keinen aus dem echten Lauf errechneten Kandidatenvorteil.
+Die semantische Kette ist daher an diesem Strang nur teilweise mit echten
+beobachtungsabhängigen Forschungsresultaten gefüllt. Andere Stränge nicht pauschal verwerfen.
+
+7. ÜBERGABE D: WAS META-LEARNING ERHALTEN UND LIEFERN SOLL
+PDF Seite 10: Lernen, welche Optimierungsfamilien und Suchmethoden unter welchen
+Bedingungen robuste Ergebnisse erzeugen. Eingang ist der Optimierungsprozess
+mit seinen Erfolgen, Misserfolgen und Vergleichsbedingungen – nicht nur der PnL
+eines einzelnen Trades.
+
+Meta-Vertrag: Experiment-IDs, Envelope-Versionen, Regime-/Kontextbezug,
+Optimierungsfamilie, Suchmethode, Erfolgs-/Fehlermuster, OOS-/Robustheitsmuster,
+Kosten-/Slippage-Fehlermuster, prädiktive Merkmale, Unsicherheit, Supportzahl,
+Provenienz und Reproduzierbarkeit.
+
+Heutiger Standard-M6-Projektor:
+Erfolgs-/Fehlermuster ist ein Text aus Challenger-Disposition und Failure-Count;
+Supportzahl ist die Anzahl übergebener Experiment-IDs (hier typischerweise eins).
+Optimierungsfamilie, Suchmethoden-Token, prädiktive Merkmale und Unsicherheit
+bleiben UNKNOWN_UNAVAILABLE. Der Regime-/Kontextbezug ist eine synthetische
+Offline-Kontext-/Surface-Referenz. Es wird kein statistischer Regimeeffekt daraus
+berechnet. Der kanonische Meta-Analyzer wird in diesem Pfad nicht aufgerufen.
+Damit ist der Vertrag reichhaltiger als die tatsächliche Standardbefüllung.
+
+M7 kann daraus begrenzte Research-Entscheide erzeugen: Experimente priorisieren,
+zulässige Suchmethode wählen, Research-Budget zuweisen, Hypothese vorschlagen.
+Die Standardbefüllung trägt für Unbekanntes fail-closed Einzelentscheidungen;
+ein teilweise nutzbares Feedback ist keine vollständige Meta-Erkenntnis.
+
+M8 verarbeitet die vorherige Feedback-Identität und extrahiert N+1-Semantik.
+Im gelesenen run_offline_evidence_cycle_v1 wird die nächste plane_request aber
+vom Caller übernommen; sie wird dort nicht aus dem Feedback umgebaut.
+Das belegt Replay/Lineage und gespeicherte Feedback-Semantik. Eine kausal dadurch
+geänderte nächste Suchraum-/Kandidatenwahl muss separat am Consumer bewiesen werden.
+
+8. ÜBERGABE E: WIE DER ÄUSSERE RING ANGESCHLOSSEN IST
+„Äußerer Ring“ ist hier eine analytische Sicht auf mehrere Owner, kein einzelnes
+ursprünglich belegtes Modul. Die Originalquellen tragen folgende konkrete Grenzen:
+
+A) Runtime/Safety → Beobachtung:
+Orders, Positionen, Reconciliation, Gesundheit und Kill-Switch-Ereignisse sind
+als Beobachtungsquellen ausdrücklich vorgesehen. Akute Sperrwirkung und spätere
+Lernauswertung sind verschiedene Zeithorizonte/Consumer. Ein Kill-Ereignis in
+Evidence gibt dem Lernsystem kein Recht, den Kill-Switch zurückzusetzen.
+
+B) Forschung/Meta → Evidence Adjudicator A:
+P5-Bridges erzeugen optimization_envelope_evidence_v1 und
+meta_learning_routed_evidence_v1. Sie binden M5-/M6-Digests an Instrument,
+observed_at, market_observation_epoch und kontrollierten Marktkontext.
+Diese Payloads sind überwiegend Referenz-/Identitäts-/Digest-Hüllen; der konkrete
+Optimierungsbefund bleibt im referenzierten Ursprungsartefakt.
+ADMIT bedeutet begrenzte Evidence-Annahme, nicht Freigabe einer Konfiguration.
+Kein direkter Producer→Double-Play-Bypass folgt daraus.
+
+C) Autorisierung → Parameter → realer Consumer:
+Das Originalziel fordert Candidate-ID, Evidence-Lineage, konkretes produktives
+Ziel, Constraints und Autorisierungsidentität. Erst daraus darf ein typisierter
+produktiver Parameter/Input entstehen.
+Ein konkreter enger Implementierungsstrang existiert für den maximalen numerischen
+Volatilitätsalterwert: ratifizierte 600 Sekunden → kontrollierte Parameterübergabe
+→ Presence-/Age-Prüfung → Begrenzung der Double-Play-Alpha-Zulässigkeit.
+Das ist ein echter möglicher Consumer-Effekt, kein Beleg, dass das Forschungs-
+Meta-Feedback diesen Wert autonom ermittelt/autorisiert hat. Der untersuchte
+Real-P4→F1/M9-Join ist ausdrücklich NOT_CANONICAL und join_permitted=False.
+Dieser eng begrenzte Consumer darf nicht zu einem universellen Lernrückweg erklärt werden.
+
+D) Produktiv-Host → Forensic-Lineage:
+Der Host kann Referenzen zum Intelligence-Verlauf protokollieren. Der gelesene
+October-7-Offline-Orchestrator komponiert M4–M8 bis M10 HARD STOP. Die produktive
+Lineage-Observer-Anbindung ruft damit nicht automatisch die gesamte Offline-
+Forschung im Handelszyklus auf; sie ist eine Referenzspur ohne Handelsmutation.
+
+E) Weiterer fachlicher Eingang aus Market Intelligence:
+Die Unified-Blueprint-Phase-8-Verbindung beschreibt Forecast + N_BARS-Realisierung
+und Calibration-Evidence als typisierten MI-Lernexport. Phase 9 speist MI-
+angereicherte Research-Inputs in die vorhandene M4-Plane. Das ist ein zusätzlicher
+belegter Vertrags-/Kompositionsstrang, getrennt von DDO-Reducer und Handelsautorität;
+vollständige aktuelle Runtime-Produktion aller MI-Inhalte ist hier nicht bewiesen.
+
+9. WAS FÜR DEN UMBAU NOCH GEKLÄRT WERDEN MUSS
+Nicht zuerst weitere Pfeile zeichnen, sondern pro Übergabe prüfen:
+1) Welcher originale Befund soll ankommen: Messwert, Zeitreihe, Ereignis,
+   Vergleich, Label, Referenz oder Entscheidungsvorschlag?
+2) Wer produziert ihn, in welcher Einheit und für welches Instrument, Konto,
+   Zeitfenster, Lauf-/Simulationsniveau und welche Code-/Config-Version?
+3) Was macht der Consumer tatsächlich damit, einschließlich UNKNOWN/Fehlerfällen?
+4) Welche Information geht verloren, wird nur weitergereicht oder in einem
+   synthetischen Kontext ersetzt? Paketdigest ist kein Feldinhalt.
+5) Beeinflusst Feedback nachweislich die nächste Forschung? Entsteht aus dem
+   Forschungsresultat eine konkrete autorisierte Parameteränderung am richtigen
+   Consumer? Welche Safety-/Risk-Schranken begrenzen sie weiterhin?
+
+BEWERTUNG
+Der fachliche Nutzen und die Rollen wurden durchdacht. Konkrete Datenfamilien,
+zwei Rückkopplungsschleifen und die produktive Parameter-Lineage sind original
+belegt. Die heutige Implementierung ist in mehreren Übergaben stärker in
+Transport/Provenienz als in der vollständig befüllten fachlichen Wirkung.
+Das Zielbild darf deshalb weder als bloße „Offline-Spielwiese“ verkürzt noch
+als bereits autonom lernendes Endsystem ausgegeben werden.
+
+PRÜFUNG UND GRENZEN
+Nur gezielte Quelllesung, Git-/PR-/PDF-Abgleich, Hash- und statische Consumer-
+Prüfung. Keine Produktimporte, keine Tests, kein tatsächlicher Lern-/Handelslauf,
+keine Zustands-/Konfigurationsänderung oder Credential-Abfrage. Produktivcode,
+Recovery und Backups unverändert. Frühere Analyse-PROVEN-Labels wurden nicht als
+neue Beweise übernommen; historische Aussagen bleiben an ihre Revision gebunden.

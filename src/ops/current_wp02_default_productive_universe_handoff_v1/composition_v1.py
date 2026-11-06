@@ -91,13 +91,31 @@ def _load_prior_membership_v1(store: Path) -> MembershipContextArtifactV1 | None
         if p.name != "cap22_snapshot.json" and p.name != "MANIFEST.sha256"
     ]
     if not candidates:
+        if (store / "MANIFEST.sha256").exists():
+            raise Wp02ProductiveDefaultChainError("PRIOR_MEMBERSHIP_MISSING")
         return None
-    latest = max(candidates, key=lambda path: path.stat().st_mtime)
-    instance_id = latest.stem
     try:
-        return read_membership_context_artifact_v1(instance_id, store_root=store)
-    except Exception:  # noqa: BLE001
-        return None
+        from src.ops.mf_membership_selector_and_rotation_runtime_contract_v1 import (
+            load_observation_chain_v1,
+        )
+
+        artifacts = [
+            read_membership_context_artifact_v1(p.stem, store_root=store) for p in candidates
+        ]
+        parents = {
+            a.prior_membership_reference
+            for a in artifacts
+            if a.prior_membership_reference is not None
+        }
+        tips = [a for a in artifacts if a.instance_id not in parents]
+        if len(tips) != 1:
+            raise ValueError("ambiguous chain tip")
+        chain = load_observation_chain_v1(tips[0], store_root=store)
+        if {a.instance_id for a in chain} != {a.instance_id for a in artifacts}:
+            raise ValueError("disconnected membership history")
+        return tips[0]
+    except Exception as exc:  # existing owner validates manifest, digests and references
+        raise Wp02ProductiveDefaultChainError("PRIOR_MEMBERSHIP_UNPROVEN") from exc
 
 
 def run_wp02_productive_default_chain_v1(

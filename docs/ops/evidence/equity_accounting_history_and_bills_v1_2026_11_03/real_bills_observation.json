@@ -1,0 +1,95 @@
+{
+  "capital_admitted": false,
+  "expected_account_configured": true,
+  "keychain_access_attempted": true,
+  "keychain_account": "okx-eea.productive",
+  "keychain_service": "peak-trade.full-core.venue-credentials",
+  "last_read": {
+    "endpoint_path": "/api/v5/account/bills-archive",
+    "get_performed": true,
+    "historical_reuse": false,
+    "http_status": 200,
+    "method": "GET",
+    "transport_error_present": false
+  },
+  "mode": "REAL_READ_ONLY_ONCE",
+  "observation": {
+    "account_binding_digest": "48a9772d5ae9dbc453ef95d56fe909a28e4a877f78ab52bdfaea23d8d733c983",
+    "authority_effect": "NONE",
+    "blockers": [
+      "CLASSIFIED_EVENT_STREAM_COMPLETENESS_UNPROVEN",
+      "CURRENT_OPENING_STOCK_BRIDGE_UNPROVEN"
+    ],
+    "capital_admitted": false,
+    "classified_event_stream_complete": false,
+    "completed_at_unix": 1793742629.6134331,
+    "configured_account_matched": true,
+    "currencies": [
+      {
+        "continuity_break_count": 0,
+        "continuity_comparison_count": 2,
+        "currency": "BTC",
+        "first_event_ms": 1791319084935,
+        "last_event_ms": 1791319556052,
+        "observed_chain_consistent": true,
+        "opening_balance_authorized": false,
+        "row_count": 3
+      },
+      {
+        "continuity_break_count": 0,
+        "continuity_comparison_count": 4,
+        "currency": "EUR",
+        "first_event_ms": 1786251344211,
+        "last_event_ms": 1791318671326,
+        "observed_chain_consistent": true,
+        "opening_balance_authorized": false,
+        "row_count": 5
+      },
+      {
+        "continuity_break_count": 0,
+        "continuity_comparison_count": 40,
+        "currency": "USDC",
+        "first_event_ms": 1788474402575,
+        "last_event_ms": 1791319556052,
+        "observed_chain_consistent": true,
+        "opening_balance_authorized": false,
+        "row_count": 41
+      }
+    ],
+    "empty_means_zero_events": false,
+    "empty_observation": false,
+    "endpoint_pagination_exhausted": true,
+    "equity_reconstructed": false,
+    "identical_duplicate_count": 0,
+    "observation_only": true,
+    "observed_at_unix": 1793742628.949784,
+    "observed_chain_consistent": true,
+    "observed_type_subtype_tokens": [
+      "1/11",
+      "1/12",
+      "2/1",
+      "2/2",
+      "27/318",
+      "27/319",
+      "30/320",
+      "30/321",
+      "8/173"
+    ],
+    "opening_anchor_bound": false,
+    "page_count": 2,
+    "page_digests": [
+      "a181fc5dd2a8d8343b7d47278a1db125c62d0223978919fc421d498da33ee4c8",
+      "9df114687da8b0580e3fa7b471764954a3a388d798efe6b4044da7675e65ff61"
+    ],
+    "profile": "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1",
+    "retention_coverage_proven": false,
+    "schema": "peaktrade.account_bills_observation_audit.v1",
+    "unique_bill_count": 49
+  },
+  "order_or_transfer_count": 0,
+  "private_get_attempt_count": 3,
+  "profile": "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1",
+  "result": "BLOCKED",
+  "service_activated": false,
+  "source_ref": "fullcore-cred://provider-ref/okx-eea-productive"
+}

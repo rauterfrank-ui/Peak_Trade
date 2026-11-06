@@ -1,0 +1,92 @@
+{
+  "schema": "peaktrade.visible_system_fixed_reference.v2",
+  "created_at": "2026-11-06T04:27:55.460934+01:00",
+  "checkpoint_tag": "freeze/visible-system-2026-11-06-v2",
+  "repository": "/Users/frnkhrz/Peak_Trade",
+  "previous_freeze_commit": "4ad1c17d56c993b522eb777a10f17c88aae58751",
+  "previous_freeze_tag": "freeze/visible-system-2026-11-06",
+  "scope": "versioned repository including existing previously ignored source/test, plus the unchanged first frozen Obsidian system content",
+  "obsidian_vault": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL",
+  "obsidian_bound_files": 4954,
+  "obsidian_basis_package": "docs/ops/evidence/visible_system_freeze_2026_11_06",
+  "obsidian_inventory_sha256": "8aa44fe5cab713593de7d73f57bdc5cc1e4274c1400b567d99979254443b63fd",
+  "obsidian_live_content_check_at_start": {
+    "files": 4954,
+    "missing": 0,
+    "added": 0,
+    "changed": 0
+  },
+  "obsidian_contents_modified_by_this_check": false,
+  "admitted_existing_sources": [
+    {
+      "path": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/email_keychain_v1.py",
+      "sha256": "d96a7963e4e6b000f1de07eb87416405344c87bd82702087432d3bc11775c70f",
+      "bytes": 5662,
+      "preexisting_in_prior_full_copy": true,
+      "source_bytes_modified": false,
+      "previous_ignore_rule": ".gitignore: *_key*"
+    },
+    {
+      "path": "tests/ops/test_runtime_mail_keychain_v1.py",
+      "sha256": "90fc82fc9c868a2667ea28d7d56ddd15c48a54d6807110dc968f5c0cd3f5e191",
+      "bytes": 5292,
+      "preexisting_in_prior_full_copy": true,
+      "source_bytes_modified": false,
+      "previous_ignore_rule": ".gitignore: *_key*"
+    }
+  ],
+  "other_ignored_artifacts_classified": [
+    {
+      "path": ".run/landscape_dashboard_persistent_local_host/resolved_python.txt",
+      "kind": "local_runtime_locator",
+      "sha256": "af48386f2806f47d0300c250f355e9b0003a110063d2aeb1c4727238399c3b9f",
+      "present_in_prior_full_copy": true
+    },
+    {
+      "path": "src/peak_trade.egg-info/PKG-INFO",
+      "kind": "generated_packaging_metadata",
+      "sha256": "ad55d9063b2eac1d1d0e3b65d59efdc17b4fbcd1c19266bf780b9a9665b9cedb",
+      "present_in_prior_full_copy": true
+    },
+    {
+      "path": "src/peak_trade.egg-info/SOURCES.txt",
+      "kind": "generated_packaging_metadata",
+      "sha256": "3e927c36e8ff65cb03b88888e9edb9426ad0db96faee6f2fb0abe0cf48c0b859",
+      "present_in_prior_full_copy": true
+    },
+    {
+      "path": "src/peak_trade.egg-info/dependency_links.txt",
+      "kind": "generated_packaging_metadata",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "present_in_prior_full_copy": true
+    },
+    {
+      "path": "src/peak_trade.egg-info/requires.txt",
+      "kind": "generated_packaging_metadata",
+      "sha256": "7bfc8f9573be59a61f7a90070596917336dc7db1e179182dcea605d1f56686ea",
+      "present_in_prior_full_copy": true
+    },
+    {
+      "path": "src/peak_trade.egg-info/top_level.txt",
+      "kind": "generated_packaging_metadata",
+      "sha256": "846ac9bba14d375a37e30eccea2a8004646d803ed3df3685e0ee1a392f53b8ec",
+      "present_in_prior_full_copy": true
+    },
+    {
+      "path": "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/console.log",
+      "kind": "historical_test_log",
+      "sha256": "84326724773082356b88886339966c1c69857180c76470bb34f5adc826dddd27",
+      "present_in_prior_full_copy": true
+    }
+  ],
+  "source_or_test_bytes_modified": false,
+  "runtime_configuration_changed": false,
+  "runtime_authorization_effect": "NONE",
+  "mocked_adapter_tests_passed": 7,
+  "credential_or_smtp_operations_performed": false,
+  "archive_destination": "/Volumes/M2DATA/PeakTrade_Archiv_2026-11-06_031920",
+  "required_external_delta": "visible-system-freeze-v2.bundle",
+  "external_delta_base": "ee323ea9a16f36d3cceaac251de1237495eeb854",
+  "backup_full_verification": "REMAINS_STOPPED_BY_OWNER",
+  "legacy_cleanup_executed": false
+}

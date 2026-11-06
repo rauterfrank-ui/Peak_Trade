@@ -6,7 +6,7 @@ Does not recompute strategy, sizing, or safety. Fail-closed on missing owners.
 from __future__ import annotations
 
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from src.governance.canonical_order_intent_v1 import CanonicalOrderIntentV1, IntentAction
 from src.governance.capital_risk_sizing_v1 import CapitalRiskSizingOutcome
@@ -23,6 +23,12 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     CompositionStatusV1,
     CoreLiveExecutionIntentV1,
 )
+
+if TYPE_CHECKING:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        PositionManagementCloseIntentHandoffV1,
+    )
+
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from trading.master_v2.double_play_entry_exit_policy_v0 import DecisionOutcome
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
@@ -97,6 +103,7 @@ def compose_core_live_execution_intent_v1(
     injected_side: Optional[str] = None,
     injected_quantity: Optional[Decimal] = None,
     predicate_trace_collector: list[dict[str, object]] | None = None,
+    full_close_handoff: PositionManagementCloseIntentHandoffV1 | None = None,
 ) -> tuple[CompositionStatusV1, tuple[str, ...], Optional[CoreLiveExecutionIntentV1]]:
     gate = "compose_core_live_execution_intent_v1"
     order = 0
@@ -177,10 +184,19 @@ def compose_core_live_execution_intent_v1(
     if intermediate.composition_result is None or intermediate.entry_exit_decision is None:
         return _deny_traced("MISSING_DOUBLE_PLAY_RESULT", predicate="composition_and_entry_exit")
 
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        validate_full_close_execution_source_v1,
+    )
+
+    close_path = full_close_handoff is not None
+    if close_path and not validate_full_close_execution_source_v1(
+        full_close_handoff, replay=replay, bound_instrument=bound_instrument
+    ):
+        return _deny_traced("FULL_CLOSE_EXECUTION_SOURCE_INVALID", predicate="full_close_source")
     sizing = intermediate.capital_risk_sizing_decision
-    if sizing is None:
+    if not close_path and sizing is None:
         return _deny_traced("MISSING_29P", predicate="capital_risk_sizing_present")
-    if sizing.outcome is not CapitalRiskSizingOutcome.PASS:
+    if not close_path and sizing.outcome is not CapitalRiskSizingOutcome.PASS:
         return _deny_traced(
             "29P_DENY",
             f"SIZING_OUTCOME:{sizing.outcome.value}",
@@ -188,7 +204,7 @@ def compose_core_live_execution_intent_v1(
         )
 
     reasons = {str(x) for x in (replay.evidence.reason_codes or ())}
-    if reasons & _SAFETY_MARKERS:
+    if not close_path and reasons & _SAFETY_MARKERS:
         return _deny_traced("REPLAY_SAFETY_DENY", predicate="evidence_safety_markers")
     typed_safety = getattr(replay, "replay_execution_safety", None)
     if isinstance(typed_safety, ReplayExecutionSafetyV1) and outcome in _ENTER:
@@ -200,7 +216,9 @@ def compose_core_live_execution_intent_v1(
                 predicate="typed_post_29q_consumption_guard",
             )
 
-    intent = intermediate.canonical_order_intent
+    intent = (
+        full_close_handoff.canonical_intent if close_path else intermediate.canonical_order_intent
+    )
     if outcome in _ENTER and intent is None:
         if reasons & _SAFETY_MARKERS or "entry_blocked_by_safety_kernel_boundary" in reasons:
             return _deny_traced("REPLAY_SAFETY_DENY", predicate="enter_missing_intent_safety")

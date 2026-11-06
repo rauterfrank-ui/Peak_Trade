@@ -1,0 +1,72 @@
+"""Read existing DDO owner records before admitting context-bound Pending work."""
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Mapping
+
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    SEAM_DOUBLE_PLAY_ENTRY_EXIT, SEAM_SPECS_V0,
+)
+from src.learning.deterministic_decision_outcome_v0.double_play_observation_projection_v1 import (
+    generic_decision_result_for_producer_outcome_v1,
+    generic_decision_type_for_producer_outcome_v1,
+)
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
+from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import (
+    PendingDecisionContextV1, canonical_payload_json_v1,
+)
+
+
+def pending_decision_lineage_is_bound_v1(
+    *, ledger_path: Path, context: PendingDecisionContextV1, dpo: Mapping[str, str],
+) -> bool:
+    """Validate stored DPO and its DecisionEvent using the existing ledger reader.
+
+    Generic event enums follow the capture mapping; they cannot replace exact DP.
+    This verifies present fields, not absent DecisionEvent policy/input snapshots.
+    """
+    try:
+        records = AppendOnlyDdoLedgerV0(ledger_path.resolve()).read_all()
+    except (DdoError, OSError, ValueError, TypeError):
+        return False
+    by_id = {record["record_id"]: record for record in records}
+    observation = by_id.get(dpo.get("dpo_ref", ""))
+    parent = by_id.get(dpo.get("decision_event_ref", ""))
+    if observation is None or parent is None:
+        return False
+    if observation["schema_name"] != "double_play_entry_exit_observation":
+        return False
+    if parent["schema_name"] != "decision_event":
+        return False
+    producer = observation["producer_canonical_payload"]
+    if canonical_payload_json_v1(producer) != context.producer_payload_json:
+        return False
+    for key in ("decision_outcome", "selected_side", "execution_eligible", "trading_epoch"):
+        if str(producer[key]).lower() != str(dpo.get(key, "")).lower():
+            return False
+    if observation["decision_event_ref"] != parent["record_id"]:
+        return False
+    if observation["cycle_id"] != context.cycle_id or parent["cycle_id"] != context.cycle_id:
+        return False
+    for key in ("correlation_id", "event_time_utc"):
+        if observation[key] != parent[key]:
+            return False
+    spec = SEAM_SPECS_V0[SEAM_DOUBLE_PLAY_ENTRY_EXIT]
+    if parent["producer_id"] != spec.producer_id or parent["authority_owner"] != spec.authority_owner:
+        return False
+    expected_codes = list(producer["reason_codes"]) or ["UNKNOWN"]
+    if [item["code"] for item in parent["reason_codes"]] != expected_codes:
+        return False
+    if any(item["source_taxonomy_ref"] != spec.source_taxonomy_ref for item in parent["reason_codes"]):
+        # The existing capture uses no source ref for its explicit empty-code UNKNOWN.
+        if producer["reason_codes"] or any(item["source_taxonomy_ref"] is not None for item in parent["reason_codes"]):
+            return False
+    if parent["hard_block_reasons"]:
+        return False
+    outcome = str(producer["decision_outcome"])
+    if parent["decision_type"] != generic_decision_type_for_producer_outcome_v1(outcome):
+        return False
+    if parent["decision_result"] != generic_decision_result_for_producer_outcome_v1(outcome):
+        return False
+    return True

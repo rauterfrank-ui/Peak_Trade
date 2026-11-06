@@ -1,0 +1,3988 @@
+{
+  "bar_binding": "ea5cabef401859323204394e7cf4b82940cefacbe431f58416b58f61e78398e3",
+  "bar_trace": [
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 0,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 1,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 2,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 3,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 4,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 5,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 6,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 7,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 8,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 9,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 10,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 11,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 12,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 13,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 14,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 15,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 16,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 17,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 18,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 19,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 20,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 21,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 22,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 23,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-01 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 24,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 25,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 26,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 27,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 28,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 29,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 30,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 31,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 32,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 33,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 34,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 35,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 36,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 37,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 38,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 39,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 40,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 41,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 42,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 43,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 44,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 45,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 46,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 47,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-02 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 48,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 49,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 50,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 51,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 52,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 53,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 54,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 55,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 56,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 57,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 58,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 59,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 60,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 61,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 62,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 63,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 64,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 65,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 66,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 67,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 68,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 69,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 70,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 71,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-03 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 72,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-04 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 73,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-04 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 0,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 74,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 0,
+      "timestamp": "2026-06-04 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 75,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 76,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 77,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 78,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 79,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 80,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 81,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 82,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 83,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 84,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 85,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 86,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 87,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 88,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 89,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 90,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 91,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 92,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 93,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 94,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 95,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-04 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 96,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 97,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 98,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 99,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 100,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 101,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 102,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 103,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 104,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 105,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 106,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 107,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 108,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 109,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 110,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 111,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 112,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 113,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 114,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 115,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 116,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 117,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 118,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 119,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-05 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 120,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 121,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 122,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 123,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 124,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 125,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 126,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 127,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 128,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 129,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 130,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 131,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 132,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 133,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 134,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 135,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 136,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 137,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 138,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 139,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 140,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 141,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 142,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 143,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-06 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 144,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 145,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 146,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 147,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 148,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 149,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 150,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 151,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 152,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 153,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 154,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 155,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 156,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 157,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 158,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 159,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 160,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 161,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 162,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 163,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 164,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 165,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 166,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 167,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-07 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 168,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 169,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 170,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 171,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 172,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 173,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 174,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 175,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 176,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 177,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 178,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 179,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 180,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 181,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 182,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 183,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 184,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 185,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 186,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 187,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 188,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 189,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 190,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 191,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-08 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 192,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 193,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 194,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 195,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 196,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 197,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 198,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 199,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 200,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 201,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 202,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 203,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 204,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 205,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 206,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 207,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "observe",
+      "epoch": 208,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 209,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 210,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 211,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 212,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 213,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 214,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 215,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-09 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 216,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 217,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 218,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 219,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 220,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 221,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 222,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 223,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 224,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 225,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 226,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 227,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 228,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 229,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 230,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 231,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 15:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 232,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 16:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 233,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 17:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 234,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 18:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 235,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 19:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 236,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 20:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 237,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 21:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 238,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 22:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 239,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-10 23:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 240,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 00:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 241,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 01:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 242,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 02:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 243,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 03:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 244,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 04:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "enter_long",
+      "epoch": 245,
+      "fail_reasons": [],
+      "mapped_signal": 1,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 05:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 246,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 06:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 247,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 07:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 248,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 08:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 249,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 09:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 250,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 10:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 251,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 11:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 252,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 12:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 253,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 13:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 254,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 14:00:00+00:00"
+    },
+    {
+      "agreement_cycle_signal": 1,
+      "agreement_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+      "decision_outcome": "no_action",
+      "epoch": 255,
+      "fail_reasons": [],
+      "mapped_signal": 0,
+      "raw_strategy_signal": 1,
+      "timestamp": "2026-06-11 15:00:00+00:00"
+    }
+  ],
+  "block_reason_counts": {
+    "CAPITAL_RISK_CONTEXT_UNRESOLVED": 256,
+    "entry_long_eligible": 94,
+    "no_action": 103,
+    "observe_only": 59
+  },
+  "cost_binding": {
+    "config_digest": "365f911f376a1ae7249ef2d22af8126ff69c9549ede6fe84ececd87225336c2a",
+    "config_source": "canonical_versioned_default_config",
+    "cost_model_version": "backtest_cost_v0",
+    "economic_interpretation_allowed": false,
+    "entry_slippage_bps": 5.0,
+    "execution_model_version": "paper_market_context_v0",
+    "exit_slippage_bps": 5.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding_application_policy": "DEFERRED_TO_LATER_STEP",
+    "funding_model_version": "NOT_BOUND",
+    "funding_rate_source": "NOT_BOUND",
+    "latency_assumption": "NOT_BOUND",
+    "maker_fee_bps": 10.0,
+    "override_digest": null,
+    "override_provenance": [],
+    "override_source": null,
+    "partial_fill_assumption": "NOT_BOUND",
+    "reason_codes": [
+      "CANONICAL_VERSIONED_DEFAULT_CONFIG",
+      "FUNDING_NOT_BOUND_DEFERRED"
+    ],
+    "slippage_model_version": "backtest_slippage_symmetric_v0",
+    "spread_application_policy": "NOT_APPLICABLE",
+    "spread_model_version": "NOT_APPLICABLE",
+    "taker_fee_bps": 10.0,
+    "zero_cost_explicitly_requested": false
+  },
+  "engine_signal_digest": "dbd5bf2ef09ae1af9fb8bd570489a952dd46b407f34f9d1864213551e9b9970c",
+  "engine_signals": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "engine_stats": {
+    "blocked_trades": 94,
+    "cagr": 0.0,
+    "economic_interpretation_allowed": false,
+    "fee_drag": 0.0,
+    "funding_drag_or_status": "NOT_BOUND",
+    "gross_return": 0.0,
+    "max_drawdown": 0.0,
+    "net_return": 0.0,
+    "profit_factor": 0.0,
+    "recovery_factor": 0.0,
+    "sharpe": 0.0,
+    "slippage_impact": 0.0,
+    "total_return": 0.0,
+    "total_trades": 0,
+    "ulcer_index": 0.0,
+    "win_rate": 0.0
+  },
+  "equity": [
+    {
+      "timestamp": "2026-06-01 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-01 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-02 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-03 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-04 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-05 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-06 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-07 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-08 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-09 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 15:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 16:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 17:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 18:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 19:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 20:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 21:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 22:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-10 23:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 00:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 01:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 02:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 03:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 04:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 05:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 06:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 07:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 08:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 09:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 10:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 11:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 12:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 13:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 14:00:00+00:00",
+      "value": 10000.0
+    },
+    {
+      "timestamp": "2026-06-11 15:00:00+00:00",
+      "value": 10000.0
+    }
+  ],
+  "funnel": {
+    "directional_candidate_count": 97,
+    "directional_confirmed_count": 0,
+    "double_play_entry_eligible_count": 94,
+    "entry_preconditions_pass_count": 0,
+    "market_epochs_total": 256,
+    "portfolio_admissible_count": 0,
+    "risk_sizing_admissible_count": 0,
+    "suitability_pass_count": 0,
+    "survival_pass_count": 0,
+    "trades_opened_count": 0
+  },
+  "hourly_supplier_metrics": {
+    "avg_loss": 0.0,
+    "avg_win": 0.0,
+    "cagr": 0.0,
+    "calmar": 0.0,
+    "expectancy": 0.0,
+    "losing_trades": 0,
+    "max_drawdown": 0.0,
+    "profit_factor": 0.0,
+    "recovery_factor": 0.0,
+    "sharpe": 0.0,
+    "sortino": 0.0,
+    "total_return": 0.0,
+    "total_trades": 0,
+    "ulcer_index": 0.0,
+    "win_rate": 0.0,
+    "winning_trades": 0
+  },
+  "input_cfg": {
+    "backtest": {
+      "cost_model_version": "backtest_cost_v0",
+      "fee_bps": 10.0,
+      "initial_cash": 10000.0,
+      "slippage_bps": 5.0
+    },
+    "economic_evaluation_v1": {
+      "strategy_params": {
+        "fast_window": 10,
+        "slow_window": 50
+      }
+    },
+    "risk": {
+      "max_position_size": 0.25,
+      "min_position_value": 10.0,
+      "min_stop_distance": 0.0001,
+      "risk_per_trade": 0.02
+    }
+  },
+  "mv2_signal_digest": "dbd5bf2ef09ae1af9fb8bd570489a952dd46b407f34f9d1864213551e9b9970c",
+  "scenario": "original_fixture_sizing",
+  "signal_source": "mv2_decision_replay_series",
+  "slow_window": 50,
+  "strategy_provenance": {
+    "all_flat_signal_reason": "NONE",
+    "configured_strategy_id": "ma_crossover",
+    "configured_strategy_params": {
+      "fast_window": 10,
+      "slow_window": 50
+    },
+    "effective_strategy_params": {
+      "fast_window": 10,
+      "slow_window": 50
+    },
+    "engine_input_nonzero_signal_count": 181,
+    "engine_signal_digest": "66e03b16a13d0ca5706cc0a682fadb589602d347148e1849f8bc16ad16ecb534",
+    "engine_signal_source": "configured_strategy_signal",
+    "executed_strategy_id": "ma_crossover",
+    "signal_alignment_status": "ALIGNED",
+    "signal_contract_status": "PASS",
+    "strategy_execution_status": "EXECUTED",
+    "strategy_nonzero_signal_count": 181,
+    "strategy_owner": "src.strategies.ma_crossover.MACrossoverStrategy",
+    "strategy_params_digest": "cc2bcdde63d34a96ac99472b67e1e796dfa7f4931234e55857d170c16386da54",
+    "strategy_signal_count": 256,
+    "strategy_signal_digest": "66e03b16a13d0ca5706cc0a682fadb589602d347148e1849f8bc16ad16ecb534",
+    "strategy_signal_source": "canonical_strategy_signal_series",
+    "strategy_signal_transition_count": 1,
+    "strategy_version": "v1"
+  },
+  "trades": []
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "peaktrade.k1_account_source.v1",
+  "profile": "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1",
+  "keychain_service": "peak-trade.full-core.venue-credentials",
+  "keychain_account": "okx-eea.productive",
+  "source_ref": "fullcore-cred://provider-ref/okx-eea-productive",
+  "expected_account_identity": "856964404452495999",
+  "rest_host": "eea.okx.com",
+  "max_request_count": 10,
+  "service_activation_authorized": false
+}

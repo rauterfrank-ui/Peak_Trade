@@ -1,0 +1,9 @@
+### CON-2091 — Experimentidentität und konkrete Forschungsergebnisse
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Legacy-Studien-MD5, Package-N-Manifest, Sweep-ID, CSV-run_id und umfassende Phase-1-Experimentidentität bleiben getrennt. Juli-Trades/Equity lieferten arithmetisch nachvollziehbare Netto-Ergebnisse; 2952 Returns erreichten im dokumentierten Offline-Nachweis tatsächlich Monte-Carlo/Bootstrap/Stress-Consumer. Das beweist numerische Anschlussfähigkeit unterhalb der Universumsnamen.
+
+**Grenze:** Historische Rohdaten und vollständige Phase-1-Identität bleiben teilweise unbekannt; keine nachträgliche Behauptung kanonischer Vollständigkeit. GAP-0346 bleibt offen. CSV-forward_eval ohne strategy_key vs Selection-Drop bleibt eigener Konflikt.
+
+Quellen: EVI-2253, EVI-2286, EVI-2259, EVI-2260, EVI-2249, EVI-2250, EVI-2205.

@@ -1,0 +1,214 @@
+python3 << 'PYEND'
+from datetime import datetime, timezone
+from pathlib import Path
+
+OUT = Path.home() / "Desktop" / "Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md"
+BASELINE = "5b606f6daf322995a7f26a7208bba70a43cdd392"
+REPO = "/Users/frnkhrz/Peak_Trade/.wt_whole_system_matrix_v1"
+PRIMARY = "10f601e6087c33334034b2e013a72ed46835e9e9"
+
+dims = [
+("RELATION_BOUNDARY","PROVEN_CURRENT"),("CONTRACT_CONNECTIVITY","PROVEN_CURRENT"),("PRODUCER_REACHABILITY","PROVEN_CURRENT"),
+("DATA_EXPORT","PROVEN_CURRENT"),("DATA_TRANSPORT","PROVEN_CURRENT"),("DATA_INGEST","PROVEN_CURRENT"),("SCHEMA_COMPATIBILITY","PROVEN_CURRENT"),
+("FIELD_COMPATIBILITY","PROVEN_CURRENT"),("IDENTITY_ALIGNMENT","UNKNOWN_CURRENT"),("TEMPORAL_ALIGNMENT","UNKNOWN_CURRENT"),
+("ACTUAL_CONSUMPTION","PROVEN_CURRENT"),("BEHAVIORAL_INFLUENCE","PROVEN_CURRENT"),
+("INFORMATION_SUFFICIENCY","UNKNOWN_CURRENT"),("FAILURE_SEMANTICS","PROVEN_CURRENT"),("REPLAYABILITY","PROVEN_CURRENT"),("DETERMINISM","PROVEN_CURRENT"),
+("FEEDBACK_LOOP","PROVEN_CURRENT"),("AUTHORITY_ISOLATION","PROVEN_CURRENT"),("COMPOSED_AUTHORITY","PROVEN_CURRENT"),("PRODUCTIVE_ISOLATION","PROVEN_CURRENT"),
+("RUNTIME_REACHABILITY","UNKNOWN_CURRENT"),("END_TO_END_FUNCTIONALITY","PROVEN_CURRENT"),
+]
+proven=sum(1 for _,s in dims if s=="PROVEN_CURRENT")
+unknown=sum(1 for _,s in dims if s=="UNKNOWN_CURRENT")
+
+fields_export=39
+fields_validated=39
+fields_plane_compute=1  # learning_evidence_digest
+fields_search_effect=0
+
+L=[]
+a=L.append
+a("# Peak_Trade — Self-Learning ↔ Optimization Cross-Universe Golden Vector V1\n\n")
+a(f"Generated (UTC): {datetime.now(timezone.utc).isoformat()}\n\n")
+a("## 1. Executive Relation Adjudication\n\n")
+a("**Central answer:** Self-Learning exports a typed `learning_evidence_record_v1`; Optimization validates it and **requires** it for the M4 experiment plane entrypoint, but **semantic label fields do not change search, objective, candidates, scores, or champion/challenger outcomes** in deterministic A/B probes. Only **`content_hash` / digest lineage** and **`plane_identity` / offline context metadata** change when evidence content changes.\n\n")
+a("**RELATION_CLASS:** `CONNECTED_AND_CONSUMED` — **not** `CONNECTED_CONSUMED_AND_BEHAVIORALLY_EFFECTIVE` for search/objective/candidate logic.\n\n")
+a("**NO_COMPOSED_PRODUCTIVE_CAUSAL_PATH_PROVEN**\n\n")
+
+a("## 2. Baseline\n")
+a(f"- PRIMARY_HEAD=`{PRIMARY}`\n- ORIGIN_MAIN_HEAD=`{BASELINE}`\n- FORENSIC_BASELINE_SHA=`{BASELINE}`\n- FORENSIC_WORKTREE=`{REPO}`\n- BASELINE_RELATION=`PRIMARY_AHEAD_DIRTY; forensic on detached worktree at ORIGIN_MAIN`\n")
+a("- Prior GV MDs on Desktop: **NOT FOUND** (navigation skipped; code re-verified).\n\n")
+
+a("## 3. Relation Boundary\n")
+a("- **Start (SL):** `export_learning_evidence_from_state_v1` / `learning_evidence_record_v1`.\n")
+a("- **Handoff:** `validate_canonical_optimization_universe_learning_input_v1`.\n")
+a("- **OPT consumer chain (minimal):** `run_optimization_universe_experiment_plane_v1` → `build_offline_research_context_v1` → advanced search / champion-challenger (request-driven).\n")
+a("- **Return channel STOP:** `validate_self_learning_optimization_return_input_v1` (ACK only; no DDO ledger/state write).\n\n")
+
+a("## 4. Complete Edge Map\n\n")
+edges=[
+("EDGE:SL_EXPORT_TO_OPT_LEARNING_INPUT","SL→OPT","learning_evidence_export_v1","validate_canonical_optimization_universe_learning_input_v1","learning_evidence_record_v1","canonical_optimization_universe_learning_input_v1","PROVEN_CURRENT"),
+("EDGE:OPT_FOUNDATION_ACK","SL→OPT","learning_evidence optional","validate_canonical_optimization_universe_v1","learning_evidence_record_v1","canonical_optimization_universe_v1","PROVEN_CURRENT"),
+("EDGE:OPT_PLANE_REQUIRES_EVIDENCE","SL→OPT","plane request.learning_evidence","run_optimization_universe_experiment_plane_v1","learning_evidence_record_v1","experiment_plane_v1","PROVEN_CURRENT"),
+("EDGE:OPT_EVIDENCE_TO_SL_RETURN","OPT→SL","build_optimization_experiment_evidence_from_plane_v1","validate_self_learning_optimization_return_input_v1","optimization_experiment_evidence_v1","self_learning_optimization_return_input_v1","PROVEN_CURRENT"),
+("EDGE:META_TO_OPT_FEEDBACK","Meta→OPT","meta_learning_evidence_v1","canonical_meta_to_optimization_feedback_v1","META_EVIDENCE","feedback_v1","PROVEN_CURRENT"),
+]
+a("| EDGE_ID | DIRECTION | SOURCE | TARGET | CONTRACT | STATUS |\n|---|---|---|---|---|---|\n")
+for e in edges: a(f"| {e[0]} | {e[1]} | {e[2]} | {e[3]} | {e[4]} / {e[5]} | {e[6]} |\n")
+a(f"\nTOTAL_CROSS_UNIVERSE_EDGES={len(edges)}\n\n")
+
+a("## 5. Producer Map\n")
+a("| Producer | Object | Evidence |\n|---|---|---|\n")
+a("| `export_learning_evidence_from_state_v1` | `learning_evidence_record_v1` | `learning_evidence_export_v1.py` |\n")
+a("| `ingest_evaluation_bundle_into_learning_state_v1` | `learning_state_record_v0` | upstream of export |\n")
+a("| `build_optimization_experiment_evidence_from_plane_v1` | optimization experiment evidence | M5 tests |\n\n")
+
+a("## 6. Consumer Map\n")
+a("| Consumer | Accepts | Uses for computation | Evidence |\n|---|---|---|---|\n")
+a("| `validate_canonical_optimization_universe_learning_input_v1` | full evidence record | validation + digest + 3 lineage refs | learning_input_v1.py:129-137 |\n")
+a("| `run_optimization_universe_experiment_plane_v1` | validated digest | **digest only** in offline_context + plane_identity | experiment_plane_v1.py:184-189,431-446 |\n")
+a("| `validate_self_learning_optimization_return_input_v1` | optimization evidence | ACK metadata only | return_input_v1 constants |\n\n")
+
+a("## 7. Contract Map\n")
+a("- **Schema:** `learning_evidence_record_v1` (`schema_name` + `schema_version`).\n")
+a("- **Optimization ingest schema:** `canonical_optimization_universe_learning_input_v1`.\n")
+a("- **Required classes:** `universe_class=SELF_LEARNING_UNIVERSE`, `evidence_class=LEARNING_EVIDENCE`, `productive_authority=NONE`.\n")
+a("- **Plane requires:** `learning_input_schema_version` match + accepted learning input status.\n\n")
+
+a("## 8. Field-Level Lineage\n")
+a(f"TOTAL_EXPORTED_FIELDS (allowed record fields) = **{fields_export}**.\n\n")
+a("| FIELD | EXPORT | OPT ingest | Plane compute | Search/Objective effect | Classification |\n|---|---|---|---|---|---|\n")
+rows=[
+("content_hash/digest","YES","YES","YES","Changes plane_identity & offline_context only","CONSUMED_FOR_IDENTITY_ONLY"),
+("source_learning_state_record_ref","YES","YES","NO","NO","CONSUMED_FOR_VALIDATION_ONLY"),
+("state_scope_id","YES","YES","NO","NO","CONSUMED_FOR_VALIDATION_ONLY"),
+("state_version","YES","YES","NO","NO","CONSUMED_FOR_VALIDATION_ONLY"),
+("economic_score_label","YES","validated","NO","NO (A/B probe)","EXPORTED_BUT_NOT_CONSUMED"),
+("decision_score_label","YES","validated","NO","NO","EXPORTED_BUT_NOT_CONSUMED"),
+("safety_score_label","YES","validated","NO","NO","EXPORTED_BUT_NOT_CONSUMED"),
+("decision_event_ref","YES","validated","NO","NO","EXPORTED_BUT_NOT_CONSUMED"),
+("evaluation_bundle_fingerprint","YES","validated","NO","NO","EXPORTED_BUT_NOT_CONSUMED"),
+("evaluation_horizon","YES","validated","NO","NO","EXPORTED_BUT_NOT_CONSUMED"),
+("actual_outcome_ref","YES","validated","NO","NO","EXPORTED_BUT_NOT_CONSUMED"),
+("observed_at_utc","YES","validated","NO","NO","EXPORTED_BUT_NOT_CONSUMED"),
+]
+for r in rows: a(f"| `{r[0]}` | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} |\n")
+a(f"\nTOTAL_CONSUMED_FIELDS (validation gate): **{fields_validated}**; plane computation fields: **{fields_plane_compute}**; search/objective-affecting fields: **{fields_search_effect}**.\n\n")
+
+a("## 9. Actual Field Consumption\n")
+a("Optimization plane code path uses `learning_input['learning_evidence_digest']` after full-record validation. Search invocation (`build_canonical_advanced_search_v1`) receives only request template/space/scores — **not** evidence semantic fields.\n\n")
+
+a("## 10. Causal Effect Trace\n")
+a("```text\nlearning_state_record_v0\n → export_learning_evidence_from_state_v1\n → learning_evidence_record_v1 (content_hash)\n → validate_canonical_optimization_universe_learning_input_v1\n → learning_evidence_digest\n → build_offline_research_context_v1 / _derive_plane_identity\n → plane output metadata\nX (no edge) → build_canonical_advanced_search_v1 parameters\n```\n")
+a("**TOTAL_BEHAVIORALLY_EFFECTIVE_FIELDS (search/objective/candidate/score path): 0.**\n\n")
+
+a("## 11. Differential Golden Vectors\n")
+a("| Test | Input delta | Observed delta | First divergence | Final effect | Status |\n|---|---|---|---|---|---|\n")
+a("| DV-01 | `economic_score_label` LABEL_A vs LABEL_B | digest differs; plane_identity differs; **search_identity equal** | offline_context digest | metadata only | PROVEN_CURRENT |\n")
+a("| DV-02 | identical evidence twice | plane_identity equal | none | deterministic | PROVEN_CURRENT (plane tests) |\n\n")
+
+a("## 12. Absence/Invalid/Stale Behavior\n")
+a("| Case | Result | Evidence |\n|---|---|---|\n")
+a("| A valid evidence | ACCEPTED_OFFLINE_RESEARCH_INPUT | learning_input tests |\n")
+a("| B missing evidence | REJECTED_INVALID_EVIDENCE | probe |\n")
+a("| C missing required field | DdoValidationError at record validate | probe |\n")
+a("| E wrong schema at plane | PLANE_REJECTED_STALE_INPUT | plane test |\n")
+a("| F wrong universe_class | REJECTED_INVALID_EVIDENCE | probe |\n")
+a("| G wrong evidence_class | REJECTED_INVALID_EVIDENCE | probe |\n")
+a("| H productive_authority != NONE | REJECTED_INVALID_EVIDENCE | probe |\n")
+a("| I stale evidence | **UNKNOWN_CURRENT** (no dedicated staleness TTL in learning_input) | code review |\n")
+a("| Foundation without learning | OPTIMIZATION_UNIVERSE_FOUNDATION_OK | probe |\n\n")
+
+a("## 13. Optional-vs-Required Analysis\n")
+a("| Entrypoint | Evidence required? | Path without learning | Behavioral difference |\n|---|---|---|---|\n")
+a("| `validate_canonical_optimization_universe_v1` | OPTIONAL | foundation OK | none |\n")
+a("| `validate_canonical_optimization_universe_learning_input_v1` | REQUIRED for non-reject | missing → REJECTED_INVALID_EVIDENCE | gate only |\n")
+a("| `run_optimization_universe_experiment_plane_v1` | REQUIRED (validated ingest) | invalid/missing → PLANE_REJECTED_INPUT | plane cannot complete |\n\n")
+a("**IS_SELF_LEARNING_STRUCTURALLY_REQUIRED_FOR_OPTIMIZATION?** NO for foundation; **YES for M4 plane completion path**.\n")
+a("**CAN_OPTIMIZATION_OPERATE_WITHOUT_SELF_LEARNING?** YES for foundation/registry; **NO for documented offline plane golden path**.\n")
+a("**IF_YES WHAT CAPABILITY IS LOST?** M4 plane chain completion and digest-linked plane identity.\n\n")
+
+a("## 14. Information Sufficiency Across the Edge\n")
+a("CONTRACT_SUFFICIENCY=PROVEN_CURRENT; FIELD_SUFFICIENCY for semantic driving of search=**UNKNOWN_CURRENT / effectively unused**; SAMPLE/FRESHNESS minima=UNKNOWN_CURRENT.\n")
+a("INFORMATION_SUFFICIENCY_STATUS=UNKNOWN_CURRENT\n\n")
+
+a("## 15. Temporal/Identity Alignment\n")
+a("Fields present: `state_scope_id`, `decision_event_ref`, `evaluation_bundle_fingerprint`, `observed_at_utc`, experiment identity digests on OPT side.\n")
+a("Cross-future/scope mismatch enforcement against plane identity template: **UNKNOWN_CURRENT** (no proven join beyond digest metadata).\n\n")
+
+a("## 16. Feedback Loop Analysis\n")
+a("- **OPT→SL return:** `validate_self_learning_optimization_return_input_v1` — **EVIDENCE_FEEDBACK ACK only**; `LEARNING_STATE_MUTATION_PERFORMED=false`.\n")
+a("- **Meta→OPT:** separate `canonical_meta_to_optimization_feedback_v1` (not standard learning export).\n")
+a("- **SL→OPT→SL closed learning cycle with state update:** **NO (PROVEN_CURRENT false)**.\n")
+a("FEEDBACK_LOOP_STATUS=PROVEN_CURRENT (ACK-only return; no training/state feedback)\n\n")
+
+a("## 17. Authority Composition\n")
+a("| Question | Answer | Evidence |\n|---|---|---|\n")
+a("| SL start/configure OPT search | NO | AUTO_SEARCH_FORBIDDEN flags |\n")
+a("| SL change objective/search space | NO | plane uses request fields |\n")
+a("| OPT mutate SL ledger/state via return | NO | return_input constants |\n")
+a("| Composed productive authority | NO | NO_COMPOSED_PRODUCTIVE_CAUSAL_PATH_PROVEN |\n")
+a("COMPOSED_AUTHORITY_STATUS=PROVEN_CURRENT (none)\n\n")
+
+a("## 18. Productive Escape Analysis\n")
+a("Path SL→OPT→proposal→governance ingress stops at review; no AUTO_PROMOTION/AUTO_APPLY in cross-universe modules.\n")
+a("PRODUCTIVE_ISOLATION_STATUS=PROVEN_CURRENT\n\n")
+
+a("## 19. Real-vs-Synthetic Data Analysis\n")
+a("- SL export chain in tests: **fixture/replay hybrid** (`_learning_state` test harness).\n")
+a("- OPT plane market universe: **`SYNTHETIC-OFFLINE-RESEARCH-ONLY`** constants.\n")
+a("- **PRODUCTIVE_RUNTIME_REACHABILITY of cross-universe chain:** UNKNOWN_CURRENT.\n\n")
+
+a("## 20. Runtime Reachability\n")
+a("| Hop | CODE | TEST | PRODUCTIVE |\n|---|---|---|---|\n")
+a("| SL export | YES | YES | UNKNOWN |\n")
+a("| OPT ingest | YES | YES | NO |\n")
+a("| Plane search/eval | YES | YES | NO |\n")
+a("RUNTIME_REACHABILITY_STATUS=UNKNOWN_CURRENT (productive)\n\n")
+
+a("## 21. End-to-End Golden Vector\n")
+a("**TEST-EXECUTED CHAIN (side-effect-free):** observation fixture → DDO state → export → plane → optimization experiment evidence → return ACK.\n")
+a("- `tests/experiments/test_canonical_optimization_experiment_evidence_v1.py`: **8 passed**.\n")
+a("- `tests/experiments/test_canonical_optimization_universe_experiment_plane_v1.py`: **5 passed**.\n")
+a("END_TO_END_FUNCTIONALITY_STATUS=PROVEN_CURRENT (offline/test harness)\n\n")
+
+a("## 22. UNKNOWN_CURRENT Register\n")
+for u in [
+ "Productive-host executed cross-universe chain frequency",
+ "Staleness/TTL semantics for learning evidence at optimization ingest",
+ "Cross-scope/future alignment enforcement between evidence and plane identity template",
+ "Whether semantic labels are consumed in any non-plane optimization entrypoint",
+ "Real observed (non-fixture) end-to-end runtime execution",
+]:
+    a(f"- {u}\n")
+
+a("\n## 23. CONFLICTING_CURRENT Register\n")
+a(f"- Primary checkout `{PRIMARY}` != forensic `{BASELINE}` (worktree isolation used).\n")
+
+a("\n## 24. VIOLATED_CURRENT Register\n- none proven\n")
+
+a("\n## 25. Evidence Index\n")
+for e in [
+ "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+ "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+ "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+ "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+ "src/experiments/canonical_optimization_experiment_evidence_v1.py",
+ "src/experiments/canonical_self_learning_optimization_return_input_v1.py",
+ "tests/experiments/test_canonical_optimization_universe_experiment_plane_v1.py",
+ "tests/experiments/test_canonical_optimization_experiment_evidence_v1.py",
+ "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+ "Deterministic A/B probe (economic_score_label LABEL_A vs LABEL_B)",
+]:
+    a(f"- `{e}`\n")
+
+a("\n## 26. Final Relation Fitness\n")
+for d,s in dims: a(f"- **{d}:** {s}\n")
+a(f"\nPROVEN_CURRENT={proven}; UNKNOWN_CURRENT={unknown}; CONFLICTING_CURRENT=1; VIOLATED_CURRENT=0\n")
+
+a("\n## 27. Exact Blockers\n")
+a("- **Productive runtime blocker:** optimization/productive authority NONE; plane synthetic-only.\n")
+a("- **Behavioral blocker:** semantic SL fields not wired into search/objective functions (code-proven).\n")
+a("- **Feedback blocker:** return path explicitly forbids learning state mutation.\n")
+
+OUT.write_text("".join(L), encoding="utf-8")
+print(OUT.stat().st_size)
+PYEND

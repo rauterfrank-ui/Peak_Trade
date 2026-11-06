@@ -1,0 +1,76 @@
+FÜNF SLOTS / ZUNÄCHST N=1 — QUELLENABGLEICH 02.11.2026
+
+ERGEBNIS
+Der erinnerte Plan ist in GitHub-PR-Historie, Spezifikation und Implementierung konkret belegt: bis zu fünf isolierte Single-Future-Lanes vorbereiten; produktive Kardinalität zunächst auf eins begrenzen. Keine automatische produktive Freischaltung von N=2..5. Keine Order-/Live-Freigabe durch diesen Befund.
+
+QUELLENSTAND
+Hauptcheckout /Users/frnkhrz/Peak_Trade HEAD 242b7974fc93f0bdb47706556101bd6f0c497414.
+Weitere Arbeitskopie /Users/frnkhrz/Peak_Trade_M1_5_CURRENT HEAD fffb95ef41f7e78c145f022144947911cce27279.
+GitHub main am Abruf 02.11.2026: 5d1c838c15369507c5247834db4dd0df25592169, via gh api GET; kein Fetch/Ref-Update.
+Fünf exakte GitHub-Dateien an diesem SHA abgerufen und unter sources/ erhalten. Staged-Control-Plane-Konstanten, Kardinalitätsfunktion, Orchestrator-Konstanten, Topologie-Konstanten und Staged-Control-Plane-Körper sind jeweils bytegleich zu beiden lokalen Arbeitskopien. Keine Aussage über Gleichheit der ganzen Checkouts.
+Github-Connector meldete Unknown tool; lesender gh-Fallback. PR-JSONs mit Titel, Body, Merge-Commit und Mergezeit gespeichert.
+
+PR-KETTE
+#6371, Merge 09.09.2026: docs(mf): close OD01 numeric ceiling at N=5.
+Commit 14a0fa3e126b4c7dd9ef5bf98619887c64a79d92.
+N_VALUE=5 als AT_MOST_N; keine Pflicht zu genau fünf belegten Instrumenten, kein Padding. Dokumententscheidung, kein Runtime-Implementierungsbeweis.
+
+#6593, Merge 18.09.2026: feat(ops): isolated N=5 MF lane-instance topology.
+Commit a878b2b00f5152163abb41b23151348114ae9ef7.
+LANE_1..LANE_5; Lane-ID ist nicht Rang. Bestehende Mitglieder behalten Slot bei Rangwechsel; freie Slots deterministisch belegen. Cap23 bleibt Single-Future-Selection-Owner. Diese damalige Stufe erzeugt allein keine fünf ausführenden Stacks.
+
+#6613, Merge 19.09.2026 Europe/Berlin: feat(ops): complete MF N=5 occupied-lane host join and cardinality runtime.
+Commit a795bb073e0ac7d2398fe085522b585b859996bb.
+Kanonisches Host-Activation-Binding pro belegter Lane; isolierte N=1-Lanes, sequentielle LANE_ID-Ausführung. PRE_EXTERNAL/HOLD/COMPLETED; kein Live-Port, Permit oder POST. 5_JOINED bedeutet hier nicht fünf live handelnde Futures.
+
+#6622, Merge 19.09.2026: PR_2: Productive Full-Autonomy N=5 runtime orchestrator (PRE_EXTERNAL).
+Commit 2fde7cb29b599cfe5e0dfea889285d71553f07ba.
+Komposition Ranking/Membership → Cap23/Cap24/Ingest → MV2/DP-Handoff → sequentielle Cycles mit gemeinsamem Portfolio-Budget-Owner. Grenze PRE_EXTERNAL. Host-Completion-Rollup optional und standardmäßig aus.
+
+#6623, Merge 19.09.2026: PR_3: Staged N=5 admission, recovery, and audit (PRE_EXTERNAL).
+Commit 26492d4fb4acb3184630ff78bb7285eb9ee0fc3f.
+Exakte Entsprechung des Anfangsplans: requested target 1..5; productive admission capped at N=1; N>1 ohne expliziten architectural_composition_harness wird vor Orchestrierung abgelehnt. N=2..5 nur nichtproduktiver Testpfad. PR nennt N1-Regression und N2/N5-Harness-Tests; diese Angaben sind historische PR-Angaben, keine heute erneut ausgeführten Tests.
+
+HEUTIGE GEPRÜFTE CODEMECHANIK
+src/ops/current_mf_n5_isolated_lane_instance_topology_v1/constants_v1.py:41ff: MAX_LANE_COUNT=5; LANE_1..LANE_5; ein Instrument pro Lane, eine Lane pro Instrument; NO_PADDING=true. topology_v1.py:256ff validiert genau fünf Slotobjekte mit korrekten IDs und eigenen lane_state_root-Pfaden; leere Slots ohne Instrument erlaubt.
+src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/constants_v1.py:29ff: Ziel 1..5; N_GT_1_PRODUCTIVE_AUTHORIZATION=false; N_GT_1_ENABLED aus Orchestrator; authorized max bei false =1.
+src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py:55ff: MAX_POSITIONS_EFFECTIVE aus Cap23/Cap24=1; N_GT_1_ENABLED=false; MULTI_FUTURE_RUNTIME_AUTHORIZED=false; Assertions auf diesen Ausgangsstand.
+staged_cardinality_v1.py:49ff: requested=1 zugelassen; requested>1 ohne Harness liefert invocation_cardinality=0 und productive_admitted=false; Harness hat productive_admitted=false.
+control_plane_v1.py:94ff kontrolliert Autoritätspins und MAX_POSITIONS=1; bei Denied wird Orchestrator nicht ausgeführt.
+Tests: tests/ops/test_current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1.py:163ff enthält N1-Erlaubnis, N5-Verweigerung, N5-Harness-Klassifikation; weitere Testkörper zu N1-Regression, N>1-Verweigerung, Membership kann sich nicht selbst autorisieren, N2/N5 isolierte Cursor-Roots. Nur Quellen gelesen, keine Tests in diesem Auftrag gestartet.
+
+WER LIEFERT DAS INSTRUMENT?
+Die untersuchte Implementierung ordnet Zuständigkeiten so:
+Ranking-/Membership-Kontext → Lane-Zuordnung/Pin → Cap23 Single-Future-Auswahl → Cap24 BoundInstrument → Lane-Handoff → gemeinsame kanonische Master-V2/Double-Play-Logik je Instrument/Lane.
+Belegt in orchestrator_v1.py:345–403 und occupied_lane_mv2_dp_handoff_join_v1/handoff_join_v1.py. Der Handoff trägt dict[lane_id, (IsolatedLaneSlotV1, BoundInstrumentV1)].
+Es ist dieselbe fachliche MV2/DP-Implementierung mit isoliertem Zustand; daraus folgt kein gemeinsamer veränderlicher MV2/DP-Zustand und kein MV2/DP-eigener Instrumentselektor.
+SAME_TRADING_CONFIGURATION_ACROSS_LANES=true; SHARED_MUTABLE_STATE_ACROSS_LANES=false im Decision-State-Addressing-Vertrag. Cursor-/Lock-/Evidence-Adressen je Lane.
+N=1 ist Kardinalität, nicht zwingend eine dauerhaft fest verdrahtete Instrument- oder LANE_1-Identität. _select_target_lanes wählt belegte Lanes in LANE_IDS-Reihenfolge, bis target erreicht ist. Bei Bootstrap beginnt die Belegung an der kleinsten Lane-ID.
+
+WAS DAS NICHT BEWEIST
+Vorhandene N5-Komposition, einzelne Tests und Labels N5_ARCHITECTURE_COMPLETE beweisen nicht, dass alle fünf vollständigen Live-Stacks heute betriebsbereit sind.
+Keine verifizierte aktuelle Prozess-/Persistenzbelegung, kein N1-Dauerlauf und kein N5-Live-Lauf geprüft.
+Die direkte textuelle Aufrufsuche des Staged-Einstiegs in src/scripts findet den Körper/Export sowie einen explizit synthetischen Whole-System-E2E-Aufrufer mit requested=5 und Harness=true. Das beweist keinen Default-Produktivlauncher und ist kein vollständiger Negativbeweis für dynamische/aliased Aufrufer.
+Der gefundene Control-Plane-Vertrag ist bis PRE_EXTERNAL; N1_ADMITTED ist keine Freigabe für reale Orders. Separate spätere tatsächliche POST-Pfade bleiben davon getrennt.
+Kein konkret ratifizierter operativer Kriterienkatalog 'nach X Stunden/Trades schalte Slot 2, dann 3...' in den hier geprüften Staged-Dateien oder PRs gefunden. Assertions fixieren derzeit den N1-Ausgangszustand; ein Flagwechsel allein ist kein bereits autorisierter Rollout.
+Die fachliche Eignung der ganzen Implementierung und vollständige kausale Verwendung im heutigen Startpfad sind weiterhin gesondert zu prüfen.
+
+EXTERNE UND OBSIDIAN-QUELLEN
+Recovery: fünf zugehörige historische Markdown-Verträge gezielt gelesen und hashgleich zum vorhandenen Inventar; siehe recovery-sources.json. Staged-Spec enthält denselben expliziten Satz 'productive admission capped at 1'.
+M2DATA Backup_20261017T190216Z/repo: drei exakte Staged-/Topologie-Codepfade gelesen; bytegleich zum Hauptcheckout; siehe m2-sources.json. Kopien sind keine unabhängigen Funktionsbeweise.
+Obsidian/Desktop-Workspace ist derselbe physische Quellenbestand wie vorher. EVI-0792 dokumentiert Topologie ohne Fünf-Lane-Runtime; EVI-1686 / RUN-0039 dokumentiert den Orchestrator-Compose-Status bei fehlender Handelsautorität. Register wurden nicht geändert und nicht zu heutiger Runtime-Autorität hochgestuft.
+
+WICHTIGE NÄCHSTE PRÜFBEREICHE
+1. Tatsächlicher Startpfad: Launcher → N1-/Staged-Zulassung → kanonischer Cycle; kein alternativer Pfad darf die Kardinalitätsgrenze umgehen.
+2. Instrument-/Lane-Zustand: gebundenes Instrument, Marktdaten, Scope, Bestätigung, Position, Cursor, Lock und Evidence derselben Lane; Restart/Rotation ohne Cross-Lane-Leck.
+3. Gemeinsames Kapital-/Positionslimit: pro Lane N=1 ist nicht automatisch ein globales Limit von einer Position; Portfolio-Owner und tatsächlicher Consumer müssen das freigegebene Gesamtlimit erzwingen.
+4. Ausbau: explizite Stufenfreigabe, Abnahmekriterien, Rücknahme, Unknown-Outcome-/Recovery-Verhalten und getrennte Orderautorität; keine automatische Freigabe aus Membership-Zahl oder erfolgreichem Harness.
+
+Keine Code-/Konfigurationsänderung, keine Aktivierung, Orders, Credential-Abrufe oder Recovery-Schreibzugriffe. Dokumentationsartefakte außerhalb der Checkouts gespeichert.
+
+
+NACHTRAG — OWNER-KONTROLLIERTE FREIGABE, SUCHHYPOTHESE DES OWNERS
+Frank ergänzt im aktuellen Chat: nach und nach selbst freigeben sei eine Erinnerung/Vermutung. Nicht als bereits bewiesene historische Implementierung übernommen.
+Ein ursprünglicher Cursor-Arbeitsauftrag wurde gezielt wiedergefunden: a04a86fa-b6c3-49c2-a813-4cc0009a5f9f, JSONL-Zeile 188, 19.09.2026 11:12 Europe/Berlin, Basis 2fde7cb29b599cfe5e0dfea889285d71553f07ba (#6622). Titel STAGED N=1→5 ENABLEMENT + ADMISSION + RECOVERY + AUDIT. Er fordert ausdrücklich staged target N=1→2→3→4→5, explicit enablement/admission, kein implizites Erhöhen aus Ranking, gespeicherter Belegung oder Capability und keine neue Owner-Autorisierung für N>1 in diesem Auftrag. Eine zukünftige N>1 Owner authorization wird ausdrücklich von External-Effect authorization getrennt. Das belegt die beabsichtigte separate Owner-kontrollierte Freigabe. Es belegt kein fertiges UI, keinen aktuellen Freigabeschalter und keine operativen Stufenkriterien.
+Ein früherer Auftrag am selben Datum 01:31, d00b2d6b-ff34-497d-a930-4234571a6a1d, Zeile 1, Basis 6ce34623c41ff7dd6be2cc802b0fca32e2e731c0 (#6611/#6612), wollte die gesamte N5-Architektur einschließlich interner Kardinalitäts-Proofs in einem WP schließen und nicht an jeder internen Stufe stoppen. Das ist ein anderer historischer Arbeitsumfang; kein Beweis für einen späteren automatischen operativen Rollout. Der spätere Auftrag #6623 und der heutige geprüfte Code halten N>1 unautorisiert. Historische GO-Texte sind keine aktuellen Ausführungsaufträge.
+Originaltext-Kopien und Provenienz: sources/cursor-*.txt und cursor-source-provenance.json.

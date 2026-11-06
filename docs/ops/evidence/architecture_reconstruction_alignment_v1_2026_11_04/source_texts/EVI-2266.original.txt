@@ -1,0 +1,301 @@
+PEAKTRADE – VORBEREITUNG DER N_BARS-REPARATUR
+Stand 02.11.2026 · Arbeitsentwurf · keine operative Autorität
+
+ENTSCHEIDUNGSEMPFEHLUNG
+
+Die Reparatur soll als begrenzte Änderung der Datenversorgung vorbereitet
+werden. Eine Neuentwicklung des Handelssystems ist durch die untersuchten
+Abhängigkeiten nicht begründet. Die vollständige Ersatzversorgung ist aber
+noch nicht freigabereif: Der echte Bar-Abschluss samt Quellenbindung und der
+dauerhafte Wiederanlauf sind nicht ausreichend belegt.
+
+Empfohlen wird deshalb eine gestufte Behebung. Zuerst soll der falsche
+Seed-Weg keine beobachteten Ergebnisse mehr erzeugen können. Der eigentliche
+Ersatz muss anschließend einen echten gespeicherten Horizont nachweisen,
+bevor ein dauerhafter Betrieb angebunden wird. Das mögliche vorübergehende
+Ausbleiben von Lern-Outcomes wird dabei sichtbar dokumentiert.
+
+In diesem Auftrag wurde ausschließlich erarbeitet und geprüft. Repository-
+Code, Konfiguration, Laufzeitdaten und bestehende Evidenz wurden nicht
+verändert. Es gab keinen GET, keine Orders und keine produktive Ausführung.
+Die beiden zuvor angelegten Research-Dateien bleiben unverändert.
+
+GRUNDLAGE UND BELEGARTEN
+
+Checkout /Users/frnkhrz/Peak_Trade
+Branch feat/ghv-current-exchange-reconciliation-pr-integration-v1
+HEAD 242b7974fc93f0bdb47706556101bd6f0c497414
+89 vorhandene git-status-Einträge; drei schon zuvor geänderte versionierte Dateien.
+Der vollständig zuvor gelesene Master-Runbook ist bytegleich zum letzten
+Prüfstand: d93111c81bafd10be81affac27c85ced1e175f21b4e0d5a85e6fe13111fc4d69.
+Runtime-Vertrag über scripts/pt erneut bestanden; Python 3.11.14.
+
+22 konkrete Codeanker mit Pfad, Zeile und SHA256 stehen in source-evidence.json.
+Die Kennungen E01–E22 unten beziehen sich darauf. Sie sind statische Belege,
+keine Behauptungen einer neuen produktiven Laufzeitausführung.
+Der vorherige Offline-Prototyp hat 24 gebundene Fixture-Tests; diese wurden
+hier nicht nochmals ausgeführt und ersetzen keine Integrationsabnahme.
+
+Der gezielt gelesene historische Ledger enthält 742 Records, darunter 674
+decision_event und 56 Double-Play-Beobachtungen. Alle 674 decision_event
+haben keine selected_instrument_ref. Es gibt nur 18 verschiedene Cycle-ID-
+Zeichenketten und drei Korrelationszeichenketten. Diese Zahlen beziehen
+sich auf diese Datei vom 12.–16.10.2026. Sie sind keine Produktionslastmessung.
+Insbesondere dürfen die vielen internen Capture-Stufen nicht zu 674
+unabhängigen neuen Lernaufträgen erklärt werden.
+
+MESSVERTRAG ALS ENTWURF
+
+Die Reparatur soll die vorhandene Berechnung zunächst beibehalten:
+  LOG_RETURN = ln(Schlusskurs letzter ausgewählter Bar /
+                  Schlusskurs erster ausgewählter Bar).
+  Einheit: dimensionslos, natürlicher Logarithmus.
+  Keine Gebühren-, Fill-, Positions- oder PnL-Aussage.
+  economic_score bleibt UNKNOWN ohne gesondert definierten Label-Producer.
+
+Intervall: explizit PT1H auf UTC-Raster. N ist ein expliziter Request-Wert.
+Der erste begrenzte Vergleich soll N=2 verwenden, entsprechend dem bisher
+untersuchten Weg. Dies ratifiziert keine allgemeine optimale N-Policy.
+
+Horizontstart: explizit und nicht vor dem Entscheidungszeitpunkt. Für den
+Vergleich bleibt die Auswahl vollständiger Bars nach dem vorhandenen
+Selektor erhalten. Beispiel: Entscheidung 11:15; Bars 12:00–13:00 und
+13:00–14:00. Vollständigkeit frühestens 14:00, gegebenenfalls später bei
+verspäteter Datenverfügbarkeit. Der Preisvergleich ist 13:00→14:00 und nicht
+Entscheidungspreis 11:15→14:00. Eine Änderung dieses Lernziels wäre eine
+gesonderte fachliche Änderung. (E04, E05)
+
+Die Preisfamilie ist noch ausdrücklich festzulegen. Normale Handels-Candles
+und Mark-Preise sind fachlich verschieden. Der alte Seed übernimmt
+finalized_closes und verpackt sie als mark_px; diese Verpackung darf keine
+Quellenentscheidung ersetzen. Arbeitshypothese für einen Ersatz ist der
+vorhandene kanonische O4-Mark-Pfad, sofern er abgeschlossene Bars mit
+Originalnachweisen liefern kann. Das ist noch keine Abnahme dieser Quelle.
+(E02, E07, E08, E12, E13)
+
+Identität des Auswertungsauftrags: DecisionRef plus belegte Bindung an
+kanonisches Instrument, Native-ID, Venue und Auswahl-/Binding-Nachweis;
+außerdem Preisfamilie/-einheit, Intervall, N, Anker und Vertragsversionen.
+Eine fehlende Instrumentbindung wird bei alten Entscheidungen nicht
+nachträglich erfunden. Für neue Aufträge muss der vorhandene typisierte
+Instrumentkontext ausdrücklich mitgeführt werden.
+
+Entscheidungsumfang: ein korrekt ausgewähltes autoritatives DecisionEvent
+je Cycle, entsprechend dem bestehenden Capture-Selektor. NO_ENTRY bleibt
+ein zulässiger Untersuchungsfall. Ein Enter-only-Ersatz würde den ersten
+Fehlerfall ausschließen. Umgekehrt werden nicht sämtliche Zwischenstufen
+zu neuen Auswertungen. Fehlt die exakte Cycle-/Instrumentbindung, darf der
+neue Weg keinen passenden Fall aus bloß ähnlicher Korrelation erraten.
+(E03, E06)
+
+Getrennte Zeitfelder: Entscheidungszeit, Bar-Open/Close, ursprüngliche
+Preisbeobachtungszeit, Empfang/Capture, Finalisierung/Verfügbarkeit und
+Verarbeitungs-/As-of-Zeit. Keines dieser Felder wird aus Bequemlichkeit
+durch ein anderes ersetzt.
+
+PRÜFUNG DES TATSÄCHLICHEN PRODUCER-WEGS
+
+Vorhanden ist der als kanonisch ausgewiesene
+CanonicalPublicMdBarProducerV1 für PT1H. Er verarbeitet normalisierte
+Mark-Ereignisse. Seine Finalisierung allein prüft nicht, ob eine vollständige
+reale Stundenbeobachtung vorliegt; der Aufrufer muss das belegen.
+
+Der Cross-Session-Resolver finalisiert unmittelbar nach einem einzelnen
+Sample. Sein Session-Adapter nimmt dabei einen Mark-Preis, kombiniert ihn
+aber mit einem Zeitwert aus der ersten Candle-Zeile. Preis- und Zeitquelle
+sind damit nicht schon aufgrund der Schnittstelle gemeinsam belegt.
+(E07, E08)
+
+Der öffentliche Runtime-Orchestrator liest gespeicherte PT1H-O4-Fakten.
+Diese Lesekante beweist keinen vollständigen Producer. Ein vorhandener
+PT1M-Mark-Parser ist ein möglicher vorgelagerter Baustein; in seinem hier
+gelesenen Pfad bleibt raw_payload_digest jedoch leer. Er kann daher nicht
+unverändert als vollständiger Herkunftsnachweis gelten. (E12, E13)
+
+Fazit dieses Bereichs: Der Name des Owners ist bekannt. Seine fachlich
+ausreichende Datenversorgung für diesen konkreten Horizont ist noch offen.
+Benötigt wird ein gespeicherter Originalfall, der Preisfamilie, Zeitraster,
+Instrument, Vollständigkeit, Abschluss und Verfügbarkeit gemeinsam belegt.
+Erst dann ist zu entscheiden, ob eine lokale Adapterkorrektur genügt oder
+eine getrennt zu beauftragende Erweiterung des gemeinsamen Producers nötig ist.
+
+DIREKTE ABHÄNGIGKEITEN UND BEGRENZUNG
+
+Unmittelbar betroffen wären:
+- Der Handoff nach dem Master-V2-Replay: Dort muss sofortige Fertigstellung
+  durch einen ehrlichen Datenstatus ersetzt werden. Der produktive Cycle
+  darf nicht auf zwei Stunden Marktdaten warten. (E01, E02)
+- Die bindende Herkunftsabbildung beim bestehenden Provenienz-Owner und
+  ihre Prüfung beim Forschungseingang. N_BARS ist kein Herkunftsbeweis. (E14–E17)
+- Ein dauerhafter offener Auswertungsauftrag, falls der Ersatz livenah
+  über Sessions arbeiten soll; keine zweite Zustandswahrheit. (E06, E09, E10)
+- Eine Diagnoseprojektion, die derzeit bei handoff.ok eine produktiv
+  beobachtete Evidenzklasse in einen Stub schreibt. Sie muss offene Fälle
+  und tatsächliche Herkunft ehrlich darstellen. Das ist eine statische
+  Berichtskante, kein nachgewiesener Trading- oder Such-Consumer. (E18)
+
+Wiederverwendbar bleiben zunächst Berechnung, Record-Builder, Lern-Ingest
+und Export. Ihre Wiederverwendung braucht Regressionen für die endgültige
+Eingabe-/Scope-Bindung, aber keinen automatisch abgeleiteten Neubau.
+
+Der G2-Primärevidenz-Eingang lehnt diesen produktiven DDO-Handoff bereits
+ausdrücklich ab. Er wird im Reparaturumfang nicht geöffnet. Der kanonische
+Optimierungseingang ist weiterhin ein Research-Intake, keine Suchfreigabe.
+Es gibt hier keinen Grund, Optimierungssuche oder Meta-/MI-Integration
+anzubauen, um die Reparatur als vollständig darzustellen. (E19, E20)
+
+Master V2, Double Play, Ranking, Auswahl, Risk/Sizing und Orders gehören
+nicht zu den fachlich zu ändernden Regeln. Ein späterer minimaler Host-Join
+darf ausschließlich bereits berechnete Resultate beobachten/weiterreichen.
+
+KONKRETE GRENZE DES BISHERIGEN PROTOTYPS
+
+Der bestandene Pool-Test trennte synthetische Evidenz von REPLAY_HISTORICAL.
+Er bewies keine vollständige Trennung innerhalb derselben breiten Klasse.
+
+Ein neuer, rein konstruierter Gegenversuch mit vorhandenen Buildern zeigt:
+  links: INTERNAL_SIMULATED_OUTCOME, SYNTHETIC_OFFLINE, NO_EXECUTION, NO_FILL;
+  rechts: INTERNAL_SIMULATED_OUTCOME, PUBLIC_MD,
+          INTERNAL_SIMULATED_EXECUTION, SIMULATED-Fills.
+Der vorhandene Pool-Kompatibilitätshelfer akzeptiert beide, weil er die
+breite Klasse vergleicht. Das beweist eine Lücke dieses Helfers, keine
+bereits geschehene Vermischung realer Produktionsdaten. In der gezielten
+src-Suche fanden sich keine Aufrufer dieses Pool-Helfers außerhalb seiner
+Definition; der aktuelle Intake prüft einzelne Records. (E17)
+
+Für die Integration müssen deshalb Ursprung, Realisierungsart,
+Ausführungsart/Fill-Quelle und Messbedeutung innerhalb einer Klasse
+verträglich sein. Preis-only-Simulation und simulierte Trade-Ergebnisse
+dürfen nicht durch ein gemeinsames Klassenlabel gleichgesetzt werden.
+Scopes sind entsprechend zu binden. Das ist eine lokale Vertragsanforderung,
+kein Auftrag zu einem neuen universellen Herkunftsmodell.
+
+DAUERHAFTER ZUSTAND: WARUM KEIN BLOSSER FUNKTIONSAUSTAUSCH GENÜGT
+
+Der vorhandene Pending-Speicher schreibt erst den Index und danach das
+Event. In diesen Funktionen fehlen fsync und eine Single-Writer-Sperre.
+Das ist ein konkretes Unterbrechungsfenster, noch kein neu beobachteter
+Datenverlust. Außerdem genügt beim Closed-Check bereits ein passendes
+out.nbars-Record; vollständiger Lern-Ingest und Export sind damit nicht
+bewiesen. Ein Restart zwischen diesen Schritten braucht eine eigene
+Wiederaufnahmebehandlung. (E09, E10)
+
+Vorgeschlagene Bindung: genau ein append-only Fortschritts-Owner, ein daraus
+wiederaufbaubarer Index und ein Schreiber pro Scope. Die vorhandene
+kanonische Ingest-Idempotenz wird für einen einzigen wirksamen
+Lernfortschritt genutzt. Sie ersetzt keine Transaktion über alle Dateien.
+Kein behauptetes Exactly-once über beliebige Ausfälle; Prozessneustart,
+beschädigte/abgebrochene Writes und konkurrierende Schreiber werden getrennt
+geprüft. Host-Crash-/Stromausfallgarantien werden nicht erfunden. (E21)
+
+Zustandsbedeutungen im Entwurf:
+  offen: Request gespeichert, noch kein vollständiger verfügbarer Horizont;
+  prüfbar: vollständige Originaldaten gebunden, Validierung noch offen;
+  zurückgewiesen: konkrete widersprüchliche oder unzulässige Eingabe;
+  abgeschlossen: Outcome-Bündel, Lernzustand und Export/Intake belegt;
+  Fehler: expliziter Persistenz-/Validierungsfehler, keine stille Rücksetzung.
+Die endgültigen Token müssen in bestehende Besitzer integriert werden;
+diese Liste führt kein neues Laufzeit-Schema ein.
+
+Fehlende Daten werden nicht vorwärts aufgefüllt. Ein dauerhaft fehlender
+Horizont braucht einen sichtbaren Grund; Frist/Abbruch dürfen kein Ergebnis
+erfinden. Belastbare Limits/Retention für einen kontinuierlichen Betrieb
+sind aus gemessener Last zu bestimmen. Für den ersten Offline-Nachweis reicht
+ein begrenzter Manifest mit maximal drei benannten DecisionRefs, einem
+Instrument je Durchlauf und einem explizit abgedeckten Zeitraum.
+
+Korrigierte Bars und widersprüchliche Revisionen werden im ersten begrenzten
+Nachweis ausdrücklich abgewiesen und aufbewahrt. Späterer Replay nur als
+neuer versionierter Fall. Der heutige Faktensync dedupliziert nach
+Instrument/Open-Zeit; er ist kein Beleg einer korrekten Revisionenbehandlung.
+(E11)
+
+UMGANG MIT DEM BESTAND
+
+Vorgeschlagen ist ein lesendes Ausschlussmanifest für die drei bereits
+exakt als Seed-Ergebnisse rekonstruierten Outcomes und ihre anhand von
+Referenzen nachgewiesenen Lern-/Export-Nachfolger. Keine Löschung, keine
+Änderung der Originalprovenienz, keine pauschale Entwertung aller 742 Records.
+Die ursprünglichen Entscheidungen bleiben historische Belege.
+
+Der Ausschluss muss bei jedem späteren Consumer geprüft werden, der diese
+Evidenz tatsächlich liest. Eine schon erfolgte Such-/Ranking-/Tradingwirkung
+ist weiterhin nicht belegt. Eine globale Suche nach allen möglichen
+Nachfolgern außerhalb der gezielt gebundenen Quellen wurde nicht durchgeführt.
+
+VIER ABNAHMEBEDINGUNGEN
+
+G1 – Messvertrag und Originalquelle:
+  Schriftliche Quellen-/Preis-/Horizont-/Scope-Bindung und mindestens ein
+  echter vollständiger gespeicherter PT1H-Horizont mit Originalnachweisen.
+
+G2 – Herkunft, Bestand und Consumer:
+  Herkunft durch alle Übergaben; quellgebundene Consumer-Prüfung;
+  Unverträglichkeit auch innerhalb breiter Klassen; enger Bestandsausschluss;
+  keine Öffnung von G2/Suche/Promotion.
+
+G3 – Persistenz und Wiederanlauf:
+  Wiederholte Zustellung, Neustart und Abbruch an jeder Speichergrenze
+  verlieren keinen Fall still und erzeugen keinen zweiten Lernfortschritt.
+
+G4 – Produktiver Pfad bleibt unabhängig:
+  Dieselben gespeicherten Inputs ergeben mit gesundem, offenem, fehlendem
+  und fehlerhaftem Lernpfad dieselbe Trading-Entscheidung, Core-State,
+  Eligibility und Intents. Keine neue Network-/Credential-/Order-Fähigkeit,
+  kein Warten auf den Horizont im Cycle.
+
+Alle vier Bedingungen sind für eine dauerhafte Ersatzversorgung noch offen.
+18 konkrete Abnahmefälle mit heutigem Belegstatus stehen in integration-plan.json.
+
+GESTUFTER UMSETZUNGSPLAN – HIER NICHT AUSGEFÜHRT
+
+P0 – Diese Vorbereitung: abgeschlossen als Arbeitsentwurf.
+
+P1 – Falsche Evidenz eindämmen:
+  Den Seed-Weg an der bestehenden Übergabe für beobachtete Outcomes sperren.
+  Capture erhalten; Status offen/zurückgewiesen ausdrücklich melden.
+  Fehlende neue Lern-Outcomes sind sichtbar, kein erfundener Erfolg.
+  Vor Merge muss G4 für diese kleine Grenzänderung bestanden sein.
+
+P2 – Ein echter Offline-Horizont:
+  Explizite gespeicherte Quellen, wenige benannte Entscheidungen, ein
+  Instrument je Durchlauf. Erst G1/G2 belegen, dann die vorhandene
+  Berechnungs-/Lern-/Exportkette verwenden. Kein kontinuierlicher Betrieb.
+
+P3 – Dauerhafter Lebenszyklus:
+  Erst nach dem Datenbeweis Request-/Checkpoint-/Wiederaufnahmebehandlung
+  an bestehende Owner binden und alle Unterbrechungsstellen prüfen.
+  Herkunftsbindung beim vorhandenen Owner, nicht nachträgliches Umlabeln.
+
+P4 – Begrenzte Integration:
+  Vergleich am vollständigen Host mit gleichen gespeicherten Inputs,
+  Fehler-Injektion, ehrlicher Diagnose, Backlog-/Ressourcenmessung und
+  Rücknahmeversuch. Produktive Ausführung/Aktivierung bleibt separat.
+
+Rücknahme heißt: neue Dispatches stoppen und offene Fälle/Nachweise erhalten.
+Sie heißt ausdrücklich nicht, den falschen Seed als Fallback wiederherzustellen.
+
+WANN DER UMFANG NEU BEWERTET WIRD
+
+- Der echte Bar-Beweis erfordert eine Änderung des gemeinsamen
+  Marktdatenkerns, neue globale Schemas oder parallele Zustandswahrheiten.
+- Ein neuer Datenbank-/WAL-/Storage-Owner wird nötig statt einer lokalen
+  Bindung des vorhandenen Evidenzbereichs.
+- Es müssten Trading-, Risk-, Auswahl- oder Ausführungsregeln verändert werden.
+- Eine vermeintlich vollständige Lösung verlangt Suche, Promotion oder
+  zusätzliche laufende Datenbeschaffung.
+- Messziel oder Preisfamilie müsste still geändert werden, um die neuen
+  Daten als passend auszugeben.
+
+Dann endet das betroffene Paket mit einem benannten offenen Punkt und einem
+separaten Änderungsvorschlag. Unabhängige Pakete können weiter vorbereitet
+werden. Aus dem Auffinden eines Problems folgt kein automatischer Umbau
+der nächsten Systemebene.
+
+ABSCHLUSS DER VORBEREITUNG
+
+Die bekannte Fehlerursache ist lokal. Die größten noch offenen Aufwände
+sind die belastbare Quelle und der dauerhafte Wiederanlauf. Sie sind jetzt
+vor einer Integration benannt und durch eigene Abnahmekriterien begrenzt.
+Eine seriöse Gesamtaufwandszahl lässt sich vor G1/G3 nicht behaupten.
+Eine Implementierung im produktiven Übergabeweg wurde nicht begonnen.

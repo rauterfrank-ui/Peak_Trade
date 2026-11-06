@@ -1046,7 +1046,6 @@ def run_bridge_cycle_v1(
     )
     if ddo_account_identity_record is not None:
         state.ddo_account_identity_record = ddo_account_identity_record
-    apply_learning_state_feedback_to_next_cycle_v1(state)
 
     if reconciliation_state_root is not None:
         state.reconciliation_state_root = str(reconciliation_state_root)
@@ -1493,6 +1492,21 @@ def run_bridge_cycle_v1(
         ),
     )
 
+    if state.ddo_capture_binding is not None and state.ddo_capture_binding.enabled:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
+            productive_scope_learning_config_hash_v1,
+        )
+
+        state.ddo_capture_binding.capture_scope_config_hash = "UNKNOWN"
+        try:
+            state.ddo_capture_binding.capture_scope_config_hash = productive_scope_learning_config_hash_v1(
+                replay_input
+            )
+        except (ValueError, TypeError, AttributeError) as exc:
+            state.ddo_capture_binding.last_error = f"scope_config_capture:{type(exc).__name__}"
+    # Feedback is checked against this cycle's resolved configuration, not the
+    # previous cycle's binding before a possible policy/owner change.
+    apply_learning_state_feedback_to_next_cycle_v1(state)
     replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
     # Durable source capture for archive sibling export (semantics-free serialization).
     from trading.master_v2.canonical_trading_decision_evidence_v1 import (

@@ -1,0 +1,1313 @@
+{
+  "automatic_multi_domain_composition_proven": false,
+  "domains": [
+    {
+      "baseline": {
+        "boundary_results": [
+          {
+            "consumer": "distinct_market_observation_acceptor_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "CAP2_4_BINDING->C1_OBSERVATION",
+            "pass_": true,
+            "producer": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1"
+          },
+          {
+            "consumer": "canonical_scope_initialization_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "C1_OBSERVATION->DYNAMIC_DIRECTIONAL_SCOPE",
+            "pass_": true,
+            "producer": "distinct_market_observation_acceptor_v1"
+          },
+          {
+            "consumer": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "DYNAMIC_DIRECTIONAL_SCOPE->MV2_DOUBLE_PLAY",
+            "pass_": true,
+            "producer": "canonical_scope_initialization_v1"
+          },
+          {
+            "consumer": "capital_risk_admissibility_owner_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "MV2_DOUBLE_PLAY->CAPITAL_RISK_CRS_SIZING",
+            "pass_": true,
+            "producer": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1"
+          },
+          {
+            "consumer": "canonical_order_intent_owner_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "CAPITAL_RISK_CRS_SIZING->INTENT",
+            "pass_": true,
+            "producer": "capital_risk_admissibility_owner_v1"
+          },
+          {
+            "consumer": "evaluate_execution_admission_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "INTENT->ADMISSION",
+            "pass_": true,
+            "producer": "canonical_order_intent_owner_v1"
+          },
+          {
+            "consumer": "full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "ADMISSION->GOVERNED_CYCLE",
+            "pass_": true,
+            "producer": "evaluate_execution_admission_v1"
+          },
+          {
+            "consumer": "full_core_live_path_composition_root_v1.current_productive_venue_plan_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "GOVERNED_CYCLE->VENUE_PLAN",
+            "pass_": true,
+            "producer": "full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1"
+          },
+          {
+            "consumer": "PRE_EXTERNAL_TERMINAL_BOUNDARY",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "VENUE_PLAN->PRE_EXTERNAL",
+            "pass_": true,
+            "producer": "full_core_live_path_composition_root_v1.current_productive_venue_plan_v1"
+          }
+        ],
+        "decision_deltas": null,
+        "domain": "productive_trading_path",
+        "evidence_refs": [
+          "evidence/ptp/baseline/550e8400-e29b-41d4-a716-446655440000"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": null,
+            "invariant_id": "ptp.pre_external_terminal",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "ptp.stage_count",
+            "unit": null,
+            "value": 10
+          },
+          {
+            "baseline_value": null,
+            "metric_id": "ptp.trace_digest",
+            "unit": null,
+            "value": "c8d7502f552c70bde0ee48a5d0714f81eb33b689cfef5b06e6c9df0a796aa82e"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "capital_risk_crs_sizing_evidence_bundle": {
+            "admission_verdict": null,
+            "capital_context_provenance": {
+              "ref": "550e8400-e29b-41d4-a716-446655440000",
+              "source": "ptp_replay_observe"
+            },
+            "crs_state_digest": "7712c577e47f1204a7a7a5bd019a3358791964c8d4b8e23dcc89f0fa455a6ea2",
+            "exposure_invariants": [
+              {
+                "detail": null,
+                "invariant_id": "ptp.crs.observe_only",
+                "pass": true
+              }
+            ],
+            "risk_context_provenance": {
+              "ref": "550e8400-e29b-41d4-a716-446655440000",
+              "source": "ptp_replay_observe"
+            },
+            "sizing_verdict": null
+          },
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE",
+          "ptp_stage_trace": {
+            "TEST_ONLY_SYNTHETIC": true,
+            "label": "baseline",
+            "run_id": "550e8400-e29b-41d4-a716-446655440000",
+            "stages": [
+              {
+                "gvef_authority": false,
+                "owner": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+                "stage": "CAP2_4_BINDING"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "distinct_market_observation_acceptor_v1",
+                "stage": "C1_OBSERVATION"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "canonical_scope_initialization_v1",
+                "stage": "DYNAMIC_DIRECTIONAL_SCOPE"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+                "stage": "MV2_DOUBLE_PLAY"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "capital_risk_admissibility_owner_v1",
+                "stage": "CAPITAL_RISK_CRS_SIZING"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "canonical_order_intent_owner_v1",
+                "stage": "INTENT"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "evaluate_execution_admission_v1",
+                "stage": "ADMISSION"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1",
+                "stage": "GOVERNED_CYCLE"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "full_core_live_path_composition_root_v1.current_productive_venue_plan_v1",
+                "stage": "VENUE_PLAN"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "PRE_EXTERNAL_TERMINAL_BOUNDARY",
+                "stage": "PRE_EXTERNAL"
+              }
+            ]
+          }
+        },
+        "verdict": "PASS"
+      },
+      "candidate": {
+        "boundary_results": [
+          {
+            "consumer": "distinct_market_observation_acceptor_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "CAP2_4_BINDING->C1_OBSERVATION",
+            "pass_": true,
+            "producer": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1"
+          },
+          {
+            "consumer": "canonical_scope_initialization_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "C1_OBSERVATION->DYNAMIC_DIRECTIONAL_SCOPE",
+            "pass_": true,
+            "producer": "distinct_market_observation_acceptor_v1"
+          },
+          {
+            "consumer": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "DYNAMIC_DIRECTIONAL_SCOPE->MV2_DOUBLE_PLAY",
+            "pass_": true,
+            "producer": "canonical_scope_initialization_v1"
+          },
+          {
+            "consumer": "capital_risk_admissibility_owner_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "MV2_DOUBLE_PLAY->CAPITAL_RISK_CRS_SIZING",
+            "pass_": true,
+            "producer": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1"
+          },
+          {
+            "consumer": "canonical_order_intent_owner_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "CAPITAL_RISK_CRS_SIZING->INTENT",
+            "pass_": true,
+            "producer": "capital_risk_admissibility_owner_v1"
+          },
+          {
+            "consumer": "evaluate_execution_admission_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "INTENT->ADMISSION",
+            "pass_": true,
+            "producer": "canonical_order_intent_owner_v1"
+          },
+          {
+            "consumer": "full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "ADMISSION->GOVERNED_CYCLE",
+            "pass_": true,
+            "producer": "evaluate_execution_admission_v1"
+          },
+          {
+            "consumer": "full_core_live_path_composition_root_v1.current_productive_venue_plan_v1",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "GOVERNED_CYCLE->VENUE_PLAN",
+            "pass_": true,
+            "producer": "full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1"
+          },
+          {
+            "consumer": "PRE_EXTERNAL_TERMINAL_BOUNDARY",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "VENUE_PLAN->PRE_EXTERNAL",
+            "pass_": true,
+            "producer": "full_core_live_path_composition_root_v1.current_productive_venue_plan_v1"
+          }
+        ],
+        "decision_deltas": null,
+        "domain": "productive_trading_path",
+        "evidence_refs": [
+          "evidence/ptp/candidate/550e8400-e29b-41d4-a716-446655440000"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": null,
+            "invariant_id": "ptp.pre_external_terminal",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "ptp.stage_count",
+            "unit": null,
+            "value": 10
+          },
+          {
+            "baseline_value": null,
+            "metric_id": "ptp.trace_digest",
+            "unit": null,
+            "value": "63593c677d94b3220147a6b035f06682fcc52f3f91effcd7ea28870c6450ea08"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "capital_risk_crs_sizing_evidence_bundle": {
+            "admission_verdict": null,
+            "capital_context_provenance": {
+              "ref": "550e8400-e29b-41d4-a716-446655440000",
+              "source": "ptp_replay_observe"
+            },
+            "crs_state_digest": "7712c577e47f1204a7a7a5bd019a3358791964c8d4b8e23dcc89f0fa455a6ea2",
+            "exposure_invariants": [
+              {
+                "detail": null,
+                "invariant_id": "ptp.crs.observe_only",
+                "pass": true
+              }
+            ],
+            "risk_context_provenance": {
+              "ref": "550e8400-e29b-41d4-a716-446655440000",
+              "source": "ptp_replay_observe"
+            },
+            "sizing_verdict": null
+          },
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE",
+          "ptp_stage_trace": {
+            "TEST_ONLY_SYNTHETIC": true,
+            "label": "candidate",
+            "run_id": "550e8400-e29b-41d4-a716-446655440000",
+            "stages": [
+              {
+                "gvef_authority": false,
+                "owner": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+                "stage": "CAP2_4_BINDING"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "distinct_market_observation_acceptor_v1",
+                "stage": "C1_OBSERVATION"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "canonical_scope_initialization_v1",
+                "stage": "DYNAMIC_DIRECTIONAL_SCOPE"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+                "stage": "MV2_DOUBLE_PLAY"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "capital_risk_admissibility_owner_v1",
+                "stage": "CAPITAL_RISK_CRS_SIZING"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "canonical_order_intent_owner_v1",
+                "stage": "INTENT"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "evaluate_execution_admission_v1",
+                "stage": "ADMISSION"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1",
+                "stage": "GOVERNED_CYCLE"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "full_core_live_path_composition_root_v1.current_productive_venue_plan_v1",
+                "stage": "VENUE_PLAN"
+              },
+              {
+                "gvef_authority": false,
+                "owner": "PRE_EXTERNAL_TERMINAL_BOUNDARY",
+                "stage": "PRE_EXTERNAL"
+              }
+            ]
+          }
+        },
+        "verdict": "PASS"
+      },
+      "evaluator": "ProductiveTradingPathEvaluatorV1",
+      "evidence_bundle": {
+        "authority_boundary_results": [
+          {
+            "consumer": "PRE_EXTERNAL",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "POST_GATE",
+            "pass_": true,
+            "producer": "gvef"
+          }
+        ],
+        "baseline_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "candidate_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "capital_risk_crs_sizing_evidence_bundle": {
+          "admission_verdict": null,
+          "capital_context_provenance": {
+            "ref": "550e8400-e29b-41d4-a716-446655440000",
+            "source": "ptp_replay_observe"
+          },
+          "crs_state_digest": "7712c577e47f1204a7a7a5bd019a3358791964c8d4b8e23dcc89f0fa455a6ea2",
+          "exposure_invariants": [
+            {
+              "detail": null,
+              "invariant_id": "ptp.crs.observe_only",
+              "pass_": true
+            }
+          ],
+          "risk_context_provenance": {
+            "ref": "550e8400-e29b-41d4-a716-446655440000",
+            "source": "ptp_replay_observe"
+          },
+          "sizing_verdict": null
+        },
+        "config_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "config_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "constraint_matrix_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "constraint_matrix_version": "1.5.0",
+        "data_manifest": {
+          "data_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "data_manifest_id": "data-stub"
+        },
+        "data_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "decision_delta_manifest": {
+          "deltas": [
+            {
+              "after": "candidate",
+              "before": "baseline",
+              "delta_id": "d1"
+            }
+          ],
+          "digest": "299bb3d3abfb9982bfecb49a309d861609c7fab9689c5764c9b0b21a4c275621"
+        },
+        "evidence_digest": "d7859433c488c0f43aae419ae856f18d9943ded1aebc0ea04fc77d0b8677f951",
+        "experiment_id": "exp-gvef-bwp2",
+        "failure_classification": null,
+        "fan_out_evaluation_class": "LOCAL_EVALUATION",
+        "invariant_results": [
+          {
+            "detail": null,
+            "invariant_id": "i1",
+            "pass_": true
+          }
+        ],
+        "metric_schema_version": "1.0.0",
+        "post_constraint_gate_pass": true,
+        "promotion_status": "EXTERNAL_UNSET",
+        "protected_semantic_digests": {
+          "admission": null,
+          "confirmation": null,
+          "crs": null,
+          "dp": null,
+          "entry_exit": null,
+          "mv2": null,
+          "ranking_universe": {
+            "digest_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "scope": null,
+          "selection": {
+            "digest_hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "sidestate": null,
+          "sizing": null,
+          "venue_plan": null
+        },
+        "ranking_delta_manifest": null,
+        "ranking_universe_manifest": null,
+        "run_id": "550e8400-e29b-41d4-a716-446655440000",
+        "seed_set": [
+          42
+        ],
+        "vector_corpus_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "vector_corpus_version": "1.0.0"
+      },
+      "evidence_complete": true,
+      "input_source": "EXISTING_SYNTHETIC_FIXTURE_TRACE",
+      "promotion_envelope": null,
+      "state": "REGISTERED",
+      "state_history": [
+        "CREATED",
+        "BOUND",
+        "PRE_CONSTRAINT_CHECKED",
+        "REPLAY_READY",
+        "REPLAYED",
+        "EVALUATED",
+        "COMPARED",
+        "DELTA_MANIFEST_BUILT",
+        "POST_CONSTRAINT_CHECKED",
+        "EVIDENCE_BUILT",
+        "REGISTERED"
+      ]
+    },
+    {
+      "baseline": {
+        "boundary_results": [],
+        "decision_deltas": null,
+        "domain": "ranking_universe",
+        "evidence_refs": [
+          "evidence/ru/baseline"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": "RANKING_UNIVERSE_IS_NOT_SELECTION",
+            "invariant_id": "ru.not_selection",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "ru.membership_count",
+            "unit": null,
+            "value": 2
+          },
+          {
+            "baseline_value": null,
+            "metric_id": "ru.digest",
+            "unit": null,
+            "value": "d767d03b2cf145ac86d8cc1a400a7712b9d0ac21bf81adfa3c22052aef47db43"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "ranking_universe_digest": "d767d03b2cf145ac86d8cc1a400a7712b9d0ac21bf81adfa3c22052aef47db43",
+          "ranking_universe_manifest": {
+            "membership": [
+              {
+                "instrument_id": "BTC-PERP"
+              },
+              {
+                "instrument_id": "ETH-PERP"
+              }
+            ],
+            "ordering": null,
+            "provenance": {
+              "ref": "ru-baseline",
+              "source": "gvef.evaluator"
+            },
+            "ranking_snapshot_id": "ru-baseline",
+            "top_k_context": null
+          }
+        },
+        "verdict": "PASS"
+      },
+      "candidate": {
+        "boundary_results": [],
+        "decision_deltas": null,
+        "domain": "ranking_universe",
+        "evidence_refs": [
+          "evidence/ru/candidate"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": "RANKING_UNIVERSE_IS_NOT_SELECTION",
+            "invariant_id": "ru.not_selection",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "ru.membership_count",
+            "unit": null,
+            "value": 2
+          },
+          {
+            "baseline_value": null,
+            "metric_id": "ru.digest",
+            "unit": null,
+            "value": "3c667a3202c515a7fb1ca03c7e57f6c4c14777a5d075ad7ec0f42c29b91f2d27"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "ranking_delta_manifest": {
+            "churn_metrics": {
+              "membership_churn_count": 2,
+              "ordering_churn_count": 0
+            },
+            "digest": "8a2a5b286297ed5eade9213115995b5753fed68be80dbeae251a3f71877fbf76",
+            "membership_deltas": [
+              {
+                "action": "added",
+                "instrument_id": "SOL-PERP"
+              },
+              {
+                "action": "removed",
+                "instrument_id": "ETH-PERP"
+              }
+            ],
+            "ordering_deltas": null
+          },
+          "ranking_universe_digest": "3c667a3202c515a7fb1ca03c7e57f6c4c14777a5d075ad7ec0f42c29b91f2d27",
+          "ranking_universe_manifest": {
+            "membership": [
+              {
+                "instrument_id": "BTC-PERP"
+              },
+              {
+                "instrument_id": "SOL-PERP"
+              }
+            ],
+            "ordering": null,
+            "provenance": {
+              "ref": "ru-candidate",
+              "source": "gvef.evaluator"
+            },
+            "ranking_snapshot_id": "ru-candidate",
+            "top_k_context": null
+          }
+        },
+        "verdict": "PASS"
+      },
+      "evaluator": "RankingUniverseEvaluatorV1",
+      "evidence_bundle": {
+        "authority_boundary_results": [
+          {
+            "consumer": "PRE_EXTERNAL",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "POST_GATE",
+            "pass_": true,
+            "producer": "gvef"
+          }
+        ],
+        "baseline_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "candidate_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "capital_risk_crs_sizing_evidence_bundle": null,
+        "config_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "config_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "constraint_matrix_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "constraint_matrix_version": "1.5.0",
+        "data_manifest": {
+          "data_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "data_manifest_id": "data-stub"
+        },
+        "data_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "decision_delta_manifest": {
+          "deltas": [
+            {
+              "after": "candidate",
+              "before": "baseline",
+              "delta_id": "d1"
+            }
+          ],
+          "digest": "299bb3d3abfb9982bfecb49a309d861609c7fab9689c5764c9b0b21a4c275621"
+        },
+        "evidence_digest": "bb2764c6c74cb185f589c62e3caa2192de1ff84c0bc59f77dbe662658fd7cfdd",
+        "experiment_id": "exp-gvef-bwp2",
+        "failure_classification": null,
+        "fan_out_evaluation_class": "LOCAL_EVALUATION",
+        "invariant_results": [
+          {
+            "detail": null,
+            "invariant_id": "i1",
+            "pass_": true
+          }
+        ],
+        "metric_schema_version": "1.0.0",
+        "post_constraint_gate_pass": true,
+        "promotion_status": "EXTERNAL_UNSET",
+        "protected_semantic_digests": {
+          "admission": null,
+          "confirmation": null,
+          "crs": null,
+          "dp": null,
+          "entry_exit": null,
+          "mv2": null,
+          "ranking_universe": {
+            "digest_hex": "3c667a3202c515a7fb1ca03c7e57f6c4c14777a5d075ad7ec0f42c29b91f2d27",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "scope": null,
+          "selection": {
+            "digest_hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "sidestate": null,
+          "sizing": null,
+          "venue_plan": null
+        },
+        "ranking_delta_manifest": {
+          "churn_metrics": {
+            "membership_churn_count": 2,
+            "ordering_churn_count": 0
+          },
+          "digest": "8a2a5b286297ed5eade9213115995b5753fed68be80dbeae251a3f71877fbf76",
+          "membership_deltas": [
+            {
+              "action": "added",
+              "instrument_id": "SOL-PERP"
+            },
+            {
+              "action": "removed",
+              "instrument_id": "ETH-PERP"
+            }
+          ],
+          "ordering_deltas": null
+        },
+        "ranking_universe_manifest": {
+          "membership": [
+            {
+              "instrument_id": "BTC-PERP"
+            },
+            {
+              "instrument_id": "SOL-PERP"
+            }
+          ],
+          "ordering": null,
+          "provenance": {
+            "ref": "ru-candidate",
+            "source": "gvef.evaluator"
+          },
+          "ranking_snapshot_id": "ru-candidate",
+          "top_k_context": null
+        },
+        "run_id": "550e8400-e29b-41d4-a716-446655440000",
+        "seed_set": [
+          42
+        ],
+        "vector_corpus_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "vector_corpus_version": "1.0.0"
+      },
+      "evidence_complete": true,
+      "input_source": "EXISTING_SYNTHETIC_FIXTURE_TRACE",
+      "promotion_envelope": null,
+      "state": "REGISTERED",
+      "state_history": [
+        "CREATED",
+        "BOUND",
+        "PRE_CONSTRAINT_CHECKED",
+        "REPLAY_READY",
+        "REPLAYED",
+        "EVALUATED",
+        "COMPARED",
+        "DELTA_MANIFEST_BUILT",
+        "POST_CONSTRAINT_CHECKED",
+        "EVIDENCE_BUILT",
+        "REGISTERED"
+      ]
+    },
+    {
+      "baseline": {
+        "boundary_results": [],
+        "decision_deltas": null,
+        "domain": "optimization_universe",
+        "evidence_refs": [
+          "evidence/opt/baseline"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": "OPTIMIZATION_PRODUCTIVE_APPLY=false",
+            "invariant_id": "opt.no_productive_apply",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "opt.param_count",
+            "unit": null,
+            "value": 3
+          },
+          {
+            "baseline_value": null,
+            "metric_id": "opt.digest",
+            "unit": null,
+            "value": "3ec03a1a8114494bd6899f30402c72933b62c8c444021e50d1411335c5db1ba9"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE",
+          "optimization_digest": "3ec03a1a8114494bd6899f30402c72933b62c8c444021e50d1411335c5db1ba9",
+          "optimization_universe": {
+            "label": "baseline",
+            "parameters": {
+              "TEST_ONLY_SYNTHETIC": true,
+              "alpha": "1",
+              "beta": "2"
+            }
+          }
+        },
+        "verdict": "PASS"
+      },
+      "candidate": {
+        "boundary_results": [],
+        "decision_deltas": null,
+        "domain": "optimization_universe",
+        "evidence_refs": [
+          "evidence/opt/candidate"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": "OPTIMIZATION_PRODUCTIVE_APPLY=false",
+            "invariant_id": "opt.no_productive_apply",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "opt.param_count",
+            "unit": null,
+            "value": 3
+          },
+          {
+            "baseline_value": null,
+            "metric_id": "opt.digest",
+            "unit": null,
+            "value": "4832f8a3edbbaaa1cc687fe5df8ad44dcf2442da483bbe1f575dc1ee8c8c902f"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE",
+          "optimization_delta": {
+            "parameter_changes": [
+              {
+                "after": "3",
+                "before": "2",
+                "key": "beta"
+              }
+            ]
+          },
+          "optimization_digest": "4832f8a3edbbaaa1cc687fe5df8ad44dcf2442da483bbe1f575dc1ee8c8c902f",
+          "optimization_universe": {
+            "label": "candidate",
+            "parameters": {
+              "TEST_ONLY_SYNTHETIC": true,
+              "alpha": "1",
+              "beta": "3"
+            }
+          }
+        },
+        "verdict": "PASS"
+      },
+      "evaluator": "OptimizationUniverseEvaluatorV1",
+      "evidence_bundle": {
+        "authority_boundary_results": [
+          {
+            "consumer": "PRE_EXTERNAL",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "POST_GATE",
+            "pass_": true,
+            "producer": "gvef"
+          }
+        ],
+        "baseline_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "candidate_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "capital_risk_crs_sizing_evidence_bundle": null,
+        "config_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "config_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "constraint_matrix_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "constraint_matrix_version": "1.5.0",
+        "data_manifest": {
+          "data_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "data_manifest_id": "data-stub"
+        },
+        "data_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "decision_delta_manifest": {
+          "deltas": [
+            {
+              "after": "candidate",
+              "before": "baseline",
+              "delta_id": "d1"
+            }
+          ],
+          "digest": "299bb3d3abfb9982bfecb49a309d861609c7fab9689c5764c9b0b21a4c275621"
+        },
+        "evidence_digest": "b5391b44a926f8382be324bebb459e195729b9c8a83fa532289197fe83267a05",
+        "experiment_id": "exp-gvef-bwp2",
+        "failure_classification": null,
+        "fan_out_evaluation_class": "LOCAL_EVALUATION",
+        "invariant_results": [
+          {
+            "detail": null,
+            "invariant_id": "i1",
+            "pass_": true
+          }
+        ],
+        "metric_schema_version": "1.0.0",
+        "post_constraint_gate_pass": true,
+        "promotion_status": "EXTERNAL_UNSET",
+        "protected_semantic_digests": {
+          "admission": null,
+          "confirmation": null,
+          "crs": null,
+          "dp": null,
+          "entry_exit": null,
+          "mv2": null,
+          "ranking_universe": {
+            "digest_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "scope": null,
+          "selection": {
+            "digest_hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "sidestate": null,
+          "sizing": null,
+          "venue_plan": null
+        },
+        "ranking_delta_manifest": null,
+        "ranking_universe_manifest": null,
+        "run_id": "550e8400-e29b-41d4-a716-446655440000",
+        "seed_set": [
+          42
+        ],
+        "vector_corpus_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "vector_corpus_version": "1.0.0"
+      },
+      "evidence_complete": true,
+      "input_source": "EXISTING_SYNTHETIC_FIXTURE_TRACE",
+      "promotion_envelope": null,
+      "state": "REGISTERED",
+      "state_history": [
+        "CREATED",
+        "BOUND",
+        "PRE_CONSTRAINT_CHECKED",
+        "REPLAY_READY",
+        "REPLAYED",
+        "EVALUATED",
+        "COMPARED",
+        "DELTA_MANIFEST_BUILT",
+        "POST_CONSTRAINT_CHECKED",
+        "EVIDENCE_BUILT",
+        "REGISTERED"
+      ]
+    },
+    {
+      "baseline": {
+        "boundary_results": [],
+        "decision_deltas": null,
+        "domain": "self_learning",
+        "evidence_refs": [
+          "evidence/sl/baseline"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": "SELF_LEARNING_PRODUCTIVE_WRITEBACK=false",
+            "invariant_id": "sl.no_productive_writeback",
+            "pass_": true
+          },
+          {
+            "detail": null,
+            "invariant_id": "sl.baseline_candidate_bound",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "sl.artifact_digest",
+            "unit": null,
+            "value": "d8891f74d440651f7fb1187c06e866fa36bc457f728d782be366697ea8531ce1"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE",
+          "learning_artifact": {
+            "TEST_ONLY_SYNTHETIC": true,
+            "epoch": 1,
+            "model_id": "m1"
+          },
+          "learning_artifact_digest": "d8891f74d440651f7fb1187c06e866fa36bc457f728d782be366697ea8531ce1"
+        },
+        "verdict": "PASS"
+      },
+      "candidate": {
+        "boundary_results": [],
+        "decision_deltas": null,
+        "domain": "self_learning",
+        "evidence_refs": [
+          "evidence/sl/candidate"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": "SELF_LEARNING_PRODUCTIVE_WRITEBACK=false",
+            "invariant_id": "sl.no_productive_writeback",
+            "pass_": true
+          },
+          {
+            "detail": null,
+            "invariant_id": "sl.baseline_candidate_bound",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "sl.artifact_digest",
+            "unit": null,
+            "value": "edc586daf2d419efdb505803e4fb07f81407be77ad7493440d49505bf853cde2"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE",
+          "learning_artifact": {
+            "TEST_ONLY_SYNTHETIC": true,
+            "epoch": 2,
+            "model_id": "m1"
+          },
+          "learning_artifact_digest": "edc586daf2d419efdb505803e4fb07f81407be77ad7493440d49505bf853cde2"
+        },
+        "verdict": "PASS"
+      },
+      "evaluator": "SelfLearningEvaluatorV1",
+      "evidence_bundle": {
+        "authority_boundary_results": [
+          {
+            "consumer": "PRE_EXTERNAL",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "POST_GATE",
+            "pass_": true,
+            "producer": "gvef"
+          }
+        ],
+        "baseline_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "candidate_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "capital_risk_crs_sizing_evidence_bundle": null,
+        "config_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "config_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "constraint_matrix_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "constraint_matrix_version": "1.5.0",
+        "data_manifest": {
+          "data_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "data_manifest_id": "data-stub"
+        },
+        "data_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "decision_delta_manifest": {
+          "deltas": [
+            {
+              "after": "candidate",
+              "before": "baseline",
+              "delta_id": "d1"
+            }
+          ],
+          "digest": "299bb3d3abfb9982bfecb49a309d861609c7fab9689c5764c9b0b21a4c275621"
+        },
+        "evidence_digest": "b5391b44a926f8382be324bebb459e195729b9c8a83fa532289197fe83267a05",
+        "experiment_id": "exp-gvef-bwp2",
+        "failure_classification": null,
+        "fan_out_evaluation_class": "LOCAL_EVALUATION",
+        "invariant_results": [
+          {
+            "detail": null,
+            "invariant_id": "i1",
+            "pass_": true
+          }
+        ],
+        "metric_schema_version": "1.0.0",
+        "post_constraint_gate_pass": true,
+        "promotion_status": "EXTERNAL_UNSET",
+        "protected_semantic_digests": {
+          "admission": null,
+          "confirmation": null,
+          "crs": null,
+          "dp": null,
+          "entry_exit": null,
+          "mv2": null,
+          "ranking_universe": {
+            "digest_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "scope": null,
+          "selection": {
+            "digest_hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "sidestate": null,
+          "sizing": null,
+          "venue_plan": null
+        },
+        "ranking_delta_manifest": null,
+        "ranking_universe_manifest": null,
+        "run_id": "550e8400-e29b-41d4-a716-446655440000",
+        "seed_set": [
+          42
+        ],
+        "vector_corpus_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "vector_corpus_version": "1.0.0"
+      },
+      "evidence_complete": true,
+      "input_source": "EXISTING_SYNTHETIC_FIXTURE_TRACE",
+      "promotion_envelope": null,
+      "state": "REGISTERED",
+      "state_history": [
+        "CREATED",
+        "BOUND",
+        "PRE_CONSTRAINT_CHECKED",
+        "REPLAY_READY",
+        "REPLAYED",
+        "EVALUATED",
+        "COMPARED",
+        "DELTA_MANIFEST_BUILT",
+        "POST_CONSTRAINT_CHECKED",
+        "EVIDENCE_BUILT",
+        "REGISTERED"
+      ]
+    },
+    {
+      "baseline": {
+        "boundary_results": [],
+        "decision_deltas": null,
+        "domain": "market_intelligence",
+        "evidence_refs": [
+          "evidence/mi/baseline"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": "MARKET_INTELLIGENCE_PRODUCTIVE_MATERIALIZATION=false",
+            "invariant_id": "mi.no_productive_materialization",
+            "pass_": true
+          },
+          {
+            "detail": null,
+            "invariant_id": "mi.leakage_check",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "mi.bundle_digest",
+            "unit": null,
+            "value": "97570a054076fa982105b5f8e5ea951da1748b1dbc88d57c4f6a0886fe0853cd"
+          },
+          {
+            "baseline_value": null,
+            "metric_id": "mi.freshness_token",
+            "unit": null,
+            "value": "t0"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE",
+          "mi_context_bundle": {
+            "TEST_ONLY_SYNTHETIC": true,
+            "causality_proof_present": true,
+            "freshness_token": "t0"
+          },
+          "mi_digest": "97570a054076fa982105b5f8e5ea951da1748b1dbc88d57c4f6a0886fe0853cd"
+        },
+        "verdict": "PASS"
+      },
+      "candidate": {
+        "boundary_results": [],
+        "decision_deltas": null,
+        "domain": "market_intelligence",
+        "evidence_refs": [
+          "evidence/mi/candidate"
+        ],
+        "failure_classification": null,
+        "invariants": [
+          {
+            "detail": "MARKET_INTELLIGENCE_PRODUCTIVE_MATERIALIZATION=false",
+            "invariant_id": "mi.no_productive_materialization",
+            "pass_": true
+          },
+          {
+            "detail": null,
+            "invariant_id": "mi.leakage_check",
+            "pass_": true
+          }
+        ],
+        "metrics": [
+          {
+            "baseline_value": null,
+            "metric_id": "mi.bundle_digest",
+            "unit": null,
+            "value": "46278285571b0ad9899da71a2d8043b917e071aa3006015a91672fb71315e57a"
+          },
+          {
+            "baseline_value": null,
+            "metric_id": "mi.freshness_token",
+            "unit": null,
+            "value": "t1"
+          }
+        ],
+        "semantic_digest_deltas": {
+          "evidence_source_class": "MECHANISM_TEST_EVIDENCE",
+          "mi_context_bundle": {
+            "TEST_ONLY_SYNTHETIC": true,
+            "causality_proof_present": true,
+            "freshness_token": "t1"
+          },
+          "mi_digest": "46278285571b0ad9899da71a2d8043b917e071aa3006015a91672fb71315e57a"
+        },
+        "verdict": "PASS"
+      },
+      "evaluator": "MarketIntelligenceEvaluatorV1",
+      "evidence_bundle": {
+        "authority_boundary_results": [
+          {
+            "consumer": "PRE_EXTERNAL",
+            "current_verdict": "PROVEN_CURRENT",
+            "edge_id": "POST_GATE",
+            "pass_": true,
+            "producer": "gvef"
+          }
+        ],
+        "baseline_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "candidate_sha": "e1c884fcb6e105864073d049617bbed57811ecf9",
+        "capital_risk_crs_sizing_evidence_bundle": null,
+        "config_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "config_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "constraint_matrix_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "constraint_matrix_version": "1.5.0",
+        "data_manifest": {
+          "data_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "data_manifest_id": "data-stub"
+        },
+        "data_provenance": {
+          "ref": "deterministic",
+          "source": "stub"
+        },
+        "decision_delta_manifest": {
+          "deltas": [
+            {
+              "after": "candidate",
+              "before": "baseline",
+              "delta_id": "d1"
+            }
+          ],
+          "digest": "299bb3d3abfb9982bfecb49a309d861609c7fab9689c5764c9b0b21a4c275621"
+        },
+        "evidence_digest": "b5391b44a926f8382be324bebb459e195729b9c8a83fa532289197fe83267a05",
+        "experiment_id": "exp-gvef-bwp2",
+        "failure_classification": null,
+        "fan_out_evaluation_class": "LOCAL_EVALUATION",
+        "invariant_results": [
+          {
+            "detail": null,
+            "invariant_id": "i1",
+            "pass_": true
+          }
+        ],
+        "metric_schema_version": "1.0.0",
+        "post_constraint_gate_pass": true,
+        "promotion_status": "EXTERNAL_UNSET",
+        "protected_semantic_digests": {
+          "admission": null,
+          "confirmation": null,
+          "crs": null,
+          "dp": null,
+          "entry_exit": null,
+          "mv2": null,
+          "ranking_universe": {
+            "digest_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "scope": null,
+          "selection": {
+            "digest_hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "schema_version": "1.0.0",
+            "verdict": null
+          },
+          "sidestate": null,
+          "sizing": null,
+          "venue_plan": null
+        },
+        "ranking_delta_manifest": null,
+        "ranking_universe_manifest": null,
+        "run_id": "550e8400-e29b-41d4-a716-446655440000",
+        "seed_set": [
+          42
+        ],
+        "vector_corpus_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "vector_corpus_version": "1.0.0"
+      },
+      "evidence_complete": true,
+      "input_source": "EXISTING_SYNTHETIC_FIXTURE_TRACE",
+      "promotion_envelope": null,
+      "state": "REGISTERED",
+      "state_history": [
+        "CREATED",
+        "BOUND",
+        "PRE_CONSTRAINT_CHECKED",
+        "REPLAY_READY",
+        "REPLAYED",
+        "EVALUATED",
+        "COMPARED",
+        "DELTA_MANIFEST_BUILT",
+        "POST_CONSTRAINT_CHECKED",
+        "EVIDENCE_BUILT",
+        "REGISTERED"
+      ]
+    }
+  ],
+  "evidence_registration_is_productive_promotion": false,
+  "integrated_ranking_authority_negative": {
+    "failure": "AUTHORITY_FAILURE",
+    "fan_out": "WHOLE_SYSTEM_REPROOF",
+    "registry_ref": null
+  },
+  "scope_algorithm_called_by_this_probe": false,
+  "source": "Actual existing GenericRunner/evaluator calls with deterministic test doubles for replay/gates/comparator/delta/evidence builder and in-memory registry; not actual productive owners or market observations"
+}

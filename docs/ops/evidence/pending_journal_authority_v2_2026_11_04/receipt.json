@@ -1,0 +1,39 @@
+{
+  "source_commit": "2a9d6e95c4962be5ca6739a892712d62ce537f12",
+  "source_paths_sha256": {
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/store_v1.py": "cf829dd74d50051db610b577c176ab58165d13c8d38c7aab4a834a0cc40232d0",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py": "5bbc15b24da58672b89193475cd9b5fa1a335d3217db387331a24b1ead2d53b5",
+    "tests/ops/test_pending_outcome_journal_authority_v2.py": "c1fdcf3165f264a7aee3f6c3b5f0bdff21c95d9ad419a14e98ab62eb2097cf78"
+  },
+  "tests": {
+    "before": "9 FAIL",
+    "final_scope": "79 PASS including 15 new journal cases",
+    "downstream": "Earlier 30 PASS reused, no redundant run"
+  },
+  "boundaries": [
+    "cooperating local writers only",
+    "root loss/rollback/power loss not proven",
+    "full durable measurement artifacts still open",
+    "cross-DDO-ledger atomic closure unproven"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/pending_journal_authority_v2_2026_11_04/README.md",
+      "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 538,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

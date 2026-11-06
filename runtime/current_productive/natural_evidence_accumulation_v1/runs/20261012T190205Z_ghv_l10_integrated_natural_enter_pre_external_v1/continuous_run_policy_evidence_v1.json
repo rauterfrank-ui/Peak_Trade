@@ -1,0 +1,72 @@
+{
+  "continuous_run_policy_digest": "42b5ee16a4307b6308451f73ee288afc76f70a12392dae3dad90eda8de963948",
+  "cycles_completed": 7,
+  "iteration_evidence": [
+    {
+      "continuous_admission_granted": true,
+      "cycle_index": 0,
+      "f1_m9_threshold_seconds": 600.0,
+      "f1_m9_wiring_status": "THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "productive_activation_authorized": true,
+      "reason_codes": []
+    },
+    {
+      "continuous_admission_granted": true,
+      "cycle_index": 1,
+      "f1_m9_threshold_seconds": 600.0,
+      "f1_m9_wiring_status": "THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "productive_activation_authorized": true,
+      "reason_codes": []
+    },
+    {
+      "continuous_admission_granted": true,
+      "cycle_index": 2,
+      "f1_m9_threshold_seconds": 600.0,
+      "f1_m9_wiring_status": "THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "productive_activation_authorized": true,
+      "reason_codes": []
+    },
+    {
+      "continuous_admission_granted": true,
+      "cycle_index": 3,
+      "f1_m9_threshold_seconds": 600.0,
+      "f1_m9_wiring_status": "THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "productive_activation_authorized": true,
+      "reason_codes": []
+    },
+    {
+      "continuous_admission_granted": true,
+      "cycle_index": 4,
+      "f1_m9_threshold_seconds": 600.0,
+      "f1_m9_wiring_status": "THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "productive_activation_authorized": true,
+      "reason_codes": []
+    },
+    {
+      "continuous_admission_granted": true,
+      "cycle_index": 5,
+      "f1_m9_threshold_seconds": 600.0,
+      "f1_m9_wiring_status": "THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "productive_activation_authorized": true,
+      "reason_codes": []
+    },
+    {
+      "continuous_admission_granted": true,
+      "cycle_index": 6,
+      "f1_m9_threshold_seconds": 600.0,
+      "f1_m9_wiring_status": "THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "productive_activation_authorized": true,
+      "reason_codes": []
+    },
+    {
+      "continuous_admission_granted": true,
+      "cycle_index": 7,
+      "f1_m9_threshold_seconds": 600.0,
+      "f1_m9_wiring_status": "THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "productive_activation_authorized": true,
+      "reason_codes": []
+    }
+  ],
+  "orchestrator_disposition": "PRE_EXTERNAL_EFFECT",
+  "productive_activation_policy_digest": "692f70db6c42e3b859972ec2946be31eec4ac581096ca2c5e1fe71772eeea4d1"
+}

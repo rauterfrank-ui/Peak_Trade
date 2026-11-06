@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from decimal import Decimal, ROUND_HALF_EVEN
+from decimal import Decimal
 from typing import Any, Mapping, Optional
 
 from src.execution.paper.futures_accounting import (
@@ -56,6 +56,10 @@ def _to_decimal(name: str, value: Decimal | str | int | float) -> Decimal:
 
 
 def validate_contract_metadata_v1(contract: ContractMetadataV1) -> None:
+    if contract.contract_type != "linear":
+        raise AccountingEngineError(
+            AccountingFailureCodeV1.INVALID_CONTRACT_METADATA, "UNSUPPORTED_CONTRACT_TYPE"
+        )
     try:
         instrument = FuturesInstrumentSpec(
             symbol=contract.symbol,
@@ -117,10 +121,17 @@ class ProductiveFuturesAccountingSessionV1:
     last_mark: Optional[Decimal] = None
     applied_fill_results: dict[str, AccountingApplyResultV1] = field(default_factory=dict)
     fill_order: list[str] = field(default_factory=list)
+    funding_pnl: Decimal = field(default_factory=lambda: Decimal("0"))
+    funding_events: dict[str, dict[str, str]] = field(default_factory=dict)
+    last_fill_time: Optional[float] = None
 
     def __post_init__(self) -> None:
         validate_contract_metadata_v1(self.contract)
         self.initial_equity = _to_decimal("initial_equity", self.initial_equity)
+        if self.initial_equity < 0:
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "NEGATIVE_INITIAL_EQUITY"
+            )
 
     @property
     def kernel_owner(self) -> str:
@@ -156,11 +167,11 @@ class ProductiveFuturesAccountingSessionV1:
             self.initial_equity
             + self.realized_pnl
             + unreal
+            + self.funding_pnl
             - self.cumulative_fees
-            - self.cumulative_slippage
         )
         return AccountingPortfolioStateV1(
-            equity=equity.quantize(Decimal("0.00000001"), rounding=ROUND_HALF_EVEN),
+            equity=equity,
             initial_equity=self.initial_equity,
             realized_pnl=self.realized_pnl,
             unrealized_pnl=unreal,
@@ -169,6 +180,7 @@ class ProductiveFuturesAccountingSessionV1:
             positions=tuple(positions),
             fill_count=len(self.fill_order),
             applied_fill_ids=tuple(self.fill_order),
+            funding_pnl=self.funding_pnl,
         )
 
     def risk_state(self, *, mark_price: Optional[Decimal] = None) -> AccountingRiskStateV1:
@@ -212,6 +224,16 @@ class ProductiveFuturesAccountingSessionV1:
         )
 
     def mark_to_market(self, mark_price: Decimal | str | int | float) -> AccountingApplyResultV1:
+        from copy import copy
+
+        candidate = copy(self)
+        result = candidate._mark_to_market_v1(mark_price)
+        self.__dict__.update(candidate.__dict__)
+        return result
+
+    def _mark_to_market_v1(
+        self, mark_price: Decimal | str | int | float
+    ) -> AccountingApplyResultV1:
         mark = _to_decimal("mark_price", mark_price)
         if mark <= 0:
             raise AccountingEngineError(AccountingFailureCodeV1.INVALID_MARK_PRICE)
@@ -245,32 +267,58 @@ class ProductiveFuturesAccountingSessionV1:
         )
 
     def apply_fill(self, fill: SimulatedFillInputV1) -> AccountingApplyResultV1:
+        # Validate/calculate on a candidate: failed risk/metadata evaluation
+        # must not leave a partially booked position or fee debit behind.
+        from copy import copy
+
+        candidate = copy(self)
+        candidate.fill_order = list(self.fill_order)
+        candidate.applied_fill_results = dict(self.applied_fill_results)
+        result = candidate._apply_fill_v1(fill)
+        self.__dict__.update(candidate.__dict__)
+        return result
+
+    def _apply_fill_v1(self, fill: SimulatedFillInputV1) -> AccountingApplyResultV1:
         """Apply fill through canonical kernel semantics. Idempotent by fill_id."""
         if fill.fill_id in self.applied_fill_results:
             prior = self.applied_fill_results[fill.fill_id]
+            if fill.digest() != prior.fill_input_digest:
+                raise AccountingEngineError(
+                    AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "FILL_ID_CONFLICT"
+                )
             return AccountingApplyResultV1(
                 ok=prior.ok,
                 action_code=AccountingSuccessCodeV1.IDEMPOTENT_REPLAY.value,
                 fill_input_digest=prior.fill_input_digest,
                 accounting_output_digest=prior.accounting_output_digest,
                 portfolio_state=self.portfolio_state(),
-                risk_state=self.risk_state(
-                    mark_price=fill.mark_price if fill.mark_price > 0 else self.last_mark
-                ),
+                risk_state=self.risk_state(mark_price=self.last_mark),
                 idempotent_replay=True,
                 notes=("IDEMPOTENT_FILL_REPLAY",),
             )
 
         validate_contract_metadata_v1(self.contract)
-        if fill.instrument_id != self.contract.symbol and fill.instrument_id not in {
-            self.contract.symbol,
-        }:
-            # Allow venue-native id equality only; productive single-future uses one symbol.
-            if self.position is not None and fill.instrument_id != self.position.symbol:
-                raise AccountingEngineError(
-                    AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION,
-                    "instrument_mismatch",
-                )
+        if fill.instrument_id != self.contract.symbol:
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "instrument_mismatch"
+            )
+        if not fill.fill_id or fill.fill_id != fill.fill_id.strip():
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "FILL_ID_REQUIRED"
+            )
+        event_time = (
+            None
+            if fill.event_time_unix is None
+            else _to_decimal("event_time", fill.event_time_unix)
+        )
+        if event_time is not None and (
+            event_time < 0
+            or (self.last_fill_time is not None and event_time < Decimal(str(self.last_fill_time)))
+        ):
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION,
+                "LATE_FILL_REQUIRES_RECONCILIATION",
+            )
 
         if fill.mark_price is None:
             raise AccountingEngineError(AccountingFailureCodeV1.MISSING_MARK_PRICE)
@@ -286,6 +334,10 @@ class ProductiveFuturesAccountingSessionV1:
         fill_price = _to_decimal("fill_price", fill.fill_price)
         fee = _to_decimal("fee", fill.fee)
         slip = _to_decimal("slippage_cost", fill.slippage_cost)
+        if fill_price <= 0 or fee < 0 or slip < 0 or qty % self.contract.min_qty != 0:
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "INVALID_FILL_TERMS"
+            )
         intended_side = _side_from_buy_sell(fill.side)
 
         open_qty = Decimal("0") if self.position is None else self.position.qty
@@ -314,7 +366,8 @@ class ProductiveFuturesAccountingSessionV1:
                     contract_size=self.contract.contract_size,
                     close_qty=qty,
                     close_price=fill_price,
-                    fee_quote=fee,
+                    # Gross realized PnL; cumulative_fees is the sole fee debit.
+                    fee_quote=Decimal("0"),
                 )
             except ValueError as exc:
                 raise AccountingEngineError(
@@ -341,7 +394,7 @@ class ProductiveFuturesAccountingSessionV1:
                     mark_price=mark,
                     realized_pnl=new_pos.realized_pnl,
                     funding_pnl=new_pos.funding_pnl,
-                    fees_paid=new_pos.fees_paid,
+                    fees_paid=new_pos.fees_paid + fee,
                 )
                 action = (
                     AccountingSuccessCodeV1.LONG_REDUCE
@@ -386,7 +439,7 @@ class ProductiveFuturesAccountingSessionV1:
                 assert self.position is not None
                 new_qty = open_qty + qty
                 new_entry = ((self.position.entry_price * open_qty) + (fill_price * qty)) / new_qty
-                new_entry = new_entry.quantize(self.contract.tick_size, rounding=ROUND_HALF_EVEN)
+                # A weighted average need not lie on a tradable price tick.
                 pos = FuturesPosition(
                     symbol=self.position.symbol,
                     side=intended_side,
@@ -423,6 +476,7 @@ class ProductiveFuturesAccountingSessionV1:
                     else AccountingSuccessCodeV1.SHORT_INCREASE
                 )
 
+        self.fill_order.append(fill.fill_id)
         portfolio = self.portfolio_state()
         risk = self.risk_state(mark_price=mark)
         out_payload = {
@@ -442,17 +496,58 @@ class ProductiveFuturesAccountingSessionV1:
             notes=("CANONICAL_KERNEL_APPLIED",),
         )
         self.applied_fill_results[fill.fill_id] = result
-        self.fill_order.append(fill.fill_id)
+        if event_time is not None:
+            self.last_fill_time = float(event_time)
         return result
+
+    def apply_funding_observation_v1(
+        self, *, event_id: str, amount: str, currency: str, instrument_id: str
+    ):
+        """Post one observed signed funding amount, not a rate estimate.
+
+        Explicit currency/instrument and native event identity are mandatory.
+        Replays preserve the current mark; conflicting reuse fails closed.
+        """
+        if not isinstance(event_id, str) or not event_id or event_id != event_id.strip():
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "FUNDING_ID_REQUIRED"
+            )
+        if currency != self.contract.quote_currency or instrument_id != self.contract.symbol:
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "FUNDING_SCOPE_MISMATCH"
+            )
+        if not isinstance(amount, str) or not amount.strip():
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "FUNDING_AMOUNT_REQUIRED"
+            )
+        delta = _to_decimal("funding_amount", amount)
+        event = {"amount": amount, "currency": currency, "instrument_id": instrument_id}
+        if event_id in self.funding_events:
+            if self.funding_events[event_id] != event:
+                raise AccountingEngineError(
+                    AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "FUNDING_ID_CONFLICT"
+                )
+            return {"idempotent_replay": True, "portfolio": self.portfolio_state().to_dict()}
+        self.funding_pnl += delta
+        self.funding_events[event_id] = event
+        if self.position is not None:
+            from dataclasses import replace
+
+            self.position = replace(self.position, funding_pnl=self.position.funding_pnl + delta)
+        return {"idempotent_replay": False, "portfolio": self.portfolio_state().to_dict()}
 
     def to_durable_dict(self) -> dict[str, Any]:
         return {
+            "checkpoint_version": 2,
             "contract": self.contract.to_dict(),
             "initial_equity": str(self.initial_equity),
             "writer_identity": self.writer_identity,
             "cumulative_fees": str(self.cumulative_fees),
             "cumulative_slippage": str(self.cumulative_slippage),
             "realized_pnl": str(self.realized_pnl),
+            "funding_pnl": str(self.funding_pnl),
+            "funding_events": dict(self.funding_events),
+            "last_fill_time": self.last_fill_time,
             "last_mark": None if self.last_mark is None else str(self.last_mark),
             "fill_order": list(self.fill_order),
             "applied_fill_results": {k: v.to_dict() for k, v in self.applied_fill_results.items()},
@@ -475,6 +570,36 @@ class ProductiveFuturesAccountingSessionV1:
 
     @classmethod
     def from_durable_dict(cls, payload: Mapping[str, Any]) -> ProductiveFuturesAccountingSessionV1:
+        required = {
+            "checkpoint_version",
+            "contract",
+            "initial_equity",
+            "writer_identity",
+            "cumulative_fees",
+            "cumulative_slippage",
+            "realized_pnl",
+            "funding_pnl",
+            "funding_events",
+            "last_mark",
+            "last_fill_time",
+            "fill_order",
+            "position",
+            "applied_fill_results",
+            "portfolio_state",
+            "risk_state",
+            "kernel_owner",
+        }
+        if not required <= set(payload) or payload.get("checkpoint_version") != 2:
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION,
+                "CHECKPOINT_VERSION_REQUIRES_EXPLICIT_REPLAY",
+            )
+        if (
+            payload["kernel_owner"] != CANONICAL_KERNEL_OWNER
+            or not isinstance(payload["writer_identity"], str)
+            or not payload["writer_identity"].strip()
+        ):
+            raise ValueError("CHECKPOINT_OWNER_MISMATCH")
         c = payload.get("contract") or {}
         contract = ContractMetadataV1(
             symbol=str(c["symbol"]),
@@ -485,18 +610,47 @@ class ProductiveFuturesAccountingSessionV1:
             initial_margin_rate=Decimal(str(c["initial_margin_rate"])),
             maintenance_margin_rate=Decimal(str(c["maintenance_margin_rate"])),
             max_leverage=Decimal(str(c["max_leverage"])),
+            contract_type=c["contract_type"],
         )
         session = cls(
             contract=contract,
-            initial_equity=Decimal(str(payload.get("initial_equity") or DEFAULT_INITIAL_EQUITY)),
-            writer_identity=str(payload.get("writer_identity") or SINGLE_WRITER_IDENTITY),
+            initial_equity=_to_decimal("initial_equity", payload["initial_equity"]),
+            writer_identity=payload["writer_identity"],
         )
-        session.cumulative_fees = Decimal(str(payload.get("cumulative_fees") or "0"))
-        session.cumulative_slippage = Decimal(str(payload.get("cumulative_slippage") or "0"))
-        session.realized_pnl = Decimal(str(payload.get("realized_pnl") or "0"))
+        session.cumulative_fees = _to_decimal("fees", payload["cumulative_fees"])
+        session.cumulative_slippage = _to_decimal("slippage", payload["cumulative_slippage"])
+        if session.cumulative_fees < 0 or session.cumulative_slippage < 0:
+            raise ValueError("CHECKPOINT_NEGATIVE_COSTS")
+        session.realized_pnl = _to_decimal("realized", payload["realized_pnl"])
+        session.funding_pnl = _to_decimal("funding", payload["funding_pnl"])
+        session.funding_events = dict(payload["funding_events"])
+        for event_id, event in session.funding_events.items():
+            if (
+                not event_id
+                or event["currency"] != contract.quote_currency
+                or event["instrument_id"] != contract.symbol
+            ):
+                raise ValueError("FUNDING_JOURNAL_SCOPE_MISMATCH")
+        if (
+            sum(
+                (_to_decimal("funding", e["amount"]) for e in session.funding_events.values()),
+                Decimal("0"),
+            )
+            != session.funding_pnl
+        ):
+            raise ValueError("FUNDING_JOURNAL_SUM_MISMATCH")
+        session.last_fill_time = payload["last_fill_time"]
+        if session.last_fill_time is not None:
+            _to_decimal("last_fill_time", session.last_fill_time)
         lm = payload.get("last_mark")
-        session.last_mark = None if lm is None else Decimal(str(lm))
-        session.fill_order = [str(x) for x in (payload.get("fill_order") or [])]
+        session.last_mark = None if lm is None else _to_decimal("last_mark", lm)
+        if session.last_mark is not None and session.last_mark <= 0:
+            raise ValueError("CHECKPOINT_INVALID_MARK")
+        session.fill_order = list(payload["fill_order"])
+        if len(set(session.fill_order)) != len(session.fill_order) or set(
+            session.fill_order
+        ) != set(payload["applied_fill_results"]):
+            raise ValueError("FILL_JOURNAL_IDENTITY_MISMATCH")
         pos = payload.get("position")
         if pos:
             session.position = FuturesPosition(
@@ -506,11 +660,28 @@ class ProductiveFuturesAccountingSessionV1:
                 entry_price=Decimal(str(pos["entry_price"])),
                 mark_price=Decimal(str(pos["mark_price"])),
                 realized_pnl=Decimal(str(pos["realized_pnl"])),
-                funding_pnl=Decimal(str(pos.get("funding_pnl") or "0")),
-                fees_paid=Decimal(str(pos.get("fees_paid") or "0")),
+                funding_pnl=_to_decimal("position_funding", pos["funding_pnl"]),
+                fees_paid=_to_decimal("position_fees", pos["fees_paid"]),
+            )
+            if session.position.symbol != contract.symbol:
+                raise ValueError("POSITION_CONTRACT_MISMATCH")
+            validate_futures_accounting_inputs(
+                instrument=_instrument(contract),
+                margin=_margin(contract),
+                position=session.position,
             )
         # Rebuild idempotency map from durable results (portfolio refreshed live).
         for fid, raw in (payload.get("applied_fill_results") or {}).items():
+            import re
+
+            if raw.get("action_code") not in {action.value for action in AccountingSuccessCodeV1}:
+                raise ValueError("CHECKPOINT_UNKNOWN_ACTION")
+
+            if raw.get("ok") is not True or not all(
+                isinstance(raw.get(k), str) and re.fullmatch(r"[0-9a-f]{64}", raw[k])
+                for k in ("fill_input_digest", "accounting_output_digest")
+            ):
+                raise ValueError("FILL_JOURNAL_DIGEST_INVALID")
             session.applied_fill_results[str(fid)] = AccountingApplyResultV1(
                 ok=bool(raw.get("ok", True)),
                 action_code=str(
@@ -524,4 +695,9 @@ class ProductiveFuturesAccountingSessionV1:
                 failure_code=raw.get("failure_code"),
                 notes=tuple(raw.get("notes") or ("RELOADED",)),
             )
+        if (
+            session.portfolio_state().to_dict() != payload["portfolio_state"]
+            or session.risk_state().to_dict() != payload["risk_state"]
+        ):
+            raise ValueError("CHECKPOINT_DERIVED_STATE_MISMATCH")
         return session

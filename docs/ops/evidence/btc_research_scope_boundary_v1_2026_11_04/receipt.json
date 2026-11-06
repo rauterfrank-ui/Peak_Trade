@@ -1,0 +1,49 @@
+{
+  "schema": "btc_research_scope_boundary_v1",
+  "review_commit": "4960b43c2d3e7ee599dca929e366505ed12cf43d",
+  "owner_decision": "BTC uses same ordinary futures admission, capital and risk rules; old SUI-driven exclusion must not become new global policy.",
+  "historical_git_anchors": [
+    {
+      "commit": "f9ba0eb215167d958c196c991c4452d2a29077e2",
+      "path": "src/research/pit_futures_universe_manifest_validator_v1.py",
+      "snapshot": "pit_futures_universe_manifest_validator_v1.py.f9ba0eb21.txt",
+      "sha256": "b337ad12e5ee1facf626654d9241eca2150b5a10fa86396fdbaa2a300e7cd493",
+      "current_byte_identical": true
+    },
+    {
+      "commit": "cce50d22baf0c903178ccbbde4f58d05b83e40bd",
+      "path": "src/research/pit_futures_universe_manifest_generator_v1.py",
+      "snapshot": "pit_futures_universe_manifest_generator_v1.py.cce50d22b.txt",
+      "sha256": "5d87f1629faa4cca02f97b557cc106b8690ab84737af22a4b9a5884f70325903",
+      "current_byte_identical": true
+    },
+    {
+      "commit": "0f6182cf4bc1dbcfd95e6ed6265e48c87f6a8479",
+      "path": "src/research/pit_futures_instrument_lifecycle_registry_validator_v1.py",
+      "snapshot": "pit_futures_instrument_lifecycle_registry_validator_v1.py.0f6182cf4.txt",
+      "sha256": "bf5e8a0ee0e6ee941b59eced02a2b01f2554ae236d05071778d3521ec3599b2c",
+      "current_byte_identical": true
+    }
+  ],
+  "current_sources": {
+    "src/research/instrument_id_canonicalization_v1.py": "0be5334559c1a25f8f913b5e580910da55b66bf175b32a6c3046f71cf717404b",
+    "src/research/pit_futures_universe_manifest_validator_v1.py": "b337ad12e5ee1facf626654d9241eca2150b5a10fa86396fdbaa2a300e7cd493",
+    "src/research/pit_futures_universe_manifest_generator_v1.py": "5d87f1629faa4cca02f97b557cc106b8690ab84737af22a4b9a5884f70325903",
+    "src/research/pit_futures_instrument_lifecycle_registry_validator_v1.py": "bf5e8a0ee0e6ee941b59eced02a2b01f2554ae236d05071778d3521ec3599b2c",
+    "src/research/pit_futures_universe_manifest_production_materialization_v1.py": "c7e6518e2ab51a9b03f5e152ea7e12f088fd4b5868decc58e3da1e1a18b446a6",
+    "src/research/pit_futures_universe_manifest_dataset_period_binding_v0.py": "49b6aafe78921f875718a03f1dc5ac1702b44d8827901bdd6167308e885c1159",
+    "src/research/okx_production_instrument_lifecycle_source_v1.py": "3cc44d7145cec953368c43288db99c3fed830bd26217d5b16eee18e7f71efd6c",
+    "config/research/pit_futures_universe_manifest_production_materialization_policy_v1.json": "11f316c105af7e8edbb3b8354123e2f15142ee6e72c4edfdceaa52e6837d9e13"
+  },
+  "tests": {
+    "total": 73,
+    "passed": 70,
+    "failed": 3,
+    "scope": "Manifest validator and generator",
+    "failure_meaning": "Old generator tests expect early BITCOIN_INSTRUMENT_BLOCKED; current common canonicalization admits identity but unchanged manifest validator denies later with OUTPUT_VALIDATION_FAILED / BITCOIN_MEMBER_REJECTED."
+  },
+  "confirmed_boundary": "Current common asset policy and historical generic research validators disagree. Registry validator separately retains BTC identity ban. Fixed production materialization/source and dataset-period bindings name a non-BTC historical cohort.",
+  "decision": "Do not restore global BTC exclusion or silently inject BTC into an old named non-BTC cohort. Before using this research chain for the new configuration, reconcile generic validation with explicit cohort identity across lifecycle, generator and period binding. This record does not declare that integration complete.",
+  "product_mutation_in_this_review": false,
+  "runtime_authorization_effect": "NONE"
+}

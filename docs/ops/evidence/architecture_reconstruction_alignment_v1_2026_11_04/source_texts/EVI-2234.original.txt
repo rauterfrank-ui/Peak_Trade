@@ -1,0 +1,131 @@
+# Kapital, Zustand und Schutz im Gesamtzusammenhang
+
+Quellengebundener Untersuchungsanhang, keine neue System-SSOT. Lokaler Vergleichspin: `5d1c838c15369507c5247834db4dd0df25592169`; kein Fetch. Neun Specs und fünf ausgewählte Codequellen neu abgeglichen; beim großen Replay nur der ausgewählte Binder-Abschnitt. Keine Projektfunktion ausgeführt.
+
+## Befunde und Beweisgrenzen
+
+### Q01 · Sizing/Safety/Intent im ausgewählten Replay-Körper
+
+Die drei Binder-Aufrufe stehen in dieser Reihenfolge. Der Intent-Aufruf steht unter if not enter_blocked_by_safety; die Bedingung bezieht hard_block_reasons und ENTER_LONG/ENTER_SHORT ein.
+
+**Grenze:** Keine Module importiert; keine bindenden Funktionen oder Host-Laufzeit ausgeführt; Callee-Verhalten und alle übrigen Zweige nicht neu bewiesen.
+
+### Q02 · Treasury-Ausgang ist kein Retry-Bit
+
+Der gelesene Lifecycle-Körper prüft Zustands-/Intent-Identität und verlangt durable Intent vor REMOTE_ATTEMPT_RECORDED. OUTCOME_UNKNOWN ist nicht direkt wieder zum Remote-Versuch zugelassen; Statusabbildung liefert UNKNOWN_NOT_FAILED.
+
+**Grenze:** Engine-Aufrufer, tatsächliche Persistenz und Venue-Idempotenz nicht nachgewiesen; keine Remote-Operation ausgeführt.
+
+### Q03 · Treasury-State verleiht keine Risk-Zulässigkeit
+
+Der gelesene Kapital-Boundary-Körper trennt RECONCILED_CAPITAL von OBSERVED_CAPITAL und enthält Ablehnungen für risk_admissible=True beziehungsweise eine gemeldete RISK_ADMISSIBLE-Klasse.
+
+**Grenze:** Imported effective constants, alle Konstruktoren und Consumer nicht neu vollständig geprüft. Dies ist ein lokaler statischer Boundary-Befund.
+
+### Q04 · C08: spätere Transportbindung ersetzt den Basiswert nicht
+
+Die Closeout-Spec enthält UNBOUND/NOT_PROVEN; die separate Binding-Spec dokumentiert BOUND/PRODUCTIVE_TRANSPORT_BOUND bei weiterhin UNBOUND für den Basiswert. Der gelesene Contract-Code deklariert BOUND und Binding-Flags true.
+
+**Grenze:** Contract-Flags und historische Spec-Fortschreibung sind kein vollständiger Runtime-/Kapitalwertnachweis. Der alte UNBOUND-Text wird nicht ungeprüft als heutiger Fehler übernommen.
+
+### Q05 · Reconciliation-Marker sind kein Enforcement-Körper
+
+Die kleine Contract-Datei deklariert Single-check, vorgeschalteten Erfolg und keinen Autoritätstransfer. Ihre eigenen Modulhinweise verorten Durchsetzung in Admission-Validierung und Cycle.
+
+**Grenze:** Diese Konstanten und Assertions beweisen nicht allein die reale Eintrittssperre oder Frische-/Identitätsprüfung.
+
+## Übergreifende Bedeutungsverträge
+
+### T01 · Kapitalarten und Reservierung
+
+Treasury-Bestand, frei/reserviert, beobachtet/abgeglichen und risikozulässig sind unterschiedliche Größen.
+
+**Offen:** Welche Werte und Einheiten gelangen nach Reservierungen tatsächlich zum Sizer, und welche Historie erklärt ihre Herkunft?
+
+**Systemische Bedeutung:** Gleicher Zahlenwert oder Kontoname allein erlaubt keine Gleichsetzung der Kapitalarten.
+
+### T02 · Transportbindung und verwendbarer Wert
+
+C08-Transport kann als BOUND dokumentiert sein, während AVAILABLE_FOR_SIZING_BASE_VALUE_STATUS im Binding-Dokument UNBOUND bleibt.
+
+**Offen:** Transport, Erzeugung des Basiswerts, typisierter Claim und STEP-29P-Verwendung an ihren jeweiligen Revisionen belegen.
+
+**Systemische Bedeutung:** Eine geschlossene Verbindung oder ein BOUND-Label schließt die wirtschaftliche Rechenkette nicht.
+
+### T03 · Zuwachs und Rückgang sind nicht symmetrisch
+
+Beobachtete oder abgeglichene Treasury-Werte erlauben allein keine Sizing-Kapazitätserhöhung; konservative Sperren oder Absenkungen sind getrennt vorgesehen.
+
+**Offen:** Welche tatsächlichen Decrease- und Increase-Consumer reagieren auf welche Evidenz? Matrix-Aussagen sind noch keine live wirkenden Consumer.
+
+**Systemische Bedeutung:** Ein vorsichtiger Rückgangspfad darf nicht automatisch als positiver Freigabepfad wiederverwendet werden.
+
+### T04 · Beobachtung, Rekonstruktion und Sizing-Autorität
+
+Checkpoint/Event-Rekonstruktion und frische Venue-Beobachtung sind als getrennte Tracks beschrieben; eq als Abgleichsziel ist keine automatische Quelle für Sizing.
+
+**Offen:** Historische Optionen, Identitätsbindung, Event-Vollständigkeit und spätere Source→Semantic-Zuordnung nachvollziehen.
+
+**Systemische Bedeutung:** Übereinstimmung zweier Zahlen verleiht keiner der Quellen von selbst eine fehlende fachliche Autorität.
+
+### T05 · Unbekannter Ausgang und sichere Wiederholung
+
+OUTCOME_UNKNOWN ist im Treasury-Lifecycle weder schlicht fehlgeschlagen noch sicher wiederholbar; Venue-Erfolg und abgeglichener wirtschaftlicher Effekt bleiben verschieden.
+
+**Offen:** Dauerhafter Intent, Remote-Versuch, bestätigte Wirkung und Idempotenz an Engine-/Persistenz-/Consumer-Grenzen gemeinsam prüfen.
+
+**Systemische Bedeutung:** Ein vorschneller Retry könnte einen unklaren wirtschaftlichen Effekt verdoppeln; eine vorschnelle Erfolgsannahme könnte Kapital falsch freigeben.
+
+### T06 · Futures-Risiko jenseits von Quantity
+
+Der historische Futures-Vertrag fordert explizite Contract-Größe, Settlement, Notional, Mark-/Last-Bezug, Margin, Liquidation und Funding.
+
+**Offen:** Je Feld ursprüngliche Absicht, Berechnung, Consumer und Missing-Verhalten prüfen. Der docs-only Vertrag belegt keine Implementierung.
+
+**Systemische Bedeutung:** Spot-Balance, Positionsmenge, Hebel und Futures-Exposure können nicht ohne Einheiten- und Contract-Bezug ersetzt werden.
+
+### T07 · Safety vor Intent und begrenzte Unterdrückung
+
+Dokumentierte Wiederherstellungsreihenfolge Risk/Sizing → Safety → Intent ist im ausgewählten Replay-Abschnitt statisch wiederzufinden. ENTER-Intent bleibt bei hard_block_reasons übersprungen.
+
+**Offen:** Safety-Producer, Input-Herkunft, nicht-ENTER-Pfade und reale Host-Nutzung separat nachweisen; keine globale Schutzgarantie.
+
+**Systemische Bedeutung:** Gleiche Besitzer bei anderer Aufrufreihenfolge können ein anderes Ergebnis erzeugen; Owner-Identität allein beweist keine semantische Gleichheit.
+
+### T08 · Reconciliation-Ergebnis und Prüfautorität
+
+Der Single-check-Vertrag sieht einen vorgeschalteten Portfolio-Abgleich mit nachgelagertem Admission-Carrier vor. Die gelesene Contract-Datei enthält Marker, keine vollständige Enforcement-Logik.
+
+**Offen:** Echte Admission-Validierung, Host-Eintritt und Frische-/Identitätsbindung weiter abgleichen; Marker sind kein Durchsetzungsbeweis.
+
+**Systemische Bedeutung:** Weitergereichter Zustand bedeutet weder erneute Reconciliation noch Übertragung ihrer fachlichen Autorität.
+
+### T09 · Schutzeingang und nachgelagerter Evidence-Binder
+
+Reconciliation- und KillSwitch-Eingänge der Safety sind von späteren gleichnamigen Evidence-Bindern zu unterscheiden.
+
+**Offen:** Datenfluss und Veto-Wirkung je konkreter Funktion belegen; nicht aus Namensreihenfolge eine globale Pipeline erfinden.
+
+**Systemische Bedeutung:** Ein späterer Bericht über einen Schutzstatus beweist nicht, dass er vor einer Entscheidung tatsächlich sperrend wirkte.
+
+### T10 · Historischer Wiederherstellungsauftrag und Gesamtfunktion
+
+Die August-Slice-Dokumentation benennt geändertes Wiring bei erhaltenen Compute-/Risk-/Safety-/Intent-Ownern und lässt vollständige E2E-Wiederherstellung ausdrücklich offen.
+
+**Offen:** Anlass, damalige Codeänderung, Erhaltungsziel und Nachweise revisionsbezogen zuordnen; Franks Erinnerung separat als Suchhinweis führen.
+
+**Systemische Bedeutung:** Ein begrenzter wiederhergestellter Ablauf belegt weder die ursprüngliche Gesamtarchitektur noch die Vollständigkeit des Systems.
+
+## Erinnerung und Historie
+
+Frank erinnert sich, dass während der Einhorn-Umsetzung Unstimmigkeiten in der Double-Play-Logik erkannt wurden, die Einhorn-Arbeit zurückgestellt und zunächst die ursprüngliche Handelslogik wiederhergestellt werden sollte.
+
+OWNER_RECOLLECTION_NOT_INDEPENDENTLY_VERIFIED. Die August-Safety-Slice liegt vor dem September-Einhorn-Bezugscommit und bestätigt diesen erinnerten Ablauf nicht. Keine Kausalität oder genaue Reihenfolge aus Namensähnlichkeit ableiten.
+
+Die Erinnerung wird als Suchhinweis erhalten. Sie ändert weder den Breitenfokus noch die Belegbewertung. Originale Urstruktur, spätere Wiederherstellungsziele und tatsächliche heutige Consumer-Wirkung bleiben je Bereich zu unterscheiden.
+
+## Konsequenz für die weitere Untersuchung
+
+Je Übergabe sind mindestens wirtschaftliche Bedeutung, Einheit/Währung, Identität, Zeit/Epoche, gültiger Zustand, zulässige Wirkung und fehlende Evidenz zu unterscheiden. Eine alte Funktion kann trotz geändertem Transport wichtig bleiben; ihre Entfernung oder Ersetzung ist erst nach Bewertung der Folgewirkungen fachlich einzuordnen.
+
+Der Befund zu C08 zeigt eine dokumentierte Stufenfolge, nicht automatisch einen Fehler. Die Safety-Aufrufreihenfolge ist ein statischer Teilnachweis, keine Gesamtwiederherstellung. Neun Dokumente und fünf Codequellen sind keine vollständige Kapital-/Safety-Systemabdeckung.

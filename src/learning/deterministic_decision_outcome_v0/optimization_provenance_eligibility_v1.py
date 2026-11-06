@@ -42,7 +42,6 @@ def evaluate_optimization_provenance_eligibility_v1(
     provenance = validate_outcome_evidence_provenance_v1(block)
     oclass = str(provenance["outcome_semantic_class"])
     digest = str(provenance["provenance_digest"])
-    pool = oclass
     status = str(provenance["provenance_status"])
     if status in {"UNKNOWN", "AMBIGUOUS"}:
         return OptimizationEligibilityResultV1(
@@ -60,6 +59,23 @@ def evaluate_optimization_provenance_eligibility_v1(
             provenance_digest=digest,
             evidence_pool_class=pool,
         )
+    if learning_evidence.get("outcome_semantic_class") != oclass:
+        return OptimizationEligibilityResultV1(
+            admitted=False,
+            reason_code="OUTCOME_SEMANTIC_CLASS_MISMATCH",
+            outcome_semantic_class=oclass,
+            provenance_digest=digest,
+            evidence_pool_class=pool,
+        )
+    declared_digest = learning_evidence.get("outcome_evidence_provenance_digest")
+    if declared_digest is not None and declared_digest != digest:
+        return OptimizationEligibilityResultV1(
+            admitted=False,
+            reason_code="PROVENANCE_DIGEST_MISMATCH",
+            outcome_semantic_class=oclass,
+            provenance_digest=digest,
+            evidence_pool_class=pool,
+        )
     if pool != oclass:
         return OptimizationEligibilityResultV1(
             admitted=False,
@@ -67,6 +83,21 @@ def evaluate_optimization_provenance_eligibility_v1(
             outcome_semantic_class=oclass,
             provenance_digest=digest,
             evidence_pool_class=pool,
+        )
+    # Capital contamination must not bypass the existing SelfLearning gate by
+    # entering through the separate optimization projection.
+    from src.learning.deterministic_decision_outcome_v0.self_learning_provenance_eligibility_v1 import (
+        evaluate_self_learning_provenance_eligibility_v1,
+    )
+
+    common = evaluate_self_learning_provenance_eligibility_v1(learning_evidence)
+    if not common.admitted:
+        return OptimizationEligibilityResultV1(
+            False,
+            common.reason_code,
+            oclass,
+            digest,
+            pool,
         )
     return OptimizationEligibilityResultV1(
         admitted=True,

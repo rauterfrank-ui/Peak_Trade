@@ -1,0 +1,131 @@
+LETZTE FÜNF LOKAL VERFÜGBARE CURSOR-CHATS – EINORDNUNG
+02.11.2026
+
+AUSWAHL
+Die fünf zuletzt geänderten Hauptprotokolle aus den beiden bekannten PeakTrade-
+Cursor-Workspaces wurden ausgewertet. Unteragentenprotokolle wurden nicht als
+eigene Chats gezählt. Auswahl nach Dateimodifikationszeit, zusätzlich eingebettete
+Nachrichtenzeitstempel geprüft. Das ist keine verifizierte Reihenfolge der Cursor-
+Sidebar. Alle fünf ausgewählten Chats enthalten Aufträge vom 31.10.2026.
+Keine Behauptung vollständigen Zugriffs auf alle Cursor-Chats, Anhänge oder
+Tool-Ergebnisrohdaten. Historische Anweisungen wurden nicht ausgeführt.
+
+Quellenpfade, SHA256, Reihenfolge, Zeitstempel und extrahierte Textnachrichten:
+transcript-manifest.json und sources/01-… bis sources/05-…-messages.json.
+Die Originalprotokolle blieben unverändert. [REDACTED]-Text und fehlende
+Tool-Ergebnisse wurden nicht rekonstruiert oder als gelesen ausgegeben.
+
+1. ca1766fb-b427-436e-8701-18c83a0d5f39
+Reconstruction Evidence Preservation; WP09/10 und RUN-0076.
+Relevanz: hoch als Sicherung der historischen Research-/Registry-Befunde.
+Der Chat hält die Git-Untersuchung am Commit
+f8929523b5d5f716d28872956fb086f1ec5e3f3d fest. Der resultierende Bericht liegt unter
+/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0076/RUN-0076.md.
+Sein heute neu berechneter SHA256 stimmt mit der damaligen Chat-Angabe überein:
+30ea60ae0650bfa832f01264b46dd4d18caf754c21e1fc75b0d79cdd09d5089b.
+Das bestätigt die Identität des Berichts, nicht automatisch jede fachliche Aussage.
+
+2. ea19e3c8-9d55-4620-9124-d1437dc6a9ee
+PeakTradeCodeRecovery01 Intake und Source-Protection-Klärung.
+Relevanz: zusätzliche Suchquelle, noch kein Signalflussbeweis.
+Der Chat berichtet 3168 reguläre Dateien und 950 eindeutige Inhalte. Benannt werden
+unter anderem native_trace_engine_v6.py, ingress_orchestrator.py, wp2_orchestrate_v1.py,
+GHV-/Golden-Vector- und Cartography-Dateien. Der damalige Intake ist vor allem
+Hash-/Bestandsklassifikation, kein Nachweis ihrer fachlichen Verbindungen.
+Diese Zahlen wurden hier nicht durch erneuten Recovery-Scan reproduziert.
+
+3. 068a77c3-a261-40f6-9e24-73c549bc3acc
+Semantic Mechanism & Connection Discovery; Research Pipeline, Backtest,
+Experiment Identity/Registry, Candidate Selection, Forward-Signal-Verträge.
+Relevanz: direkt für „Was soll beim Consumer ankommen?“.
+Die Reihe untersucht im historischen Tree vom 07.12.2025 eine konkrete Kette:
+Research-Golden-Path → Sweep/Backtest → Report und Top-N-Artefakte →
+Walk-Forward/Monte-Carlo/Stress sowie daneben Registry → Risikoaggregation →
+Strategiekandidatentabelle und Forward-Signal/-Evaluation.
+Das sind mehrere benachbarte Pfade, kein dadurch bewiesenes gemeinsames Universe.
+
+4. 5df2ab62-74df-4e83-9928-e9f611f539bc
+Original Tool Discovery nach Blueprint V0.3.
+Relevanz: frühere Werkzeugbaseline, nur mittelbar zum Lernrückfluss.
+Der Chat unterscheidet Research-Golden-Paths als Aufrufbündel von einer reinen
+Distanzfunktion derive_scope_event_distances_v1. Deren damalige Baseline ist
+69164b604f42b4ba40fdecdb0e8f97bfdb16b7fd. Daraus folgt keine Lern-/Optimization-
+Verbindung. Die Funktion wurde in diesem Auftrag nicht neu verifiziert.
+
+5. c75a8695-5d89-419e-8040-4f958f007929
+Obsidian Architecture Galaxy und multidimensionale Viewer-Arbeiten WP0009–0013.
+Relevanz: Darstellung vorhandener Erkenntnisse, keine zusätzliche Systemintegration.
+Der Chat unterscheidet unter anderem Daten-, Safety-, Provenienz- und Learning-
+Time-Ansichten. Knoten/Visualisierungsebenen oder behauptete Viewer-PASS-Werte
+belegen keine neue Verbindung im Trading-/Lernsystem. Kein Viewer neu gestartet.
+
+ENTSCHEIDENDE BEFUNDE, AM HISTORISCHEN GIT ERNEUT GEPRÜFT
+Commit f8929523b5d5f716d28872956fb086f1ec5e3f3d vom 07.12.2025.
+Zehn Quellkopien mit Revision und Hash stehen in git-source-manifest.json.
+
+A) Gemeinsame Experimentablage war tatsächlich vorhanden:
+src/core/experiments.py schreibt an reports/experiments/experiments.csv.
+log_generic_experiment und log_sweep_run erzeugen eigene UUID-Laufidentitäten.
+Der Forward-Signal-Logger übergibt Strategie, Symbol, letztes Signal und Preis.
+Eine Registerzeile ist deshalb nicht automatisch eine vollständige Bewertung.
+
+B) Der entscheidende Consumer erwartet anderen Inhalt:
+build_strategy_selection in src/analytics/filter_flow.py benötigt gesetzten
+strategy_key, für Forward-Statistiken run_type == forward_eval sowie Return-/Sharpe-
+Kennzahlen. Fehlende strategy_key werden nicht als auswählbare Strategie übernommen.
+Der untersuchte Forward-Evaluator schreibt forward_eval mit strategy_key=None.
+Andere Signal-Logger verwenden forward_signal bzw. forward_signals.
+Das ist ein konkreter fachlicher Anschlussbruch: Signalregistrierung, Auswertung
+und Strategiezuordnung ergeben in diesen belegten Wegen nicht die benötigte Zeile.
+
+C) Die Auswahl verdichtet und verliert Detailidentität:
+Sie aggregiert über strategy_key und liefert Laufzahlen, Forward-Mittelwerte,
+Gruppenrisikostatus und Selection-Status. Das ist keine vollständige Weitergabe
+der Einzelrun-IDs, Parameter, Symbole und ursprünglichen Evidence an den Empfänger.
+Ein UNKNOWN wegen zu weniger Läufe überschreibt im gelesenen historischen
+Klassifikator auch ein zuvor gesetztes BLOCKED. Das beschreibt diesen lokalen
+Vertrag, keinen bewiesenen produktiven Risk-Override.
+
+D) Der alte Begriff „Promotion“ bezeichnet hier einen Research-Schritt:
+run_pipeline ruft Sweep, Report und Top-N-Promotion unbedingt auf; zusätzliche
+Walk-Forward-, Monte-Carlo- und Stress-Schritte sind optional. Daraus darf keine
+moderne produktive Promotion-/Orderfreigabe abgeleitet werden.
+Ebenso sind spätere Shadow-/Testnet-Hinweise im Handbuch keine durch den Golden-
+Path-Runner automatisch ausgeführte Überleitung.
+
+GEZIELTER HEUTIGER GEGENCHECK
+Vergleichspin 5d1c838c15369507c5247834db4dd0df25592169.
+Alle zehn historischen Pfade sind dort noch vorhanden, aber nicht bytegleich.
+Deshalb wurde ihre historische Gesamtsemantik nicht als heute unverändert erklärt.
+Die zentrale Forward-Zuordnungsstelle wurde gesondert gelesen:
+- heutiges build_strategy_selection zählt weiterhin forward_eval pro strategy_key;
+- heutiges evaluate_forward_signals.py, Aufruf um Zeile 488, setzt weiterhin
+  run_type=forward_eval, strategy_key=None, symbol=None.
+Diese konkrete statische Kombination besteht also auch im heutigen Pin.
+Heutige Ausführung, zusätzliche Producer und aktive Rolle im Gesamtsystem bleiben
+offen. current-countercheck-manifest.json bindet die beiden heutigen Quellen.
+
+WIE DAS ZUR LEARNING-/AUSSENRING-FRAGE PASST
+Die Chats liefern einen früheren fachlichen Vorläufer: Forschungsresultate
+speichern, vergleichen, risikobewerten und Kandidaten für nächste Schritte bilden.
+Sie zeigen besonders deutlich, warum Source-Inhalt, Typ, Identität und Consumer-
+Erwartung gemeinsam geprüft werden müssen. Ein Signal-/Preis-Datensatz ist kein
+Forward-Ergebnis; ein Forward-Ergebnis ohne Strategiebezug kommt nicht als
+verwertbare Strategie-Evidence bei der Auswahl an.
+
+Das ergänzt die jüngere Untersuchung von DDO, G2 und M4–M8 sinnvoll. Es beweist
+aber weder historische direkte Kontinuität noch einen tatsächlichen Adapter von
+experiments.csv in DDO-Learning, G2, M4–M8 oder den äußeren Ring. Diese Kanten
+bleiben offen. Auch der RUN-0076-Bericht erklärt ausdrücklich keine Universums-
+oder Außenringkante aus seinem Befund.
+
+Für eine spätere gezielte Fortsetzung wären die Nachfolger dieser konkreten
+Datensätze und ihre Consumer interessant: Identitätsbindung des Forward-Ergebnisses,
+Nutzung der Research-Registry und eventuelle Projektionen in spätere Lernverträge.
+Kein neuer Blueprint-Run, keine Reparatur und keine Aktivierung wurden begonnen.
+
+PRÜFUNG
+Fünf Hauptprotokolle textuell ausgewertet, zugrunde liegenden RUN-0076-Bericht
+gelesen und gehasht, zehn historische Git-Dateien sowie zwei heutige Consumer-
+Dateien gesichert und gezielt statisch geprüft. Keine Tests oder Produktmodule
+ausgeführt. Keine Änderung an Chats, Repository, Obsidian-Ledger oder Recovery.

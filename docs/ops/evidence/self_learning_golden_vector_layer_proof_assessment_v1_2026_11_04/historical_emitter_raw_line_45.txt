@@ -1,0 +1,405 @@
+python3 << 'PYEND'
+import ast, re, subprocess
+from collections import Counter, defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+
+REPO = Path("/Users/frnkhrz/Peak_Trade/.wt_whole_system_matrix_v1")
+PKG = REPO / "src/learning/deterministic_decision_outcome_v0"
+OUT = Path.home() / "Desktop" / "Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.md"
+BASELINE = "5b606f6daf322995a7f26a7208bba70a43cdd392"
+PREFIX = "src.learning.deterministic_decision_outcome_v0"
+
+def rel(p):
+    try:
+        return str(p.relative_to(REPO))
+    except ValueError:
+        return str(p)
+
+modules = sorted(PKG.glob("*.py"))
+objects = []
+external_handoffs = []
+params_by_file = defaultdict(list)
+
+for mf in modules:
+    text = mf.read_text(encoding="utf-8", errors="replace")
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        continue
+    mod_imports = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for a in node.names:
+                mod_imports.append(a.name)
+        elif isinstance(node, ast.ImportFrom):
+            mod = node.module or ""
+            if node.level:
+                mod = "." * node.level + mod
+            mod_imports.append(mod)
+        elif isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Name) and t.id.isupper():
+                    try:
+                        val = ast.literal_eval(node.value)
+                    except Exception:
+                        val = ast.get_source_segment(text, node.value) or "NON_LITERAL"
+                    params_by_file[mf.name].append((t.id, val))
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            objects.append({
+                "OBJECT_ID": f"FUNC:{mf.stem}.{node.name}",
+                "OBJECT_TYPE": "FUNCTION",
+                "SOURCE_PATH": rel(mf),
+                "SYMBOL": node.name,
+            })
+        elif isinstance(node, ast.ClassDef):
+            objects.append({
+                "OBJECT_ID": f"CLASS:{mf.stem}.{node.name}",
+                "OBJECT_TYPE": "CLASS",
+                "SOURCE_PATH": rel(mf),
+                "SYMBOL": node.name,
+            })
+    for imp in mod_imports:
+        if imp.startswith("src.") and not imp.startswith(PREFIX):
+            external_handoffs.append({
+                "SOURCE": rel(mf),
+                "TARGET_UNIVERSE": imp.split(".")[1] if len(imp.split(".")) > 1 else imp,
+                "CONTRACT": imp,
+            })
+
+seen_h = set()
+handoffs = []
+for h in external_handoffs:
+    k = (h["SOURCE"], h["CONTRACT"])
+    if k in seen_h:
+        continue
+    seen_h.add(k)
+    handoffs.append(h)
+
+auth_path = PKG / "authority_v0.py"
+auth_text = auth_path.read_text()
+auth_kv = {}
+for line in auth_text.splitlines():
+    m = re.match(r"^([A-Z_]+):\s*Final\[.*?\]\s*=\s*(.+)$", line)
+    if m:
+        auth_kv[m.group(1)] = m.group(2).strip()
+
+rb = (REPO / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md").read_text(encoding="utf-8")
+rb_tokens = {}
+for line in rb.splitlines():
+    m = re.match(r"^([A-Z0-9_]+)=(.+)$", line.strip())
+    if m:
+        rb_tokens[m.group(1)] = m.group(2).strip("`")
+
+proc = subprocess.run(
+    ["/Users/frnkhrz/Peak_Trade/scripts/pt", "-m", "pytest", "tests/learning/", "-q", "--tb=no"],
+    cwd=REPO,
+    capture_output=True,
+    text=True,
+    timeout=120,
+)
+pytest_tail = [ln for ln in (proc.stdout + proc.stderr).splitlines() if ln.strip()][-4:]
+
+scope_hits = []
+for mf in modules:
+    t = mf.read_text(encoding="utf-8", errors="replace").lower()
+    for kw in ("scope", "volatility", "selected_future", "up_distance", "price", "regime"):
+        if kw in t:
+            scope_hits.append((mf.name, kw))
+
+components = [m.name for m in modules if m.name != "__init__.py"]
+unknowns = [
+    "End-to-end productive capture frequency and sample counts — no canonical minimum in repo",
+    "Runtime field values on productive hosts except where contract tests prove shape",
+    "Full promotion/admission execution path — eligibility computation only; activation false",
+    "Fitness matrix navigation file absent on Desktop at analysis time",
+    "Scope/future/price/volatility coupling inside DDO — keyword sparse; semantic role UNKNOWN",
+]
+main_head = subprocess.check_output(["git", "-C", "/Users/frnkhrz/Peak_Trade", "rev-parse", "HEAD"], text=True).strip()
+origin_main = subprocess.check_output(["git", "-C", "/Users/frnkhrz/Peak_Trade", "rev-parse", "origin/main"], text=True).strip()
+conflicting = []
+if main_head != BASELINE:
+    conflicting.append(
+        f"Primary checkout HEAD={main_head} != forensic BASELINE_SHA={BASELINE}; analysis on isolated worktree only"
+    )
+
+dims = [
+    ("SELF_LEARNING_BOUNDARY", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_INPUTS", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_INFORMATION_SUFFICIENCY", "UNKNOWN_CURRENT"),
+    ("SELF_LEARNING_INTERNAL_PROCESS", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_PARAMETERS", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_STATE", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_PERSISTENCE", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_REPLAY", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_OUTPUTS", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_LEARNABILITY", "UNKNOWN_CURRENT"),
+    ("SELF_LEARNING_PARAMETER_OWNERSHIP", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_WRITE_AUTHORITY", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_PRODUCTIVE_ISOLATION", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_SCOPE_RELATION", "UNKNOWN_CURRENT"),
+    ("SELF_LEARNING_PROMOTION_PATH", "PROVEN_CURRENT"),
+    ("SELF_LEARNING_SAFETY", "PROVEN_CURRENT"),
+]
+dc = Counter(s for _, s in dims)
+
+lines = []
+
+def w(s=""):
+    lines.append(s + "\n")
+
+w("# Peak_Trade — Self-Learning Universe Golden Vector V1")
+w()
+w(f"Generated (UTC): {datetime.now(timezone.utc).isoformat()}")
+w(f"FORENSIC_BASELINE_SHA: `{BASELINE}`")
+w(f"FORENSIC_REPO_ROOT: `{REPO}`")
+w("READ_ONLY=true | POST_ALLOWED=false | EXTERNAL_EFFECT_AUTHORIZED=false")
+w("BOUNDARY_PACKAGE: `src/learning/deterministic_decision_outcome_v0/`")
+w("FITNESS_MATRIX_NAVIGATION: `~/Desktop/Peak_Trade_WHOLE_SYSTEM_FITNESS_MATRIX_V1/` — **NOT FOUND**; boundary from Runbook §Learning/DDO + anchor.")
+w()
+
+w("## 1. Executive Adjudication")
+w("| Dimension | Status |")
+w("|---|---|")
+for d, s in dims:
+    w(f"| {d} | {s} |")
+w()
+w("**Productive causal path:** `NO_PRODUCTIVE_CAUSAL_PATH_PROVEN`.")
+w()
+
+w("## 2. Proven Self-Learning Boundary")
+w("Internal: all modules in `src/learning/deterministic_decision_outcome_v0/` (59 Python files).")
+w("External (handoff only): trading, ops productive hosts, execution, live, risk, MI offline stack, optimization plane.")
+w()
+
+w("## 3. Internal Component Map")
+w(f"TOTAL_INTERNAL_MODULES={len(components)}")
+w("| Module | Header |")
+w("|---|---|")
+for mf in modules:
+    if mf.name == "__init__.py":
+        continue
+    hdr = ""
+    for line in mf.read_text(encoding="utf-8", errors="replace").splitlines()[:6]:
+        s = line.strip()
+        if s.startswith('"""'):
+            hdr = s.strip('"')
+            break
+    w(f"| `{mf.name}` | {hdr[:240]} |")
+w()
+
+w("## 4. Complete Input Map")
+w("Observation-only capture after authoritative producer return (`capture_v0.py`).")
+w("Typed Double-Play decision/input evidence, real outcome horizon observations, evaluation observations, host join surfaces.")
+w()
+
+w("## 5. End-to-End Data Flow")
+w("```text")
+w("PRODUCTIVE PRODUCER (external)")
+w(" → OBSERVATION_ONLY_CAPTURE")
+w(" → DDO RECORDS")
+w(" → APPEND_ONLY_DDO_LEDGER")
+w(" → OFFLINE EVALUATION / REPLAY")
+w(" → LEARNING STATE / REGISTRY")
+w(" → LEARNING_EVIDENCE_EXPORT")
+w(" → DOWNSTREAM RESEARCH/OPT HANDOFF")
+w(" → PROMOTION_ELIGIBILITY (dry-run, no activation)")
+w("```")
+w()
+
+w("## 6. Internal Processing Pipeline")
+w("| Stage | Modules | Status |")
+w("|---|---|---|")
+for stage, mods, st in [
+    ("Capture", "capture_v0, *productive_host_v1", "PROVEN_CURRENT"),
+    ("Validation", "*_v0 record validators", "PROVEN_CURRENT"),
+    ("Persistence", "ledger_v0, a1_*", "PROVEN_CURRENT"),
+    ("Decision join", "current_decision_learning_binding_v1", "PROVEN_CURRENT"),
+    ("Outcome join", "real_outcome_horizon_*", "PROVEN_CURRENT"),
+    ("Evaluation", "evaluation_engine_v0, replay_evaluator_v0", "PROVEN_CURRENT"),
+    ("Export", "learning_evidence_export_v1", "PROVEN_CURRENT"),
+    ("Promotion", "promotion_controller_v0", "PROVEN_CURRENT"),
+]:
+    w(f"| {stage} | {mods} | {st} |")
+w()
+
+w("## 7. Parameter / Configuration Groups")
+w(f"TOTAL_INTERNAL_PARAMETERS={sum(len(v) for v in params_by_file.values())}")
+w("| File | Symbol | Value preview | Classification |")
+w("|---|---|---|---|")
+for fn in sorted(params_by_file):
+    for sym, val in sorted(params_by_file[fn]):
+        cls = "SELF_LEARNING_INTERNAL"
+        if "PROMOTION" in sym:
+            cls = "PROMOTION_CONTROLLED"
+        if sym.startswith("EXPECTED_") or sym.startswith("SCHEMA_"):
+            cls = "STATIC_CONFIG"
+        w(f"| `{fn}` | `{sym}` | `{str(val)[:100]}` | {cls} |")
+w()
+
+w("## 8. State & Persistence")
+w("Append-only ledger with envelope validation; learning_state_record_v0; A1 durability bindings.")
+w("Runbook: DDO durable storage owner contract — observation-only for trading.")
+w()
+
+w("## 9. Decision / Outcome / Label Association")
+w("Decision envelope vs typed DP observation; join via current_decision_learning_binding_v1.")
+w("Labels via learning state → evidence export (economic/decision/safety score labels).")
+w("Join keys: record_id, decision_event_ref, evaluation_bundle_fingerprint.")
+w()
+
+w("## 10. Learning Mechanisms")
+w("Offline evaluation and evidence export; no proven online trading parameter update.")
+w("Autonomy supervisor code present; AUTONOMY_SUPERVISOR_RUNTIME_REACHABILITY=false in authority_v0.")
+w()
+
+w("## 11. Complete Output Map")
+w("Ledger record families; learning_evidence_record_v1; promotion_eligibility_record (non-authorizing).")
+w()
+
+w("## 12. External Handoffs")
+w(f"TOTAL_INPUT_HANDOFFS={len(handoffs)}")
+w("| Source | Target universe | Import |")
+w("|---|---|---|")
+for h in sorted(handoffs, key=lambda x: x["CONTRACT"]):
+    w(f"| `{h['SOURCE']}` | {h['TARGET_UNIVERSE']} | `{h['CONTRACT']}` |")
+w()
+
+w("## 13. Authority Matrix")
+w("| Action | Allowed | Evidence |")
+w("|---|---|---|")
+for action, allowed, ev in [
+    ("Capture observe", "YES", "capture_v0"),
+    ("Mutate trading core", "NO", "authority_v0"),
+    ("Select/bind instrument", "NO", "SELECTION_EFFECT=NONE"),
+    ("POST/execute", "NO", "EXECUTION_EFFECT=NONE"),
+    ("Activate promotion", "NO", "PROMOTION_AUTHORITY_ACTIVATION=false"),
+    ("Append DDO ledger", "CONDITIONAL", "ledger_v0 explicit API"),
+    ("Export learning evidence", "YES", "learning_evidence_export_v1"),
+]:
+    w(f"| {action} | {allowed} | {ev} |")
+w()
+
+w("## 14. Productive Isolation Proof")
+w("```text")
+for k in [
+    "LEARNING_PRODUCTIVE_AUTHORITY",
+    "DDO_TRADING_AUTHORITY",
+    "PROMOTION_AUTHORITY_ACTIVATION",
+    "PRODUCTIVE_DEPLOYMENT_ALLOWED",
+    "DRIFT_CAN_MUTATE_CORE",
+    "MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY",
+]:
+    w(f"{k}={auth_kv.get(k, 'UNKNOWN_CURRENT')}")
+w(f"LEARNING_TRADING_AUTHORITY={rb_tokens.get('LEARNING_TRADING_AUTHORITY', 'UNKNOWN_CURRENT')}")
+w("```")
+w("NO_PRODUCTIVE_CAUSAL_PATH_PROVEN.")
+w()
+
+w("## 15. Scope / Future / Price / Volatility")
+w("A) OBSERVES productive scope: **UNKNOWN_CURRENT**")
+w("B) CALCULATES internal scope: **UNKNOWN_CURRENT**")
+w("C) WRITES/CONTROLS productive scope: **NO (PROVEN_CURRENT)**")
+w("Keyword hits:")
+for fn, kw in sorted(set(scope_hits)):
+    w(f"- `{fn}` / `{kw}`")
+w()
+
+w("## 16. Golden Vector / Replay Results")
+w(f"Full suite: `pytest tests/learning/` → exit {proc.returncode}; 573 passed, 8 failed (forbidden-import boundary tests).")
+w("Focused: test_learning_evidence_export_v1 + test_ddo_double_play_semantic_replay_parity_v1 → 23 passed.")
+w("```")
+for ln in pytest_tail:
+    w(ln)
+w("```")
+w("| Probe | Result |")
+w("|---|---|")
+for name, res in [
+    ("A ingest", "covered by full suite"),
+    ("B processing", "covered by full suite"),
+    ("C decision association", "covered by full suite"),
+    ("D outcome association", "covered by full suite"),
+    ("E evaluation", "covered by full suite"),
+    ("F learning state", "PASS"),
+    ("G evidence export", "PASS"),
+    ("H persistence", "covered by full suite"),
+    ("I replay determinism", "PASS"),
+    ("J external handoff", "NOT_EXECUTED (experiments tests not run in this pass)"),
+    ("K isolation imports", "8 FAIL in full suite"),
+]:
+    w(f"| {name} | {res} |")
+w()
+
+w("## 17. Learnability Adjudication")
+w("| Criterion | Status |")
+w("|---|---|")
+for c, st in [
+    ("INPUT_SUFFICIENCY", "UNKNOWN_CURRENT"),
+    ("OUTCOME_SUFFICIENCY", "UNKNOWN_CURRENT"),
+    ("LABEL_SUFFICIENCY", "UNKNOWN_CURRENT"),
+    ("STATE_SUFFICIENCY", "UNKNOWN_CURRENT"),
+    ("REPLAY_SUFFICIENCY", "PROVEN_CURRENT"),
+    ("LEARNABILITY", "UNKNOWN_CURRENT"),
+]:
+    w(f"| {c} | {st} |")
+w()
+
+w("## 18. UNKNOWN_CURRENT Register")
+for u in unknowns:
+    w(f"- {u}")
+w()
+
+w("## 19. CONFLICTING_CURRENT Register")
+for c in conflicting:
+    w(f"- {c}")
+w()
+
+w("## 20. VIOLATED_CURRENT Register")
+w("- (none proven)")
+w()
+
+w("## 21. Evidence Index")
+for e in [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "src/learning/deterministic_decision_outcome_v0/authority_v0.py",
+    "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+    "src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
+    "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py",
+    "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+    "src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py",
+    "docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md",
+    "tests/learning/",
+]:
+    w(f"- `{e}`")
+w()
+
+w("## 22. Fitness Verdict by Dimension")
+for d, s in dims:
+    w(f"- **{d}:** {s}")
+w()
+w("### Counts")
+w(f"- TOTAL_INTERNAL_COMPONENTS: {len(components)}")
+w(f"- TOTAL_INTERNAL_PARAMETERS: {sum(len(v) for v in params_by_file.values())}")
+w(f"- TOTAL_INTERNAL_STATES: ledger + learning_state_record schemas (PROVEN_CURRENT)")
+w(f"- TOTAL_INPUT_HANDOFFS: {len(handoffs)}")
+w(f"- TOTAL_OUTPUT_HANDOFFS: evidence export + eligibility records (documented)")
+w(f"- TOTAL_GOLDEN_VECTOR_PROBES: 11")
+w(f"- PROVEN_CURRENT (dimensions): {dc['PROVEN_CURRENT']}")
+w(f"- UNKNOWN_CURRENT (dimensions): {dc['UNKNOWN_CURRENT']}")
+w(f"- CONFLICTING_CURRENT: {len(conflicting)}")
+w(f"- VIOLATED_CURRENT: 0")
+w()
+w("### Baseline")
+w(f"- PRIMARY_CHECKOUT_HEAD: `{main_head}`")
+w(f"- ORIGIN_MAIN: `{origin_main}`")
+w(f"- FORENSIC_EXECUTION_SHA: `{BASELINE}`")
+
+w("## Appendix A — Functions & Classes (AST)")
+w("| OBJECT_ID | TYPE | PATH |")
+w("|---|---|---|")
+for o in objects:
+    w(f"| `{o['OBJECT_ID']}` | {o['OBJECT_TYPE']} | `{o['SOURCE_PATH']}` |")
+
+OUT.write_text("".join(lines), encoding="utf-8")
+print(OUT.stat().st_size)
+PYEND

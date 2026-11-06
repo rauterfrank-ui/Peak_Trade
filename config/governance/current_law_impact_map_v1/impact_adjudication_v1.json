@@ -1,27 +1,41 @@
 {
   "authority_effect": "NONE",
+  "base_sha": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "head_binding": "CURRENT_WORKTREE_PATH_SET",
+  "source_tag": "freeze/clean-system-2026-11-06-v1",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
-    "tests/ops/test_h1_get_evidence_admission_v1.py",
-    "tests/ops/test_h1_get_evidence_bundle_v1.py"
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/governance/current_law_impact_map_v1/generated/LAW_CHANGE_IMPACT.md",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+    "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
+    "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
+    "docs/governance/current_law_impact_map_v1/generated/unknown_and_conflict_v1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json",
+    "docs/system_atlas/ATLAS_AUTHORITY_AND_USAGE.md",
+    "docs/system_atlas/README.md",
+    "docs/system_atlas/current_atlas.py",
+    "docs/system_atlas/generated/SOURCE_INDEX.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/obsidian_projection.py",
+    "docs/system_atlas/source/current-files.jsonl.gz",
+    "docs/system_atlas/source/current-imports.jsonl.gz",
+    "docs/system_atlas/source/current-model.json",
+    "docs/system_atlas/source/current-symbols.jsonl.gz",
+    "docs/system_atlas/source/documentation-cleanup.json",
+    "docs/system_atlas/source/policy-inventory.json",
+    "docs/system_atlas/source/successor-disposition.json",
+    "docs/system_atlas/tests/test_obsidian_projection.py"
   ],
-  "changed_paths_sha256": "5844566d94a11e2e9d276cbec5f4a727c734f1fd32ff0335acd26afa3cd6b922",
-  "covered_candidate_paths": [
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
-    "tests/ops/test_h1_get_evidence_admission_v1.py",
-    "tests/ops/test_h1_get_evidence_bundle_v1.py"
-  ],
-  "evidence_refs": [
-    "config/ops/okx_captured_at_freshness_policy_ratification_v1.json",
-    "src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py"
-  ],
-  "reason": "Change-bound receipt for H1 positions pagination alignment B_LIMITED. Positions leaves the paginated REST classification. Pending, history, and fills stay unproven. No law reference and no domain membership were added. source_v1.json and derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_LAW_IMPACT.",
+  "changed_paths_sha256": "ef893ea189b83877513910611e59aac9b4334e463db41a1e4a6bd6acdcb97117",
+  "verdict": "LAW_MAP_UPDATE_REQUIRED",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT"
+  "reason": "Clean successor documentation rebinding; retired archive receipts are baseline-bound. Product src/runtime bytes and existing protected-source comparison are preserved.",
+  "evidence_refs": [
+    "docs/system_atlas/source/documentation-cleanup.json",
+    "docs/system_atlas/source/policy-inventory.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json"
+  ]
 }

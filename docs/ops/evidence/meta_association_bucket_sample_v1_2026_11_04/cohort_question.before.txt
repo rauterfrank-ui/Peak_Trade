@@ -1,0 +1,73 @@
+def _cohort_question(
+    question_id: str,
+    collector: Any,
+    cohorts: Sequence[Mapping[str, Any]],
+    policy: Mapping[str, Any],
+    *,
+    associative: bool,
+    sample_key: str | None,
+    proposal_builder: Any,
+    exclude_missing_units: bool = False,
+) -> dict[str, Any]:
+    comparable_n = sum(len(cohort["units"]) for cohort in cohorts)
+    missing = 0
+    findings: list[dict[str, Any]] = []
+    proposals: list[dict[str, Any]] = []
+    statuses: list[str] = []
+    for cohort in cohorts:
+        units = list(cohort["units"])
+        cohort_findings, cohort_missing = collector(units)
+        missing += cohort_missing
+        sample_size = (
+            len(units) if sample_key is None else _finding_sample(cohort_findings, sample_key)
+        )
+        if exclude_missing_units:
+            # The stability collector counts exactly one missing value per unit.
+            sample_size -= cohort_missing
+        evidence_status, claim_type, _claim_strength = _claim_gate(
+            sample_size=sample_size,
+            findings=cohort_findings,
+            policy=policy,
+            associative=associative,
+        )
+        statuses.append(evidence_status)
+        if evidence_status != EVIDENCE_COMPUTED:
+            continue
+        wrapped = [
+            {
+                "causal_claim": False,
+                "cohort_id": cohort["cohort_id"],
+                "experiment_ids": list(cohort["experiment_ids"]),
+                **item,
+            }
+            for item in cohort_findings
+        ]
+        findings.extend(wrapped)
+        proposals.extend(proposal_builder(wrapped, question_id=question_id, claim_type=claim_type))
+    if findings:
+        evidence_status = EVIDENCE_COMPUTED
+        claim_type = CLAIM_TYPE_ASSOCIATION if associative else CLAIM_TYPE_DESCRIPTIVE
+        claim_strength = CLAIM_STRENGTH_WEAK if associative else CLAIM_STRENGTH_NONE
+    elif EVIDENCE_INSUFFICIENT_SAMPLE in statuses:
+        evidence_status = EVIDENCE_INSUFFICIENT_SAMPLE
+        claim_type = CLAIM_TYPE_NONE
+        claim_strength = CLAIM_STRENGTH_NONE
+    else:
+        evidence_status = EVIDENCE_INSUFFICIENT_EVIDENCE
+        claim_type = CLAIM_TYPE_NONE
+        claim_strength = CLAIM_STRENGTH_NONE
+    return {
+        "causal_claim": False,
+        "claim_strength": claim_strength,
+        "claim_type": claim_type,
+        "comparable_sample_size": comparable_n,
+        "correlation_is_not_causality": True,
+        "evidence_status": evidence_status,
+        "findings": findings,
+        "missing_evidence_count": missing,
+        "question_id": question_id,
+        "rejected_comparability_count": comparable_n if len(cohorts) > 1 else 0,
+        "research_proposals": proposals,
+        "sample_size": comparable_n - missing if exclude_missing_units else comparable_n,
+    }
+

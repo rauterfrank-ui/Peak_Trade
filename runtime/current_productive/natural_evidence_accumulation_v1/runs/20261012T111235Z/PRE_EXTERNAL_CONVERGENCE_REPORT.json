@@ -1,0 +1,65 @@
+{
+  "BASELINE_SHA": "693a48ceb7b8f503d7294c54bfc7f5faaab1ecfe",
+  "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": "false",
+  "CYCLE_COUNT": 4,
+  "DPO": {
+    "cycle_id": "persistent-natural-enter-live-c1:s5:LANE_1:LANE_1:cycle:5",
+    "decision_event_ref": "ddo.dec:94c188f82d7a4669f819be06",
+    "decision_outcome": "observe",
+    "dpo_ref": "ddo.dpo:56360cce67050373b479fa81",
+    "execution_eligible": "",
+    "s5_cycle_index": "4",
+    "selected_side": "none",
+    "trading_epoch": "5"
+  },
+  "EFFECTIVE_MAX_CYCLES": 4,
+  "EFFECTIVE_MAX_RUN_DURATION_SECONDS": 180.0,
+  "ENTER_SIDE": "",
+  "EVIDENCE_ROOT": "/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T111235Z",
+  "EXECUTION_HEAD_SHA": "693a48ceb7b8f503d7294c54bfc7f5faaab1ecfe",
+  "EXTERNAL_EFFECT_COUNT": 0,
+  "FIRST_GENUINE_BLOCKER": "MAX_CYCLES_PER_RUN",
+  "GET_REQUEST_COUNT": 77,
+  "LIVE_PUBLIC_C1_GET_EXECUTED": "true",
+  "NATIVE_ID": "RSR-USDT-SWAP",
+  "NATURAL_ENTER_OBSERVED": "false",
+  "NATURAL_PRE_EXTERNAL_REACHED": "false",
+  "OWNER_GO_FRESH_C1_GET_CONSUMPTION_COUNT": 33,
+  "PENDING_OUTCOME_CREATED": "false",
+  "PENDING_OUTCOME_CREATION_REASON": "NOT_GENUINE_NATURAL_ENTER",
+  "PENDING_OUTCOME_ID": "",
+  "PERMIT_CREATED": "false",
+  "POST_COUNT": 0,
+  "PRE_EXTERNAL_REACHED": "false",
+  "REPORTING_S5_CYCLE_INDEX": "4",
+  "REPORTING_S5_DISPOSITION": "HOLD_CLOSED",
+  "REQUESTED_MAX_CYCLES": 4,
+  "REQUESTED_MAX_RUN_DURATION_SECONDS": 180.0,
+  "RUN_ID": "30d7f8a3ef28df24",
+  "S5_CYCLE_SUMMARIES": [
+    {
+      "c1_venue_event_time": 1791803760.0,
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791803820.0,
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791803880.0,
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791803940.0,
+      "cycle_index": 4,
+      "s5_disposition": "HOLD_CLOSED"
+    }
+  ],
+  "S5_TERMINAL_CLASS": "MAX_CYCLES_BOUND",
+  "SYNTHETIC_ENTER_COUNT": 0,
+  "SYNTHETIC_ENTER_OBSERVED": "false",
+  "TERMINAL_DISPOSITION": "MAX_CYCLES_BOUND_STOP"
+}

@@ -6,6 +6,7 @@ Sends alerts via SMTP email.
 """
 
 import smtplib
+import ssl
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -61,6 +62,7 @@ class EmailChannel(AlertChannel):
         self.from_address = config.get("from_address", "alerts@peak-trade.local")
         self.to_addresses = config.get("to_addresses", [])
         self.use_tls = config.get("use_tls", True)
+        self.last_failure_retryable = False
 
         # Validate configuration
         if self._enabled:
@@ -89,6 +91,7 @@ class EmailChannel(AlertChannel):
         Returns:
             True if sent successfully, False otherwise
         """
+        self.last_failure_retryable = False
         try:
             # Build email message
             msg = self._build_message(event)
@@ -96,7 +99,7 @@ class EmailChannel(AlertChannel):
             # Send via SMTP
             with smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=30) as server:
                 if self.use_tls:
-                    server.starttls()
+                    server.starttls(context=ssl.create_default_context())
 
                 # Login
                 server.login(self.smtp_user, self.smtp_password)
@@ -107,9 +110,20 @@ class EmailChannel(AlertChannel):
             return True
 
         except smtplib.SMTPException as e:
+            if isinstance(e, smtplib.SMTPResponseException):
+                self.last_failure_retryable = 400 <= e.smtp_code < 500
+            elif isinstance(e, smtplib.SMTPRecipientsRefused):
+                self.last_failure_retryable = bool(e.recipients) and all(
+                    400 <= response[0] < 500 for response in e.recipients.values()
+                )
+            else:
+                self.last_failure_retryable = isinstance(e, smtplib.SMTPServerDisconnected)
             self._health.last_error = f"SMTP error: {e}"
             return False
         except Exception as e:
+            self.last_failure_retryable = isinstance(
+                e, (TimeoutError, ConnectionError, OSError)
+            ) and not isinstance(e, ssl.SSLError)
             self._health.last_error = str(e)
             return False
 

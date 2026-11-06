@@ -1,0 +1,163 @@
+# Weitere Gesamtkonzeption: Varianten und Querschnittsverträge
+
+Untersuchungsanhang, keine neue System-SSOT und keine Architekturentscheidung. Vergleichspin: `5d1c838c15369507c5247834db4dd0df25592169` (lokal, kein Fetch). Drei weitere historische PDFs auf 28 ausgewählten vollständigen Seiten gelesen, drei Seiten visuell geprüft. Die übrigen Seiten dieser PDFs sind in diesem Schritt nicht fachlich ausgewertet.
+
+## Wesentlicher Fortschritt
+
+Die frühere Idee eines späteren Authority-Cutovers zum separaten L1–L10-Core darf nicht als unveränderter heutiger Plan übernommen werden. Der Vertrag und das Entscheidungsartefakt am Vergleichspin erklären diesen Cutover ausdrücklich für entfallen. Der integrierte Replay bleibt darin die benannte Entscheidungsinstanz. Das ist ein belegter Unterschied zwischen Fassungen, kein Beweis, dass die spätere Lösung fachlich besser oder vollständig umgesetzt ist.
+
+Die neu gelesenen Assertion-Körper verlangen diese Trennung; ihre Aufrufer und tatsächliche Wirksamkeit wurden nicht nachgewiesen. Erwartete PROVEN_CURRENT-Werte und null-Lücken im Config-Artefakt werden nicht als neue Prüfung übernommen.
+
+## Historische Varianten und offene Erhaltungsfragen
+
+### V01 · Geplanter Core-Cutover wurde anders entschieden
+
+Einhorn v2 am Bezugscommit 097b6338 (22.09.2026) sieht einen späteren Authority-Cutover zum separaten L1–L10-Core vor.
+
+CV-S02 und CV-S04 am Vergleichspin erklären P5-Cutover für entfallen; integrierter Replay bleibt als Entscheidungsinstanz benannt. Zwei gelesene Assertion-Körper in CV-S05 fordern diese Trennung ein.
+
+**Zu klären:** Welche Kerninvarianten wurden im Replay vollständig erhalten, welche geändert und was begründete die neue Entscheidung?
+
+### V02 · Früherer Persistenz-Blocker braucht einen neuen Abgleich
+
+P09:10 beschreibt damals fehlende prozessübergreifende Core-Persistenz.
+
+CV-S01 dokumentiert später einen nativen Durable-State-Vertrag; entsprechende Code-/Testpfade sind im Pin vorhanden. Ihre Gesamtwirkung wurde hier nicht nachgeprüft.
+
+**Zu klären:** Erfüllen Restore, atomarer Commit und Weitergabe tatsächlich den benötigten Zustand über Prozessgrenzen – und für welchen Host?
+
+### V03 · Guardian-Identitäten, technische Grenzen und Instanzen
+
+P10 V0.4 fordert offene Klassifikation von Universen, Außenbereichen und Übergängen.
+
+Der spätere V0.8-Entwurf im Repo berichtet fünf fachlich fixierte Identitäten bei weiterhin offenen technischen Grenzen und keiner nachgewiesenen Guardian-Zuweisung. Dies sind übernommene Berichtsangaben, keine hier wiederholte Prüfung.
+
+**Zu klären:** Welche Owner-Entscheidungen sind primär belegt, welche technische Membership ist nachgewiesen und welche Zuständigkeit fehlt noch?
+
+### V04 · Breiter Lernkreislauf und enger Core-Experimentierraum
+
+B01–B06 aus September-Konzepten enthalten breitere Kontext-, Repräsentations- und Optimierungsfunktionen.
+
+P09:11 begrenzt den Core-bezogenen Experimentierraum auf zulässige Scope-Parameter/-Familien und trennt ihn von Änderungen an Direction und Switch.
+
+**Zu klären:** Welche Grenzen gelten nur für den Core, welche für andere Forschungsobjekte, und wo wäre eine explizite Architekturweiterentwicklung gewollt?
+
+### V05 · Build-ready und semantisch implementiert sind verschiedene Aussagen
+
+P11:1 nennt den Entwurf PASS_BUILD_READY.
+
+P11:18–19 verlangt zusätzlich genaue Implementierungs-, Verbindungs-, Fehler- und Regressionsnachweise; Dateiexistenz und PASS-Flags reichen ausdrücklich nicht.
+
+**Zu klären:** Welche konkrete Anforderung ist durch welche Implementierung und welche ausgeführte Assertion abgedeckt?
+
+## Zusätzliche Anforderungen – auch außerhalb von Universen
+
+### B20 · Zustandsautorität und konkurrierende Schreiber
+
+Das Einhorn-Zielbild fordert genau einen fachlichen Schreiber je Regime-, NullLine-, Scope- und Referenzzustand. Parallel vorhandene Modelle sind vor einer Bindung zu beurteilen.
+
+**Nachweisfrage:** Alle tatsächlichen Schreiber und deren Host-/Zustandsgrenzen je historischer Variante erfassen; ein bloßer Owner-String reicht nicht.
+
+**Systemische Folge:** Konkurrierende Zustandsänderungen könnten trotz lokal richtiger Berechnung eine andere globale Handelslogik erzeugen.
+
+### B21 · Zustandsfortsetzung über Prozessgrenzen
+
+Vorgesehen sind native Core-Snapshots mit Instrument/Bindung, Version, Initialisierung, Regime, NullLine, Scope, Referenz, Beobachtungsidentität und atomarem Persist-before-publish-Ablauf.
+
+**Nachweisfrage:** Restore, Crash-Fenster, Versions-/Identitätskonflikte, Weitergabe nach Switch und Wiederanlauf-Parität belegen. Später vorhandene Persistenzdateien schließen diese Anforderung nicht allein.
+
+**Systemische Folge:** Ein korrekter Einzelschritt kann beim Wiederanlauf seinen kausalen Zusammenhang verlieren oder mit fremdem Zustand fortgesetzt werden.
+
+### B22 · Veto und Mengengrenze erhalten die Entscheidungsbedeutung
+
+Risiko, Sizing, Treasury, Safety und Ausführung sollen im Entwurf Kapital/Menge begrenzen oder Ausführung ablehnen können, ohne BULL/BEAR und die Core-Zustandsaussage umzudeuten.
+
+**Nachweisfrage:** Entscheidungszustand, konkrete Entry/Exit-Aktion, Zulassung, Quantity und Ausführungsstatus an ihren Consumern auseinanderhalten.
+
+**Systemische Folge:** Kein Trade, Quantity null und gegenteilige Handelsrichtung sind fachlich verschiedene Ergebnisse.
+
+### B23 · Optimierbare Fläche und unveränderte Taktik
+
+Der Einhorn-Entwurf begrenzt seinen Experimentierraum auf zulässige Scope-Familien/-Parameter; Direction-, Switch- und NullLine-Regeln werden davon unterschieden.
+
+**Nachweisfrage:** Geltungsbereich dieser Begrenzung gegenüber den breiteren Learning-/Market-Intelligence-Konzepten klären. Gewollte Weiterentwicklung nicht mit unerlaubter impliziter Mutation verwechseln.
+
+**Systemische Folge:** Lokale Parameteroptimierung kann erwünscht sein; eine geänderte Taktik muss als eigenständige fachliche Entscheidung sichtbar bleiben.
+
+### B24 · Skalierung behält Semantik und getrennten Zustand
+
+Spätere Mehr-Lane-Fähigkeit soll denselben Core-Vertrag pro Lane mit eigenem Zustand verwenden; Portfolio/Budget koordiniert darüber. Fähigkeit und Aktivierung bleiben verschieden.
+
+**Nachweisfrage:** Lane-/Instrument-/Episode-Identität, Zustandsisolation und Budgetkopplung prüfen; historische N=1/N=5-Aussagen nicht als heutige Betriebsbeobachtung verwenden.
+
+**Systemische Folge:** Geteilte Kapitalgrenzen können Lanes koppeln, ohne dass deren interne Entscheidung oder Zustandsidentität vermischt werden darf.
+
+### B25 · Unbekannte Nebenbereiche bleiben Teil der Systemrekonstruktion
+
+market_sentinel/levelup, tiefe Dispatch-Pfade und Referenzschreiber sind im damaligen Entwurf ausdrücklich offene Punkte; gemeinsame Dienste und Außenbereiche sind einzubeziehen.
+
+**Nachweisfrage:** Herkunft, Zweck, Reachability und Wirkung auch für nicht als Universum benannte Bereiche ermitteln; die genannten Beispiele sind keine vollständige Restliste.
+
+**Systemische Folge:** Eine unbekannte Nebenkomponente kann eine entscheidende Abhängigkeit besitzen; Unklassifiziertheit begründet weder Löschung noch Irrelevanz.
+
+### B26 · Fachliche Identität ist nicht technische Systemgrenze
+
+Universen, Außenbereiche, Shared Services, Querschnittsverträge, Dateien, Surfaces und Graphknoten sind unterschiedliche Einheiten. Grenzen und Zugehörigkeit brauchen eigene Nachweise.
+
+**Nachweisfrage:** Historische Klassifikationen und spätere Owner-Entscheidungen je Revision erhalten; Ratifikation einer Identität von vollständiger Membership und aktiven Außenkanten trennen.
+
+**Systemische Folge:** Eine vorschnelle Universe-Taxonomie könnte gemeinsame Zustands-/Kapital-/Datenverträge aus dem Überblick verdrängen.
+
+### B27 · Befundtransport ohne erfundene Bedeutung
+
+Guardian-Kommunikation ist als versionierter, typisierter Befundaustausch entworfen: Originalaussage und Konflikt bleiben erhalten, unklare Semantik wird nicht automatisch ergänzt.
+
+**Nachweisfrage:** Falls ein solches Werkzeug später bewertet wird: Befundidentität, Provenienz, Zuständigkeit, Konfliktstatus und unerlaubte Statushochstufung prüfen. Keine Guardian-Implementierung aus dem Konzept ableiten.
+
+**Systemische Folge:** Eine sprachlich plausible Zusammenfassung kann die Bedeutung eines fremden Befunds verändern und dadurch falsche Kausalität erzeugen.
+
+### B28 · Änderungsfolgen umfassen Rückwege und Zustandsgrenzen
+
+Das Guardian-Zielbild verfolgt für einen abgegrenzten Änderungsfall direkte, transitive und rückwirkende Pfade, Zyklen sowie Epoch-/Persistenzgrenzen; verbleibende Lücken werden ausgewiesen.
+
+**Nachweisfrage:** Coverage nach Struktur, Eintritt, dynamischem Wiring, Vertrag, Runtime und Zustand getrennt führen. Ein lokaler Fixpunkt ist kein globaler Vollständigkeitsbeweis.
+
+**Systemische Folge:** Historische Funktionen können auch dann systemisch relevant sein, wenn ihre Entfernung erst über mehrere Übergaben und einen späteren Zyklus wirkt.
+
+### B29 · Evaluation endet vor produktiver Freigabe
+
+GVEF soll reproduzierbare Evaluation, Vergleich und registrierte Evidence liefern. EVIDENCE_COMPLETE und ein Envelope an Governance sind getrennt von Promotion oder Live-Zulassung.
+
+**Nachweisfrage:** Runner, Evaluatoren, Registry und Handoff mit erlaubten Nebenwirkungen und tatsächlichen Grenzen prüfen; Build-ready-Labels belegen keine ausgeführte Gesamtpipeline.
+
+**Systemische Folge:** Eine erfolgreiche Evaluation darf keine zweite Selection-, Risk-, Decision- oder Promotion-Autorität erzeugen.
+
+### B30 · Evidence bindet Eingaben und Vergleichsidentität
+
+Run, Baseline, Kandidat, Corpus, Konfiguration, Daten, Seed, Constraints und geschützte Digests sollen im Evaluationskontext gebunden sein.
+
+**Nachweisfrage:** Exakte Serialisierung, Identitätsbindung, Vergleichbarkeit, deterministische Teilverträge und tatsächliche verwendete Eingaben nachweisen.
+
+**Systemische Folge:** Gleiche Metriknamen oder grüne Ergebnisse sind ohne denselben Vergleichsbezug nicht als gleichwertige Evidenz verwendbar.
+
+### B31 · Geschützte Digests sind begrenzte Nachweise
+
+GVEF unterscheidet Ranking- und Selection-Digests sowie erwartete, unerwartete, fehlende und widersprüchliche Änderungen; Semantik und Consumer-Verbindung sind zusätzlich nachzuweisen.
+
+**Nachweisfrage:** Was der Digest tatsächlich abdeckt und auslässt, welche Driftklasse vorliegt und welche Regressionen erforderlich sind, getrennt belegen.
+
+**Systemische Folge:** Byte-/Digestgleichheit kann den erfassten Inhalt schützen, aber keine ungemessene fachliche Wirkung oder vollständige Austauschbarkeit garantieren.
+
+### B32 · Fehlerpfad und Abschlussregel sind Teil der Architektur
+
+Runner-Fehler sollen terminal sein; Vor-/Nachprüfung darf nicht übersprungen werden. Fehlerklassen und Fan-out legen lokale, nachgelagerte oder systemweite Nachprüfung fest.
+
+**Nachweisfrage:** Ist-Zustand, Schemas, Werte, Semantik, Wiring, Fehlerverhalten und Nebenwirkungen je begrenztem Paket nachweisen; offene Punkte bleiben offen.
+
+**Systemische Folge:** Eine Funktion kann im Erfolgsfall richtig erscheinen und bei Missing, Konflikt oder Wiederholung dennoch unbemerkt einen falschen Status weiterreichen.
+
+## Abdeckung und Grenzen
+
+Die vorherigen B01–B19 bleiben unverändert. B20–B32 sind weitere ausgewählte Anforderungen, kein vollständiger Gesamtkatalog. Spätere Ebenenmodelle werden nicht als Urstruktur ausgegeben. Kein frischer GHV-/Graph-/GHOSV-Lauf, keine Projektfunktion ausgeführt, kein Produktcode verändert, keine Guardian-Instanz eingerichtet.
+
+Die neue Übersicht hält insbesondere Zustandskontinuität, Mengengrenze versus Richtung, pro-Lane-Identität, außeruniverselle Dienste, Evidence-Identität und Fehler-/Rückkopplungspfade als eigene offene Verträge fest. Nutzen historischer Varianten, technische Erfüllung und heutige systemische Wirkung sind weiter getrennt zu bewerten.

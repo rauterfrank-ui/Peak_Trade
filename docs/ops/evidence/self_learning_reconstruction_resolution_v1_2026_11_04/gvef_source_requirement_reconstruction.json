@@ -1,0 +1,287 @@
+{
+  "role": "DERIVED_SOURCE_RECONSTRUCTION_NOT_ORIGINAL_MANIFEST_BYTES_OR_HISTORICAL_EXECUTION",
+  "component_before_normalization": {
+    "COMPONENT_ID": "gvef.domain_evaluator.self_learning_v1",
+    "PURPOSE": "Learning/DDO candidate evaluation",
+    "AUTHORITY": "NONE",
+    "OWNER": "self_learning_evaluator_v1",
+    "INPUTS": [
+      "DomainEvaluationContext"
+    ],
+    "OUTPUTS": [
+      "DomainEvaluationResult"
+    ],
+    "ALLOWED_CALLERS": [
+      "generic_runner"
+    ],
+    "ALLOWED_CALLEES": [
+      "metric_engine"
+    ],
+    "FORBIDDEN_CALLERS": [],
+    "FORBIDDEN_CALLEES": [
+      "learning loop writeback to productive"
+    ],
+    "STATEFUL": false,
+    "READ_BOUNDARIES": [
+      "src/learning evidence exports"
+    ],
+    "WRITE_BOUNDARIES": [
+      "evidence"
+    ],
+    "SIDE_EFFECT_CLASS": "NONE",
+    "FAILURE_BEHAVIOR": "EVALUATOR_FAILURE",
+    "EVIDENCE_PRODUCED": [
+      "sl_evidence"
+    ],
+    "CURRENT_PROVENANCE": "PROVEN_CURRENT runbook learning boundaries"
+  },
+  "component_after_source_described_normalization": {
+    "COMPONENT_ID": "gvef.domain_evaluator.self_learning_v1",
+    "PURPOSE": "Learning/DDO candidate evaluation",
+    "AUTHORITY": "NONE",
+    "OWNER": "self_learning_evaluator_v1",
+    "INPUTS": [
+      "DomainEvaluationContext"
+    ],
+    "OUTPUTS": [
+      "DomainEvaluationResult"
+    ],
+    "ALLOWED_CALLERS": [
+      "generic_runner"
+    ],
+    "ALLOWED_CALLEES": [
+      "metric_engine"
+    ],
+    "FORBIDDEN_CALLERS": [],
+    "FORBIDDEN_CALLEES": [
+      "learning loop writeback to productive"
+    ],
+    "STATEFUL": false,
+    "READ_BOUNDARIES": [
+      "src/learning evidence exports"
+    ],
+    "WRITE_BOUNDARIES": [
+      "evidence"
+    ],
+    "SIDE_EFFECT_CLASS": "NONE",
+    "FAILURE_BEHAVIOR": "EVALUATOR_FAILURE",
+    "CURRENT_PROVENANCE": "PROVEN_CURRENT runbook learning boundaries",
+    "EVIDENCE_OUTPUT": [
+      "sl_evidence"
+    ],
+    "PROVENANCE": "PROVEN_CURRENT runbook learning boundaries"
+  },
+  "bwp_after_source_described_enum_normalization": {
+    "id": "BWP-5",
+    "INPUTS": [
+      "runner"
+    ],
+    "OUTPUTS": [
+      "self_learning_evaluator_v1"
+    ],
+    "DEPENDENCIES": [
+      "BWP-2"
+    ],
+    "ACCEPTANCE": [
+      "no productive writeback"
+    ],
+    "TESTS": "SL tests",
+    "EVIDENCE": "SL evidence",
+    "STOP": "AUTHORITY_FAILURE",
+    "REPROOF": "LOCAL_EVALUATION"
+  },
+  "closure_program_requirement_rows": [
+    {
+      "requirement_id": "BWP5-META-001",
+      "soll_source_expression": "bwp",
+      "source_line": 107,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-COMP-001",
+      "soll_source_expression": "comp",
+      "source_line": 108,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-DEPS-001",
+      "soll_source_expression": "{\"DEPENDENCIES\": [\"BWP-2\"]}",
+      "source_line": 109,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-STOP-001",
+      "soll_source_expression": "{\"STOP\": \"AUTHORITY_FAILURE\", \"package_binding\": \"architecture_manifest.bwp_detail\"}",
+      "source_line": 110,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-REPROOF-001",
+      "soll_source_expression": "{\"REPROOF\": \"LOCAL_EVALUATION\"}",
+      "source_line": 111,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-ACCEPT-001",
+      "soll_source_expression": "{\"ACCEPTANCE\": [\"no productive writeback\"]}",
+      "source_line": 112,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-AUTHORITY-001",
+      "soll_source_expression": "comp[\"AUTHORITY\"]",
+      "source_line": 113,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-STATEFUL-001",
+      "soll_source_expression": "comp[\"STATEFUL\"]",
+      "source_line": 114,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-SIDE-EFFECT-001",
+      "soll_source_expression": "comp[\"SIDE_EFFECT_CLASS\"]",
+      "source_line": 115,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-CALLERS-001",
+      "soll_source_expression": "comp[\"ALLOWED_CALLERS\"]",
+      "source_line": 116,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-CALLEES-001",
+      "soll_source_expression": "comp[\"FORBIDDEN_CALLEES\"]",
+      "source_line": 117,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-EVAL-ID-001",
+      "soll_source_expression": "comp[\"OWNER\"]",
+      "source_line": 118,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-INPUT-CTX-001",
+      "soll_source_expression": "comp[\"INPUTS\"]",
+      "source_line": 119,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-OUTPUT-RES-001",
+      "soll_source_expression": "comp[\"OUTPUTS\"]",
+      "source_line": 120,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-REPLAY-KIND-001",
+      "soll_source_expression": "\"replay entry kind=self_learning with learning_artifact\"",
+      "source_line": 121,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-AUTH-FLAGS-001",
+      "soll_source_expression": "{k: \"AUTHORITY_FAILURE when true\" for k in AUTHORITY_REPLAY_KEYS}",
+      "source_line": 122,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-METRICS-001",
+      "soll_source_expression": "[\"sl.artifact_digest\"]",
+      "source_line": 123,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-INVARIANTS-001",
+      "soll_source_expression": "[\"sl.no_productive_writeback\", \"sl.baseline_candidate_bound\"]",
+      "source_line": 124,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-SEM-DELTA-001",
+      "soll_source_expression": "[\"learning_artifact\", \"learning_artifact_digest\", \"evidence_source_class\"]",
+      "source_line": 125,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-EVIDENCE-REF-001",
+      "soll_source_expression": "\"evidence_refs evidence/sl/{baseline|candidate}\"",
+      "source_line": 126,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-EVIDENCE-CLASS-001",
+      "soll_source_expression": "\"TEST_ONLY_SYNTHETIC -> MECHANISM_TEST_EVIDENCE\"",
+      "source_line": 127,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-FANOUT-001",
+      "soll_source_expression": "\"AUTHORITY_FAILURE -> LOCAL_EVALUATION; NON_DETERMINISM -> WHOLE_SYSTEM_REPROOF\"",
+      "source_line": 128,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-RUNNER-FAIL-001",
+      "soll_source_expression": "\"authority breach -> FAILED, fail-closed, LOCAL_EVALUATION\"",
+      "source_line": 129,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-RUNNER-PASS-001",
+      "soll_source_expression": "\"valid fixture -> REGISTERED + evidence_complete\"",
+      "source_line": 130,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-DETERMINISM-001",
+      "soll_source_expression": "\"25x identical protected_output_digest\"",
+      "source_line": 131,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-PIPELINE-001",
+      "soll_source_expression": "\"canonical runner pipeline to EVIDENCE_REGISTRY\"",
+      "source_line": 132,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-PROTECTED-DIGEST-001",
+      "soll_source_expression": "\"NOT_APPLICABLE: SL evaluator passthrough baseline digests only\"",
+      "source_line": 133,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-FAIL-TAX-001",
+      "soll_source_expression": "{\"AUTHORITY_FAILURE\": auth_tax[\"FAIL_CLOSED\"]}",
+      "source_line": 134,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-FORBIDDEN-IMPORTS-001",
+      "soll_source_expression": "\"no productive writeback/credential imports\"",
+      "source_line": 135,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-GLOBAL-SAFETY-001",
+      "soll_source_expression": "\"GVEF authority NONE; zero productive mutations\"",
+      "source_line": 136,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    },
+    {
+      "requirement_id": "BWP5-PRECEDENCE-001",
+      "soll_source_expression": "\"bwp_detail STOP/REPROOF binds package; component FAILURE_BEHAVIOR is subordinate\"",
+      "source_line": 137,
+      "provenance": "BWP5 closure program adds this ledger row; source-derived requirement, not recovered historical output verdict"
+    }
+  ],
+  "scope_resolution": {
+    "blueprint_component_fields": "Purpose, interfaces, read/write bounds and authority; no numerical outcome/stability formula in the component declaration.",
+    "closure_added_metric_row": "BWP5-METRICS-001 names sl.artifact_digest in closure-program source; not a metric formula explicitly declared in extracted component.",
+    "broad_target": "V1.4 §8.3 Learning Outcomes/Stability/Reproducibility/Evidence Deltas remains broader than the artifact-digest acceptance mechanism.",
+    "no_silent_equivalence": true
+  }
+}

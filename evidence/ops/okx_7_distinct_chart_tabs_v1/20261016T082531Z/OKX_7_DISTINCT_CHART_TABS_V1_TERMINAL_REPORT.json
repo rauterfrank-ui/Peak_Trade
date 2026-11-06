@@ -1,0 +1,124 @@
+{
+  "mission": "OKX_7_DISTINCT_CHART_TABS_V1",
+  "timestamp_utc": "2026-10-16T08:28:00Z",
+  "mode": "STRICT_OBSERVATION_ONLY",
+  "VERDICT": "FAIL",
+  "VERDICT_REASON": "Native OKX-Arbeitsplätze liefern nicht sieben unabhängig aufrufbare, sichtbar unterschiedliche Chart-Grafiken ohne Workspace-Konfigurationsänderung. Sieben Tabs mit sieben verschiedenen Grafiken wurden nicht abgeschlossen.",
+  "arbeitsplatz_inventory": {
+    "meine_arbeitsplaetze": "2/10",
+    "sidebar_entries": [
+      {
+        "name": "Arbeitsplatz 1",
+        "observed_route": "https://my.okx.com/de/trade-spot-strategy/btc-usdc",
+        "primary_content": "Spot-Strategie / Grid-Sniper-Bots (kein Futures-Hauptchart)",
+        "distinct_chart_graphic": "PARTIAL — eigenes Produkt-UI, kein klassischer Futures-Kerzenchart"
+      },
+      {
+        "name": "Arbeitsplatz 2",
+        "observed_route": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+        "workspace_id": "1031216400532770816",
+        "primary_content": "Futures-Terminal BTC USD UM XPERP",
+        "distinct_chart_graphic": "YES — Kerzenchart (Diagramm/TradingView) plus separate Handelsdaten-Dashboards"
+      },
+      {
+        "name": "Trading-Bots",
+        "observed_behavior": "Sidebar-Eintrag; URL blieb auf Futures-WS2 — kein separater Vollbild-Chart-Arbeitsplatz nachweisbar",
+        "distinct_chart_graphic": "NO — nicht als eigene Grafik abgrenzbar"
+      }
+    ],
+    "saved_workspace_ids_confirmed": {
+      "WS2": "1031216400532770816",
+      "WS1_hash_target": "1006418239457071104"
+    },
+    "layout_presets_in_verwalten_not_applied": [
+      "Standard",
+      "Erweitert (rechts)",
+      "Erweitert (links)",
+      "Chart-Handel",
+      "2 Diagramme",
+      "3 Diagramme",
+      "4 Diagramme",
+      "Options-Layout"
+    ],
+    "note": "Vorlagen/Widget-Layouts sind Konfigurationsoptionen; Anwenden würde Arbeitsplatz-Konfiguration verändern (vom Auftrag ausgeschlossen)."
+  },
+  "distinct_chart_views_counted": {
+    "qualifies_as_separate_graphic": 3,
+    "items": [
+      {
+        "id": "A",
+        "label": "Arbeitsplatz 2 — Diagramm (Futures Kerzenchart + Orderbuch)",
+        "evidence": "screenshots/ws2_baseline.png"
+      },
+      {
+        "id": "B",
+        "label": "Arbeitsplatz 2 — Handelsdaten (Funding/OI/Long-Short Analytics-Charts)",
+        "evidence": "screenshots/probe_center_Handelsdaten.png",
+        "note": "Gleicher Workspace/Hash, anderer Mittelbereich — zählt als andere Grafik, nicht Orderbuch/Letzte-Trades"
+      },
+      {
+        "id": "C",
+        "label": "Arbeitsplatz 1 — Spot-Strategie-Handelsfläche",
+        "evidence": "screenshots/inventory_ap1.png"
+      }
+    ],
+    "does_not_qualify": [
+      {
+        "label": "Informationen",
+        "reason": "Text/Metadaten, keine Chart-Grafik",
+        "evidence": "screenshots/probe_center_Informationen.png"
+      },
+      {
+        "label": "Feed",
+        "reason": "Social-Feed-Overlay, keine Chart-Grafik",
+        "evidence": "screenshots/probe_center_Feed.png"
+      },
+      {
+        "label": "Orderbuch vs Letzte Trades",
+        "reason": "Explizit vom Owner ausgeschlossen"
+      },
+      {
+        "label": "Tiefe / Original",
+        "reason": "Steuerelemente in DOM nicht als klickbare Modi gefunden (missing Tiefe/Original)"
+      }
+    ],
+    "ws1_multichart_restoration": {
+      "status": "NOT_PROVEN_IN_THIS_RUN",
+      "note": "Deep-Link #workspaceId=1006418239457071104 zeigte in der Sitzung nicht zuverlässig die historisch bekannte 3-Diagramm-Ansicht (Feed/Informationen sichtbar). WS1 nicht als vierte stabile Grafik belegt.",
+      "evidence": "screenshots/probe_ws1_multichart.png"
+    }
+  },
+  "safari_tabs_deliverable": {
+    "target": 7,
+    "achieved_distinct_chart_tabs": 0,
+    "note": "Kein finales Ein-Fenster-Sieben-Tab-Setup mit je einem validierten Screenshot TAB_01..TAB_07 abgeschlossen.",
+    "inventory_screenshots": [
+      "screenshots/ws2_baseline.png",
+      "screenshots/probe_center_Handelsdaten.png",
+      "screenshots/inventory_ap1.png",
+      "screenshots/probe_center_Informationen.png",
+      "screenshots/probe_center_Feed.png",
+      "screenshots/probe_ws1_multichart.png",
+      "screenshots/inventory_ap1.png"
+    ]
+  },
+  "security_status": {
+    "orders": false,
+    "transfers": false,
+    "bots_activated": false,
+    "account_changes": false,
+    "peak_trade_mutations": false,
+    "bookmark_edits_this_mission": false,
+    "tab_groups_created": false,
+    "workspace_config_mutated": false,
+    "html_title_manipulation": false
+  },
+  "technical_limitations": [
+    "Nur 2 gespeicherte Arbeitsplätze (2/10), nicht sieben.",
+    "Trading-Bots ist kein separater Chart-Arbeitsplatz in dieser Sitzung.",
+    "Weitere Layout-Grafiken (2/3/4 Diagramme) erfordern Workspace-Vorlagen-Anwendung = Konfigurationsänderung.",
+    "Vier identische Futures-Tabs (gleicher Hash WS2) liefern keine vier unterschiedlichen Grafiken.",
+    "WS1-Multichart in dieser Sitzung nicht visuell reproduziert."
+  ],
+  "recommended_owner_next_step": "Entweder (a) sieben Arbeitsplätze in OKX nativ anlegen/speichern (Owner, außerhalb Observation-only), oder (b) Ziel auf 3–4 nachweislich unterschiedliche native Grafiken reduzieren (WS2 Diagramm, WS2 Handelsdaten, AP1 Spot-Strategie, optional WS1 Multichart nach manueller Slot-Auswahl)."
+}

@@ -1,0 +1,187 @@
+{
+  "document": "READ_ONLY_DATA_SOURCE_CHARTER_V1",
+  "timestamp_utc": "2026-10-16T07:45:00Z",
+  "mode": "FORENSIC_READ_ONLY",
+  "implementation": "FORBIDDEN",
+  "context": "OKX_MAXIMUM_OBSERVATION_V6H → stop native Safari layout experiments",
+  "recommended_architecture": "LOCAL_READ_ONLY_WORKSTATION",
+  "interim_operations": "HYBRID",
+  "native_okx_safari_primary": "REJECTED_AS_STEADY_STATE",
+  "security_charter": {
+    "rules": [
+      {"id": 1, "rule": "No trading authority", "enforcement": "DESIGN + adapter allowlists"},
+      {"id": 2, "rule": "No order endpoints (POST submit/amend/cancel)", "enforcement": "PATH/METHOD denylist"},
+      {"id": 3, "rule": "No transfer endpoints", "enforcement": "FAIL_CLOSED_UNKNOWN"},
+      {"id": 4, "rule": "No account mutations", "enforcement": "GET-only private plane"},
+      {"id": 5, "rule": "No Peak Trade runtime control", "enforcement": "Consumer-only; no orchestrator triggers"},
+      {"id": 6, "rule": "No POST/PUT/PATCH/DELETE to exchange", "enforcement": "HTTP GET + WS subscribe/read only"},
+      {"id": 7, "rule": "No credentials in browser", "enforcement": "Server-side adapter only"},
+      {"id": 8, "rule": "No Double Play / Master V2 mutation", "enforcement": "Out of scope; read snapshots only if bound"},
+      {"id": 9, "rule": "No productive trading contract changes", "enforcement": "Charter is evidence-only"},
+      {"id": 10, "rule": "UNKNOWN = FAIL_CLOSED", "enforcement": "UI shows UNAVAILABLE not guessed data"}
+    ],
+    "credential_classes": {
+      "public_market": {"required": false, "notes": "OKX public REST/WS — no API key per Peak policy"},
+      "private_observation": {
+        "required": "OPTIONAL_FOR_EXCHANGE_ACCOUNT_PANEL",
+        "class_if_used": "OKX_EEA_PRIVATE_OBSERVATION_READ_V1",
+        "forbidden_classes": ["OKX_EEA_TRADE_API_KEY", "LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY"],
+        "activation": "UNKNOWN — separate Owner-GO; not invoked in this charter"
+      }
+    }
+  },
+  "phase_1_current_peak_trade_matrix": {
+    "mark_price_feeds": {
+      "availability": "CURRENT",
+      "owner": "ops.peak_trade_public_market_data_runtime_v1",
+      "transport": "WS tickers + REST /api/v5/public/mark-price",
+      "host_family": "eea.okx.com / wseea.okx.com public WS",
+      "ui_ready": "PARTIAL — facts + dashboard OHLCV poll, not full workstation layout"
+    },
+    "orderbook_depth": {
+      "availability": "CURRENT_PARTIAL",
+      "owner": "ops.peak_trade_public_market_data_runtime_v1",
+      "transport": "WS books5 only (top-of-book depth, 5 levels)",
+      "full_l2_books": "NOT_WIRED_IN_WP_A_BINDING",
+      "ui_ready": "NO — Landscape V2 has no orderbook panel in census"
+    },
+    "time_and_sales": {
+      "availability": "CURRENT",
+      "owner": "ops.peak_trade_public_market_data_runtime_v1 + okx_selected_instrument_ohlcv_readmodel_v1",
+      "transport": "WS trades + REST /api/v5/market/trades",
+      "ui_ready": "NO dedicated T&S column in Landscape V2"
+    },
+    "funding_open_interest": {
+      "availability": "CURRENT_SCHEMA_PARTIAL_WIRE",
+      "owner": "facts_v1 FundingRateFactV1/OpenInterestFactV1; cycle references /api/v5/public/funding-rate and open-interest",
+      "ws_tickers_oi_funding": "UNKNOWN full normalizer path in WP-A hot path",
+      "ui_ready": "PARTIAL — not primary Landscape slot"
+    },
+    "ohlcv_multi_interval": {
+      "availability": "CURRENT",
+      "owner": "okx_selected_instrument_ohlcv_readmodel_v1",
+      "transport": "REST /api/v5/market/candles + trades-assisted open candle",
+      "ui_ready": "YES — Landscape PRIMARY_MARKET_WORKSPACE (poll ~1s)"
+    },
+    "instrument_universe": {
+      "availability": "CURRENT",
+      "owner": "Cap 2.1 universe producers + governed_futures_universe snapshots",
+      "persistence_example": "runtime/.../runtime_state/universe/",
+      "freshness": "SNAPSHOT — must be validated at read time; not live OKX screener"
+    },
+    "instrument_ranking_top20": {
+      "availability": "CURRENT",
+      "owner": "ops.productive_futures_ranking_producer_v1",
+      "limit": "TOP20_CANDIDATE_CONTEXT_LIMIT=20",
+      "persistence": "productive_futures_ranking_snapshot_v1.json / evidence_v1.json",
+      "authority": "NON_AUTHORIZING for dashboard; ranking producer ACTIVATION_STATE not activated for live trading"
+    },
+    "current_instrument_selection": {
+      "availability": "CURRENT",
+      "owner": "ops.single_selected_future_policy_v1",
+      "artifact": "single_selected_future_selection_v1.json",
+      "note": "Peak internal selection — not OKX UI; valid_until must be checked; stale snapshots must not drive display as LIVE"
+    },
+    "runtime_status_safety": {
+      "availability": "CURRENT",
+      "owner": "Landscape V2 projections + Full-Core safety/archive siblings",
+      "transport": "Read-only archive bind / SSR; no SSE found in webui",
+      "ui_ready": "YES — SYSTEM_OBSERVABILITY_COMPLETION regions"
+    },
+    "positions_orders_pnl_exchange_truth": {
+      "availability": "CURRENT_CODE_NOT_PROVEN_PRODUCTIVE_OKX_MIRROR",
+      "owner_wp_b": "ops.okx_eea_private_account_state_runtime_v1 (GET allowlist: balance, positions, orders-pending, orders-history, fills)",
+      "owner_internal": "productive_reconciliation_runtime_binding_v1 / productive_portfolio_state_v1",
+      "distinction": "Cap 7.2 runtime is INTERNAL_SIMULATED_EXECUTION — portfolio state is NOT OKX exchange unless WP-B session active with observation credentials",
+      "ui_ready": "PARTIAL — Landscape secondary bands; not OKX-identical bottom panel"
+    },
+    "rejected_positive_trades": {
+      "availability": "UNKNOWN_AS_UNIFIED_UI_METRIC",
+      "owner_hint": "DDO/offline export / decision observability — not verified as live workstation feed",
+      "fail_closed": true
+    },
+    "event_streams_sse": {
+      "availability": "NOT_FOUND",
+      "note": "Landscape uses poll/SSR; no EventSource in src/webui grep"
+    },
+    "existing_read_models": {
+      "landscape_v2_projections": "src/webui/market_dashboard_landscape_v2/ — consumer-only",
+      "okx_ohlcv_readmodel": "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json",
+      "public_md_facts_store": "peak_trade_public_market_data_runtime_v1 durable facts",
+      "private_state_readmodel": "WP-B durable store (when activated)"
+    }
+  },
+  "phase_2_okx_public_api_matrix": {
+    "host_note": "Peak ratified EEA: eea.okx.com REST, wseea.okx.com:8443/ws/v5/public; okx_public_market_data_client_v1 also allows www.okx.com for subset REST — reconcile in adapter design",
+    "public_websocket": {
+      "tickers": {"okx_supported": true, "peak_wp_a_bound": true, "use": "mark/last, may include OI/funding fields per OKX payload"},
+      "trades": {"okx_supported": true, "peak_wp_a_bound": true, "use": "time and sales"},
+      "books5": {"okx_supported": true, "peak_wp_a_bound": true, "use": "5-level book → BestBidAskFactV1"},
+      "books": {"okx_supported": true, "peak_wp_a_bound": false, "use": "full depth — available for LOCAL adapter if added"},
+      "candlesticks": {"okx_supported": true, "peak_wp_a_bound": "UNKNOWN hot WS path; REST candles wired in OHLCV readmodel"}
+    },
+    "public_rest": {
+      "market_candles": {"okx_supported": true, "peak_allowed_client": true, "path": "/api/v5/market/candles"},
+      "market_history_candles": {"okx_supported": true, "peak_allowed_client": true},
+      "market_trades": {"okx_supported": true, "peak_allowed_client": true},
+      "market_tickers": {"okx_supported": true, "peak_allowed_client": true},
+      "public_mark_price": {"okx_supported": true, "peak_allowed_client": true},
+      "public_instruments": {"okx_supported": true, "peak_allowed_client": true},
+      "public_open_interest": {"okx_supported": true, "peak_wp_a_client_allowlist": false, "peak_cycle_reference": true},
+      "public_funding_rate": {"okx_supported": true, "peak_wp_a_client_allowlist": false, "peak_cycle_reference": true},
+      "public_funding_rate_history": {"okx_supported": true, "peak_wired": "UNKNOWN"},
+      "index_tickers": {"okx_supported": true, "peak_wired": "UNKNOWN"}
+    },
+    "private_account_class": {
+      "classification": "SEPARATE — not public market data",
+      "peak_owner": "ops.okx_eea_private_account_state_runtime_v1",
+      "methods": "GET REST + private WS observation only",
+      "requires_credentials": true,
+      "browser_exposure": "FORBIDDEN"
+    }
+  },
+  "phase_4_target_data_architecture": {
+    "layers": [
+      "PUBLIC_OKX_MARKET_DATA (EEA hosts)",
+      "READ_ONLY_DATA_ADAPTER (process boundary, allowlists, no POST)",
+      "NORMALIZED_OBSERVATION_MODELS (InstrumentRef, BookLevel, TradePrint, FundingSnapshot, OiSnapshot, OhlcvBar, Quality/Freshness)",
+      "LOCAL_OBSERVATION_BACKEND (in-memory + optional local cache; no trading)",
+      "READ_ONLY_WORKSTATION_UI (static/SSR or local SPA without keys)"
+    ],
+    "optional_peak_branch": {
+      "sources": "Ranking snapshot, selection snapshot, runtime/safety archive projections",
+      "adapter": "ISOLATED_READ_ONLY_FILE_OR_RPC",
+      "rules": "Non-authorizing; labeled PEAK_INTERNAL; never triggers cycles; stale guards mandatory"
+    },
+    "forbidden_backfeed": "No connection from UI/adapters to execution, pretrade POST, MV2/DP orchestrators, or credential stores in browser"
+  },
+  "phase_5_ui_concept_summary": {
+    "left": "Top-20 ranking rail; top-5 highlight; current Peak selection instrument (stale-safe)",
+    "center": "Large chart (TradingView widget or lightweight-charts); multi-interval; volume",
+    "right": "Order book + time & sales stacked (requires LOCAL — OKX native cannot)",
+    "right_meta": "Funding + open interest strip",
+    "bottom": "Positions, orders, PnL, runtime status, safety, trade outcome metrics (exchange via WP-B or Peak internal — must be labeled)"
+  },
+  "phase_6_decision": {
+    "safest_cheapest_complete_path": "LOCAL_READ_ONLY_WORKSTATION fed by OKX public WS/REST adapters; optional server-side WP-B for account panel; optional Peak snapshot adapter for ranking/selection/runtime labels",
+    "why_not_native_okx": "V6B–V6F evidence: trading UI persists; OB/T&S not parallel; no observation preset",
+    "why_not_peak_dashboard_alone": "Landscape V2 is consumer-complete for ops observability but lacks simultaneous OB+T&S and trading-free layout; not OKX account terminal replacement",
+    "minimal_implementation_plan": [
+      "M0: Ratify this charter + security allowlists (no code)",
+      "M1: Owner-GO for private observation credential class OR explicit exchange-blind mode",
+      "M2: Specify normalized observation schema v1 (JSON schema only)",
+      "M3: Single-process read-only adapter POC scope (public MD only) — future GO",
+      "M4: UI shell mock bound to live public feeds — future GO",
+      "M5: Peak snapshot adapter + WP-B account panel — future GO"
+    ],
+    "risks_and_blockers": [
+      "EEA vs www host drift — must single-source in adapter policy",
+      "books5 vs full books — depth limited unless books channel added",
+      "Funding/OI REST not in narrow public client allowlist — extend adapter deliberately",
+      "Peak portfolio state ≠ OKX account — mislabeling risk HIGH",
+      "WP-B activation implies credential handling — security review required",
+      "TradingView licensing for embedded chart — UNKNOWN cost/ToS",
+      "Rate limits / WS reconnect — reuse WP-A reconnect patterns conceptually"
+    ]
+  }
+}

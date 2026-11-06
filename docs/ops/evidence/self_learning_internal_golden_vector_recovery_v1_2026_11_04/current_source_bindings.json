@@ -1,0 +1,57 @@
+{
+  "files": [
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "sha256": "1507f008b47df920860b9c380d055cfac4ffe30c232429276568d9a9f5fdef5c"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+      "sha256": "da3deab38df85cbedab6a3fc403a0a950caa5a9435d4f1ab3683533dada67306"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_v1.py",
+      "sha256": "66be1ae22132572aceab89d013ec69af0c48a639384a2b9d44b427167180ea46"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "sha256": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e"
+    },
+    {
+      "path": "src/experiments/canonical_self_learning_optimization_return_input_v1.py",
+      "sha256": "641f1fafa9e3dd74d8adee5cf9b7dba7e786d27f51ff469273aa13ffefc75657"
+    },
+    {
+      "path": "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "sha256": "c964b2c077017d249736d4563f84bc094685284111b23fc9897b974fc6801155"
+    },
+    {
+      "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+      "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16"
+    },
+    {
+      "path": "src/experiments/canonical_research_result_to_meta_input_v1.py",
+      "sha256": "26e183dbb85a23a9e93077c828a4913240df4cb9ce50693082bcfc9ed13da67b"
+    },
+    {
+      "path": "src/meta/learning_loop/handoff_trust_policy_v1.py",
+      "sha256": "ec1b59b4e76a829978c8607db6c0f92fbda4e56faa4e5fad79a17ecd12db6fb9"
+    },
+    {
+      "path": "src/meta/learning_loop/secure_handoff_envelope_v1.py",
+      "sha256": "082c8ad6d7c6b80e1074c56bb22a7223dbe766f2635a9717e2b49216f97d3355"
+    },
+    {
+      "path": "src/meta/learning_loop/handoff_atomic_claim_consume_v1.py",
+      "sha256": "3f591aa6aaa728248bc1fc6219eb80abdf007dd791260ac306e6b7eedd2e0e13"
+    },
+    {
+      "path": "config/evaluation/golden_vectors/fixture_corpus_v1/corpus_manifest.json",
+      "sha256": "68c2cfe6c0d9d040986c635fff3ac9e86d63f33633de48e3a70e3e0b3feb0bb4"
+    }
+  ],
+  "source_commit": "f49735166ab037b90b596d9b91c4ff5f5765e364"
+}

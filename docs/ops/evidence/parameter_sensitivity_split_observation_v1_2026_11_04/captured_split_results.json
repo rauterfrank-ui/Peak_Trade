@@ -1,0 +1,188 @@
+[
+  {
+    "bar_count": 384,
+    "cost_model_ref": "backtest_cost_v0",
+    "funding_model_ref": "NOT_BOUND",
+    "metrics": {
+      "avg_loss": -22.969999999999988,
+      "avg_win": 98.44682595745354,
+      "cagr": 0.0072216537347220555,
+      "calmar": 81.46524222220941,
+      "expectancy": 37.73841297872678,
+      "losing_trades": 1,
+      "max_drawdown": -0.0022969999999999345,
+      "profit_factor": 4.285887068239163,
+      "recovery_factor": 3.2858870682392713,
+      "sharpe": 3.566909498529816,
+      "sortino": {
+        "raw_repr": "nan",
+        "status": "NON_FINITE_FROM_SUPPLIER"
+      },
+      "total_return": 0.007547682595745391,
+      "total_trades": 2,
+      "ulcer_index": 0.0019056957586863436,
+      "win_rate": 0.5,
+      "winning_trades": 1
+    },
+    "parameter_set_id": "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a",
+    "period_end": "2026-06-16 23:00:00+00:00",
+    "period_start": "2026-06-01 00:00:00+00:00",
+    "result_ref": "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a:train",
+    "split_name": "train"
+  },
+  {
+    "bar_count": 192,
+    "cost_model_ref": "backtest_cost_v0",
+    "funding_model_ref": "NOT_BOUND",
+    "metrics": {
+      "avg_loss": -22.96999999999999,
+      "avg_win": 16.942630919983387,
+      "cagr": -0.0011377666442627943,
+      "calmar": -11.812476430432696,
+      "expectancy": -3.0136845400083025,
+      "losing_trades": 1,
+      "max_drawdown": -0.0022969999999999345,
+      "profit_factor": 0.7375982115795992,
+      "recovery_factor": -0.26240178842041656,
+      "sharpe": -1.4124758175235277,
+      "sortino": {
+        "raw_repr": "nan",
+        "status": "NON_FINITE_FROM_SUPPLIER"
+      },
+      "total_return": -0.0006027369080016797,
+      "total_trades": 2,
+      "ulcer_index": 0.0014794972045042792,
+      "win_rate": 0.5,
+      "winning_trades": 1
+    },
+    "parameter_set_id": "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a",
+    "period_end": "2026-06-24 23:00:00+00:00",
+    "period_start": "2026-06-17 00:00:00+00:00",
+    "result_ref": "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a:validation",
+    "split_name": "validation"
+  },
+  {
+    "bar_count": 192,
+    "cost_model_ref": "backtest_cost_v0",
+    "funding_model_ref": "NOT_BOUND",
+    "metrics": {
+      "avg_loss": -22.970000000000002,
+      "avg_win": 90.96355001850976,
+      "cagr": 0.013049855063860916,
+      "calmar": 157.72523509964722,
+      "expectancy": 33.99677500925488,
+      "losing_trades": 1,
+      "max_drawdown": -0.0022969999999999345,
+      "profit_factor": 3.9601023081632456,
+      "recovery_factor": 2.960102308163388,
+      "sharpe": 4.8937003830724946,
+      "sortino": {
+        "raw_repr": "nan",
+        "status": "NON_FINITE_FROM_SUPPLIER"
+      },
+      "total_return": 0.006799355001851109,
+      "total_trades": 2,
+      "ulcer_index": 0.0011214018197999794,
+      "win_rate": 0.5,
+      "winning_trades": 1
+    },
+    "parameter_set_id": "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a",
+    "period_end": "2026-07-02 23:00:00+00:00",
+    "period_start": "2026-06-25 00:00:00+00:00",
+    "result_ref": "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a:out_of_sample",
+    "split_name": "out_of_sample"
+  },
+  {
+    "bar_count": 384,
+    "cost_model_ref": "backtest_cost_v0",
+    "funding_model_ref": "NOT_BOUND",
+    "metrics": {
+      "avg_loss": -22.97,
+      "avg_win": 90.26039644509913,
+      "cagr": 0.006436413580662048,
+      "calmar": 71.97027065620429,
+      "expectancy": 33.64519822254957,
+      "losing_trades": 1,
+      "max_drawdown": -0.0022969999999999345,
+      "profit_factor": 3.9294904852024004,
+      "recovery_factor": 2.929490485202511,
+      "sharpe": 3.451807015686721,
+      "sortino": {
+        "raw_repr": "nan",
+        "status": "NON_FINITE_FROM_SUPPLIER"
+      },
+      "total_return": 0.006729039644509976,
+      "total_trades": 2,
+      "ulcer_index": 0.001626332290609877,
+      "win_rate": 0.5,
+      "winning_trades": 1
+    },
+    "parameter_set_id": "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f",
+    "period_end": "2026-06-16 23:00:00+00:00",
+    "period_start": "2026-06-01 00:00:00+00:00",
+    "result_ref": "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f:train",
+    "split_name": "train"
+  },
+  {
+    "bar_count": 192,
+    "cost_model_ref": "backtest_cost_v0",
+    "funding_model_ref": "NOT_BOUND",
+    "metrics": {
+      "avg_loss": -22.97,
+      "avg_win": 0.0,
+      "cagr": -0.004357198574893584,
+      "calmar": -43.36286672735826,
+      "expectancy": -22.97,
+      "losing_trades": 1,
+      "max_drawdown": -0.0022969999999999345,
+      "profit_factor": 0.0,
+      "recovery_factor": -1.0,
+      "sharpe": -6.754628043053148,
+      "sortino": {
+        "raw_repr": "nan",
+        "status": "NON_FINITE_FROM_SUPPLIER"
+      },
+      "total_return": -0.0022969999999999345,
+      "total_trades": 1,
+      "ulcer_index": 0.00046765688675626016,
+      "win_rate": 0.0,
+      "winning_trades": 0
+    },
+    "parameter_set_id": "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f",
+    "period_end": "2026-06-24 23:00:00+00:00",
+    "period_start": "2026-06-17 00:00:00+00:00",
+    "result_ref": "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f:validation",
+    "split_name": "validation"
+  },
+  {
+    "bar_count": 192,
+    "cost_model_ref": "backtest_cost_v0",
+    "funding_model_ref": "NOT_BOUND",
+    "metrics": {
+      "avg_loss": -22.96999999999999,
+      "avg_win": 90.96355001850976,
+      "cagr": 0.013049855063860916,
+      "calmar": 157.72523509964722,
+      "expectancy": 33.99677500925489,
+      "losing_trades": 1,
+      "max_drawdown": -0.0022969999999999345,
+      "profit_factor": 3.9601023081632474,
+      "recovery_factor": 2.960102308163388,
+      "sharpe": 4.8937003830724946,
+      "sortino": {
+        "raw_repr": "nan",
+        "status": "NON_FINITE_FROM_SUPPLIER"
+      },
+      "total_return": 0.006799355001851109,
+      "total_trades": 2,
+      "ulcer_index": 0.001157391745628793,
+      "win_rate": 0.5,
+      "winning_trades": 1
+    },
+    "parameter_set_id": "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f",
+    "period_end": "2026-07-02 23:00:00+00:00",
+    "period_start": "2026-06-25 00:00:00+00:00",
+    "result_ref": "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f:out_of_sample",
+    "split_name": "out_of_sample"
+  }
+]

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from runpy import run_path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -16,6 +17,10 @@ from scripts.ops.system_atlas_v1.validate_v1 import AtlasValidationError, valida
 
 
 def main() -> int:
+    if (_REPO_ROOT / "docs/system_atlas/source/current-model.json").is_file():
+        return run_path(str(_REPO_ROOT / "docs/system_atlas/current_atlas.py"))["main"](
+            ["generate"]
+        )
     atlas = load_atlas_v1(repo_root=_REPO_ROOT)
     try:
         validate_atlas_v1(atlas)

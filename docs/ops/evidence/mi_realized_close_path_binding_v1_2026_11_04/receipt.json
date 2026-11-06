@@ -1,0 +1,36 @@
+{
+  "source_commit": "28515d9693acbcaa28e94b3b1d6c1c864a6d62b3",
+  "source_paths_sha256": {
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py": "90c0c3c58b613b67fd696182a930c0ab2e1d4c1ff266894044b7a4e07861d2f0",
+    "tests/learning/test_mi_realized_close_path_binding_v1.py": "7bd3f8d9568872655a909ed8489aea4de1b3410808362a0a91b1e36e5e3bef5a"
+  },
+  "tests": {
+    "before": "4 FAIL / 1 PASS",
+    "after": "38 PASS",
+    "positive_output": "IDENTICAL full behavior and digest; reversed list order identical"
+  },
+  "boundaries": [
+    "Interior closes and complete bar payload/source authenticity remain unproven",
+    "No formula or label changes; U04/GAP-0370 deferred",
+    "No live operation, original-ledger mutation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/mi_realized_close_path_binding_v1_2026_11_04/README.md",
+      "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 186,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

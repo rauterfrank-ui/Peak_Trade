@@ -1,0 +1,9 @@
+{
+  "base_commit": "2ed94965facb87bb24eaa386b44d78c233be8dc2",
+  "new_worktree_files": {
+    "src/experiments/canonical_search_candidate_research_execution_v1.py": "a124840cd2a97de2318f478ea205775862d10b731c48f4dfbe9e69ff0f5584be",
+    "tests/experiments/test_canonical_search_candidate_research_execution_v1.py": "0235b55910dc3fc8b472564311f69e73d241055be72f78bf2fc812adaaaae6a5"
+  },
+  "existing_implementation_diff": "",
+  "note": "New files were untracked when diff was taken; explicitly listed and SHA-bound. Existing implementation untouched."
+}

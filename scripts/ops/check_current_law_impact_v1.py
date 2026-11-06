@@ -5,7 +5,10 @@ from __future__ import annotations
 
 import argparse
 import sys
+import json
+import subprocess
 from pathlib import Path
+from runpy import run_path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -35,7 +38,29 @@ def main() -> int:
         repo_root / "config/governance/current_law_impact_map_v1/impact_candidates_v1.json"
     )
     candidates = _load_json(candidates_path)
-    changed = git_changed_paths(repo_root, args.base)
+    if doc.get("policy_inventory"):
+        tracked = subprocess.check_output(
+            ["git", "diff", "--name-only", doc["baseline_sha"], "--"], cwd=repo_root, text=True
+        ).splitlines()
+        extras = subprocess.check_output(
+            ["git", "ls-files", "--others", "--exclude-standard"], cwd=repo_root, text=True
+        ).splitlines()
+        changed = sorted(set(tracked + extras))
+        projection = run_path(str(repo_root / "docs/system_atlas/policy_projection.py"))
+        policy_impact = projection["policy_impact_for_paths"](doc, changed, repo_root)
+        print("LAW_COMPARISON=FROZEN_SOURCE")
+        print(
+            json.dumps(
+                {
+                    "indexed_policy_hits": len(policy_impact["policies"]),
+                    "source_reference_paths": len(policy_impact["source_references"]),
+                    "test_reference_paths": len(policy_impact["test_references"]),
+                    "runtime_effect_inferred": False,
+                }
+            )
+        )
+    else:
+        changed = git_changed_paths(repo_root, args.base)
     report = evaluate_changed_paths(
         doc, changed, candidate_surfaces=list(candidates.get("surfaces", []))
     )

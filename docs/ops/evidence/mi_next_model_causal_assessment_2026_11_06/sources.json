@@ -1,0 +1,1776 @@
+{
+  "head": "286c1f0f93b6a536df9469d48c9c36d6569deb03",
+  "files": [
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+      "sha256": "dcb00c640bf97c0a47d14c1cc621aba38301ba30d8f39e29136aa7555a4c528e",
+      "bytes": 21734,
+      "symbols": [
+        {
+          "name": "validate_forecast_numbers_v1",
+          "line": 47,
+          "end_line": 58
+        },
+        {
+          "name": "_lease",
+          "line": 62,
+          "end_line": 70
+        },
+        {
+          "name": "_append",
+          "line": 73,
+          "end_line": 95
+        },
+        {
+          "name": "_read",
+          "line": 98,
+          "end_line": 99
+        },
+        {
+          "name": "freeze_existing_intelligence_forecast_v1",
+          "line": 102,
+          "end_line": 121
+        },
+        {
+          "name": "freeze_existing_market_forecast_v1",
+          "line": 124,
+          "end_line": 143
+        },
+        {
+          "name": "_freeze_existing_forecast_v1",
+          "line": 146,
+          "end_line": 321
+        },
+        {
+          "name": "calibrate_frozen_intelligence_forecast_v1",
+          "line": 324,
+          "end_line": 412
+        },
+        {
+          "name": "_readback",
+          "line": 415,
+          "end_line": 429
+        },
+        {
+          "name": "handoff_calibrated_intelligence_evidence_v1",
+          "line": 432,
+          "end_line": 516
+        },
+        {
+          "name": "read_calibrated_intelligence_v1",
+          "line": 519,
+          "end_line": 547
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/independent_market_forecast_measurement_v1.py",
+      "sha256": "2ffaa8ff1b174b0ccad12f5607dc9ff6b017268d2535873bf36f5614a467065e",
+      "bytes": 8751,
+      "symbols": [
+        {
+          "name": "_prepare",
+          "line": 45,
+          "end_line": 95
+        },
+        {
+          "name": "calibrate_frozen_market_forecast_v1",
+          "line": 98,
+          "end_line": 161
+        },
+        {
+          "name": "read_independent_market_calibration_v1",
+          "line": 164,
+          "end_line": 199
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "sha256": "f26c985bd3d2fac37ac1a8413bb4b03488f3d1b9654ae1d720014cbbc19a99c5",
+      "bytes": 10993,
+      "symbols": [
+        {
+          "name": "MiToLearningBridgeError",
+          "line": 42,
+          "end_line": 43
+        },
+        {
+          "name": "_parse_utc",
+          "line": 46,
+          "end_line": 48
+        },
+        {
+          "name": "_assert_temporal_integrity_v1",
+          "line": 51,
+          "end_line": 77
+        },
+        {
+          "name": "_assert_instrument_alignment_v1",
+          "line": 80,
+          "end_line": 92
+        },
+        {
+          "name": "compose_mi_to_learning_evidence_v1",
+          "line": 95,
+          "end_line": 246
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py",
+      "sha256": "f7501295667c02a872195ef9fdcc75f2f86046417e6c595a27086649f43bc9fc",
+      "bytes": 9020,
+      "symbols": [
+        {
+          "name": "MiLearningEvidenceValidationError",
+          "line": 62,
+          "end_line": 63
+        },
+        {
+          "name": "derive_mi_learning_evidence_id_v1",
+          "line": 66,
+          "end_line": 67
+        },
+        {
+          "name": "build_mi_learning_evidence_record_v1",
+          "line": 70,
+          "end_line": 153
+        },
+        {
+          "name": "validate_mi_learning_evidence_record_v1",
+          "line": 156,
+          "end_line": 159
+        },
+        {
+          "name": "compute_mi_learning_reproducibility_digest_v1",
+          "line": 162,
+          "end_line": 192
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_store_v1.py",
+      "sha256": "c756be8eb78d3022e8dda4c67c325ea9ccd7077cb308f396eb6090c2e3e5b783",
+      "bytes": 3788,
+      "symbols": [
+        {
+          "name": "MiLearningEvidenceStoreV1",
+          "line": 23,
+          "end_line": 83
+        },
+        {
+          "name": "_serialize_record",
+          "line": 86,
+          "end_line": 87
+        },
+        {
+          "name": "_atomic_create_exclusive",
+          "line": 90,
+          "end_line": 101
+        },
+        {
+          "name": "__init__",
+          "line": 26,
+          "end_line": 30
+        },
+        {
+          "name": "store_root",
+          "line": 33,
+          "end_line": 34
+        },
+        {
+          "name": "append",
+          "line": 36,
+          "end_line": 56
+        },
+        {
+          "name": "get",
+          "line": 58,
+          "end_line": 63
+        },
+        {
+          "name": "list_records",
+          "line": 65,
+          "end_line": 79
+        },
+        {
+          "name": "_record_path",
+          "line": 81,
+          "end_line": 83
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py",
+      "sha256": "de74237164f1f77f22db63289dbdca1113c4cf8c56f3e191df21b023fd125f64",
+      "bytes": 3857,
+      "symbols": [
+        {
+          "name": "MiLearningEvidenceIngestRequestV1",
+          "line": 23,
+          "end_line": 29
+        },
+        {
+          "name": "ingest_mi_learning_evidence_v1",
+          "line": 32,
+          "end_line": 88
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+      "sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71",
+      "bytes": 3513,
+      "symbols": [
+        {
+          "name": "route_learning_evidence_for_consumer_v1",
+          "line": 25,
+          "end_line": 52
+        },
+        {
+          "name": "export_mi_learning_evidence_onto_learning_path_v1",
+          "line": 55,
+          "end_line": 80
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_store_v1.py",
+      "sha256": "e51e8c20d46f097831e4fb43a1d8375752a5ccb100d032817f1b1295425b40df",
+      "bytes": 4343,
+      "symbols": [
+        {
+          "name": "MiOfflineDurableEvidenceStoreV1",
+          "line": 23,
+          "end_line": 96
+        },
+        {
+          "name": "_serialize_record",
+          "line": 99,
+          "end_line": 100
+        },
+        {
+          "name": "_atomic_create_exclusive",
+          "line": 103,
+          "end_line": 114
+        },
+        {
+          "name": "__init__",
+          "line": 26,
+          "end_line": 30
+        },
+        {
+          "name": "store_root",
+          "line": 33,
+          "end_line": 34
+        },
+        {
+          "name": "append",
+          "line": 36,
+          "end_line": 55
+        },
+        {
+          "name": "get",
+          "line": 57,
+          "end_line": 62
+        },
+        {
+          "name": "get_by_forecast_evidence_id",
+          "line": 64,
+          "end_line": 76
+        },
+        {
+          "name": "list_records",
+          "line": 78,
+          "end_line": 92
+        },
+        {
+          "name": "_record_path",
+          "line": 94,
+          "end_line": 96
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_record_v1.py",
+      "sha256": "e90e144610c8cad19f4388194370ab1b6ecefeff2b2a1f3a49212ccf309de7d8",
+      "bytes": 8168,
+      "symbols": [
+        {
+          "name": "MiOfflineDurableEvidenceValidationError",
+          "line": 40,
+          "end_line": 41
+        },
+        {
+          "name": "derive_mi_offline_durable_evidence_id_v1",
+          "line": 44,
+          "end_line": 47
+        },
+        {
+          "name": "validate_research_evidence_record_v1",
+          "line": 50,
+          "end_line": 99
+        },
+        {
+          "name": "build_mi_offline_durable_evidence_record_v1",
+          "line": 102,
+          "end_line": 159
+        },
+        {
+          "name": "validate_mi_offline_durable_evidence_record_v1",
+          "line": 162,
+          "end_line": 184
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+      "sha256": "19abf38618000e12a8d81a3b9c5db2ccd78f4c490a6b36fd80f49aac379099bb",
+      "bytes": 12327,
+      "symbols": [
+        {
+          "name": "OfflineForecastScenarioV1",
+          "line": 78,
+          "end_line": 88
+        },
+        {
+          "name": "OfflineOrchestratorInputV1",
+          "line": 92,
+          "end_line": 102
+        },
+        {
+          "name": "run_market_intelligence_offline_orchestrator_cycle_v1",
+          "line": 105,
+          "end_line": 263
+        },
+        {
+          "name": "compose_failure_memory_offline_iteration_v1",
+          "line": 266,
+          "end_line": 286
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+      "sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1",
+      "bytes": 10135,
+      "symbols": [
+        {
+          "name": "Phase24RepresentationFeedbackError",
+          "line": 47,
+          "end_line": 48
+        },
+        {
+          "name": "LoopCRepresentationFeedbackRequestV1",
+          "line": 52,
+          "end_line": 56
+        },
+        {
+          "name": "derive_loop_c_cycle_identity_v1",
+          "line": 59,
+          "end_line": 60
+        },
+        {
+          "name": "build_learning_representation_research_evidence_v1",
+          "line": 63,
+          "end_line": 103
+        },
+        {
+          "name": "run_loop_c_representation_feedback_closure_v1",
+          "line": 106,
+          "end_line": 199
+        },
+        {
+          "name": "assert_phase_24_loop_c_authority_invariants_v1",
+          "line": 202,
+          "end_line": 214
+        }
+      ]
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "sha256": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d",
+      "bytes": 12118,
+      "symbols": [
+        {
+          "name": "derive_learning_state_scope_id_v1",
+          "line": 39,
+          "end_line": 53
+        },
+        {
+          "name": "compute_evaluation_bundle_fingerprint_v1",
+          "line": 56,
+          "end_line": 69
+        },
+        {
+          "name": "validate_evaluation_bundle_for_ingest_v1",
+          "line": 72,
+          "end_line": 104
+        },
+        {
+          "name": "latest_learning_state_for_scope_v1",
+          "line": 107,
+          "end_line": 123
+        },
+        {
+          "name": "_derive_next_cycle_economic_score_label_v1",
+          "line": 126,
+          "end_line": 130
+        },
+        {
+          "name": "reduce_learning_state_transition_v1",
+          "line": 133,
+          "end_line": 235
+        },
+        {
+          "name": "derive_learning_state_record_id_v1",
+          "line": 238,
+          "end_line": 240
+        },
+        {
+          "name": "ingest_evaluation_bundle_into_learning_state_v1",
+          "line": 243,
+          "end_line": 293
+        }
+      ]
+    },
+    {
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
+      "sha256": "b2c2add38316dffdd1ea5b5d02d658a8dcee58d32303d3e5c0ff39b628adbe05",
+      "bytes": 5167,
+      "symbols": [
+        {
+          "name": "_ledger_from_state",
+          "line": 21,
+          "end_line": 27
+        },
+        {
+          "name": "_scope_id_from_state",
+          "line": 30,
+          "end_line": 40
+        },
+        {
+          "name": "apply_learning_state_feedback_to_next_cycle_v1",
+          "line": 43,
+          "end_line": 62
+        },
+        {
+          "name": "invoke_productive_learning_outcome_evidence_ingest_v1",
+          "line": 65,
+          "end_line": 133
+        }
+      ]
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53",
+      "bytes": 15065,
+      "symbols": [
+        {
+          "name": "MiEnrichedM4IntakeError",
+          "line": 64,
+          "end_line": 65
+        },
+        {
+          "name": "MiEnrichedM4IntakeRequestV1",
+          "line": 69,
+          "end_line": 76
+        },
+        {
+          "name": "MiEnrichedM4ClosureRequestV1",
+          "line": 80,
+          "end_line": 83
+        },
+        {
+          "name": "_json_safe",
+          "line": 86,
+          "end_line": 93
+        },
+        {
+          "name": "_recompute_plane_result_digest",
+          "line": 96,
+          "end_line": 100
+        },
+        {
+          "name": "build_mi_lineage_refs_v1",
+          "line": 103,
+          "end_line": 144
+        },
+        {
+          "name": "_attach_mi_lineage_to_plane",
+          "line": 147,
+          "end_line": 160
+        },
+        {
+          "name": "validate_mi_enriched_m4_intake_v1",
+          "line": 163,
+          "end_line": 265
+        },
+        {
+          "name": "run_mi_enriched_optimization_universe_experiment_plane_v1",
+          "line": 268,
+          "end_line": 305
+        },
+        {
+          "name": "run_mi_enriched_m4_optimization_closure_v1",
+          "line": 308,
+          "end_line": 327
+        },
+        {
+          "name": "_intake_payload",
+          "line": 330,
+          "end_line": 356
+        }
+      ]
+    },
+    {
+      "path": "src/experiments/canonical_learning_representation_offline_evaluation_v1.py",
+      "sha256": "acf19867887ae6d88be828802b3cb9213be0ad5b0ec164d98694551bbdd4e8ea",
+      "bytes": 5791,
+      "symbols": [
+        {
+          "name": "OfflineEvaluationOutcome",
+          "line": 34,
+          "end_line": 42
+        },
+        {
+          "name": "LearningRepresentationOfflineEvaluationError",
+          "line": 45,
+          "end_line": 46
+        },
+        {
+          "name": "LearningRepresentationOfflineEvaluationRequestV1",
+          "line": 50,
+          "end_line": 52
+        },
+        {
+          "name": "_outcome_for_fixture",
+          "line": 55,
+          "end_line": 74
+        },
+        {
+          "name": "run_learning_representation_offline_evaluation_v1",
+          "line": 77,
+          "end_line": 125
+        }
+      ]
+    },
+    {
+      "path": "src/research/linear_evidence/fitters.py",
+      "sha256": "2b617607987cf949e52303529625cb69cac50d09526af2d5ec97eb3a9c17c245",
+      "bytes": 12825,
+      "symbols": [
+        {
+          "name": "OlsFitPrecheckDiagnosticsV0",
+          "line": 21,
+          "end_line": 29
+        },
+        {
+          "name": "_digest",
+          "line": 32,
+          "end_line": 35
+        },
+        {
+          "name": "_r2",
+          "line": 38,
+          "end_line": 42
+        },
+        {
+          "name": "_target_is_constant",
+          "line": 45,
+          "end_line": 52
+        },
+        {
+          "name": "_feature_unique_value_count",
+          "line": 55,
+          "end_line": 56
+        },
+        {
+          "name": "exclude_strict_zero_variance_features_v0",
+          "line": 59,
+          "end_line": 83
+        },
+        {
+          "name": "strict_zero_variance_feature_exclusion_reason_codes_v0",
+          "line": 86,
+          "end_line": 91
+        },
+        {
+          "name": "_zero_variance_feature_names",
+          "line": 94,
+          "end_line": 99
+        },
+        {
+          "name": "_intercept_collinear_feature_names",
+          "line": 102,
+          "end_line": 114
+        },
+        {
+          "name": "compose_ols_precheck_reason_codes_v0",
+          "line": 117,
+          "end_line": 130
+        },
+        {
+          "name": "compute_ols_fit_precheck_v0",
+          "line": 133,
+          "end_line": 172
+        },
+        {
+          "name": "_blocked_constant_target_evidence_v0",
+          "line": 175,
+          "end_line": 229
+        },
+        {
+          "name": "fit_ols_lstsq",
+          "line": 232,
+          "end_line": 354
+        }
+      ]
+    },
+    {
+      "path": "src/research/linear_evidence/feature_matrix.py",
+      "sha256": "0e8aa1a4938deddafa0fcb6f853db2441bb81d1641f979499c6baa9e94ac7b76",
+      "bytes": 2839,
+      "symbols": [
+        {
+          "name": "_stable_digest",
+          "line": 13,
+          "end_line": 15
+        },
+        {
+          "name": "_as_float",
+          "line": 18,
+          "end_line": 25
+        },
+        {
+          "name": "build_feature_matrix_binding",
+          "line": 28,
+          "end_line": 83
+        }
+      ]
+    },
+    {
+      "path": "src/research/linear_evidence/cost_model.py",
+      "sha256": "789bbcfb45d22e6db6d83a6521bcb44a14b83070d7c1f67fd6f4efeb147fa804",
+      "bytes": 1714,
+      "symbols": [
+        {
+          "name": "build_cost_model_calibration_evidence",
+          "line": 8,
+          "end_line": 40
+        },
+        {
+          "name": "with_authority_neutral_effects",
+          "line": 47,
+          "end_line": 51
+        }
+      ]
+    },
+    {
+      "path": "src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py",
+      "sha256": "dbafa0b916fecf7b396c4b33fc0e9e8fb432dfe38f6eba4a3ac2cbf3359bf1e8",
+      "bytes": 24799,
+      "symbols": [
+        {
+          "name": "PreparationVerdict",
+          "line": 157,
+          "end_line": 159
+        },
+        {
+          "name": "ManifestVerification",
+          "line": 163,
+          "end_line": 165
+        },
+        {
+          "name": "serialize_canonical_json",
+          "line": 168,
+          "end_line": 169
+        },
+        {
+          "name": "_stable_digest",
+          "line": 172,
+          "end_line": 173
+        },
+        {
+          "name": "verify_manifest_sha256",
+          "line": 176,
+          "end_line": 187
+        },
+        {
+          "name": "_load_json",
+          "line": 190,
+          "end_line": 194
+        },
+        {
+          "name": "_normalize_bars_frame",
+          "line": 197,
+          "end_line": 210
+        },
+        {
+          "name": "_bar_pressure",
+          "line": 213,
+          "end_line": 215
+        },
+        {
+          "name": "compute_ohlcv_proxy_features_v0",
+          "line": 218,
+          "end_line": 244
+        },
+        {
+          "name": "materialize_feature_rows_v0",
+          "line": 247,
+          "end_line": 269
+        },
+        {
+          "name": "validate_no_lookahead_contract_v0",
+          "line": 272,
+          "end_line": 289
+        },
+        {
+          "name": "build_owner_inventory",
+          "line": 292,
+          "end_line": 313
+        },
+        {
+          "name": "build_reuse_decision",
+          "line": 316,
+          "end_line": 335
+        },
+        {
+          "name": "build_distinctness_adjudication",
+          "line": 338,
+          "end_line": 365
+        },
+        {
+          "name": "build_hypothesis_contract",
+          "line": 368,
+          "end_line": 393
+        },
+        {
+          "name": "build_dataset_feasibility",
+          "line": 396,
+          "end_line": 413
+        },
+        {
+          "name": "build_target_binding",
+          "line": 416,
+          "end_line": 426
+        },
+        {
+          "name": "build_sample_sufficiency_assessment",
+          "line": 429,
+          "end_line": 444
+        },
+        {
+          "name": "build_implementation_admissibility",
+          "line": 447,
+          "end_line": 469
+        },
+        {
+          "name": "build_prior_negative_evidence_preservation",
+          "line": 472,
+          "end_line": 485
+        },
+        {
+          "name": "build_economic_evaluation_status",
+          "line": 488,
+          "end_line": 498
+        },
+        {
+          "name": "build_runtime_authority_boundary",
+          "line": 501,
+          "end_line": 512
+        },
+        {
+          "name": "materialize_and_validate_feature_matrix_v0",
+          "line": 515,
+          "end_line": 526
+        },
+        {
+          "name": "materialize_preparation_config",
+          "line": 529,
+          "end_line": 581
+        },
+        {
+          "name": "compute_preparation_digest",
+          "line": 584,
+          "end_line": 586
+        },
+        {
+          "name": "validate_source_evidence",
+          "line": 589,
+          "end_line": 609
+        },
+        {
+          "name": "load_fixture_bars_v0",
+          "line": 612,
+          "end_line": 619
+        },
+        {
+          "name": "load_dataset_bars_v0",
+          "line": 622,
+          "end_line": 625
+        },
+        {
+          "name": "is_unsupported_microstructure_feature_rejected",
+          "line": 628,
+          "end_line": 629
+        }
+      ]
+    },
+    {
+      "path": "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py",
+      "sha256": "4890105f31b18061b4ca365f59a2d868c071e2f69a8864c7a26627ccd870f9a7",
+      "bytes": 29456,
+      "symbols": [
+        {
+          "name": "FeatureMatrixBindingStatus",
+          "line": 115,
+          "end_line": 121
+        },
+        {
+          "name": "FeatureMatrixBindingValidationError",
+          "line": 124,
+          "end_line": 125
+        },
+        {
+          "name": "DiagnosticConsumptionBindingV0",
+          "line": 129,
+          "end_line": 154
+        },
+        {
+          "name": "BouchaudFeatureMatrixLinearDiagnosticsBindingV0",
+          "line": 158,
+          "end_line": 220
+        },
+        {
+          "name": "_stable_digest",
+          "line": 223,
+          "end_line": 225
+        },
+        {
+          "name": "_feature_matrix_binding_to_dict",
+          "line": 228,
+          "end_line": 243
+        },
+        {
+          "name": "_consumption_binding_v0",
+          "line": 246,
+          "end_line": 272
+        },
+        {
+          "name": "_feature_availability_time_before",
+          "line": 275,
+          "end_line": 278
+        },
+        {
+          "name": "_rows_to_drift_inputs",
+          "line": 281,
+          "end_line": 301
+        },
+        {
+          "name": "_rows_to_sensitivity_inputs",
+          "line": 304,
+          "end_line": 324
+        },
+        {
+          "name": "_rows_to_factor_inputs",
+          "line": 327,
+          "end_line": 349
+        },
+        {
+          "name": "_consume_cost_diagnostics_v0",
+          "line": 352,
+          "end_line": 404
+        },
+        {
+          "name": "_consume_signal_orthogonality_v0",
+          "line": 407,
+          "end_line": 443
+        },
+        {
+          "name": "_consume_factor_exposure_v0",
+          "line": 446,
+          "end_line": 482
+        },
+        {
+          "name": "_consume_parameter_sensitivity_v0",
+          "line": 485,
+          "end_line": 527
+        },
+        {
+          "name": "_consume_rolling_linear_drift_v0",
+          "line": 530,
+          "end_line": 572
+        },
+        {
+          "name": "_validate_target_binding_contract",
+          "line": 575,
+          "end_line": 583
+        },
+        {
+          "name": "bind_bouchaud_feature_matrix_to_linear_diagnostics_v0",
+          "line": 586,
+          "end_line": 683
+        },
+        {
+          "name": "materialize_bouchaud_feature_matrix_linear_diagnostics_binding_v0",
+          "line": 686,
+          "end_line": 729
+        },
+        {
+          "name": "to_dict",
+          "line": 141,
+          "end_line": 154
+        },
+        {
+          "name": "to_dict",
+          "line": 188,
+          "end_line": 220
+        }
+      ]
+    },
+    {
+      "path": "src/research/ml/meta/meta_labeling.py",
+      "sha256": "0b285709ed482effdc3c726489b49273f8437db9c319b1e671211143b046b5c6",
+      "bytes": 9029,
+      "symbols": [
+        {
+          "name": "MLModel",
+          "line": 43,
+          "end_line": 56
+        },
+        {
+          "name": "MetaModelSpec",
+          "line": 60,
+          "end_line": 82
+        },
+        {
+          "name": "_align_indices",
+          "line": 90,
+          "end_line": 97
+        },
+        {
+          "name": "_feature_frame",
+          "line": 100,
+          "end_line": 114
+        },
+        {
+          "name": "_positive_class_proba",
+          "line": 117,
+          "end_line": 122
+        },
+        {
+          "name": "apply_meta_model",
+          "line": 125,
+          "end_line": 179
+        },
+        {
+          "name": "compute_meta_labels",
+          "line": 182,
+          "end_line": 207
+        },
+        {
+          "name": "compute_bet_size",
+          "line": 210,
+          "end_line": 235
+        },
+        {
+          "name": "_create_model",
+          "line": 238,
+          "end_line": 275
+        },
+        {
+          "name": "fit",
+          "line": 46,
+          "end_line": 48
+        },
+        {
+          "name": "predict",
+          "line": 50,
+          "end_line": 52
+        },
+        {
+          "name": "predict_proba",
+          "line": 54,
+          "end_line": 56
+        },
+        {
+          "name": "__post_init__",
+          "line": 78,
+          "end_line": 82
+        }
+      ]
+    },
+    {
+      "path": "src/strategies/lopez_de_prado/meta_labeling_strategy.py",
+      "sha256": "957e58e02634f90aa144698f5d41133a1fcd2e6463f178baacd3d3b5e97bb94c",
+      "bytes": 17633,
+      "symbols": [
+        {
+          "name": "MetaLabelingConfig",
+          "line": 63,
+          "end_line": 98
+        },
+        {
+          "name": "MetaLabelingStrategy",
+          "line": 106,
+          "end_line": 438
+        },
+        {
+          "name": "generate_signals",
+          "line": 446,
+          "end_line": 461
+        },
+        {
+          "name": "to_dict",
+          "line": 87,
+          "end_line": 98
+        },
+        {
+          "name": "__init__",
+          "line": 155,
+          "end_line": 231
+        },
+        {
+          "name": "from_config",
+          "line": 234,
+          "end_line": 267
+        },
+        {
+          "name": "_load_base_strategy",
+          "line": 269,
+          "end_line": 282
+        },
+        {
+          "name": "generate_signals",
+          "line": 284,
+          "end_line": 352
+        },
+        {
+          "name": "compute_triple_barrier_labels",
+          "line": 354,
+          "end_line": 383
+        },
+        {
+          "name": "meta_model_spec",
+          "line": 385,
+          "end_line": 390
+        },
+        {
+          "name": "apply_meta_model",
+          "line": 392,
+          "end_line": 399
+        },
+        {
+          "name": "_extract_features",
+          "line": 401,
+          "end_line": 414
+        },
+        {
+          "name": "validate",
+          "line": 416,
+          "end_line": 429
+        },
+        {
+          "name": "__repr__",
+          "line": 431,
+          "end_line": 438
+        }
+      ]
+    },
+    {
+      "path": "src/meta/learning_loop/versioned_strategy_model_parameter_artifact_v1.py",
+      "sha256": "5308d97c8738c6c8ffb3192e6c8cb34fb2908efded922dc17353492bf670b76f",
+      "bytes": 53068,
+      "symbols": [
+        {
+          "name": "VersionedStrategyModelParameterArtifactError",
+          "line": 240,
+          "end_line": 241
+        },
+        {
+          "name": "VerifiedCandidateIdentityBindingBundle",
+          "line": 245,
+          "end_line": 253
+        },
+        {
+          "name": "VerifiedModelParameterIdentityBindingBundle",
+          "line": 257,
+          "end_line": 265
+        },
+        {
+          "name": "VerifiedAiPromotionAssessmentBundle",
+          "line": 269,
+          "end_line": 277
+        },
+        {
+          "name": "VersionedStrategyModelParameterArtifactInputs",
+          "line": 281,
+          "end_line": 284
+        },
+        {
+          "name": "VersionedStrategyModelParameterArtifactResult",
+          "line": 288,
+          "end_line": 298
+        },
+        {
+          "name": "_reject_symlink",
+          "line": 301,
+          "end_line": 303
+        },
+        {
+          "name": "_reject_forbidden_index_keys",
+          "line": 306,
+          "end_line": 309
+        },
+        {
+          "name": "_validate_regular_file",
+          "line": 312,
+          "end_line": 317
+        },
+        {
+          "name": "_validate_bundle_dir",
+          "line": 320,
+          "end_line": 325
+        },
+        {
+          "name": "_validate_output_target",
+          "line": 328,
+          "end_line": 336
+        },
+        {
+          "name": "_path_is_under",
+          "line": 339,
+          "end_line": 344
+        },
+        {
+          "name": "_reject_unsafe_overlap",
+          "line": 347,
+          "end_line": 362
+        },
+        {
+          "name": "_manifest_file_digest",
+          "line": 365,
+          "end_line": 368
+        },
+        {
+          "name": "_validate_capabilities",
+          "line": 371,
+          "end_line": 385
+        },
+        {
+          "name": "_validate_non_authorizing_flags",
+          "line": 388,
+          "end_line": 391
+        },
+        {
+          "name": "_load_self_verification",
+          "line": 394,
+          "end_line": 402
+        },
+        {
+          "name": "_artifact_digest_from_payload",
+          "line": 405,
+          "end_line": 412
+        },
+        {
+          "name": "_non_empty_ref",
+          "line": 415,
+          "end_line": 416
+        },
+        {
+          "name": "_normalized_comparison_definition_id",
+          "line": 419,
+          "end_line": 428
+        },
+        {
+          "name": "_resolve_strategy_version",
+          "line": 431,
+          "end_line": 452
+        },
+        {
+          "name": "verify_candidate_identity_binding_bundle",
+          "line": 455,
+          "end_line": 496
+        },
+        {
+          "name": "verify_model_parameter_identity_binding_bundle",
+          "line": 499,
+          "end_line": 540
+        },
+        {
+          "name": "verify_ai_promotion_assessment_bundle",
+          "line": 543,
+          "end_line": 584
+        },
+        {
+          "name": "_input_artifact_ref_mapping",
+          "line": 587,
+          "end_line": 602
+        },
+        {
+          "name": "_cross_validate_identity_bindings",
+          "line": 605,
+          "end_line": 702
+        },
+        {
+          "name": "_compute_output_digest",
+          "line": 705,
+          "end_line": 716
+        },
+        {
+          "name": "_integrity_body",
+          "line": 719,
+          "end_line": 722
+        },
+        {
+          "name": "build_versioned_strategy_model_parameter_artifact_v1",
+          "line": 725,
+          "end_line": 887
+        },
+        {
+          "name": "serialize_versioned_strategy_model_parameter_artifact_v1",
+          "line": 890,
+          "end_line": 912
+        },
+        {
+          "name": "_artifact_bytes_for_manifest_digest",
+          "line": 915,
+          "end_line": 919
+        },
+        {
+          "name": "_compute_output_manifest_digest",
+          "line": 922,
+          "end_line": 923
+        },
+        {
+          "name": "_validate_artifact_integrity",
+          "line": 926,
+          "end_line": 942
+        },
+        {
+          "name": "build_self_verification_v1",
+          "line": 945,
+          "end_line": 1036
+        },
+        {
+          "name": "_finalize_artifact_with_manifest_digest",
+          "line": 1039,
+          "end_line": 1047
+        },
+        {
+          "name": "_staging_dir_for",
+          "line": 1050,
+          "end_line": 1051
+        },
+        {
+          "name": "_cleanup_staging",
+          "line": 1054,
+          "end_line": 1056
+        },
+        {
+          "name": "verify_artifact_inputs",
+          "line": 1059,
+          "end_line": 1078
+        },
+        {
+          "name": "reverify_versioned_strategy_model_parameter_artifact_v1",
+          "line": 1081,
+          "end_line": 1144
+        },
+        {
+          "name": "produce_versioned_strategy_model_parameter_artifact_v1",
+          "line": 1147,
+          "end_line": 1234
+        }
+      ]
+    },
+    {
+      "path": "src/ops/peak_trade_ranking_matrix_policy_v1.py",
+      "sha256": "e728541baf016b3b8051d4b2c92c6bdab6fccf4c856ca15e494144a64165ce83",
+      "bytes": 12293,
+      "symbols": [
+        {
+          "name": "PeakTradeRankingMatrixPolicyError",
+          "line": 161,
+          "end_line": 162
+        },
+        {
+          "name": "_require_mapping",
+          "line": 165,
+          "end_line": 168
+        },
+        {
+          "name": "_require_false_flags",
+          "line": 171,
+          "end_line": 176
+        },
+        {
+          "name": "_require_true_flags",
+          "line": 179,
+          "end_line": 184
+        },
+        {
+          "name": "build_ranking_matrix_policy_semantic_payload_v1",
+          "line": 187,
+          "end_line": 240
+        },
+        {
+          "name": "compute_ranking_matrix_policy_digest_v1",
+          "line": 243,
+          "end_line": 244
+        },
+        {
+          "name": "classify_peak_trade_ranking_matrix_policy_v1",
+          "line": 247,
+          "end_line": 278
+        },
+        {
+          "name": "validate_peak_trade_ranking_matrix_policy_declaration_v1",
+          "line": 281,
+          "end_line": 303
+        }
+      ]
+    },
+    {
+      "path": "src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py",
+      "sha256": "03acaa2d974f7e9cd64f4947f5ebb1ded9b62a2480d9a964eb7386c89f3ca27a",
+      "bytes": 5347,
+      "symbols": [
+        {
+          "name": "FeatureNormalizationRowV1",
+          "line": 21,
+          "end_line": 26
+        },
+        {
+          "name": "CandidateEconomicScoreV1",
+          "line": 30,
+          "end_line": 40
+        },
+        {
+          "name": "midrank_higher_is_better_v1",
+          "line": 43,
+          "end_line": 60
+        },
+        {
+          "name": "percentile_from_midrank_v1",
+          "line": 63,
+          "end_line": 68
+        },
+        {
+          "name": "normalize_feature_cross_section_v1",
+          "line": 71,
+          "end_line": 106
+        },
+        {
+          "name": "build_balanced_movement_scores_v1",
+          "line": 109,
+          "end_line": 161
+        }
+      ]
+    },
+    {
+      "path": "src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py",
+      "sha256": "0cd62154c8d644e24a7c0d2b31370f595b29598419789f779d58aa9e2db39239",
+      "bytes": 17446,
+      "symbols": [
+        {
+          "name": "EconomicRankingResultV1",
+          "line": 69,
+          "end_line": 75
+        },
+        {
+          "name": "_raw_feature_map",
+          "line": 78,
+          "end_line": 81
+        },
+        {
+          "name": "_feature_ready_pair",
+          "line": 84,
+          "end_line": 106
+        },
+        {
+          "name": "classify_and_rank_economic_candidates_v1",
+          "line": 109,
+          "end_line": 286
+        },
+        {
+          "name": "_build_explainability_witness_v1",
+          "line": 289,
+          "end_line": 425
+        }
+      ]
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/policy_v1.py",
+      "sha256": "e5a30f8b5410401827c1d42c7aaf99f468b13f52cc67ca8e2796d60d46b6d750",
+      "bytes": 5098,
+      "symbols": [
+        {
+          "name": "policy_descriptor_v1",
+          "line": 27,
+          "end_line": 56
+        },
+        {
+          "name": "candidate_exclusion_codes_v1",
+          "line": 59,
+          "end_line": 95
+        },
+        {
+          "name": "is_selection_eligible_v1",
+          "line": 98,
+          "end_line": 99
+        },
+        {
+          "name": "soft_degradation_codes_v1",
+          "line": 102,
+          "end_line": 114
+        },
+        {
+          "name": "rank_of_instrument_v1",
+          "line": 117,
+          "end_line": 126
+        }
+      ]
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/selection_v1.py",
+      "sha256": "059b877032955079a3d84d46cd55113cd510c1e7922cc24953fabd284245f5ad",
+      "bytes": 39294,
+      "symbols": [
+        {
+          "name": "_rfc3339",
+          "line": 68,
+          "end_line": 69
+        },
+        {
+          "name": "_parse_event_time_unix",
+          "line": 72,
+          "end_line": 86
+        },
+        {
+          "name": "_valid_until_rfc",
+          "line": 89,
+          "end_line": 101
+        },
+        {
+          "name": "_failure_selection",
+          "line": 104,
+          "end_line": 174
+        },
+        {
+          "name": "_validate_ranking_dict_v1",
+          "line": 177,
+          "end_line": 231
+        },
+        {
+          "name": "_pick_top_eligible",
+          "line": 234,
+          "end_line": 271
+        },
+        {
+          "name": "produce_single_selected_future_v1",
+          "line": 275,
+          "end_line": 907
+        }
+      ]
+    },
+    {
+      "path": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/adapters_v1.py",
+      "sha256": "30581db340c8588fc4c5e93b7915c393b04eb67629e35ac32e4b89b89bebc4cc",
+      "bytes": 13013,
+      "symbols": [
+        {
+          "name": "ProducerAdapterError",
+          "line": 50,
+          "end_line": 51
+        },
+        {
+          "name": "_parse_observed_at_unix",
+          "line": 54,
+          "end_line": 57
+        },
+        {
+          "name": "instrument_binding_from_ref_v1",
+          "line": 60,
+          "end_line": 70
+        },
+        {
+          "name": "default_termination_context_from_market_context_v1",
+          "line": 73,
+          "end_line": 87
+        },
+        {
+          "name": "adapt_market_intelligence_market_context_v1",
+          "line": 90,
+          "end_line": 141
+        },
+        {
+          "name": "adapt_learning_conditioned_evaluative_v1",
+          "line": 144,
+          "end_line": 188
+        },
+        {
+          "name": "adapt_optimization_envelope_evidence_v1",
+          "line": 191,
+          "end_line": 241
+        },
+        {
+          "name": "adapt_meta_learning_routed_evidence_v1",
+          "line": 244,
+          "end_line": 289
+        }
+      ]
+    },
+    {
+      "path": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/ingress_v1.py",
+      "sha256": "f220dd653029a763e68ea49024dbaaf723a83f2abd54995fe3dba0262729a904",
+      "bytes": 14660,
+      "symbols": [
+        {
+          "name": "_reject_at_ingress",
+          "line": 66,
+          "end_line": 97
+        },
+        {
+          "name": "_adjudicate_intake",
+          "line": 100,
+          "end_line": 128
+        },
+        {
+          "name": "terminate_market_intelligence_market_context_at_a_v1",
+          "line": 131,
+          "end_line": 166
+        },
+        {
+          "name": "terminate_learning_conditioned_evaluative_at_a_v1",
+          "line": 169,
+          "end_line": 204
+        },
+        {
+          "name": "terminate_optimization_envelope_at_a_v1",
+          "line": 207,
+          "end_line": 267
+        },
+        {
+          "name": "terminate_meta_learning_routed_at_a_v1",
+          "line": 270,
+          "end_line": 330
+        },
+        {
+          "name": "terminate_loop_a_conditioned_cycle_at_a_v1",
+          "line": 333,
+          "end_line": 364
+        }
+      ]
+    },
+    {
+      "path": "tests/research/test_offline_linear_cost_model_diagnostics_fitter_zero_variance_constant_target_precheck_v0.py",
+      "sha256": "156d4a64aebfef5bd63894ccee712af5a5dc34ad52996bfd28e989b7601452fc",
+      "bytes": 13480,
+      "symbols": [
+        {
+          "name": "_rows",
+          "line": 47,
+          "end_line": 94
+        },
+        {
+          "name": "_binding",
+          "line": 97,
+          "end_line": 104
+        },
+        {
+          "name": "_run_cli",
+          "line": 107,
+          "end_line": 119
+        },
+        {
+          "name": "_archive_inputs_available",
+          "line": 122,
+          "end_line": 123
+        },
+        {
+          "name": "_fit_with_lstsq_spy",
+          "line": 126,
+          "end_line": 147
+        },
+        {
+          "name": "test_constant_target_blocks_before_solver_with_fail_closed_evidence",
+          "line": 150,
+          "end_line": 163
+        },
+        {
+          "name": "test_non_constant_target_still_calls_solver",
+          "line": 166,
+          "end_line": 170
+        },
+        {
+          "name": "test_constant_target_only_emits_constant_target_reason_code",
+          "line": 173,
+          "end_line": 181
+        },
+        {
+          "name": "test_zero_variance_feature_without_intercept_emits_feature_reason_only",
+          "line": 184,
+          "end_line": 196
+        },
+        {
+          "name": "test_constant_feature_with_intercept_emits_collinearity_reason_code",
+          "line": 199,
+          "end_line": 212
+        },
+        {
+          "name": "test_multiple_zero_variance_features_use_deterministic_ordering",
+          "line": 215,
+          "end_line": 235
+        },
+        {
+          "name": "test_full_rank_varying_target_and_features_have_no_precheck_reason_codes",
+          "line": 238,
+          "end_line": 255
+        },
+        {
+          "name": "test_affine_dependency_emits_rank_deficiency_without_zero_variance_precheck_codes",
+          "line": 258,
+          "end_line": 274
+        },
+        {
+          "name": "test_explicit_and_implicit_repo_root_cli_parity",
+          "line": 278,
+          "end_line": 298
+        },
+        {
+          "name": "test_archive_fixture_digests_unchanged_and_precheck_reason_codes_present",
+          "line": 302,
+          "end_line": 364
+        },
+        {
+          "name": "test_archive_fixture_entry_point_skips_calibration_when_constant_target_blocked",
+          "line": 368,
+          "end_line": 386
+        },
+        {
+          "name": "_spy_lstsq",
+          "line": 137,
+          "end_line": 140
+        }
+      ]
+    },
+    {
+      "path": "tests/test_meta_labeling.py",
+      "sha256": "b2bed152181afc1581731970bc241e1515566908c2598e2ce0aea9315f713ad1",
+      "bytes": 3039,
+      "symbols": [
+        {
+          "name": "test_apply_meta_model_passthrough_without_labels",
+          "line": 18,
+          "end_line": 23
+        },
+        {
+          "name": "test_apply_meta_model_filters_with_trained_sklearn",
+          "line": 26,
+          "end_line": 50
+        },
+        {
+          "name": "test_apply_meta_model_trains_when_label_present",
+          "line": 53,
+          "end_line": 67
+        },
+        {
+          "name": "test_create_model_random_forest",
+          "line": 70,
+          "end_line": 73
+        },
+        {
+          "name": "test_compute_meta_labels_basic",
+          "line": 76,
+          "end_line": 82
+        },
+        {
+          "name": "test_compute_bet_size_sigmoid",
+          "line": 85,
+          "end_line": 89
+        },
+        {
+          "name": "test_xgboost_missing_raises",
+          "line": 92,
+          "end_line": 101
+        }
+      ]
+    },
+    {
+      "path": "tests/experiments/test_canonical_learning_representation_offline_evaluation_v1.py",
+      "sha256": "371972b0e96edaf62383d160d4a6dff80aabb5d6fc766259f58ff23b9d2c4b3e",
+      "bytes": 4808,
+      "symbols": [
+        {
+          "name": "_plan",
+          "line": 26,
+          "end_line": 35
+        },
+        {
+          "name": "test_supported_fixture_outcome",
+          "line": 38,
+          "end_line": 47
+        },
+        {
+          "name": "test_rejection_typed_evidence_redundancy",
+          "line": 50,
+          "end_line": 57
+        },
+        {
+          "name": "test_rejection_coverage_failure",
+          "line": 60,
+          "end_line": 68
+        },
+        {
+          "name": "test_changed_fixture_cannot_reuse_the_old_plan_identity_and_digest",
+          "line": 71,
+          "end_line": 77
+        },
+        {
+          "name": "test_changed_parent_cannot_be_hidden_by_rehashing_only_the_outer_result",
+          "line": 80,
+          "end_line": 89
+        },
+        {
+          "name": "test_changed_nonidentity_lineage_is_rejected_by_the_result_digest",
+          "line": 92,
+          "end_line": 100
+        },
+        {
+          "name": "test_plan_cannot_claim_additional_authority_even_with_a_fresh_outer_digest",
+          "line": 112,
+          "end_line": 121
+        }
+      ]
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "7ef8f54894a9811bce57f2c0fed5279de8ce4be39be4b3cca00a6de0d6a4c9ab",
+      "bytes": 3079,
+      "symbols": []
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "2d92f8ab66a07e293b27f171dc80a4632ef52c7ccbf54f1e89bc17df6b03b8f2",
+      "bytes": 1150088,
+      "symbols": []
+    },
+    {
+      "path": "docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md",
+      "sha256": "4be5677f8cfd4d8e82d2c25c7235f2a6101630dbac90ded9c6ed06a2b1bb9b3e",
+      "bytes": 7207,
+      "symbols": []
+    },
+    {
+      "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "sha256": "873827fde8865ed84aae4318aaa17284333c4ba597549c9cfdf6db10473466dc",
+      "bytes": 552665,
+      "symbols": []
+    }
+  ],
+  "is_shallow": true
+}

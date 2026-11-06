@@ -1,0 +1,36 @@
+{
+  "source_commit": "401421f72b121e069ad0a803053292ad8508a33e",
+  "source_sha256": {
+    "src/experiments/canonical_robustness_suite_v1.py": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+    "src/backtest/stats.py": "db28d27f6ed42d6fae0aa46638c38198be08dba8ba7d40ad84457e63446bc12a",
+    "src/backtest/mv2_research_wiring_v1.py": "b2df222d48e08c10a88737b1dd3e9a2a5ff4bec5c00849bd80d575c927925f7d",
+    "docs/ops/specs/CANONICAL_ROBUSTNESS_SUITE_V1.md": "0467819a2211ef28319842da5b0bfca106547deab03af685e7388f30fccba9a0"
+  },
+  "tests": "No new pytest: 12 actual bounded robustness calls and two Failure Memory projections asserted; measured gate PASS/overall BLOCKED; validation +/-100 same gate/different bound evidence; holdout collapse FAIL; missing blocked; nonfinite rejected",
+  "ruff_status": "PASS; format PASS",
+  "boundaries": [
+    "Numerical consumer probe with explicit synthetic identity scaffold, not complete source authenticity or executed canonical next experiment",
+    "Explicit known-source annualized to nonannual Sharpe conversion only; no automatic general adapter or policy rewrite",
+    "Validation numerical decision role unresolved in original intent; current gate uses holdout collapse only",
+    "Other required evidence absent: aggregate BLOCKED retained, no overall robustness pass",
+    "U04/GAP-0370 deferred; ledger unchanged; no activation/push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/measured_split_robustness_consumer_effect_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 230,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; format PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

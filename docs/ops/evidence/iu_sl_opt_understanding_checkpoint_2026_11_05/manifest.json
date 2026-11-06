@@ -1,0 +1,2237 @@
+{
+  "schema": "peaktrade.iu_sl_opt.documentation_checkpoint.v1",
+  "created_at_utc": "2026-11-05T22:15:33.239224+00:00",
+  "source_head": "10d899b16356974bdd1f3c90f13681825cc09afe",
+  "source_branch": "feat/ghv-current-exchange-reconciliation-pr-integration-v1",
+  "role": "FROZEN_DOCUMENTATION_AND_SOURCE_EVIDENCE",
+  "product_changes_in_this_checkpoint": 0,
+  "runtime_authorization_effect": "NONE",
+  "working_tree_changes_excluded_from_commit": 135,
+  "reviewed_sources": {
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py": {
+      "sha256": "d5643610897776253cfd158c98cc218dc7b52ebb1122bc2b2b614807af545695",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py": {
+      "sha256": "500f8ac9794dce0d44513bb8b5da09200c226a54deae5bf16a19ace5eb189ec4",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py": {
+      "sha256": "68a01235a03fb60e55eebf04a1e917c6e1d5725fc210623f467710627671d682",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py": {
+      "sha256": "bcfc10d0aa2aa4aba6f87e053ff0d2bbcf41a54b718af0382031a1c30336618c",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/exact_intelligence_evaluation_v1.py": {
+      "sha256": "d1077293a3609317c273bc284dec0935e6f6f9516f96070178282f759aa70c0b",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/exact_intelligence_evaluation_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py": {
+      "sha256": "f737a856de745400d7c4392ca68f596b9fbf91f7bf31fa2250f8a090ad858fee",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py": {
+      "sha256": "f26c985bd3d2fac37ac1a8413bb4b03488f3d1b9654ae1d720014cbbc19a99c5",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py": {
+      "sha256": "f7501295667c02a872195ef9fdcc75f2f86046417e6c595a27086649f43bc9fc",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py": {
+      "sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py": {
+      "sha256": "ec6236e755490ebd107249b2b6f84083f65fbbbe04ffaf990d21dc96fed032d1",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py": {
+      "sha256": "9c5e66d4fc9d6a1a48797c4d6fe890dbebbddc169702f39d6521496923ce63b3",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py": {
+      "sha256": "90c0c3c58b613b67fd696182a930c0ab2e1d4c1ff266894044b7a4e07861d2f0",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py": {
+      "sha256": "c341395e10769b90a49a4191bda4027cf7b9b3333638dea32881f6cf92876b63",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py": {
+      "sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py": {
+      "sha256": "94fae7b7516630a99f18f33f253b9301bfeaf46f3d93fe845fe98f6f70359b74",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py": {
+      "sha256": "19dcf5c7d58c5bad0ad76a46371c62fc6546e93682dacff4c89b328dbd4bac85",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py": {
+      "sha256": "19b81f5d07a3d34ee5776662ddb1dda1a16906097943480f7ad082b7c9a911d8",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py": {
+      "sha256": "4d24ebca8aaab630f578cfb71a948589894749f739ea7681f77c7caffdab094d",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py": {
+      "sha256": "ca74b2f8361ae527d409ae3037452c845c580ce3ae12044f003cab5ee3e71d49",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py": {
+      "sha256": "19abf38618000e12a8d81a3b9c5db2ccd78f4c490a6b36fd80f49aac379099bb",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_native_research_session_v1.py": {
+      "sha256": "4b9b45a07df4c18c5b6e11bf197c42d5226a07fe75a21cb42790d7ea8a81b31b",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_native_research_session_v1.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/src/experiments/canonical_native_research_session_v1.py.json"
+    },
+    "src/experiments/canonical_native_research_measurements_v1.py": {
+      "sha256": "dbefcd3ce569971bd15dce4a3acccefe8b26852a6adb719bb4c1d1ca0fd5cead",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_native_research_measurements_v1.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/src/experiments/canonical_native_research_measurements_v1.py.json"
+    },
+    "src/experiments/canonical_research_result_to_meta_input_v1.py": {
+      "sha256": "26e183dbb85a23a9e93077c828a4913240df4cb9ce50693082bcfc9ed13da67b",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_research_result_to_meta_input_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py": {
+      "sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_optimization_universe_experiment_plane_v1.py": {
+      "sha256": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_optimization_universe_learning_input_v1.py": {
+      "sha256": "da3deab38df85cbedab6a3fc403a0a950caa5a9435d4f1ab3683533dada67306",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimization_universe_learning_input_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_meta_learning_ingest_v1.py": {
+      "sha256": "08b28d4d8e46c8b532c9e0cc014338d2f19b2417ee26fc9d6113395ac62f4a75",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_learning_ingest_v1.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/src/experiments/canonical_meta_learning_ingest_v1.py.json"
+    },
+    "src/experiments/canonical_meta_evidence_dual_router_v1.py": {
+      "sha256": "6dd605a16f200d7af30bbedeb252d21692d86d723e0af8f0f697e5cab48272d9",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_evidence_dual_router_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py": {
+      "sha256": "4f77e457cba472f5ddef71cae176253e1af76cce27f40e560b8974815d6c7b6e",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_learning_representation_offline_evaluation_v1.py": {
+      "sha256": "acf19867887ae6d88be828802b3cb9213be0ad5b0ec164d98694551bbdd4e8ea",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_learning_representation_offline_evaluation_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py": {
+      "sha256": "a37b433e9b73c1dc192dc8059844227fad5757aae8fa87f6a57c8d3ebeba4188",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_automated_offline_research_loop_v1.py": {
+      "sha256": "48b3cccdc8034afbd9d6acd03f1225c3c2cc65b39365ff1ca42183bc68445524",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_automated_offline_research_loop_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_regime_aware_evaluation_v1.py": {
+      "sha256": "b56a4845eecc8966fd9cb29cde722bad27a58762e8ebad98ef58cac9a0ae89e9",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_regime_aware_evaluation_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_portfolio_learning_v1.py": {
+      "sha256": "a70e3854f5f7d9497c55b68a773cf126f73426fd4bbd158932f4b684464b973b",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_portfolio_learning_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_search_candidate_research_execution_v1.py": {
+      "sha256": "8ce1830484cb1f592bac90ee78e9cfa11d693eece12ddaac8ab669e82aa78cfc",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_search_candidate_research_execution_v1.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/src/experiments/canonical_search_candidate_research_execution_v1.py.json"
+    },
+    "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py": {
+      "sha256": "1507f008b47df920860b9c380d055cfac4ffe30c232429276568d9a9f5fdef5c",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py": {
+      "sha256": "886607ce405fd19f7233fb83d2b68cac524b6cba9d77f763a59838cfe0872b21",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py": {
+      "sha256": "1a150c36da85304fa71acd4a35bf823652166efeb7d1230af725fd792f9892ad",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py.json"
+    },
+    "src/meta/learning_loop/runtime_observation_feedback_v1.py": {
+      "sha256": "3c438c87060ca381831f5604f5a2ca29a2e27dcc4323eaa2c3df23f12c66c2a8",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/meta/learning_loop/runtime_observation_feedback_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/meta/learning_loop/autonomous_non_live_orchestration_plan_v1.py": {
+      "sha256": "3dbe17509410ca5ee8ef452eeca9d0e5d17494bf4ff337ef3e14d70bc4711474",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/meta/learning_loop/autonomous_non_live_orchestration_plan_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py": {
+      "sha256": "1735837499fa504a6661f37f213c31526d8caf0c0b3b83facd801efc3cdffd3b",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/governance/optimization_proposal_governance_ingress_v1.py": {
+      "sha256": "2ae0bf6eae57ad8a9d3ffe50c05aa1cbd20f1c1a98aa098f41c9a1c7faa77481",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/governance/optimization_proposal_governance_ingress_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/research/ml/meta/meta_labeling.py": {
+      "sha256": "0b285709ed482effdc3c726489b49273f8437db9c319b1e671211143b046b5c6",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/research/ml/meta/meta_labeling.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/strategies/lopez_de_prado/meta_labeling_strategy.py": {
+      "sha256": "957e58e02634f90aa144698f5d41133a1fcd2e6463f178baacd3d3b5e97bb94c",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/strategies/lopez_de_prado/meta_labeling_strategy.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "tests/learning/test_intelligence_context_admission_v1.py": {
+      "sha256": "5ecb6af7704a97f0c42b98747b959c15e5c4ac12b1ae7bdb5144f525e17be516",
+      "origin": "/Users/frnkhrz/Peak_Trade/tests/learning/test_intelligence_context_admission_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "tests/learning/test_intelligence_forecast_measurement_integration_v1.py": {
+      "sha256": "7f19c1d647f49acc74301f909a5d642856dc12ae731e96c0af52e95a9ae691a3",
+      "origin": "/Users/frnkhrz/Peak_Trade/tests/learning/test_intelligence_forecast_measurement_integration_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "tests/learning/test_exact_intelligence_evaluation_v1.py": {
+      "sha256": "62c555f2ee249268841992f769a3d4aeef10e03d040a246eaa592c66f2fad5fc",
+      "origin": "/Users/frnkhrz/Peak_Trade/tests/learning/test_exact_intelligence_evaluation_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md": {
+      "sha256": "54c28251701bd163178f8206749357a8c0ccb4b87c412d382cba297eec0bd183",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md": {
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md": {
+      "sha256": "89c8af944f992ed0a46c260e31e09aeb8b306c2ba339179f5024f3bd8ee1ebf1",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md": {
+      "sha256": "f58db673497f9208990b69f37ccb00803c45fead71d5c78ad2ed75a2be20d68f",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/ops/specs/INTELLIGENCE_EXACT_FORECAST_MEASUREMENT_HANDOFF_V1.md": {
+      "sha256": "36830b2a9726efbdeb61ca8e46d8e2512857ac17ad67a0009ea3bdced9a7696f",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/INTELLIGENCE_EXACT_FORECAST_MEASUREMENT_HANDOFF_V1.md",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/ops/evidence/self_learning_original_layers_restoration_v1_2026_11_04/originals/self_learning_master_core_bound.original.txt": {
+      "sha256": "77eb523b165d3f534c10da86e55f105c10c3f91629d0a19795f2a5eeb02b6219",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/ops/evidence/self_learning_original_layers_restoration_v1_2026_11_04/originals/self_learning_master_core_bound.original.txt",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/ops/evidence/self_learning_original_layers_restoration_v1_2026_11_04/restored_source_manifest.json": {
+      "sha256": "6dd45d63a5569e062c6037a989a7afe4c56275535f27e06882bb78814d231f6f",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/ops/evidence/self_learning_original_layers_restoration_v1_2026_11_04/restored_source_manifest.json",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md": {
+      "sha256": "ea4aea9fce10c424490796db307d2d1382f5b4ee71839bdeeaca3314df702b8e",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md.json"
+    },
+    "src/experiments/canonical_experiment_identity_v1.py": {
+      "sha256": "d9974edd7874393c2dae0f7b900d2f393d5b62d7a5284da7c21d2214e5113ef7",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_experiment_identity_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_experiment_memory_v1.py": {
+      "sha256": "c9e938747965d22e9886132656dab1b8aaa2e16f7805848e2d9644237627f7cf",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_experiment_memory_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_failure_memory_v1.py": {
+      "sha256": "bec73128000cb83184841bbbdb3e88659ecda50106e15b3e7aabf0fbcc1acf42",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_failure_memory_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_robustness_suite_v1.py": {
+      "sha256": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_robustness_suite_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_comparison_ssot_v1.py": {
+      "sha256": "4154155a46990cb6abc9bd78d6cf2ead3c50ed157c43ea990bc0185fa94461ff",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_comparison_ssot_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_champion_challenger_v1.py": {
+      "sha256": "ad072a9656395701aeafd124986b0633e867b5ba90258289f2c8078c6b7309db",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_champion_challenger_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_reality_gap_store_v1.py": {
+      "sha256": "5dd07e13ed772321bed2043dde78d3076da522905a82afd4ad7ab4c6c9c30660",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_reality_gap_store_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_advanced_search_v1.py": {
+      "sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_advanced_search_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_meta_learning_v1.py": {
+      "sha256": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_learning_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py": {
+      "sha256": "bfd79144f85eefefada451758b9e8ff7a489c1b569de78fded3eeb95f4b31867",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py": {
+      "sha256": "dac0c4b2deaba2691ebda5567a881e53ed50265daf43233d0ee42e919f704942",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py": {
+      "sha256": "4c76e2f77658634de84a97ff10da526028225940391acaf408186f4c2a8101fc",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py": {
+      "sha256": "fd773cb6b8c1a359c9f6541dcb5d19babae16c65791c7a08901be3edd7edb0ec",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/common_v0.py": {
+      "sha256": "0b952324b430febaf41f3f6816bfd9bfac6f76077a1bbbbd01f17e2cfbd36aa7",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/common_v0.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_store_v1.py": {
+      "sha256": "c756be8eb78d3022e8dda4c67c325ea9ccd7077cb308f396eb6090c2e3e5b783",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_store_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py": {
+      "sha256": "de74237164f1f77f22db63289dbdca1113c4cf8c56f3e191df21b023fd125f64",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_meta_to_optimization_feedback_v1.py": {
+      "sha256": "c964b2c077017d249736d4563f84bc094685284111b23fc9897b974fc6801155",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_m4_m8_evidence_return_loop_v1.py": {
+      "sha256": "aa105fa2a0780f9c2f95d5eba00aae8ea4283aa7548ae5e392fc0f9c4b5c9a6e",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_m4_m8_evidence_return_loop_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py": {
+      "sha256": "3fea28d9fb3ba72514121edcd7a65409066bcfce591c950fdb30704d3d3812f2",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py": {
+      "sha256": "b26f83ad53ab53d663c5131012ee1734391bf574966c6915d339f618ba7acfc1",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_federated_m5_m6_return_join_v1.py": {
+      "sha256": "438cd669b2972ce85a858ab6c1d15cc770982a5301f39ae84d79bb515056a1b0",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_federated_m5_m6_return_join_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_federated_surface_optimization_experiment_evidence_projection_v1.py": {
+      "sha256": "49540737496833b0a0f86d0d89c5d8f51fff9f3ce4b2b71ce3f74f48450d754e",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_federated_surface_optimization_experiment_evidence_projection_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py": {
+      "sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py": {
+      "sha256": "5c00cbd43296c8ef270bf8a6e03a876a7efa043dc2583940748ca1bcba7d49c3",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/adapters_v1.py": {
+      "sha256": "30581db340c8588fc4c5e93b7915c393b04eb67629e35ac32e4b89b89bebc4cc",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/adapters_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py": {
+      "sha256": "7c67da11cea16457ed03ba299822c7464e7ecfa8e0c19c50f8662ce953201669",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/governance/governed_runtime_apply_materialization_v1.py": {
+      "sha256": "32830f8fbf84ab13a1962b180aea7bf55d3ce95d73ea1fbb2371f3b055ffe39e",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/governance/governed_runtime_apply_materialization_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/capture_v0.py": {
+      "sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py": {
+      "sha256": "10dfb5217be629495ff97c0c57b179c27583b6458da44c75c095d1560d4a056c",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py.json"
+    },
+    "src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py": {
+      "sha256": "8ad5860abea73b1977448c472a5d2b6dd6e012a513d755eedde66e820aa6b757",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py.json"
+    },
+    "tests/ops/_bounded_system_episode_fixture_v1.py": {
+      "sha256": "c00c1da83cd40bd321315a0fefd915d6e39dc417e22e55ab959c22f6164697f6",
+      "origin": "/Users/frnkhrz/Peak_Trade/tests/ops/_bounded_system_episode_fixture_v1.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/tests/ops/_bounded_system_episode_fixture_v1.py.json"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py": {
+      "sha256": "3150df03e7cf8b3c62ae205c4240818ae725963b9195fcc835660f152134bbec",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_optimization_experiment_evidence_v1.py": {
+      "sha256": "f0cd43a0e3c83f81096de0c75ff1dde20061a2a7e5845545bd1a58a60fc7b301",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimization_experiment_evidence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/canonical_self_learning_optimization_return_input_v1.py": {
+      "sha256": "641f1fafa9e3dd74d8adee5cf9b7dba7e786d27f51ff469273aa13ffefc75657",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_self_learning_optimization_return_input_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/experiments/ohlcv_returns_file.py": {
+      "sha256": "fc9d04522d50c83011db5ee4f3d2c68a6e1a93af3eb24c26295c55731881d968",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/ohlcv_returns_file.py",
+      "materialization": "INERT_WORKING_TREE_SNAPSHOT",
+      "archive": "source_snapshots/src/experiments/ohlcv_returns_file.py.json"
+    },
+    "src/experiments/canonical_optimizable_envelope_v1.py": {
+      "sha256": "4eaae92218bb59f6f97e2ba90456d859b6922c141abbdfd434d9b00894141d25",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimizable_envelope_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/ops/single_selected_future_policy_v1/persistence_v1.py": {
+      "sha256": "64548daaf97b2423fc063a9a78afe1f29e070a9a878957b48e5fbc8e3bf61d42",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/ops/single_selected_future_policy_v1/persistence_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py": {
+      "sha256": "2b1fd1ea29d3bb61b22322313ff677a3c6f55cf37455a8d1534eabd6156cf9c0",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "scripts/run_runtime_to_learning_input_v1.py": {
+      "sha256": "52c66c5acaa13d5e9e5e9aaecf9e143bdf8e1c96b2dcef55c7dafe71bd29e290",
+      "origin": "/Users/frnkhrz/Peak_Trade/scripts/run_runtime_to_learning_input_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "scripts/run_runtime_observation_to_orchestration_input_v1.py": {
+      "sha256": "fb1b4627dd17f524f215aff77c494ceb63df505318b7ffa657dc61332d9b0fec",
+      "origin": "/Users/frnkhrz/Peak_Trade/scripts/run_runtime_observation_to_orchestration_input_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/evaluation/golden_vectors/evaluators/self_learning_v1.py": {
+      "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py": {
+      "sha256": "6928359eacbc3c10a45853f1fc33c8d9416916661bb34e6b76a3c05a97d7a9dd",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/ledger_v0.py": {
+      "sha256": "4065b266d31d2b969118d3b6c39c5294d08416cfca06200235821a3e1fc50787",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py": {
+      "sha256": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_persist_v1.py": {
+      "sha256": "70526c541e8678b788f45346a2ecf5ec11f9ee08214e56072d7a09cab862513e",
+      "origin": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_persist_v1.py",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "AGENTS.md": {
+      "sha256": "85e70e04bc7b34825ae3f691a51a40c825d11c6df07e8c5f9fd86168e1c017e2",
+      "origin": "/Users/frnkhrz/Peak_Trade/AGENTS.md",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    },
+    "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md": {
+      "sha256": "d869d0be8a7ddfe52f3ac8dacaab4fcf20cbfe119d6258433d0e16b9e3ee81dd",
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md",
+      "materialization": "GIT_BLOB_AT_SOURCE_HEAD"
+    }
+  },
+  "review_anchors": {
+    "src/experiments/canonical_experiment_identity_v1.py#build_canonical_experiment_identity_v1": {
+      "path": "src/experiments/canonical_experiment_identity_v1.py",
+      "line": 433,
+      "end_line": 545,
+      "symbol": "build_canonical_experiment_identity_v1"
+    },
+    "src/experiments/canonical_comparison_ssot_v1.py#build_canonical_comparison_result_v1": {
+      "path": "src/experiments/canonical_comparison_ssot_v1.py",
+      "line": 172,
+      "end_line": 244,
+      "symbol": "build_canonical_comparison_result_v1"
+    },
+    "src/experiments/canonical_champion_challenger_v1.py#evaluate_canonical_champion_challenger_v1": {
+      "path": "src/experiments/canonical_champion_challenger_v1.py",
+      "line": 113,
+      "end_line": 241,
+      "symbol": "evaluate_canonical_champion_challenger_v1"
+    },
+    "src/experiments/canonical_regime_aware_evaluation_v1.py#CanonicalRegimeAwareEvaluationRequestV1": {
+      "path": "src/experiments/canonical_regime_aware_evaluation_v1.py",
+      "line": 263,
+      "end_line": 273,
+      "symbol": "CanonicalRegimeAwareEvaluationRequestV1"
+    },
+    "src/experiments/canonical_portfolio_learning_v1.py#CanonicalPortfolioLearningRequestV1": {
+      "path": "src/experiments/canonical_portfolio_learning_v1.py",
+      "line": 167,
+      "end_line": 181,
+      "symbol": "CanonicalPortfolioLearningRequestV1"
+    },
+    "src/experiments/canonical_automated_offline_research_loop_v1.py#run_canonical_automated_offline_research_loop_v1": {
+      "path": "src/experiments/canonical_automated_offline_research_loop_v1.py",
+      "line": 216,
+      "end_line": 477,
+      "symbol": "run_canonical_automated_offline_research_loop_v1"
+    },
+    "src/experiments/canonical_meta_learning_v1.py#build_canonical_meta_learning_v1": {
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "line": 251,
+      "end_line": 368,
+      "symbol": "build_canonical_meta_learning_v1"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py#advance_explicit_offline_pending_v1": {
+      "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py",
+      "line": 500,
+      "end_line": 629,
+      "symbol": "advance_explicit_offline_pending_v1"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py#_consume": {
+      "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py",
+      "line": 632,
+      "end_line": 746,
+      "symbol": "_consume"
+    },
+    "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py#export_learning_evidence_from_state_v1": {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "line": 40,
+      "end_line": 115,
+      "symbol": "export_learning_evidence_from_state_v1"
+    },
+    "src/experiments/canonical_optimization_universe_learning_input_v1.py#validate_canonical_optimization_universe_learning_input_v1": {
+      "path": "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+      "line": 76,
+      "end_line": 151,
+      "symbol": "validate_canonical_optimization_universe_learning_input_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py#compose_admitted_intelligence_context_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py",
+      "line": 159,
+      "end_line": 323,
+      "symbol": "compose_admitted_intelligence_context_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py#freeze_existing_intelligence_forecast_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+      "line": 98,
+      "end_line": 236,
+      "symbol": "freeze_existing_intelligence_forecast_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py#calibrate_frozen_intelligence_forecast_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+      "line": 239,
+      "end_line": 327,
+      "symbol": "calibrate_frozen_intelligence_forecast_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py#handoff_calibrated_intelligence_evidence_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+      "line": 347,
+      "end_line": 431,
+      "symbol": "handoff_calibrated_intelligence_evidence_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py#compose_mi_to_learning_evidence_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "line": 95,
+      "end_line": 246,
+      "symbol": "compose_mi_to_learning_evidence_v1"
+    },
+    "src/experiments/canonical_optimization_universe_experiment_plane_v1.py#run_optimization_universe_experiment_plane_v1": {
+      "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "line": 157,
+      "end_line": 374,
+      "symbol": "run_optimization_universe_experiment_plane_v1"
+    },
+    "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py#run_mi_enriched_optimization_universe_experiment_plane_v1": {
+      "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "line": 268,
+      "end_line": 305,
+      "symbol": "run_mi_enriched_optimization_universe_experiment_plane_v1"
+    },
+    "src/experiments/canonical_native_research_session_v1.py#_run_native_research_session_step_locked_v1": {
+      "path": "src/experiments/canonical_native_research_session_v1.py",
+      "line": 332,
+      "end_line": 547,
+      "symbol": "_run_native_research_session_step_locked_v1"
+    },
+    "src/experiments/canonical_native_research_measurements_v1.py#NativeResearchExperimentProviderV1": {
+      "path": "src/experiments/canonical_native_research_measurements_v1.py",
+      "line": 409,
+      "end_line": 557,
+      "symbol": "NativeResearchExperimentProviderV1"
+    },
+    "src/experiments/canonical_search_candidate_research_execution_v1.py#run_search_candidate_research_execution_v1": {
+      "path": "src/experiments/canonical_search_candidate_research_execution_v1.py",
+      "line": 87,
+      "end_line": 175,
+      "symbol": "run_search_candidate_research_execution_v1"
+    },
+    "src/experiments/canonical_research_result_to_meta_input_v1.py#run_research_result_meta_search_feedback_v1": {
+      "path": "src/experiments/canonical_research_result_to_meta_input_v1.py",
+      "line": 198,
+      "end_line": 232,
+      "symbol": "run_research_result_meta_search_feedback_v1"
+    },
+    "src/experiments/canonical_meta_evidence_dual_router_v1.py#route_meta_evidence_v1": {
+      "path": "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+      "line": 79,
+      "end_line": 158,
+      "symbol": "route_meta_evidence_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py#run_loop_c_representation_feedback_closure_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+      "line": 106,
+      "end_line": 199,
+      "symbol": "run_loop_c_representation_feedback_closure_v1"
+    },
+    "src/experiments/canonical_learning_representation_offline_evaluation_v1.py#_outcome_for_fixture": {
+      "path": "src/experiments/canonical_learning_representation_offline_evaluation_v1.py",
+      "line": 55,
+      "end_line": 74,
+      "symbol": "_outcome_for_fixture"
+    },
+    "src/meta/learning_loop/runtime_observation_feedback_v1.py#evaluate_runtime_to_learning_input_v1": {
+      "path": "src/meta/learning_loop/runtime_observation_feedback_v1.py",
+      "line": 712,
+      "end_line": 813,
+      "symbol": "evaluate_runtime_to_learning_input_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/exact_intelligence_evaluation_v1.py#evaluate_exact_intelligence_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/exact_intelligence_evaluation_v1.py",
+      "line": 51,
+      "end_line": 138,
+      "symbol": "evaluate_exact_intelligence_v1"
+    },
+    "src/governance/optimization_proposal_governance_ingress_v1.py#build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1": {
+      "path": "src/governance/optimization_proposal_governance_ingress_v1.py",
+      "line": 135,
+      "end_line": 258,
+      "symbol": "build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py#mint_forecast_evidence_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+      "line": 200,
+      "end_line": 262,
+      "symbol": "mint_forecast_evidence_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py#IntelligenceIdentityV1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py",
+      "line": 101,
+      "end_line": 117,
+      "symbol": "IntelligenceIdentityV1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py#prepare_explicit_measured_return_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py",
+      "line": 49,
+      "end_line": 132,
+      "symbol": "prepare_explicit_measured_return_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py#_score_directional": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+      "line": 65,
+      "end_line": 75,
+      "symbol": "_score_directional"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py#_materialize_excursion_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+      "line": 245,
+      "end_line": 288,
+      "symbol": "_materialize_excursion_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py#_materialize_realized_volatility_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+      "line": 291,
+      "end_line": 333,
+      "symbol": "_materialize_realized_volatility_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py#derive_cross_market_state_slot_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py",
+      "line": 258,
+      "end_line": 342,
+      "symbol": "derive_cross_market_state_slot_v1"
+    },
+    "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py#materialize_real_outcome_horizon_supplier_input_v1": {
+      "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "line": 199,
+      "end_line": 346,
+      "symbol": "materialize_real_outcome_horizon_supplier_input_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py#compose_conditioned_mi_learning_evidence_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
+      "line": 121,
+      "end_line": 208,
+      "symbol": "compose_conditioned_mi_learning_evidence_v1"
+    },
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py#build_calibration_evidence_v1": {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+      "line": 78,
+      "end_line": 208,
+      "symbol": "build_calibration_evidence_v1"
+    },
+    "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py#MarketIntelligenceEvaluatorV1._evaluate": {
+      "path": "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "line": 61,
+      "end_line": 113,
+      "symbol": "MarketIntelligenceEvaluatorV1._evaluate"
+    },
+    "src/research/ml/meta/meta_labeling.py#apply_meta_model": {
+      "path": "src/research/ml/meta/meta_labeling.py",
+      "line": 125,
+      "end_line": 179,
+      "symbol": "apply_meta_model"
+    },
+    "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py#supply_n_bars_evaluation_observation_v1": {
+      "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py",
+      "symbol": "supply_n_bars_evaluation_observation_v1",
+      "line": 36,
+      "end_line": 76
+    },
+    "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py#_build_measurement_fields": {
+      "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "line": 156,
+      "end_line": 196,
+      "symbol": "_build_measurement_fields"
+    },
+    "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py#assert_routing_class_lineage_binding_v1": {
+      "path": "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+      "symbol": "assert_routing_class_lineage_binding_v1",
+      "line": 86,
+      "end_line": 107
+    },
+    "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py#run_offline_evidence_cycle_v1": {
+      "path": "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
+      "symbol": "run_offline_evidence_cycle_v1",
+      "line": 108,
+      "end_line": 195
+    },
+    "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py#run_federated_offline_evidence_cycle_v1": {
+      "path": "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+      "symbol": "run_federated_offline_evidence_cycle_v1",
+      "line": 97,
+      "end_line": 178
+    },
+    "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py#_project_learning_evidence_from_runtime_v1": {
+      "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+      "symbol": "_project_learning_evidence_from_runtime_v1",
+      "line": 209,
+      "end_line": 293
+    },
+    "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/adapters_v1.py#adapt_learning_conditioned_evaluative_v1": {
+      "path": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/adapters_v1.py",
+      "symbol": "adapt_learning_conditioned_evaluative_v1",
+      "line": 144,
+      "end_line": 188
+    },
+    "src/governance/governed_runtime_apply_materialization_v1.py#evaluate_runtime_apply_materialization_v1": {
+      "path": "src/governance/governed_runtime_apply_materialization_v1.py",
+      "symbol": "evaluate_runtime_apply_materialization_v1",
+      "line": 216,
+      "end_line": 283
+    }
+  },
+  "repository_baseline": {
+    "key_order": [
+      "head",
+      "branch",
+      "status_porcelain_v1",
+      "diff_sha256",
+      "files",
+      "scope",
+      "captured_at_utc",
+      "navigation_backups",
+      "authorization_scope"
+    ],
+    "metadata": {
+      "head": "10d899b16356974bdd1f3c90f13681825cc09afe",
+      "branch": "feat/ghv-current-exchange-reconciliation-pr-integration-v1",
+      "status_porcelain_v1": " M docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md\n M src/evaluation/golden_vectors/registry/evidence_registry_v1.py\n M src/evaluation/golden_vectors/runner/errors.py\n M src/evaluation/golden_vectors/runner/generic_runner_v1.py\n M src/experiments/canonical_meta_learning_ingest_v1.py\n M src/experiments/canonical_native_research_measurements_v1.py\n M src/experiments/canonical_native_research_session_v1.py\n M src/experiments/canonical_search_candidate_research_execution_v1.py\n M src/experiments/ohlcv_returns_file.py\n M src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py\n M src/learning/deterministic_decision_outcome_v0/outcome_evidence_provenance_bindings_v1.py\n M src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py\n M src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py\n M src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py\n M src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/__init__.py\n M src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py\n M src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/artifact_matrix_v1.py\n M src/ops/exit_policy_producer_binding_v1/host_binding_v1.py\n M src/ops/exit_policy_producer_binding_v1/models_v1.py\n M src/ops/exit_policy_producer_binding_v1/persistence_v1.py\n M src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py\n M src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py\n M src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py\n M src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py\n M src/ops/n1_whole_system_hard_facts_integration_wp_v1/public_runtime_economic_md_adapter_v1.py\n M src/ops/peak_trade_public_market_data_runtime_v1/consumer_adapters_v1.py\n M src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py\n M src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py\n M src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py\n M src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py\n M tests/experiments/test_canonical_federated_m5_m6_return_join_v1.py\n M tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py\n M tests/ops/test_current_mf_n5_full_autonomy_runtime_n5_completion_v1.py\n M tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py\n M tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py\n M tests/ops/test_current_productive_occupied_scope_continuity_v1.py\n M tests/ops/test_economic_md_input_producer_v1.py\n M tests/ops/test_portfolio_budget_host_v1.py\n?? docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E1_ACCEPTANCE_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E2_ACCEPTANCE_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E3_ACCEPTANCE_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E4_ACCEPTANCE_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E5_ACCEPTANCE_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E6_ACCEPTANCE_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE10_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE1_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE2_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE3_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE4_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE5_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE6_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE7_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE8_2026_11_05.md\n?? docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE9_2026_11_05.md\n?? docs/ops/specs/BOUNDED_ADVERSE_TIME_EXIT_CONSUMER_SEMANTICS_V1.md\n?? docs/ops/specs/BOUNDED_EXIT_CURSOR_PUBLICATION_RECOVERY_V1.md\n?? docs/ops/specs/BOUNDED_OFFLINE_ATTEMPT_CONTINUATION_AND_DATA_ADMISSION_V1.md\n?? docs/ops/specs/BOUNDED_OFFLINE_CYCLE_CAPTURE_NAMESPACE_V1.md\n?? docs/ops/specs/BOUNDED_OFFLINE_EPISODE_SESSION_V1.md\n?? docs/ops/specs/BOUNDED_OFFLINE_STAGE_E1_ACCEPTANCE_V1.md\n?? docs/ops/specs/BOUNDED_OFFLINE_STAGE_E2_POSITION_CAPITAL_RISK_V1.md\n?? docs/ops/specs/BOUNDED_OFFLINE_STAGE_E3_OUTCOME_LEARNING_V1.md\n?? docs/ops/specs/BOUNDED_OFFLINE_STAGE_E4_RESEARCH_RECOVERY_V1.md\n?? docs/ops/specs/BOUNDED_OFFLINE_STAGE_E5_EVALUATION_RECEIPTS_V1.md\n?? docs/ops/specs/BOUNDED_POSITION_EPISODE_EXIT_CONTINUITY_V1.md\n?? docs/ops/specs/BOUNDED_SIMULATED_ACCOUNTING_ENTRY_SOURCE_V1.md\n?? docs/ops/specs/BOUNDED_SIMULATED_ACCOUNTING_EPISODE_PROGRESS_V1.md\n?? docs/ops/specs/BOUNDED_SIMULATED_EPISODE_FLAT_SEAL_AND_SUCCESSOR_V1.md\n?? docs/ops/specs/BOUNDED_SYSTEM_ACCEPTANCE_EPISODES_V1.md\n?? docs/ops/specs/BOUNDED_SYSTEM_COMPOSITION_CONTRACT_V1.md\n?? docs/ops/specs/BOUNDED_SYSTEM_N5_COMPLETION_AND_RECOVERY_TRANSPORT_V1.md\n?? src/evaluation/golden_vectors/integration/bounded_required_domain_fanout_v1.py\n?? src/evaluation/golden_vectors/integration/domain_result_binding_v1.py\n?? src/evaluation/golden_vectors/integration/evaluation_receipt_v1.py\n?? src/experiments/canonical_research_preflight_v1.py\n?? src/experiments/canonical_research_prepared_execution_v1.py\n?? src/learning/deterministic_decision_outcome_v0/learning_scope_guard_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/__init__.py\n?? src/ops/bounded_peaktrade_system_composition_v1/acceptance_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/configuration_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/cycle_namespace_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/governed_attempt_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/handoff_receipts_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/manifest_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/profile_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/readiness_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/recovery_v1.py\n?? src/ops/bounded_peaktrade_system_composition_v1/session_v1.py\n?? src/ops/economic_md_input_producer_v1/purpose_admission_v1.py\n?? src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py\n?? src/ops/economic_md_input_producer_v1/purpose_gateway_v1.py\n?? src/ops/exit_policy_producer_binding_v1/current_cursor_recovery_v1.py\n?? src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py\n?? src/ops/exit_policy_producer_binding_v1/risk_bound_simulated_entry_v1.py\n?? src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py\n?? src/ops/exit_policy_producer_binding_v1/simulated_accounting_entry_source_v1.py\n?? src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py\n?? src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py\n?? src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/retention_v1.py\n?? src/ops/peak_trade_public_market_data_runtime_v1/canonical_fact_decoder_v1.py\n?? src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py\n?? src/risk/decision_bound_model_adapters_v1.py\n?? tests/evaluation/golden_vectors/test_bounded_required_domain_fanout_v1.py\n?? tests/evaluation/golden_vectors/test_gvef_result_integrity_v1.py\n?? tests/experiments/_research_prepared_recovery_worker_v1.py\n?? tests/experiments/test_measured_meta_next_trial_v1.py\n?? tests/experiments/test_research_preflight_recovery_v1.py\n?? tests/learning/test_offline_learning_scope_guard_v1.py\n?? tests/ops/_bounded_offline_episode_session_worker_v1.py\n?? tests/ops/_bounded_system_episode_fixture_v1.py\n?? tests/ops/test_adverse_time_exit_consumer_semantics_v1.py\n?? tests/ops/test_bounded_offline_all_purpose_consumers_v1.py\n?? tests/ops/test_bounded_offline_configuration_binding_v1.py\n?? tests/ops/test_bounded_offline_cycle_namespace_v1.py\n?? tests/ops/test_bounded_offline_decision_risk_v1.py\n?? tests/ops/test_bounded_offline_episode_session_v1.py\n?? tests/ops/test_bounded_offline_governed_continuation_v1.py\n?? tests/ops/test_bounded_offline_original_entry_risk_join_v1.py\n?? tests/ops/test_bounded_offline_owner_crash_points_v1.py\n?? tests/ops/test_bounded_offline_partial_close_lifecycle_v1.py\n?? tests/ops/test_bounded_offline_ranking_unit_admission_v1.py\n?? tests/ops/test_bounded_offline_risk_entry_source_integrity_v1.py\n?? tests/ops/test_bounded_offline_shared_gateway_n5_v1.py\n?? tests/ops/test_bounded_offline_stop_and_handoff_v1.py\n?? tests/ops/test_bounded_peaktrade_system_episodes_v1.py\n?? tests/ops/test_exit_policy_restore_integrity_v1.py\n?? tests/ops/test_explicit_offline_pending_learning_v1.py\n?? tests/ops/test_outcome_retention_release_v1.py\n?? tests/ops/test_position_episode_cursor_recovery_v1.py\n?? tests/ops/test_position_episode_exit_continuity_v1.py\n?? tests/ops/test_public_fact_consumer_semantics_v1.py\n?? tests/ops/test_public_fact_purpose_admission_v1.py\n?? tests/ops/test_simulated_accounting_entry_source_v1.py\n?? tests/ops/test_simulated_accounting_episode_close_v1.py\n?? tests/ops/test_simulated_accounting_episode_progress_v1.py\n",
+      "diff_sha256": "9e1dea58aae62c35a5d0d394319293ecc2d14507463a7ced5fdbc8e69b88f03b",
+      "scope": "All git-indexed and nonignored untracked files; ignored caches, .git internals and external data are excluded.",
+      "captured_at_utc": "2026-11-05T21:48:59.888822+00:00",
+      "navigation_backups": [
+        {
+          "path": "Start.md",
+          "sha256": "b3edbdb6e07f7609b5ba5122a5e4a72e84dd55fd549d8d2c06d94b462ff0b413",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/Start.md"
+        },
+        {
+          "path": "PeakTrade-Systemindex.md",
+          "sha256": "a8fab60c943a434b6da1743136a97a954e3657bcc69368d2222e407ff67fdf15",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/PeakTrade-Systemindex.md"
+        },
+        {
+          "path": "Systemindexbindung.json",
+          "sha256": "578ed91922ce9282a24ebd5b31cd653622bc148269043478465ff3f7c652d8a2",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/Systemindexbindung.json"
+        },
+        {
+          "path": "00 Systemindex/Universen/SL.md",
+          "sha256": "38637c94268cf348e9d8a8d15859dfb34384cfa13bc482fdb78bf4b95bda90bb",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/00 Systemindex/Universen/SL.md"
+        },
+        {
+          "path": "00 Systemindex/Universen/OPT.md",
+          "sha256": "7a37a0597f3aca3a37ce17bc37783914f5b9e6aa290b6bdc346e1be3f57c8829",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/00 Systemindex/Universen/OPT.md"
+        },
+        {
+          "path": "00 Systemindex/Intelligentes Universum/Intelligentes Universum rekonstruiert.md",
+          "sha256": "a4591d3d958a2754801c39fc8db0911fd3f926b01cc54569814e9927675979ca",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/00 Systemindex/Intelligentes Universum/Intelligentes Universum rekonstruiert.md"
+        },
+        {
+          "path": "00 Systemindex/Intelligentes Universum/Integration/Integrationskonstrukt Intelligentes Universum.md",
+          "sha256": "a196e5e98f7642a92e29b488082780a751f3235b201fc558aa637eaba01f0dee",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/00 Systemindex/Intelligentes Universum/Integration/Integrationskonstrukt Intelligentes Universum.md"
+        },
+        {
+          "path": "00 Systemindex/Intelligentes Universum/Integration/10 Implementierungsstand.md",
+          "sha256": "ed72652f2802077a39bb242540e55a30d05e07b3ac5dcd29b0e5a781d291feae",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/00 Systemindex/Intelligentes Universum/Integration/10 Implementierungsstand.md"
+        },
+        {
+          "path": "00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT.md",
+          "sha256": "bd03d20a54bfa641ba3b3f035c42e6ce11514e9f67e85e98245ea7a0b03bff23",
+          "backup": ".belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vorher/00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT.md"
+        }
+      ],
+      "authorization_scope": "Read-only source/architecture/commit review and existing Obsidian documentation; no product mutation or product execution."
+    },
+    "file_parts": [
+      "evidence/repository_baseline/file_hashes_001.json",
+      "evidence/repository_baseline/file_hashes_002.json",
+      "evidence/repository_baseline/file_hashes_003.json",
+      "evidence/repository_baseline/file_hashes_004.json",
+      "evidence/repository_baseline/file_hashes_005.json",
+      "evidence/repository_baseline/file_hashes_006.json",
+      "evidence/repository_baseline/file_hashes_007.json",
+      "evidence/repository_baseline/file_hashes_008.json",
+      "evidence/repository_baseline/file_hashes_009.json",
+      "evidence/repository_baseline/file_hashes_010.json",
+      "evidence/repository_baseline/file_hashes_011.json",
+      "evidence/repository_baseline/file_hashes_012.json",
+      "evidence/repository_baseline/file_hashes_013.json",
+      "evidence/repository_baseline/file_hashes_014.json",
+      "evidence/repository_baseline/file_hashes_015.json",
+      "evidence/repository_baseline/file_hashes_016.json",
+      "evidence/repository_baseline/file_hashes_017.json",
+      "evidence/repository_baseline/file_hashes_018.json",
+      "evidence/repository_baseline/file_hashes_019.json",
+      "evidence/repository_baseline/file_hashes_020.json",
+      "evidence/repository_baseline/file_hashes_021.json",
+      "evidence/repository_baseline/file_hashes_022.json",
+      "evidence/repository_baseline/file_hashes_023.json"
+    ],
+    "original_sha256": "06eebff4426e01a5d0b65f17a9c331c7e0abf9305be0d22764f7b5e8377620b5"
+  },
+  "historical_report_origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/pruefung.json",
+  "original_artifacts": [
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/quellen.json",
+      "archive": "evidence/understanding/quellen.json",
+      "sha256": "6539ac59e79a2a04a056cb4fb3739dc0e36681d8492e7150d4a11d58926dfb6c",
+      "bytes": 215137
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/dokumente.json",
+      "archive": "evidence/understanding/dokumente.json",
+      "sha256": "6632de9885e8673b1cad41621780a369792c412eb6649b80e36ff9ebd245e306",
+      "bytes": 30620
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/pruefung.json",
+      "archive": "evidence/understanding/pruefung.json",
+      "sha256": "614d19c7375a30e42d3c261f68722326650b70240bd2904dd51b9f7c0e942ffb",
+      "bytes": 4365
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/suchspuren.json",
+      "archive": "evidence/understanding/suchspuren.json",
+      "sha256": "4f10707aea96ee3f5901f57ffcbe71ed6bbfaf120fb5393fd206224c931bcbd9",
+      "bytes": 22888
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vault-vorher.json",
+      "archive": "evidence/understanding/vault-vorher.json",
+      "sha256": "c925a7819c8974b55b56e163023d3acf048a786b32e570cfb650247ff749bd5c",
+      "bytes": 603405
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vertiefung.json",
+      "archive": "evidence/understanding/vertiefung.json",
+      "sha256": "ae318b8978ca42e78d60188af3e9f6364c880138fbff1c838f50e5112a559c60",
+      "bytes": 1796
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/sl-opt-aussenkanten-architektur-2026-11-05/anschlussregister.json",
+      "archive": "evidence/boundaries/anschlussregister.json",
+      "sha256": "9be96e1af728e71b1f5ebf706a8e3b849f3e2d8128f64c4125c9d4ba07774e55",
+      "bytes": 61066
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/sl-opt-aussenkanten-architektur-2026-11-05/quellenbindung.json",
+      "archive": "evidence/boundaries/quellenbindung.json",
+      "sha256": "5a375b65a5ae48bb0efa9e05f19c2f6ecbafc29648e2bce03a8a63f6cbea0ce8",
+      "bytes": 100620
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/sl-opt-aussenkanten-architektur-2026-11-05/pruefung.json",
+      "archive": "evidence/boundaries/pruefung.json",
+      "sha256": "254ac865efd9448fb987199f855484b205fda8ac7005d7993fd4cdcb81fb0db9",
+      "bytes": 714
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/sl-opt-aussenkanten-architektur-2026-11-05/previous-chat-context.json",
+      "archive": "evidence/boundaries/previous-chat-context.json",
+      "sha256": "2d55f3107535f8bc79a692bd431298a81c24ac399c3e0b9bc8c7847fc3c2d4db",
+      "bytes": 40186
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/3aa3ad751.patch",
+      "archive": "evidence/commits/3aa3ad751.patch.json",
+      "sha256": "5296ae5614a190136fb89e8e091110859cbafe6ed9cb58681cda22a84f5243a5",
+      "bytes": 52750
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/4d312c378.patch",
+      "archive": "evidence/commits/4d312c378.patch.json",
+      "sha256": "e7682ab8e3ebb1aa25a22019a003a2e845a128ce4a50e57cf5cd30ab359f8051",
+      "bytes": 69331
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/10d899b16.patch",
+      "archive": "evidence/commits/10d899b16.patch.json",
+      "sha256": "522dec3407bbb5cddafb16031c8756384a72f53b615a0ece045b8b41ccc50c63",
+      "bytes": 23725
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/sammlung.py.txt",
+      "archive": "evidence/authoring/sammlung.py.txt.json",
+      "sha256": "fe40ca9480dce90a8baf40108945c979494d9cc8f5ff7d9f985af7c7e55959b5",
+      "bytes": 3246
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/quellensammlung.py.txt",
+      "archive": "evidence/authoring/quellensammlung.py.txt.json",
+      "sha256": "0b58c6b71cdd6cd1f462186a3053466abfc2fb573ca7bad277e0e9aaf6264c05",
+      "bytes": 12305
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/ausarbeitung.py.txt",
+      "archive": "evidence/authoring/ausarbeitung.py.txt.json",
+      "sha256": "7bf9b26e6cff2ca4c4e65594b7c9dd51f36a8a25885969f890a9e56e305a9831",
+      "bytes": 58989
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/vertiefung.py.txt",
+      "archive": "evidence/authoring/vertiefung.py.txt.json",
+      "sha256": "53166dab228b30718a065393da58b7f6885c95da9dbbfa275a4c75ff3af35638",
+      "bytes": 15167
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-konstrukt-abgleich-2026-11-05/dokumentpruefer.py.txt",
+      "archive": "evidence/authoring/dokumentpruefer.py.txt.json",
+      "sha256": "7be997bd029f170c48abb5b9bf9ee498603294b4435edf2927972f7e766c05fa",
+      "bytes": 14469
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_native_research_session_v1.py",
+      "archive": "source_snapshots/src/experiments/canonical_native_research_session_v1.py.json",
+      "sha256": "4b9b45a07df4c18c5b6e11bf197c42d5226a07fe75a21cb42790d7ea8a81b31b",
+      "bytes": 24020
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_native_research_measurements_v1.py",
+      "archive": "source_snapshots/src/experiments/canonical_native_research_measurements_v1.py.json",
+      "sha256": "dbefcd3ce569971bd15dce4a3acccefe8b26852a6adb719bb4c1d1ca0fd5cead",
+      "bytes": 25647
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_learning_ingest_v1.py",
+      "archive": "source_snapshots/src/experiments/canonical_meta_learning_ingest_v1.py.json",
+      "sha256": "08b28d4d8e46c8b532c9e0cc014338d2f19b2417ee26fc9d6113395ac62f4a75",
+      "bytes": 24839
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_search_candidate_research_execution_v1.py",
+      "archive": "source_snapshots/src/experiments/canonical_search_candidate_research_execution_v1.py.json",
+      "sha256": "8ce1830484cb1f592bac90ee78e9cfa11d693eece12ddaac8ab669e82aa78cfc",
+      "bytes": 15640
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py",
+      "archive": "source_snapshots/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py.json",
+      "sha256": "1a150c36da85304fa71acd4a35bf823652166efeb7d1230af725fd792f9892ad",
+      "bytes": 32682
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "archive": "source_snapshots/docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md.json",
+      "sha256": "ea4aea9fce10c424490796db307d2d1382f5b4ee71839bdeeaca3314df702b8e",
+      "bytes": 550109
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+      "archive": "source_snapshots/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py.json",
+      "sha256": "10dfb5217be629495ff97c0c57b179c27583b6458da44c75c095d1560d4a056c",
+      "bytes": 7641
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py",
+      "archive": "source_snapshots/src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py.json",
+      "sha256": "8ad5860abea73b1977448c472a5d2b6dd6e012a513d755eedde66e820aa6b757",
+      "bytes": 12699
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/tests/ops/_bounded_system_episode_fixture_v1.py",
+      "archive": "source_snapshots/tests/ops/_bounded_system_episode_fixture_v1.py.json",
+      "sha256": "c00c1da83cd40bd321315a0fefd915d6e39dc417e22e55ab959c22f6164697f6",
+      "bytes": 30832
+    },
+    {
+      "origin": "/Users/frnkhrz/Peak_Trade/src/experiments/ohlcv_returns_file.py",
+      "archive": "source_snapshots/src/experiments/ohlcv_returns_file.py.json",
+      "sha256": "fc9d04522d50c83011db5ee4f3d2c68a6e1a93af3eb24c26295c55731881d968",
+      "bytes": 2163
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/meta_v33-text.json",
+      "archive": "originals/pdf_text/meta_v33.json",
+      "sha256": "2f09186a55c66a30e07473ba02103ad0220a2ce5a52dfbace7d211a3938b0769",
+      "bytes": 48364
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/unified_blueprint-text.json",
+      "archive": "originals/pdf_text/unified_blueprint.json",
+      "sha256": "f31689fe7c684070b5260855a4146ebd5d3c9a0914adfc2bd55f2b7a784d5341",
+      "bytes": 29074
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/closed_cycle-text.json",
+      "archive": "originals/pdf_text/closed_cycle.json",
+      "sha256": "6e1c9056a992187773efc79c66de3d79a337562cf008aa63e7130ae1f70a4028",
+      "bytes": 43693
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/meta_v34-text.json",
+      "archive": "originals/pdf_text/meta_v34.json",
+      "sha256": "c71cc0345ec7974fb6ebbbf73eee58b3341c4f44a14cbb54527c2a1c1e0b4168",
+      "bytes": 58140
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/original-request-334924.txt",
+      "archive": "originals/requests/request_334924.json",
+      "sha256": "a771913b7a84dfe1c2866c7dc7f4b1f7b21dd908db6d292c3f1c28089549f21f",
+      "bytes": 4487
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/original-request-231408.txt",
+      "archive": "originals/requests/request_231408.json",
+      "sha256": "e47811a108976f065f20eed24745ee80853f5cff3740df610aa6dbb33d573bcd",
+      "bytes": 3846
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/original-request-140827.txt",
+      "archive": "originals/requests/request_140827.json",
+      "sha256": "a79c56749ccc536dc17637e7205340f0154e628507b9f6ba73164e9285aa0d12",
+      "bytes": 21693
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/original-request-140911.txt",
+      "archive": "originals/requests/request_140911.json",
+      "sha256": "e8b7df51104a6d2bb02f8f42fe79c6d9ab3263f8e4d9ea68aa7a58b60fea5da0",
+      "bytes": 5990
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/original-request-325483.txt",
+      "archive": "originals/requests/request_325483.json",
+      "sha256": "b120d82e8d7adafa7f338999fb80f792a8249d0c9db4d254b4e3acd2bda915b0",
+      "bytes": 9379
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/original-request-326818.txt",
+      "archive": "originals/requests/request_326818.json",
+      "sha256": "469efabfd5cd4a8c42cd26a635f529b2dcc21eec0a3a7913926fa983707e8608",
+      "bytes": 9181
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-originalquellen-2026-11-05/original-request-101096.txt",
+      "archive": "originals/requests/request_101096.json",
+      "sha256": "f38266018b40ee4bf775e7c7f2bb51ab81c888a4de886f0b05b0300739c43944",
+      "bytes": 16605
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-original-d03-request.txt",
+      "archive": "originals/requests/d03.json",
+      "sha256": "656e0e2c8b8248c7fab23f83632aefdca4b211a77111d3f3fa208ab1e035f78f",
+      "bytes": 18086
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/GOV-OPT.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/GOV-OPT.md.json",
+      "sha256": "4067e1f5ae90099385ed212e8ce558c23378cbf5aef5cbbf1002d138cbe9755a",
+      "bytes": 3370
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/OPT-STORE.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/OPT-STORE.md.json",
+      "sha256": "6758f71b5432b53761f385e635e2739c69de626d2773582e7a0f12025af42aca",
+      "bytes": 3037
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P15.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P15.md.json",
+      "sha256": "c0349ed093b783f9c615c2e3bf0e4529a8ab0f3cbe9cad0c08fb7155345aad20",
+      "bytes": 3476
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P16.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P16.md.json",
+      "sha256": "8882215919b67d743a4b93c2064b14f2f0ea08d85d8167e7526a2820ae15eb36",
+      "bytes": 2960
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P17.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P17.md.json",
+      "sha256": "8ec11b6605fa63f87bf894877145c94c112f57f41eaea2a07817f65d46423b56",
+      "bytes": 3660
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P18.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P18.md.json",
+      "sha256": "5f3a0f1ae463b33ee09b5c027f270b19844ac416d5ddfb78feba79253d6faa58",
+      "bytes": 3143
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P19.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P19.md.json",
+      "sha256": "6613fb17d7ca713f811b37e0e151c6d627e313e54383b2ba4417dc18b43e5daf",
+      "bytes": 2910
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P20.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P20.md.json",
+      "sha256": "2de9eab3b7c9be8823e541207ad676a004cbe6bf2f7e44ad43b88c0673c5ad07",
+      "bytes": 3862
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P21.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P21.md.json",
+      "sha256": "78bc1931129b5ad9697cc078d79f5340a0e3d7c866aa0ed2ea771ab60ad7961c",
+      "bytes": 3587
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P22.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P22.md.json",
+      "sha256": "97265723f7e7ee792c6e139da435f2f63ec18a40b8dda468421c14c3a8d75c55",
+      "bytes": 3067
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P23.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P23.md.json",
+      "sha256": "68eab1c9172e5983d857ba727c54d9a2dfd36b02c2e8124aa966db69ca7facca",
+      "bytes": 3627
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P24.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P24.md.json",
+      "sha256": "cda5ccc9543c7d9bdda052fa41879e81719b2cf354fafef593ae712dfd944307",
+      "bytes": 3485
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P25.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P25.md.json",
+      "sha256": "d1d389a680099976ae9e2b945d9460ee99ffc72306b382e42cdd82660dd4a0f6",
+      "bytes": 3389
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P26.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P26.md.json",
+      "sha256": "30b88db31ab85d9e6121f165e7fccb3370919a2b931dbab386560b4767e76a55",
+      "bytes": 3261
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P35.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P35.md.json",
+      "sha256": "4c161d0d6499a3f1bfdd5b091d542c57ed37af7c6872409b190f345f9b28ac09",
+      "bytes": 3439
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P36.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P36.md.json",
+      "sha256": "3aa78c713602599fa7044a67d4484ff5932fb2883955b015caf8c2237929d1c2",
+      "bytes": 3097
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P42.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P42.md.json",
+      "sha256": "2f50357d0a26d67472fd42259c9adbe27599815a677a75133b46f084db66643a",
+      "bytes": 2818
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P47-SL.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P47-SL.md.json",
+      "sha256": "7106bd1124d66645dace58300fc12caf25674378516aa2064ee6d82bdb2164af",
+      "bytes": 2788
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P47.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P47.md.json",
+      "sha256": "91f81acfb285885bd140a41a5c4fa3feec847f48aed36147e2e9f4852ade26f2",
+      "bytes": 2935
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P54.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P54.md.json",
+      "sha256": "e58a94c91de8501c2301b329f894e3b192b338c93a7a14572e2ba3d5a3506c89",
+      "bytes": 3053
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P61.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/P61.md.json",
+      "sha256": "9c4eef74d2203b3d4c25b56e393f21381323472a16bbbd23c7692547f7c5d897",
+      "bytes": 3012
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/RANK-OPT.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/RANK-OPT.md.json",
+      "sha256": "05afd333ae847c44017ded9f8fd6f44880b1a90b2b4f0fe90820f73c7b3b8b47",
+      "bytes": 2948
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/RUNTIME-SL.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/RUNTIME-SL.md.json",
+      "sha256": "1b13643a7fccebef404e6e74708fc70a68c9abcb879ac27439890e03a4bc4177",
+      "bytes": 3344
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/SL-HOST.md",
+      "archive": "vault_exact/00 Systemindex/Grenzen/SL-HOST.md.json",
+      "sha256": "0a1b2bfa691528fb108987286820697e8cdb7b4d1b0c6651f82149ebbfd79ca1",
+      "bytes": 3146
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/01 Bedeutungen und urspruenglicher Auftrag.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/01 Bedeutungen und urspruenglicher Auftrag.md.json",
+      "sha256": "78071e8937628ac03a54680f281a00e48ac930704a998c9f64812aabe1ea3b60",
+      "bytes": 4336
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/02 Rekonstruiertes historisches Schichtenmodell.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/02 Rekonstruiertes historisches Schichtenmodell.md.json",
+      "sha256": "867475b0e68d34a9413caf413c389c8167d6e88e6c845476d8640535415ccfdc",
+      "bytes": 2931
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/08 Befunde und historische Unterschiede.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/08 Befunde und historische Unterschiede.md.json",
+      "sha256": "d553b7ea501c8bf1ad07bd953ff503df92a63ed4a49b74504376d8e459c7b261",
+      "bytes": 8376
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Integration/10 Implementierungsstand.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Integration/10 Implementierungsstand.md.json",
+      "sha256": "c6490c3911b42b62b04a767afae4ac0bdd61931c9b2fde189e817494481db035",
+      "bytes": 5525
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Integration/Integrationskonstrukt Intelligentes Universum.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Integration/Integrationskonstrukt Intelligentes Universum.md.json",
+      "sha256": "81753ad1bb194f701bfd959963a1a91f4207688ee8ac97506e7fd5b9302dd87f",
+      "bytes": 4480
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Intelligentes Universum rekonstruiert.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Intelligentes Universum rekonstruiert.md.json",
+      "sha256": "dfd8fc202082255e6a397fe8a1ddd97fdc20c37ad500a32bc999f0040d544938",
+      "bytes": 4766
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/01 Ursprung Varianten und innere Aufgaben.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/01 Ursprung Varianten und innere Aufgaben.md.json",
+      "sha256": "99c1ae41ef1bd2e42571868c466d906db704589bfbda1d996fd61656eff4729f",
+      "bytes": 9555
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/02 Verarbeitung Zustaende und Rueckkopplungen.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/02 Verarbeitung Zustaende und Rueckkopplungen.md.json",
+      "sha256": "6070ae7a9bf14e3363eb65d33d811221f0e431de2a5ca703ba23665152f1349f",
+      "bytes": 18124
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/03 Bedeutung der Daten und Messungen.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/03 Bedeutung der Daten und Messungen.md.json",
+      "sha256": "b6d74ed5ff2b793ce8a611b0b19f6d87f200a5385c22452b858d395b1ac5becb",
+      "bytes": 9542
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/04 Abgleich der drei Integrationscommits.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/04 Abgleich der drei Integrationscommits.md.json",
+      "sha256": "a70f2abdd812626ce8cf569997ae735e81b884257c8f248a466d7d8bcd5c1db4",
+      "bytes": 7668
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/05 Geklaerte Zusammenhaenge und offene Verstaendnisfragen.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/05 Geklaerte Zusammenhaenge und offene Verstaendnisfragen.md.json",
+      "sha256": "6744d618b1f80056ea8ba411d9128bb279c775e9fae95abbdd1df3334565419e",
+      "bytes": 9381
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md",
+      "archive": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.json",
+      "sha256": "49bfb7ae57669e37bca803ab2dd148ba95091805231925fa35be3e70d5582de4",
+      "bytes": 6581
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT.md",
+      "archive": "vault_exact/00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT.md.json",
+      "sha256": "73c4306ff12f0b75f13db02e66e4c29bba0f93772a4657004b68632d61d1b3a6",
+      "bytes": 12334
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Universen/OPT.md",
+      "archive": "vault_exact/00 Systemindex/Universen/OPT.md.json",
+      "sha256": "7532648440148cb00030213a64beb66e4e2aa44fea22e7b1d948f2a04cf60d22",
+      "bytes": 12600
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Universen/SL.md",
+      "archive": "vault_exact/00 Systemindex/Universen/SL.md.json",
+      "sha256": "22eb79fd1736e2b232a9fbb650f62659d67eb86b54d6122f8792b1be38cec310",
+      "bytes": 13266
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/PeakTrade-Systemindex.md",
+      "archive": "vault_exact/PeakTrade-Systemindex.md.json",
+      "sha256": "5357f2f3598222a226ad09d451889d30645fa26b44aad3a802fe2c567101e3b2",
+      "bytes": 11231
+    },
+    {
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/Start.md",
+      "archive": "vault_exact/Start.md.json",
+      "sha256": "cab695d195cb1048125657165b19945bc6406318cda7d1bcbb2a46fc50a8b86b",
+      "bytes": 3562
+    }
+  ],
+  "pdf_originals": [
+    {
+      "id": "meta_v33",
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Originalquellen/01 Meta Learning und Optimization v3.3.pdf",
+      "archive": "originals/pdfs/01 Meta Learning und Optimization v3.3.pdf",
+      "sha256": "5acca2951d4eacca0db433c40e24588392088f0ef7929ab710e78958e64611d7"
+    },
+    {
+      "id": "unified_blueprint",
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Originalquellen/02 Unified Blueprint 2026-09-26.pdf",
+      "archive": "originals/pdfs/02 Unified Blueprint 2026-09-26.pdf",
+      "sha256": "b2a68a664348fc93da3c191e9e77d696d8d1ac4a57cc69bd582392f14435a1d1"
+    },
+    {
+      "id": "closed_cycle",
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Originalquellen/03 Closed Cycle Extended 2026-09-26.pdf",
+      "archive": "originals/pdfs/03 Closed Cycle Extended 2026-09-26.pdf",
+      "sha256": "bd9c6b8e51cec7727b397fb948f34fa85c218c0214bba1fbb37c06cf03c6ac80"
+    },
+    {
+      "id": "meta_v34",
+      "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Originalquellen/04 Meta Learning und Optimization v3.4.pdf",
+      "archive": "originals/pdfs/04 Meta Learning und Optimization v3.4.pdf",
+      "sha256": "e8019bc92c36d349d9ecbc23dbfd57894801fe4cd6d321453b6a63e5ac1cbeb4"
+    }
+  ],
+  "readable_note_projection": {
+    "00 Systemindex/Grenzen/GOV-OPT.md": "notes/01_GOV-OPT.md",
+    "00 Systemindex/Grenzen/OPT-STORE.md": "notes/02_OPT-STORE.md",
+    "00 Systemindex/Grenzen/P15.md": "notes/03_P15.md",
+    "00 Systemindex/Grenzen/P16.md": "notes/04_P16.md",
+    "00 Systemindex/Grenzen/P17.md": "notes/05_P17.md",
+    "00 Systemindex/Grenzen/P18.md": "notes/06_P18.md",
+    "00 Systemindex/Grenzen/P19.md": "notes/07_P19.md",
+    "00 Systemindex/Grenzen/P20.md": "notes/08_P20.md",
+    "00 Systemindex/Grenzen/P21.md": "notes/09_P21.md",
+    "00 Systemindex/Grenzen/P22.md": "notes/10_P22.md",
+    "00 Systemindex/Grenzen/P23.md": "notes/11_P23.md",
+    "00 Systemindex/Grenzen/P24.md": "notes/12_P24.md",
+    "00 Systemindex/Grenzen/P25.md": "notes/13_P25.md",
+    "00 Systemindex/Grenzen/P26.md": "notes/14_P26.md",
+    "00 Systemindex/Grenzen/P35.md": "notes/15_P35.md",
+    "00 Systemindex/Grenzen/P36.md": "notes/16_P36.md",
+    "00 Systemindex/Grenzen/P42.md": "notes/17_P42.md",
+    "00 Systemindex/Grenzen/P47-SL.md": "notes/18_P47-SL.md",
+    "00 Systemindex/Grenzen/P47.md": "notes/19_P47.md",
+    "00 Systemindex/Grenzen/P54.md": "notes/20_P54.md",
+    "00 Systemindex/Grenzen/P61.md": "notes/21_P61.md",
+    "00 Systemindex/Grenzen/RANK-OPT.md": "notes/22_RANK-OPT.md",
+    "00 Systemindex/Grenzen/RUNTIME-SL.md": "notes/23_RUNTIME-SL.md",
+    "00 Systemindex/Grenzen/SL-HOST.md": "notes/24_SL-HOST.md",
+    "00 Systemindex/Intelligentes Universum/01 Bedeutungen und urspruenglicher Auftrag.md": "notes/25_01 Bedeutungen und urspruenglicher Auftrag.md",
+    "00 Systemindex/Intelligentes Universum/02 Rekonstruiertes historisches Schichtenmodell.md": "notes/26_02 Rekonstruiertes historisches Schichtenmodell.md",
+    "00 Systemindex/Intelligentes Universum/08 Befunde und historische Unterschiede.md": "notes/27_08 Befunde und historische Unterschiede.md",
+    "00 Systemindex/Intelligentes Universum/Integration/10 Implementierungsstand.md": "notes/28_10 Implementierungsstand.md",
+    "00 Systemindex/Intelligentes Universum/Integration/Integrationskonstrukt Intelligentes Universum.md": "notes/29_Integrationskonstrukt Intelligentes Universum.md",
+    "00 Systemindex/Intelligentes Universum/Intelligentes Universum rekonstruiert.md": "notes/30_Intelligentes Universum rekonstruiert.md",
+    "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/01 Ursprung Varianten und innere Aufgaben.md": "notes/31_01 Ursprung Varianten und innere Aufgaben.md",
+    "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/02 Verarbeitung Zustaende und Rueckkopplungen.md": "notes/32_02 Verarbeitung Zustaende und Rueckkopplungen.md",
+    "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/03 Bedeutung der Daten und Messungen.md": "notes/33_03 Bedeutung der Daten und Messungen.md",
+    "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/04 Abgleich der drei Integrationscommits.md": "notes/34_04 Abgleich der drei Integrationscommits.md",
+    "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/05 Geklaerte Zusammenhaenge und offene Verstaendnisfragen.md": "notes/35_05 Geklaerte Zusammenhaenge und offene Verstaendnisfragen.md",
+    "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md": "notes/36_Konstrukt von IU SL und OPT.md",
+    "00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT.md": "notes/37_Aussenkanten SL und OPT.md",
+    "00 Systemindex/Universen/OPT.md": "notes/38_OPT.md",
+    "00 Systemindex/Universen/SL.md": "notes/39_SL.md",
+    "PeakTrade-Systemindex.md": "notes/40_PeakTrade-Systemindex.md",
+    "Start.md": "notes/41_Start.md"
+  },
+  "package_files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "34f4a2f27608d1c0d1a27b870eaee65081f776a4623614c088861f42f06cc6fb",
+      "bytes": 28
+    },
+    {
+      "path": "README.md",
+      "sha256": "a599ff78f6febaad04cb3378907598d72404b472d0f5e95988d6a5b82bfd22df",
+      "bytes": 3014
+    },
+    {
+      "path": "evidence/authoring/ausarbeitung.py.txt.json",
+      "sha256": "b3cd1f4d602d7878b49afdabfa3527868b03bd86dcc7e689f35776e8abbd58b2",
+      "bytes": 59771
+    },
+    {
+      "path": "evidence/authoring/dokumentpruefer.py.txt.json",
+      "sha256": "b10008d3503ba536d1abf3243f704fbfca7d9a0c4282b62ee3577e3ecf279ef0",
+      "bytes": 14987
+    },
+    {
+      "path": "evidence/authoring/quellensammlung.py.txt.json",
+      "sha256": "0482477a745420e1f3a8bc196313234c7101452d51647db33d590801f3461534",
+      "bytes": 12805
+    },
+    {
+      "path": "evidence/authoring/sammlung.py.txt.json",
+      "sha256": "48420db138d24cbab4c349e4a1e5dd27163b7a7e2b3bdbb435268e324a754ffa",
+      "bytes": 3608
+    },
+    {
+      "path": "evidence/authoring/vertiefung.py.txt.json",
+      "sha256": "b416b627dff65484a7e7c0af41e5b1e1f3b476a55351bf2a52b0ffb0b75be0f8",
+      "bytes": 15613
+    },
+    {
+      "path": "evidence/boundaries/anschlussregister.json",
+      "sha256": "049f34d6b05a1d676d92725fd23733449920b643d394662dbbd7118e1102f94c",
+      "bytes": 64853
+    },
+    {
+      "path": "evidence/boundaries/previous-chat-context.json",
+      "sha256": "2acce74b3a17790b1c7f69fc230dbdc7ac10f5d8406e48a2b072080ddfa6fa84",
+      "bytes": 42044
+    },
+    {
+      "path": "evidence/boundaries/pruefung.json",
+      "sha256": "3ace44afb63c47aa95ff952dad65c983a260017b8a98a7e191948573c638eb68",
+      "bytes": 1068
+    },
+    {
+      "path": "evidence/boundaries/quellenbindung.json",
+      "sha256": "7ce78670c2aa054a513ccd72d825ea9785d8f333015caeef6e05e42e7d8f8622",
+      "bytes": 108455
+    },
+    {
+      "path": "evidence/commits/10d899b16.patch.json",
+      "sha256": "4102cacd236fc8fe9f8c9aa045873b70df803291202ddf1843378ec7b7bb47c5",
+      "bytes": 25035
+    },
+    {
+      "path": "evidence/commits/3aa3ad751.patch.json",
+      "sha256": "71f273cd67978102a1667d71b76f35d124797b16ba6984ccc2fd180359dbde29",
+      "bytes": 55281
+    },
+    {
+      "path": "evidence/commits/4d312c378.patch.json",
+      "sha256": "cca3e1f16a6a5f2a0dbf64b8533c507dfbe636bc0f33ed073dc724b52704b34b",
+      "bytes": 72617
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_001.json",
+      "sha256": "59386426c8730d650dcf3a761e3cdf2e5ea9ffe9cb32249e045fdf9d7871bc01",
+      "bytes": 199767
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_002.json",
+      "sha256": "71e67ffee802fadf12879fb469838a70042cfe4e1c6250d0d7df1004c22f5f09",
+      "bytes": 204433
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_003.json",
+      "sha256": "9a3a58cd4db51cc0af89f9f9216e6ba5852de8a95cb4608e6f9148838d641cc7",
+      "bytes": 259979
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_004.json",
+      "sha256": "5964d2b29dcc870ab1cc5f7b93a97f4e12b29a8fb05c94942a089919171b02fa",
+      "bytes": 216603
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_005.json",
+      "sha256": "493c47b3a4c7e9fb34bd03179bc829247b17621bd50b16126083248ad10174e0",
+      "bytes": 191492
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_006.json",
+      "sha256": "7eca33b4bb40c026d55d7e162654c5759ba1a99b5123f5243a104b52603a1cdf",
+      "bytes": 214209
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_007.json",
+      "sha256": "cec16622cfc51e67ef361c253e781e3fcdec4203d1c3b0fff00e8516bf090e67",
+      "bytes": 193903
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_008.json",
+      "sha256": "8b7a6848647d776ea34f7ff3970061209300886f49d604220e1a1ab873d386b5",
+      "bytes": 199814
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_009.json",
+      "sha256": "6c999a66c31a5c918eb24302147568c3b24e9e36392bbfb120f4b9e08aa7e5fc",
+      "bytes": 228366
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_010.json",
+      "sha256": "779c4370d6722fd34f3017fd08d97b7bbe53518d27fa51e69890b13b41deab0a",
+      "bytes": 243343
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_011.json",
+      "sha256": "7f6b70c4a68da260f55a771950dd5cfd092babc592b27428776ff5585518d759",
+      "bytes": 241457
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_012.json",
+      "sha256": "ca69f21d5e2714867d30e784ea144da06c16e8710f28b807db16af160ba0ab35",
+      "bytes": 256398
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_013.json",
+      "sha256": "39e89ccbf62f1d809c481a1acd5ebfb4fef4070f7db65041682c2e50a21b0ed2",
+      "bytes": 187520
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_014.json",
+      "sha256": "200ff52aed24ee15727749c1deb59dcdf331caa364d8ce3d43fe0339ce9fc7ca",
+      "bytes": 179905
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_015.json",
+      "sha256": "28578b89e3f8c8738fdfc9ae716258acfb05eacbaec90bf05b747d52198edf98",
+      "bytes": 198145
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_016.json",
+      "sha256": "4dfe8318ad65dc94c60be8e100c26822caa5236bf0e95f6b20e68b0e97061809",
+      "bytes": 216942
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_017.json",
+      "sha256": "533a0e84aea74f6106ac32d3d0e5741c76c72c1004e8871fb4d79f4762da01f5",
+      "bytes": 212554
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_018.json",
+      "sha256": "f1977d6e22e136c66877bba3d1fc046c75c69b66831eff31654b3dc418ea80b2",
+      "bytes": 215834
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_019.json",
+      "sha256": "95dfa13bcc4cfcfcf2422b3807b1c4b2b574fd0a5d02e74651935da96c6ef474",
+      "bytes": 186361
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_020.json",
+      "sha256": "3d903a8fecdac9030586cbd401e96f8b343389aec0153f9e0e1105405916950d",
+      "bytes": 199697
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_021.json",
+      "sha256": "2d921e6d3c2f1ad75d18ecce7c63b58dd7c2559df2a91f3a55045a1f55cc5f9c",
+      "bytes": 197134
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_022.json",
+      "sha256": "021755260e3c5e62821c4ef6dde170a790585ae13375ef9c99344a690227397c",
+      "bytes": 199999
+    },
+    {
+      "path": "evidence/repository_baseline/file_hashes_023.json",
+      "sha256": "15c904e0369c64248efb3b607f0f899122a5364decf9b6a51980c4987c60a96c",
+      "bytes": 83573
+    },
+    {
+      "path": "evidence/understanding/dokumente.json",
+      "sha256": "86b60f1762817e764f6f8c73fd68403fdf70573056ea665d905fb8ee8430f545",
+      "bytes": 32792
+    },
+    {
+      "path": "evidence/understanding/pruefung.json",
+      "sha256": "10ddb7b65c76665d5347f6bba1ddd1113933549815f630239cc645c15f179cc9",
+      "bytes": 5032
+    },
+    {
+      "path": "evidence/understanding/quellen.json",
+      "sha256": "58be3c22330835f15e47c03cb0afebd651e5b6038de3cef35065c1c125ab88fb",
+      "bytes": 234353
+    },
+    {
+      "path": "evidence/understanding/suchspuren.json",
+      "sha256": "3aae9949150a78e8a88087dad808082936ddf3564e4f0eebac6c789d9fb48da5",
+      "bytes": 23953
+    },
+    {
+      "path": "evidence/understanding/vault-vorher.json",
+      "sha256": "e0165e08e60318104cf743e317688ef8ae00b0f2fed11755cdf119d3fb52eb1f",
+      "bytes": 627613
+    },
+    {
+      "path": "evidence/understanding/vertiefung.json",
+      "sha256": "db2d95d5f1ba5993eeabbc224f0a0deada8ed13b87a03cfedeb11371b10d4d7f",
+      "bytes": 2172
+    },
+    {
+      "path": "notes/01_GOV-OPT.md",
+      "sha256": "32faad11b70a25cc15b97ca91d8a19a1deab6550491549ca34bcf0a00fc7df10",
+      "bytes": 3352
+    },
+    {
+      "path": "notes/02_OPT-STORE.md",
+      "sha256": "7629e1caf113f23011bef226a8999310fc15a1416e23662dbbfe4228d0e8bec5",
+      "bytes": 3044
+    },
+    {
+      "path": "notes/03_P15.md",
+      "sha256": "fa287bca3219594788e82e596c471850b9f573c2f81b3774a9ccda35ce2ebc42",
+      "bytes": 3468
+    },
+    {
+      "path": "notes/04_P16.md",
+      "sha256": "640bbc7896ed3e8d435f236cc0bac38d1a7afc6bee5b0171a6cc32a8025e9380",
+      "bytes": 2957
+    },
+    {
+      "path": "notes/05_P17.md",
+      "sha256": "2b6117f08e5b3de978a3a87fe84a2076d28dafd8536e1b4a88a67af62c3bbb80",
+      "bytes": 3637
+    },
+    {
+      "path": "notes/06_P18.md",
+      "sha256": "748a9e0d21bc65df5ed778053782443da8912c765e0180ee25b6e212c78d095b",
+      "bytes": 3072
+    },
+    {
+      "path": "notes/07_P19.md",
+      "sha256": "cc5cbff5c22fec91bbc90c92f9b190d569f3772dfbe8e6b1b8547f02fac907b9",
+      "bytes": 2854
+    },
+    {
+      "path": "notes/08_P20.md",
+      "sha256": "1ee92b2e3cb78f4b9e4f2d31f527154d70148dfafb90fe9f79bd26ab63a55d22",
+      "bytes": 3844
+    },
+    {
+      "path": "notes/09_P21.md",
+      "sha256": "37deab682d1138ec6a70f9880f6561f0caff9e7051bbe29149a1491fb0b71d2f",
+      "bytes": 3559
+    },
+    {
+      "path": "notes/10_P22.md",
+      "sha256": "0962a8d6ab96932dec184bbc3331c8e5b498e7e557991ea0cdbc20a13879046f",
+      "bytes": 3001
+    },
+    {
+      "path": "notes/11_P23.md",
+      "sha256": "13b0d424ebfdfc22b3de30a63ba89b7c03e97ae5c678ac4831e5f67497fbc68a",
+      "bytes": 3546
+    },
+    {
+      "path": "notes/12_P24.md",
+      "sha256": "4a6eff0056fc6e32dabde930447be82954cb8690b3beb874b44f2c3de417ea0a",
+      "bytes": 3409
+    },
+    {
+      "path": "notes/13_P25.md",
+      "sha256": "423dbe49cafcc376413cbad171ecc84c7f8503994dec48e244a7094ec9e35568",
+      "bytes": 3313
+    },
+    {
+      "path": "notes/14_P26.md",
+      "sha256": "91684c2cb56996360b82b356cd33eac2eab5942d77b9df0107e951f9dd6fc079",
+      "bytes": 3253
+    },
+    {
+      "path": "notes/15_P35.md",
+      "sha256": "71f239ca1f066fe41b57f431a49d3ab476fe0c8c09c9dc49f09629f24f120dfb",
+      "bytes": 3431
+    },
+    {
+      "path": "notes/16_P36.md",
+      "sha256": "aae59e41549f8df91b2a612fdeb528842ff1663a86ff5603a91caf948148fdd9",
+      "bytes": 3094
+    },
+    {
+      "path": "notes/17_P42.md",
+      "sha256": "d0bf2cc52be8dc09d750de95489d73b4ba546ddee585a9742751e83d4333a176",
+      "bytes": 2820
+    },
+    {
+      "path": "notes/18_P47-SL.md",
+      "sha256": "587e2868e4eac41dca8a43809997883a31a2b8142fd2fd027dd6a0e1cfa0f75c",
+      "bytes": 2785
+    },
+    {
+      "path": "notes/19_P47.md",
+      "sha256": "ac9d2fd9891b388e68d2042a1930c3dd30a5ea270648d3d82269f9150b8051ba",
+      "bytes": 2927
+    },
+    {
+      "path": "notes/20_P54.md",
+      "sha256": "d5e8692bf7d955a5badf3526e7c98980e9cbbfa291711b8fbf9346a5de4bb94e",
+      "bytes": 3045
+    },
+    {
+      "path": "notes/21_P61.md",
+      "sha256": "eaf9cc454ff55c329af97e96117b6cd6b020acb71ae7e37315316c1a953bfe60",
+      "bytes": 3015
+    },
+    {
+      "path": "notes/22_RANK-OPT.md",
+      "sha256": "99be37ac7fb17691d0cd8536c668024a204244793a426a5dc121982387783ec6",
+      "bytes": 2940
+    },
+    {
+      "path": "notes/23_RUNTIME-SL.md",
+      "sha256": "df6990fd8f13f127819f9c9e5b84885698d7f145d0643b3d6081d8b2f09dc6a0",
+      "bytes": 3326
+    },
+    {
+      "path": "notes/24_SL-HOST.md",
+      "sha256": "753ac7b6b9da855ac68381a39997abdf359bacf8c4bda9a1a3fec95c49b26d9c",
+      "bytes": 3128
+    },
+    {
+      "path": "notes/25_01 Bedeutungen und urspruenglicher Auftrag.md",
+      "sha256": "91211fad9eabaf70a49dc29d2adc0635321f039754b8b15a156dbded6f761f8d",
+      "bytes": 4346
+    },
+    {
+      "path": "notes/26_02 Rekonstruiertes historisches Schichtenmodell.md",
+      "sha256": "87ae50272b28898d6d1030d1df9f3e704ccfdc1853558946716624d7291c1379",
+      "bytes": 2961
+    },
+    {
+      "path": "notes/27_08 Befunde und historische Unterschiede.md",
+      "sha256": "c8d27a96a5ffe5600d957abd232d70d9b56c7e9dd6bade19a8d948ebdb4655b8",
+      "bytes": 8412
+    },
+    {
+      "path": "notes/28_10 Implementierungsstand.md",
+      "sha256": "cc809679a6c5eb3832409731d5d880afd9a5de5f07e29dcff2444fa9eaae4c7a",
+      "bytes": 5670
+    },
+    {
+      "path": "notes/29_Integrationskonstrukt Intelligentes Universum.md",
+      "sha256": "e9acf3928cc359460e0962e1ebe03a0781fe958605dad0eea40c31fa1b33f0a1",
+      "bytes": 5213
+    },
+    {
+      "path": "notes/30_Intelligentes Universum rekonstruiert.md",
+      "sha256": "17e21feabf973d3452b1467776ab4efe2525c3f3ef23bacd815e304d422a7ff4",
+      "bytes": 5621
+    },
+    {
+      "path": "notes/31_01 Ursprung Varianten und innere Aufgaben.md",
+      "sha256": "e18218b4e5414c844910766a5b9dc228bbdf5dd397ef301bed07501960f8c6a3",
+      "bytes": 9246
+    },
+    {
+      "path": "notes/32_02 Verarbeitung Zustaende und Rueckkopplungen.md",
+      "sha256": "e88e136302dc17dc98fb8ed8add65d2265fb715ff9cc67a13693b3023ef5559d",
+      "bytes": 17900
+    },
+    {
+      "path": "notes/33_03 Bedeutung der Daten und Messungen.md",
+      "sha256": "7fe25c0cc8c0bf62530647c25aead942acf98125e8539d70ff78726252c00f39",
+      "bytes": 9512
+    },
+    {
+      "path": "notes/34_04 Abgleich der drei Integrationscommits.md",
+      "sha256": "5d520fac63e2f34189c07d9603addfeeada3ea316aff8001fdb672b4b86720b4",
+      "bytes": 7295
+    },
+    {
+      "path": "notes/35_05 Geklaerte Zusammenhaenge und offene Verstaendnisfragen.md",
+      "sha256": "b73ebe00e079d1cd9f16d83f15c129353e1bb272cbfddc3650c8debb057a4b34",
+      "bytes": 9411
+    },
+    {
+      "path": "notes/36_Konstrukt von IU SL und OPT.md",
+      "sha256": "fab7427d30c2602d783b8cf02bb9389a13b9bda10b98c13f332e942bfe836532",
+      "bytes": 6671
+    },
+    {
+      "path": "notes/37_Aussenkanten SL und OPT.md",
+      "sha256": "602fa277444b9857499be74594bc7cd02a93f3362e20d801c578bc62a2e23443",
+      "bytes": 12644
+    },
+    {
+      "path": "notes/38_OPT.md",
+      "sha256": "f256667a4478d56543906ff089e7b274c32145a0bfaab7ac240dd615bc9b0f75",
+      "bytes": 12937
+    },
+    {
+      "path": "notes/39_SL.md",
+      "sha256": "0e7137f913cd92862b3261ee40ca941dc4b418bfbb5d8157a240cf7bd20f4280",
+      "bytes": 13606
+    },
+    {
+      "path": "notes/40_PeakTrade-Systemindex.md",
+      "sha256": "f2fde8050039ad4b26b91b715a7df5ffeb0d25ab2e3fb89c24f32fd38801bfe8",
+      "bytes": 15204
+    },
+    {
+      "path": "notes/41_Start.md",
+      "sha256": "5b784e3bbbe13dd63e71a1b50d7d26ea291c40515e717778e050b9832286ee74",
+      "bytes": 4527
+    },
+    {
+      "path": "originals/pdf_text/closed_cycle.json",
+      "sha256": "aed310058589c7a9a90ccb96cbd54614c9eb2f240486a50cba3d4454ffb9591e",
+      "bytes": 44859
+    },
+    {
+      "path": "originals/pdf_text/meta_v33.json",
+      "sha256": "529f49930a38f15d35fd0af2f6e0269056b991dfe904ec0f8565dc90ff4e844b",
+      "bytes": 49536
+    },
+    {
+      "path": "originals/pdf_text/meta_v34.json",
+      "sha256": "feacbb62b6bfc54f33dfe5d5500eff1ba60b3ba062044ab609778e6f3704df10",
+      "bytes": 59495
+    },
+    {
+      "path": "originals/pdf_text/unified_blueprint.json",
+      "sha256": "34d26629cad8306b335e39832be90434596df2f3019f40ed3847806ead51a67a",
+      "bytes": 29959
+    },
+    {
+      "path": "originals/pdfs/01 Meta Learning und Optimization v3.3.pdf",
+      "sha256": "5acca2951d4eacca0db433c40e24588392088f0ef7929ab710e78958e64611d7",
+      "bytes": 130601
+    },
+    {
+      "path": "originals/pdfs/02 Unified Blueprint 2026-09-26.pdf",
+      "sha256": "b2a68a664348fc93da3c191e9e77d696d8d1ac4a57cc69bd582392f14435a1d1",
+      "bytes": 61180
+    },
+    {
+      "path": "originals/pdfs/03 Closed Cycle Extended 2026-09-26.pdf",
+      "sha256": "bd9c6b8e51cec7727b397fb948f34fa85c218c0214bba1fbb37c06cf03c6ac80",
+      "bytes": 77624
+    },
+    {
+      "path": "originals/pdfs/04 Meta Learning und Optimization v3.4.pdf",
+      "sha256": "e8019bc92c36d349d9ecbc23dbfd57894801fe4cd6d321453b6a63e5ac1cbeb4",
+      "bytes": 118965
+    },
+    {
+      "path": "originals/requests/d03.json",
+      "sha256": "c9e20a258147421e1e11373a2e4672dd54ab06fd856377ce415c8eb2543d674e",
+      "bytes": 19031
+    },
+    {
+      "path": "originals/requests/request_101096.json",
+      "sha256": "4045cd6904d94872ffd0e24d057a2fa9ad45650a1ed5500c7ccafdde0cbc6f5b",
+      "bytes": 17589
+    },
+    {
+      "path": "originals/requests/request_140827.json",
+      "sha256": "543c9f37e9870ac534ad6fc49935d2ee6e3ec0d5c3875c4b10b2cf45f44effeb",
+      "bytes": 22764
+    },
+    {
+      "path": "originals/requests/request_140911.json",
+      "sha256": "0e3aace5bae047c0f9dd4ff56d721dfea781a58b4dceabe79790b34743a64d2e",
+      "bytes": 6482
+    },
+    {
+      "path": "originals/requests/request_231408.json",
+      "sha256": "0973fbbb4486720ea056bb747ebb83393dc6fa2f9d228ec888cacad578ff95cd",
+      "bytes": 4267
+    },
+    {
+      "path": "originals/requests/request_325483.json",
+      "sha256": "5921df1a837c9d1337d875525ad541e90002eff4b5f344097327675d02553d6e",
+      "bytes": 10011
+    },
+    {
+      "path": "originals/requests/request_326818.json",
+      "sha256": "14b7efefa9f431a852f82f81d8926bf9cd329a031031a74ddc6a6d2b11ac90cb",
+      "bytes": 9777
+    },
+    {
+      "path": "originals/requests/request_334924.json",
+      "sha256": "d8e2ab209941cdb08d9186011f487979d3291181af333f57c46a38f2e13fa3d5",
+      "bytes": 4915
+    },
+    {
+      "path": "source_snapshots/docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md.json",
+      "sha256": "58cf443184ffedd6afcbce85c2943dbff69f22592272f9039869770a32f9836f",
+      "bytes": 560995
+    },
+    {
+      "path": "source_snapshots/src/experiments/canonical_meta_learning_ingest_v1.py.json",
+      "sha256": "7954d3caa02a6965e264432d6eb7078c8809dc6a26ebb55046a498eb8953786e",
+      "bytes": 26137
+    },
+    {
+      "path": "source_snapshots/src/experiments/canonical_native_research_measurements_v1.py.json",
+      "sha256": "f0fa21fefcdce3e587745d42383bc640256bb8a594f4f11d2ca020ace9e4cb08",
+      "bytes": 26998
+    },
+    {
+      "path": "source_snapshots/src/experiments/canonical_native_research_session_v1.py.json",
+      "sha256": "c0b27e88730cc56692c7e6361ad8d1c9e095fe9742d2cb0de4caaadecd905bc1",
+      "bytes": 25271
+    },
+    {
+      "path": "source_snapshots/src/experiments/canonical_search_candidate_research_execution_v1.py.json",
+      "sha256": "d2ee27bac5ce01ff60d9a5bd1d2d4c842adfd457124cd73f28a95d1fd47955ea",
+      "bytes": 16616
+    },
+    {
+      "path": "source_snapshots/src/experiments/ohlcv_returns_file.py.json",
+      "sha256": "a3f9916f8dd4d2cf8febd865c24616468569eef76a2c3a46cf11c4edd9a405f8",
+      "bytes": 2502
+    },
+    {
+      "path": "source_snapshots/src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py.json",
+      "sha256": "0eb0f0fd5a518b6bb3f4ab912f60fd48ab945409f5d489ba728cc6be9a07ea86",
+      "bytes": 13504
+    },
+    {
+      "path": "source_snapshots/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py.json",
+      "sha256": "b8f1634b9e29c98184d4b5960d225fb6103f828e328cbad5b7ffad8618885d02",
+      "bytes": 8213
+    },
+    {
+      "path": "source_snapshots/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py.json",
+      "sha256": "33e97e4a0626c5bcf401589ec0a371790bc1991edc01b9f80f260fca6d635e1c",
+      "bytes": 34524
+    },
+    {
+      "path": "source_snapshots/tests/ops/_bounded_system_episode_fixture_v1.py.json",
+      "sha256": "5136b6360e330d00a4deafa0425e6c42906e30dd0fb6ebf6c59e66518cf4da2c",
+      "bytes": 32264
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/GOV-OPT.md.json",
+      "sha256": "8e916ba4bb12c4fb9ae4ea51f2cf189134ce5113c00e367fca2dec33c1b83c4e",
+      "bytes": 3678
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/OPT-STORE.md.json",
+      "sha256": "cbb631ccb2bd43c55de874919c830ebc9e6be1a66fc426af3326db40bf419e15",
+      "bytes": 3345
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P15.md.json",
+      "sha256": "fcdb47140ec49628c53ea9e4bb653345089c6207027fcc2c09ecc12a8ec59229",
+      "bytes": 3780
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P16.md.json",
+      "sha256": "a53d34339c35bec8491c1f74beae563af8a60ecd0895a5e7cf08a02678eb951c",
+      "bytes": 3262
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P17.md.json",
+      "sha256": "bf620f25652eb3d131d87f15e4eac566475d8f2c731571997a53eda5cb121fe1",
+      "bytes": 3964
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P18.md.json",
+      "sha256": "77924606a6ae26b186a91748ae8f6e8a784a5314adf2717cd647bcc54a032170",
+      "bytes": 3447
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P19.md.json",
+      "sha256": "d7f3b81f3281a5644d4435977be859f9ca65e7d9628c6597c81b67e21c8894ae",
+      "bytes": 3212
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P20.md.json",
+      "sha256": "25b243cc0b968ecde00e8f610ccd3d0e1ef4031c76704de8c9898af46393d6b0",
+      "bytes": 4166
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P21.md.json",
+      "sha256": "e2876c14faf1361810afb58ca94cef67c4c4f8d21d110e34fb9805bd489cd742",
+      "bytes": 3891
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P22.md.json",
+      "sha256": "75ead80693f19282c74fa2d4306450865c4f488455f4f3d71e798e6b3e46bbb1",
+      "bytes": 3369
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P23.md.json",
+      "sha256": "e644298baeff1a3c55a059fe5f41a0b0ddf06b5acc985ca8f94798c0841201db",
+      "bytes": 3931
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P24.md.json",
+      "sha256": "b39d061db20b7c95452747f072e1d77391fee17272f0651a9143a0e7c7ce263b",
+      "bytes": 3791
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P25.md.json",
+      "sha256": "562cfd9c37b5d0588b6bfca21a36ab3786b7a1ceb33b9a4e751008cdf1dc3e3c",
+      "bytes": 3693
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P26.md.json",
+      "sha256": "9183c9ecb327e77247deaa57218e57d90cfb923d23e6b7dbdec65b02a66505c3",
+      "bytes": 3563
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P35.md.json",
+      "sha256": "09f574f271d5e7883a2b1e0fdbefb345e1ecfb7f31dfc8a9745e70ead30d9d98",
+      "bytes": 3745
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P36.md.json",
+      "sha256": "db2720a16d36c1d5bdaa66481cfc463894844d87807e140465a88a981607e9a4",
+      "bytes": 3401
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P42.md.json",
+      "sha256": "34d4234d864d4b3e5a77bfa460aa3890b50ac1bf5c3b5d3acad51085d4cc6351",
+      "bytes": 3120
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P47-SL.md.json",
+      "sha256": "0526e933c1a6f4768e111e14d2d93c7700a26081d9e551313a4dbeba696f1681",
+      "bytes": 3093
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P47.md.json",
+      "sha256": "6e189ba4616fa3fe21458a4a68adf1c69c45922e2fd92c0d55598d8e5df7992b",
+      "bytes": 3237
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P54.md.json",
+      "sha256": "5a01954df2d890e64512cdeab4bb8e1f0649b2d0a399e82f9686b7345095cfcf",
+      "bytes": 3355
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/P61.md.json",
+      "sha256": "38e02ddc95b44207dce358c739563a85dca92684642bb35c40121c5257cedc58",
+      "bytes": 3314
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/RANK-OPT.md.json",
+      "sha256": "64e5e517792caf58905891dd370ce090c5631d964e56b0486d2ada532449015d",
+      "bytes": 3255
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/RUNTIME-SL.md.json",
+      "sha256": "cff9de68825ade92e71e8b373d9818e996110f11ea63c764a339a8fa9787aa61",
+      "bytes": 3655
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Grenzen/SL-HOST.md.json",
+      "sha256": "2d925ede4db9beb487027dc753debbdef2c174ad6a2e3ecba62b09ecc1c82904",
+      "bytes": 3454
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/01 Bedeutungen und urspruenglicher Auftrag.md.json",
+      "sha256": "bfd7588db16091ebfb0e89fc94ca74673dcde5c4558fcb6b465a40a72c767bb5",
+      "bytes": 4682
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/02 Rekonstruiertes historisches Schichtenmodell.md.json",
+      "sha256": "d25d373cad76888b221c8b68de4bc10b4cb969dc7b41ee43f358926255899d09",
+      "bytes": 3274
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/08 Befunde und historische Unterschiede.md.json",
+      "sha256": "ec7606aa94cc6590fdfd75db947221e751ccd39de8b5c93f6dfac0db7555af3d",
+      "bytes": 8791
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Integration/10 Implementierungsstand.md.json",
+      "sha256": "b0d0de2f05a0e4d5130ff30b1ebc041836271f9e64a5549b9559fd8d95df7ddb",
+      "bytes": 5876
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Integration/Integrationskonstrukt Intelligentes Universum.md.json",
+      "sha256": "d46be1d4003dc02e3133731f58ff2388fce34d9df7e0e53788df00cfa80ef3ee",
+      "bytes": 4849
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Intelligentes Universum rekonstruiert.md.json",
+      "sha256": "b719a6a0eeb082a458e8ea3f3e01664f317378a24924ade7387c3f915e9195e5",
+      "bytes": 5120
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/01 Ursprung Varianten und innere Aufgaben.md.json",
+      "sha256": "2326189b8be72811a27ad2bba3c7b091bc1a046f7cfdc697f45dad5dd49caf0b",
+      "bytes": 9951
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/02 Verarbeitung Zustaende und Rueckkopplungen.md.json",
+      "sha256": "9236f194686f8f3578e008f3e6f3aba231a0af91fffe6fb93012384e75abd415",
+      "bytes": 18566
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/03 Bedeutung der Daten und Messungen.md.json",
+      "sha256": "80f98221e78be70fe64498cfc7886ba9e9620c28f1147ba8d640b8749be6fefd",
+      "bytes": 9937
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/04 Abgleich der drei Integrationscommits.md.json",
+      "sha256": "d70f329a04c3385c81cf51a62201b1950195a95d56de78c15ae4a5fc81069efb",
+      "bytes": 8059
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/05 Geklaerte Zusammenhaenge und offene Verstaendnisfragen.md.json",
+      "sha256": "c0b3b0fd90b1b274acf83c96961042eb5bcbc6a73f65fb42848aecadc0d264f8",
+      "bytes": 9799
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.json",
+      "sha256": "ad8251714bf6613e40c529942ae2d7cafb6aa5e19567f6e6ad7fc36b3db3d024",
+      "bytes": 6953
+    },
+    {
+      "path": "vault_exact/00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT.md.json",
+      "sha256": "ac4cc28cda942c2c025241b2058e70454cd26ed7354e5d4ce1ee024aaf7527ec",
+      "bytes": 12737
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Universen/OPT.md.json",
+      "sha256": "04ad121aa23633718beea72e5ba3f3a3a2f48c5f525d77a55f4a54a2ef7e7993",
+      "bytes": 12928
+    },
+    {
+      "path": "vault_exact/00 Systemindex/Universen/SL.md.json",
+      "sha256": "92c9b0f22a07f04a424613978c1abd679718db5db2689603dc29c4bc399a30da",
+      "bytes": 13597
+    },
+    {
+      "path": "vault_exact/PeakTrade-Systemindex.md.json",
+      "sha256": "30931478e8d71933f18d985fffafab944ebbe050bfcf7012cba312f316ff14f3",
+      "bytes": 11631
+    },
+    {
+      "path": "vault_exact/Start.md.json",
+      "sha256": "a1342bd13b48ced40c5f251f5fe368684187d0506a395f1343e5e94bc34f6563",
+      "bytes": 3841
+    },
+    {
+      "path": "verify_checkpoint.py",
+      "sha256": "09610ffdbd2bbdbeb8457828d8d2eb6e671f3b5c8e1c451c3eac047ba0780638",
+      "bytes": 5604
+    }
+  ]
+}

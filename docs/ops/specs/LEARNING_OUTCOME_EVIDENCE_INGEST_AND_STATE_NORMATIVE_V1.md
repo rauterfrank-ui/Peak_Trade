@@ -9,6 +9,9 @@ last_updated: 2026-09-19
 
 # Learning Outcome Evidence Ingest and State Normative V1
 
+**Current Owner amendment, 2026-11-03:** [GGE-only geometry and common futures asset admission v3](GGE_ONLY_FUTURES_AND_COMMON_ASSET_ADMISSION_V3.md). Fixed Scope is retired from executable Double Play. BTC uses the same metadata, minimum-size, capital and risk rules as other admitted Futures. Earlier fixed-bound/BTC-exclusion statements are dated or superseded, not the active policy.
+
+
 ```text
 DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK

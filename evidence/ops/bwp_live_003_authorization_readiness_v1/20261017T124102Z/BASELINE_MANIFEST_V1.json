@@ -1,0 +1,47 @@
+{
+  "analysis_source": "git show origin/main:<path>",
+  "authority": "NONE",
+  "baseline_matches_origin_main": true,
+  "capital_movement_performed": false,
+  "credential_read_performed": false,
+  "current_origin_main_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "dirty_paths_not_used_as_current": [
+    "config/governance/current_system_census_graph_v1/source_v1.json",
+    ".cursor/rules/README.md"
+  ],
+  "drift_effect_on_this_adjudication": "NONE_ANALYSIS_BOUND_TO_ORIGIN_MAIN_VIA_GIT_SHOW",
+  "financial_guarantee": "NONE",
+  "live_authorized": false,
+  "local_branch": "feat/ghv-current-exchange-reconciliation-pr-integration-v1",
+  "local_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+  "local_remote_tracking": "gone",
+  "mutation_performed": false,
+  "network_get_performed": false,
+  "post_performed": false,
+  "pr_7140": {
+    "merge_commit": "769d13663badb8daed64b32a0e3047cd198da900",
+    "merged_at": "2026-10-17T12:31:07Z",
+    "state": "MERGED",
+    "title": "BWP-LIVE-001: Full-System Live Readiness Closure"
+  },
+  "production_live_authorization": false,
+  "requested_baseline_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "required_checks_on_pr_7140_rollup": "12/12 SUCCESS",
+  "required_status_contexts": [
+    "Guard tracked files in reports directories",
+    "Lint Gate",
+    "Policy Critic Gate",
+    "audit",
+    "dispatch-guard",
+    "docs-drift-guard",
+    "docs-reference-targets-gate",
+    "docs-token-policy-gate",
+    "repo-truth-claims",
+    "strategy-smoke",
+    "tests (3.11)",
+    "map-currency-gate"
+  ],
+  "schema_version": "bwp_live_003_baseline_manifest.v1",
+  "testnet_authorized": false,
+  "working_model_drift": "LOCAL_CHECKOUT_NOT_ORIGIN_MAIN"
+}

@@ -94,6 +94,9 @@ class RuntimeEnvelope:
 
     static: StaticHardLimits
     live_authorization: bool = False
+    # Scope distance is GGE-only; legacy economic modes are not executable.
+    # Other envelope/transition safety checks still apply.
+    scope_distance_mode: str = "gge_raw_v2"
 
 
 @dataclass(frozen=True)
@@ -135,6 +138,7 @@ class RuntimeScopeState:
     # Chop scope policy latch (CHOP_SCOPE_EVENT_POLICY_BINDING_CONTRACT_V1).
     # Cleared via NOOP while latched; never invents SideState / Direction / Switch.
     chop_latched: bool = False
+    scope_distance_mode: str = "legacy_bounded_v1"
 
 
 @dataclass(frozen=True)
@@ -161,6 +165,8 @@ def _both_active_invariant_ok(side: SideState) -> bool:
 def envelope_valid(envelope: RuntimeEnvelope) -> bool:
     """Fail-closed: invalid envelope blocks transitions."""
     s = envelope.static
+    if envelope.scope_distance_mode != "gge_raw_v2":
+        return False
     if envelope.live_authorization:
         return False
     if s.min_band_width <= 0 or s.max_band_width < s.min_band_width:
@@ -205,14 +211,6 @@ def _cooldown_allows_opposite_switch(
     return (now_tick - st.last_completed_side_switch_tick) >= rules.min_switch_cooldown_ticks
 
 
-def clamp_band_width(raw: float, rules: DynamicScopeRules, env: RuntimeEnvelope) -> float:
-    lo = max(rules.min_band_width, env.static.min_band_width)
-    hi = min(rules.max_band_width, env.static.max_band_width)
-    if hi < lo:
-        return lo
-    return max(lo, min(hi, raw))
-
-
 def update_dynamic_boundaries(
     *,
     mark_price: float,
@@ -222,7 +220,7 @@ def update_dynamic_boundaries(
     env: RuntimeEnvelope,
 ) -> RuntimeScopeState:
     """
-    Update trailing anchor and scope boundaries; band width is clamped (manifest §6–7).
+    Update geometry from GGE; only explicit legacy mode applies economic bounds.
 
     Long: anchor chases new highs; downscope boundary trails below anchor.
     Short: anchor chases new lows; upscope boundary trails above anchor.
@@ -247,7 +245,7 @@ def update_dynamic_boundaries(
     )
     if not gge.ok or gge.output is None:
         return st
-    band = clamp_band_width(float(gge.output.magnitude), rules, env)
+    band = float(gge.output.magnitude)
     if side == ActiveSide.LONG:
         new_anchor = max(st.anchor_price, mark_price) if st.anchor_price > 0 else mark_price
         down = new_anchor - band
@@ -258,6 +256,7 @@ def update_dynamic_boundaries(
             current_downscope_boundary=down,
             current_upscope_boundary=up,
             current_hysteresis_band=band,
+            scope_distance_mode=env.scope_distance_mode,
         )
     if side == ActiveSide.SHORT:
         new_anchor = min(st.anchor_price, mark_price) if st.anchor_price > 0 else mark_price
@@ -269,6 +268,19 @@ def update_dynamic_boundaries(
             current_upscope_boundary=up,
             current_downscope_boundary=down,
             current_hysteresis_band=band,
+            scope_distance_mode=env.scope_distance_mode,
+        )
+    if env.scope_distance_mode == "gge_raw_v2":
+        # Neutral does not trail its anchor, but consumes today's GGE distance.
+        # Restored legacy bands must not become the new raw-mode distance.
+        anchor = st.anchor_price if st.anchor_price > 0 else mark_price
+        return replace(
+            st,
+            anchor_price=anchor,
+            current_upscope_boundary=anchor + band,
+            current_downscope_boundary=anchor - band,
+            current_hysteresis_band=band,
+            scope_distance_mode=env.scope_distance_mode,
         )
     return st
 

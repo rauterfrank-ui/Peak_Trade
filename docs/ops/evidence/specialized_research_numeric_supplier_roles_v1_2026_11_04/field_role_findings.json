@@ -1,0 +1,60 @@
+{
+  "source_commit": "d511f5e4672e9b7d5f733368faabe463f3c6fd28",
+  "findings": [
+    {
+      "field": "net_return",
+      "producer": "final_equity / initial_cash - 1",
+      "meaning": "fraction, simulated equity after applied costs",
+      "consumer_limit": "usable only with bound strategy/dataset/execution semantics"
+    },
+    {
+      "field": "net_expectancy",
+      "producer": "compute_backtest_stats expectancy = sum trade pnl / trade count",
+      "meaning": "absolute quote currency per closed trade; pnl_unit from trade schema",
+      "consumer_limit": "not a normalized return or interchangeable forecast score"
+    },
+    {
+      "field": "fee_drag / slippage_impact",
+      "producer": "backtest accumulates entry/exit cost allocation",
+      "meaning": "absolute simulated monetary amounts",
+      "consumer_limit": "no unproved conversion to normalized drag/sensitivity"
+    },
+    {
+      "field": "turnover",
+      "producer": "rotation_count",
+      "meaning": "event count including window-end force close",
+      "consumer_limit": "not automatically normalized turnover"
+    },
+    {
+      "field": "max_drawdown",
+      "producer": "stats minimum equity/cummax - 1",
+      "meaning": "nonpositive relative drawdown",
+      "consumer_limit": "canonical suite _max_dd yields nonnegative magnitude; explicit conversion and contract needed"
+    },
+    {
+      "field": "gross_return",
+      "producer": "stats total_return from cost-debited equity",
+      "meaning": "cost-bearing equity return from first recorded point",
+      "consumer_limit": "not independent pre-cost gross calculation"
+    },
+    {
+      "field": "walk_forward_results",
+      "producer": "training/validation/OOS slices of one completed equity curve",
+      "meaning": "period net return, closed-trade count and bar count",
+      "consumer_limit": "not canonical paired train/test Sharpe windows or reoptimization proof"
+    },
+    {
+      "field": "parameter_sensitivity_results",
+      "producer": "BOUND_PRIMARY_ONLY_NO_SEARCH",
+      "meaning": "explicit fixed-primary scope; higher wrapper sets pass True and degradation 0.0",
+      "consumer_limit": "does not measure neighboring parameter robustness or parameter_stability scalar"
+    },
+    {
+      "field": "funding_drag",
+      "producer": "getattr(backtest, funding_drag, None)",
+      "meaning": "missing in inspected result DTO",
+      "consumer_limit": "binding name alone is not funding calculation; preserve missingness"
+    }
+  ],
+  "status": "source-bound interpretation; no adapter or numeric definition ratified"
+}

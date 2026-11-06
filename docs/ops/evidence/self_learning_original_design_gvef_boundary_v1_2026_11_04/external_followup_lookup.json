@@ -1,0 +1,81 @@
+{
+  "backup_files": [
+    {
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackUp_FINISH_2026_10_03/docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "same_as_current_repo": true,
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452"
+    },
+    {
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "same_as_current_repo": true,
+      "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d"
+    },
+    {
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "same_as_current_repo": true,
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452"
+    },
+    {
+      "path": "/Volumes/M2DATA/PeakTrade_DisasterBackup_2026_10_06_FINAL_CURRENT/src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "same_as_current_repo": true,
+      "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d"
+    },
+    {
+      "path": "/Volumes/M2DATA/PeakTrade_DisasterBackup_2026_10_06_FINAL_CURRENT/docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "same_as_current_repo": true,
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452"
+    },
+    {
+      "path": "/Volumes/M2DATA/Peak_Trade_exec_natural_enter_922167f/src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "same_as_current_repo": true,
+      "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d"
+    },
+    {
+      "path": "/Volumes/M2DATA/Peak_Trade_exec_natural_enter_922167f/docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "same_as_current_repo": true,
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452"
+    },
+    {
+      "path": "/Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo/src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "same_as_current_repo": true,
+      "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d"
+    },
+    {
+      "path": "/Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo/docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "same_as_current_repo": true,
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452"
+    }
+  ],
+  "external_writes": false,
+  "mount_identities_rechecked": "M2DATA BFA81BFA-80C5-3634-84EE-17B3496EE123; Recovery 53B45FBD-BBAC-4D62-B42C-A75BD6BD7C57",
+  "other_scoped_search": "Exact companion manifest filename lookup in current repo and local primary attachments produced no matches. Not a global absence claim; other archive locations/dynamic callers remain possible.",
+  "recovery": [
+    {
+      "path": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.Id_dc00001003cb4a3.md",
+      "same_as_repo": "docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452"
+    },
+    {
+      "path": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/OPTIMIZATION_TO_SELF_LEARNING_RETURN_LOOP_NORMATIVE_V1.Id_dc00001007492d5.md",
+      "same_as_repo": "docs/ops/specs/OPTIMIZATION_TO_SELF_LEARNING_RETURN_LOOP_NORMATIVE_V1.md",
+      "sha256": "24bb0e7f562b336eb904f7023ce343008435621c893e1478a45e105723242623"
+    }
+  ],
+  "specific_paths_not_found": [
+    "/Volumes/M2DATA/PeakTradeDisasterBackUp_FINISH_2026_10_03/evidence/research/gvef_bwp5_self_learning_evaluator_v1",
+    "/Volumes/M2DATA/PeakTradeDisasterBackUp_FINISH_2026_10_03/architecture_manifest.json",
+    "/Volumes/M2DATA/PeakTradeDisasterBackUp_FINISH_2026_10_03/component_manifest.json",
+    "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/evidence/research/gvef_bwp5_self_learning_evaluator_v1",
+    "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/architecture_manifest.json",
+    "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/component_manifest.json",
+    "/Volumes/M2DATA/PeakTrade_DisasterBackup_2026_10_06_FINAL_CURRENT/evidence/research/gvef_bwp5_self_learning_evaluator_v1",
+    "/Volumes/M2DATA/PeakTrade_DisasterBackup_2026_10_06_FINAL_CURRENT/architecture_manifest.json",
+    "/Volumes/M2DATA/PeakTrade_DisasterBackup_2026_10_06_FINAL_CURRENT/component_manifest.json",
+    "/Volumes/M2DATA/Peak_Trade_exec_natural_enter_922167f/evidence/research/gvef_bwp5_self_learning_evaluator_v1",
+    "/Volumes/M2DATA/Peak_Trade_exec_natural_enter_922167f/architecture_manifest.json",
+    "/Volumes/M2DATA/Peak_Trade_exec_natural_enter_922167f/component_manifest.json",
+    "/Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo/evidence/research/gvef_bwp5_self_learning_evaluator_v1",
+    "/Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo/architecture_manifest.json",
+    "/Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/repo/component_manifest.json"
+  ]
+}

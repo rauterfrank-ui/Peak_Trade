@@ -1,0 +1,3633 @@
+diff --git a/config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json b/config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json
+index dbbe2ddee..e64d1577c 100644
+--- a/config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json
++++ b/config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json
+@@ -1,142 +1,58 @@
+ {
+   "authority_effect": "NONE",
+-  "base_sha": "3de380c8c0ed112ba726e0326e1ff5b83b51f802",
+-  "head_sha": "c73980773041c60776a399bdf948cdc3355ab9dc",
++  "base_sha": "3714620db0ebfb3f6786e1b91923a7f32c0d3e08",
++  "head_sha": "a0a8ca94bab17d59016f28b448331e8d64d42bd1",
+   "changed_paths": [
+     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+-    "src/governance/current_productive_k1_pre_post_productive_chain_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_full_system_offline_e2e_integration_proof_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
++    "docs/ops/KILL_SWITCH_RUNBOOK.md",
++    "docs/risk/KILL_SWITCH.md",
++    "docs/risk/KILL_SWITCH_ARCHITECTURE.md",
++    "scripts/ops/kill_switch_ctl.sh",
+     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reduction_venue_proof_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
+     "src/ops/gates/risk_gate.py",
+-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
++    "src/risk_layer/kill_switch/cli.py",
+     "src/risk_layer/kill_switch/core.py",
+     "src/risk_layer/kill_switch/persistence.py",
+-    "tests/execution/test_execution_reject_codes_mvp.py",
+-    "tests/execution/test_wp0b_risk_hook_adapter_smoke.py",
+-    "tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py",
+-    "tests/governance/test_post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1.py",
+-    "tests/ops/_current_productive_post_hard_crash_child_runner_v1.py",
+-    "tests/ops/_current_productive_post_hard_crash_harness_v1.py",
+-    "tests/ops/_pilot_guard_enter_post_test_helpers_v1.py",
++    "src/risk_layer/kill_switch/recovery_attestation.py",
+     "tests/ops/_post_path_safety_fixtures_v1.py",
+     "tests/ops/_protected_surface_content_pins_v1.py",
+-    "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py",
+-    "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+-    "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py",
+-    "tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
+-    "tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
+-    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+-    "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+-    "tests/ops/test_current_productive_permit_send_seam_replay_isolation_v1.py",
+-    "tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py",
+-    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+-    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py",
+     "tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py",
+-    "tests/ops/test_current_productive_post_path_security_remediation_b5_b5rr_b6_v1.py",
+-    "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
+-    "tests/ops/test_full_core_current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
+-    "tests/ops/test_full_core_durable_filegate_join_seam_v1.py",
+-    "tests/ops/test_full_core_execution_admission_contract_v1.py",
+-    "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
+-    "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py",
+-    "tests/ops/test_full_core_owner_one_shot_typed_permit_seam_v1.py",
+-    "tests/ops/test_full_core_post_response_to_ack_mapper_and_lifecycle_join_v1.py",
+     "tests/ops/test_risk_gate.py",
+     "tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py",
+     "tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py",
+-    "tests/test_execution_pipeline_governance.py"
++    "tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py"
+   ],
+-  "changed_paths_sha256": "70815fd63ecdeba0e99471e96e807138ef14c3686cd33518f3eca1cd857a2cae",
++  "changed_paths_sha256": "9f01b735ebeb256cc189b0386ad0765e61c44f305496271ab0f06b810db4dae8",
+   "covered_candidate_paths": [
+-    "src/governance/current_productive_k1_pre_post_productive_chain_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_full_system_offline_e2e_integration_proof_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
++    "docs/ops/KILL_SWITCH_RUNBOOK.md",
++    "docs/risk/KILL_SWITCH.md",
++    "docs/risk/KILL_SWITCH_ARCHITECTURE.md",
++    "scripts/ops/kill_switch_ctl.sh",
+     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reduction_venue_proof_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
+     "src/ops/gates/risk_gate.py",
+-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
++    "src/risk_layer/kill_switch/cli.py",
+     "src/risk_layer/kill_switch/core.py",
+     "src/risk_layer/kill_switch/persistence.py",
+-    "tests/execution/test_execution_reject_codes_mvp.py",
+-    "tests/execution/test_wp0b_risk_hook_adapter_smoke.py",
+-    "tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py",
+-    "tests/governance/test_post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1.py",
+-    "tests/ops/_current_productive_post_hard_crash_child_runner_v1.py",
+-    "tests/ops/_current_productive_post_hard_crash_harness_v1.py",
+-    "tests/ops/_pilot_guard_enter_post_test_helpers_v1.py",
++    "src/risk_layer/kill_switch/recovery_attestation.py",
+     "tests/ops/_post_path_safety_fixtures_v1.py",
+     "tests/ops/_protected_surface_content_pins_v1.py",
+-    "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py",
+-    "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+-    "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py",
+-    "tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
+-    "tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
+-    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+-    "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+-    "tests/ops/test_current_productive_permit_send_seam_replay_isolation_v1.py",
+-    "tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py",
+-    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+-    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py",
+     "tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py",
+-    "tests/ops/test_current_productive_post_path_security_remediation_b5_b5rr_b6_v1.py",
+-    "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
+-    "tests/ops/test_full_core_current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
+-    "tests/ops/test_full_core_current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
+-    "tests/ops/test_full_core_durable_filegate_join_seam_v1.py",
+-    "tests/ops/test_full_core_execution_admission_contract_v1.py",
+-    "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
+-    "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py",
+-    "tests/ops/test_full_core_owner_one_shot_typed_permit_seam_v1.py",
+-    "tests/ops/test_full_core_post_response_to_ack_mapper_and_lifecycle_join_v1.py",
+     "tests/ops/test_risk_gate.py",
+     "tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py",
+     "tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py",
+-    "tests/test_execution_pipeline_governance.py"
++    "tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py"
+   ],
+   "evidence_refs": [
+     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reduction_venue_proof_v1.py",
+-    "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
++    "src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py",
+     "src/ops/gates/risk_gate.py",
+-    "tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py",
+-    "tests/ops/test_current_productive_post_path_security_remediation_b5_b5rr_b6_v1.py",
+-    "https://github.com/rauterfrank-ui/Peak_Trade/pull/7138"
++    "src/risk_layer/kill_switch/core.py",
++    "src/risk_layer/kill_switch/recovery_attestation.py",
++    "tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py"
+   ],
+-  "reason": "PR #7138 closes B5/B5-RR/B6 post-path safety gaps fail-closed: the durable kill-switch already consumed by external_effect_permit_v1 (DurableKillSwitchEvidenceStatusV1) is now resolved from the canonical risk_gate path instead of hard-coded non-blocking values on the send seam, HTTP POST transport, one-shot join, actual-venue-post and K1 pre-post chain; risk-reduction is bound to a venue-based proof; a global one-shot venue-effect ledger blocks replay across store roots. CSIA domains safety (DURABLE_KILL_SWITCH=src.ops.gates.risk_gate+durable_filegate_join_v1), execution_external_effect (single owner full_core_live_path_composition_root_v1; standing EXTERNAL_EFFECT_AUTHORIZED/POST_ALLOWED/REAL_VENUE_POST_ALLOWED false) and current_productive_k1_opaque_signing_handle_pre_post_policy stay accurate; no domain owner, interaction or authority edge added or removed; no new POST path or authority; source_v1.json and derived views unchanged; 11 previously undetermined kill-switch/risk-gate/K1 paths added to impact_candidates_v1.json as exact files; NO_MAP_IMPACT; AUTHORITY=NONE.",
++  "reason": "WP-B5 closes kill-switch findings F1-F6 and the missing RECOVERING->ACTIVE entry inside the existing durable kill-switch authority: fail-closed env-secret approval, bound and HMAC-signed recovery requests, cooldown/timestamp integrity, inter-process flock with lock-free KILL journal latch, append-only transition journal, DISABLED and PEAK_KILL_SWITCH=1 always deny, and an attested ACTIVE that the existing productive POST kill-switch gate verifies. CSIA domain safety (DURABLE_KILL_SWITCH=src.ops.gates.risk_gate+durable_filegate_join_v1) and execution_external_effect (standing EXTERNAL_EFFECT_AUTHORIZED/POST_ALLOWED/REAL_VENUE_POST_ALLOWED false) stay accurate: the attestation and journal are internal integrity checks of the same authority; no domain owner, interaction or authority edge added or removed; no new POST path, credential or authority; ACTIVE grants no trading/POST authorization; source_v1.json and derived views unchanged; 7 previously undetermined kill-switch CLI/attestation/ops-script/doc/test paths added to impact_candidates_v1.json as exact files; NO_MAP_IMPACT; AUTHORITY=NONE.",
+   "verdict": "NO_MAP_IMPACT",
+   "selector_used_as_map_impact_authority": false
+ }
+diff --git a/config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json b/config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json
+index 6312bcdad..8ce0d5807 100644
+--- a/config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json
++++ b/config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json
+@@ -147,6 +147,7 @@
+     "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md",
+     "docs/governance/current_law_impact_map_v1/",
+     "docs/ops/F1_R1_RESEARCH_STRATIFICATION_V2_IMPLEMENTATION_PLAN_V1.md",
++    "docs/ops/KILL_SWITCH_RUNBOOK.md",
+     "docs/ops/RUNBOOK_INDEX.md",
+     "docs/ops/evidence/",
+     "docs/ops/evidence/OWNER_SCOPED_GET_BUDGET_ENFORCEMENT_ADVERSARIAL_CONTRACT_REVIEW_V1.md",
+@@ -237,6 +238,8 @@
+     "docs/ops/specs/WHOLE_SYSTEM_CAUSAL_CLOSURE_SYNTHETIC_TREASURY_PRODUCTIVE_JOIN_V1.md",
+     "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
+     "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json",
++    "docs/risk/KILL_SWITCH.md",
++    "docs/risk/KILL_SWITCH_ARCHITECTURE.md",
+     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+     "docs/system_atlas/census/census_meta.yaml",
+     "docs/system_atlas/entities/catalog.yaml",
+@@ -295,6 +298,7 @@
+     "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/",
+     "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/",
+     "scripts/ops/ghv_forensic_source_provenance_v1/",
++    "scripts/ops/kill_switch_ctl.sh",
+     "scripts/ops/living_current_matrix_v1/",
+     "scripts/ops/periodic_current_documentation_sync_v1.py",
+     "scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py",
+@@ -539,8 +543,10 @@
+     "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/",
+     "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/",
+     "src/research/canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1/",
++    "src/risk_layer/kill_switch/cli.py",
+     "src/risk_layer/kill_switch/core.py",
+     "src/risk_layer/kill_switch/persistence.py",
++    "src/risk_layer/kill_switch/recovery_attestation.py",
+     "src/trading/market_state/directional_confirmation_progress_v1.py",
+     "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+     "src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py",
+@@ -774,6 +780,7 @@
+     "tests/research/test_r1_repository_sha_runtime_compatibility_v1.py",
+     "tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py",
+     "tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py",
++    "tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py",
+     "tests/test_execution_pipeline_governance.py",
+     "tests/test_live_status_snapshot_api.py",
+     "tests/test_r_and_d_api.py",
+diff --git a/docs/ops/KILL_SWITCH_RUNBOOK.md b/docs/ops/KILL_SWITCH_RUNBOOK.md
+index e865792a0..7d67d20fa 100644
+--- a/docs/ops/KILL_SWITCH_RUNBOOK.md
++++ b/docs/ops/KILL_SWITCH_RUNBOOK.md
+@@ -155,18 +155,20 @@ Details:
+ 
+ Das Script fragt nach:
+ 1. **Reason for recovery**: Kurze Beschreibung (z.B. "Issue behoben, System stabil")
+-2. Verwendet automatisch `KILL_SWITCH_APPROVAL_CODE` aus Environment
++2. **Approval code** (Prompt; erwarteter Wert aus `KILL_SWITCH_APPROVAL_CODE`, nie als argv)
+ 
+ **Erwartete Ausgabe:**
+ ```
+ ⏳ RECOVERY STARTED
+ Reason: Issue behoben, System stabil
++Recovery request id: <id>
+ Cooldown active. Use 'status' to check progress.
+ 
+ Next steps:
+-  1. Wait for cooldown period (5 minutes)
++  1. Wait for the cooldown period
+   2. Monitor status: kill_switch_ctl.sh status
+-  3. System will gradually restart with reduced position limits
++  3. Complete: kill_switch_ctl.sh complete-recovery <request-id>
++Nothing completes automatically. ACTIVE is not a trading authorization.
+ ```
+ 
+ **Schritt 4: Cooldown abwarten**
+diff --git a/docs/risk/KILL_SWITCH.md b/docs/risk/KILL_SWITCH.md
+index fa37cf356..e39f1548c 100644
+--- a/docs/risk/KILL_SWITCH.md
++++ b/docs/risk/KILL_SWITCH.md
+@@ -267,8 +267,10 @@ python3 -m src.risk_layer.kill_switch.cli status
+ # Trigger
+ python3 -m src.risk_layer.kill_switch.cli trigger --reason "Maintenance" --confirm
+ 
+-# Recover
+-python3 -m src.risk_layer.kill_switch.cli recover --code "SECRET" --reason "Fixed"
++# Recover (approval code is prompted or read via --code-stdin, never argv)
++python3 -m src.risk_layer.kill_switch.cli recover --approved-by "operator" --reason "Fixed"
++# Complete after cooldown (ACTIVE is not a trading/POST authorization)
++python3 -m src.risk_layer.kill_switch.cli complete-recovery --approved-by "operator" --request-id "<id>"
+ 
+ # Audit
+ python3 -m src.risk_layer.kill_switch.cli audit --since 24h --limit 50
+diff --git a/docs/risk/KILL_SWITCH_ARCHITECTURE.md b/docs/risk/KILL_SWITCH_ARCHITECTURE.md
+index edcdb10ac..67ee642ed 100644
+--- a/docs/risk/KILL_SWITCH_ARCHITECTURE.md
++++ b/docs/risk/KILL_SWITCH_ARCHITECTURE.md
+@@ -244,7 +244,8 @@ if portfolio_drawdown < -0.15:
+ ```bash
+ python3 -m src.risk_layer.kill_switch.cli status
+ python3 -m src.risk_layer.kill_switch.cli trigger --reason "Wartung" --confirm
+-python3 -m src.risk_layer.kill_switch.cli recover --code "..." --reason "..."
++python3 -m src.risk_layer.kill_switch.cli recover --approved-by "..." --reason "..."
++python3 -m src.risk_layer.kill_switch.cli complete-recovery --approved-by "..." --request-id "..."
+ python3 -m src.risk_layer.kill_switch.cli audit --limit 50
+ python3 -m src.risk_layer.kill_switch.cli health
+ ```
+diff --git a/scripts/ops/kill_switch_ctl.sh b/scripts/ops/kill_switch_ctl.sh
+index 9a3dc498d..a275f0f6a 100755
+--- a/scripts/ops/kill_switch_ctl.sh
++++ b/scripts/ops/kill_switch_ctl.sh
+@@ -38,7 +38,8 @@ Usage:
+ Commands:
+     status              Show current kill switch status
+     trigger [reason]    Trigger kill switch (emergency stop)
+-    recover             Request recovery (requires approval code)
++    recover             Request recovery (approval code typed at the prompt)
++    complete-recovery ID  Complete recovery after cooldown (not a trading authorization)
+     audit [--since X]   Show audit trail
+     health              Check system health
+ 
+@@ -56,7 +57,7 @@ Examples:
+     ./kill_switch_ctl.sh audit --since 24h
+ 
+ Environment Variables:
+-    KILL_SWITCH_APPROVAL_CODE    Approval code for recovery
++    KILL_SWITCH_APPROVAL_CODE    Expected approval code (the code itself is typed at the prompt)
+ 
+ EOF
+ }
+@@ -89,38 +90,46 @@ cmd_trigger() {
+ }
+ 
+ cmd_recover() {
+-    echo -e "${YELLOW}Starting Kill Switch Recovery...${NC}\n"
++    echo -e "${YELLOW}Starting Kill Switch Recovery Request...${NC}\n"
+ 
+-    # Check if approval code is in environment
++    # The expected code must be present in the environment; the provided code is
++    # typed at the prompt (never passed via argv).
+     if [ -z "${KILL_SWITCH_APPROVAL_CODE:-}" ]; then
+         echo -e "${RED}Error: KILL_SWITCH_APPROVAL_CODE not set in environment${NC}"
+-        echo ""
+-        echo "Set it with:"
+-        echo "  export KILL_SWITCH_APPROVAL_CODE='your_code_here'"
+         exit 1
+     fi
+ 
+-    # Get operator name
+     OPERATOR="${USER:-operator}"
+-
+-    # Get reason
+     read -p "Reason for recovery: " reason
+     reason="${reason:-Recovery via ops script}"
+ 
+     echo ""
+-    echo -e "${YELLOW}Requesting recovery...${NC}"
+     "$PT" -m src.risk_layer.kill_switch.cli recover \
+-        --code "$KILL_SWITCH_APPROVAL_CODE" \
+         --reason "$reason" \
+         --approved-by "$OPERATOR"
+ 
+-    echo ""
+-    echo -e "${GREEN}Recovery process started.${NC}"
+     echo ""
+     echo "Next steps:"
+-    echo "  1. Wait for cooldown period (5 minutes)"
++    echo "  1. Wait for the cooldown period"
+     echo "  2. Monitor status: $(basename "$0") status"
+-    echo "  3. System will gradually restart with reduced position limits"
++    echo "  3. Complete: $(basename "$0") complete-recovery <request-id>"
++    echo "Nothing completes automatically. ACTIVE is not a trading authorization."
++}
++
++cmd_complete_recovery() {
++    local request_id="${1:-}"
++    if [ -z "$request_id" ]; then
++        echo -e "${RED}Error: request id required (printed by 'recover' and 'status')${NC}"
++        exit 1
++    fi
++    if [ -z "${KILL_SWITCH_APPROVAL_CODE:-}" ]; then
++        echo -e "${RED}Error: KILL_SWITCH_APPROVAL_CODE not set in environment${NC}"
++        exit 1
++    fi
++    OPERATOR="${USER:-operator}"
++    "$PT" -m src.risk_layer.kill_switch.cli complete-recovery \
++        --approved-by "$OPERATOR" \
++        --request-id "$request_id"
+ }
+ 
+ cmd_audit() {
+@@ -160,6 +169,10 @@ main() {
+         recover)
+             cmd_recover
+             ;;
++        complete-recovery)
++            shift
++            cmd_complete_recovery "$@"
++            ;;
+         audit)
+             shift
+             cmd_audit "$@"
+diff --git a/src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py b/src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py
+index 9fb2729bf..b3e571328 100644
+--- a/src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py
++++ b/src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py
+@@ -8,12 +8,19 @@ process working directory.
+ 
+ Decision semantics (fail-closed):
+ 
++- ``PEAK_KILL_SWITCH=1`` emergency deny      -> DENY (no state file and no
++                                               risk-reduction proof overrides it)
+ - env path override set                      -> DENY
+ - evidence not TRUSTED_PRESENT              -> DENY
+ - state DISABLED (backtest-only enum value) -> DENY
+ - state ACTIVE written by the canonical writer (schema ``version`` + ``saved_at``)
+-                                            -> ALLOW
++  AND carrying a verified recovery attestation (HMAC bound to the signed journal
++  REQUESTED/COMPLETED pair, last transition in the journal)
++                                            -> ALLOW (kill-switch only; every other
++                                               POST gate still applies)
+ - state ACTIVE without the writer schema    -> DENY
++- state ACTIVE without verified attestation -> DENY (forged, copied, restored or
++                                               superseded ACTIVE files)
+ - state KILLED / RECOVERING                 -> ALLOW only for a verified, fresh,
+                                                envelope-bound risk-reduction proof
+ - any other combination                     -> DENY
+@@ -57,9 +64,11 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
+ from src.ops.gates.risk_gate import (
+     _anchor_kill_switch_path,
+     canonical_kill_switch_state_path,
++    kill_switch_emergency_env_deny,
+     kill_switch_env_override_rejected,
+     legacy_cwd_kill_switch_state_paths,
+ )
++from src.risk_layer.kill_switch.recovery_attestation import verify_active_attestation_from_env
+ 
+ CONTRACT_ID = "CURRENT_PRODUCTIVE_POST_PATH_KILL_SWITCH_GATE_V1"
+ WRITER_SCHEMA_VERSION = "1.0"
+@@ -77,6 +86,8 @@ DENY_SECONDARY_SIGNAL = "KILL_SWITCH_SECONDARY_PATH_DENY_SIGNAL"
+ DENY_EVIDENCE_STALE = "KILL_SWITCH_EVIDENCE_STALE"
+ DENY_ENV_OVERRIDE_REJECTED = "KILL_SWITCH_ENV_OVERRIDE_REJECTED"
+ DENY_ACTIVE_NOT_CANONICAL_WRITER = "KILL_SWITCH_ACTIVE_NOT_WRITTEN_BY_CANONICAL_WRITER"
++DENY_ACTIVE_ATTESTATION_NOT_VERIFIED = "KILL_SWITCH_ACTIVE_ATTESTATION_NOT_VERIFIED"
++DENY_EMERGENCY_ENV = "KILL_SWITCH_EMERGENCY_ENV_DENY"
+ MAX_KILL_SWITCH_EVIDENCE_AGE_SECONDS = 15.0
+ MAX_FUTURE_SKEW_SECONDS = 1.0
+ 
+@@ -104,6 +115,9 @@ class PostPathKillSwitchEvidenceV1:
+     writer_schema_state: Optional[str] = None
+     writer_saved_at: Optional[str] = None
+     contract_id: str = CONTRACT_ID
++    emergency_env_deny: bool = True
++    active_attestation_verified: bool = False
++    active_attestation_reason: Optional[str] = None
+ 
+ 
+ @dataclass(frozen=True)
+@@ -131,20 +145,22 @@ def _secondary_candidate_paths_v1(primary: Path) -> tuple[Path, ...]:
+     return tuple(out)
+ 
+ 
+-def _read_writer_schema_v1(path: Path) -> tuple[Optional[str], Optional[str]]:
+-    """(state, saved_at) when the file carries the canonical StatePersistence schema."""
++def _read_writer_schema_v1(
++    path: Path,
++) -> tuple[Optional[str], Optional[str], Optional[dict]]:
++    """(state, saved_at, payload) when the file carries the canonical StatePersistence schema."""
+     try:
+         payload = json.loads(path.read_text(encoding="utf-8"))
+     except (OSError, ValueError):
+-        return None, None
++        return None, None, None
+     if not isinstance(payload, dict) or payload.get("version") != WRITER_SCHEMA_VERSION:
+-        return None, None
++        return None, None, None
+     saved_at = str(payload.get("saved_at") or "").strip()
+     try:
+         datetime.fromisoformat(saved_at)
+     except ValueError:
+-        return None, None
+-    return str(payload.get("state") or "").strip().upper() or None, saved_at
++        return None, None, None
++    return str(payload.get("state") or "").strip().upper() or None, saved_at, payload
+ 
+ 
+ def read_post_path_kill_switch_evidence_v1(
+@@ -156,7 +172,13 @@ def read_post_path_kill_switch_evidence_v1(
+         if state_path is not None
+         else resolve_post_path_kill_switch_state_path_v1()
+     )
+-    writer_state, writer_saved_at = _read_writer_schema_v1(primary)
++    writer_state, writer_saved_at, payload = _read_writer_schema_v1(primary)
++    attestation_verified = False
++    attestation_reason: Optional[str] = None
++    if writer_state == _STATE_ACTIVE and payload is not None:
++        check = verify_active_attestation_from_env(primary, payload)
++        attestation_verified = check.verified is True
++        attestation_reason = check.reason
+     joined = read_durable_filegate_join_evidence_v1(state_path=str(primary))
+     secondary_deny: list[str] = []
+     for candidate in _secondary_candidate_paths_v1(primary):
+@@ -176,6 +198,9 @@ def read_post_path_kill_switch_evidence_v1(
+         env_override_rejected=kill_switch_env_override_rejected(),
+         writer_schema_state=writer_state,
+         writer_saved_at=writer_saved_at,
++        emergency_env_deny=kill_switch_emergency_env_deny(),
++        active_attestation_verified=attestation_verified,
++        active_attestation_reason=attestation_reason,
+     )
+ 
+ 
+@@ -199,6 +224,8 @@ def evaluate_post_path_kill_switch_v1(
+ 
+     if evidence.contract_id != CONTRACT_ID:
+         return _deny(f"{DENY_EVIDENCE_NOT_TRUSTED}:CONTRACT_MISMATCH")
++    if evidence.emergency_env_deny is not False or kill_switch_emergency_env_deny():
++        return _deny(DENY_EMERGENCY_ENV)
+     if evidence.env_override_rejected is not False:
+         return _deny(DENY_ENV_OVERRIDE_REJECTED)
+     if evidence.evidence_status != _TRUSTED:
+@@ -215,6 +242,11 @@ def evaluate_post_path_kill_switch_v1(
+     if state == _STATE_ACTIVE and evidence.blocked is False:
+         if evidence.writer_schema_state != _STATE_ACTIVE or not evidence.writer_saved_at:
+             return _deny(DENY_ACTIVE_NOT_CANONICAL_WRITER)
++        if evidence.active_attestation_verified is not True:
++            return _deny(
++                DENY_ACTIVE_ATTESTATION_NOT_VERIFIED,
++                str(evidence.active_attestation_reason or "ACTIVE_ATTESTATION_ABSENT"),
++            )
+         return PostPathKillSwitchAdmissionV1(
+             decision=PostPathKillSwitchDecisionV1.ALLOW,
+             reason_codes=("KILL_SWITCH_ACTIVE_TRUSTED",),
+@@ -321,7 +353,9 @@ __all__ = [
+     "PreSendSafetyGateV1",
+     "DENY_BLOCKED",
+     "DENY_BLOCKED_RISK_REDUCTION_NOT_PROVEN",
++    "DENY_ACTIVE_ATTESTATION_NOT_VERIFIED",
+     "DENY_ACTIVE_NOT_CANONICAL_WRITER",
++    "DENY_EMERGENCY_ENV",
+     "DENY_DISABLED_NOT_LIVE_STATE",
+     "DENY_ENV_OVERRIDE_REJECTED",
+     "DENY_EVIDENCE_NOT_TRUSTED",
+diff --git a/src/ops/gates/risk_gate.py b/src/ops/gates/risk_gate.py
+index 72490f9e8..524a18719 100644
+--- a/src/ops/gates/risk_gate.py
++++ b/src/ops/gates/risk_gate.py
+@@ -19,8 +19,16 @@ KILL_SWITCH_STATE_PATH_ENV_VARS = (
+ )
+ 
+ _KILL_SWITCH_STATE_ROOT = Path(__file__).resolve().parents[3]
+-_KILL_SWITCH_BLOCKING_STATES = frozenset({"KILLED", "RECOVERING"})
+-_KILL_SWITCH_NON_BLOCKING_STATES = frozenset({"ACTIVE", "DISABLED"})
++# DISABLED is backtest-only and never written by the durable writer: a persisted
++# DISABLED file must not neutralize a kill.
++_KILL_SWITCH_BLOCKING_STATES = frozenset({"KILLED", "RECOVERING", "DISABLED"})
++_KILL_SWITCH_NON_BLOCKING_STATES = frozenset({"ACTIVE"})
++EMERGENCY_DENY_ENV = "PEAK_KILL_SWITCH"
++
++
++def kill_switch_emergency_env_deny() -> bool:
++    """``PEAK_KILL_SWITCH=1`` is an operator emergency deny that no state file overrides."""
++    return os.getenv(EMERGENCY_DENY_ENV, "0") == "1"
+ 
+ 
+ def kill_switch_state_path_from_env() -> Optional[str]:
+@@ -108,9 +116,10 @@ def resolve_kill_switch_limit_from_state_file(
+     Reads ``state`` from JSON (same contract as ``data/kill_switch/state.json``).
+     Returns:
+ 
+-    - ``True`` — state is ``KILLED`` or ``RECOVERING`` (trading should be denied).
+-    - ``False`` — file exists, parsed, and state is a valid non-blocking enum
+-      (``ACTIVE`` or ``DISABLED``).
++    - ``True`` — state is ``KILLED``, ``RECOVERING`` or ``DISABLED``, or an
++      ``ACTIVE`` state superseded by a later transition in the durable journal
++      (trading should be denied).
++    - ``False`` — file exists, parsed, and state is ``ACTIVE`` not superseded.
+     - ``None`` — file missing, unreadable, or semantically invalid. Callers that
+       treat the path as configured/expected must fail-closed rather than treat
+       this as ACTIVE.
+@@ -127,7 +136,11 @@ def resolve_kill_switch_limit_from_state_file(
+     if state in _KILL_SWITCH_BLOCKING_STATES:
+         return True
+     if state in _KILL_SWITCH_NON_BLOCKING_STATES:
+-        return False
++        from src.risk_layer.kill_switch.recovery_attestation import (
++            active_state_superseded_by_journal,
++        )
++
++        return bool(active_state_superseded_by_journal(path, data))
+     return None
+ 
+ 
+@@ -138,18 +151,20 @@ def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
+     - If ``explicit_active`` is True (e.g. orchestrator constructor), block.
+     - Else read state via :func:`canonical_kill_switch_state_path` and
+       :func:`resolve_kill_switch_limit_from_state_file`.
+-    - ``KILLED`` / ``RECOVERING`` block.
+-    - Valid ``ACTIVE`` / ``DISABLED`` do not block from the file.
++    - ``PEAK_KILL_SWITCH=1`` always blocks; no state file (not even ACTIVE)
++      overrides this emergency deny. It is not a second persisted kill-state machine.
++    - ``KILLED`` / ``RECOVERING`` / ``DISABLED`` block.
++    - ``ACTIVE`` does not block from the file unless the durable journal shows a
++      later transition (e.g. a KILL whose state write is still pending).
+     - Configured path missing, or an existing file that is unreadable or
+       semantically invalid, fail-closed (block).
+-    - When no state path is configured and the default file is absent,
+-      ``PEAK_KILL_SWITCH=1`` remains an explicit operator deny overlay.
+-      It is not a second persisted kill-state machine.
+     - A set env path override blocks (never redirects).
+     - A CWD-relative legacy state file that is not a valid non-blocking state blocks.
+     """
+     if explicit_active:
+         return True
++    if kill_switch_emergency_env_deny():
++        return True
+     if kill_switch_env_override_rejected():
+         return True
+     for legacy in legacy_cwd_kill_switch_state_paths():
+@@ -166,7 +181,7 @@ def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
+         return False
+     if Path(path).is_file():
+         return True
+-    return os.getenv("PEAK_KILL_SWITCH", "0") == "1"
++    return False
+ 
+ 
+ def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:
+diff --git a/src/risk_layer/kill_switch/cli.py b/src/risk_layer/kill_switch/cli.py
+index 8cce7ca61..2da537d94 100644
+--- a/src/risk_layer/kill_switch/cli.py
++++ b/src/risk_layer/kill_switch/cli.py
+@@ -6,24 +6,46 @@ Commands:
+     - status: Show current status
+     - trigger: Manually trigger kill switch
+     - recover: Request recovery
++    - complete-recovery: Complete an authorized recovery after cooldown
+     - audit: Show audit trail
+     - health: Check system health
++
++The approval code is never accepted via argv. It is read with ``getpass`` from
++the terminal or, with ``--code-stdin``, as one line from stdin. The expected code
++comes from the environment variable named by ``approval_code_env``.
++
++ACTIVE means only "kill-switch recovery completed". It never authorizes live
++trading, orders or a venue POST; every other gate stays independent.
++
++Exit codes:
++    0 success
++    1 configuration / unexpected error
++    2 usage error (argparse, e.g. a rejected ``--code`` argument)
++    3 denied (authorization, state, request binding, cooldown, journal)
++    4 KILL journaled but the state write was blocked by the state lock
++    5 KILL could not be made durable at all
+ """
+ 
+ import argparse
++import getpass
+ import logging
+ import os
+ import sys
+ from datetime import datetime, timedelta
+ from pathlib import Path
+-from typing import Any, Dict, Tuple
++from typing import Any, Dict, Optional, Tuple
+ 
+ # Add src to path if running as script
+ if __name__ == "__main__":
+     sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
+ 
+-from src.risk_layer.kill_switch import KillSwitch, load_config, get_approval_code
++from src.risk_layer.kill_switch import KillSwitch, load_config
+ from src.risk_layer.kill_switch.audit import AuditTrail
++from src.risk_layer.kill_switch.core import KillSwitchKillFailedError, KillSwitchKillPendingError
++from src.risk_layer.kill_switch.recovery_attestation import (
++    JournalError,
++    TransitionJournal,
++)
+ from src.risk_layer.kill_switch.exchange_probe import (
+     is_exchange_probe_disabled,
+     probe_exchange_http_public,
+@@ -41,6 +63,28 @@ logger = logging.getLogger(__name__)
+ 
+ _EXCHANGE_CONNECTED_ENV = "PEAK_KILL_SWITCH_EXCHANGE_CONNECTED"
+ 
++EXIT_OK = 0
++EXIT_ERROR = 1
++EXIT_USAGE = 2
++EXIT_DENIED = 3
++EXIT_KILL_PENDING = 4
++EXIT_KILL_FAILED = 5
++
++ACTIVE_IS_NOT_TRADING_AUTHORIZATION = (
++    "ACTIVE = kill-switch recovery completed. It is NOT a live-trading, order or "
++    "venue-POST authorization; all other gates remain closed and independent."
++)
++
++
++def read_approval_code(args) -> Optional[str]:
++    """Approval code from stdin (``--code-stdin``) or an interactive prompt; never argv."""
++    if getattr(args, "code_stdin", False):
++        line = sys.stdin.readline()
++        return line.rstrip("\r\n") or None
++    if sys.stdin is not None and sys.stdin.isatty():
++        return getpass.getpass("Enter approval code: ") or None
++    return None
++
+ 
+ def resolve_exchange_connected_for_health(cli_choice: str) -> Tuple[bool, Dict[str, Any]]:
+     """
+@@ -110,6 +154,11 @@ def cmd_status(args, kill_switch: KillSwitch):
+     print(f"│ Events:        {status['event_count']:<20} │")
+ 
+     print("└────────────────────────────────────────┘")
++    if status.get("request_id"):
++        print(f"Recovery request id: {status['request_id']}")
++    if state == "ACTIVE":
++        print(ACTIVE_IS_NOT_TRADING_AUTHORIZATION)
++    return EXIT_OK
+ 
+ 
+ def cmd_trigger(args, kill_switch: KillSwitch):
+@@ -123,55 +172,95 @@ def cmd_trigger(args, kill_switch: KillSwitch):
+         response = input("Are you sure? (type 'yes' to confirm): ")
+         if response.lower() != "yes":
+             print("Aborted.")
+-            return
+-
+-    # Trigger
+-    success = kill_switch.trigger(reason, triggered_by="manual_cli")
++            return EXIT_ERROR
+ 
+-    if not success:
+-        print("❌ Failed to trigger (already killed or disabled)")
+-        return
+     persist_path = kill_switch.persistence_path
+     if not persist_path:
+         raise RuntimeError("kill_switch trigger did not persist state")
++    try:
++        success = kill_switch.trigger(reason, triggered_by="manual_cli")
++    except KillSwitchKillPendingError:
++        print("🚨 KILL JOURNALED; state write blocked by the state lock.")
++        print(f"Every ACTIVE reader denies via the journal: {kill_switch.journal_path}")
++        print("Re-run 'trigger' to persist KILLED once the lock is free.")
++        return EXIT_KILL_PENDING
++    except KillSwitchKillFailedError:
++        print("❌ KILL could not be made durable (journal and state both failed).")
++        return EXIT_KILL_FAILED
++
++    if not success:
++        print("❌ Failed to trigger (disabled)")
++        return EXIT_KILL_FAILED
+     print(f"🚨 KILL SWITCH TRIGGERED: {reason}")
+     print("Trading is now BLOCKED.")
+     print(f"Persisted state: {persist_path}")
++    return EXIT_OK
+ 
+ 
+ def cmd_recover(args, kill_switch: KillSwitch):
+-    """Request kill switch recovery."""
++    """Request kill switch recovery (KILLED → RECOVERING)."""
+     reason = args.reason or "Recovery via CLI"
++    persist_path = kill_switch.persistence_path
++    if not persist_path:
++        raise RuntimeError("kill_switch recovery did not persist state")
+ 
+-    # Get approval code
+-    code = args.code
+-    if not code:
+-        code = input("Enter approval code: ")
+-
+-    # Request recovery
+     success = kill_switch.request_recovery(
+-        approved_by=args.approved_by or os.getenv("USER", "operator"),
+-        approval_code=code,
++        approved_by=args.approved_by,
++        approval_code=read_approval_code(args),
+     )
+ 
+     if not success:
+-        print("❌ Recovery request failed")
+-        print("Possible reasons:")
+-        print("  - Not in KILLED state")
+-        print("  - Invalid approval code")
+-        return
+-    persist_path = kill_switch.persistence_path
+-    if not persist_path:
+-        raise RuntimeError("kill_switch recovery did not persist state")
++        print(f"❌ Recovery request denied: {kill_switch.last_denial_reason}")
++        return EXIT_DENIED
+     print("⏳ RECOVERY STARTED")
+     print(f"Reason: {reason}")
++    print(f"Recovery request id: {kill_switch.pending_request_id}")
+     print("Cooldown active. Use 'status' to check progress.")
+     print(f"Persisted state: {persist_path} (RECOVERING still blocks trading)")
++    return EXIT_OK
++
++
++def cmd_complete_recovery(args, kill_switch: KillSwitch):
++    """Complete an authorized recovery (RECOVERING → ACTIVE) after cooldown."""
++    persist_path = kill_switch.persistence_path
++    if not persist_path:
++        raise RuntimeError("kill_switch completion requires durable state")
++
++    success = kill_switch.complete_recovery(
++        approved_by=args.approved_by,
++        approval_code=read_approval_code(args),
++        request_id=args.request_id,
++    )
++    if not success:
++        print(f"❌ Recovery completion denied: {kill_switch.last_denial_reason}")
++        return EXIT_DENIED
++    print("✅ KILL SWITCH RECOVERY COMPLETED")
++    print(ACTIVE_IS_NOT_TRADING_AUTHORIZATION)
++    print(f"Persisted state: {persist_path}")
++    print(f"Audit journal: {kill_switch.journal_path}")
++    return EXIT_OK
+ 
+ 
+ def cmd_audit(args, config: dict):
+-    """Show audit trail."""
+-    audit_dir = config.get("kill_switch", {}).get("audit_dir", "data/kill_switch/audit")
++    """Show audit trail (durable transition journal first, then legacy daily files)."""
++    from src.ops.gates.risk_gate import canonical_kill_switch_state_path
++    from src.risk_layer.kill_switch.recovery_attestation import journal_path_for_state_file
++
++    journal = TransitionJournal(journal_path_for_state_file(canonical_kill_switch_state_path()))
++    print(f"\n📒 TRANSITION JOURNAL: {journal.path}")
++    try:
++        journal_events = journal.read_events()
++    except JournalError as exc:
++        print(f"❌ Journal unreadable ({exc}); every ACTIVE reader denies.")
++        return EXIT_DENIED
++    for event in journal_events[-args.limit :]:
++        print(
++            f"{event.get('timestamp', ''):<27} {event.get('kind', ''):<19} "
++            f"{event.get('new_state', ''):<11} {event.get('approved_by') or event.get('triggered_by') or ''} "
++            f"{event.get('request_id') or ''} {event.get('reason_code') or ''}"
++        )
++
++    audit_dir = str(journal.path.parent)
+     audit = AuditTrail(audit_dir)
+ 
+     # Parse time filters
+@@ -192,8 +281,8 @@ def cmd_audit(args, config: dict):
+     events = audit.get_events(since=since, limit=args.limit)
+ 
+     if not events:
+-        print("No audit events found.")
+-        return
++        print("No legacy audit events found.")
++        return EXIT_OK
+ 
+     print(f"\n📋 AUDIT TRAIL ({len(events)} events)\n")
+     print(f"{'Timestamp':<20} {'Previous':<12} {'New State':<12} {'Triggered By':<15} Reason")
+@@ -215,6 +304,7 @@ def cmd_audit(args, config: dict):
+     print(f"  Total events: {stats['total_events']}")
+     print(f"  Total files: {stats['total_files']}")
+     print(f"  Total size: {stats['total_size_mb']:.2f} MB")
++    return EXIT_OK
+ 
+ 
+ def cmd_health(args, config: dict):
+@@ -276,9 +366,23 @@ def main():
+ 
+     # Recover command
+     recover_parser = subparsers.add_parser("recover", help="Request recovery")
+-    recover_parser.add_argument("--code", help="Approval code")
+     recover_parser.add_argument("--reason", help="Reason for recovery")
+-    recover_parser.add_argument("--approved-by", help="Approver name")
++    recover_parser.add_argument("--approved-by", required=True, help="Approver identity")
++    recover_parser.add_argument(
++        "--code-stdin", action="store_true", help="Read the approval code from stdin"
++    )
++
++    complete_parser = subparsers.add_parser(
++        "complete-recovery",
++        help="Complete an authorized recovery after cooldown (not a trading authorization)",
++    )
++    complete_parser.add_argument("--approved-by", required=True, help="Approver identity")
++    complete_parser.add_argument(
++        "--request-id", required=True, help="Recovery request id printed by 'recover'"
++    )
++    complete_parser.add_argument(
++        "--code-stdin", action="store_true", help="Read the approval code from stdin"
++    )
+ 
+     # Audit command
+     audit_parser = subparsers.add_parser("audit", help="Show audit trail")
+@@ -316,34 +420,36 @@ def main():
+         return 1
+ 
+     # Initialize kill switch for most commands
+-    if args.command in ["status", "trigger", "recover"]:
++    if args.command in ["status", "trigger", "recover", "complete-recovery"]:
+         try:
+             kill_switch = KillSwitch(kill_switch_config, logger=logger)
+         except Exception as e:
+             logger.error(f"Failed to initialize kill switch: {e}")
+-            return 1
++            return EXIT_ERROR
+ 
+     # Execute command
+     try:
+         if args.command == "status":
+-            cmd_status(args, kill_switch)
++            rc = cmd_status(args, kill_switch)
+         elif args.command == "trigger":
+-            cmd_trigger(args, kill_switch)
++            rc = cmd_trigger(args, kill_switch)
+         elif args.command == "recover":
+-            cmd_recover(args, kill_switch)
++            rc = cmd_recover(args, kill_switch)
++        elif args.command == "complete-recovery":
++            rc = cmd_complete_recovery(args, kill_switch)
+         elif args.command == "audit":
+-            cmd_audit(args, config)
++            rc = cmd_audit(args, config)
+         elif args.command == "health":
+-            cmd_health(args, config)
++            rc = cmd_health(args, config)
+         else:
+             parser.print_help()
+-            return 1
++            return EXIT_ERROR
+ 
+-        return 0
++        return EXIT_OK if rc is None else int(rc)
+ 
+     except Exception as e:
+         logger.error(f"Command failed: {e}", exc_info=True)
+-        return 1
++        return EXIT_ERROR
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/src/risk_layer/kill_switch/core.py b/src/risk_layer/kill_switch/core.py
+index 2dd5245f5..83db8554c 100644
+--- a/src/risk_layer/kill_switch/core.py
++++ b/src/risk_layer/kill_switch/core.py
+@@ -3,20 +3,87 @@
+ This is the heart of the Emergency Kill Switch system - Layer 4 of the
+ Defense-in-Depth architecture. It MUST always work, regardless of other
+ system failures.
++
++Durable mode (a ``StatePersistence`` is bound):
++
++- Every transition re-reads the durable state under a process-exclusive lock
++  (compare-and-swap); in-memory state is never trusted for a transition.
++- ``trigger`` journals KILL before taking the lock and never needs the approval
++  secret. It never writes state without the lock; on lock timeout the journaled
++  KILL alone already denies every ACTIVE reader.
++- Recovery requires the approval secret from the environment (``approval_code_env``),
++  an operator identity, the persisted request id, a valid recovery timestamp and
++  an expired cooldown. ``require_approval_code`` cannot disable this.
++- ACTIVE is written only with an HMAC attestation bound to the signed journal
++  REQUESTED/COMPLETED pair. ACTIVE means "kill-switch recovery completed" only;
++  it is not a trading, live or venue-POST authorization.
++- A missing durable state file restores as KILLED (never armed); persisted
++  DISABLED is never honored.
+ """
+ 
+ from __future__ import annotations
+ 
++import hmac
+ import logging
+ from datetime import datetime, timedelta
+ from threading import RLock
+-from typing import TYPE_CHECKING, Callable, List, Optional
+-
+-from .state import KillSwitchEvent, KillSwitchState, validate_transition
++from typing import TYPE_CHECKING, Any, Callable, List, Optional
++
++from .recovery_attestation import (
++    KIND_KILL,
++    KIND_RECOVERY_COMPLETED,
++    KIND_RECOVERY_DENIED,
++    KIND_RECOVERY_REQUESTED,
++    JournalError,
++    TransitionJournal,
++    active_record_fields,
++    active_state_superseded_by_journal,
++    approval_code_matches,
++    completed_event_fields,
++    derive_attestation_key,
++    journal_path_for_state_file,
++    new_identifier,
++    parse_naive_utc,
++    requested_event_fields,
++    resolve_approval_secret,
++    sign_fields,
++    verify_active_attestation,
++    verify_pending_request_binding,
++)
++from .state import KillSwitchEvent, KillSwitchState
+ 
+ if TYPE_CHECKING:
+     from .persistence import StatePersistence
+ 
++DEFAULT_STATE_LOCK_TIMEOUT_SECONDS = 10.0
++MAX_RECOVERY_FUTURE_SKEW_SECONDS = 1.0
++
++DENY_NOT_KILLED = "RECOVERY_REQUIRES_KILLED"
++DENY_NOT_RECOVERING = "COMPLETE_REQUIRES_RECOVERING"
++DENY_AUTHORITY_MISSING = "RECOVERY_AUTHORITY_MISSING"
++DENY_EXPECTED_CODE_UNAVAILABLE = "APPROVAL_EXPECTED_CODE_UNAVAILABLE"
++DENY_CODE_MISSING = "APPROVAL_CODE_MISSING"
++DENY_CODE_INVALID = "APPROVAL_CODE_INVALID"
++DENY_REQUEST_ID_MISMATCH = "RECOVERY_REQUEST_ID_MISMATCH"
++DENY_BINDING_MISSING = "RECOVERY_REQUEST_BINDING_MISSING"
++DENY_TIMESTAMP_MISSING = "RECOVERY_TIMESTAMP_MISSING"
++DENY_TIMESTAMP_INVALID = "RECOVERY_TIMESTAMP_INVALID"
++DENY_TIMESTAMP_FUTURE = "RECOVERY_TIMESTAMP_IN_FUTURE"
++DENY_COOLDOWN_ACTIVE = "RECOVERY_COOLDOWN_ACTIVE"
++DENY_LOCK_TIMEOUT = "KILL_SWITCH_STATE_LOCK_TIMEOUT"
++DENY_JOURNAL_UNAVAILABLE = "RECOVERY_JOURNAL_UNAVAILABLE"
++DENY_AUDIT_WRITE_FAILED = "RECOVERY_AUDIT_WRITE_FAILED"
++DENY_STATE_WRITE_FAILED = "RECOVERY_STATE_WRITE_FAILED"
++DENY_KILL_PRIORITY = "RECOVERY_SUPERSEDED_BY_KILL"
++
++
++class KillSwitchKillPendingError(RuntimeError):
++    """KILL is journaled (every ACTIVE reader denies) but the state write was blocked."""
++
++
++class KillSwitchKillFailedError(RuntimeError):
++    """Neither the KILL journal entry nor the KILLED state could be made durable."""
++
+ 
+ class KillSwitch:
+     """Emergency Kill Switch for Peak_Trade.
+@@ -24,7 +91,7 @@ class KillSwitch:
+     Layer 4 of Defense-in-Depth architecture.
+     Last line of defense - MUST ALWAYS WORK.
+ 
+-    Thread-safe through RLock.
++    Thread-safe through RLock; process-safe through the durable state lock.
+ 
+     Usage:
+         >>> config = {"recovery_cooldown_seconds": 300}
+@@ -41,7 +108,7 @@ class KillSwitch:
+         >>> ks.request_recovery("operator", "APPROVAL_CODE")
+         >>>
+         >>> # After cooldown
+-        >>> ks.complete_recovery()
++        >>> ks.complete_recovery("operator", "APPROVAL_CODE", request_id)
+     """
+ 
+     def __init__(
+@@ -65,16 +132,31 @@ class KillSwitch:
+         self._logger = logger or logging.getLogger(__name__)
+         self._trigger_reason: Optional[str] = None
+         self._persistence = self._bind_persistence(persistence, config)
++        self._journal: Optional[TransitionJournal] = (
++            TransitionJournal(journal_path_for_state_file(self._persistence.state_file))
++            if self._persistence is not None
++            else None
++        )
++        self._lock_timeout = float(
++            config.get("state_lock_timeout_seconds", DEFAULT_STATE_LOCK_TIMEOUT_SECONDS)
++        )
++        self._recovery: Optional[dict] = None
++        self._last_denial_reason: Optional[str] = None
+ 
+         # Compatibility: Override flag for enabled property (does NOT mutate config)
+         self._enabled_override: Optional[bool] = None
+ 
+-        # Check if disabled (backtest mode)
++        # Check if disabled (backtest mode). A durable kill switch is never DISABLED.
+         if config.get("mode") == "disabled":
+-            self._state = KillSwitchState.DISABLED
+-            self._logger.warning(
+-                "⚠️  Kill Switch DISABLED (Backtest Mode) - Trading will NOT be blocked!"
+-            )
++            if self._persistence is None:
++                self._state = KillSwitchState.DISABLED
++                self._logger.warning(
++                    "⚠️  Kill Switch DISABLED (Backtest Mode) - Trading will NOT be blocked!"
++                )
++            else:
++                self._logger.critical(
++                    "mode=disabled rejected for a durable kill switch; DISABLED is backtest-only"
++                )
+ 
+         # Event history for audit
+         self._events: List[KillSwitchEvent] = []
+@@ -131,41 +213,63 @@ class KillSwitch:
+         except ValueError:
+             return None
+ 
+-    def _restore_from_persistence(self) -> None:
+-        """Load durable state. Missing file stays constructor default.
++    # ------------------------------------------------------------------ durable state
+ 
+-        Existing unreadable or semantically invalid files latch KILLED
+-        in-memory (fail-closed) without silently becoming ACTIVE.
+-        Persisted KILLED/RECOVERING wins over config mode=disabled.
+-        """
++    def _read_durable(self) -> tuple[KillSwitchState, dict]:
++        """Classify the durable file fail-closed: missing/unreadable/invalid/DISABLED → KILLED."""
+         assert self._persistence is not None
+         data = self._persistence.load()
+         path = self._persistence.state_file
+-        if data is None:
++        if data is None or not isinstance(data, dict):
+             if path.is_file():
+-                self._state = KillSwitchState.KILLED
+                 self._logger.critical(
+-                    "Unreadable kill-switch state file %s; latching KILLED (fail-closed)",
+-                    path,
++                    "Unreadable kill-switch state file %s; latching KILLED (fail-closed)", path
+                 )
+-            return
++            return KillSwitchState.KILLED, {}
+         name = str(data.get("state", "")).strip().upper()
+         try:
+             restored = KillSwitchState[name]
+         except KeyError:
+-            self._state = KillSwitchState.KILLED
+             self._logger.critical(
+-                "Invalid kill-switch state %r in %s; latching KILLED (fail-closed)",
+-                name,
++                "Invalid kill-switch state %r in %s; latching KILLED (fail-closed)", name, path
++            )
++            return KillSwitchState.KILLED, {}
++        if restored is KillSwitchState.DISABLED:
++            self._logger.critical(
++                "Persisted DISABLED in %s is never honored; latching KILLED (fail-closed)", path
++            )
++            return KillSwitchState.KILLED, {}
++        if restored is KillSwitchState.ACTIVE and active_state_superseded_by_journal(path, data):
++            self._logger.critical(
++                "Persisted ACTIVE in %s is superseded by the transition journal; latching KILLED",
+                 path,
+             )
+-            return
+-        self._state = restored
++            return KillSwitchState.KILLED, {}
++        return restored, data
++
++    def _sync_from_durable(self, state: KillSwitchState, data: dict) -> None:
++        self._state = state
+         self._killed_at = self._parse_iso_datetime(data.get("killed_at"))
+-        self._recovery_started_at = self._parse_iso_datetime(data.get("recovery_started_at"))
++        self._recovery_started_at = parse_naive_utc(data.get("recovery_started_at"))
+         reason = data.get("trigger_reason")
+         self._trigger_reason = str(reason) if reason else None
+-        self._logger.info("KillSwitch restored from persistence: state=%s", restored.name)
++        recovery = data.get("recovery")
++        self._recovery = (
++            dict(recovery)
++            if state is KillSwitchState.RECOVERING and isinstance(recovery, dict)
++            else None
++        )
++
++    def _restore_from_persistence(self) -> None:
++        """Load durable state. Nothing here ever arms ACTIVE on its own.
++
++        Missing file → KILLED (never armed). Unreadable, invalid, DISABLED or
++        journal-superseded ACTIVE → KILLED (fail-closed).
++        """
++        assert self._persistence is not None
++        state, data = self._read_durable()
++        self._sync_from_durable(state, data)
++        self._logger.info("KillSwitch restored from persistence: state=%s", state.name)
+ 
+     def _persist_current_state(self) -> None:
+         if self._persistence is None:
+@@ -175,13 +279,67 @@ class KillSwitch:
+             killed_at = self._killed_at
+             recovery_started_at = self._recovery_started_at
+             trigger_reason = self._trigger_reason
++            recovery = dict(self._recovery) if self._recovery else None
+         self._persistence.save(
+             state,
+             killed_at=killed_at,
+             trigger_reason=trigger_reason,
+             recovery_started_at=recovery_started_at,
++            recovery=recovery,
++        )
++
++    # ------------------------------------------------------------------ authorization
++
++    def _expected_approval_code(self) -> Optional[str]:
++        env_secret = resolve_approval_secret(self._config.get("approval_code_env"))
++        if self._persistence is not None:
++            return env_secret
++        configured = self._config.get("approval_code")
++        return str(configured) if configured else env_secret
++
++    def _approval_required(self) -> bool:
++        return self._persistence is not None or bool(
++            self._config.get("require_approval_code", False)
+         )
+ 
++    def _authorization_denial(
++        self, approved_by: Optional[str], approval_code: Optional[str]
++    ) -> Optional[str]:
++        if not isinstance(approved_by, str) or not approved_by.strip():
++            return DENY_AUTHORITY_MISSING
++        if not self._approval_required():
++            return None
++        expected = self._expected_approval_code()
++        if not expected:
++            return DENY_EXPECTED_CODE_UNAVAILABLE
++        if not isinstance(approval_code, str) or not approval_code.strip():
++            return DENY_CODE_MISSING
++        if not approval_code_matches(expected, approval_code):
++            return DENY_CODE_INVALID
++        return None
++
++    def _deny(self, code: str, *, approved_by: Optional[str] = None) -> bool:
++        self._last_denial_reason = code
++        self._logger.error("❌ Kill-switch recovery denied: %s (by=%s)", code, approved_by)
++        if self._journal is not None:
++            try:
++                self._journal.append(
++                    {
++                        "kind": KIND_RECOVERY_DENIED,
++                        "reason_code": code,
++                        "approved_by": approved_by,
++                        "previous_state": self._state.name,
++                        "new_state": self._state.name,
++                        "triggered_by": "manual",
++                        "trigger_reason": f"Recovery denied: {code}",
++                    }
++                )
++            except Exception:  # denial is already the safe outcome
++                self._logger.error("Failed to journal recovery denial %s", code, exc_info=True)
++        return False
++
++    # ------------------------------------------------------------------ properties
++
+     @property
+     def state(self) -> KillSwitchState:
+         """Current state (thread-safe read)."""
+@@ -195,7 +353,7 @@ class KillSwitch:
+ 
+     @property
+     def is_active(self) -> bool:
+-        """True if trading is allowed."""
++        """True if the kill switch is ACTIVE (recovery completed; not a trading authorization)."""
+         return self.state == KillSwitchState.ACTIVE
+ 
+     @property
+@@ -252,6 +410,57 @@ class KillSwitch:
+             return None
+         return str(self._persistence.state_file)
+ 
++    @property
++    def journal_path(self) -> Optional[str]:
++        """Durable transition journal path when persistence is bound, else None."""
++        if self._journal is None:
++            return None
++        return str(self._journal.path)
++
++    @property
++    def last_denial_reason(self) -> Optional[str]:
++        return self._last_denial_reason
++
++    @property
++    def pending_request_id(self) -> Optional[str]:
++        """Request id of the current RECOVERING binding (not a secret)."""
++        with self._lock:
++            if self._state is KillSwitchState.RECOVERING and self._recovery:
++                value = self._recovery.get("request_id")
++                return str(value) if value else None
++            return None
++
++    # ------------------------------------------------------------------ transitions
++
++    def _apply_kill_in_memory(
++        self, reason: str, triggered_by: str, metadata: Optional[dict]
++    ) -> Optional[KillSwitchEvent]:
++        """Caller holds ``self._lock``. Returns the event for a real transition."""
++        previous = self._state
++        self._state = KillSwitchState.KILLED
++        self._trigger_reason = reason
++        self._recovery = None
++        self._recovery_started_at = None
++        if previous is KillSwitchState.KILLED:
++            self._logger.warning("Kill Switch already KILLED (idempotent)")
++            if self._killed_at is None:
++                self._killed_at = datetime.utcnow()
++            return None
++        self._killed_at = datetime.utcnow()
++        event = KillSwitchEvent(
++            timestamp=self._killed_at,
++            previous_state=previous,
++            new_state=self._state,
++            trigger_reason=reason,
++            triggered_by=triggered_by,
++            metadata=metadata or {},
++        )
++        self._events.append(event)
++        self._logger.critical(
++            f"🚨 KILL SWITCH TRIGGERED: {reason} (by={triggered_by}, from={previous.name})"
++        )
++        return event
++
+     def trigger(
+         self,
+         reason: str,
+@@ -269,41 +478,62 @@ class KillSwitch:
+ 
+         Returns:
+             True if successfully triggered or already killed
+-            False if disabled
++            False if disabled (in-memory backtest mode only)
++
++        Raises:
++            KillSwitchKillPendingError: KILL journaled, state write blocked by the lock.
++            KillSwitchKillFailedError: neither journal nor state could be made durable.
+         """
+-        with self._lock:
+-            if self._state == KillSwitchState.DISABLED:
+-                self._logger.warning("⚠️  Kill Switch is DISABLED (Backtest Mode) - Trigger ignored")
+-                return False
++        if self._persistence is None:
++            with self._lock:
++                if self._state == KillSwitchState.DISABLED:
++                    self._logger.warning(
++                        "⚠️  Kill Switch is DISABLED (Backtest Mode) - Trigger ignored"
++                    )
++                    return False
++                event = self._apply_kill_in_memory(reason, triggered_by, metadata)
++                callbacks = list(self._on_kill_callbacks) if event else []
++            if event is not None:
++                self._execute_callbacks(callbacks, event)
++            return True
+ 
+-            if self._state == KillSwitchState.KILLED:
+-                self._logger.warning("Kill Switch already KILLED (idempotent)")
+-                callbacks = []
+-                event = None
+-            else:
+-                previous = self._state
+-                self._state = KillSwitchState.KILLED
+-                self._killed_at = datetime.utcnow()
+-                self._trigger_reason = reason
++        assert self._journal is not None
++        journaled = False
++        try:
++            self._journal.append(
++                {
++                    "kind": KIND_KILL,
++                    "previous_state": self.state.name,
++                    "new_state": KillSwitchState.KILLED.name,
++                    "triggered_by": triggered_by,
++                    "trigger_reason": reason,
++                }
++            )
++            journaled = True
++        except Exception:
++            self._logger.critical("KILL journal append failed; persisting state", exc_info=True)
+ 
+-                event = KillSwitchEvent(
+-                    timestamp=self._killed_at,
+-                    previous_state=previous,
+-                    new_state=self._state,
+-                    trigger_reason=reason,
+-                    triggered_by=triggered_by,
+-                    metadata=metadata or {},
+-                )
+-                self._events.append(event)
+-
+-                self._logger.critical(
+-                    f"🚨 KILL SWITCH TRIGGERED: {reason} (by={triggered_by}, from={previous.name})"
+-                )
+-                callbacks = list(self._on_kill_callbacks)
++        from .persistence import StateLockTimeoutError
+ 
++        try:
++            with self._persistence.exclusive_lock(self._lock_timeout):
++                with self._lock:
++                    event = self._apply_kill_in_memory(reason, triggered_by, metadata)
++                    callbacks = list(self._on_kill_callbacks) if event else []
++                self._persist_current_state()
++        except StateLockTimeoutError:
++            with self._lock:
++                event = self._apply_kill_in_memory(reason, triggered_by, metadata)
++                callbacks = list(self._on_kill_callbacks) if event else []
++            if event is not None:
++                self._execute_callbacks(callbacks, event)
++            if journaled:
++                raise KillSwitchKillPendingError(
++                    "KILL_JOURNALED_STATE_WRITE_BLOCKED_BY_LOCK"
++                ) from None
++            raise KillSwitchKillFailedError("KILL_NOT_DURABLE") from None
+         if event is not None:
+             self._execute_callbacks(callbacks, event)
+-        self._persist_current_state()
+         return True
+ 
+     def request_recovery(
+@@ -315,32 +545,116 @@ class KillSwitch:
+ 
+         Args:
+             approved_by: Who approved the recovery
+-            approval_code: Optional approval code for validation
++            approval_code: Approval code (mandatory in durable mode)
+ 
+         Returns:
+-            True if recovery started
+-            False if not in KILLED state or validation failed
++            True if recovery started (or already RECOVERING)
++            False if denied
+         """
++        if self._persistence is None:
++            return self._request_recovery_in_memory(approved_by, approval_code)
++
++        from .persistence import StateLockTimeoutError
++
++        try:
++            with self._persistence.exclusive_lock(self._lock_timeout):
++                with self._lock:
++                    state, data = self._read_durable()
++                    self._sync_from_durable(state, data)
++                    if state is KillSwitchState.RECOVERING:
++                        self._logger.info(
++                            f"Already RECOVERING (idempotent request by {approved_by})"
++                        )
++                        return True
++                    if state is not KillSwitchState.KILLED:
++                        return self._deny(DENY_NOT_KILLED, approved_by=approved_by)
++                    denial = self._authorization_denial(approved_by, approval_code)
++                    if denial:
++                        return self._deny(denial, approved_by=approved_by)
++                    key = derive_attestation_key(self._expected_approval_code())
++                    assert self._journal is not None and key is not None
++                    try:
++                        self._journal.read_events()
++                    except JournalError as exc:
++                        return self._deny(
++                            f"{DENY_JOURNAL_UNAVAILABLE}:{exc}", approved_by=approved_by
++                        )
++
++                    started_at = datetime.utcnow()
++                    request = {
++                        "kind": KIND_RECOVERY_REQUESTED,
++                        "event_id": new_identifier(),
++                        "request_id": new_identifier(),
++                        "recovery_started_at": started_at.isoformat(),
++                        "cooldown_seconds": self._recovery_cooldown.total_seconds(),
++                        "approved_by": approved_by,
++                        "previous_state": KillSwitchState.KILLED.name,
++                        "new_state": KillSwitchState.RECOVERING.name,
++                        "triggered_by": "manual",
++                        "trigger_reason": f"Recovery requested by {approved_by}",
++                    }
++                    request["tag"] = sign_fields(
++                        key, requested_event_fields(self._persistence.state_file, request)
++                    )
++                    try:
++                        self._journal.append(request)
++                    except Exception:
++                        self._logger.error("Recovery request journal write failed", exc_info=True)
++                        return self._deny(DENY_AUDIT_WRITE_FAILED, approved_by=approved_by)
++
++                    previous = self._state
++                    self._state = KillSwitchState.RECOVERING
++                    self._recovery_started_at = started_at
++                    self._recovery = {
++                        "request_id": request["request_id"],
++                        "requested_event_id": request["event_id"],
++                        "recovery_started_at": request["recovery_started_at"],
++                        "cooldown_seconds": request["cooldown_seconds"],
++                        "approved_by": approved_by,
++                    }
++                    self._events.append(
++                        KillSwitchEvent(
++                            timestamp=started_at,
++                            previous_state=previous,
++                            new_state=self._state,
++                            trigger_reason=f"Recovery requested by {approved_by}",
++                            triggered_by="manual",
++                            metadata={
++                                "approved_by": approved_by,
++                                "request_id": request["request_id"],
++                            },
++                        )
++                    )
++                    self._persist_current_state()
++                    self._last_denial_reason = None
++                    self._logger.warning(
++                        f"⏳ RECOVERY STARTED: cooldown={self._recovery_cooldown}, "
++                        f"approved_by={approved_by}, request_id={request['request_id']}"
++                    )
++                    return True
++        except StateLockTimeoutError:
++            return self._deny(DENY_LOCK_TIMEOUT, approved_by=approved_by)
++
++    def _request_recovery_in_memory(self, approved_by: str, approval_code: Optional[str]) -> bool:
+         with self._lock:
+-            # Idempotent: if already RECOVERING, return True
+             if self._state == KillSwitchState.RECOVERING:
+                 self._logger.info(f"Already RECOVERING (idempotent request by {approved_by})")
+-            elif self._state != KillSwitchState.KILLED:
++                return True
++            if self._state != KillSwitchState.KILLED:
+                 self._logger.warning(
+                     f"Recovery only possible from KILLED state, currently: {self._state.name}"
+                 )
+                 return False
+-            elif self._config.get("require_approval_code", False) and not (
+-                self._validate_approval_code(approval_code)
+-            ):
++            if self._approval_required() and not self._validate_approval_code(approval_code):
++                self._last_denial_reason = DENY_CODE_INVALID
+                 self._logger.error("❌ Invalid Approval Code")
+                 return False
+-            else:
+-                previous = self._state
+-                self._state = KillSwitchState.RECOVERING
+-                self._recovery_started_at = datetime.utcnow()
+-
+-                event = KillSwitchEvent(
++            previous = self._state
++            self._state = KillSwitchState.RECOVERING
++            self._recovery_started_at = datetime.utcnow()
++            self._recovery = {"request_id": new_identifier()}
++            self._events.append(
++                KillSwitchEvent(
+                     timestamp=self._recovery_started_at,
+                     previous_state=previous,
+                     new_state=self._state,
+@@ -348,23 +662,188 @@ class KillSwitch:
+                     triggered_by="manual",
+                     metadata={"approved_by": approved_by},
+                 )
+-                self._events.append(event)
+-
+-                self._logger.warning(
+-                    f"⏳ RECOVERY STARTED: cooldown={self._recovery_cooldown}, "
+-                    f"approved_by={approved_by}"
+-                )
+-
+-        self._persist_current_state()
+-        return True
++            )
++            self._logger.warning(
++                f"⏳ RECOVERY STARTED: cooldown={self._recovery_cooldown}, "
++                f"approved_by={approved_by}"
++            )
++            return True
+ 
+-    def complete_recovery(self) -> bool:
++    def _cooldown_denial(self, started_raw: object, bound_cooldown: object) -> Optional[str]:
++        if started_raw in (None, ""):
++            return DENY_TIMESTAMP_MISSING
++        started = parse_naive_utc(started_raw)
++        if started is None:
++            return DENY_TIMESTAMP_INVALID
++        now = datetime.utcnow()
++        if started > now + timedelta(seconds=MAX_RECOVERY_FUTURE_SKEW_SECONDS):
++            return DENY_TIMESTAMP_FUTURE
++        cooldown = self._recovery_cooldown
++        try:
++            if bound_cooldown is not None:
++                cooldown = max(cooldown, timedelta(seconds=float(bound_cooldown)))
++        except (TypeError, ValueError):
++            return DENY_BINDING_MISSING
++        if now - started < cooldown:
++            remaining = cooldown - (now - started)
++            self._logger.warning(f"⏳ Cooldown still active: {remaining.seconds}s remaining")
++            return DENY_COOLDOWN_ACTIVE
++        return None
++
++    def complete_recovery(
++        self,
++        approved_by: Optional[str] = None,
++        approval_code: Optional[str] = None,
++        request_id: Optional[str] = None,
++    ) -> bool:
+         """Complete recovery (after cooldown).
+ 
++        Durable mode requires ``approved_by``, the approval code and the persisted
++        ``request_id``. ACTIVE only means "kill-switch recovery completed".
++
+         Returns:
+             True if successfully recovered
+-            False if not in RECOVERING state or cooldown not complete
++            False if denied (see :attr:`last_denial_reason`)
+         """
++        if self._persistence is None:
++            return self._complete_recovery_in_memory(approval_code, request_id)
++
++        from .persistence import StateLockTimeoutError
++
++        try:
++            with self._persistence.exclusive_lock(self._lock_timeout):
++                with self._lock:
++                    event = self._complete_recovery_locked(approved_by, approval_code, request_id)
++                    callbacks = list(self._on_recover_callbacks)
++        except StateLockTimeoutError:
++            return self._deny(DENY_LOCK_TIMEOUT, approved_by=approved_by)
++        if not isinstance(event, KillSwitchEvent):
++            return False
++        self._execute_callbacks(callbacks, event)
++        return True
++
++    def _complete_recovery_locked(
++        self,
++        approved_by: Optional[str],
++        approval_code: Optional[str],
++        request_id: Optional[str],
++    ) -> KillSwitchEvent | bool:
++        """Returns the ACTIVE event on success, ``False`` on any denial."""
++        assert self._persistence is not None and self._journal is not None
++        state_file = self._persistence.state_file
++        state, data = self._read_durable()
++        self._sync_from_durable(state, data)
++        if state is not KillSwitchState.RECOVERING:
++            self._logger.warning(
++                f"Complete recovery only possible from RECOVERING state, currently: {state.name}"
++            )
++            return self._deny(DENY_NOT_RECOVERING, approved_by=approved_by)
++        binding = data.get("recovery")
++        if not isinstance(binding, dict) or not all(
++            isinstance(binding.get(k), str) and binding.get(k)
++            for k in ("request_id", "requested_event_id", "recovery_started_at")
++        ):
++            return self._deny(DENY_BINDING_MISSING, approved_by=approved_by)
++        if not isinstance(request_id, str) or not hmac.compare_digest(
++            request_id.encode("utf-8"), str(binding["request_id"]).encode("utf-8")
++        ):
++            return self._deny(DENY_REQUEST_ID_MISMATCH, approved_by=approved_by)
++        denial = self._authorization_denial(approved_by, approval_code)
++        if denial:
++            return self._deny(denial, approved_by=approved_by)
++        if data.get("recovery_started_at") != binding.get("recovery_started_at"):
++            return self._deny(DENY_TIMESTAMP_INVALID, approved_by=approved_by)
++        denial = self._cooldown_denial(
++            data.get("recovery_started_at"), binding.get("cooldown_seconds")
++        )
++        if denial:
++            return self._deny(denial, approved_by=approved_by)
++
++        key = derive_attestation_key(self._expected_approval_code())
++        try:
++            events = self._journal.read_events()
++        except JournalError as exc:
++            return self._deny(f"{DENY_JOURNAL_UNAVAILABLE}:{exc}", approved_by=approved_by)
++        check = verify_pending_request_binding(
++            state_file=state_file, events=events, recovery=binding, key=key
++        )
++        if not check.verified:
++            return self._deny(f"{DENY_KILL_PRIORITY}:{check.reason}", approved_by=approved_by)
++
++        assert key is not None
++        completed_at = datetime.utcnow().isoformat()
++        completed = {
++            "kind": KIND_RECOVERY_COMPLETED,
++            "event_id": new_identifier(),
++            "request_id": binding["request_id"],
++            "parent_event_id": binding["requested_event_id"],
++            "completed_at": completed_at,
++            "approved_by": approved_by,
++            "previous_state": KillSwitchState.RECOVERING.name,
++            "new_state": KillSwitchState.ACTIVE.name,
++            "triggered_by": "manual",
++            "trigger_reason": "Recovery completed",
++        }
++        completed["tag"] = sign_fields(key, completed_event_fields(state_file, completed))
++        try:
++            self._journal.append(completed)
++        except Exception:
++            self._logger.error("Recovery completion journal write failed", exc_info=True)
++            return self._deny(DENY_AUDIT_WRITE_FAILED, approved_by=approved_by)
++
++        record = {
++            "request_id": binding["request_id"],
++            "requested_event_id": binding["requested_event_id"],
++            "completed_event_id": completed["event_id"],
++            "recovery_started_at": binding["recovery_started_at"],
++            "completed_at": completed_at,
++        }
++        record["attestation"] = sign_fields(key, active_record_fields(state_file, record))
++        payload = {"state": KillSwitchState.ACTIVE.name, "recovery": record}
++        pre_write = verify_active_attestation(state_file=state_file, payload=payload, key=key)
++        if not pre_write.verified:
++            return self._deny(f"{DENY_KILL_PRIORITY}:{pre_write.reason}", approved_by=approved_by)
++
++        try:
++            self._persistence.save(KillSwitchState.ACTIVE, recovery=record)
++        except Exception:
++            self._logger.error("ACTIVE state write failed; durable state unchanged", exc_info=True)
++            return self._deny(DENY_STATE_WRITE_FAILED, approved_by=approved_by)
++
++        written = self._persistence.load() or {}
++        post_write = verify_active_attestation(state_file=state_file, payload=written, key=key)
++        if not post_write.verified:
++            self._logger.critical(
++                "KILL won against concurrent recovery (%s); restoring KILLED", post_write.reason
++            )
++            self._apply_kill_in_memory(f"{DENY_KILL_PRIORITY}:{post_write.reason}", "system", None)
++            self._persist_current_state()
++            return self._deny(f"{DENY_KILL_PRIORITY}:{post_write.reason}", approved_by=approved_by)
++
++        previous = self._state
++        self._state = KillSwitchState.ACTIVE
++        self._killed_at = None
++        self._recovery_started_at = None
++        self._trigger_reason = None
++        self._recovery = None
++        self._last_denial_reason = None
++        event = KillSwitchEvent(
++            timestamp=datetime.utcnow(),
++            previous_state=previous,
++            new_state=self._state,
++            trigger_reason="Recovery completed",
++            triggered_by="manual",
++            metadata={"approved_by": approved_by, "request_id": record["request_id"]},
++        )
++        self._events.append(event)
++        self._logger.info(
++            "✅ KILL SWITCH RECOVERED (kill-switch only; no trading/POST authorization)"
++        )
++        return event
++
++    def _complete_recovery_in_memory(
++        self, approval_code: Optional[str], request_id: Optional[str]
++    ) -> bool:
+         with self._lock:
+             if self._state != KillSwitchState.RECOVERING:
+                 self._logger.warning(
+@@ -372,21 +851,19 @@ class KillSwitch:
+                     f"currently: {self._state.name}"
+                 )
+                 return False
++            if request_id is not None and request_id != (self._recovery or {}).get("request_id"):
++                self._last_denial_reason = DENY_REQUEST_ID_MISMATCH
++                return False
++            if self._recovery_started_at is None:
++                self._last_denial_reason = DENY_TIMESTAMP_MISSING
++                return False
++            denial = self._cooldown_denial(self._recovery_started_at.isoformat(), None)
++            if denial:
++                self._last_denial_reason = denial
++                return False
+ 
+-            # Check cooldown
+-            if self._recovery_started_at:
+-                elapsed = datetime.utcnow() - self._recovery_started_at
+-                if elapsed < self._recovery_cooldown:
+-                    remaining = self._recovery_cooldown - elapsed
+-                    self._logger.warning(
+-                        f"⏳ Cooldown still active: {remaining.seconds}s remaining"
+-                    )
+-                    return False
+-
+-            # State transition
+             previous = self._state
+             self._state = KillSwitchState.ACTIVE
+-
+             event = KillSwitchEvent(
+                 timestamp=datetime.utcnow(),
+                 previous_state=previous,
+@@ -396,20 +873,14 @@ class KillSwitch:
+                 metadata={},
+             )
+             self._events.append(event)
+-
+-            # Reset timestamps
+             self._killed_at = None
+             self._recovery_started_at = None
+             self._trigger_reason = None
+-
++            self._recovery = None
+             self._logger.info("✅ KILL SWITCH RECOVERED: Trading active again")
+-
+-            # Execute callbacks
+             callbacks = list(self._on_recover_callbacks)
+ 
+-        # Execute callbacks outside lock
+         self._execute_callbacks(callbacks, event)
+-        self._persist_current_state()
+         return True
+ 
+     def check_and_block(self) -> bool:
+@@ -459,7 +930,7 @@ class KillSwitch:
+             Dictionary with current status
+         """
+         with self._lock:
+-            status = {
++            status: dict[str, Any] = {
+                 "state": self._state.name,
+                 "is_killed": self.is_killed,
+                 "is_active": self.is_active,
+@@ -468,6 +939,8 @@ class KillSwitch:
+                     self._recovery_started_at.isoformat() if self._recovery_started_at else None
+                 ),
+                 "event_count": len(self._events),
++                "request_id": self.pending_request_id,
++                "last_denial_reason": self._last_denial_reason,
+             }
+ 
+             # Add cooldown info if recovering
+@@ -479,21 +952,11 @@ class KillSwitch:
+             return status
+ 
+     def _validate_approval_code(self, code: Optional[str]) -> bool:
+-        """Validate approval code.
++        """Validate approval code (fail-closed, constant-time).
+ 
+-        Args:
+-            code: Code to validate
+-
+-        Returns:
+-            True if valid, False otherwise
++        A missing expected code, a missing provided code or a mismatch all deny.
+         """
+-        expected = self._config.get("approval_code")
+-
+-        # If no expected code is set, accept any (for testing)
+-        if not expected:
+-            return True
+-
+-        return code == expected
++        return approval_code_matches(self._expected_approval_code(), code)
+ 
+     def _execute_callbacks(
+         self,
+diff --git a/src/risk_layer/kill_switch/persistence.py b/src/risk_layer/kill_switch/persistence.py
+index 70886944a..9a303d3b9 100644
+--- a/src/risk_layer/kill_switch/persistence.py
++++ b/src/risk_layer/kill_switch/persistence.py
+@@ -3,19 +3,36 @@
+ Provides crash-safe state persistence using atomic writes.
+ """
+ 
++import fcntl
+ import json
+ import logging
+ import os
+ import shutil
++import time
++from contextlib import contextmanager
+ from datetime import datetime
+ from pathlib import Path
+-from typing import Optional
++from typing import Iterator, Optional
+ 
+ from .state import KillSwitchState
+ 
+ 
+ logger = logging.getLogger(__name__)
+ 
++_LOCK_POLL_SECONDS = 0.01
++
++
++class StateLockTimeoutError(RuntimeError):
++    """The process-exclusive state lock was not acquired in time."""
++
++
++def _fsync_dir(path: Path) -> None:
++    fd = os.open(str(path), os.O_RDONLY)
++    try:
++        os.fsync(fd)
++    finally:
++        os.close(fd)
++
+ 
+ class StatePersistence:
+     """Persists kill switch state to disk.
+@@ -68,16 +85,19 @@ class StatePersistence:
+         killed_at: Optional[datetime] = None,
+         trigger_reason: Optional[str] = None,
+         recovery_started_at: Optional[datetime] = None,
++        recovery: Optional[dict] = None,
+     ):
+         """Save current state to disk.
+ 
+-        Uses atomic write pattern (tmp → rename) for crash safety.
++        Uses atomic write pattern (tmp → fsync → rename → dir fsync) for crash safety.
+ 
+         Args:
+             state: Current kill switch state
+             killed_at: Timestamp when killed (if KILLED)
+             trigger_reason: Reason for trigger (if KILLED)
+             recovery_started_at: Timestamp when recovery started (if RECOVERING)
++            recovery: Request binding (RECOVERING) or attestation record (ACTIVE);
++                never contains the approval secret
+         """
+         data = {
+             "state": state.name,
+@@ -89,6 +109,8 @@ class StatePersistence:
+             ),
+             "version": "1.0",
+         }
++        if recovery is not None:
++            data["recovery"] = dict(recovery)
+ 
+         # Atomic write: tmp → rename
+         tmp_file = self.state_file.with_suffix(".tmp")
+@@ -109,6 +131,7 @@ class StatePersistence:
+ 
+             # Atomic rename
+             tmp_file.rename(self.state_file)
++            _fsync_dir(self.state_file.parent)
+ 
+             self._logger.debug(f"State saved: {state.name}")
+ 
+@@ -143,6 +166,32 @@ class StatePersistence:
+             self._logger.error(f"Failed to load state: {e}", exc_info=True)
+             return None
+ 
++    @contextmanager
++    def exclusive_lock(self, timeout_seconds: float) -> Iterator[None]:
++        """Process-exclusive ``flock`` on the state directory itself (no lock file).
++
++        Bounded: raises :class:`StateLockTimeoutError` instead of waiting forever.
++        """
++        directory = self.state_file.parent
++        directory.mkdir(parents=True, exist_ok=True)
++        fd = os.open(str(directory), os.O_RDONLY)
++        try:
++            deadline = time.monotonic() + max(0.0, float(timeout_seconds))
++            while True:
++                try:
++                    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
++                    break
++                except BlockingIOError:
++                    if time.monotonic() >= deadline:
++                        raise StateLockTimeoutError("KILL_SWITCH_STATE_LOCK_TIMEOUT") from None
++                    time.sleep(_LOCK_POLL_SECONDS)
++            try:
++                yield
++            finally:
++                fcntl.flock(fd, fcntl.LOCK_UN)
++        finally:
++            os.close(fd)
++
+     def clear(self):
+         """Clear saved state."""
+         if self.state_file.exists():
+diff --git a/src/risk_layer/kill_switch/recovery_attestation.py b/src/risk_layer/kill_switch/recovery_attestation.py
+new file mode 100644
+index 000000000..ef2954f3f
+--- /dev/null
++++ b/src/risk_layer/kill_switch/recovery_attestation.py
+@@ -0,0 +1,412 @@
++"""Recovery authorization, durable transition journal and ACTIVE attestation.
++
++Trust boundary: the approval secret lives only in the environment variable named
++by ``approval_code_env`` (default ``KILL_SWITCH_APPROVAL_CODE``). It is never
++logged, never accepted via argv and never persisted. Persisted records carry
++HMAC-SHA256 tags derived from that secret, so a state or journal file written
++without the secret cannot attest ACTIVE.
++
++The journal is append-only. KILL events are appended without the state lock and
++without the secret (a kill must never depend on either). An ACTIVE state is only
++attested while the last transition in the journal is the signed
++RECOVERY_COMPLETED event bound to it, directly preceded by its signed
++RECOVERY_REQUESTED event. Any later KILL, any replayed (duplicated) event and any
++copied or restored older ACTIVE file therefore fails verification.
++
++Not covered: a writer that truncates the journal *and* restores an older ACTIVE
++state file together. There is no external monotonic anchor in the CURRENT
++filesystem boundary to detect such a joint rollback.
++
++This module is stdlib-only and does not write kill-switch state.
++"""
++
++from __future__ import annotations
++
++import hashlib
++import hmac
++import json
++import os
++import uuid
++from dataclasses import dataclass
++from datetime import datetime
++from pathlib import Path
++from typing import Any, Mapping, Optional, Sequence
++
++DEFAULT_APPROVAL_CODE_ENV = "KILL_SWITCH_APPROVAL_CODE"
++JOURNAL_DIRNAME = "audit"
++JOURNAL_FILENAME = "kill_switch_transition_journal_v1.jsonl"
++MAX_JOURNAL_LINE_BYTES = 3500
++
++KIND_KILL = "KILL"
++KIND_RECOVERY_REQUESTED = "RECOVERY_REQUESTED"
++KIND_RECOVERY_COMPLETED = "RECOVERY_COMPLETED"
++KIND_RECOVERY_DENIED = "RECOVERY_DENIED"
++TRANSITION_KINDS = frozenset({KIND_KILL, KIND_RECOVERY_REQUESTED, KIND_RECOVERY_COMPLETED})
++JOURNAL_KINDS = TRANSITION_KINDS | {KIND_RECOVERY_DENIED}
++
++_KEY_CONTEXT = b"peak_trade.kill_switch.recovery_attestation.v1"
++_TAG_HEX_LEN = 64
++
++ACTIVE_RECORD_KEYS = (
++    "request_id",
++    "requested_event_id",
++    "completed_event_id",
++    "recovery_started_at",
++    "completed_at",
++    "attestation",
++)
++
++
++class JournalError(RuntimeError):
++    """Journal unreadable, torn, inconsistent or not writable (fail-closed)."""
++
++
++# --------------------------------------------------------------------------- secret
++
++
++def resolve_approval_secret(env_var: Optional[str] = None) -> Optional[str]:
++    name = str(env_var or "").strip() or DEFAULT_APPROVAL_CODE_ENV
++    value = os.environ.get(name, "")
++    return value if value.strip() else None
++
++
++def approval_code_matches(expected: Optional[str], provided: Optional[str]) -> bool:
++    """Constant-time match. Missing or blank expected/provided never match."""
++    if not isinstance(expected, str) or not expected.strip():
++        return False
++    if not isinstance(provided, str) or not provided.strip():
++        return False
++    return hmac.compare_digest(expected.encode("utf-8"), provided.encode("utf-8"))
++
++
++def derive_attestation_key(secret: Optional[str]) -> Optional[bytes]:
++    if not isinstance(secret, str) or not secret.strip():
++        return None
++    return hmac.new(secret.encode("utf-8"), _KEY_CONTEXT, hashlib.sha256).digest()
++
++
++def attestation_key_from_env(env_var: Optional[str] = None) -> Optional[bytes]:
++    return derive_attestation_key(resolve_approval_secret(env_var))
++
++
++def _canonical_bytes(fields: Mapping[str, Any]) -> bytes:
++    return json.dumps(dict(fields), sort_keys=True, separators=(",", ":")).encode("utf-8")
++
++
++def sign_fields(key: bytes, fields: Mapping[str, Any]) -> str:
++    return hmac.new(key, _canonical_bytes(fields), hashlib.sha256).hexdigest()
++
++
++def verify_fields(key: Optional[bytes], fields: Mapping[str, Any], tag: object) -> bool:
++    if key is None or not isinstance(tag, str) or len(tag) != _TAG_HEX_LEN:
++        return False
++    return hmac.compare_digest(sign_fields(key, fields), tag)
++
++
++def _bound_state_path(state_file: Path | str) -> str:
++    return str(Path(state_file).resolve())
++
++
++def requested_event_fields(state_file: Path | str, event: Mapping[str, Any]) -> dict:
++    return {
++        "kind": KIND_RECOVERY_REQUESTED,
++        "event_id": event.get("event_id"),
++        "request_id": event.get("request_id"),
++        "recovery_started_at": event.get("recovery_started_at"),
++        "cooldown_seconds": event.get("cooldown_seconds"),
++        "approved_by": event.get("approved_by"),
++        "state_path": _bound_state_path(state_file),
++    }
++
++
++def completed_event_fields(state_file: Path | str, event: Mapping[str, Any]) -> dict:
++    return {
++        "kind": KIND_RECOVERY_COMPLETED,
++        "event_id": event.get("event_id"),
++        "request_id": event.get("request_id"),
++        "parent_event_id": event.get("parent_event_id"),
++        "completed_at": event.get("completed_at"),
++        "approved_by": event.get("approved_by"),
++        "state_path": _bound_state_path(state_file),
++    }
++
++
++def active_record_fields(state_file: Path | str, record: Mapping[str, Any]) -> dict:
++    return {
++        "state": "ACTIVE",
++        "request_id": record.get("request_id"),
++        "requested_event_id": record.get("requested_event_id"),
++        "completed_event_id": record.get("completed_event_id"),
++        "recovery_started_at": record.get("recovery_started_at"),
++        "completed_at": record.get("completed_at"),
++        "state_path": _bound_state_path(state_file),
++    }
++
++
++def new_identifier() -> str:
++    return uuid.uuid4().hex
++
++
++def parse_naive_utc(value: object) -> Optional[datetime]:
++    """Writer timestamps are naive UTC ISO strings; anything else is invalid."""
++    if not isinstance(value, str) or not value.strip():
++        return None
++    try:
++        parsed = datetime.fromisoformat(value)
++    except ValueError:
++        return None
++    if parsed.tzinfo is not None:
++        return None
++    return parsed
++
++
++# --------------------------------------------------------------------------- journal
++
++
++def journal_path_for_state_file(state_file: Path | str) -> Path:
++    return Path(state_file).parent / JOURNAL_DIRNAME / JOURNAL_FILENAME
++
++
++def _fsync_dir(path: Path) -> None:
++    fd = os.open(str(path), os.O_RDONLY)
++    try:
++        os.fsync(fd)
++    finally:
++        os.close(fd)
++
++
++class TransitionJournal:
++    """Append-only JSONL journal; one ``os.write`` + ``fsync`` per event."""
++
++    def __init__(self, path: Path | str) -> None:
++        self.path = Path(path)
++
++    def append(self, record: Mapping[str, Any]) -> dict:
++        event = dict(record)
++        if event.get("kind") not in JOURNAL_KINDS:
++            raise JournalError("JOURNAL_EVENT_KIND_INVALID")
++        event.setdefault("event_id", new_identifier())
++        event.setdefault("timestamp", datetime.utcnow().isoformat())
++        line = (json.dumps(event, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
++        if len(line) > MAX_JOURNAL_LINE_BYTES:
++            raise JournalError("JOURNAL_LINE_TOO_LARGE")
++        self.path.parent.mkdir(parents=True, exist_ok=True)
++        created = not self.path.exists()
++        fd = os.open(str(self.path), os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
++        try:
++            if os.write(fd, line) != len(line):
++                raise JournalError("JOURNAL_SHORT_WRITE")
++            os.fsync(fd)
++        finally:
++            os.close(fd)
++        if created:
++            _fsync_dir(self.path.parent)
++        return event
++
++    def exists(self) -> bool:
++        return self.path.is_file()
++
++    def read_events(self) -> list[dict]:
++        if not self.path.is_file():
++            return []
++        try:
++            raw = self.path.read_bytes()
++        except OSError as exc:
++            raise JournalError("JOURNAL_UNREADABLE") from exc
++        if raw and not raw.endswith(b"\n"):
++            raise JournalError("JOURNAL_TORN_TAIL")
++        events: list[dict] = []
++        seen: set[str] = set()
++        for line in raw.splitlines():
++            try:
++                event = json.loads(line)
++            except ValueError as exc:
++                raise JournalError("JOURNAL_LINE_UNREADABLE") from exc
++            if not isinstance(event, dict) or event.get("kind") not in JOURNAL_KINDS:
++                raise JournalError("JOURNAL_EVENT_INVALID")
++            event_id = event.get("event_id")
++            if not isinstance(event_id, str) or not event_id:
++                raise JournalError("JOURNAL_EVENT_ID_MISSING")
++            if event_id in seen:
++                raise JournalError("JOURNAL_DUPLICATE_EVENT_ID")
++            seen.add(event_id)
++            events.append(event)
++        return events
++
++
++def last_transition_index(events: Sequence[Mapping[str, Any]], before: Optional[int] = None) -> int:
++    """Index of the last transition event (DENIED entries are skipped), or -1."""
++    idx = (len(events) if before is None else before) - 1
++    while idx >= 0 and events[idx].get("kind") not in TRANSITION_KINDS:
++        idx -= 1
++    return idx
++
++
++# --------------------------------------------------------------------------- verification
++
++
++@dataclass(frozen=True)
++class AttestationCheckV1:
++    verified: bool
++    reason: str
++
++
++def _fail(reason: str) -> AttestationCheckV1:
++    return AttestationCheckV1(False, reason)
++
++
++def verify_pending_request_binding(
++    *,
++    state_file: Path | str,
++    events: Sequence[Mapping[str, Any]],
++    recovery: Mapping[str, Any],
++    key: Optional[bytes],
++) -> AttestationCheckV1:
++    """The last transition must be the signed REQUESTED event of ``recovery``."""
++    idx = last_transition_index(events)
++    if idx < 0:
++        return _fail("JOURNAL_REQUEST_NOT_LAST_TRANSITION")
++    event = events[idx]
++    if event.get("kind") != KIND_RECOVERY_REQUESTED:
++        return _fail("JOURNAL_TRANSITION_AFTER_REQUEST")
++    if event.get("event_id") != recovery.get("requested_event_id"):
++        return _fail("JOURNAL_REQUEST_EVENT_MISMATCH")
++    if event.get("request_id") != recovery.get("request_id"):
++        return _fail("JOURNAL_REQUEST_ID_MISMATCH")
++    if event.get("recovery_started_at") != recovery.get("recovery_started_at"):
++        return _fail("JOURNAL_REQUEST_TIMESTAMP_MISMATCH")
++    if not verify_fields(key, requested_event_fields(state_file, event), event.get("tag")):
++        return _fail("JOURNAL_REQUEST_TAG_INVALID")
++    same_request = [
++        e
++        for e in events
++        if e.get("kind") == KIND_RECOVERY_REQUESTED
++        and e.get("request_id") == event.get("request_id")
++    ]
++    if len(same_request) != 1:
++        return _fail("JOURNAL_REQUEST_ID_REUSED")
++    return AttestationCheckV1(True, "REQUEST_BINDING_VERIFIED")
++
++
++def verify_active_attestation(
++    *,
++    state_file: Path | str,
++    payload: Mapping[str, Any],
++    key: Optional[bytes],
++    events: Optional[Sequence[Mapping[str, Any]]] = None,
++) -> AttestationCheckV1:
++    """Full provenance check of a persisted ACTIVE state (fail-closed)."""
++    if key is None:
++        return _fail("ACTIVE_ATTESTATION_KEY_UNAVAILABLE")
++    if str(payload.get("state") or "").strip().upper() != "ACTIVE":
++        return _fail("ACTIVE_ATTESTATION_STATE_NOT_ACTIVE")
++    record = payload.get("recovery")
++    if not isinstance(record, dict) or any(
++        not isinstance(record.get(k), str) or not record.get(k) for k in ACTIVE_RECORD_KEYS
++    ):
++        return _fail("ACTIVE_ATTESTATION_MISSING")
++    if not verify_fields(key, active_record_fields(state_file, record), record.get("attestation")):
++        return _fail("ACTIVE_ATTESTATION_INVALID")
++    if events is None:
++        try:
++            events = TransitionJournal(journal_path_for_state_file(state_file)).read_events()
++        except JournalError as exc:
++            return _fail(f"ACTIVE_{exc}")
++    idx = last_transition_index(events)
++    if idx < 0:
++        return _fail("ACTIVE_JOURNAL_MISSING_COMPLETION")
++    completed = events[idx]
++    if completed.get("kind") != KIND_RECOVERY_COMPLETED:
++        return _fail("ACTIVE_SUPERSEDED_BY_LATER_TRANSITION")
++    if completed.get("event_id") != record.get("completed_event_id"):
++        return _fail("ACTIVE_COMPLETION_EVENT_MISMATCH")
++    if completed.get("request_id") != record.get("request_id"):
++        return _fail("ACTIVE_COMPLETION_REQUEST_MISMATCH")
++    if completed.get("parent_event_id") != record.get("requested_event_id"):
++        return _fail("ACTIVE_COMPLETION_PARENT_MISMATCH")
++    if completed.get("completed_at") != record.get("completed_at"):
++        return _fail("ACTIVE_COMPLETION_TIMESTAMP_MISMATCH")
++    if not verify_fields(key, completed_event_fields(state_file, completed), completed.get("tag")):
++        return _fail("ACTIVE_COMPLETION_TAG_INVALID")
++    completions = [
++        e
++        for e in events
++        if e.get("kind") == KIND_RECOVERY_COMPLETED
++        and e.get("request_id") == record.get("request_id")
++    ]
++    if len(completions) != 1:
++        return _fail("ACTIVE_COMPLETION_REPLAYED")
++    request = verify_pending_request_binding(
++        state_file=state_file,
++        events=events[:idx],
++        recovery=record,
++        key=key,
++    )
++    if not request.verified:
++        return _fail(f"ACTIVE_{request.reason}")
++    return AttestationCheckV1(True, "ACTIVE_ATTESTATION_VERIFIED")
++
++
++def verify_active_attestation_from_env(
++    state_file: Path | str, payload: Mapping[str, Any], env_var: Optional[str] = None
++) -> AttestationCheckV1:
++    return verify_active_attestation(
++        state_file=state_file, payload=payload, key=attestation_key_from_env(env_var)
++    )
++
++
++def active_state_superseded_by_journal(state_file: Path | str, payload: Mapping[str, Any]) -> bool:
++    """Secret-free structural check for ACTIVE readers.
++
++    True (block) when a journal exists and is unreadable, or its last transition
++    is not the completion this ACTIVE state claims. No journal: False (the
++    durable state file alone decides, as before).
++    """
++    journal = TransitionJournal(journal_path_for_state_file(state_file))
++    if not journal.exists():
++        return False
++    try:
++        events = journal.read_events()
++    except JournalError:
++        return True
++    idx = last_transition_index(events)
++    if idx < 0:
++        return False
++    last = events[idx]
++    if last.get("kind") != KIND_RECOVERY_COMPLETED:
++        return True
++    record = payload.get("recovery")
++    if not isinstance(record, dict):
++        return True
++    return last.get("event_id") != record.get("completed_event_id")
++
++
++__all__ = [
++    "ACTIVE_RECORD_KEYS",
++    "AttestationCheckV1",
++    "DEFAULT_APPROVAL_CODE_ENV",
++    "JOURNAL_FILENAME",
++    "JournalError",
++    "KIND_KILL",
++    "KIND_RECOVERY_COMPLETED",
++    "KIND_RECOVERY_DENIED",
++    "KIND_RECOVERY_REQUESTED",
++    "TransitionJournal",
++    "active_record_fields",
++    "active_state_superseded_by_journal",
++    "approval_code_matches",
++    "attestation_key_from_env",
++    "completed_event_fields",
++    "derive_attestation_key",
++    "journal_path_for_state_file",
++    "last_transition_index",
++    "new_identifier",
++    "parse_naive_utc",
++    "requested_event_fields",
++    "resolve_approval_secret",
++    "sign_fields",
++    "verify_active_attestation",
++    "verify_active_attestation_from_env",
++    "verify_fields",
++    "verify_pending_request_binding",
++]
+diff --git a/tests/ops/_post_path_safety_fixtures_v1.py b/tests/ops/_post_path_safety_fixtures_v1.py
+index 048915744..2d639d54b 100644
+--- a/tests/ops/_post_path_safety_fixtures_v1.py
++++ b/tests/ops/_post_path_safety_fixtures_v1.py
+@@ -2,6 +2,9 @@
+ 
+ Kill-switch evidence is produced by writing a real state file under ``tmp_path``
+ and reading it through the CURRENT reader; nothing fabricates TRUSTED_PRESENT.
++ACTIVE is only produced through the canonical recovery flow
++(trigger → request_recovery → complete_recovery) with a test-only approval
++secret, so it carries a real attestation and journal binding.
+ Global ledgers live under ``tmp_path``; the canonical per-user ledger root is
+ refused under pytest.
+ """
+@@ -9,10 +12,12 @@ refused under pytest.
+ from __future__ import annotations
+ 
+ import json
++import os
+ import tempfile
+ import time
++from contextlib import contextmanager
+ from pathlib import Path
+-from typing import Any, Callable
++from typing import Any, Callable, Iterator
+ 
+ import pytest
+ 
+@@ -39,25 +44,88 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
+     FinalOrderEnvelopeV1,
+ )
+ from src.ops.gates import risk_gate
++from src.risk_layer.kill_switch.core import KillSwitch
+ from src.risk_layer.kill_switch.persistence import StatePersistence
++from src.risk_layer.kill_switch.recovery_attestation import DEFAULT_APPROVAL_CODE_ENV
+ from src.risk_layer.kill_switch.state import KillSwitchState
+ 
+ KILL_SWITCH_ENV = "PEAK_KILL_SWITCH_STATE_PATH"
+ KILL_SWITCH_ENV_ALT = "PEAKTRADE_KILL_SWITCH_STATE_PATH"
++KILL_SWITCH_EMERGENCY_ENV = "PEAK_KILL_SWITCH"
+ TEST_BASELINE_SHA = "ab" * 20
++TEST_APPROVAL_CODE = "pt-test-only-kill-switch-approval-v1"
++TEST_APPROVER = "fixture_operator"
++
++
++@contextmanager
++def kill_switch_test_approval_env_v1(code: str = TEST_APPROVAL_CODE) -> Iterator[str]:
++    """Temporarily expose the test-only approval secret; restores the previous value."""
++    previous = os.environ.get(DEFAULT_APPROVAL_CODE_ENV)
++    os.environ[DEFAULT_APPROVAL_CODE_ENV] = code
++    try:
++        yield code
++    finally:
++        if previous is None:
++            os.environ.pop(DEFAULT_APPROVAL_CODE_ENV, None)
++        else:
++            os.environ[DEFAULT_APPROVAL_CODE_ENV] = previous
++
++
++def set_kill_switch_test_approval_env_v1(
++    monkeypatch: pytest.MonkeyPatch, code: str = TEST_APPROVAL_CODE
++) -> str:
++    monkeypatch.setenv(DEFAULT_APPROVAL_CODE_ENV, code)
++    return code
++
++
++def durable_kill_switch_at_v1(path: Path, **config: Any) -> KillSwitch:
++    """Durable KillSwitch bound to ``path`` (cooldown 0 unless overridden)."""
++    path.parent.mkdir(parents=True, exist_ok=True)
++    merged = {"persist_state": True, "recovery_cooldown_seconds": 0, **config}
++    return KillSwitch(
++        merged,
++        persistence=StatePersistence(str(path), backup_dir=str(path.parent / "backups")),
++    )
++
++
++def recover_kill_switch_to_active_v1(ks: KillSwitch, code: str = TEST_APPROVAL_CODE) -> None:
++    """Canonical KILLED/ACTIVE → KILLED → RECOVERING → ACTIVE with a real attestation."""
++    if ks.state is not KillSwitchState.KILLED:
++        ks.trigger("fixture_recovery_cycle", triggered_by="fixture")
++    assert ks.request_recovery(TEST_APPROVER, code) is True, ks.last_denial_reason
++    request_id = ks.pending_request_id
++    assert request_id
++    assert ks.complete_recovery(TEST_APPROVER, code, request_id=request_id) is True, (
++        ks.last_denial_reason
++    )
++
++
++def write_attested_active_kill_switch_state_v1(path: Path) -> Path:
++    with kill_switch_test_approval_env_v1() as code:
++        recover_kill_switch_to_active_v1(durable_kill_switch_at_v1(path), code)
++    return path
++
++
++def write_unattested_kill_switch_state_v1(path: Path, *, state: str) -> Path:
++    """Raw writer output without recovery attestation (negative tests only)."""
++    path.parent.mkdir(parents=True, exist_ok=True)
++    StatePersistence(str(path), backup_dir=str(path.parent / "backups")).save(
++        KillSwitchState[state]
++    )
++    return path
+ 
+ 
+ def write_kill_switch_state_v1(
+     path: Path, *, state: str = "ACTIVE", raw: str | None = None
+ ) -> Path:
+-    """Valid enum states go through the CURRENT ``StatePersistence`` writer."""
++    """ACTIVE goes through the canonical recovery flow; other enum states through the writer."""
+     path.parent.mkdir(parents=True, exist_ok=True)
+     if raw is not None:
+         path.write_text(raw, encoding="utf-8")
++    elif state == "ACTIVE":
++        write_attested_active_kill_switch_state_v1(path)
+     elif state in KillSwitchState.__members__:
+-        StatePersistence(str(path), backup_dir=str(path.parent / "backups")).save(
+-            KillSwitchState[state]
+-        )
++        write_unattested_kill_switch_state_v1(path, state=state)
+     else:
+         path.write_text(json.dumps({"state": state}) + "\n", encoding="utf-8")
+     return path
+@@ -68,10 +136,13 @@ def isolate_kill_switch_state_root_v1(monkeypatch: pytest.MonkeyPatch, root: Pat
+ 
+     Writer and every reader keep resolving through ``canonical_kill_switch_state_path``;
+     nothing outside this in-process injection (env, pytest import) can redirect it.
++    The test-only approval secret is exposed for the same test so ACTIVE re-reads
++    can verify their attestation.
+     """
+     monkeypatch.delenv(KILL_SWITCH_ENV, raising=False)
+     monkeypatch.delenv(KILL_SWITCH_ENV_ALT, raising=False)
+     monkeypatch.setattr(risk_gate, "_KILL_SWITCH_STATE_ROOT", root.resolve())
++    set_kill_switch_test_approval_env_v1(monkeypatch)
+     return Path(risk_gate.canonical_kill_switch_state_path())
+ 
+ 
+@@ -82,6 +153,7 @@ def activate_isolated_kill_switch_state_v1(
+     state: str = "ACTIVE",
+ ) -> Path:
+     path = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path / "kill_switch_fixture")
++    monkeypatch.delenv(KILL_SWITCH_EMERGENCY_ENV, raising=False)
+     return write_kill_switch_state_v1(path, state=state)
+ 
+ 
+@@ -91,7 +163,8 @@ def kill_switch_evidence_from_state_v1(
+     path = write_kill_switch_state_v1(
+         tmp_path / "kill_switch_evidence_fixture" / f"{state.lower()}.json", state=state
+     )
+-    return read_post_path_kill_switch_evidence_v1(state_path=path)
++    with kill_switch_test_approval_env_v1():
++        return read_post_path_kill_switch_evidence_v1(state_path=path)
+ 
+ 
+ def trusted_active_kill_switch_evidence_v1(tmp_path: Path) -> PostPathKillSwitchEvidenceV1:
+@@ -227,10 +300,19 @@ def execute_with_isolated_global_ledger_v1(execute_fn: Callable[..., Any]) -> Ca
+ 
+ 
+ __all__ = [
++    "KILL_SWITCH_EMERGENCY_ENV",
+     "KILL_SWITCH_ENV",
++    "TEST_APPROVAL_CODE",
++    "TEST_APPROVER",
+     "TEST_BASELINE_SHA",
+     "activate_isolated_kill_switch_state_v1",
+     "claim_for_join_v1",
++    "durable_kill_switch_at_v1",
++    "kill_switch_test_approval_env_v1",
++    "recover_kill_switch_to_active_v1",
++    "set_kill_switch_test_approval_env_v1",
++    "write_attested_active_kill_switch_state_v1",
++    "write_unattested_kill_switch_state_v1",
+     "execute_with_isolated_global_ledger_v1",
+     "isolated_join_safety_kwargs_v1",
+     "join_with_isolated_post_path_safety_v1",
+diff --git a/tests/ops/_protected_surface_content_pins_v1.py b/tests/ops/_protected_surface_content_pins_v1.py
+index dd4f0c70c..b416c682e 100644
+--- a/tests/ops/_protected_surface_content_pins_v1.py
++++ b/tests/ops/_protected_surface_content_pins_v1.py
+@@ -24,6 +24,9 @@ AUTHORIZATION_B5_B6_V1_V2 = (
+ AUTHORIZATION_B6_LINUX_LEDGER_V5 = (
+     AUTHORIZATION_B5_B6_V1_V2 + "+OWNER_GO=IMPLEMENT_B6_LINUX_LEDGER_ALLOWLIST_FIX_V5"
+ )
++AUTHORIZATION_WP_B5_KILL_SWITCH_CLOSURE = (
++    "OWNER_IMPLEMENTATION_GO=WP_B5_KILL_SWITCH_SAFETY_AND_RECOVERY_CLOSURE"
++)
+ NEW_FILE_BASE_BLOB = None
+ 
+ # path -> (authorization, origin/main blob id or None for new file, content sha256)
+@@ -49,9 +52,9 @@ AUTHORIZED_PROTECTED_SURFACE_CHANGES_V1: Mapping[str, tuple[str, Optional[str],
+         "5b2f6237f733b35f50d3e37f0f9991645db0426c6d50b5a75bce1e6184574f9d",
+     ),
+     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py": (
+-        AUTHORIZATION_B5_B6_V1_V2,
+-        NEW_FILE_BASE_BLOB,
+-        "92899a48c8b2e56c10e86b1d2e555f17ed5a63b9997cc31ff5f9aa003767017a",
++        AUTHORIZATION_WP_B5_KILL_SWITCH_CLOSURE,
++        "9fb2729bff6cf8f63d9ad04cf1be93d236e3f022",
++        "f95a36596d081ca9ce0c72c25c7bb3ea30ab53c094db109da6d35ac42969f482",
+     ),
+     "src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reduction_venue_proof_v1.py": (
+         AUTHORIZATION_B5_B6_V1_V2,
+diff --git a/tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py b/tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py
+index 90626e600..420903e48 100644
+--- a/tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py
++++ b/tests/ops/test_current_productive_post_path_security_closure_b5_b6_v2.py
+@@ -6,6 +6,7 @@ Offline only: fake states under tmp_path, no venue, no credentials, no owner led
+ from __future__ import annotations
+ 
+ import hashlib
++import io
+ import json
+ import os
+ import subprocess
+@@ -48,11 +49,18 @@ from src.ops.gates.risk_gate import (
+     canonical_kill_switch_state_path,
+     kill_switch_should_block_trading,
+ )
+-from src.risk_layer.kill_switch.cli import cmd_recover, cmd_trigger
++from src.risk_layer.kill_switch.cli import (
++    EXIT_DENIED,
++    EXIT_OK,
++    cmd_complete_recovery,
++    cmd_recover,
++    cmd_trigger,
++)
+ from src.risk_layer.kill_switch.core import KillSwitch
+ from src.risk_layer.kill_switch.state import KillSwitchState
+ from tests.ops._post_path_safety_fixtures_v1 import (
+     isolate_kill_switch_state_root_v1,
++    set_kill_switch_test_approval_env_v1,
+     write_kill_switch_state_v1,
+ )
+ from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
+@@ -126,13 +134,31 @@ def test_v2_writer_and_all_readers_share_one_source_across_cwd(
+     assert _admission(evidence).decision is PostPathKillSwitchDecisionV1.DENY
+     assert _writer().state is KillSwitchState.KILLED
+ 
+-    cmd_recover(Namespace(reason="v2-recover", code="any", approved_by="test"), writer)
++    monkeypatch.setattr(sys, "stdin", io.StringIO("any\n"))
++    assert cmd_recover(
++        Namespace(reason="v2-recover", approved_by="test", code_stdin=True), writer
++    ) == (EXIT_DENIED)
++    assert json.loads(path.read_text(encoding="utf-8"))["state"] == "KILLED"
++    code = set_kill_switch_test_approval_env_v1(monkeypatch)
++    monkeypatch.setattr(sys, "stdin", io.StringIO(code + "\n"))
++    assert (
++        cmd_recover(Namespace(reason="v2-recover", approved_by="test", code_stdin=True), writer)
++        == EXIT_OK
++    )
+     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "RECOVERING"
+     assert kill_switch_should_block_trading(explicit_active=False) is True
+     assert _admission(read_post_path_kill_switch_evidence_v1()).decision is (
+         PostPathKillSwitchDecisionV1.DENY
+     )
+-    assert writer.complete_recovery() is True
++    assert writer.complete_recovery() is False
++    monkeypatch.setattr(sys, "stdin", io.StringIO(code + "\n"))
++    assert (
++        cmd_complete_recovery(
++            Namespace(approved_by="test", request_id=writer.pending_request_id, code_stdin=True),
++            writer,
++        )
++        == EXIT_OK
++    )
+     assert writer.state is KillSwitchState.ACTIVE
+     evidence = read_post_path_kill_switch_evidence_v1()
+     assert evidence.writer_schema_state == "ACTIVE"
+diff --git a/tests/ops/test_risk_gate.py b/tests/ops/test_risk_gate.py
+index a1fde2012..6cb64fe13 100644
+--- a/tests/ops/test_risk_gate.py
++++ b/tests/ops/test_risk_gate.py
+@@ -126,7 +126,7 @@ def test_resolve_kill_switch_missing_file(tmp_path):
+         ("KILLED", True),
+         ("RECOVERING", True),
+         ("ACTIVE", False),
+-        ("DISABLED", False),
++        ("DISABLED", True),
+     ],
+ )
+ def test_resolve_kill_switch_from_file(tmp_path, state, expected):
+@@ -184,10 +184,16 @@ def test_kill_switch_should_block_trading_invalid_enum_fail_closed(tmp_path, mon
+ 
+ def test_kill_switch_should_block_trading_file_active_no_block(tmp_path, monkeypatch):
+     _canonical_state_file(monkeypatch, tmp_path, json.dumps({"state": "ACTIVE"}))
+-    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
++    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+     assert kill_switch_should_block_trading(explicit_active=False) is False
+ 
+ 
++def test_kill_switch_emergency_env_blocks_even_with_active_file(tmp_path, monkeypatch):
++    _canonical_state_file(monkeypatch, tmp_path, json.dumps({"state": "ACTIVE"}))
++    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
++    assert kill_switch_should_block_trading(explicit_active=False) is True
++
++
+ def test_kill_switch_env_override_to_active_file_blocks_and_never_redirects(tmp_path, monkeypatch):
+     canonical = _canonical_state_file(
+         monkeypatch, tmp_path / "root", json.dumps({"state": "ACTIVE"})
+diff --git a/tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py b/tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py
+index fcf0c0f30..ed80bf325 100644
+--- a/tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py
++++ b/tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py
+@@ -13,7 +13,10 @@ from src.risk_layer.kill_switch.cli import cmd_trigger
+ from src.risk_layer.kill_switch.core import KillSwitch
+ from src.risk_layer.kill_switch.persistence import StatePersistence
+ from src.risk_layer.kill_switch.state import KillSwitchState
+-from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
++from tests.ops._post_path_safety_fixtures_v1 import (
++    isolate_kill_switch_state_root_v1,
++    set_kill_switch_test_approval_env_v1,
++)
+ 
+ 
+ def _persist_config(tmp_path, monkeypatch):
+@@ -123,11 +126,20 @@ def test_recovery_does_not_silently_clear_killed(tmp_path, monkeypatch):
+     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "KILLED"
+     assert kill_switch_should_block_trading(explicit_active=False) is True
+ 
+-    assert restarted.request_recovery("operator") is True
++    # require_approval_code=False cannot disable durable recovery authorization.
++    assert restarted.request_recovery("operator") is False
++    assert json.loads(path.read_text(encoding="utf-8"))["state"] == "KILLED"
++    code = set_kill_switch_test_approval_env_v1(monkeypatch)
++    assert restarted.request_recovery("operator", code) is True
+     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "RECOVERING"
+     assert kill_switch_should_block_trading(explicit_active=False) is True
+ 
+-    assert restarted.complete_recovery() is True
++    assert restarted.complete_recovery() is False
++    assert json.loads(path.read_text(encoding="utf-8"))["state"] == "RECOVERING"
++    assert (
++        restarted.complete_recovery("operator", code, request_id=restarted.pending_request_id)
++        is True
++    )
+     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "ACTIVE"
+     assert kill_switch_should_block_trading(explicit_active=False) is False
+ 
+diff --git a/tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py b/tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py
+index d58d3e86c..a7c5eb4aa 100644
+--- a/tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py
++++ b/tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py
+@@ -13,7 +13,10 @@ import pytest
+ 
+ from src.ops.gates.risk_gate import kill_switch_should_block_trading
+ from src.risk_layer.kill_switch import KillSwitch, __all__ as KILL_SWITCH_PUBLIC_API
+-from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
++from tests.ops._post_path_safety_fixtures_v1 import (
++    isolate_kill_switch_state_root_v1,
++    set_kill_switch_test_approval_env_v1,
++)
+ 
+ REPO_ROOT = Path(__file__).resolve().parents[3]
+ TRIGGER_PACKAGE = "src.risk_layer.kill_switch.triggers"
+@@ -74,5 +77,6 @@ def test_filegate_reader_and_cli_writer_remain_the_durable_path(
+     assert ks.trigger("KS_THIN_01_contract", triggered_by="manual_cli") is True
+     assert path.is_file()
+     assert kill_switch_should_block_trading(explicit_active=False) is True
+-    assert ks.request_recovery(approved_by="operator") is True
++    code = set_kill_switch_test_approval_env_v1(monkeypatch)
++    assert ks.request_recovery(approved_by="operator", approval_code=code) is True
+     assert kill_switch_should_block_trading(explicit_active=False) is True
+diff --git a/tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py b/tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py
+new file mode 100644
+index 000000000..e422f8d8e
+--- /dev/null
++++ b/tests/risk_layer/kill_switch/test_wp_b5_kill_switch_safety_recovery_closure_v1.py
+@@ -0,0 +1,944 @@
++"""WP-B5 kill-switch safety & recovery closure (offline, isolated temp roots).
++
++Covers F1–F6 and the RECOVERING → ACTIVE entry: fail-closed approval, bound
++recovery requests, cooldown/timestamp integrity, inter-process kill priority,
++durable journal, DISABLED / PEAK_KILL_SWITCH semantics and ACTIVE provenance.
++ACTIVE here only means "kill-switch recovery completed"; no test arms, signs,
++opens a socket or performs a venue POST.
++"""
++
++from __future__ import annotations
++
++import dataclasses
++import hashlib
++import io
++import json
++import logging
++import os
++import socket
++import subprocess
++import sys
++import threading
++import time
++from argparse import Namespace
++from datetime import datetime, timedelta
++from pathlib import Path
++
++import pytest
++
++from src.ops.full_core_live_path_composition_root_v1 import constants_v1
++from src.ops.full_core_live_path_composition_root_v1.current_full_core_capital_guard_v1 import (
++    load_full_core_capital_guard_config_v1,
++)
++from src.ops.full_core_live_path_composition_root_v1.current_productive_global_venue_effect_authority_ledger_v1 import (
++    GlobalVenueEffectReplayDeniedError,
++)
++from src.ops.full_core_live_path_composition_root_v1.current_productive_mandatory_new_risk_enter_post_admission_v1 import (
++    MandatoryNewRiskEnterPostAdmissionError,
++    resolve_mandatory_new_risk_enter_post_admission_v1,
++)
++from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
++    CurrentProductiveOneShotFreshEnvelopeJoinError,
++    attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1,
++)
++from src.ops.full_core_live_path_composition_root_v1.current_productive_pilot_capital_guard_post_bind_v1 import (
++    OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1,
++)
++from src.ops.full_core_live_path_composition_root_v1.current_productive_post_path_kill_switch_gate_v1 import (
++    DENY_ACTIVE_ATTESTATION_NOT_VERIFIED,
++    DENY_EMERGENCY_ENV,
++    PostPathKillSwitchDecisionV1,
++    PostPathKillSwitchGateError,
++    assert_post_path_kill_switch_admits_v1,
++    evaluate_post_path_kill_switch_v1,
++    read_post_path_kill_switch_evidence_v1,
++)
++from src.ops.gates import risk_gate
++from src.ops.gates.risk_gate import kill_switch_should_block_trading
++from src.risk_layer.kill_switch import cli
++from src.risk_layer.kill_switch.core import (
++    DENY_AUTHORITY_MISSING,
++    DENY_BINDING_MISSING,
++    DENY_CODE_INVALID,
++    DENY_CODE_MISSING,
++    DENY_COOLDOWN_ACTIVE,
++    DENY_EXPECTED_CODE_UNAVAILABLE,
++    DENY_JOURNAL_UNAVAILABLE,
++    DENY_KILL_PRIORITY,
++    DENY_LOCK_TIMEOUT,
++    DENY_NOT_RECOVERING,
++    DENY_REQUEST_ID_MISMATCH,
++    DENY_TIMESTAMP_FUTURE,
++    DENY_TIMESTAMP_INVALID,
++    DENY_TIMESTAMP_MISSING,
++    KillSwitch,
++    KillSwitchKillFailedError,
++    KillSwitchKillPendingError,
++)
++from src.risk_layer.kill_switch.persistence import StatePersistence
++from src.risk_layer.kill_switch.recovery_attestation import (
++    DEFAULT_APPROVAL_CODE_ENV,
++    KIND_KILL,
++    KIND_RECOVERY_COMPLETED,
++    KIND_RECOVERY_REQUESTED,
++    JournalError,
++    TransitionJournal,
++    derive_attestation_key,
++    journal_path_for_state_file,
++    sign_fields,
++    active_record_fields,
++)
++from src.risk_layer.kill_switch.state import KillSwitchState
++from tests.ops._post_path_safety_fixtures_v1 import (
++    TEST_APPROVAL_CODE,
++    TEST_APPROVER,
++    claim_for_join_v1,
++    isolate_kill_switch_state_root_v1,
++    isolated_global_ledger_v1,
++    risk_reduction_proof_for_envelope_v1,
++    write_unattested_kill_switch_state_v1,
++)
++from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
++    _new_risk_envelope,
++)
++
++REPO_ROOT = Path(__file__).resolve().parents[3]
++_PRODUCTIVE_STATE_PATH = Path(risk_gate.canonical_kill_switch_state_path())
++_PRODUCTIVE_JOURNAL_PATH = journal_path_for_state_file(_PRODUCTIVE_STATE_PATH)
++
++
++def _fingerprint(path: Path) -> str | None:
++    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
++
++
++_PRODUCTIVE_FINGERPRINTS = (
++    _fingerprint(_PRODUCTIVE_STATE_PATH),
++    _fingerprint(_PRODUCTIVE_JOURNAL_PATH),
++)
++
++
++class _SocketOpened(AssertionError):
++    pass
++
++
++@pytest.fixture(autouse=True)
++def _offline(monkeypatch: pytest.MonkeyPatch) -> list[str]:
++    """Any socket connect in this module is a hard failure and is counted."""
++    opened: list[str] = []
++
++    def _refuse(*args, **kwargs):  # noqa: ANN002, ANN003, ANN202
++        opened.append(repr(args[:2]))
++        raise _SocketOpened("socket open attempted in an offline kill-switch test")
++
++    monkeypatch.setattr(socket.socket, "connect", _refuse)
++    monkeypatch.setattr(socket.socket, "connect_ex", _refuse)
++    monkeypatch.setattr(socket, "create_connection", _refuse)
++    return opened
++
++
++@pytest.fixture
++def state_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
++    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
++    monkeypatch.setenv(DEFAULT_APPROVAL_CODE_ENV, TEST_APPROVAL_CODE)
++    path = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path / "root")
++    assert path != _PRODUCTIVE_STATE_PATH
++    return path
++
++
++def _ks(**config) -> KillSwitch:  # noqa: ANN003
++    merged = {"persist_state": True, "recovery_cooldown_seconds": 0, **config}
++    return KillSwitch(merged)
++
++
++def _raw(path: Path) -> dict:
++    return json.loads(path.read_text(encoding="utf-8"))
++
++
++def _write_raw(path: Path, payload: dict) -> None:
++    path.write_text(json.dumps(payload), encoding="utf-8")
++
++
++def _journal(path: Path) -> list[dict]:
++    return TransitionJournal(journal_path_for_state_file(path)).read_events()
++
++
++def _to_recovering(ks: KillSwitch) -> str:
++    ks.trigger("wp_b5_test", triggered_by="test")
++    assert ks.request_recovery(TEST_APPROVER, TEST_APPROVAL_CODE) is True, ks.last_denial_reason
++    request_id = ks.pending_request_id
++    assert request_id
++    return request_id
++
++
++def _to_active(ks: KillSwitch) -> str:
++    request_id = _to_recovering(ks)
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id) is True, (
++        ks.last_denial_reason
++    )
++    return request_id
++
++
++def _post_decision(**read_kwargs) -> tuple[PostPathKillSwitchDecisionV1, tuple[str, ...]]:  # noqa: ANN003
++    evidence = read_post_path_kill_switch_evidence_v1(**read_kwargs)
++    admission = evaluate_post_path_kill_switch_v1(
++        evidence=evidence, envelope=_new_risk_envelope(), risk_reduction_proof=None
++    )
++    return admission.decision, admission.reason_codes
++
++
++def _assert_everyone_denies(path: Path) -> None:
++    assert kill_switch_should_block_trading(explicit_active=False) is True
++    decision, _ = _post_decision()
++    assert decision is PostPathKillSwitchDecisionV1.DENY
++    assert _ks().state is not KillSwitchState.ACTIVE
++
++
++# --------------------------------------------------------------------- 1 valid
++
++
++def test_01_valid_recovery_reaches_attested_active_only(state_path: Path) -> None:
++    ks = _ks()
++    request_id = _to_active(ks)
++    raw = _raw(state_path)
++    assert raw["state"] == "ACTIVE"
++    assert raw["recovery"]["request_id"] == request_id
++    kinds = [e["kind"] for e in _journal(state_path)]
++    assert kinds[-3:] == [KIND_KILL, KIND_RECOVERY_REQUESTED, KIND_RECOVERY_COMPLETED]
++    assert kill_switch_should_block_trading(explicit_active=False) is False
++    decision, reasons = _post_decision()
++    assert decision is PostPathKillSwitchDecisionV1.ALLOW, reasons
++    assert _ks().state is KillSwitchState.ACTIVE
++
++
++# ------------------------------------------------------- 2–4 authorization (F1)
++
++
++def test_02_missing_code_denies(state_path: Path) -> None:
++    ks = _ks()
++    ks.trigger("t")
++    assert ks.request_recovery(TEST_APPROVER) is False
++    assert ks.last_denial_reason == DENY_CODE_MISSING
++    assert ks.request_recovery(TEST_APPROVER, "   ") is False
++    assert ks.last_denial_reason == DENY_CODE_MISSING
++    assert _raw(state_path)["state"] == "KILLED"
++
++    request_id = _to_recovering(ks)
++    assert ks.complete_recovery(TEST_APPROVER, None, request_id=request_id) is False
++    assert ks.last_denial_reason == DENY_CODE_MISSING
++    assert ks.complete_recovery(None, TEST_APPROVAL_CODE, request_id=request_id) is False
++    assert ks.last_denial_reason == DENY_AUTHORITY_MISSING
++    assert _raw(state_path)["state"] == "RECOVERING"
++
++
++def test_03_wrong_code_denies(state_path: Path) -> None:
++    ks = _ks()
++    ks.trigger("t")
++    assert ks.request_recovery(TEST_APPROVER, TEST_APPROVAL_CODE + "x") is False
++    assert ks.last_denial_reason == DENY_CODE_INVALID
++    request_id = _to_recovering(ks)
++    assert ks.complete_recovery(TEST_APPROVER, "wrong", request_id=request_id) is False
++    assert ks.last_denial_reason == DENY_CODE_INVALID
++    assert _raw(state_path)["state"] == "RECOVERING"
++
++
++def test_04_missing_expected_authorization_denies_and_config_cannot_supply_it(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    ks = _ks(require_approval_code=False, approval_code="config-code")
++    ks.trigger("t")
++    monkeypatch.delenv(DEFAULT_APPROVAL_CODE_ENV)
++    for code in (None, "", "config-code", TEST_APPROVAL_CODE):
++        assert ks.request_recovery(TEST_APPROVER, code) is False
++        assert ks.last_denial_reason == DENY_EXPECTED_CODE_UNAVAILABLE
++    monkeypatch.setenv(DEFAULT_APPROVAL_CODE_ENV, "   ")
++    assert ks.request_recovery(TEST_APPROVER, "   ") is False
++    assert ks.last_denial_reason == DENY_EXPECTED_CODE_UNAVAILABLE
++    assert _raw(state_path)["state"] == "KILLED"
++
++
++def test_04b_in_memory_validation_is_fail_closed_without_expected_code(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    monkeypatch.delenv(DEFAULT_APPROVAL_CODE_ENV, raising=False)
++    ks = KillSwitch({"persist_state": False, "require_approval_code": True})
++    ks.trigger("t")
++    assert ks.request_recovery(TEST_APPROVER, "anything") is False
++    assert ks._validate_approval_code("anything") is False
++    assert ks._validate_approval_code("") is False
++
++
++# --------------------------------------------------- 5–8 cooldown / timestamps (F2)
++
++
++def test_05_cooldown_not_expired_denies(state_path: Path) -> None:
++    ks = _ks(recovery_cooldown_seconds=3600)
++    request_id = _to_recovering(ks)
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id) is False
++    assert ks.last_denial_reason == DENY_COOLDOWN_ACTIVE
++    # A lower cooldown in a restarted instance cannot shorten the bound cooldown.
++    restarted = _ks(recovery_cooldown_seconds=0)
++    assert (
++        restarted.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id)
++        is False
++    )
++    assert restarted.last_denial_reason == DENY_COOLDOWN_ACTIVE
++    assert _raw(state_path)["state"] == "RECOVERING"
++
++
++def _tamper_recovery_timestamp(path: Path, value) -> None:  # noqa: ANN001
++    raw = _raw(path)
++    for target in (raw, raw["recovery"]):
++        if value is None:
++            target.pop("recovery_started_at", None)
++        else:
++            target["recovery_started_at"] = value
++    _write_raw(path, raw)
++
++
++@pytest.mark.parametrize(
++    "value,expected_prefixes",
++    [
++        (None, (DENY_BINDING_MISSING,)),
++        ("not-a-timestamp", (DENY_TIMESTAMP_INVALID,)),
++        ("2026-01-01T00:00:00+00:00", (DENY_TIMESTAMP_INVALID,)),
++    ],
++    ids=["06_missing", "07_corrupt", "07b_tz_aware"],
++)
++def test_06_07_missing_or_corrupt_timestamp_denies(
++    state_path: Path,
++    value,
++    expected_prefixes,  # noqa: ANN001
++) -> None:
++    ks = _ks()
++    request_id = _to_recovering(ks)
++    _tamper_recovery_timestamp(state_path, value)
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id) is False
++    assert ks.last_denial_reason in expected_prefixes, ks.last_denial_reason
++    assert _raw(state_path)["state"] == "RECOVERING"
++    _assert_everyone_denies(state_path)
++
++
++def test_06b_missing_timestamp_unit_denies() -> None:
++    ks = KillSwitch({"persist_state": False, "recovery_cooldown_seconds": 0})
++    assert ks._cooldown_denial(None, None) == DENY_TIMESTAMP_MISSING
++    assert ks._cooldown_denial("", None) == DENY_TIMESTAMP_MISSING
++
++
++def test_08_future_timestamp_denies(state_path: Path) -> None:
++    ks = _ks()
++    request_id = _to_recovering(ks)
++    _tamper_recovery_timestamp(state_path, (datetime.utcnow() + timedelta(hours=1)).isoformat())
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id) is False
++    assert ks.last_denial_reason == DENY_TIMESTAMP_FUTURE
++    _assert_everyone_denies(state_path)
++
++
++def test_08b_tampered_timestamp_with_valid_format_breaks_journal_binding(state_path: Path) -> None:
++    ks = _ks()
++    request_id = _to_recovering(ks)
++    _tamper_recovery_timestamp(state_path, (datetime.utcnow() - timedelta(days=1)).isoformat())
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id) is False
++    assert str(ks.last_denial_reason).startswith(DENY_KILL_PRIORITY)
++    _assert_everyone_denies(state_path)
++
++
++# ------------------------------------------------------------- 9–10 replay (F6)
++
++
++def test_09_replay_of_old_request_denies(state_path: Path) -> None:
++    ks = _ks()
++    old_request = _to_active(ks)
++    new_request = _to_recovering(ks)
++    assert new_request != old_request
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=old_request) is False
++    assert ks.last_denial_reason == DENY_REQUEST_ID_MISMATCH
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=None) is False
++
++    # Re-appending an old signed REQUESTED line makes the journal fail closed.
++    journal = journal_path_for_state_file(state_path)
++    lines = journal.read_text(encoding="utf-8").splitlines(keepends=True)
++    old_line = next(
++        line
++        for line in lines
++        if json.loads(line).get("kind") == KIND_RECOVERY_REQUESTED
++        and json.loads(line).get("request_id") == old_request
++    )
++    with journal.open("a", encoding="utf-8") as handle:
++        handle.write(old_line)
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=new_request) is False
++    assert str(ks.last_denial_reason).startswith(DENY_JOURNAL_UNAVAILABLE)
++    _assert_everyone_denies(state_path)
++
++
++def test_10_replay_of_old_active_file_denies(state_path: Path) -> None:
++    ks = _ks()
++    _to_active(ks)
++    old_active = state_path.read_bytes()
++    ks.trigger("after_active")
++    assert _raw(state_path)["state"] == "KILLED"
++    state_path.write_bytes(old_active)
++    assert _raw(state_path)["state"] == "ACTIVE"
++    _assert_everyone_denies(state_path)
++
++    # Same file copied to another root (other journal) is not valid there either.
++    other = state_path.parent.parent / "other_root" / "state.json"
++    other.parent.mkdir(parents=True)
++    other.write_bytes(old_active)
++    decision, reasons = _post_decision(state_path=other)
++    assert decision is PostPathKillSwitchDecisionV1.DENY, reasons
++
++
++# -------------------------------------------------------- 11–13 concurrency (F3)
++
++_CHILD = r"""
++import json, os, sys, time
++from pathlib import Path
++from src.risk_layer.kill_switch.core import KillSwitch
++from src.risk_layer.kill_switch.persistence import StatePersistence
++mode, path, go = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
++extra = sys.argv[4] if len(sys.argv) > 4 else ""
++code = sys.stdin.readline().rstrip("\n")
++if mode.startswith("crash_on_"):
++    target = mode[len("crash_on_"):]
++    original = StatePersistence.save
++    def _crash(self, state, **kw):
++        if state.name == target:
++            os._exit(137)
++        return original(self, state, **kw)
++    StatePersistence.save = _crash
++ks = KillSwitch(
++    {"persist_state": True, "recovery_cooldown_seconds": 0, "state_lock_timeout_seconds": 20},
++    persistence=StatePersistence(str(path), backup_dir=str(path.parent / "backups")),
++)
++deadline = time.time() + 30
++while not go.exists() and time.time() < deadline:
++    time.sleep(0.002)
++if mode in ("complete", "crash_on_ACTIVE"):
++    ok = ks.complete_recovery("child", code, request_id=extra)
++elif mode in ("request", "crash_on_RECOVERING"):
++    ok = ks.request_recovery("child", code)
++else:
++    ok = ks.trigger("child_kill", triggered_by="child")
++print(json.dumps({"ok": ok, "reason": ks.last_denial_reason}))
++"""
++
++
++def _spawn(mode: str, path: Path, go: Path, extra: str = "") -> subprocess.Popen:
++    proc = subprocess.Popen(
++        [sys.executable, "-c", _CHILD, mode, str(path), str(go), extra],
++        cwd=str(REPO_ROOT),
++        stdin=subprocess.PIPE,
++        stdout=subprocess.PIPE,
++        stderr=subprocess.PIPE,
++        text=True,
++        env={k: v for k, v in os.environ.items() if k != "PEAK_KILL_SWITCH"},
++    )
++    assert proc.stdin is not None
++    proc.stdin.write(TEST_APPROVAL_CODE + "\n")
++    proc.stdin.close()
++    return proc
++
++
++def _result(proc: subprocess.Popen) -> dict:
++    assert proc.stdout is not None and proc.stderr is not None
++    out, err = proc.stdout.read(), proc.stderr.read()
++    assert proc.wait(timeout=60) == 0, err
++    return json.loads(out.strip().splitlines()[-1])
++
++
++def test_11_two_concurrent_completers_exactly_one_wins(state_path: Path, tmp_path: Path) -> None:
++    ks = _ks()
++    request_id = _to_recovering(ks)
++    go = tmp_path / "go"
++    procs = [_spawn("complete", state_path, go, request_id) for _ in range(2)]
++    time.sleep(0.5)
++    go.touch()
++    results = [_result(p) for p in procs]
++    assert sorted(r["ok"] for r in results) == [False, True], results
++    loser = next(r for r in results if r["ok"] is False)
++    assert loser["reason"] == DENY_NOT_RECOVERING
++    completions = [e for e in _journal(state_path) if e["kind"] == KIND_RECOVERY_COMPLETED]
++    assert len(completions) == 1
++    decision, reasons = _post_decision()
++    assert decision is PostPathKillSwitchDecisionV1.ALLOW, reasons
++
++
++@pytest.mark.parametrize("stage", ["before_completion_journal", "before_active_write"])
++def test_12_trigger_racing_completer_always_wins(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch, stage: str
++) -> None:
++    ks = _ks()
++    request_id = _to_recovering(ks)
++    journal = TransitionJournal(journal_path_for_state_file(state_path))
++    threads: list[threading.Thread] = []
++    errors: list[BaseException] = []
++
++    def _concurrent_kill() -> None:
++        killer = _ks(state_lock_timeout_seconds=20)
++
++        def _run() -> None:
++            try:
++                killer.trigger("concurrent_kill", triggered_by="other_process")
++            except BaseException as exc:  # pragma: no cover - surfaced below
++                errors.append(exc)
++
++        thread = threading.Thread(target=_run)
++        thread.start()
++        threads.append(thread)
++        deadline = time.time() + 10
++        while time.time() < deadline:
++            try:
++                events = journal.read_events()
++            except JournalError:
++                events = []
++            if any(
++                e["kind"] == KIND_KILL and e.get("triggered_by") == "other_process" for e in events
++            ):
++                return
++            time.sleep(0.005)
++        raise AssertionError("concurrent KILL was not journaled lock-free")
++
++    if stage == "before_completion_journal":
++        original_append = ks._journal.append
++
++        def _append(record):  # noqa: ANN001, ANN202
++            if record.get("kind") == KIND_RECOVERY_COMPLETED and not threads:
++                _concurrent_kill()
++            return original_append(record)
++
++        monkeypatch.setattr(ks._journal, "append", _append)
++    else:
++        original_save = ks._persistence.save
++
++        def _save(state, **kwargs):  # noqa: ANN001, ANN003, ANN202
++            if state is KillSwitchState.ACTIVE and not threads:
++                _concurrent_kill()
++            return original_save(state, **kwargs)
++
++        monkeypatch.setattr(ks._persistence, "save", _save)
++
++    assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id) is False
++    assert str(ks.last_denial_reason).startswith(DENY_KILL_PRIORITY), ks.last_denial_reason
++    for thread in threads:
++        thread.join(30)
++    assert errors == []
++    assert _raw(state_path)["state"] == "KILLED"
++    _assert_everyone_denies(state_path)
++
++
++def test_13_trigger_on_lock_timeout_is_never_bypassed(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    ks = _ks(state_lock_timeout_seconds=0.2)
++    _to_active(ks)
++    holder = StatePersistence(str(state_path))
++    with holder.exclusive_lock(1.0):
++        with pytest.raises(KillSwitchKillPendingError):
++            ks.trigger("kill_while_locked")
++        # ACTIVE bytes are still on disk, but the journaled KILL supersedes them.
++        assert _raw(state_path)["state"] == "ACTIVE"
++        assert ks.state is KillSwitchState.KILLED
++        _assert_everyone_denies(state_path)
++        # A completer under the same lock contention is denied, never ACTIVE.
++        assert ks.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id="x") is False
++        assert ks.last_denial_reason == DENY_LOCK_TIMEOUT
++
++        def _broken_append(record):  # noqa: ANN001, ANN202
++            raise OSError("journal unavailable")
++
++        original_append = ks._journal.append
++        monkeypatch.setattr(ks._journal, "append", _broken_append)
++        with pytest.raises(KillSwitchKillFailedError):
++            ks.trigger("kill_without_journal_while_locked")
++        monkeypatch.setattr(ks._journal, "append", original_append)
++    assert ks.trigger("kill_after_lock_release") is True
++    assert _raw(state_path)["state"] == "KILLED"
++    _assert_everyone_denies(state_path)
++
++
++def test_13b_kill_without_journal_still_persists_killed(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    ks = _ks()
++    _to_active(ks)
++
++    def _broken_append(record):  # noqa: ANN001, ANN202
++        raise OSError("journal unavailable")
++
++    monkeypatch.setattr(ks._journal, "append", _broken_append)
++    assert ks.trigger("kill_journal_down") is True
++    assert _raw(state_path)["state"] == "KILLED"
++
++
++# ---------------------------------------------------------- 14–15 crash (F4)
++
++
++def test_14_crash_during_recovery_request_leaves_killed(state_path: Path, tmp_path: Path) -> None:
++    ks = _ks()
++    ks.trigger("t")
++    go = tmp_path / "go"
++    go.touch()
++    proc = _spawn("crash_on_RECOVERING", state_path, go)
++    assert proc.wait(timeout=60) == 137
++    assert _raw(state_path)["state"] == "KILLED"
++    assert [e["kind"] for e in _journal(state_path)][-1] == KIND_RECOVERY_REQUESTED
++    _assert_everyone_denies(state_path)
++    # Orphaned request cannot be completed; a fresh authorized request works.
++    restarted = _ks()
++    assert restarted.state is KillSwitchState.KILLED
++    _to_active(restarted)
++
++
++def test_15_crash_between_audit_and_state_never_yields_active(
++    state_path: Path, tmp_path: Path
++) -> None:
++    ks = _ks()
++    request_id = _to_recovering(ks)
++    go = tmp_path / "go"
++    go.touch()
++    proc = _spawn("crash_on_ACTIVE", state_path, go, request_id)
++    assert proc.wait(timeout=60) == 137
++    assert _raw(state_path)["state"] == "RECOVERING"
++    assert [e["kind"] for e in _journal(state_path)][-1] == KIND_RECOVERY_COMPLETED
++    _assert_everyone_denies(state_path)
++    restarted = _ks()
++    assert (
++        restarted.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id)
++        is False
++    )
++    assert str(restarted.last_denial_reason).startswith(DENY_KILL_PRIORITY)
++    # Exit path: trigger, then a new authorized recovery.
++    _to_active(restarted)
++
++
++def test_15b_corrupt_journal_denies_active_everywhere(state_path: Path) -> None:
++    ks = _ks()
++    _to_active(ks)
++    journal = journal_path_for_state_file(state_path)
++    with journal.open("a", encoding="utf-8") as handle:
++        handle.write('{"torn": ')
++    _assert_everyone_denies(state_path)
++
++
++# ---------------------------------------------------- 16–17 DISABLED / env (F5)
++
++
++def test_16_disabled_never_neutralizes_a_kill(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    write_unattested_kill_switch_state_v1(state_path, state="DISABLED")
++    assert kill_switch_should_block_trading(explicit_active=False) is True
++    assert _post_decision()[0] is PostPathKillSwitchDecisionV1.DENY
++    restored = _ks()
++    assert restored.state is KillSwitchState.KILLED
++
++    durable = _ks(mode="disabled")
++    assert durable.state is not KillSwitchState.DISABLED
++    assert durable.trigger("kill_in_disabled_mode") is True
++    assert _raw(state_path)["state"] == "KILLED"
++
++    backtest = KillSwitch({"persist_state": False, "mode": "disabled"})
++    assert backtest.state is KillSwitchState.DISABLED
++
++
++def test_17_peak_kill_switch_env_denies_even_with_attested_active(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    _to_active(_ks())
++    evidence_before_env = read_post_path_kill_switch_evidence_v1()
++    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
++    assert kill_switch_should_block_trading(explicit_active=False) is True
++    decision, reasons = _post_decision()
++    assert decision is PostPathKillSwitchDecisionV1.DENY
++    assert DENY_EMERGENCY_ENV in reasons
++    late = evaluate_post_path_kill_switch_v1(
++        evidence=evidence_before_env, envelope=_new_risk_envelope(), risk_reduction_proof=None
++    )
++    assert late.decision is PostPathKillSwitchDecisionV1.DENY
++    forged = dataclasses.replace(evidence_before_env, emergency_env_deny=False)
++    assert (
++        evaluate_post_path_kill_switch_v1(
++            evidence=forged, envelope=_new_risk_envelope(), risk_reduction_proof=None
++        ).decision
++        is PostPathKillSwitchDecisionV1.DENY
++    )
++
++
++# ------------------------------------------------------- 18 manipulation (F6)
++
++
++def test_18_manipulated_or_forged_active_files_deny(state_path: Path) -> None:
++    _to_active(_ks())
++    genuine = _raw(state_path)
++
++    tampered = json.loads(json.dumps(genuine))
++    tampered["recovery"]["completed_at"] = datetime.utcnow().isoformat()
++    _write_raw(state_path, tampered)
++    decision, reasons = _post_decision()
++    assert decision is PostPathKillSwitchDecisionV1.DENY
++    assert DENY_ACTIVE_ATTESTATION_NOT_VERIFIED in reasons
++
++    stripped = {k: v for k, v in genuine.items() if k != "recovery"}
++    _write_raw(state_path, stripped)
++    assert _post_decision()[0] is PostPathKillSwitchDecisionV1.DENY
++    assert kill_switch_should_block_trading(explicit_active=False) is True
++
++    forged = json.loads(json.dumps(genuine))
++    wrong_key = derive_attestation_key("attacker-guess")
++    assert wrong_key is not None
++    forged["recovery"]["attestation"] = sign_fields(
++        wrong_key, active_record_fields(state_path, forged["recovery"])
++    )
++    _write_raw(state_path, forged)
++    assert _post_decision()[0] is PostPathKillSwitchDecisionV1.DENY
++
++    _write_raw(state_path, genuine)
++    assert _post_decision()[0] is PostPathKillSwitchDecisionV1.ALLOW
++
++
++def test_18b_schema_valid_active_without_any_journal_is_not_post_admissible(
++    state_path: Path,
++) -> None:
++    write_unattested_kill_switch_state_v1(state_path, state="ACTIVE")
++    decision, reasons = _post_decision()
++    assert decision is PostPathKillSwitchDecisionV1.DENY
++    assert DENY_ACTIVE_ATTESTATION_NOT_VERIFIED in reasons
++
++
++def test_18d_secret_free_legacy_readers_scope_without_journal_is_pinned(
++    state_path: Path,
++) -> None:
++    # Legacy (non-POST) readers have no secret; without any journal they keep the
++    # pre-existing file-only semantics. The productive POST gate denies (18b).
++    write_unattested_kill_switch_state_v1(state_path, state="ACTIVE")
++    assert kill_switch_should_block_trading(explicit_active=False) is False
++    assert _post_decision()[0] is PostPathKillSwitchDecisionV1.DENY
++
++
++def test_18c_active_attestation_requires_the_secret_at_read_time(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    _to_active(_ks())
++    monkeypatch.delenv(DEFAULT_APPROVAL_CODE_ENV)
++    decision, reasons = _post_decision()
++    assert decision is PostPathKillSwitchDecisionV1.DENY
++    assert "ACTIVE_ATTESTATION_KEY_UNAVAILABLE" in reasons
++
++
++# ----------------------------------------------------------- 19–20 restart
++
++
++def test_19_restart_with_killed_stays_killed(state_path: Path) -> None:
++    _ks().trigger("before_restart")
++    for _ in range(3):
++        restarted = _ks()
++        assert restarted.state is KillSwitchState.KILLED
++        assert restarted.complete_recovery() is False
++    _assert_everyone_denies(state_path)
++
++
++def test_19b_missing_state_file_never_arms(state_path: Path) -> None:
++    assert not state_path.exists()
++    assert _ks().state is KillSwitchState.KILLED
++
++
++def test_20_restart_with_recovering_never_auto_activates(state_path: Path) -> None:
++    request_id = _to_recovering(_ks())
++    restarted = _ks()
++    assert restarted.state is KillSwitchState.RECOVERING
++    assert restarted.pending_request_id == request_id
++    assert restarted.complete_recovery() is False
++    assert _raw(state_path)["state"] == "RECOVERING"
++    _assert_everyone_denies(state_path)
++    assert (
++        restarted.complete_recovery(TEST_APPROVER, TEST_APPROVAL_CODE, request_id=request_id)
++        is True
++    )
++
++
++# ---------------------------------------------------- 21–23 independence
++
++
++def test_21_active_does_not_ratify_b2_owner_caps(state_path: Path, tmp_path: Path) -> None:
++    _to_active(_ks())
++    cfg = load_full_core_capital_guard_config_v1()
++    assert cfg.owner_caps_ratified is False
++    joined = dataclasses.replace(cfg, full_core_guard_join_enabled=True)
++    with pytest.raises(MandatoryNewRiskEnterPostAdmissionError, match="OWNER_CAPS_UNRATIFIED"):
++        resolve_mandatory_new_risk_enter_post_admission_v1(
++            envelope=_new_risk_envelope(),
++            store_root=tmp_path / "store",
++            pilot_capital_guard_bind_go=OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1,
++            pilot_capital_guard_config=joined,
++            pilot_native_instrument_id="0g-usdt-swap",
++            pilot_atomic_state_dir=None,
++            pilot_dw_private_get_go="",
++            read_only_get_transport_present=True,
++        )
++
++
++def test_22_active_does_not_bypass_b6_global_replay(state_path: Path, tmp_path: Path) -> None:
++    _to_active(_ks())
++    ledger = isolated_global_ledger_v1(tmp_path)
++    envelope = _new_risk_envelope()
++    claim_for_join_v1(ledger, envelope)
++    with pytest.raises(GlobalVenueEffectReplayDeniedError):
++        claim_for_join_v1(ledger, envelope)
++
++
++def test_23_active_does_not_replace_post_owner_go_or_standing_pins(
++    state_path: Path, tmp_path: Path, _offline: list[str]
++) -> None:
++    _to_active(_ks())
++    assert _post_decision()[0] is PostPathKillSwitchDecisionV1.ALLOW
++    ledger = isolated_global_ledger_v1(tmp_path)
++    envelope = _new_risk_envelope()
++    claim = claim_for_join_v1(ledger, envelope)
++    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="POST_GO_REQUIRED"):
++        attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
++            envelope=envelope,
++            post_owner_go="",
++            store_root=tmp_path / "store",
++            k1_backend=None,
++            global_authority_ledger=ledger,
++            global_claim=claim,
++        )
++    assert constants_v1.EXTERNAL_EFFECT_AUTHORIZED is False
++    assert constants_v1.POST_ALLOWED is False
++    assert constants_v1.REAL_VENUE_POST_ALLOWED is False
++    assert _offline == []
++
++
++# ---------------------------------------------------- 24–26 effects / secrets
++
++
++def test_24_no_socket_open_on_any_deny(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch, _offline: list[str]
++) -> None:
++    envelope = _new_risk_envelope()
++    for prepare in (
++        lambda: _ks().trigger("deny_killed"),
++        lambda: _to_recovering(_ks()),
++        lambda: write_unattested_kill_switch_state_v1(state_path, state="DISABLED"),
++        lambda: write_unattested_kill_switch_state_v1(state_path, state="ACTIVE"),
++    ):
++        prepare()
++        with pytest.raises(PostPathKillSwitchGateError):
++            assert_post_path_kill_switch_admits_v1(envelope=envelope, risk_reduction_proof=None)
++    _to_active(_ks())
++    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
++    with pytest.raises(PostPathKillSwitchGateError, match=DENY_EMERGENCY_ENV):
++        assert_post_path_kill_switch_admits_v1(envelope=envelope, risk_reduction_proof=None)
++    assert _offline == []
++
++
++def test_24b_emergency_env_also_denies_risk_reduction(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    from tests.ops.test_current_productive_post_path_security_remediation_b5_b5rr_b6_v1 import (
++        _flatten_envelope,
++    )
++
++    _ks().trigger("rr_case")
++    envelope = _flatten_envelope()
++    proof = risk_reduction_proof_for_envelope_v1(envelope)
++    killed = read_post_path_kill_switch_evidence_v1()
++    admission = evaluate_post_path_kill_switch_v1(
++        evidence=killed, envelope=envelope, risk_reduction_proof=proof
++    )
++    assert admission.decision is PostPathKillSwitchDecisionV1.ALLOW_PROVEN_RISK_REDUCTION_ONLY
++    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
++    admission = evaluate_post_path_kill_switch_v1(
++        evidence=read_post_path_kill_switch_evidence_v1(),
++        envelope=envelope,
++        risk_reduction_proof=proof,
++    )
++    assert admission.decision is PostPathKillSwitchDecisionV1.DENY
++    assert DENY_EMERGENCY_ENV in admission.reason_codes
++
++
++def test_25_no_productive_active_file_is_created_or_changed(state_path: Path) -> None:
++    _to_active(_ks())
++    _ks().trigger("after")
++    assert state_path.resolve() != _PRODUCTIVE_STATE_PATH
++    assert (
++        _fingerprint(_PRODUCTIVE_STATE_PATH),
++        _fingerprint(_PRODUCTIVE_JOURNAL_PATH),
++    ) == _PRODUCTIVE_FINGERPRINTS
++
++
++def test_26_no_secret_in_argv_logs_state_or_journal(
++    state_path: Path,
++    monkeypatch: pytest.MonkeyPatch,
++    caplog: pytest.LogCaptureFixture,
++    capsys: pytest.CaptureFixture[str],
++) -> None:
++    caplog.set_level(logging.DEBUG)
++    ks = _ks()
++    assert cli.cmd_trigger(Namespace(reason="cli_kill", confirm=True), ks) == cli.EXIT_OK
++
++    monkeypatch.setattr(sys, "stdin", io.StringIO("wrong-code\n"))
++    denied = cli.cmd_recover(Namespace(reason="r", approved_by=TEST_APPROVER, code_stdin=True), ks)
++    assert denied == cli.EXIT_DENIED
++
++    monkeypatch.setattr(sys, "stdin", io.StringIO(TEST_APPROVAL_CODE + "\n"))
++    assert (
++        cli.cmd_recover(Namespace(reason="r", approved_by=TEST_APPROVER, code_stdin=True), ks)
++        == cli.EXIT_OK
++    )
++    request_id = ks.pending_request_id
++    monkeypatch.setattr(sys, "stdin", io.StringIO(TEST_APPROVAL_CODE + "\n"))
++    assert (
++        cli.cmd_complete_recovery(
++            Namespace(approved_by=TEST_APPROVER, request_id=request_id, code_stdin=True), ks
++        )
++        == cli.EXIT_OK
++    )
++    out = capsys.readouterr().out
++    assert "NOT a live-trading" in out
++
++    blobs = [caplog.text, out]
++    for path in state_path.parent.rglob("*"):
++        if path.is_file():
++            blobs.append(path.read_text(encoding="utf-8", errors="replace"))
++    assert all(TEST_APPROVAL_CODE not in blob for blob in blobs)
++
++    usage = subprocess.run(
++        [
++            sys.executable,
++            "-m",
++            "src.risk_layer.kill_switch.cli",
++            "recover",
++            "--approved-by",
++            "x",
++            "--code",
++            "argv-code-must-be-rejected",
++        ],
++        cwd=str(REPO_ROOT),
++        capture_output=True,
++        text=True,
++        timeout=60,
++        check=False,
++    )
++    assert usage.returncode == cli.EXIT_USAGE
++    assert "unrecognized arguments" in usage.stderr
++
++    ctl = (REPO_ROOT / "scripts" / "ops" / "kill_switch_ctl.sh").read_text(encoding="utf-8")
++    assert "--code" not in ctl
++    assert "complete-recovery" in ctl
++
++
++def test_26b_cli_exit_codes_for_pending_and_failed_kill(
++    state_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    ks = _ks(state_lock_timeout_seconds=0.2)
++    with StatePersistence(str(state_path)).exclusive_lock(1.0):
++        assert (
++            cli.cmd_trigger(Namespace(reason="locked", confirm=True), ks) == cli.EXIT_KILL_PENDING
++        )
++
++        def _broken_append(record):  # noqa: ANN001, ANN202
++            raise OSError("journal unavailable")
++
++        monkeypatch.setattr(ks._journal, "append", _broken_append)
++        assert cli.cmd_trigger(Namespace(reason="locked", confirm=True), ks) == cli.EXIT_KILL_FAILED

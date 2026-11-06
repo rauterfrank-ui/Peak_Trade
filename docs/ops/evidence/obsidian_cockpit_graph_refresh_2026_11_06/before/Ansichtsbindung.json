@@ -1,0 +1,461 @@
+{
+  "schema": "peaktrade.current_obsidian_system_view.v1",
+  "date": "2026-11-05",
+  "vault": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL",
+  "role": "CURRENT_IMPLEMENTED_SYNTHETIC_OFFLINE_SYSTEM_ONLY",
+  "source_tree_digest": "3190c01f4393dbfa695bf610160555e7720b735916d04d014810ece2b7310eaf",
+  "source_report": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEMPLAN/65 Gesamtsystementwurf/Etappe 6 Systemabnahme/Abschluss 2026-11-05.json",
+  "source_report_sha256": "462e73126ef0567621b4f4b0371709aee06343829af7368cf56d2310adebc0d8",
+  "prior_material_outside_active_view": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEMPLAN",
+  "original_vault_file_count": 2389,
+  "original_files_preserved": true,
+  "product_code_unchanged": true,
+  "current_note_count": 4484,
+  "required_cases": 39,
+  "edge_assessments": 31,
+  "selected_optional_edges": 0,
+  "canvas_nodes": 11,
+  "canvas_edges": 9,
+  "internal_links_valid": true,
+  "generated_files": [
+    {
+      "path": "01 System/Abnahmestand.md",
+      "sha256": "ce720f18e9f2a5e789a459783b8d35c8412e0094572e6a6fbacc06085efd7992"
+    },
+    {
+      "path": "01 System/Gesamtarchitektur.md",
+      "sha256": "6244e326607cc9044db71cc8cfca66c37000b3f4735d7c7becc682e145525cd0"
+    },
+    {
+      "path": "01 System/Identitaeten und Zahlenbedeutung.md",
+      "sha256": "dd37ded344b80d9519ac3ecd8db1cd583a3de8760df9ed03a542b555d285b031"
+    },
+    {
+      "path": "01 System/Konfiguration und Autoritaet.md",
+      "sha256": "47c4a386b9d1a677ecc0b4f1f122b0d9ce55327c332606a7573f4fcbcadd151c"
+    },
+    {
+      "path": "01 System/Laufzeit und Persistenz.md",
+      "sha256": "ffb9e67a454c6df6b1b63cb9ba995306a79bf0aafcd834e9586d4e04c744dcb5"
+    },
+    {
+      "path": "01 System/Offene Grenzen.md",
+      "sha256": "3f676c4325646181a1154de728ce0c31736bece46fb5987a5b06cb4ed4d78d1e"
+    },
+    {
+      "path": "01 System/Zustaende und Wiederanlauf.md",
+      "sha256": "962afa72f495b39521464d30388a14a1805d771944637e7258835a6dcab052ef"
+    },
+    {
+      "path": "10 Fachbereiche/Double Play und Positionsfuehrung.md",
+      "sha256": "ea442e9e3ee2c20538a3ddfca0b5fe7ffd95df174a91108076cdfca98cae4914"
+    },
+    {
+      "path": "10 Fachbereiche/Evaluation und Governance.md",
+      "sha256": "111eec304998caaf95fc99ba15644c8bc6e79f50fbffc27398d283300eb33b7a"
+    },
+    {
+      "path": "10 Fachbereiche/Kapital Risiko Ausfuehrung und Accounting.md",
+      "sha256": "15d3d082232664ef15493d8d621d7522f36d64cebae5e753a2ed084c13f4a9ce"
+    },
+    {
+      "path": "10 Fachbereiche/Marktdaten und Marktintelligenz.md",
+      "sha256": "1075e5d8fa1f96e8e08def42654f5747a4c353c0ca4e0a0299af6124d7d92c5c"
+    },
+    {
+      "path": "10 Fachbereiche/Outcome Lernen Forschung und Optimization.md",
+      "sha256": "18337d6833f16c79174a76a4825d3655e7175456246ba2167c9ba8a4c20c83b9"
+    },
+    {
+      "path": "10 Fachbereiche/Ranking und Auswahl.md",
+      "sha256": "726bead5f3f64e703d7a00e09b698c0a9bed397169bd377248b2774a8ae22c16"
+    },
+    {
+      "path": "20 Wirkungsketten/A Auswahl Daten und Core.md",
+      "sha256": "ddd3772a18561b3b4ad740e4849cf983fee45c52b0d9f050ba59a0aec78192f9"
+    },
+    {
+      "path": "20 Wirkungsketten/B Entry Teilclose Flat und Wiederanlauf.md",
+      "sha256": "c17c3b702031e90c2aca9754a663d14e1c1ebe0b8b5868f48f70ad66ca8cb4c0"
+    },
+    {
+      "path": "20 Wirkungsketten/C Entscheidung Outcome und Lernen.md",
+      "sha256": "74811ba42909ad776bd9779cebea0fb5f9612e98b291eef0fd293f1742b49104"
+    },
+    {
+      "path": "20 Wirkungsketten/D Gemessene Forschung und naechster Versuch.md",
+      "sha256": "002c366ccf63796167cf30dc2625c65d4d806b5001eebfcd72e0cbcc2be1d4e6"
+    },
+    {
+      "path": "20 Wirkungsketten/E Bewertung und Nachladen.md",
+      "sha256": "709df1b6e4e1303bba2de683ad8a993627807ac9038dbb1b5ee5c48d284295ca"
+    },
+    {
+      "path": "30 Schnittstellen/E01.md",
+      "sha256": "9aead295992f34616e13c17197a34ea4cdc6fb03488e03239fd2197f2427a3f9"
+    },
+    {
+      "path": "30 Schnittstellen/E02.md",
+      "sha256": "52f79187ccce9d336a024ddcaca1662f8c542afbf8a56c4f8bbfc0dc219443eb"
+    },
+    {
+      "path": "30 Schnittstellen/E03.md",
+      "sha256": "eba7617f6291d30aed8cba82d4f28676fe512f44f77fdff6652948202f7dcc63"
+    },
+    {
+      "path": "30 Schnittstellen/E04.md",
+      "sha256": "5f792a592005244e0e9d155c2b4048aa1c0039bebc15280a318f23ff70524f3c"
+    },
+    {
+      "path": "30 Schnittstellen/E05.md",
+      "sha256": "360b7ce81ba20fa18aa7eb00adb00402977a88ab35deae613d301ac86bddfd02"
+    },
+    {
+      "path": "30 Schnittstellen/E06.md",
+      "sha256": "e885b0846348f4ef23977ffb57b16a4ab0615a32a0df951a39b6901e0c882dd3"
+    },
+    {
+      "path": "30 Schnittstellen/E07.md",
+      "sha256": "d661459546c933d42d50ff51e6c5a8309f9a2df7ffdd0bee7c46404fd5cf09c6"
+    },
+    {
+      "path": "30 Schnittstellen/E08.md",
+      "sha256": "b6ac7538a27726f5a2d141a76da1bc3765d5e4b7e5280aa6b21bd175456d0067"
+    },
+    {
+      "path": "30 Schnittstellen/E09.md",
+      "sha256": "8e3d7e8dfc183867e96bdc65d49a1fbcb29d9577e0e30dfd1a7ce7a81a7ed3dd"
+    },
+    {
+      "path": "30 Schnittstellen/E10.md",
+      "sha256": "e967555086ab4dc9e7e4081ae0ee1aeb851e614e53e878b2d4c49df6760e68fd"
+    },
+    {
+      "path": "30 Schnittstellen/E11.md",
+      "sha256": "8a292d3336bd979a6e068a55716d582fe0ac96dd8501369340c588a7a92788a1"
+    },
+    {
+      "path": "30 Schnittstellen/E12.md",
+      "sha256": "862aba906d7a48014048a86baea3cf2856c42db4d197a1affac84d03ce8b3fec"
+    },
+    {
+      "path": "30 Schnittstellen/E13.md",
+      "sha256": "e9a7e05a3161e5e965fb260ea67c4103d80fe006850a2fec0014103dac711463"
+    },
+    {
+      "path": "30 Schnittstellen/E14.md",
+      "sha256": "935d7a7ce9190d0f5a685ab7d87b6300ec42b52f3f09cf1853ac0b58ac3bdb8b"
+    },
+    {
+      "path": "30 Schnittstellen/E15.md",
+      "sha256": "172c4482fd2b131c8952d1b0a6ce7ff77ec72df82ba576bdb7033699cbda69cc"
+    },
+    {
+      "path": "30 Schnittstellen/E16.md",
+      "sha256": "edc258f280f61035b1c0fe3da2a35e255f42bf3f53ae8a9ce4819accd6cd6154"
+    },
+    {
+      "path": "30 Schnittstellen/E17.md",
+      "sha256": "50597fd950f257b1dfe9ad05af460c04e2dc331763fa26c607344f20d54dd928"
+    },
+    {
+      "path": "30 Schnittstellen/E18.md",
+      "sha256": "0c81822556557147a440789f566c82e749ea0e2221e42f095440c7c309d4f381"
+    },
+    {
+      "path": "30 Schnittstellen/E19.md",
+      "sha256": "8cfd79c47b14da31e59b955313779331bf2ceabfc56efc3cfa2189f0c562da22"
+    },
+    {
+      "path": "30 Schnittstellen/E20.md",
+      "sha256": "1ac50bb6f0875c2708ce51ba0a535f23f1bab13d8643f3543c13eced59851b56"
+    },
+    {
+      "path": "30 Schnittstellen/E21.md",
+      "sha256": "98d4fc00db1b2c91bbdd5067c70baf939e268ba6f4943a41039932ad5782def2"
+    },
+    {
+      "path": "30 Schnittstellen/E22.md",
+      "sha256": "b4d13ae1bb5b26ce58bce2e76ee2da0c4e13cf6758ab0e182316a9be2db77da1"
+    },
+    {
+      "path": "30 Schnittstellen/E23.md",
+      "sha256": "93df46560c95c1ce4efba4b527b002c7be5fc7d6a70ebac8a4f366442bf5087b"
+    },
+    {
+      "path": "30 Schnittstellen/E24.md",
+      "sha256": "01f33127c56a49a224405a5928a1c8564a6dba9d82ac93bdf5e0594ecf1d97ad"
+    },
+    {
+      "path": "30 Schnittstellen/E25.md",
+      "sha256": "01f9aa478390be99d483e318ee3bef943fef755c5db25241b342fa98cdb9ba2f"
+    },
+    {
+      "path": "30 Schnittstellen/E26.md",
+      "sha256": "e392e70b6f086d9bcbaf738f0a8ae75846741c04fabe83472fbed81ef955b4c0"
+    },
+    {
+      "path": "30 Schnittstellen/E27.md",
+      "sha256": "dc478f8e044c50896ec05a807f7060998fe4aa0011d8b00f38670d70a0ebb2c8"
+    },
+    {
+      "path": "30 Schnittstellen/E28.md",
+      "sha256": "06ee2bc583b8c5028ef81524ba3cd854c79657192fe6dcc6931093d2cc802c6d"
+    },
+    {
+      "path": "30 Schnittstellen/E29.md",
+      "sha256": "a69ab7b79e01e4571a3443ddc3dfcc5aed706a6814d1275f65de15cca90d2a26"
+    },
+    {
+      "path": "30 Schnittstellen/E30.md",
+      "sha256": "5d6abc56780d90de17bbc26fc4684c66611542ef24592dd3372a5ae4c1b430aa"
+    },
+    {
+      "path": "30 Schnittstellen/E31.md",
+      "sha256": "22c526915737dea169385d7b9b48384606c546874c517e5d82e31569c07cb9e8"
+    },
+    {
+      "path": "30 Schnittstellen/Schnittstellenuebersicht.md",
+      "sha256": "b21ffc92afbf9ba1e1fed97c29ad9268cdf6a3ec8c9b8a754e04de05c7e1e8b3"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC01.md",
+      "sha256": "77f69d380bd757899e2b7410efc59d53cf1643c0371bb332aee883015dd8951a"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC02.md",
+      "sha256": "8eb8ad05303a416775caea5bcca1638bc7a0bd964afa879f299e0266d3c0ae81"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC03.md",
+      "sha256": "96bb276871e306bce62165548fe2f9c675cc115e5a51ec597d919cc1b35e7287"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC04.md",
+      "sha256": "8ea506ceda82e71ebd3733361c169359341a91350e4110f5cf530a722f47bc6a"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC05.md",
+      "sha256": "b577c2decc60df70ab242802f13793312e3c0adffe48354845623ec221e93540"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC06.md",
+      "sha256": "2679c8746925326152ac71a802d1f35a7a176b430b910ffc9a66999adf750bbb"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC07.md",
+      "sha256": "9e495ad596f42e04b06a7afcc2534a57146774f79cbd34a82784eee9d5e72c5d"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC08.md",
+      "sha256": "1d747be1e56607bc065afa691556301754aa20e510b67c0f67afe6fc51952370"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC09.md",
+      "sha256": "5412a5c2784e13f4d6ab16b02f293adafb8ac9f103948358d66a7c56eda5cf37"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC10.md",
+      "sha256": "9c490e16db3294d6842ee95efa1c033fa5c1898a7af383ac712018e199e9d7f1"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC11.md",
+      "sha256": "8cee8fa6d34eba4d4e89c5d6159d850fc37856da2db73be4f558858ace427b9a"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC12.md",
+      "sha256": "8b32452abd2cc28a04e2ff476a76bc2adf716e67aea147d05752674759670a95"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC13.md",
+      "sha256": "50b8eaafb86dabf175fe4c61ef57771efe592fb2e1d4ce5a151c8aa317b19d72"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC14.md",
+      "sha256": "8a23ba419cd3e610c9f353c5169b9e1b26bdc00e15036346e4f8d9aa9fc38670"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC15.md",
+      "sha256": "3d1b641ffe7f6e0f552d104c8d3ff71bc7f63f36d669b88c895a149fd1c3e1c5"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC16.md",
+      "sha256": "b66523dd10d57f1ca8c2450a71134e908811715b0f4a55e33b77b9312d8754e8"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC17.md",
+      "sha256": "d3ab94408bf7547ad9961f7bfef5a3a72a44863314301a6a88730fa2787d83ab"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC18.md",
+      "sha256": "bf1a886bf99e3dce12f73f230532fd5a1774d47c7e1804039770d4b5678b8670"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC19.md",
+      "sha256": "9a806e032c49d7f40608755af6c3b330dafa244a9b4de0b61a975d5747fc3b98"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC20.md",
+      "sha256": "a6b37d2042757ecef36e3e36b07f4422d809e5a92e9b3cec2199b256e2b77a42"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC21.md",
+      "sha256": "0d0cd294d9193b17fdfceca6355b25641b1b547f9e9c372179346fe4b6b8466e"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC22.md",
+      "sha256": "2a290b34a6c00ac36297e86739b9a32e1040e70a6a4be567c378e28d3f3ffad4"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC23.md",
+      "sha256": "33fb61cee3857dae1e822adff7af4472f53511c8d5b6ff90a3d661327c94e75c"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC24.md",
+      "sha256": "4f68e4ef46c7f228627e82e5e86edf58c7d64d7cfb6d8228ced47a199a3b9378"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC25.md",
+      "sha256": "e357fcedcd9e66c727c99325b8b7c639066c43a76bb2be9322bf51e8122d2c70"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC26.md",
+      "sha256": "a39423f03975873f633cb05a77a048fd5a4b6c0c12900bc7bc3300c6435d53da"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC27.md",
+      "sha256": "b30cb25bf487534d1d75d8fabd213306057c1d7d20a93393b8bb408226857cd5"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC28.md",
+      "sha256": "51203730f722dcc7ffbeb414ef708e7f5094879d815521b3ecf08a5612bb86a4"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC29.md",
+      "sha256": "b5a287213b092e177e4374ab63cd708bda86ae64d84841ac986d59527be4b5af"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC30.md",
+      "sha256": "fb74dce314a4b675a5baccf70bfff8ddc0c478a825f59f01bd6dfd99a04f44d0"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC31.md",
+      "sha256": "96ba620636bc46080bdc3551a682c48c24d3f48c6dcef3679846dde6d8f659bf"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC32.md",
+      "sha256": "24a3ef43cbf59b861d2f8c511ec04d3d3cc058fcf097d4ed60785cc882c2500a"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC33.md",
+      "sha256": "bc70e948b8b7fced57e1c59e8fb5cf340df9df245a70bb83561db801607e26a9"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC34.md",
+      "sha256": "05598011965a70f2877fb51becb3af0573014df9693319cd94aa53e266dd34e2"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC36.md",
+      "sha256": "713a415f61924d19b1c3a9e690625fa9118df870b0248df2090fedbeddbcad87"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC37.md",
+      "sha256": "ed4fc248d7c11078bc5b4dc0180ac06fd4d9a29bade7f47f39bf77e0c615f485"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC38.md",
+      "sha256": "ec1a4eb668ad9ab6455f22c5c1dde30dc0667cb93d785205830f9dcfd12ebc07"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC39.md",
+      "sha256": "dc9ad7bdebb17cdd9984ca270fefc4926920d634fdc298887d35a54f72481b94"
+    },
+    {
+      "path": "40 Abnahme/Faelle/AC40.md",
+      "sha256": "2ae8a84a24b29ee8478e161e7924b4e76431a9c4252d1ea998d46addf7a94557"
+    },
+    {
+      "path": "40 Abnahme/Pflichtfaelle.md",
+      "sha256": "162963e19a9ad289018e8c09910c7199f29da78c94c80110320e82cabd8dfd76"
+    },
+    {
+      "path": "90 Nachweise/Belegregister.md",
+      "sha256": "9b6386c3e42b3b2cf11d7e10f7d80f763b4b50c01d25dc054ed272118f90a252"
+    },
+    {
+      "path": "Start.md",
+      "sha256": "2e2238ef1575d141ee3bde57dec0c9fccca76229a50f17cc75a1587619ac8cad"
+    },
+    {
+      "path": "Systemkarte.canvas",
+      "sha256": "3ee316dc6b510698804d2933526a99f66d994974de41bf0b1868105d134c862e"
+    }
+  ],
+  "source_files": {
+    "config/ops/canonical_decision_runtime_config_v1.toml": "1258f3bcf9d70502d35ccd4d404f497f9e9caf58796b4d0f6d835f64a842b9ef",
+    "src/evaluation/golden_vectors/integration/bounded_required_domain_fanout_v1.py": "9936a96e98ed5b38b95f9f668c67164d061d0095ecf6e7dbf796ca69dc2191fa",
+    "src/evaluation/golden_vectors/integration/domain_result_binding_v1.py": "fd368f163cd7fb0a4e1a9f3af6cc74ad7c87ac1c53c8ae4bb1998399e0d0b447",
+    "src/evaluation/golden_vectors/integration/evaluation_receipt_v1.py": "db8e42e683bd4cdecc3230b64b0b99f45487e00066b2423d1d67d482bc2db852",
+    "src/experiments/canonical_native_research_measurements_v1.py": "dbefcd3ce569971bd15dce4a3acccefe8b26852a6adb719bb4c1d1ca0fd5cead",
+    "src/experiments/canonical_native_research_session_v1.py": "4b9b45a07df4c18c5b6e11bf197c42d5226a07fe75a21cb42790d7ea8a81b31b",
+    "src/learning/deterministic_decision_outcome_v0/learning_scope_guard_v1.py": "10c3cf8b6e741bd61c80d70b1d58be267c4213f636d26b5eec81cb1e85452eaa",
+    "src/ops/bounded_peaktrade_system_composition_v1/acceptance_v1.py": "149270ece18714efcabbde91167c98ef7efacd8022f8aa05382db06ebb6ac999",
+    "src/ops/bounded_peaktrade_system_composition_v1/configuration_v1.py": "2820a314a2727e5def6d81eac86a439b31692cb6ddf93f39b23015ce12be9e21",
+    "src/ops/bounded_peaktrade_system_composition_v1/handoff_receipts_v1.py": "5c59eea515e8aba08a0e02fb3ed07b2affeff6cbff84ba70ad9c07d133f9ba98",
+    "src/ops/bounded_peaktrade_system_composition_v1/profile_v1.py": "6fc41d96a183f6c3a6860d3aa29f567c8fe742c94d044abef759e4aa304f4d0f",
+    "src/ops/bounded_peaktrade_system_composition_v1/readiness_v1.py": "33d4ac803b4db55c0148ef728a55d183f2fc359b1bd681c2966d9351d25f9a28",
+    "src/ops/bounded_peaktrade_system_composition_v1/session_v1.py": "fd6896fe501a13532891ea9934caf25cb49fee28590b00d705b2b99a2f7a7cc9",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": "d09816ba7fc2ab06f05e9d0668cc090aff8d8c6b0f16d1589d28d108c765f56e",
+    "src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py": "559a8267bb4c57c198c3e3146b980b4208837bb4eb863d5c715be26e800437ea",
+    "src/ops/economic_md_input_producer_v1/purpose_admission_v1.py": "456e6582cfe7165a311ac4bad1bf892553b5c6b852cf2ccdc3d8c6d0dbcb637c",
+    "src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py": "8ad5860abea73b1977448c472a5d2b6dd6e012a513d755eedde66e820aa6b757",
+    "src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py": "51c52f3caec87fd051343c1b47053da5f06dfd5812acca878c0f0d2bf5fe5a5d",
+    "src/ops/exit_policy_producer_binding_v1/risk_bound_simulated_entry_v1.py": "a213e0b4fdc82af743a293ba5297016ae77e5ec2718125da8ff77cdd0f4f0e87",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_entry_budget_policy_v1.py": "1d84af66376d3b8c7b17785ada945a6f9b3d76287fc04a1bf3327b68dfa6212d",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py": "1a150c36da85304fa71acd4a35bf823652166efeb7d1230af725fd792f9892ad",
+    "src/ops/peak_trade_public_market_data_runtime_v1/canonical_fact_decoder_v1.py": "5d4b4fddbaec1aa393cb4138ef76ed69ab32efaaf5a0f088d25455d042f93f71",
+    "src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py": "434e93f368aff873a1f90a0874b40da6f4aee9033c64bd826bebf537d95dc37c",
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
+    "src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py": "6dc6ac382e389bd4a29de72ab25071a165d2a52f971116d248947492e7f12572",
+    "src/risk/decision_bound_model_adapters_v1.py": "4564dad05f1657f856e7d156af8b360a2b1ead1c47eb3681767edb17b880ee69",
+    "src/trading/master_v2/double_play_entry_exit_policy_v0.py": "15fb8967ac153cdbc85ea1e4f3d09a9cf315f2fa97b2742e9d427df5938d1150",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py": "cccf8b939970f63a46db19e88e2a91c087ba76f22cde2fa3e85684f143147254",
+    "tests/ops/_bounded_system_episode_fixture_v1.py": "c00c1da83cd40bd321315a0fefd915d6e39dc417e22e55ab959c22f6164697f6",
+    "tests/ops/test_bounded_peaktrade_system_episodes_v1.py": "06e3c089177c820bb9d468b23acf7d809b6e3df6d2d3edee75f2d9660deb520e"
+  },
+  "copied_original_evidence": [
+    {
+      "path": ".belege/Abschluss 2026-11-05.json",
+      "sha256": "462e73126ef0567621b4f4b0371709aee06343829af7368cf56d2310adebc0d8"
+    },
+    {
+      "path": ".belege/final-static-readback-2026-11-05.json",
+      "sha256": "69866952cd00837d1fc675820de28e1a6bbd395baa4933a34c19af119f6e96c7"
+    },
+    {
+      "path": ".belege/mandatory-case-evidence-2026-11-05.json",
+      "sha256": "16e38736a50f6b4e5094a99b3929a9fc3d9e53f983ed310075e5905967d5f433"
+    },
+    {
+      "path": ".belege/numeric-witness-2026-11-05.json",
+      "sha256": "a7ebb34bbc7909c51643e5f9f4076c15068d0f95e7c4343cdf10b25bc706f9cd"
+    },
+    {
+      "path": ".belege/runtime-fingerprint-2026-11-05.json",
+      "sha256": "78485a4c687721bee6716b7a8f44a106634b7a678e77affcf08ae0641a95e835"
+    },
+    {
+      "path": ".belege/static-checks-2026-11-05.json",
+      "sha256": "187fefa798ce49edf5453d4ccc681e43000091baca9b9dbd6cae6a10b93ae6d6"
+    },
+    {
+      "path": ".belege/system-edge-evidence-2026-11-05.json",
+      "sha256": "f686e906bd68078c5a39768bac17af7380689baaeaebd5b6ee4846d43f7b3292"
+    }
+  ],
+  "full_system_accepted": false,
+  "economic_quality": "BLOCKED",
+  "operational_authority": "NONE",
+  "systematlas_binding": "Systematlasbindung.json",
+  "active_semantic_index": "PeakTrade-Systemindex.md"
+}

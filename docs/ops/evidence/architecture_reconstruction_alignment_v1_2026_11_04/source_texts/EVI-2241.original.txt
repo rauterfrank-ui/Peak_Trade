@@ -1,0 +1,86 @@
+# Golden Vector Happy und semantische Übergaben in der PR Historie
+
+Stand 2. November 2026. Repository rauterfrank-ui/Peak_Trade.
+
+Die Erinnerung an Golden-, Happy- und Vector-Pfade hat konkrete historische Anker. Der vollständige zugängliche PR-Bestand ergibt 275 Begriffstreffer, davon 190 mit zusätzlichen Verbindungsbegriffen. Die Treffer erschließen mehrere unterschiedliche Funktionen: Eingangsverträge, numerische Referenzfälle, Replay-Projektionen, Beobachtung und Domänenprüfung. Ein gemeinsamer Name beweist keinen gemeinsamen Datenursprung oder geschlossenen universenübergreifenden Regelkreis.
+
+## Umfang und Suchverfahren
+
+Erfasst wurden 7.134 PRs aller Zustände: 6.959 gemergt und 175 geschlossen ohne Merge. Durchsucht wurden Titel, vollständige Beschreibungen und sämtliche 73.532 geänderten Dateipfadeinträge über alle PRs. Diese Zahl zählt Pfade je PR, nicht unterschiedliche Repository-Dateien. Dezember 2025 bleibt als historischer Vergleich enthalten; für die fachliche Rückverfolgung sind die späteren Stränge vorrangig.
+
+Primärbegriffe: Golden, Vector, Happy sowie die eigenständigen Kürzel GHV, GVEF, GV und GHOSV. Die drei ausgeschriebenen Begriffe werden unabhängig von Großschreibung als Teilwort gesucht, Kürzel mit alphanumerischen Wortgrenzen. Vector umfasst dadurch auch Vektorisierung und Vektordatenbanken; beide sind im Register gesondert navigierbar.
+
+Verbindungsbegriffe: Bridge, Adapter, Cross, Handoff, Join, Seam, Projection, Ingress, Dispatch, Mapping, Lineage und Convergence. Ergänzende Markierungen: Replay, Witness, Corpus, Fixture, Parity, Reproof, Coherence, Hydration und Semantic. Automatische Gruppen sind Suchhilfen und keine verifizierten Architekturklassen.
+
+258 Treffer stammen aus Titel oder Beschreibung; 17 weitere ausschließlich aus Dateipfaden. Die 190 Treffer mit Verbindungsbegriffen sind eine Teilmenge der 275. Weitere 2.656 PRs enthalten Verbindungsbegriffe ohne Primärbegriff und bleiben als breiter separater Kandidatenpool erhalten. Familienzählungen überlappen.
+
+GitHubs Grenze von 3.000 PR-Dateien betraf #6819 und #6832. Vollständige, nicht abgeschnittene rekursive Git-Bäume vor und nach dem GitHub-Vergleichscommit ergaben exakt 9.805 beziehungsweise 5.802 Änderungen und enthalten alle zuvor erhaltenen PR-Pfade. Beide PRs wurden ohne Merge geschlossen; ihre Vergleichsbäume belegen Kandidatenänderungen, keine Übernahme in main. Die beiden mengenmäßig vollständigen Baumdifferenzen sind in der finalen Pfadliste eingesetzt; Originalantworten bleiben erhalten. Große Umbau- und Lösch-PRs sind markiert und zählen fachlich nicht als tausende neue Übergabefunktionen.
+
+## Historische Spuren
+
+### Happy Raw und Wire Vertrag
+
+April und Mai 2026: kanonischer Happy-Raw-Eingang, JSON-Wire-Smoke und Formvertrag. Der gelesene Builder übernimmt Werte aus einem Szenario-Paket für den Master-V2-Adapter. Er berechnet keine Marktdaten. Das ist eine Eingangs- und Fixture-Spur, kein Gesamtbetriebsnachweis.
+
+Quellen: [#2824](https://github.com/rauterfrank-ui/Peak_Trade/pull/2824), [#2825](https://github.com/rauterfrank-ui/Peak_Trade/pull/2825), [#3306](https://github.com/rauterfrank-ui/Peak_Trade/pull/3306).
+
+### Replay und primäre Evidence
+
+25. Juni 2026: PR-Beschreibungen und geänderte Implementierungspfade führen von Cross-Slice-Kohärenz über Master-V2-State-Events und Replay-Projektion bis zur Completion-Proof-Klassifikation. Dies ist eine besonders wertvolle historische Übergabekette. Die Einzelrevisionen dieser Serie sind hier noch nicht vollständig semantisch geprüft; FULL_E2E_BOUND ist eine Klassifikation und keine Betriebsfreigabe.
+
+Quellen: [#4550](https://github.com/rauterfrank-ui/Peak_Trade/pull/4550), [#4554](https://github.com/rauterfrank-ui/Peak_Trade/pull/4554), [#4555](https://github.com/rauterfrank-ui/Peak_Trade/pull/4555), [#4556](https://github.com/rauterfrank-ui/Peak_Trade/pull/4556), [#4557](https://github.com/rauterfrank-ui/Peak_Trade/pull/4557).
+
+### Numerische Golden Referenzen
+
+Ledger-/Replay-Referenzen im Januar und Golden-Vektoren für abgeleitete Scope-Distanzen im September. Solche numerischen Referenzfälle müssen von GHV-Beobachtung und GVEF-Domänenprüfung unterschieden werden.
+
+Quellen: [#926](https://github.com/rauterfrank-ui/Peak_Trade/pull/926), [#1055](https://github.com/rauterfrank-ui/Peak_Trade/pull/1055), [#1058](https://github.com/rauterfrank-ui/Peak_Trade/pull/1058), [#6537](https://github.com/rauterfrank-ui/Peak_Trade/pull/6537).
+
+### GHV und natürliche Daten
+
+Ende September und Oktober: Natural-Enter-Nachweise, optionale Marktdatenaufnahme, Forensik und Whole-System-Crosswalk. Laut #6998 ist die Korrelation ausdrücklich PARTIAL; zusätzliche Aufnahme und Referenzierung beweisen keine vollständige Poll-Bundle-Versorgung aller Consumer.
+
+Quellen: [#6981](https://github.com/rauterfrank-ui/Peak_Trade/pull/6981), [#6992](https://github.com/rauterfrank-ui/Peak_Trade/pull/6992), [#6998](https://github.com/rauterfrank-ui/Peak_Trade/pull/6998), [#6999](https://github.com/rauterfrank-ui/Peak_Trade/pull/6999), [#7106](https://github.com/rauterfrank-ui/Peak_Trade/pull/7106), [#7114](https://github.com/rauterfrank-ui/Peak_Trade/pull/7114), [#7145](https://github.com/rauterfrank-ui/Peak_Trade/pull/7145).
+
+### GVEF und Universenprüfung
+
+Ab 4. Oktober: Golden Vector Evaluation Fabric mit Domänen für produktiven Trading-Pfad, Ranking, Optimierung, Selbstlernen und Market Intelligence. #7039 beschreibt synthetische Fixtures; #7043 und #7044 verwenden deterministische Stubs. Die gelesenen Evaluatoren prüfen Replay-Artefakte und Autoritätsflags, führen damit nicht automatisch die ursprünglichen Produzenten aus.
+
+Quellen: [#7039](https://github.com/rauterfrank-ui/Peak_Trade/pull/7039), [#7040](https://github.com/rauterfrank-ui/Peak_Trade/pull/7040), [#7041](https://github.com/rauterfrank-ui/Peak_Trade/pull/7041), [#7042](https://github.com/rauterfrank-ui/Peak_Trade/pull/7042), [#7043](https://github.com/rauterfrank-ui/Peak_Trade/pull/7043), [#7044](https://github.com/rauterfrank-ui/Peak_Trade/pull/7044).
+
+### Intelligence Zusammenschluss und weitere Übergaben
+
+#7081 ist der stärkste hier statisch gelesene Zusammenschluss: validierter Learning-Input, bestehender M4–M8-Loop, Optimierungsevidence, Governance-Ingress und M10 ohne Owner-Autorisierung. Hinzu kommen GHV-Lineage und eine lokale GVEF-artige Invariantenprüfung. #7085 ist ein nur über Dateipfade gefundener Kandidat für historische Replay- und ökonomische Evidence-Übergaben.
+
+Quellen: [#7081](https://github.com/rauterfrank-ui/Peak_Trade/pull/7081), [#7083](https://github.com/rauterfrank-ui/Peak_Trade/pull/7083), [#7084](https://github.com/rauterfrank-ui/Peak_Trade/pull/7084), [#7085](https://github.com/rauterfrank-ui/Peak_Trade/pull/7085).
+
+## Was der gelesene Code über die Semantik zeigt
+
+Zehn Quellensnapshots sind an Revision 5d1c838c15369507c5247834db4dd0df25592169 gebunden; Pfade und SHA-256 stehen in [code-sources.json](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/code-sources.json>). Diese Revision ist ein Vergleichspunkt, keine Erklärung zum maßgeblichen heutigen Betrieb. PR-Aussagen oben beruhen auf PR-Metadaten und Pfaden; die folgenden Aussagen zusätzlich auf den genannten statischen Snapshots.
+
+Der GenericRunner der GVEF erhält Replay-Adapter, Evaluator und Gates als Abhängigkeiten. Er prüft Baseline und Kandidat auf dem Replay sowie semantische Digests. Der Self-Learning-Evaluator liest Learning-Artefakte aus ReplayTrace-Einträgen und prüft unter anderem verbotenen produktiven Writeback. Der Optimization-Evaluator prüft Parameterdifferenzen und Autoritätskennzeichen. Solche Prüfungen ersetzen weder ursprüngliche Datenproduktion noch den Beleg ihrer chronologisch korrekten Versorgung.
+
+Der PromotionEvidenceAdapter erzeugt bei erfüllten Bedingungen einen typisierten Evidence-Umschlag. Er aktiviert damit keine Promotion. Der Standard-Passthrough liefert keinen solchen Umschlag. Das ist für Übergabegrenzen wichtig: ein vorhandener Adapter ist noch kein ausgeführter oder autorisierter Übergang.
+
+In der zu #7081 gehörenden Offline-Komposition wird der vom Aufrufer gelieferte plane_request an den M4–M8-Loop weitergereicht. Danach folgen Evidence, Ingress, Admission und M10 mit owner_authorization_input=None; der Pfad endet am HARD STOP. Die lokale Funktion build_gvef_intelligence_superstructure_reproof_v1 prüft Invarianten wie fehlende Apply-/Search-Autorität und bildet Digests. Sie ruft nicht den GenericRunner der GVEF auf. Die Bezeichnung Reproof darf daher nicht zum Nachweis einer vollständigen GVEF-Ausführung erweitert werden. Auch die zuvor gefundene Frage nach kausaler Meta-zu-Search-Anpassung wird durch diese Komposition allein nicht geschlossen.
+
+Die Arbeitshypothese für die weitere Rekonstruktion lautet: Golden-/Happy-/Vector-Spuren können Eingaben, Projektionen und Prüfgrenzen sichtbar machen. Je Übergang müssen jedoch Quelle und Zeitbezug, Experiment-/Run-Identität, Bedeutungsänderung im Adapter, tatsächliche Verwendung beim Consumer und Autoritätswirkung getrennt verfolgt werden. Die Juni-Serie ist dafür eine ältere zusammenhängende Kandidatenkette; #7081 verbindet die spätere Universen-Komposition mit einer klaren Autoritätsgrenze.
+
+## Register und Primärdaten
+
+- [Durchsuchbares PR-Register](</Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-golden-vector-pr-register.canvas.tsx>) mit Haupttreffern, Verbindungsteilmenge, nur über Pfade gefundenen Treffern und separatem breitem Kandidatenpool.
+- [Alle 275 Haupttreffer einschließlich Beschreibungen und vollständiger Pfade](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/primary-pr-hits.json>).
+- [190 Haupttreffer mit Verbindungsbegriffen](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/primary-with-connection-hits.json>).
+- [2.656 zusätzliche Verbindungskandidaten](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/connection-only-pr-hits.json>).
+- [Vollständiger PR-Bestand](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/all-pr-inventory.json>), [vollständige finale Dateipfade](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/all-pr-files-complete.json>), [Filterstatistik](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/filter-statistics.json>).
+- Baumabgleiche: [#6819](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/bulk-6819-path-comparison.json>), [#6832](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/bulk-6832-path-comparison.json>).
+
+## Aussagegrenzen
+
+Die Vollständigkeit bezieht sich auf den zugänglichen Bestand von 7.134 PRs und deren Titel, Beschreibung und Dateipfade. Kommentare, sämtliche Diff-Texte und beliebige Codeinhalte wurden nicht global nach allen Begriffen durchsucht. Ein semantisch wichtiger PR ohne Suchbegriff kann fehlen. Von den Treffern wurden repräsentative Quellen gelesen, nicht alle 275 Änderungen fachlich einzeln geprüft. Geschlossene ungemergte PRs, spätere Entfernung, Stub-Verwendung und Referenzpfade sind im Einzelfall zu beachten.
+
+Die Canvas-Freitextsuche durchsucht den eingebetteten Registertext aus Nummer, Titel, Tags, passenden Pfaden und Beschreibungsauszug; vollständige Beschreibungen stehen in den JSON-Daten. Datumsanzeigen verwenden UTC, bevorzugt Merge-Datum und andernfalls Erstellungsdatum. Repository und vorhandene Vault-Notizen wurden für diese Recherche nicht geändert. Kein Trading-, Research- oder Gesamtsystemlauf wurde gestartet.
+
+## Lokale Aufgabenanalyse vom 2. November
+
+Die Begriffe werden unabhängig an ihrer jeweiligen Fundstelle untersucht. Es besteht keine Anforderung, alle Treffer miteinander zu verbinden. Die frühere Betonung zusammenhängender Übergabespuren war eine Recherchepriorität und ist kein Einordnungsprinzip für sämtliche Treffer. Die ergänzende [lokale Aufgabenanalyse](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/Lokale_Aufgaben_der_Golden_Happy_Vector_Fundstellen.md>) führt alle 275 PR-Fundstellen mit Originalkontext, Status und Aufgabenbezug sowie getrennte Beschreibungen der jeweiligen Verwendung.

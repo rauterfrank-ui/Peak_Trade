@@ -14,6 +14,10 @@ from src.ops.peak_trade_public_market_data_runtime_v1.constants_v1 import (
     RANKING_FINALIZED_PT1M_MARK_COUNT,
     SELECTION_AUTHORITY,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    canonical_fact_source_v1,
+    fact_capture_timestamp_v1,
+)
 
 
 def landscape_readmodel_from_live_facts_v1(
@@ -59,13 +63,24 @@ def finalized_facts_to_raw_mark_candles_v1(
     for fact in facts:
         if fact.get("fact_kind") != "FinalizedPt1mMarkFactV1":
             continue
+        instrument = fact.get("instrument")
+        if (
+            not isinstance(instrument, Mapping)
+            or instrument.get("venue_native_id") != venue_native_id
+        ):
+            continue
         rows.append(
             RawMarkCandleV1(
                 venue_native_id=venue_native_id,
                 ts_ms=str(fact["interval_start_ms"]),
                 mark_px=str(fact["mark_px"]),
-                confirm=str(fact.get("confirm") or "1"),
-                receive_or_capture_timestamp=captured_at,
+                confirm=str(fact.get("confirm", "")),
+                receive_or_capture_timestamp=(
+                    fact_capture_timestamp_v1(fact)
+                    if "timestamps" in fact or "captured_at" in fact
+                    else captured_at
+                ),
+                **(canonical_fact_source_v1(fact) if "timestamps" in fact else {}),
             )
         )
     return tuple(rows)

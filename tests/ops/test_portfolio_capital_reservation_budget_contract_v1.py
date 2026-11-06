@@ -211,7 +211,7 @@ def _admit(
         cycle_id="cycle-1",
         instrument_id=INSTRUMENT,
         account_identity=ACCOUNT,
-        sizing_input=sizing or _sizing_input(),
+        sizing_input=sizing or _sizing_input(decision_id=decision),
         fresh_pretrade_get_status=TRUSTED,
         live_account_bound_status=BOUND,
         fresh_evidence_fetched=True,

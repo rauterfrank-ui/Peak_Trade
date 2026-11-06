@@ -1,0 +1,88 @@
+{
+  "authority": "NONE",
+  "checks": [
+    {
+      "case": "missing capital data",
+      "effect": "MISSING_AVAILABLE_MARGIN_EVIDENCE denies guard",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "non-finite caps",
+      "effect": "NON_FINITE_CAP or INVALID_DECIMAL at parse",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "negative finite decimal caps",
+      "effect": "parse accepts; positive notional exceeds cap and is denied; canonical caps are null so MISSING_NUMERIC_CAP dominates",
+      "status": "FAIL_CLOSED_AT_EVALUATION_PARSE_RANGE_NOT_POSITIVE_ONLY"
+    },
+    {
+      "case": "negative int caps",
+      "effect": "NEGATIVE_INT_CAP",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "non-bool owner_caps_ratified",
+      "effect": "INVALID_BOOL_FLAG; string false does not ratify",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "contradictory account identity",
+      "effect": "SESSION_ACCOUNT_SCOPE_MISMATCH and keychain identity is not possession",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "credential mismatch",
+      "effect": "one-shot refuses unless REAL_KEYCHAIN pins stay false and the signing Owner-GO matches",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "stale session",
+      "effect": "SESSION_GUARD_CONFIG_DIGEST_MISMATCH, STALE_MARGIN_EVIDENCE_PRETRADE_MISMATCH, risk-reduction max age 15s",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "kill switch KILLED RECOVERING DISABLED or missing file",
+      "effect": "block",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "kill switch state ACTIVE",
+      "effect": "does not block unless journal supersedes it or PEAK_KILL_SWITCH=1",
+      "status": "NON_BLOCKING_WHEN_TRUSTED_ACTIVE"
+    },
+    {
+      "case": "duplicate authorization",
+      "effect": "ledger OWNER_AUTHORIZATION_IDENTITY is single-use per token, baseline pin, account, environment",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "replay after crash",
+      "effect": "GLOBAL_REPLAY_DENIED; unresolved claim blocks new risk",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "double POST",
+      "effect": "max_post_count 1, second_submit forbidden, consumed permit/envelope/client-order markers",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "unclear venue response",
+      "effect": "UNKNOWN_OUTCOME is not safe to retry",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "network interruption after claim",
+      "effect": "SENT_INITIATED or UNKNOWN_OUTCOME requires reconciliation; no automatic retry",
+      "status": "FAIL_CLOSED"
+    },
+    {
+      "case": "restart between claim and consume",
+      "effect": "in-memory claim token is not held by the new process",
+      "status": "FAIL_CLOSED"
+    }
+  ],
+  "implementation_performed": false,
+  "new_defect_found": false,
+  "schema_version": "bwp_live_003_security_invariants.v1"
+}

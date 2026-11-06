@@ -1,0 +1,293 @@
+PEAKTRADE – OFFENLEGUNG DES RANKING-FUNKTIONSBEREICHS
+02.11.2026 | Haupt-Checkout HEAD 242b7974fc93f0bdb47706556101bd6f0c497414 plus vorhandene Änderungen
+
+AUSGANGSPUNKT UND ERGEBNIS
+Die vorherige Ranking/N5/Execution-Prüfung war keine vollständige Rekonstruktion des inneren Ranking-Aufbaus. Diese Fortsetzung beginnt bei den ursprünglichen Aufgaben und unterscheidet mehrere heute nebeneinander stehende Zuständigkeiten und Varianten. Eine gemeinsame nachweislich passende Endsystem-Konfiguration ist weiterhin nicht belegt.
+Die Erinnerung an das Bewahren einer Top20-Auswertungsmöglichkeit ist in Originalnachrichten vom 02.10.2026 konkret dokumentiert. Das Ziel war, Kandidaten trotz normaler Rangwechsel eine echte Auswertungsgelegenheit zu erhalten. Dies darf nicht rückwirkend als bereits bewiesene Lösung der Entry-Kontinuität verstanden werden.
+Besonders neu gegenüber der letzten Übersicht ist die eigenständige Authority für ein Authoritative Next Active Set. Dieses Objekt ist nicht mit einem Ranking-Snapshot, einem nichtautoritativen Membership-Artifact, einem Evaluationsslot oder einer produktiven Cap23-Einzelauswahl gleichzusetzen. Sein Ownership-Vertrag erklärt den produktiven Anschluss ausdrücklich für ungebunden.
+
+HISTORISCHE KONSTRUKTION UND KORREKTUREN
+1. 02.08.: Cap21–24 als Inventar, zunächst strukturelles Ranking, Auswahl und Binding; wirtschaftliche Features/Score später im September. Die bereits erhaltene Herkunftsrekonstruktion ist als datierte Quelle referenziert, nicht erneut als global erster Ursprung bewiesen.
+2. 02.10.,17:17: Originalauftrag verlangt Residenz nach finalem VALID Cap22-Top20-Ergebnis. Ranking darf weiterlaufen; der Resident behält Identität und Eintrittsherkunft, auch wenn sein aktueller Rang außerhalb der Top20 liegt. Residenz ist Lifecycle/Arbeitsplanung ohne Ranking-, Selection- oder Trading-Authority.
+3. 02.10.,17:23: Weiterer Originalauftrag verlangt endliche Pending-Queue, bis fünf aktive Plätze, kein Deadline-Reset bei Wiederholung, spätere Reentry-Bedingung, persistente Herkunft und möglichen Early Release nach tatsächlicher kanonischer Auswertung. Natural Enter ist ausdrücklich kein Abschlusskriterium.
+4. Derselbe Abend enthält widersprüchliche Zwischenmodelle. Eine Nachricht um18:27 setzt Top20/Residenz vor ein späteres „Ranking“ und verschiebt B05 begrifflich. Die Korrektur um19:06 verwirft diese Reihenfolge und verlangt wieder Residenz NACH gültigem Cap22-Ranking. Diese Varianten bleiben historische Aussagen; sie werden nicht zu einer gemeinsamen Ursprungspipeline geglättet. Upstream-Feature-Lieferung ist keine damit automatisch ratifizierte Universe-Mitgliedschaft.
+5. 23.10.,07:28: Originalnachricht unterscheidet Selected-Instrument-Hold von Candidate-/Evaluationsstabilität und fordert ihre Implementierung getrennt nachzuweisen.
+6. 23.10.,07:35: Klarstellung verlangt zeitnahe Prüfung aktueller Eignungs-/Safety-Evidence und unmittelbare Weitergabe geeigneter Kandidaten. Keine pauschale mehrstündige Wartepflicht. Cap23-Hold, Residenz und Confirmation bleiben getrennt.
+Die sechs Originaltexte sind anhand ihrer tatsächlichen JSONL-Zeilen verifiziert und in sources/ gesichert. Historische GO-/Implementierungsanweisungen wurden nicht ausgeführt.
+Lokaler Git-Ausschnitt: Residenz d62eb64c am02.10.17:42; Eligibility-Semantik #7023/4b646cc5 um20:10; Config-Coalescing #7025/6ba968bd um21:26; weiterer Config-Propagation-Commit2a1f6317 um22:29. Diese Abfolge zeigt nachträgliche Übergaben, keinen bewiesenen Gesamtabschluss.
+
+INSTANZEN UND AUTORITÄTEN
+Die folgende Liste ist ein beleggebundenes Untersuchungsregister. Sie definiert keine neue Universe-Mitgliedschaft oder kanonische Anzahl von Ebenen.
+I01 Instrumentinventar / Eignung
+Aufgabe: Upstream-Fakten und Strukturprüfung
+Befugnis: Cap21; keine Handelswahl
+Zustand / Übergabe: Universe-Snapshot
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/governed_futures_universe_producer_v1/producer_v1.py
+
+I02 Economic-MD und B05-Features
+Aufgabe: Instrumentbezogene Historie, Volatilität und Amplitude
+Befugnis: Feature-Produktion; keine wirtschaftliche Rang-/Entry-Entscheidung
+Zustand / Übergabe: Economic-MD- und Feature-Snapshot
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py
+
+I03 B06 / Cap22
+Aufgabe: Normalisierung, Score, wirtschaftliche Ordnung und finaler Top20-Kontext
+Befugnis: Ranking; keine produktive Einzelauswahl oder Handelsentscheidung
+Zustand / Übergabe: Ranking-Snapshot, Digest, Rangordnung
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
+
+I04 Ranking-Persistenz / Evidence
+Aufgabe: Single Writer, atomare Dateien, Lesekontrolle, Herkunft
+Befugnis: Speicherung und Prüfung
+Zustand / Übergabe: Ranking-/Evidence-Dateien
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+
+I05 Residenz-Aufnahme
+Aufgabe: Finales VALID/ELIGIBLE Top20-Ergebnis als Eintrittsereignis
+Befugnis: Auswertungs-Lifecycle; kein Neuranking
+Zustand / Übergabe: Admission-Snapshot, Record, Start und Deadline
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/top20_opportunity_evaluation_residency_v1/admission_v1.py
+
+I06 Residenz-Scheduler
+Aufgabe: Pending-Queue, bis fünf aktive Auswertungsplätze, Ablauf und Reentry
+Befugnis: Arbeitszuteilung ohne neue wirtschaftliche Präferenz
+Zustand / Übergabe: Residenz-State und Slots
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/top20_opportunity_evaluation_residency_v1/residency_engine_v1.py
+
+I07 EvaluationSchedulingFrame
+Aufgabe: Bewahrt originale Eintrittsherkunft trotz verändertem aktuellem Ranking
+Befugnis: Auswertungs-Kontext; keine neue aktuelle Top20-Wahrheit
+Zustand / Übergabe: Admission-Snapshot plus ephemeres Membership-Objekt
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/top20_opportunity_evaluation_residency_v1/evaluation_frame_v1.py
+
+I08 Integrierte Residenz-Auswertung
+Aufgabe: Archivdatengebundener Replay je aktivem Resident; Ergebnis zu Witness
+Befugnis: Auswertung abschließen; kein Entry erzwingen
+Zustand / Übergabe: Replay-Witness, EVALUATION_OBSERVED/COMPLETED
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/top20_opportunity_evaluation_residency_v1/scoped_productive_residency_evaluation_completion_v1.py
+
+I09 Cap23-Residenz-Gate
+Aufgabe: Liest Abschluss, Identität und Alter vor Freigabe SELECTED_ACTIVE
+Befugnis: Bedingtes Veto; keine eigene Auswahl und kein State-Schreiber der Residenz
+Zustand / Übergabe: Completion-Ref oder NO_SELECTION
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/single_selected_future_policy_v1/residency_eligibility_gate_v1.py
+
+I10 Isolierter MF-Selector / POLICY_A
+Aufgabe: Membership-Vorschlag, Haltealter in Ranking-Beobachtungen und Hysterese
+Befugnis: Isolierte Membership-Verarbeitung; keine produktive Trading-Selection
+Zustand / Übergabe: Membership-Artifact und abgeleitetes Delta
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py
+
+I11 Authoritative Next Active Set
+Aufgabe: Eigenständige Zuständigkeit für verbindliche Mitgliedschaft im Auswahlbereich
+Befugnis: Active-Set-Authority deklarativ gebunden; Runtime/Rotation weiterhin gesperrt
+Zustand / Übergabe: AuthoritativeNextActiveSetDeclarationV1
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/mf_authoritative_next_active_set_ownership_contract_v1.py
+
+I12 Kanonisches MF-Single-Egress-Envelope
+Aufgabe: Typisierte Referenz auf Membership-Kontext
+Befugnis: Keine produktive Consumer-Bindung; nicht automatisch Active-Set-DTO
+Zustand / Übergabe: MF_AUTHORITY_HANDOFF_ENVELOPE_V1
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/mf_canonical_single_egress_authority_handoff_contract_v1.py
+
+I13 Hard-Facts-Cap22→MF-N5-Join
+Aufgabe: Zusätzlicher ausführbarer Weg über POLICY_A, Membership und Topologie
+Befugnis: Bedingtes Zusammensetzen bestehender Owner; keine neue N>1-Freigabe
+Zustand / Übergabe: Membership plus wiedergewonnene Topologie
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/hard_facts_system_closure_v1/productive_mf_n5_handoff_join_v1.py
+
+I14 Lane-Mapping und Persistenz
+Aufgabe: Stabile Lane-ID je behaltenem Mitglied, keine Wanderung nur wegen Rangwechsel
+Befugnis: Identitätsabbildung; keine Auswahl, kein Entry
+Zustand / Übergabe: LANE_1…5, Root, Checkpoint
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+
+I15 Governed Pin
+Aufgabe: Vollständige Ranking-/Universe-/Lane-Herkunft als Auswahlconstraint
+Befugnis: Kein Selection-Writer und kein eigenständiger Selector
+Zustand / Übergabe: GovernedCap23InstrumentPinV1
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+
+I16 Cap23-Einzelauswahl / Selection Hold
+Aufgabe: Wählt aus vorgegebener Ordnung, erhält vorherige Wahl, Hysterese und Positionsschutz
+Befugnis: Alleinige produktive Einzelauswahl
+Zustand / Übergabe: Persistierte Selection mit Gültigkeit/Previous/Pending
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/single_selected_future_policy_v1/selection_v1.py
+
+I17 Cap24-Binding
+Aufgabe: Prüft und bindet ausgewählte Identität; wählt nicht neu
+Befugnis: Binding
+Zustand / Übergabe: BoundInstrumentV1 / Handoff
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+
+I18 Bestätigungs-Cursor / Natural-Enter-Consumer
+Aufgabe: Fortlaufende frische/distinkte Beobachtungen desselben gebundenen Instruments
+Befugnis: Core-Bestätigung und fachliche Decision; kein neuer Rank
+Zustand / Übergabe: Cursor, SideState, Confirmation-Fortschritt
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
+
+I19 Positionsbetreuung und Lane-Health
+Aufgabe: Offene Position trotz Rankingwechsel erhalten; Hold nicht automatisch auswerfen
+Befugnis: Custody und bedingtes Veto/Replacement; kein neues wirtschaftliches Ranking
+Zustand / Übergabe: Lifecycle, Positionslage, Health-Klassifikation
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/lifecycle_v1.py
+
+NICHT EINE EINZIGE LINEARE PIPELINE
+B1 Direkter N1-Pfad
+Verlauf: Inventar → Features → finaler Cap22 → Cap23 → Cap24 → bereits gebundenes Instrument → fortlaufender Natural-Enter-Core
+Wirkung und Grenze: Der gelesene Cap21→23-Caller übergibt previous_selection=None und load_previous_from_state=False. Dadurch wird seine vorhandene Cap23-Haltefunktion nicht automatisch zur Kontinuitätsgarantie über neue Läufe.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py
+
+B2 Scoped N1 mit Residenz-Qualifikation
+Verlauf: Cap22 persistiert → Residenz → archivdatengebundene integrierte Auswertung → Abschluss-Witness → Cap23-Eligibility-Gate → Cap24 → Natural-Enter-Core
+Wirkung und Grenze: Gesonderte Enable-Flags und instrumentpassende Replay-Daten nötig. Ein Auswertungsabschluss mit HOLD reicht; er ist weder Natur-Entry noch umfassende Handelbarkeit.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/top20_opportunity_evaluation_residency_v1/scoped_residency_integrated_evaluation_propagation_v1.py
+
+B3 Membership / N5
+Verlauf: Cap22 → isolierte POLICY_A/Membership oder bedingter Hard-Facts-Handoff → stabile Topologie → Pin → Cap23/24 je Lane → N5-Orchestrierung
+Wirkung und Grenze: Fünf N1-Lanes sind möglich. Per-Lane-Cap23 lädt Previous-State. Ein anderer Caller kann andere Kontinuität haben. Produktiv bleibt N>1 gesperrt.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+
+B4 Residenz-Frames vor N5
+Verlauf: Residenzstore → aktive Residents nach Eintrittssnapshot gruppieren → EvaluationSchedulingFrame → N5 → normalisierte Witnesses → Abschluss/Slot-Freigabe
+Wirkung und Grenze: prepare_staged_control_plane_residency_v1 verwendet keinen Scoped-Override. Bei globalem False führt allein config.enabled=True nicht zu Frames. Die Control Plane erhält replay_executed_by_lane gesondert; bloßes Scheduling beweist kein Replay.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+
+B5 Intendiertes Authoritative Active Set und Egress
+Verlauf: Ranking-Kontext ≠ nichtautoritatives Membership ≠ Authoritative Next Active Set → intendiertes Single Egress → noch ungebundener produktiver Consumer
+Wirkung und Grenze: Der Ownership-Vertrag besitzt eine eigene Auswahlbereichs-Autorität, untersagt aber Rotation/Runtime und erklärt das heutige Envelope ausdrücklich für ungeeignet als Active-Set-DTO. Diese Variante darf nicht mit B3 gleichgesetzt werden.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/mf_authoritative_next_active_set_ownership_contract_v1.py
+
+B6 Beobachtung und nachgelagerte Consumers
+Verlauf: Ranking-/Feature-Evidence → Explainability / Archive / DDO-Beobachtung → Anzeige oder Offline-Auswertung; Decision → Risk/Sizing/Execution → Accounting/Reconciliation
+Wirkung und Grenze: Diese Abzweige sind zu referenzieren. Weder Darstellung noch Lernexport erzeugen Auswahl- oder Handelsrechte. Aktuelle Preise, G17, Safety, Kapital und Venue-Admissibility bleiben zusätzliche Consumer-Bedingungen außerhalb der Residenz.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+
+SECHS VERSCHIEDENE KONTINUITÄTEN
+Auswertungsresidenz
+Erhalten wird: Identität + Eintrittsherkunft + Auswertungsgelegenheit
+Bedingung: Deadline/Abschluss/Invalidierung; Defaultdauer 28.800 s, Early Release möglich
+Abgrenzung: Weder Pflichtwartezeit noch Entry-Bestätigung
+
+Cap23 Selection Hold
+Erhalten wird: Bereits ausgewähltes Instrument
+Bedingung: Default 3.600 s und Ranghysterese 1; Previous-State muss wirklich angeliefert/geladen werden
+Abgrenzung: Hält Auswahl, verzögert nicht automatisch Entry
+
+MF/POLICY_A Anti-Churn
+Erhalten wird: Mitgliedschaft im isolierten Modell
+Bedingung: Zwei Ranking-Beobachtungen, mindestens ein Rang Verbesserung; ungeeignet/fehlend kann entfernt werden
+Abgrenzung: Keine Sekunden-Haltezeit und keine bestätigte Position
+
+Lane-Retention
+Erhalten wird: Zuordnung Instrument → Lane/State-Root
+Bedingung: Behaltenes Mitglied bleibt in seiner Lane; Rangumsortierung bewegt es nicht
+Abgrenzung: Keine eigenständige wirtschaftliche Auswahl
+
+Core-Confirmation-Cursor
+Erhalten wird: Fachlicher Fortschritt derselben Instrumentidentität
+Bedingung: Distinkte/fresh Beobachtungen und Core-Regeln; fremde Native-ID archiviert Singleton-Cursor
+Abgrenzung: Keine Residenz- oder Selection-Zeit
+
+Positions-Custody
+Erhalten wird: Offene Position und ihre weitere Betreuung
+Bedingung: Freigabe erst nach positionsbezogenen Bedingungen/Recon
+Abgrenzung: Ranking-Abfall schließt keine Position
+
+WAS RESIDENZ TATSÄCHLICH SPEICHERT UND PRÜFT
+Admission: finaler VALID-Snapshot, Digest und Ranking-/Universe-ID; Kandidat ELIGIBLE und Rang1..20. Die Aufnahme bewertet Volatilität oder Score nicht neu.
+State: canonical_instrument_id, universe_snapshot_id, residency_epoch_id, Original-Aufnahmesnapshot, Aufnahmerang/-zeit, Start, Deadline, FIFO-Aufnahmesequenz, aktiver Slot, aktuelle Rangbeobachtungen und terminaler Grund.
+Pending ist keine Trading-Selection. Active heißt vergebene Auswertungskapazität, nicht offene Position und nicht bestätigter Entry.
+Scheduler: maximal fünf aktive Plätze; ältere Aufnahmesequenz zuerst, innerhalb eines Ereignisses ursprüngliche Rangordnung. Kein Vergleich wirtschaftlicher Scores unterschiedlicher Epochen. Default max_pending20 mit Implementierungsobergrenze256.
+Lebenslauf: ABSENT → ADMITTED_PENDING → ACTIVE_RESIDENT → EVALUATION_OBSERVED → optional früh COMPLETED_EVALUATION_WINDOW. Alternativen: EXPIRED_PENDING, EXPIRED_ACTIVE, INVALIDATED oder CAPACITY_REJECTED.
+Die Deadline beginnt bei Aufnahme, nicht erst bei Aktivierung; ein Kandidat kann ausdrücklich bereits in der Queue ablaufen. Stärkere Fairness „jeder Top20-Kandidat wird sicher aktiv geprüft“ ist damit nicht garantiert.
+Wiederholte Top20-Aufnahme soll die Deadline nicht verlängern. Nach terminalem Zustand muss ein tatsächliches späteres Outside-Top20 beobachtet werden, bevor eine erneute Aufnahme erlaubt wird.
+Die Frame-Schicht gruppiert nach dem ursprünglichen Aufnahmesnapshot und erzeugt einen ephemeren Membership-Kontext. Die alte Aufnahmeherkunft wird nicht zu einem neuen aktuellen Ranking erklärt.
+Evaluation-Witness: integrated_offline_replay_executed=True plus kanonische Disposition wie HOLD/PRE_EXTERNAL_EFFECT/COMPLETED. Die Residenz selbst berechnet keine Safety-/Suitability-/Core-Parameter und sammelt nicht den fortlaufenden Confirmation-Cursor.
+Cap23-Gate: prüft nur SELECTED_ACTIVE gegen abgeschlossene Residenz, passende Instrument-/Universe-Identität, Witness und Alter. Sein max_witness_age_seconds-Default86400 wird derzeit gegen residency_started_at_unix gerechnet, nicht gegen einen separat gespeicherten Abschlusszeitpunkt. Bei fehlendem Nachweis erzeugt es NO_SELECTION. Andere Selection-Klassen werden nicht als SELECTED_ACTIVE geprüft.
+Defaultdauer28800 ist ein vorhandener Betriebsparameter, keine nachgewiesen passende Zielkonfiguration und keine angeordnete Wartezeit. Default Early Release istTrue; somit kann ein legitimer HOLD-Auswertungsabschluss weit vor Deadline die Ressource wieder freigeben.
+
+AKTUELLE KONFIGURATION IST AUFRUFERABHÄNGIG
+Die direkten Codekontrollen ergeben:
+- globale TOP20_EVALUATION_RESIDENCY_ENABLED=False;
+- config.enabled=True ohne Scoped-Override bleibtFalse;
+- Scoped-Aufruf mit config.enabled=True kannTrue werden;
+- Scoped-Cap23-Gate kann unabhängig davon gebunden werden;
+- N5-prepare mit nur config.enabled=True benutzt keinen Scoped-Override und erzeugt daher keine Residenz-Frames.
+Das sind vorhandene unterschiedliche Pfade, kein einheitlich wirksamer Schalter.
+Der M01-CLI-Adapter propagiert die zwei gesonderten Flags --enable-scoped-top20-evaluation-residency-v1 und --enable-cap23-residency-eligibility-gate-v1. Für die gekoppelte Auswertung benötigt der N1-Pfad passende archivierte Daten oder eine explizite integrierte Evaluationskonfiguration. Ohne sie wird gesperrt.
+Der gelesene N1-Produktiv-Persist-Caller übergibt previous_selection=None und load_previous_from_state=False. Die im Cap23-Modul vorhandene einstündige Auswahlstabilität ist dadurch nicht automatisch über erneute Aufrufe erhalten. Der N5-Lane-Caller lädt dagegen previous state. Ein bloßer Defaultwert beweist nicht seine aktuelle Nutzung.
+Bei einer anderen gebundenen Native-ID archiviert der Singleton-Natural-Enter-Consumer seinen alten aktiven Cursor und beginnt mit anderer Identität neu. Das verhindert Fremdinstrument-Übernahme, kann aber den Bestätigungsfortschritt des ersetzten Instruments beenden. Eine Residenz-Deadline ist kein Nachweis, dass dieser Core-Cursor erhalten bleibt.
+Ein Gültigkeitszeitraum, Ranking-Maxalter, Replay-Auswertungsbudget, Selection-Haltezeit, Residenzdeadline und Confirmation-Epochen sind verschiedene Zeitverträge. Es wurde kein Zwei-Stunden-Horizont festgelegt.
+
+AKTUELL REPRODUZIERTE GRENZEN
+G1 Originalabsicht rekonstruiert
+Nachrichten vom 02.10. verlangen Erhalt einer Auswertungsgelegenheit trotz gewöhnlichem Ranking-Churn. Am selben Abend wurde die falsche Reihenfolge mit Ranking erst hinter Residenz korrigiert. Am 23.10. wurden Selection Hold, Residenz und Confirmation ausdrücklich getrennt und eine pauschale mehrstündige Kandidatenwartepflicht ausgeschlossen.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/original-message-provenance.json
+
+G2 Erhalt bei Rangabfall funktioniert begrenzt
+Konstruierter Fall: X bei Rang20 erhält Start100/Deadline700; nach Ausscheiden aus aktuellem Top20 bleibt X ACTIVE_RESIDENT und Deadline700 unverändert. Das belegt Lifecycle-Erhalt, nicht fortgesetzte tatsächliche Marktbeobachtung.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/continuity-scenarios.json
+
+G3 Eine Auswertung ist nicht dauerhaftes Beobachten
+Ein ausdrücklich gesetzter Witness integrated_offline_replay_executed=True und HOLD setzt den Resident bereits auf COMPLETED und gibt den Slot frei. Die Residenz sammelt Rang-/Lifecycle-Beobachtungen, nicht selbst C1-, G17-, Suitability- oder Confirmation-Fortschritt.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/continuity-scenarios.json
+
+G4 Snapshot-Identität kann Kontinuität beenden
+Bei anderer Universe-Snapshot-ID invalidiert die aktuelle Funktion den Resident auch dann, wenn X im übergebenen Inventar noch vorkommt. Das wurde konstruiert reproduziert. Ob normale tatsächliche Refreshes diese ID wechseln, ist pro aktivem Producer/Source-Digest zu prüfen; kein pauschaler Live-Fehler behauptet.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/continuity-scenarios.json
+
+G5 Aktivierung unterscheidet sich nach Einstieg
+Globaler Default False; Scoped N1 kann mit eigenem Override aktiviert werden. N5-Frame-Preparation benutzt diesen Override nicht. config.enabled=True allein ergibt dort False. Somit existiert kein aus einem einzelnen Schalter ableitbarer einheitlicher wirksamer Zustand.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/continuity-scenarios.json
+
+G6 Selection Hold braucht tatsächlich geladenen Vorzustand
+Der gelesene N1-Cap21→23-Caller beginnt explizit ohne Previous-Auswahl. Der N5-Lane-Producer lädt Previous-State. Die Defaultzahl3600 allein garantiert daher nicht dieselbe Stabilität in beiden Wegen.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/source-manifest.json
+
+G7 Eigenständige Active-Set-Autorität ist noch kein produktiver Anschluss
+Der zusätzliche Ownership-Vertrag trennt RankedCandidateContext, NonAuthoritativeMembershipContext und AuthoritativeNextActiveSet. Active-Set-Owner, reiner POLICY_A-Evaluator, produktiver Cap23-Selector und Envelope-Consumer haben unterschiedliche Rechte. Runtime/Rotation bleiben im Ownership-Vertrag gesperrt.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/source-manifest.json
+
+G8 Eignung ist eine Folge verschiedener Prüfungen
+Strukturelle Universe-Eignung, vollständige Rankingfeatures, Auswahl-Eignung, Auswertungsabschluss, frische/distinkte Beobachtung, Core-Bestätigung, Risk/Sizing und Venue-Admission sind unterschiedliche Urteile. COMPLETED heißt nicht insgesamt handelbar. Der gelesene Replay platziert Survival/Suitability nach C1/C2/C3; eine separate schnelle vorgeschaltete Kandidatenprüfung ist dadurch nicht belegt.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/source-manifest.json
+
+G9 Persistenz-/Restart-Garantie noch nicht insgesamt getragen
+Residenz-State und Metrics werden pro Datei atomar geschrieben; Eventlog separat angehängt. Die eigene Single-Writer-Klasse ist vorhanden, in src/scripts wurden aber keine Aufrufe dieser Klasse außerhalb ihrer Definition gefunden. Keine automatisch bewiesene konkurrierende oder crashkonsistente Gesamttransaktion.
+Beleg: /Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/ranking-universe-open-reconstruction-2026-11-02/source-manifest.json
+
+DIE AUSSAGE „MIT DIESEM FUTURE KÖNNEN WIR HANDELN“
+Sie lässt sich nicht aus einem einzigen Top20-/Residency-Label ableiten:
+- Universe: Instrument und notwendige Vertragsmetadaten strukturell gültig?
+- Economic-MD/B05: erforderliche Historie vollständig und verwendbar?
+- Cap22: im wirtschaftlich bewertbaren Set und in der endgültigen Ordnung?
+- Residenz: Auswertungsmöglichkeit erhalten und tatsächlicher Replay nachgewiesen?
+- Cap23: aktuell auswählbar, Vorzustand/Haltebedingungen/Positionslage korrekt?
+- Cap24: dieselbe Identität, gültige Herkunft und Binding?
+- Core: frische/distinkte Marktbeobachtung, G17, Directional-/Confirmation-/Suitability-/Composition-Bedingungen erfüllt?
+- Risk/Execution: Kapital, Menge, Contract/Lot, Stop, Position Mode, Admission und Modus zulässig?
+Nur die tatsächlich benötigten jeweiligen Consumer-Urteile können die Gesamtzulässigkeit tragen. Ein Kandidat kann wirtschaftlich interessant und ordnungsgemäß ausgewertet sein, ohne dass ein Entry erlaubt ist. Fehlende Evidence ist nicht gleich wirtschaftlich ungeeignet; ein HOLD ist nicht automatisch ein Grund für Ranking-Eviction.
+
+NATÜRLICHER ENTRY: HISTORISCHEN TEILNACHWEIS NICHT VERLIEREN
+Ein vorhandener Bericht vom07.10. am Pin6ed52d01 beschreibt für NMR-USDT-SWAP einen natürlichen Long-Entry und PRE_EXTERNAL im selben Zyklus10, ohne POST. Die dazu benannten Summary-/Runreport-Dateien sind lokal vorhanden und ihre Hashes wurden gegen den Evidence-Index geprüft.
+Das ist ein historischer begrenzter Witness; dessen SOURCE/CONFIG/KEYCHAIN- und Beobachtungsaussagen wurden nicht durch eine neue Live-Ausführung bestätigt. Es beweist weder alle fünf Lanes noch alle Rankingvarianten noch die ursächliche Notwendigkeit oder Wirksamkeit der Residenz. Die dortige Behauptung WHOLE_SYSTEM_SEMANTIC_EXCAVATION_COMPLETE wird nicht übernommen.
+Die Frage ist deshalb nicht mehr pauschal „gab es nie einen natürlichen Enter?“, sondern: welcher genau gebundene Pfad hatte ihn, welche Kontinuität trug ihn und ist diese mit der gewünschten Ranking-/Residenz-/Active-Set-Konfiguration gemeinsam belegt?
+
+PRÜFUNG
+42 ausgewählte Prüfungen bestanden,1 übersprungen. Schwerpunkt: Residenz-Lifecycle, Cap23-Gate, integrierter Abschluss und Config-Weitergabe. Die Completion-Tests verwenden ausdrücklich auch Stub-Evaluatoren; sie ersetzen keine echte durchgehende Markt-/Replay-Versorgung.
+Zusätzliche konstruierte Szenarien belegten Rangabfall-Erhalt, unveränderte Deadline, Early Release bei HOLD-Witness und Invalidierung bei neuer Universe-Snapshot-ID. Dabei wurden600s nur als expliziter Testwert benutzt, nicht als Konfigurationsempfehlung.
+Netzverbindungen waren gesperrt; Schreibzugriffe auf Dateien/Verzeichnisse wurden auf diesen Analyseordner beschränkt. Kein neuer Run in Obsidian. Keine Repo-/Config-/Produktänderung und keine Aktivierung. Vorherige Ranking-/N5-Prüfungen wurden nicht unnötig erneut ausgeführt.
+
+VERBLEIBENDER VOLLSTÄNDIGKEITS- UND KONFIGURATIONSABSCHLUSS
+Diese Offenlegung erweitert die frühere Übersicht wesentlich; sie wird nicht als vollständiges Verständnis aller historischen Funktionen ausgegeben. Für einen belastbaren Konfigurationsabschluss sind konkret offen:
+1. Die gewünschte Zielvariante bestimmen: direkter N1-Pfad, ausgewertete Residenz vor N1, Membership/N5 oder verbindliches Authoritative Active Set. Diese Varianten sind keine austauschbaren Namen.
+2. Den noch ungebundenen Active-Set-/Single-Egress-Vertrag zur tatsächlichen produktiven Übergabe abgleichen. Aus gegenwärtigen Adaptern keine Autoritätsübertragung ableiten.
+3. Tatsächliche Instrument-, Universe-/Ranking-/Admission-/Lane-/Core-Versionen durchgehend binden; normales Snapshot-Erneuern von echter Invalidierung unterscheiden.
+4. Prüfen, welche Mindestbeobachtung fachlich nötig ist, statt einen Auswertungsabschluss mit beliebiger ausreichender Entry-Beobachtungsdauer gleichzusetzen.
+5. Belegen, dass geeignete Kandidaten sofort weitergegeben werden können, unzureichende Evidence fail-closed bleibt und normale HOLDs keine ungewollte Rotation auslösen.
+6. Auswertungsplatz-Freigabe mit weiterlebendem Core-Cursor, Positions-Custody, Slot-Reuse und Kapitalzustand abgleichen.
+7. Mehrfachwriter und unterbrochene Persistenz prüfen; vorhandene Lock-Klasse und atomare Einzeldatei sind kein kompletter Restart-/Concurrency-Nachweis.
+8. Erst daraus eine konkrete zusammengehörige Konfiguration plus Daten-/Laufzeitnachweis ableiten. Alle genannten Defaultzahlen bleiben beobachteter Ist-Stand, keine neue fachliche Ratifikation.
+Keine Wiederherstellung oder Reparatur wurde vorgenommen. Dieses Dossier ist Befund und Navigation, keine parallele Architekturautorität.
+

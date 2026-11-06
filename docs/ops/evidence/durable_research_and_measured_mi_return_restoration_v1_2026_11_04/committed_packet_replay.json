@@ -1,0 +1,12 @@
+{
+  "source_commit": "221755e3ae8d0c04bff2677f57879bb44ecb717d",
+  "artifact_source": "Committed git blobs, materialized only to a fresh temporary directory",
+  "all_manifest_hashes_match": true,
+  "manifest_count": 24,
+  "measured_execution_packets_reloaded": 3,
+  "all_reloaded_comparisons": "COMPARABLE",
+  "complete_later_meta_equal": true,
+  "mi_durable_numeric_calibrations_equal": 2,
+  "production_state_touched": false,
+  "source_authentication_or_natural_learning_claim": false
+}

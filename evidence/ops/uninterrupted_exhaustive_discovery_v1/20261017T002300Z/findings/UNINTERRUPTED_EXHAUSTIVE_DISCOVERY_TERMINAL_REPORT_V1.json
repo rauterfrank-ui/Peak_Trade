@@ -1,0 +1,439 @@
+{
+  "AUTHORITY_FINDINGS": [
+    {
+      "capital_safety_impact": "MEDIUM \u2014 Intent\u2192Execution-Seam auf LOCAL-Graph nicht sichtbar.",
+      "class": "CENSUS_GRAPH_DRIFT",
+      "evidence": {
+        "local_count": 58,
+        "missing_edge_ids": [
+          "census:CE-001",
+          "census:CE-002",
+          "census:CE-003",
+          "census:CE-004",
+          "census:CE-005",
+          "census:CE-006",
+          "census:CE-007",
+          "census:CE-008",
+          "census:CE-009",
+          "census:authorization_to_seam",
+          "census:c1_injected_governed_cycle",
+          "census:dashboard_read",
+          "census:fa_compose_governed_cycle_n1",
+          "census:fa_compose_portfolio_budget",
+          "census:integrated_replay_safety_gate_before_intent",
+          "census:intent_to_execution",
+          "census:k1_bind_governed_cycle_occupancy",
+          "census:mv2_executable_pre_external_terminal",
+          "census:mv2_to_sizing",
+          "census:mv2_valid_no_trade_terminal",
+          "census:portfolio_to_enter",
+          "census:reconciliation_startup_before_cap24_bind",
+          "census:safety_signals_into_integrated_replay"
+        ],
+        "origin_count": 81
+      },
+      "finding_id": "F010_LOCAL_NAV_GRAPH_MISSING_EXECUTION_SEAM_EDGES",
+      "summary": "Lokaler NAVIGATION_ONLY-Graph fehlen 23 Kanten vs origin/main (u.a. intent_to_execution, authorization_to_seam, CE-001..009)."
+    },
+    {
+      "capital_safety_impact": "INDIRECT \u2014 Repo-weites STRICT_CURRENT-Materialisierungsziel derzeit nicht erf\u00fcllt.",
+      "class": "GRAPH_CONTRACT",
+      "evidence": {
+        "result": "1 failed, 4 passed (strict-focused selection)",
+        "test": "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py::test_no_implicit_strict_to_navigation_cli",
+        "worktree": "/tmp/peak_trade_ued_origin_main_6261c8f"
+      },
+      "finding_id": "F007_ORIGIN_STRICT_CONTRACT_TEST_FAILS_ON_CLEAN_TREE",
+      "summary": "origin/main: test_no_implicit_strict_to_navigation_cli erwartet STRICT PASS + CURRENT_GRAPH_VERIFIED; scheitert wegen Census-Baseline\u2260HEAD."
+    }
+  ],
+  "CAPITAL_SAFETY_FINDINGS": [
+    {
+      "capital_safety_impact": "MEDIUM \u2014 Offline-GHOSV-Observation lokal nicht reproduzierbar; nur \u00fcber origin-WT oder Rebase.",
+      "class": "WORKTREE_DRIFT",
+      "evidence": {
+        "local_module_count": 0,
+        "origin_module_count": 16,
+        "origin_sample": [
+          "src/ops/ghosv_bounded_context_v1/s01_evidence_ingest_v1.py",
+          "src/ops/ghosv_bounded_context_v1/execution_offline_consistency_guard_v1.py",
+          "src/ops/ghosv_bounded_context_v1/s04_traffic_light_v1.py",
+          "src/ops/ghosv_bounded_context_v1/s06_safety_authority_adapter_v1.py",
+          "src/ops/ghosv_bounded_context_v1/constants_v1.py"
+        ]
+      },
+      "finding_id": "F002_LOCAL_WORKTREE_MISSING_GHOSV_PACKAGE",
+      "summary": "Lokaler Checkout enth\u00e4lt kein src/ops/ghosv_bounded_context_v1; origin/main enth\u00e4lt 16 Python-Module."
+    },
+    {
+      "capital_safety_impact": "HIGH \u2014 Discovery auf LOCAL HEAD ist git-authoritativ unvollst\u00e4ndig; nur origin/main-WT verl\u00e4sslich.",
+      "class": "WORKTREE_DRIFT",
+      "evidence": {
+        "forensic_owners_on_origin": [
+          "ghv_forensic_source_provenance_v1",
+          "ghv_forensic_whole_system_causal_ghv_adapter_v1",
+          "ghv_forensic_whole_system_causal_integration_v1",
+          "ghv_forensic_whole_system_crosswalk_v1"
+        ],
+        "forensic_tracked_on_local": [],
+        "ghosv_tracked_on_local": [],
+        "untracked_crosswalk_py_files": [
+          "__init__.py",
+          "cli.py",
+          "compose_v1.py",
+          "constants_v1.py",
+          "edges_v1.py",
+          "filter_current_v1.py",
+          "graph_mode_v1.py",
+          "identity_v1.py",
+          "load_sources_v1.py",
+          "snapshot_drift_report_v1.py",
+          "snapshot_v1.py",
+          "source_validation_v1.py"
+        ]
+      },
+      "finding_id": "F003_LOCAL_GIT_MISSING_FORENSIC_AND_GHOSV_OWNERS",
+      "summary": "Auf LOCAL HEAD sind ghv_forensic_* (WP1\u2013WP2) und src/ops/ghosv_bounded_context_v1 nicht in git getrackt; nur ein untracked WP1-Snapshot existiert."
+    },
+    {
+      "capital_safety_impact": "MEDIUM \u2014 Intent\u2192Execution-Seam auf LOCAL-Graph nicht sichtbar.",
+      "class": "CENSUS_GRAPH_DRIFT",
+      "evidence": {
+        "local_count": 58,
+        "missing_edge_ids": [
+          "census:CE-001",
+          "census:CE-002",
+          "census:CE-003",
+          "census:CE-004",
+          "census:CE-005",
+          "census:CE-006",
+          "census:CE-007",
+          "census:CE-008",
+          "census:CE-009",
+          "census:authorization_to_seam",
+          "census:c1_injected_governed_cycle",
+          "census:dashboard_read",
+          "census:fa_compose_governed_cycle_n1",
+          "census:fa_compose_portfolio_budget",
+          "census:integrated_replay_safety_gate_before_intent",
+          "census:intent_to_execution",
+          "census:k1_bind_governed_cycle_occupancy",
+          "census:mv2_executable_pre_external_terminal",
+          "census:mv2_to_sizing",
+          "census:mv2_valid_no_trade_terminal",
+          "census:portfolio_to_enter",
+          "census:reconciliation_startup_before_cap24_bind",
+          "census:safety_signals_into_integrated_replay"
+        ],
+        "origin_count": 81
+      },
+      "finding_id": "F010_LOCAL_NAV_GRAPH_MISSING_EXECUTION_SEAM_EDGES",
+      "summary": "Lokaler NAVIGATION_ONLY-Graph fehlen 23 Kanten vs origin/main (u.a. intent_to_execution, authorization_to_seam, CE-001..009)."
+    },
+    {
+      "capital_safety_impact": "MEDIUM \u2014 Whole-System-Graph unterrepr\u00e4sentiert Execution-Observation-Schicht.",
+      "class": "GHOSV_SEMANTIC_GAP",
+      "evidence": {
+        "ghosv_observer_contract": "ghosv_execution_bounded_offline_observer.v1",
+        "grep_ghosv_in_composed": 0,
+        "observer_entrypoint_origin": "src.ops.ghosv_bounded_context_v1.execution_bounded_offline_observer_v1"
+      },
+      "finding_id": "F006_GHOSV_NOT_IN_CENSUS_GRAPH",
+      "summary": "GHOSV bounded context ist nicht als Census-Knoten/Kante im composed/integrated Graph materialisiert."
+    }
+  ],
+  "CAUSAL_ARTIFACT_PATH": "/Users/frnkhrz/Peak_Trade/evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_wp2a_causal/integrated_causal_graph.v1.json",
+  "CONFIRMED_DEFECTS": [
+    "F001_STRICT_CURRENT_GRAPH_EMPTY",
+    "F002_LOCAL_WORKTREE_MISSING_GHOSV_PACKAGE",
+    "F003_LOCAL_GIT_MISSING_FORENSIC_AND_GHOSV_OWNERS",
+    "F012_LOCAL_CENSUS_BASELINE_DIVERGES_FROM_ORIGIN_MAIN",
+    "F004_CENSUS_VALIDATOR_PASS_BASELINE_MISMATCH",
+    "F006_GHOSV_NOT_IN_CENSUS_GRAPH"
+  ],
+  "CURRENT_EDGES": 81,
+  "CURRENT_NODES": 302,
+  "CURRENT_ORIGIN_MAIN_SHA": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "DISCOVERY_COMPLETED": true,
+  "DISCOVERY_FIXPOINT": "SAFE_METHODS_EXHAUSTED",
+  "DISCOVERY_QUEUE": {
+    "DISCOVERY_QUEUE_MODE": "EXHAUSTIVE",
+    "dedupe": "native_id_set",
+    "execution_seeds": 27,
+    "forward_closure_size": 27,
+    "initial_seeds": 302,
+    "processed_graphs": [
+      "origin_main_crosswalk_nav",
+      "origin_main_wp2a_causal"
+    ],
+    "queue_empty": true,
+    "reverse_closure_size": 56,
+    "transitive_execution_neighborhood": 56
+  },
+  "EXCLUDED_NON_CURRENT_COUNT_LOCAL": 623,
+  "EXCLUDED_NON_CURRENT_COUNT_ORIGIN": 633,
+  "FINDINGS": [
+    {
+      "capital_safety_impact": "INDIRECT \u2014 CURRENT-Graph nicht als Nachweis nutzbar; Isolation/Reachability \u00fcber STRICT_CURRENT nicht PROVEN.",
+      "class": "GRAPH_AUTHORITY",
+      "evidence": {
+        "local_census_baseline": "0578d813db4f2881082077338636e2a634e77869",
+        "local_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+        "local_strict_cli": "/Users/frnkhrz/Peak_Trade/evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/crosswalk_strict_current_cli.json",
+        "origin_census_baseline": "ae131a986e5f0106831b501203725cea7e30bc6c",
+        "origin_head": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+        "origin_strict_cli": "/Users/frnkhrz/Peak_Trade/evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_crosswalk_strict_cli.json"
+      },
+      "finding_id": "F001_STRICT_CURRENT_GRAPH_EMPTY",
+      "summary": "STRICT_CURRENT crosswalk liefert 0 Knoten/0 Kanten solange Census-Baseline-Head != git HEAD."
+    },
+    {
+      "capital_safety_impact": "MEDIUM \u2014 Offline-GHOSV-Observation lokal nicht reproduzierbar; nur \u00fcber origin-WT oder Rebase.",
+      "class": "WORKTREE_DRIFT",
+      "evidence": {
+        "local_module_count": 0,
+        "origin_module_count": 16,
+        "origin_sample": [
+          "src/ops/ghosv_bounded_context_v1/s01_evidence_ingest_v1.py",
+          "src/ops/ghosv_bounded_context_v1/execution_offline_consistency_guard_v1.py",
+          "src/ops/ghosv_bounded_context_v1/s04_traffic_light_v1.py",
+          "src/ops/ghosv_bounded_context_v1/s06_safety_authority_adapter_v1.py",
+          "src/ops/ghosv_bounded_context_v1/constants_v1.py"
+        ]
+      },
+      "finding_id": "F002_LOCAL_WORKTREE_MISSING_GHOSV_PACKAGE",
+      "summary": "Lokaler Checkout enth\u00e4lt kein src/ops/ghosv_bounded_context_v1; origin/main enth\u00e4lt 16 Python-Module."
+    },
+    {
+      "capital_safety_impact": "HIGH \u2014 Discovery auf LOCAL HEAD ist git-authoritativ unvollst\u00e4ndig; nur origin/main-WT verl\u00e4sslich.",
+      "class": "WORKTREE_DRIFT",
+      "evidence": {
+        "forensic_owners_on_origin": [
+          "ghv_forensic_source_provenance_v1",
+          "ghv_forensic_whole_system_causal_ghv_adapter_v1",
+          "ghv_forensic_whole_system_causal_integration_v1",
+          "ghv_forensic_whole_system_crosswalk_v1"
+        ],
+        "forensic_tracked_on_local": [],
+        "ghosv_tracked_on_local": [],
+        "untracked_crosswalk_py_files": [
+          "__init__.py",
+          "cli.py",
+          "compose_v1.py",
+          "constants_v1.py",
+          "edges_v1.py",
+          "filter_current_v1.py",
+          "graph_mode_v1.py",
+          "identity_v1.py",
+          "load_sources_v1.py",
+          "snapshot_drift_report_v1.py",
+          "snapshot_v1.py",
+          "source_validation_v1.py"
+        ]
+      },
+      "finding_id": "F003_LOCAL_GIT_MISSING_FORENSIC_AND_GHOSV_OWNERS",
+      "summary": "Auf LOCAL HEAD sind ghv_forensic_* (WP1\u2013WP2) und src/ops/ghosv_bounded_context_v1 nicht in git getrackt; nur ein untracked WP1-Snapshot existiert."
+    },
+    {
+      "capital_safety_impact": "MEDIUM \u2014 Intent\u2192Execution-Seam auf LOCAL-Graph nicht sichtbar.",
+      "class": "CENSUS_GRAPH_DRIFT",
+      "evidence": {
+        "local_count": 58,
+        "missing_edge_ids": [
+          "census:CE-001",
+          "census:CE-002",
+          "census:CE-003",
+          "census:CE-004",
+          "census:CE-005",
+          "census:CE-006",
+          "census:CE-007",
+          "census:CE-008",
+          "census:CE-009",
+          "census:authorization_to_seam",
+          "census:c1_injected_governed_cycle",
+          "census:dashboard_read",
+          "census:fa_compose_governed_cycle_n1",
+          "census:fa_compose_portfolio_budget",
+          "census:integrated_replay_safety_gate_before_intent",
+          "census:intent_to_execution",
+          "census:k1_bind_governed_cycle_occupancy",
+          "census:mv2_executable_pre_external_terminal",
+          "census:mv2_to_sizing",
+          "census:mv2_valid_no_trade_terminal",
+          "census:portfolio_to_enter",
+          "census:reconciliation_startup_before_cap24_bind",
+          "census:safety_signals_into_integrated_replay"
+        ],
+        "origin_count": 81
+      },
+      "finding_id": "F010_LOCAL_NAV_GRAPH_MISSING_EXECUTION_SEAM_EDGES",
+      "summary": "Lokaler NAVIGATION_ONLY-Graph fehlen 23 Kanten vs origin/main (u.a. intent_to_execution, authorization_to_seam, CE-001..009)."
+    },
+    {
+      "capital_safety_impact": "LOW direkt (offline); belegt Evidence-Decay / unvollst\u00e4ndige Cycle-Artefakte.",
+      "class": "GHOSV_OBSERVATION",
+      "evidence": {
+        "missing_evidence_classes": [
+          "EXECUTION_PREPARATION",
+          "PRE_EXTERNAL_WITNESS",
+          "VENUE_ACK",
+          "FILL",
+          "FULL_FILL",
+          "PARTIAL_FILL",
+          "EXECUTION_RECON",
+          "POSITION",
+          "POST_SUBMISSION_WITNESS"
+        ],
+        "path": "/Users/frnkhrz/Peak_Trade/evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/ghosv_observer_replay/GHOSV_EXECUTION_BOUNDED_OFFLINE_OBSERVER_REPORT_V1.json",
+        "pipeline_error": "GhosvEvidenceIngestError:MISSING_LEDGER:/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T190205Z_ghv_l10_integrated_natural_enter_pre_external_v1/cycles/48cf857337ef5f1f8249146ff607c24787afe0ec2124b406b6cb4321801c4cd5/governed_cycle_orchestrator_ledger_v1.json",
+        "status": "OBSERVER_RUN_FAILED"
+      },
+      "finding_id": "F011_GHOSV_OBSERVER_REPLAY_FAILED",
+      "summary": "Aktueller Observer-Replay auf vorhandener Runtime scheitert (MISSING_LEDGER); traffic UNKNOWN."
+    },
+    {
+      "capital_safety_impact": "INDIRECT \u2014 Versch\u00e4rft STRICT_CURRENT-Fail und Nav-Graph-Delta.",
+      "class": "BASELINE_BINDING",
+      "evidence": {
+        "local_baseline": "0578d813db4f2881082077338636e2a634e77869",
+        "local_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+        "origin_baseline": "ae131a986e5f0106831b501203725cea7e30bc6c",
+        "origin_main": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9"
+      },
+      "finding_id": "F012_LOCAL_CENSUS_BASELINE_DIVERGES_FROM_ORIGIN_MAIN",
+      "summary": "Lokale uncommitted Census-Baseline weicht von origin/main ab (Rollback vs Post-CD-010 Rebind)."
+    },
+    {
+      "capital_safety_impact": "INDIRECT \u2014 Census-Inhalt materialisiert, aber CURRENT-Bindung an HEAD nicht belegt.",
+      "class": "BASELINE_BINDING",
+      "evidence": {
+        "command": "./scripts/pt scripts/ops/validate_current_system_census_graph_v1.py",
+        "local_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+        "source_baseline_head": "0578d813db4f2881082077338636e2a634e77869"
+      },
+      "finding_id": "F004_CENSUS_VALIDATOR_PASS_BASELINE_MISMATCH",
+      "summary": "validate_current_system_census_graph_v1: VALIDATOR_RESULT=PASS bei BASELINE_MATCH=False."
+    },
+    {
+      "capital_safety_impact": "INDIRECT \u2014 Kein globaler Kausal-Nachweis; execution-Reachability nur census-contract-basiert.",
+      "class": "CAUSAL_GRAPH",
+      "evidence": {
+        "integrated_graph": "/Users/frnkhrz/Peak_Trade/evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_wp2a_causal/integrated_causal_graph.v1.json",
+        "manifest": "/Users/frnkhrz/Peak_Trade/evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_wp2a_causal/causal_integration_manifest.v1.json",
+        "wp1_mode": "NAVIGATION_ONLY"
+      },
+      "finding_id": "F005_WP2A_CLOSURE_FLAGS_FALSE",
+      "summary": "WP2-A integriert NAVIGATION_ONLY-WP1; GLOBAL/CURRENT_CAUSAL_CLOSURE_PROVEN=false."
+    },
+    {
+      "capital_safety_impact": "MEDIUM \u2014 Whole-System-Graph unterrepr\u00e4sentiert Execution-Observation-Schicht.",
+      "class": "GHOSV_SEMANTIC_GAP",
+      "evidence": {
+        "ghosv_observer_contract": "ghosv_execution_bounded_offline_observer.v1",
+        "grep_ghosv_in_composed": 0,
+        "observer_entrypoint_origin": "src.ops.ghosv_bounded_context_v1.execution_bounded_offline_observer_v1"
+      },
+      "finding_id": "F006_GHOSV_NOT_IN_CENSUS_GRAPH",
+      "summary": "GHOSV bounded context ist nicht als Census-Knoten/Kante im composed/integrated Graph materialisiert."
+    },
+    {
+      "capital_safety_impact": "INDIRECT \u2014 Repo-weites STRICT_CURRENT-Materialisierungsziel derzeit nicht erf\u00fcllt.",
+      "class": "GRAPH_CONTRACT",
+      "evidence": {
+        "result": "1 failed, 4 passed (strict-focused selection)",
+        "test": "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py::test_no_implicit_strict_to_navigation_cli",
+        "worktree": "/tmp/peak_trade_ued_origin_main_6261c8f"
+      },
+      "finding_id": "F007_ORIGIN_STRICT_CONTRACT_TEST_FAILS_ON_CLEAN_TREE",
+      "summary": "origin/main: test_no_implicit_strict_to_navigation_cli erwartet STRICT PASS + CURRENT_GRAPH_VERIFIED; scheitert wegen Census-Baseline\u2260HEAD."
+    },
+    {
+      "capital_safety_impact": "LOW direkt (offline evidence); dokumentiert Execution-Lifecycle-L\u00fccken.",
+      "class": "GHOSV_OBSERVATION",
+      "evidence": {
+        "baseline_sha_in_report": "69467b14c2112e0e25aa4869a837b743c34946ce",
+        "lifecycle": "PRE_EXTERNAL_ONLY",
+        "path": "/Users/frnkhrz/Peak_Trade/evidence/ops/ghosv_execution_lifecycle_correction_v1/20261016T110000Z_bugbot_traffic_guard_reproof/GHOSV_EXECUTION_BOUNDED_OFFLINE_OBSERVER_REPORT_V1.json",
+        "traffic": "YELLOW"
+      },
+      "finding_id": "F009_GHOSV_HISTORICAL_EVIDENCE_YELLOW",
+      "summary": "Historischer Observer-Report: ghosv_traffic_light=YELLOW, PRE_EXTERNAL_ONLY, mehrere UNKNOWN checks."
+    }
+  ],
+  "FORWARD_REVERSE_TRANSITIVE_CLOSURE": {
+    "execution_seed_count": 27,
+    "forward": 27,
+    "reverse": 56,
+    "transitive_union": 56
+  },
+  "GHOSV_SEMANTIC_COVERAGE": {
+    "adapter_mode_default": "DISABLED",
+    "in_census_graph": false,
+    "local_modules": 0,
+    "origin_modules": 16
+  },
+  "GHV_ARTIFACT_PATH": "/Users/frnkhrz/Peak_Trade/evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_crosswalk_nav/composed_forensic_graph.v1.json",
+  "GHV_CROSSCHECK": {
+    "CURRENT_CAUSAL_GRAPH_VERIFIED": false,
+    "GLOBAL_CAUSAL_CLOSURE_PROVEN": false,
+    "navigation_pass_origin": true,
+    "strict_pass_origin": false,
+    "wp2a_pass": true,
+    "wp2b_adapter_ok": true
+  },
+  "GLOBAL_COVERAGE_PROVEN": false,
+  "HISTORICAL_EDGES_ISOLATED": null,
+  "HISTORICAL_NODES_ISOLATED": 633,
+  "INTEGRATED_CAUSAL_EDGES": 81,
+  "INTEGRATED_CAUSAL_NODES": 302,
+  "LOCAL_HEAD": "242b7974fc93f0bdb47706556101bd6f0c497414",
+  "NODE_RELEVANCE_BREAKDOWN": {
+    "CURRENT_VERIFIED": 302
+  },
+  "ORIGIN_WT_HEAD": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "PATH_BINDING_MISSING_BOTH": 0,
+  "PATH_BINDING_MISSING_LOCAL": 0,
+  "REMEDIATION_BACKLOG": [
+    "Census/Landscape baseline rebind auf CURRENT origin/main HEAD (governance-only, Owner-GO)",
+    "Lokalen Branch mit origin/main synchronisieren f\u00fcr GHOSV/WP2 Owner",
+    "STRICT_CURRENT crosswalk erneut materialisieren; dann WP2-A mit STRICT WP1",
+    "Optional: Census-Erweiterung f\u00fcr ghosv_bounded_context_v1 (Architektur-Entscheidung)"
+  ],
+  "ROOT_CAUSES": [
+    {
+      "cause": "Census source_baseline_head hinter origin/main HEAD (Post-Merge-Rebind fehlt)",
+      "effect": "STRICT_CURRENT crosswalk fail-closed \u2192 leerer Graph",
+      "id": "RC1"
+    },
+    {
+      "cause": "Lokaler Feature-Branch ohne GHOSV/forensic WP2 Owner-Snapshot",
+      "effect": "GHOSV\u00d7GHV-Discovery auf LOCAL nicht vollst\u00e4ndig reproduzierbar",
+      "id": "RC2"
+    },
+    {
+      "cause": "GHOSV als paralleler bounded context nicht im Census verankert",
+      "effect": "Whole-System-Graph unvollst\u00e4ndig bzgl. Execution-Observation",
+      "id": "RC3"
+    }
+  ],
+  "STRICT_CURRENT_GRAPH_COVERAGE": {
+    "edges": 0,
+    "nodes": 0,
+    "reason": "census_source_baseline_head_mismatch"
+  },
+  "TOTAL_FINDINGS": 11,
+  "UNRESOLVED_UNKNOWNS": [
+    {
+      "count": 0,
+      "reason": "crosswalk filter could not verify current productivity",
+      "topic": "CURRENT_RELEVANCE_UNKNOWN_nodes"
+    },
+    {
+      "reason": "STRICT_CURRENT empty; causal closure flags false; GHOSV outside census",
+      "status": "NOT_PROVEN",
+      "topic": "GLOBAL_COVERAGE_PROVEN"
+    }
+  ],
+  "WORKING_MODEL_DRIFT": "LOCAL_BRANCH_DIVERGED_FROM_ORIGIN_MAIN",
+  "generated_at": "2026-10-16T22:25:42.524781+00:00"
+}

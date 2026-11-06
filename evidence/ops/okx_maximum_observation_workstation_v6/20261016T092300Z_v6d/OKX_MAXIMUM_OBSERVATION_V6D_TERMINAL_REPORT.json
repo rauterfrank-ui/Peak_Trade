@@ -1,0 +1,125 @@
+{
+  "mission": "OKX_MAXIMUM_OBSERVATION_V6D",
+  "mode": "STRICT_OBSERVATION_ONLY",
+  "authority": "OWNER_AUTHORIZED_READ_ONLY_NAVIGATION",
+  "timestamp_utc": "2026-10-16T07:28:00Z",
+  "evidence_path": "evidence/ops/okx_maximum_observation_workstation_v6/20261016T092300Z_v6d",
+  "baseline": "evidence/ops/okx_maximum_observation_workstation_v6/20261016T091800Z_v6c",
+  "SAFARI_ACCESS": {
+    "javascript_from_apple_events": "PASS",
+    "usage": "read-only DOM/text inventory; whitelisted tab switches on WS2; GET location.assign to account/market pages; deep-link WS1/WS2 verification",
+    "storage_writes": 0
+  },
+  "PROTECTED_WORKSPACES_POST_V6D": {
+    "WS1": {
+      "status": "PASS_UNCHANGED",
+      "workspace_id": "1006418239457071104",
+      "klineLayout": "3A",
+      "instCount": 3,
+      "route": "trade-futures with hash 100641",
+      "screenshot": "screenshots/WS1_readonly_verify.png"
+    },
+    "WS2": {
+      "status": "PASS_UNCHANGED",
+      "workspace_id": "1031216400532770816",
+      "klineLayout": "1A",
+      "layout_has_Market_component": true,
+      "route": "trade-futures BTC USD UM XPERP with hash 103121",
+      "panels_verified": [
+        "Orderbuch",
+        "Letzte Trades",
+        "Offene Positionen",
+        "Offene Orders",
+        "Variabler PnL",
+        "Handelsdaten analytics"
+      ],
+      "screenshot": "screenshots/WS2_post_v6d_verify.png"
+    },
+    "WS3": {
+      "status": "UNCHANGED_PARTIAL",
+      "note": "No third futures workspace attempted; V6C technical limit stands"
+    }
+  },
+  "PHASE_1_FUNCTION_INVENTORY": {
+    "completed": true,
+    "method": "UI-visible text/DOM probes + allowed GET navigation",
+    "feature_matrix_artifact": "OKX_OBSERVATION_FEATURE_MATRIX_V6D.json",
+    "summary_counts": {
+      "AVAILABLE": 18,
+      "RESTRICTED": 4,
+      "NOT_AVAILABLE": 1
+    }
+  },
+  "PHASE_2_WORKSTATION_OPTIMIZATION": {
+    "layout_changes_to_WS1_WS2": "NONE",
+    "recommended_supplemental_views_without_layout_risk": [
+      {
+        "purpose": "Contract analytics (OI, L/S, taker flow, funding charts)",
+        "access": "WS2 → center tab „Handelsdaten“ (session-only tab switch; restore Diagramm/Orderbuch after observation)",
+        "persistence_impact": "LOW — tab selection may persist per workspace but does not alter klineLayout/topology"
+      },
+      {
+        "purpose": "Account performance / Heutiger PnL",
+        "access": "GET /de/account/users (Überblick) in same Safari tab, then deep-link restore WS2 URL",
+        "persistence_impact": "NONE on comb_trade layouts"
+      },
+      {
+        "purpose": "Cross-market futures overview",
+        "access": "GET /de/markets/futures",
+        "persistence_impact": "NONE"
+      },
+      {
+        "purpose": "Spot grid / strategy observation",
+        "access": "Sidebar slot 3 (accepts spot-strategy route); avoid Kopieren buttons",
+        "persistence_impact": "NONE on WS1/WS2 IDs; slot 3 separate SPA"
+      }
+    ],
+    "explicitly_not_forced": "Third futures workspaceId or WS3 futures layout isolation"
+  },
+  "PHASE_3_OBSERVATION_QUALITY": {
+    "data_freshness": {
+      "orderbook_time_and_sales": "LIVE while futures terminal focused",
+      "handelsdaten_charts": "LIVE/near-real-time refresh observed via UI labels",
+      "account_ueberblick": "NEAR_LIVE rollup",
+      "history_tabs": "ACCOUNT_HISTORY — populated only when account activity exists (currently flat/empty rows)"
+    },
+    "instrument_identity": {
+      "WS2_verified": "BTCUSD UM X-Perp on trade-futures/btc-usd_um_xperp-5yearly",
+      "WS1_verified": "Multi-pane futures+spot mix per stored insts[]",
+      "peak_trade_selection": "NOT_USED — no runtime selection file interpreted as live market truth"
+    },
+    "intervals": {
+      "WS1": "1D + 15m panes (stored)",
+      "WS2": "Interval selectors present; LIVE chart may show 1d/1T until operator selects 15m (no forced change in V6D)"
+    },
+    "market_data_consistency": {
+      "spot_vs_futures": "Spot route shows BTC/USDC spot orderbook; futures route shows XPERP header (Index/Richtpreis/Funding). Same workspaceId hash on wrong product route yields spot shell (V6C collision) — always verify pathname",
+      "ee_a_redirects": "report-center/trading-data and several account report deep links redirect to /de/account/users; balance/finance/overview redirected to Earn"
+    },
+    "pnl_positions_orders": {
+      "live_panels": "Visible on WS2; counts show 0 open positions/orders on probed account",
+      "realized_pnl": "Account Überblick shows Heutiger PnL; history tabs await fills"
+    }
+  },
+  "PHASE_4_DELIVERABLES": {
+    "OKX_OBSERVATION_FEATURE_MATRIX_V6D.json": "COMPLETE",
+    "OKX_MAXIMUM_OBSERVATION_V6D_TERMINAL_REPORT.json": "COMPLETE"
+  },
+  "SECURITY_INVARIANTS": {
+    "TRADING_ACTIONS": 0,
+    "ORDERS_SUBMITTED": 0,
+    "TRANSFERS_DEPOSITS": 0,
+    "BOTS_ACTIVATED": 0,
+    "MARGIN_LEVERAGE_CHANGED": 0,
+    "API_OR_SECURITY_CHANGES": 0,
+    "PEAK_TRADE_MUTATIONS": 0,
+    "UNDOCUMENTED_WRITE_REQUESTS": 0,
+    "OKX_STORAGE_WRITES_BY_AGENT": 0
+  },
+  "V6D_VERDICT": {
+    "function_inventory": "COMPLETE",
+    "workstation_baseline_integrity": "PASS",
+    "observation_station_functionally_complete": "YES_WITH_DOCUMENTED_EEA_AND_WS3_LIMITS",
+    "overall": "PASS"
+  }
+}

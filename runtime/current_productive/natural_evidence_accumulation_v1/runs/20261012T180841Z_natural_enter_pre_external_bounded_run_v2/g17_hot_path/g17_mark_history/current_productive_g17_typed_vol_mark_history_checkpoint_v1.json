@@ -1,0 +1,1375 @@
+{
+  "acceptance_state": {
+    "bound_instrument_key": {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    "last_accepted_observation_identity": {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "mark_price": 0.09789,
+      "venue": "OKX",
+      "venue_event_time": 1791828720.0,
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    "last_accepted_transport": null,
+    "market_observation_epoch": {
+      "value": 61
+    }
+  },
+  "bar_interval_seconds": 60,
+  "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+  "capability_id": "MASTER_V2_CANONICAL_VOLATILITY_TYPED_RUNTIME_PRODUCER_SCAFFOLD_V1",
+  "history_digest": "abf16d3e94954d927089997e1b6922f68b217b6449e1d0df8a20c2a44be97354",
+  "last_accepted_event_time": {
+    "unix_seconds": 1791828720.0
+  },
+  "owner": "trading.master_v2.canonical_volatility_runtime_mark_history_v1",
+  "records": [
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825120.0
+      },
+      "is_final": true,
+      "mark_price": 0.09301,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825120.0
+        },
+        "mark_price": 0.09301,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0564742ff4fe20935b4d165fbea25e3dca444738a3baffda347289fdee6a264b",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825180.0
+      },
+      "is_final": true,
+      "mark_price": 0.09326,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825180.0
+        },
+        "mark_price": 0.09326,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6015fc789598dc70b9f3809324de0be7d68adc3ebd3160e78a017a418dac4305",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825240.0
+      },
+      "is_final": true,
+      "mark_price": 0.09372,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825240.0
+        },
+        "mark_price": 0.09372,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "2bd24ddc5e2b9504bc1cb5b7efd65884beba453431d168c4e51f9b756b37e56c",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825300.0
+      },
+      "is_final": true,
+      "mark_price": 0.09385,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825300.0
+        },
+        "mark_price": 0.09385,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6d8e1cec3358b6c22fc46682885e67ff2a31021df18805bd31c4ae37cd723e7d",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825360.0
+      },
+      "is_final": true,
+      "mark_price": 0.09427,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825360.0
+        },
+        "mark_price": 0.09427,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "fe46305ff992364d0a196dac353b7b35e8a75605613ea20107406907a0e6ca3a",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825420.0
+      },
+      "is_final": true,
+      "mark_price": 0.09395,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825420.0
+        },
+        "mark_price": 0.09395,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "7ae5f8a9fbb9414f9fad397bd5b9f8ff64753825067d1f0b40c1410f4f0a5b72",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825480.0
+      },
+      "is_final": true,
+      "mark_price": 0.09471,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825480.0
+        },
+        "mark_price": 0.09471,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "79d6c0ece64e7dcf63c5b8e702c4a647c5256fef858319c1956492ea04d8b694",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825540.0
+      },
+      "is_final": true,
+      "mark_price": 0.09585,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825540.0
+        },
+        "mark_price": 0.09585,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "eceebf980067b652a1e934f9489a85c43abe065776ad0e23c3056461e01afb42",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825600.0
+      },
+      "is_final": true,
+      "mark_price": 0.09511,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825600.0
+        },
+        "mark_price": 0.09511,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6d30299891a778298d9b6a98bdeae1c0bd0b34f732249b7311dffe033207dfce",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825660.0
+      },
+      "is_final": true,
+      "mark_price": 0.09546,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825660.0
+        },
+        "mark_price": 0.09546,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "1a19c0eaffbc63a15971da42ab4a78a7bebb1512b4ced0d07d93ddeb755cdbd4",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825720.0
+      },
+      "is_final": true,
+      "mark_price": 0.09503,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825720.0
+        },
+        "mark_price": 0.09503,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "60d42a3f14f48613db171a6291531f317f77865213cb3bb426e39436c5d31d7d",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825780.0
+      },
+      "is_final": true,
+      "mark_price": 0.09569,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825780.0
+        },
+        "mark_price": 0.09569,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "7e2d0ab5bad734f2dc4d42270a091c4ac17e2a93219218b5199bbf60a4c0a044",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825840.0
+      },
+      "is_final": true,
+      "mark_price": 0.09623,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825840.0
+        },
+        "mark_price": 0.09623,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "5c391fbd6f2e61d3df27fc66f710fd592e8b026563c4b8a17a74e7775b68eb98",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825900.0
+      },
+      "is_final": true,
+      "mark_price": 0.09594,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825900.0
+        },
+        "mark_price": 0.09594,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "ca68934fb97d8042a04db01b3b81d62d49ac18e9a1355df819d667f38e075fa4",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791825960.0
+      },
+      "is_final": true,
+      "mark_price": 0.09634,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791825960.0
+        },
+        "mark_price": 0.09634,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "aaaca4c99f8e4dfd5ad6e342db3c0d31d650456aa84145d1a29067aae51e664a",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826020.0
+      },
+      "is_final": true,
+      "mark_price": 0.09605,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826020.0
+        },
+        "mark_price": 0.09605,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d82396af27f66d367756b01d97d498b42b78aca115fdca1a3f53dea7d4c47571",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826080.0
+      },
+      "is_final": true,
+      "mark_price": 0.09672,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826080.0
+        },
+        "mark_price": 0.09672,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "3f3863c954d57c2d7c380cba162240e1d6811d7b4228c0d65b2cc646ed2a7dd4",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826140.0
+      },
+      "is_final": true,
+      "mark_price": 0.09654,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826140.0
+        },
+        "mark_price": 0.09654,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "11dff3c0772b57269ddd877001e4123d2d6eea20f632546953f97f31fc9b84bf",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826200.0
+      },
+      "is_final": true,
+      "mark_price": 0.09629,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826200.0
+        },
+        "mark_price": 0.09629,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "56ce9696f5d84463f02aa5152766e0df040c67f9dab67d9ea6b23a9cffb6e54c",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826260.0
+      },
+      "is_final": true,
+      "mark_price": 0.09604,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826260.0
+        },
+        "mark_price": 0.09604,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "20f741d6ac107bfa07ca05511d7f7162c86b32e7d4e631b947c5d82cc36d46db",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826320.0
+      },
+      "is_final": true,
+      "mark_price": 0.0961,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826320.0
+        },
+        "mark_price": 0.0961,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "ddecccd444487e8fc4892fdc9baf98132ce21024f9e1dabdd83b22a0b0e40723",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826380.0
+      },
+      "is_final": true,
+      "mark_price": 0.09613,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826380.0
+        },
+        "mark_price": 0.09613,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "7afc4a6ae1a41c8f1d453f45aa569b09471b3d4d2a58a10a42fe53f1ca646eb5",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826440.0
+      },
+      "is_final": true,
+      "mark_price": 0.09876,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826440.0
+        },
+        "mark_price": 0.09876,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "e6ea6c7bb5c9861d7429c4d773ebbf3ac760313a7814e45af730d9edf0084a77",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826500.0
+      },
+      "is_final": true,
+      "mark_price": 0.09748,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826500.0
+        },
+        "mark_price": 0.09748,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "ee9e3b3c229446d9615fb72239a78fb33214b03b705be9e7b09ea2b8805e0329",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826560.0
+      },
+      "is_final": true,
+      "mark_price": 0.09812,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826560.0
+        },
+        "mark_price": 0.09812,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "afb96f05e54bce757bef1b20895296d5a177bc55e08205999b9260b7819cc24e",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826620.0
+      },
+      "is_final": true,
+      "mark_price": 0.09786,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826620.0
+        },
+        "mark_price": 0.09786,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6d40890fede156c0dea6721f3ec1b31f16415db4efe482a7faa7f29671de596f",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826680.0
+      },
+      "is_final": true,
+      "mark_price": 0.09778,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826680.0
+        },
+        "mark_price": 0.09778,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "49d6378772022780e8ffc64df07677b3c51888c9e8bf29d0555e6ef4828f85f5",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826740.0
+      },
+      "is_final": true,
+      "mark_price": 0.09764,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826740.0
+        },
+        "mark_price": 0.09764,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "b48c8fca939d2636ac91837590cc9786b0b45dfb0ed16820780486503b80e231",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826800.0
+      },
+      "is_final": true,
+      "mark_price": 0.09753,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826800.0
+        },
+        "mark_price": 0.09753,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "5bbccffbd88c54e570e0b25e37fef616f101351798a35f36ef95186ed863c97b",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826860.0
+      },
+      "is_final": true,
+      "mark_price": 0.09716,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826860.0
+        },
+        "mark_price": 0.09716,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "83339a09c516bfff49ae340cbb10656b8f48bdee1d9eb016aa9defa1cf805e77",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826920.0
+      },
+      "is_final": true,
+      "mark_price": 0.09742,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826920.0
+        },
+        "mark_price": 0.09742,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d9730830c1281b6f9a983dd185b53dfdcf4491e98ec38565a7d05206988d88fe",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791826980.0
+      },
+      "is_final": true,
+      "mark_price": 0.09735,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791826980.0
+        },
+        "mark_price": 0.09735,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "454b18771339fc3f2f536a44a13e17efdf11df9fddb93cdae1bd99fb53249608",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827040.0
+      },
+      "is_final": true,
+      "mark_price": 0.09724,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827040.0
+        },
+        "mark_price": 0.09724,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "282a8b792dad43d43761c614b155a9200316fae866935040e6ab06fd3ff08e80",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827100.0
+      },
+      "is_final": true,
+      "mark_price": 0.09731,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827100.0
+        },
+        "mark_price": 0.09731,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "e84e3fcd39397ca47fe872ca57c5a10e63e829c2a632afff7ea3cec09d3d3f16",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827160.0
+      },
+      "is_final": true,
+      "mark_price": 0.09771,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827160.0
+        },
+        "mark_price": 0.09771,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "027eb36aca602c1f82060812935e401b71286d867d61756f507f6b61768cab15",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827220.0
+      },
+      "is_final": true,
+      "mark_price": 0.09765,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827220.0
+        },
+        "mark_price": 0.09765,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "228d545c5dc2d5d0a6d36cd76a95a0922dda8e60969a88f698fac0199806e446",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827280.0
+      },
+      "is_final": true,
+      "mark_price": 0.0982,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827280.0
+        },
+        "mark_price": 0.0982,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "2fe9d33ffeffac8f6f936960688a9fc313bffa61ecc2f9cc91c34f9c0ae724c8",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827340.0
+      },
+      "is_final": true,
+      "mark_price": 0.09851,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827340.0
+        },
+        "mark_price": 0.09851,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "1e503fa4a29bdf137f6b76e8f88284d89d5a08f2b28b1dce9b9b149640d91f1d",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827400.0
+      },
+      "is_final": true,
+      "mark_price": 0.09867,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827400.0
+        },
+        "mark_price": 0.09867,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "227a139af1ae6138d0c1ba8d0a5bed4b15ad0759e43c227931d7f5769743c2a2",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827460.0
+      },
+      "is_final": true,
+      "mark_price": 0.09857,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827460.0
+        },
+        "mark_price": 0.09857,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "3d64d0fcc4836e077c9365924f6b6290aa90708139b80a88ea473a1a4325afb1",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827520.0
+      },
+      "is_final": true,
+      "mark_price": 0.09869,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827520.0
+        },
+        "mark_price": 0.09869,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "25f58a47e4d8b9b4d94676a5264d053dff55bef9b67008be4eee078efdb5b31b",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827580.0
+      },
+      "is_final": true,
+      "mark_price": 0.09869,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827580.0
+        },
+        "mark_price": 0.09869,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "fcb4fa6df11b2bcc2305932824831154bd4d3d5a2928f8b759b373a86a79fe6c",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827640.0
+      },
+      "is_final": true,
+      "mark_price": 0.09845,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827640.0
+        },
+        "mark_price": 0.09845,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6f5421620b1e11ffea7c8a3fdade61db435e0a26b14fa65afcce7eff18856002",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827700.0
+      },
+      "is_final": true,
+      "mark_price": 0.0981,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827700.0
+        },
+        "mark_price": 0.0981,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "af416f93d52cdac1f2f4ca7ab6f6d28119fc10442634fc75e3f1cc6701b8a51f",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827760.0
+      },
+      "is_final": true,
+      "mark_price": 0.09818,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827760.0
+        },
+        "mark_price": 0.09818,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "75a56511a893bfdec3be71fec0b3e7c0448110ace45c377e9e95ffd092793b30",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827820.0
+      },
+      "is_final": true,
+      "mark_price": 0.09817,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827820.0
+        },
+        "mark_price": 0.09817,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "736b79f042fee1850818f2fb98650c1f76396725f0cc00bcb411fef6ba5b1ff9",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827880.0
+      },
+      "is_final": true,
+      "mark_price": 0.09765,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827880.0
+        },
+        "mark_price": 0.09765,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "f08be6cc62ce90783beca1cceec86d3ab20c726b6e2287a719d820a67c6d433f",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791827940.0
+      },
+      "is_final": true,
+      "mark_price": 0.09791,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791827940.0
+        },
+        "mark_price": 0.09791,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "69c613a5b7ad1c2c088cdb8f1396facf72a0d2f3697156c2a2c0a96a2fbc472e",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828000.0
+      },
+      "is_final": true,
+      "mark_price": 0.09746,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828000.0
+        },
+        "mark_price": 0.09746,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "277c24272f865217891ffe83472023bf410d1ac019bb66d87c2fc9cf7106c0e6",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828060.0
+      },
+      "is_final": true,
+      "mark_price": 0.09798,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828060.0
+        },
+        "mark_price": 0.09798,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0e73c58c796fd0a70d3867b49b965eea3ae45bab82dd2f8061d56577b97a96a1",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828120.0
+      },
+      "is_final": true,
+      "mark_price": 0.09798,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828120.0
+        },
+        "mark_price": 0.09798,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "089f8de7ef232ac0bdee21922272e2c27c4fd1f20373c2fddc21ae5e02fc1c01",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828180.0
+      },
+      "is_final": true,
+      "mark_price": 0.098,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828180.0
+        },
+        "mark_price": 0.098,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a7fca3de9af1288852f0843117527cf2d87f2539c5693af2b01ab73b9ce0fec1",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828240.0
+      },
+      "is_final": true,
+      "mark_price": 0.09791,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828240.0
+        },
+        "mark_price": 0.09791,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "9733e20792dec7e1284aad05d76e85d338f186428c8b247d8ae7f1c8a0e16e74",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828300.0
+      },
+      "is_final": true,
+      "mark_price": 0.09858,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828300.0
+        },
+        "mark_price": 0.09858,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d310f894540d10bf02193b8645a27e7b15f111856a58217296d629769c466ae5",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828360.0
+      },
+      "is_final": true,
+      "mark_price": 0.09891,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828360.0
+        },
+        "mark_price": 0.09891,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "72f54a4996b9e404d5ec088134984d1fb19f5a92be925be80f444c9570d1d12a",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828420.0
+      },
+      "is_final": true,
+      "mark_price": 0.09879,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828420.0
+        },
+        "mark_price": 0.09879,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "2b31840481104fee3fc71d39b5e5b29a764b9ea3629c36d7207b86b306d98956",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828480.0
+      },
+      "is_final": true,
+      "mark_price": 0.09806,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828480.0
+        },
+        "mark_price": 0.09806,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d2d1e6023cc63c843d5387d63996e321edc9fb8fa1dbfa163a5c2742804d9e20",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828540.0
+      },
+      "is_final": true,
+      "mark_price": 0.09799,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828540.0
+        },
+        "mark_price": 0.09799,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "acfe1c5028b5fb3c2ab66d05c35291a37f3e1c988b24638fe93893048bb859e1",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828600.0
+      },
+      "is_final": true,
+      "mark_price": 0.0975,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828600.0
+        },
+        "mark_price": 0.0975,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "aca41dfbca12a625d6402b3640f69931368fac8709ff5b54fad040dd3d11c691",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828660.0
+      },
+      "is_final": true,
+      "mark_price": 0.09802,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828660.0
+        },
+        "mark_price": 0.09802,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "fde859007ae4325a3489760b24a0d7d67dfb48c5f6387ebe8fe038007e2d7935",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828720.0
+      },
+      "is_final": true,
+      "mark_price": 0.09789,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828720.0
+        },
+        "mark_price": 0.09789,
+        "venue": "OKX",
+        "venue_instrument_id": "STRK-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "94d3c432d6f495ab57de9f38121d1c74d3c3f2976039d584922e46458c53cabb",
+      "venue": "OKX",
+      "venue_instrument_id": "STRK-USDT-SWAP"
+    }
+  ],
+  "schema_version": "canonical_volatility_runtime_mark_history/v1",
+  "venue": "OKX",
+  "venue_instrument_id": "STRK-USDT-SWAP"
+}

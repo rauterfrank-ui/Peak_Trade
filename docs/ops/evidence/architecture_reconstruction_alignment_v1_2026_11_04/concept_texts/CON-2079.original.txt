@@ -1,0 +1,9 @@
+### CON-2079 — Treasury, Kapitalquelle und Reconciliation
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Treasury-Bestand, Available Margin, bereits gebundenes Kapital, beobachtetes, reconciliertes und risikoadmissibles Kapital sind verschiedene Gegenstände. Späterer ENTER-Join ruft Treasury tatsächlich statisch auf; C08-Transport-BOUND beweist noch keinen verwendbaren Basiswert. Historischer Treasury-GET-Bericht meldet Venue-Beobachtung, lässt Reconciliation und damaligen Host-Join offen.
+
+**Grenze:** GAP-0002 bleibt offen, wird aber um spätere Joins präzisiert. Keine neue produktive Kapitalquelle behauptet. Simulierte 100000 sind keine Kontowahrheit.
+
+Quellen: EVI-2234, EVI-2235, EVI-2209, EVI-2214, EVI-2292, EVI-2240.

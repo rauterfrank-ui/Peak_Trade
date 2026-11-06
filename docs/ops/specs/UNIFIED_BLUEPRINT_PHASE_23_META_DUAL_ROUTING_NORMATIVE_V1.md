@@ -34,3 +34,10 @@ Closure: `config/governance/unified_blueprint_phase_23_meta_dual_routing_v1.json
 - `tests/learning/test_meta_evidence_v1.py`
 - `tests/governance/test_unified_blueprint_phase_23_meta_dual_routing_v1.py`
 - `prove_unified_blueprint_phase_23_meta_dual_routing_v1`
+
+## Top-level recipient request (2026-11-04)
+
+The cycle forwards an explicitly requested consumer to the existing recipient
+validation. A mismatching request invokes neither research consumer. An omitted
+or matching request preserves the existing deterministic single-consumer route.
+UNKNOWN/MIXED remain fail closed. [Bound evidence](../evidence/meta_routing_plan_integrity_v1_2026_11_04/README.md).

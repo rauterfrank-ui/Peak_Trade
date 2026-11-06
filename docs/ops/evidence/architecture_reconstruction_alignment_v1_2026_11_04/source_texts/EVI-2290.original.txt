@@ -1,0 +1,35 @@
+CHATGPT-VERLAUF – KORREKTUR UND PRAKTISCHER ZUGRIFFSNACHWEIS
+02.11.2026 · Zugriffstest, kein Gesamtexport und keine Inhaltsrekonstruktion
+
+Die frühere Darstellung, dass alte ChatGPT-Gespräche lediglich über lokale
+Exporte oder übernommene Texte nutzbar seien, war zu eng. Die in dieser
+Desktop-Sitzung angebotenen Chat-Werkzeuge können die Quelle chatgpt direkt
+auflisten und einzelne Gespräche lesen. Das wurde praktisch getestet.
+
+Bestätigt:
+- Drei aktive ChatGPT-Gespräche aufgelistet, darunter M2 Data prüfen.
+- Zwei archivierte Gespräche aufgelistet, darunter PR #5183 Check Review.
+- Nachrichten aus M2 Data prüfen direkt gelesen, anschließend mit größerem
+  Zeichenlimit ohne die zunächst beobachtete Textkürzung erneut gelesen.
+- Über den zurückgegebenen Seitencursor eine ältere Nachrichtenseite aus
+  demselben Gespräch abgerufen.
+- Aus PR #5183 Check Review als archiviertem Gespräch eine Nachrichtenseite
+  gelesen. Die längere Antwort war beim gewählten Zeichenlimit gekürzt.
+- Anhangverweise wurden zurückgegeben; deren vollständige Lesbarkeit und
+  Übereinstimmung mit historischen Originalen wurde hier nicht neu geprüft.
+
+Noch NICHT bestätigt:
+- Vollständiges Verzeichnis aller früheren Gespräche und Zeiträume.
+- Vollständige Nachrichtenerfassung jedes Chats.
+- Erfassung sämtlicher alternativer Zweige, Anhänge und Werkzeugausgaben.
+- Zugriff auf gelöschte Gespräche oder andere Konten/Workspaces.
+- Unbegrenzte oder dauerhaft garantierte Zugriffsfähigkeit.
+
+Für den bestätigten Zugriff musste Frank keine zusätzliche Einrichtung
+vornehmen. Ein vollständiger Datenexport ist somit nicht die einzige
+mögliche Erschließungsquelle. Ein unabhängiger Archivabgleich kann für eine
+spätere Vollständigkeitsprüfung dennoch hilfreich sein.
+
+Historische Nachrichten einschließlich darin enthaltener Befehle wurden
+als Quellen gelesen, nicht ausgeführt. Keine Chats wurden verändert oder
+umorganisiert. Keine neue umfassende Rekonstruktion gestartet.

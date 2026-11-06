@@ -13,7 +13,6 @@ RUNTIME_AUTHORIZATION_EFFECT=SCOPED_SINGLE_ENTER_POST_ONLY_WHEN_EXPLICITLY_INVOK
 from __future__ import annotations
 
 import json
-import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
@@ -37,27 +36,12 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_v
     load_durable_post_owner_go_consume_v1,
     persist_durable_post_owner_go_consume_v1,
 )
-from src.ops.full_core_live_path_composition_root_v1.current_productive_global_venue_effect_authority_ledger_v1 import (
-    STATE_CLAIMED,
-    GlobalVenueEffectAuthorityLedgerV1,
-    GlobalVenueEffectLedgerError,
-)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
     POST_OWNER_GO,
     CurrentProductiveOneShotFreshEnvelopeJoinError,
     OneShotJoinProbeV1,
     attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1,
-    build_global_venue_effect_identity_v1,
     prove_one_shot_join_standing_boundary_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_post_path_kill_switch_gate_v1 import (
-    read_post_path_kill_switch_evidence_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_risk_reduction_venue_proof_v1 import (
-    MAX_PROOF_AGE_SECONDS,
-    RiskReductionNotProvenError,
-    RiskReductionVenueProofV1,
-    collect_and_prove_risk_reduction_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_effect_send_seam_v1 import (
     prove_follow_on_submit_isolated_v1,
@@ -66,13 +50,10 @@ from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 imp
     TRADE_ORDER_PATH,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
-    DURABLE_STATE_SENT_INITIATED,
     finalize_external_effect_durable_consume_v1,
     load_external_effect_durable_consume_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 import (
-    FullCoreExternalEffectPermitError,
-    expected_permit_identity_v1,
     issue_external_effect_permit_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
@@ -99,31 +80,6 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_v
 from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1 import (
     CurrentProductiveActualVenuePostPreMutationFreshnessError,
     prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_exchange_reconciliation_wiring_v1 import (
-    DwExchangeReconciliationWiringModeV1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_mandatory_new_risk_enter_post_admission_v1 import (
-    MandatoryNewRiskEnterPostAdmissionContextV1,
-    MandatoryNewRiskEnterPostAdmissionError,
-    ProductiveVenuePostRiskClassV1,
-    RiskReducingEnvelopeProvenanceError,
-    classify_productive_venue_post_risk_class_v1,
-    default_guard_atomic_state_dir_for_store_v1,
-    persist_enter_post_lifecycle_correlation_v1,
-    prove_new_risk_enter_post_store_admission_clear_v1,
-    resolve_mandatory_new_risk_enter_post_admission_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_pilot_capital_guard_post_bind_v1 import (
-    PilotCapitalGuardPostBindError,
-    PilotCapitalGuardPostBindResultV1,
-    enforce_pilot_capital_guard_before_enter_post_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1 import (
-    full_core_atomic_mark_submit_boundary_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_full_core_capital_guard_v1 import (
-    FullCoreCapitalGuardConfigV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1 import (
     resolve_fresh_executable_enter_final_order_envelope_from_pre_external_closure_v1,
@@ -165,7 +121,6 @@ CANONICAL_PACK_RELPATH = (
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
 _REPO_ROOT = Path(__file__).resolve().parents[3]
-RR_PROOF_REFRESH_AFTER_SECONDS = MAX_PROOF_AGE_SECONDS / 3.0
 
 
 class CurrentProductiveActualVenuePostError(RuntimeError):
@@ -289,7 +244,6 @@ def prove_pre_live_actual_venue_post_readiness_v1(
     envelope: FinalOrderEnvelopeV1,
     store_root: Path | str,
     k1_backend: OsNativeStoreLookupBackendV1 | None = None,
-    risk_reduction_proof: RiskReductionVenueProofV1 | None = None,
 ) -> dict[str, str]:
     """Runtime pre-live checklist. Does not consume Owner-GO or POST."""
     if str(owner_go or "") != OWNER_GO:
@@ -305,15 +259,7 @@ def prove_pre_live_actual_venue_post_readiness_v1(
     assert_post_durable_store_root_isolation_v1(store_root=store_root)
     if load_durable_post_owner_go_consume_v1(store_root=store_root).get("consumed") is True:
         raise CurrentProductiveActualVenuePostError("POST_OWNER_GO_ALREADY_DURABLE_CONSUMED")
-    try:
-        permit = issue_external_effect_permit_v1(
-            envelope,
-            authority_ref=OWNER_GO,
-            kill_switch_evidence=read_post_path_kill_switch_evidence_v1(),
-            risk_reduction_proof=risk_reduction_proof,
-        )
-    except FullCoreExternalEffectPermitError as exc:
-        raise CurrentProductiveActualVenuePostError(f"PRE_LIVE_PERMIT_DENIED:{exc}") from exc
+    permit = issue_external_effect_permit_v1(envelope, authority_ref=OWNER_GO)
     admission = evaluate_real_venue_post_admission_v1(
         post_owner_go=OWNER_GO,
         one_shot_real_post=True,
@@ -343,148 +289,6 @@ def prove_pre_live_actual_venue_post_readiness_v1(
     }
 
 
-def _mark_pilot_guard_submit_boundary_when_send_evidenced_v1(
-    *,
-    pilot_bind: PilotCapitalGuardPostBindResultV1 | None,
-    mandatory_ctx: MandatoryNewRiskEnterPostAdmissionContextV1 | None,
-    probe: OneShotJoinProbeV1,
-    store_root: Path,
-    envelope: FinalOrderEnvelopeV1,
-) -> None:
-    """Align atomic guard with durable SENT_INITIATED after a possible venue submit."""
-    if pilot_bind is None or mandatory_ctx is None:
-        return
-    durable = load_external_effect_durable_consume_v1(store_root=store_root)
-    record = durable.get("record")
-    sent_initiated_same_envelope = (
-        isinstance(record, Mapping)
-        and str(record.get("durable_state") or "") == DURABLE_STATE_SENT_INITIATED
-        and str(record.get("envelope_digest") or "") == envelope.envelope_digest
-    )
-    if probe.http_post_attempts < 1 and not sent_initiated_same_envelope:
-        return
-    try:
-        full_core_atomic_mark_submit_boundary_v1(
-            state_dir=mandatory_ctx.atomic_state_dir,
-            binding=pilot_bind.authorization_binding,
-        )
-    except Exception as exc:
-        raise CurrentProductiveActualVenuePostError(
-            f"GUARD_SUBMIT_BOUNDARY_MARK_FAILED:{exc}"
-        ) from exc
-
-
-def _collect_risk_reduction_proof_v1(
-    *,
-    envelope: FinalOrderEnvelopeV1,
-    read_only_get_transport: FullCoreFreshPretradeGetTransportV1 | None,
-    pretrade_decision_id: str,
-) -> RiskReductionVenueProofV1:
-    try:
-        return collect_and_prove_risk_reduction_v1(
-            envelope=envelope,
-            read_only_get_transport=read_only_get_transport,
-            pretrade_decision_id=pretrade_decision_id,
-        )
-    except RiskReductionNotProvenError as exc:
-        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
-
-
-def _refresh_risk_reduction_proof_if_aging_v1(
-    *,
-    proof: RiskReductionVenueProofV1,
-    envelope: FinalOrderEnvelopeV1,
-    read_only_get_transport: FullCoreFreshPretradeGetTransportV1 | None,
-    pretrade_decision_id: str,
-) -> RiskReductionVenueProofV1:
-    """Re-collect before the global claim so the pre-send gate sees fresh evidence."""
-    if time.time() - float(proof.observed_at_epoch_s) <= RR_PROOF_REFRESH_AFTER_SECONDS:
-        return proof
-    return _collect_risk_reduction_proof_v1(
-        envelope=envelope,
-        read_only_get_transport=read_only_get_transport,
-        pretrade_decision_id=pretrade_decision_id,
-    )
-
-
-def _reserve_and_consume_before_join_v1(
-    *,
-    mandatory_ctx: MandatoryNewRiskEnterPostAdmissionContextV1 | None,
-    envelope: FinalOrderEnvelopeV1,
-    root: Path,
-    read_only_get_transport: FullCoreFreshPretradeGetTransportV1 | None,
-    pre_mutation_id: str,
-    pilot_canonical_decision_id: str | None,
-    pilot_account_identity: str | None,
-    baseline_origin_main_sha: str,
-    pilot_master_v2_decision: str,
-) -> tuple[
-    PilotCapitalGuardPostBindResultV1 | None,
-    DwExchangeReconciliationWiringModeV1 | str,
-    Any,
-]:
-    """Capital reservation and store-root Owner-GO consume; runs only after the global claim."""
-    pilot_bind: PilotCapitalGuardPostBindResultV1 | None = None
-    dw_wiring_mode: DwExchangeReconciliationWiringModeV1 | str = (
-        DwExchangeReconciliationWiringModeV1.DISABLED
-    )
-    dw_wiring_config = None
-    if mandatory_ctx is not None:
-        try:
-            pilot_bind = enforce_pilot_capital_guard_before_enter_post_v1(
-                pilot_capital_guard_bind_go=mandatory_ctx.pilot_capital_guard_bind_go,
-                envelope=envelope,
-                read_only_get_transport=read_only_get_transport,
-                pretrade_decision_id=pre_mutation_id,
-                native_instrument_id=mandatory_ctx.native_instrument_id,
-                canonical_decision_id=str(pilot_canonical_decision_id or pre_mutation_id),
-                account_identity=pilot_account_identity,
-                origin_main_sha=baseline_origin_main_sha,
-                guard_config=mandatory_ctx.guard_config,
-                atomic_state_dir=mandatory_ctx.atomic_state_dir,
-                master_v2_decision=pilot_master_v2_decision,
-                pretrade_reference_mark_px=envelope.price or None,
-                private_get_go=mandatory_ctx.private_get_go,
-            )
-        except PilotCapitalGuardPostBindError as exc:
-            raise CurrentProductiveActualVenuePostError(str(exc)) from exc
-        if pilot_bind.blocked:
-            reasons = ",".join(pilot_bind.reasons) or "PILOT_CAPITAL_GUARD_BLOCKED"
-            raise CurrentProductiveActualVenuePostError(f"PILOT_CAPITAL_GUARD_BLOCKED:{reasons}")
-        if pilot_bind.join_result.reservation_created is not True:
-            raise CurrentProductiveActualVenuePostError("PILOT_ATOMIC_RESERVATION_REQUIRED")
-        persist_enter_post_lifecycle_correlation_v1(
-            store_root=root,
-            envelope=envelope,
-            authorization_binding=pilot_bind.authorization_binding,
-            pretrade_decision_id=pre_mutation_id,
-            submit_attempt_id=f"enter-post:{envelope.client_order_id}",
-            atomic_state_dir=mandatory_ctx.atomic_state_dir,
-        )
-        dw_wiring_mode = DwExchangeReconciliationWiringModeV1.PRODUCTIVE_READ_ONLY
-        dw_wiring_config = pilot_bind.dw_wiring_config
-    persist_durable_post_owner_go_consume_v1(
-        store_root=root,
-        owner_go_token=OWNER_GO,
-        baseline_origin_main_sha=baseline_origin_main_sha,
-    )
-    return pilot_bind, dw_wiring_mode, dw_wiring_config
-
-
-def _abandon_global_claim_if_unsent_v1(
-    *,
-    ledger: GlobalVenueEffectAuthorityLedgerV1,
-    claim_id: str,
-    reason: str,
-) -> None:
-    """CLAIMED never reached transport; record ABORTED. Authorization stays consumed."""
-    try:
-        if str(ledger.load_claim_v1(claim_id).get("state") or "") == STATE_CLAIMED:
-            ledger.abandon_unsent_claim_v1(claim_id, reason=reason[:240])
-    except Exception:  # noqa: BLE001
-        return
-
-
 def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
     *,
     owner_go: str,
@@ -497,15 +301,6 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     opener_factory: Callable[[], OpenerDirector] | None = None,
     read_only_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
-    pilot_capital_guard_bind_go: str | None = None,
-    pilot_capital_guard_config: FullCoreCapitalGuardConfigV1 | None = None,
-    pilot_native_instrument_id: str | None = None,
-    pilot_canonical_decision_id: str | None = None,
-    pilot_account_identity: str | None = None,
-    pilot_atomic_state_dir: Path | None = None,
-    pilot_master_v2_decision: str = "enter_long",
-    pilot_dw_private_get_go: str = "GRANTED_SCOPED_READ_ONLY",
-    global_authority_ledger: GlobalVenueEffectAuthorityLedgerV1 | None = None,
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
@@ -521,53 +316,19 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
-    try:
-        risk_class = classify_productive_venue_post_risk_class_v1(envelope)
-    except RiskReducingEnvelopeProvenanceError as exc:
-        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     root = Path(store_root)
     assert_post_durable_store_root_isolation_v1(store_root=root)
-    try:
-        ledger = (
-            global_authority_ledger
-            if global_authority_ledger is not None
-            else GlobalVenueEffectAuthorityLedgerV1()
-        )
-    except GlobalVenueEffectLedgerError as exc:
-        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
-    if not isinstance(ledger, GlobalVenueEffectAuthorityLedgerV1):
-        raise CurrentProductiveActualVenuePostError("GLOBAL_AUTHORITY_LEDGER_REQUIRED")
     root.mkdir(parents=True, exist_ok=True)
-    pre_mutation_id = f"actual-venue-post:{envelope.envelope_id}"
-    rr_proof: RiskReductionVenueProofV1 | None = None
-    if risk_class is ProductiveVenuePostRiskClassV1.RISK_REDUCING:
-        rr_proof = _collect_risk_reduction_proof_v1(
-            envelope=envelope,
-            read_only_get_transport=read_only_get_transport,
-            pretrade_decision_id=pre_mutation_id,
-        )
-    if risk_class is ProductiveVenuePostRiskClassV1.NEW_RISK_ENTER:
-        atomic_probe = pilot_atomic_state_dir or default_guard_atomic_state_dir_for_store_v1(
-            store_root=root
-        )
-        try:
-            prove_new_risk_enter_post_store_admission_clear_v1(
-                store_root=root,
-                envelope=envelope,
-                atomic_state_dir=atomic_probe,
-            )
-        except MandatoryNewRiskEnterPostAdmissionError as exc:
-            raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     pre = prove_pre_live_actual_venue_post_readiness_v1(
         owner_go=owner_go,
         baseline_origin_main_sha=baseline_origin_main_sha,
         envelope=envelope,
         store_root=root,
         k1_backend=k1_backend,
-        risk_reduction_proof=rr_proof,
     )
     if pre.get("PRE_LIVE_PROOF_COMPLETE") != "true":
         raise CurrentProductiveActualVenuePostError("PRE_LIVE_PROOF_INCOMPLETE")
+    pre_mutation_id = f"actual-venue-post:{envelope.envelope_id}"
     try:
         freshness = prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             envelope=envelope,
@@ -578,66 +339,11 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     if freshness.all_required_pre_post_gates_pass is not True:
         raise CurrentProductiveActualVenuePostError("PRE_MUTATION_FRESHNESS_FAIL_CLOSED")
-
-    dw_wiring_mode: DwExchangeReconciliationWiringModeV1 | str = (
-        DwExchangeReconciliationWiringModeV1.DISABLED
-    )
-    dw_wiring_config = None
-    pilot_bind: PilotCapitalGuardPostBindResultV1 | None = None
-    mandatory_ctx = None
-    try:
-        mandatory_ctx = resolve_mandatory_new_risk_enter_post_admission_v1(
-            envelope=envelope,
-            store_root=root,
-            pilot_capital_guard_bind_go=pilot_capital_guard_bind_go,
-            pilot_capital_guard_config=pilot_capital_guard_config,
-            pilot_native_instrument_id=pilot_native_instrument_id,
-            pilot_atomic_state_dir=pilot_atomic_state_dir,
-            pilot_dw_private_get_go=pilot_dw_private_get_go,
-            read_only_get_transport_present=read_only_get_transport is not None,
-        )
-    except MandatoryNewRiskEnterPostAdmissionError as exc:
-        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
-    if mandatory_ctx is not None and read_only_get_transport is None:
-        raise CurrentProductiveActualVenuePostError(
-            "NEW_RISK_POST_MANDATORY_READ_TRANSPORT_REQUIRED"
-        )
-    if rr_proof is not None:
-        rr_proof = _refresh_risk_reduction_proof_if_aging_v1(
-            proof=rr_proof,
-            envelope=envelope,
-            read_only_get_transport=read_only_get_transport,
-            pretrade_decision_id=pre_mutation_id,
-        )
-    expected_permit = expected_permit_identity_v1(envelope, authority_ref=OWNER_GO)
-    global_identity = build_global_venue_effect_identity_v1(
-        ledger=ledger,
-        envelope=envelope,
-        permit_id=expected_permit.permit_id,
-        post_owner_go=OWNER_GO,
+    persist_durable_post_owner_go_consume_v1(
+        store_root=root,
+        owner_go_token=OWNER_GO,
         baseline_origin_main_sha=baseline_origin_main_sha,
     )
-    try:
-        global_claim = ledger.claim_v1(global_identity)
-    except GlobalVenueEffectLedgerError as exc:
-        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
-    try:
-        pilot_bind, dw_wiring_mode, dw_wiring_config = _reserve_and_consume_before_join_v1(
-            mandatory_ctx=mandatory_ctx,
-            envelope=envelope,
-            root=root,
-            read_only_get_transport=read_only_get_transport,
-            pre_mutation_id=pre_mutation_id,
-            pilot_canonical_decision_id=pilot_canonical_decision_id,
-            pilot_account_identity=pilot_account_identity,
-            baseline_origin_main_sha=baseline_origin_main_sha,
-            pilot_master_v2_decision=pilot_master_v2_decision,
-        )
-    except BaseException as exc:
-        _abandon_global_claim_if_unsent_v1(
-            ledger=ledger, claim_id=global_claim.claim_id, reason=f"PRE_JOIN:{exc}"
-        )
-        raise
     durable_before = load_external_effect_durable_consume_v1(store_root=root)
     permit_unused = durable_before.get("durable_consumed") is not True
     probe = OneShotJoinProbeV1()
@@ -663,11 +369,6 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             k1_backend=k1_backend,
             opener_factory=opener_factory,
             probe=probe,
-            dw_exchange_reconciliation_wiring_mode=dw_wiring_mode,
-            dw_exchange_reconciliation_wiring=dw_wiring_config,
-            global_authority_ledger=ledger,
-            global_claim=global_claim,
-            risk_reduction_proof=rr_proof,
         )
         real_attempted = probe.http_post_attempts >= 1
         real_performed = (
@@ -680,14 +381,6 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         join_outcome = join.outcome
         if join.http_status:
             http_status = str(join.http_status)
-        if join.unknown_outcome is True or real_attempted:
-            _mark_pilot_guard_submit_boundary_when_send_evidenced_v1(
-                pilot_bind=pilot_bind,
-                mandatory_ctx=mandatory_ctx,
-                probe=probe,
-                store_root=root,
-                envelope=envelope,
-            )
         if join.unknown_outcome is True:
             post_outcome = "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
         elif real_performed:
@@ -701,27 +394,15 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
                 outcome=post_outcome,
             )
             permit_completed = True
-    except BaseException as exc:
-        _abandon_global_claim_if_unsent_v1(
-            ledger=ledger, claim_id=global_claim.claim_id, reason=f"JOIN:{exc}"
-        )
-        if not isinstance(exc, CurrentProductiveOneShotFreshEnvelopeJoinError):
-            raise
+    except CurrentProductiveOneShotFreshEnvelopeJoinError as exc:
         msg = str(exc)
         join_error = msg
-        if msg == "UNKNOWN_OUTCOME":
+        if "UNKNOWN_OUTCOME" in msg:
             real_attempted = probe.http_post_attempts >= 1
             post_outcome = "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
             live_exposure = real_attempted
             real_submission = real_attempted
             real_performed = False
-            _mark_pilot_guard_submit_boundary_when_send_evidenced_v1(
-                pilot_bind=pilot_bind,
-                mandatory_ctx=mandatory_ctx,
-                probe=probe,
-                store_root=root,
-                envelope=envelope,
-            )
         else:
             raise CurrentProductiveActualVenuePostError(msg) from exc
     handle = FullCoreSendCredentialHandleV1(
@@ -729,17 +410,14 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         bound=True,
         material_loaded=False,
     )
-    store_replay_blocked = prove_follow_on_submit_isolated_v1(
+    permit_replay = issue_external_effect_permit_v1(envelope, authority_ref=OWNER_GO)
+    replay_blocked = prove_follow_on_submit_isolated_v1(
         envelope=envelope,
-        permit=expected_permit,
+        permit=permit_replay,
         store_root=root,
         transport=_ReplayBlockedTransportV1(),
         handle=handle,
     )
-    global_consumed = ledger.consumed_kinds_v1(global_identity)
-    global_replay_blocked = len(global_consumed) == 4
-    replay_blocked = store_replay_blocked is True and global_replay_blocked
-    global_claim_state = str(ledger.load_claim_v1(global_claim.claim_id).get("state") or "")
     second_post = probe.http_post_attempts > 1
     recon = _enter_reconciliation_v1(envelope=envelope, transport=read_only_get_transport)
     ev_root = (
@@ -764,11 +442,6 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         "PERMIT_REUSABLE": FALSE_TOKEN,
         "PERMIT_COMPLETED": _token(permit_completed),
         "REPLAY_ATTEMPT_BLOCKED": _token(replay_blocked),
-        "STORE_ROOT_REPLAY_BLOCKED": _token(store_replay_blocked is True),
-        "GLOBAL_AUTHORITY_REPLAY_BLOCKED": _token(global_replay_blocked),
-        "GLOBAL_AUTHORITY_CLAIM_ID": global_claim.claim_id,
-        "GLOBAL_AUTHORITY_CLAIM_STATE": global_claim_state,
-        "RISK_REDUCTION_PROOF_DIGEST": rr_proof.proof_digest if rr_proof is not None else "",
         "ENTER_RECONCILIATION_STATUS": recon,
         "CREDENTIAL_MATERIAL_DISCLOSED": FALSE_TOKEN,
         "CREDENTIAL_MATERIAL_PERSISTED": FALSE_TOKEN,

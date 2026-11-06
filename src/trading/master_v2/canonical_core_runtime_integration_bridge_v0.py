@@ -105,7 +105,7 @@ _RUNTIME_EFFECT_NONE = "NONE"
 _ORDER_EFFECT_NONE = "NONE"
 
 _FORBIDDEN_INSTRUMENT_SUBSTRINGS = frozenset(
-    {"btc", "xbt", "bitcoin", "spot", "synthetic_spot", "synthetic-spot"}
+    {"spot", "synthetic_spot", "synthetic-spot"}
 )
 _HARNESS_INSTRUMENT_CANONICAL_MAP: Mapping[str, str] = {
     "PF_ETHUSD": "inst-pf-ethusd-perp",

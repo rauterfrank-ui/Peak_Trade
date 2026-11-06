@@ -20,3 +20,18 @@ no WS order send/amend/cancel; no trade-credential fallback).
 
 Does not modify Cap 2.3 selection, MV2/DP, Pretrade fresh-GET authority, Execution POST/wire,
 account-equity sizing authority, or external-effect authorization.
+
+Local recovery integrity extension, 2026-11-03: restart consumers now require an
+explicit trusted boundary and CURRENT quality without a reconciliation requirement.
+Journal schema/digests and complete line framing are checked before restoration;
+unproven legacy/raw/torn records are preserved and rejected. The journal is fsynced
+before rebuildable indexes are updated, and fill deduplication reads its validated
+records. Required REST rows/identities/numbers must be present; malformed positions
+and fills are not converted into zero values. REST/WS comparisons bind instrument,
+position side and order identity, with one existing order-state normalization.
+
+After journal restore, only an exact known ReconciliationSnapshotV1 metadata shape
+can be superseded automatically by a newly collected valid REST baseline. Actual
+position/order/balance state or unknown/extended records still require canonical
+reconciliation. This is private observation readiness, not full account identity,
+pagination, freshness, custody, reservation restoration or trading admission proof.

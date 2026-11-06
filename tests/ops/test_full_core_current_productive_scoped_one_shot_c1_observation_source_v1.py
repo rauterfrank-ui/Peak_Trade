@@ -776,7 +776,7 @@ def test_ms04a_binds_existing_public_candles_request_without_get(tmp_path: Path)
     assert result.bar == REQUIRED_BAR
     assert result.bar == "1m"
     assert result.limit == GET_LIMIT
-    assert result.limit == "100"
+    assert result.limit == "101"  # 100 finalized candles plus a possible open candle
     assert result.limit_binding_source == LIMIT_BINDING_SOURCE
     assert result.limit_binding_source == "EXISTING_CURRENT_PRODUCTIVE_PUBLIC_1M_CANDLES_GET_QUERY"
     assert result.auth_required is GET_AUTH_REQUIRED

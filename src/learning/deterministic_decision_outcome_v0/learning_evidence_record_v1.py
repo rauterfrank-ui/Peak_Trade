@@ -273,6 +273,11 @@ def build_learning_evidence_record_v1(payload: Mapping[str, Any]) -> MappingProx
     if canonical["outcome_semantic_class"] != canonical["evidence_pool_class"]:
         raise DdoValidationError("LEARNING_EVIDENCE_POOL_CLASS_MISMATCH")
     if (
+        canonical["outcome_semantic_class"]
+        != canonical["outcome_evidence_provenance"]["outcome_semantic_class"]
+    ):
+        raise DdoValidationError("LEARNING_EVIDENCE_OUTCOME_SEMANTIC_CLASS_MISMATCH")
+    if (
         str(canonical["outcome_evidence_provenance"]["provenance_digest"])
         != canonical["outcome_evidence_provenance_digest"]
     ):

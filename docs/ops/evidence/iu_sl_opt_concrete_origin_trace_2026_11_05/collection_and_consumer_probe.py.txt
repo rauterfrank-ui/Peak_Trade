@@ -1,0 +1,255 @@
+from pathlib import Path
+from copy import deepcopy
+from datetime import datetime, timezone
+import ast
+import hashlib
+import json
+import math
+import statistics
+import subprocess
+
+from tests.backtest.test_parameter_sensitivity_split_observation_v1 import _inputs
+from src.experiments.canonical_native_research_measurements_v1 import native_research_input_hashes_v1
+from src.backtest.strategy_signal_binding_v1 import execute_configured_strategy_signal_series_v1
+from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import normalize_strategy_signal_to_suitability_agreement_material_v1
+from trading.master_v2.suitability_binding_v1 import derive_effective_strategy_side_agreement_v1
+from src.experiments.canonical_advanced_search_v1 import _priority_from_signals, _assign_proposal_budget
+
+R=Path('/Users/frnkhrz/Peak_Trade')
+P=R/'docs/ops/evidence'
+OUT=P/'iu_sl_opt_concrete_origin_trace_2026_11_05'
+RUN=Path('/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/pytest-of-frnkhrz/pytest-0').resolve()
+DOC=P/'IU_SL_OPT_UNDERSTANDING_RESOLUTION_2026_11_05.md'
+MODEL=P/'iu_sl_opt_understanding_resolution_2026_11_05.json'
+if OUT.exists():
+    for previous in (OUT/'originals').glob('*.json'):
+        stored=json.loads(previous.read_text())
+        assert hashlib.sha256(Path(stored['origin']).read_bytes()).hexdigest()==stored['sha256']
+head=subprocess.check_output(['git','-C',str(R),'rev-parse','HEAD'],text=True).strip()
+assert head=='28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44'
+
+def sha(data):return hashlib.sha256(data).hexdigest()
+def read(p):return json.loads(p.read_text())
+def dump(p,value):
+    p.parent.mkdir(parents=True,exist_ok=True)
+    p.write_text(json.dumps(value,ensure_ascii=False,indent=2,allow_nan=False)+'\n')
+
+sources={}
+def source(rel,symbol=None):
+    raw=(R/rel).read_bytes()
+    row=sources.setdefault(rel,{'path':rel,'sha256':sha(raw),'head':head,'symbols':{}})
+    line=''
+    if symbol:
+        nodes=[n for n in ast.walk(ast.parse(raw.decode())) if isinstance(n,(ast.FunctionDef,ast.ClassDef)) and n.name==symbol]
+        assert len(nodes)==1,(rel,symbol)
+        n=nodes[0];row['symbols'][symbol]={'line':n.lineno,'end_line':n.end_lineno};line='#L'+str(n.lineno)
+    return '../../../'+rel+line
+
+OUT.mkdir(exist_ok=True)
+originals=[]
+def freeze(path,label):
+    raw=path.read_bytes();dest=OUT/'originals'/(label+'.json')
+    dump(dest,{'schema':'peaktrade.exact_original_trace_artifact.v1','origin':str(path),'sha256':sha(raw),'original_utf8':raw.decode()})
+    originals.append({'path':str(dest.relative_to(R)),'origin':str(path),'sha256':sha(raw)})
+
+witness_path=RUN/'test_closed_actual_consumer_ad0/e6-combined-episode/research/research-witness.json'
+w=read(witness_path)
+freeze(witness_path,'e6_research_witness')
+mi_path=RUN/'test_selected_cap24_identity_r0/e6-combined-episode/combined-witness.json'
+mi=read(mi_path);job=Path(mi['job_root'])
+measurement=read(job/'offline_measurement_v1.json');capsule=read(job/'capsule_v1.json');ack=read(job/'consumer_ack_v1.json')
+freeze(job/'offline_measurement_v1.json','mi_original_measurement')
+freeze(job/'consumer_ack_v1.json','mi_original_ack')
+freeze(job/'optimization_input_v1.json','ddo_original_optimization_input')
+freeze(job/'mi_consumer'/ack['mi_durable_id']/'mi_offline_durable_evidence_record_v1.json','mi_original_durable_triad')
+assert capsule['forecast']['probabilistic_payload']=={'mean_return':0.02,'std_return':0.1}
+assert measurement['measurement']['start_price']==110.0 and measurement['measurement']['end_price']==120.0
+realized=math.log(120/110);error=realized-0.02
+assert realized==measurement['measurement']['log_return']==ack['numeric_readback']['realized_return']
+assert error==ack['numeric_readback']['error']
+ledger=[json.loads(x)['payload'] for x in (job/'LANE_1/ddo_learning_capture_v1.jsonl').read_text().splitlines()]
+state=next(x for x in ledger if x.get('schema_name')=='learning_state_record')
+assert state['next_cycle_economic_score_label']=='UNKNOWN'
+
+bars,cfg=_inputs()
+e6=[]
+for label,key in [('first',w['first_artifact_id']),('second',w['second_artifact_id'])]:
+    path=Path(w['archive_root'])/(key+'.json');packet=read(path);freeze(path,'e6_'+label+'_original_packet')
+    execution=json.loads(packet['execution_utf8']);m=packet['measurement_receipt'];local=deepcopy(cfg)
+    local['economic_evaluation_v1']['strategy_params']=m['parameters']
+    hashes=dict(native_research_input_hashes_v1(bars,local));assert hashes==m['source_hashes']
+    signal=execute_configured_strategy_signal_series_v1(bars,strategy_id='ma_crossover',cfg=local)
+    full=m['runs'][0];assert full['split']=='full'
+    assert signal.provenance.engine_signal_digest==full['strategy_provenance']['engine_signal_digest']
+    assert full['engine_signal_digest']==full['mv2_signal_digest']
+    assert full['engine_signal_digest']!=full['strategy_provenance']['engine_signal_digest']
+    values=[x['value'] for x in full['equity']]
+    returns=[v/p-1 for p,v in zip(values,values[1:])]
+    recomputed=statistics.mean(returns)/statistics.stdev(returns)
+    stored=full['statistics']['sharpe']['value'];assert abs(recomputed-stored)<1e-15
+    candidates=[{k:c[k] for k in ['parameter_region','status','search_priority_score','matched_meta_learning_proposal_ids','hypothesis_id']} for c in execution['search_record']['candidates']]
+    gate=next(x for x in execution['research_loop_record']['robustness_evidence']['test_results'] if x['test_id']=='TRAIN_VALIDATION_HOLDOUT')
+    e6.append({'artifact_id':key,'parameters':m['parameters'],'input_hashes_reconstructed':hashes,
+        'strategy_signal_digest_reconstructed':signal.provenance.engine_signal_digest,
+        'actual_engine_signal_digest':full['engine_signal_digest'],'actual_engine_equals_mv2_replay_digest':True,
+        'raw_strategy_provenance_is_not_actual_engine_source':True,
+        'raw_strategy_first_nonzero_epoch':next(i for i,x in enumerate(signal.signals) if x!=0),
+        'actual_core_entry_signal_epochs':[i for i,x in enumerate(full['mapped_signal_values']) if x!=0],
+        'closed_trade_intervals':full['closed_trade_intervals'],'initial_equity':values[0],'final_equity':values[-1],
+        'full_sharpe_stored':stored,'full_sharpe_recomputed':recomputed,
+        'split_sharpes':{x['split']:x['statistics']['sharpe']['value'] for x in m['runs']},
+        'candidate_selection':candidates,'search_meta_identity':execution['search_record']['input_lineage']['meta_learning_identity'],
+        'robustness_gate':gate})
+assert e6[1]['search_meta_identity'] is None
+assert next(c for c in e6[1]['candidate_selection'] if c['parameter_region']['slow_window']==50)['status']=='REJECTED_DUPLICATE_WITHOUT_RETEST'
+for path in Path(w['archive_root']).parent.rglob('started.json'):
+    record=read(path)['body']
+    if record['experiment_id']==read(Path(w['archive_root'])/(w['second_artifact_id']+'.json'))['measurement_receipt']['experiment_id']:
+        assert record['feedback']['meta_input_binding']['meta_learning_record']['research_proposals']==[]
+        freeze(path,'e6_second_original_started')
+
+control_path=RUN/'test_measured_policy_intervent0/measured_meta_next_trial_witness.json'
+controls=read(control_path);freeze(control_path,'meta_three_original_controls')
+rows=[]
+for name,c in controls.items():
+    s=c['feedback']['next_search_record']
+    rows.append({'scenario':name,'selected':c['selected'],'overfit_records':c['overfit_failures'],
+        'candidate_priorities':[{k:x[k] for k in ['parameter_region','search_priority_score','status']} for x in s['candidates']],
+        'proposals':c['feedback']['meta_input_binding']['meta_learning_record']['research_proposals']})
+relevant=controls['relevant_failure'];record=relevant['feedback']['next_search_record']
+signals=relevant['feedback']['meta_input_binding']['meta_learning_record']['research_proposals']
+counterfactual=[]
+for name,subset in [('original_all_signals',signals),('remove_only_region_signal',[s for s in signals if s['question_id']!='PARAMETER_REGION_REPEATED_OVERFIT']),('remove_all_signals',[])]:
+    candidates=deepcopy(record['candidates'])
+    for c in candidates:
+        assert c['status'] in ['PROPOSED','BUDGET_EXCLUDED'] and not c['duplicate_assessment']['detected']
+        c['status']='PROPOSED'
+        matches,score=_priority_from_signals(subset,strategy_family=c['strategy_family'],search_space_id=c['search_space_id'],hypothesis_kind=c['hypothesis_kind'],parameter_region=c['parameter_region'],duplicate_assessment=c['duplicate_assessment'])
+        c['search_priority_score']=score
+    _assign_proposal_budget(candidates,budget=record['budget'])
+    selected=next(c['parameter_region']['slow_window'] for c in candidates if c['status']=='PROPOSED')
+    assert selected==(100 if name=='original_all_signals' else 50)
+    counterfactual.append({'intervention':name,'selected_slow_window':selected,'candidates':[{k:c[k] for k in ['parameter_region','search_priority_score','status','hypothesis_id']} for c in candidates]})
+
+# The exact consumer interprets neutral producer metadata using the raw 0/1 value and DA side.
+from trading.master_v2.directional_assessment_v1 import DirectionalAssessmentSide
+agreement=[]
+for slow in [50,100]:
+    local=deepcopy(cfg);local['economic_evaluation_v1']['strategy_params']['slow_window']=slow
+    bound=execute_configured_strategy_signal_series_v1(bars,strategy_id='ma_crossover',cfg=local)
+    material=normalize_strategy_signal_to_suitability_agreement_material_v1(bound,instrument_id=w['instrument_id'],trading_epoch=75,expected_configured_strategy_id='ma_crossover')
+    consumer=derive_effective_strategy_side_agreement_v1(material,DirectionalAssessmentSide.LONG)
+    agreement.append({'slow_window':slow,'epoch':75,'raw_signal':material.cycle_signal_value,'producer_side_agreement':material.side_agreement.value,'consumer_long_agreement':consumer.value})
+assert agreement[0]['consumer_long_agreement']=='AGREE' and agreement[1]['consumer_long_agreement']=='NEUTRAL'
+
+M='src/learning/market_intelligence_forecast_calibration_offline_stack_v1/'
+O='src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/'
+S='src/experiments/'
+fixture=source('tests/ops/_bounded_system_episode_fixture_v1.py','research_episode')
+outcome_fixture=source('tests/ops/_bounded_system_episode_fixture_v1.py','outcome_episode')
+price=source('tests/ops/test_bounded_offline_all_purpose_consumers_v1.py','_profiles')
+inputs=source('tests/backtest/test_parameter_sensitivity_split_observation_v1.py','_inputs')
+scaffold=source('tests/backtest/test_mv2_research_wiring_v1.py','_bars')
+config=source('tests/backtest/test_mv2_research_wiring_v1.py','_cfg')
+provider=source(S+'canonical_native_research_measurements_v1.py','measure_native_research_candidate_v1')
+wire=source('src/backtest/mv2_research_wiring_v1.py','run_mv2_research_backtest_wiring_v1')
+ma=source('src/strategies/ma_crossover.py','MACrossoverStrategy')
+adapter=source('src/backtest/strategy_signal_suitability_agreement_adapter_v1.py','normalize_strategy_signal_to_suitability_agreement_material_v1')
+suitability=source('src/trading/master_v2/suitability_binding_v1.py','derive_effective_strategy_side_agreement_v1')
+stats=source('src/backtest/stats.py','compute_sharpe_ratio')
+gate=source(S+'canonical_robustness_suite_v1.py','_oos_gate')
+meta=source(S+'canonical_meta_learning_v1.py','_question_repeated_overfit')
+signal_source=source(S+'canonical_advanced_search_v1.py','_priority_from_signals')
+budget=source(S+'canonical_advanced_search_v1.py','_assign_proposal_budget')
+testcontrol=source('tests/experiments/test_measured_meta_next_trial_v1.py','test_measured_policy_intervention_changes_next_native_trial_with_unrelated_control')
+supplier=source('src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py','materialize_real_outcome_horizon_supplier_input_v1')
+calibration=source(M+'calibration_evidence_v1.py','build_calibration_evidence_v1')
+consume=source(O+'offline_v1.py','_consume')
+typed=source(M+'forecast_measurement_integration_v1.py','freeze_existing_intelligence_forecast_v1')
+setup=source('tests/learning/test_intelligence_forecast_measurement_integration_v1.py','setup')
+source('src/backtest/backtest_engine_position_feedback_adapter_v1.py','step_legacy_realistic_bar_v1')
+source('src/backtest/engine.py')
+source('tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py','strong_uptrend_closes_v1')
+source('src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py','_derive_next_cycle_economic_score_label_v1')
+
+result={'schema':'peaktrade.iu_sl_opt.concrete_value_origin_trace.v1','created_at_utc':datetime.now(timezone.utc).isoformat(),'source_head':head,
+    'test_run':'Current 1551-case connected receipt committed in 28f0115fb; retained exact temporary witnesses copied here.',
+    'mi':{'forecast_mean_origin':'literal 0.02 in outcome_episode; not an executed forecaster','model_artifact_origin_in_new_typed_integration':'literal bytes TEST_ONLY_SYNTHETIC_MODEL_ARTIFACT; NO INFERENCE',
+        'o4_mark_origin':'_profiles sets 100 + i*10 for i=0,1,2 and uses the original producer/finalizer; the target selects closes 110 and 120',
+        'n_bars':2,'selected_closes':[110.0,120.0],'realized_log_return':realized,'forecast_mean':0.02,'recomputed_error':error,
+        'original_numeric_readback':ack['numeric_readback'],'ddo_state_version':state['state_version'],'ddo_next_cycle_label':state['next_cycle_economic_score_label'],
+        'research_join':'closed job + original ACK hash; no scalar passed to research price/return inputs or score'},
+    'research_input':{'rows':768,'frequency':'1h','start':str(bars.index[0]),'end':str(bars.index[-1]),'close_formula':'100 + 5*sin(i/12) + 0.01*i','first_three_closes':[float(x) for x in bars.close.iloc[:3]],
+        'initial_equity':10000.0,'fixture_fee_bps':10.0,'fixture_slippage_bps':5.0,'fixture_risk_per_trade':0.002,
+        'candidate_grid':{'fast_window':[10],'slow_window':[50,100]},'fixture_oos_collapse_ratio':100.0,'canonical_default_oos_collapse_ratio':0.5,
+        'input_hashes_match_original_receipts_for_each_candidate':True},
+    'e6_actual_executions':e6,'suitability_consumer_probe':agreement,
+    'separate_meta_controls':rows,'same_candidate_meta_signal_intervention':counterfactual,
+    'e6_50_to_100_cause':'REJECTED_DUPLICATE_WITHOUT_RETEST at the 50 candidate; meta proposals empty and Search meta identity None.',
+    'separate_three_history_meta_cause':'Region-matched DEPRIORITIZE_RESEARCH produces -40 for slow 50 and -20 for slow 100; deleting only region signal equalizes -20/-20 and selects 50 by existing hypothesis-id tie-break.',
+    'limits':['Synthetic input and explicit policy intervention; no natural-market or economic-improvement conclusion.','Distinct seeds in the three histories do not establish independent market samples.','Strategy provenance reports a generated strategy input; actual engine digest matches canonical MV2 replay and differs from raw strategy digest.'],
+    'original_artifacts':originals,'bound_sources':sources,'product_files_changed':0,'new_engine_or_training_runs':0,'local_readonly_numeric_and_consumer_probes_performed':True,'runtime_authorization_effect':'NONE'}
+dump(OUT/'trace.json',result)
+dump(OUT/'sources.json',sources)
+
+DOC.write_text(f'''# IU / SL / OPT: konkrete Werte bis zu ihrem Ursprung zurückverfolgt
+
+Untersucht am vollständigen Codecommit `{head}`. Verwendet sind die Originalartefakte des gerade bestandenen Verbundlaufs sowie die tatsächlichen Rechen- und Consumerfunktionen. Die Rückverfolgung startet bei konkreten Ergebnissen; anschließend werden die maßgeblichen Rechnungen und Auswahlentscheidungen vorwärts überprüft. [Zahlen, Originalbytes und Quellenbindung](iu_sl_opt_concrete_origin_trace_2026_11_05/trace.json).
+
+## 1. Der MI-Fehler 0,0670113769896297
+
+Der fertige Consumer-ACK enthält Return 0,0870113769896297 und Fehler 0,0670113769896297. Rückwärts führt der ACK über den [numerischen MI-Readback und die DDO-Consumer]({consume}) zur Originalmessung des [N_BARS-Suppliers]({supplier}). Die erhaltene Messung nennt ausdrücklich Startpreis 110, Endpreis 120, zwei endgültige Barcloses und LOG_RETURN.
+
+Diese beiden Preise stammen aus [der Testquelle]({price}): Sie übergibt dem originalen O4-Produzenten drei künstliche Markbeobachtungen 100, 110, 120, erzeugt echte Producer-/Finalizerrecords und schreibt sie in den normalen Factstore. Der genaue spätere Horizont wählt die letzten beiden Closes 110 und 120. Bis dorthin ist die Herkunft verfolgt: Die ursprünglichen Preise sind Zahlen aus dem Testgenerator. Sie stammen in diesem Beleg nicht von einer Börsenverbindung.
+
+Der andere Operand des Fehlers führt über den Forecastrecord direkt zu [outcome_episode]({outcome_fixture}): Dort sind Mittelwert 0,02 und Standardabweichung 0,1 vorgegeben. Der [Calibrationowner]({calibration}) berechnet den Mittelwertfehler aus dem vom Supplier gemessenen Logreturn und dem gelieferten Forecastmittelwert. Die Rückrechnung aus den Originalwerten ergibt exakt dieselben gespeicherten Zahlen. Zwei Bars bedeuten hier einen Return zwischen diesen beiden Closes; weder der vorherige Preis 100 noch der Entry-/Fillpreis ist der Returnanker.
+
+Auch die jüngere typisierte Integration hat einen konkreten Ursprung: [Ihr Testsetup]({setup}) setzt den Mittelwert standardmäßig auf 0,02 und übergibt die Modellbytes als ausdrücklichen synthetischen Platzhalter mit dem Text NO INFERENCE. Der [Freezeconsumer]({typed}) bindet diese gelieferten Bytes und Metadaten. Das in diesem Test gespeicherte Forecastresultat wurde folglich nicht aus einem dort trainierten Modell berechnet.
+
+## 2. Was von diesem MI-Ergebnis in die Forschung gelangt
+
+Im [tatsächlichen E6-Researchaufruf]({fixture}) werden der geschlossene Job und genau dessen ursprünglicher Consumer-ACK vor jedem Provideraufruf zurückgelesen. Aus dem ACKhash entsteht die Parentlineage der Experimentidentität. Ein geänderter oder fehlender Abschluss blockiert den Versuch. Das ist eine belegte kausale Zulassungswirkung.
+
+Die numerischen Forschungsdaten werden danach separat erzeugt. Weder der Return 0,0870113769896297 noch der Fehler 0,0670113769896297 wird dort als Preisreihe, Featurewert oder Researchscore eingesetzt. Die Rückverfolgung erreicht hier eine konkrete Zuständigkeits- und Bedeutungsgrenze: Die bestandene MI-Aufnahme erlaubt den nachfolgenden Forschungsaufruf, dessen Zahlen entstehen aus einer anderen Datenquelle.
+
+Im originalen DDO-LearningState dieses Jobs steht außerdem Stateversion 1 mit Folgelabel UNKNOWN. Der numerische Forecastfehler wurde also nicht still zum opaken DDO-Label umgedeutet. Die drei Produkte sind in den Originalrecords unterscheidbar: numerische Calibration, DDO-Zustand und Researchzulassung.
+
+## 3. Woher die Forschungs-Sharpes tatsächlich kommen
+
+Die Werte 0,030562049388796947 und 0,030229745317592854 führen rückwärts über [die Statistik]({stats}) zu den gespeicherten vollen Engine-Equityreihen. Der [Nativeprovider]({provider}) berechnet einfache Equityreturns und verwendet eine Annualisierungsbasis von 1. Die unabhängige Nachrechnung aus den vollständigen gespeicherten Equitywerten reproduziert beide Scores bis auf Rundung unter 1e-15.
+
+Die Equity startet jeweils bei 10.000 und endet für Slow 50 bei 10.136,033743093587 beziehungsweise für Slow 100 bei 10.127,395670007812. Der Backtest erhält die tatsächlich ausgeführten kanonischen MV2-Entscheidungssignale. In beiden Originalreceipts ist der tatsächliche Engine-Signaldigest identisch zum MV2-Replay-Digest und verschieden vom Digest der erzeugten rohen MA-Strategiereihe.
+
+Dieser Unterschied ist semantisch wichtig: Das Feld strategy_provenance beschreibt weiterhin die konfigurierte Strategieeingabe. Es bezeichnet für diese Runs nicht den tatsächlichen Signalowner der Engine. Der [Wiringbody]({wire}) führt zuerst die Strategie aus, übergibt deren typisiertes Material an den Core und verwendet im kanonischen Modus dessen Replaysignale für die Engine.
+
+Der MA-Eingang wirkt trotzdem an einer konkreten Stelle: [Der Adapter]({adapter}) erhält den Rohwert 0 oder 1. Sein anfängliches Side-Agreement ist neutral. Erst [der wirkliche Suitabilityconsumer]({suitability}) interpretiert diesen Wert relativ zur Directional-Assessment-Seite. Bei demselben Epoch 75 und LONG ergibt Slow 50 den Rohwert 1 und AGREE; Slow 100 ergibt Rohwert 0 und NEUTRAL. Diese Consumerprobe wurde direkt mit den rekonstruierten Originaleingängen durchgeführt. Ein neutraler Producerwert alleine hätte die Wirkung daher ebenfalls falsch beschrieben.
+
+Die Rohstrategie stammt aus [der MA-Crossover-Implementierung]({ma}). Ihre schnelle Periode 10 und die Suchmöglichkeiten 50/100 sind explizite Vorgaben des Researchfixtures. Ihre Kursdaten führen weiter zurück zu [diesem Generator]({inputs}): 768 Stundenbars, Preis gleich 100 + 5·sin(i/12) + 0,01·i. Zeitindex und weitere Ausgangsspalten kommen aus [dem Barscaffold]({scaffold}); Startkapital, 10 bps Fees und 5 bps Slippage aus [der Konfiguration]({config}), der Risk-per-Trade-Wert wird im Generator auf 0,002 gesetzt. Für jeden Kandidaten wurden die vollständigen Daten-/Konfigurationshashes und der Rohstrategie-Signaldigest aus diesen Ursprüngen exakt rekonstruiert.
+
+Damit endet die Herkunftskette bei einer mathematisch erzeugten Testreihe und expliziten Konfigurationszahlen. Die zwei Sharpes sind tatsächliche Ergebnisse der verfolgten Owner auf diesen Eingaben. Sie sind keine aus dem MI-Fehler gelernte Marktprognose. Der Score für Slow 100 ist sogar etwas niedriger.
+
+## 4. Was den E6-Wechsel 50 → 100 tatsächlich auslöst
+
+Hier muss die bisherige verkürzte Zuschreibung an numerische Meta präzisiert werden. Der erste E6-Versuch schlägt Slow 50 mit Priorität 0 vor. Im zweiten Originalrecord steht für Slow 50 ausdrücklich REJECTED_DUPLICATE_WITHOUT_RETEST; Slow 100 wird mit Priorität 0 vorgeschlagen. Die Search-Metaidentität ist None und die Liste passender Meta-Proposals ist leer. Das ursprüngliche Startedjournal enthält zwar einen Meta-Auswertungsschritt, dessen Proposalresultat ist ebenfalls leer.
+
+Der unmittelbare Auswahlgrund in diesem konkreten E6-Beleg ist somit die bestehende Duplikatsperre des schon untersuchten 50er-Kandidaten. Die neue Messung von 100 ist tatsächlich ausgeführt worden. Dieser spezielle Wechsel belegt jedoch keine numerische Meta-Priorisierung. Die unveränderten Originalartefakte bleiben erhalten; ihre frühere Zusammenfassung wird hier genauer eingeordnet.
+
+## 5. Der getrennte, wirklich kausale Meta-Rückweg
+
+[Der bereits ausgeführte Drei-Varianten-Versuch]({testcontrol}) liefert einen anderen und stärkeren Beleg. Aus derselben synthetischen Researchreihe werden kontrollierte historische Versuche mit den vorab gesetzten Seeds 55, 56, 57 erzeugt. Der Eingriff ist eine geänderte Bewertungspolicy: OOS-Collapse-Ratio 100 statt 0,5. Diese Seeds erzeugen keine drei unabhängigen Marktpopulationen.
+
+Am [tatsächlichen Robustnessconsumer]({gate}) lautet der Vergleich Holdout-Sharpe kleiner als Train-Sharpe mal Collapse-Ratio. Für den 50er-Versuch sind Train 0,03811009551571799 und Holdout 0,05228598850098903 gespeichert. Mit Faktor 0,5 liegt die Grenze bei etwa 0,019055; mit Faktor 100 bei etwa 3,81101. Der strengere Faktor erzeugt REJECTED_OVERFIT. Das ist ein kontrollierter Policyeingriff auf berechnete Zahlen, kein neu beobachteter Marktschock.
+
+Nach drei passenden historischen Fehlerrecords erzeugt [numerische Meta]({meta}) eine regionale DEPRIORITIZE_RESEARCH-Proposal. [Der Searchconsumer]({signal_source}) prüft die identische vollständige Parameterregion und addiert -20. Ein weiteres gemeinsames Signal trifft beide Kandidaten. Deshalb erhält Slow 50 insgesamt -40 und Slow 100 -20. [Die Budgetvergabe]({budget}) wählt bei Budget 1 die höhere Priorität. Bei gleichem Score gilt anschließend die bestehende Ordnung der Hypothesis-ID; das ist keine Rangfolge gemessener Profitabilität.
+
+Zusätzlich zu den ursprünglichen drei Kontrollen wurde jetzt am selben gespeicherten Kandidatenpaar nur dieses regionale Meta-Signal entfernt und der wirkliche Prioritäts-/Budgetconsumer erneut aufgerufen. Mit allen ursprünglichen Signalen wird 100 gewählt. Ohne ausschließlich das regionale Signal sind beide Scores -20, und 50 wird gewählt. Ohne sämtliche Meta-Signale sind beide Scores 0, und ebenfalls 50 wird gewählt. Kandidaten, Budget und übrige Eingaben bleiben dabei gleich. Die gezielte Ursache der Auswahländerung ist damit bis zum konkreten Consumer und zurück zu den drei policybedingt erzeugten Fehlerrecords verfolgt.
+
+## Ergebnis dieser Rückverfolgung
+
+Für diese beiden Korridore sind die Ursprünge und Wirkungen nun konkret benannt: MI-Rechnung aus künstlichen O4-Closes und geliefertem Forecast; DDO-State mit opakem Label; ACK als Zulassungs-/Herkunftskante; separate Sinusdaten als numerischer Researchinput; kanonische Core-Replaysignale als tatsächlicher Engineeingang; E6-Duplikatsauswahl und ein gesondert nachgewiesener regionaler Meta-Prioritätseffekt.
+
+Die quantitative Verbindung vom MI-Lernergebnis zur nächsten eigenen Marktprognose entsteht in diesen verfolgten Aufrufen nicht. Das ist jetzt an der konkreten Weitergabe des ACKs und dem anschließenden separaten Researchinput belegt. Für andere Pfade wird keine Vollständigkeit behauptet. Hier wurde kein Produktcode geändert und kein neuer Backtest, kein Modelltraining oder Betriebsstart ausgeführt; die zusätzlichen Prüfungen waren Inputrekonstruktion, Rechnung aus Originalwerten und begrenzte stateless Consumerinterventionen.
+''')
+dump(MODEL,{'schema':'peaktrade.iu_sl_opt.concrete_origin_trace_index.v1','source_head':head,'document':str(DOC.relative_to(R)),'document_sha256':sha(DOC.read_bytes()),'trace':str((OUT/'trace.json').relative_to(R)),'trace_sha256':sha((OUT/'trace.json').read_bytes()),'bound_sources':sources,'product_files_changed':0,'new_engine_or_training_runs':0,'scope':'Two concrete numeric corridors with retained current-run witnesses and causal consumer probes; not global architecture completeness.'})
+dump(OUT/'manifest.json',{'schema':'peaktrade.concrete_origin_trace_manifest.v1','source_head':head,'files':[{'path':str(p.relative_to(OUT)),'sha256':sha(p.read_bytes())} for p in sorted(OUT.rglob('*')) if p.is_file()]})
+print(json.dumps({'result':'PASS_CONCRETE_VALUE_ORIGIN_AND_CONSUMER_TRACE','sources':len(sources),'frozen_original_artifacts':len(originals),'mi_error_recomputed':error,'e6_selection_cause':'DUPLICATE_NOT_META','causal_meta_intervention':counterfactual,'document':str(DOC)},ensure_ascii=False))

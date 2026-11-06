@@ -6,7 +6,7 @@
   "law_reference_is_normative": false,
   "bootstrap_exhaustive": false,
   "normalize_unknown_to_current": false,
-  "baseline_sha": "1bac0d93302c6e589effafe46fccb055d82bd44e",
+  "baseline_sha": "c742a23c964901c1353fcf3468e618db9cb6ef42",
   "law_references": [
     {
       "law_id": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
@@ -81,7 +81,7 @@
       "law_id": "CAP21-GOVERNED-UNIVERSE-V1",
       "canonical_source": "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
       "canonical_anchor": "GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
-      "source_sha256": "465371e80921507cdbf4f65050ddbe1b3980c3873d7ca71b345487b6ff4bc3f3",
+      "source_sha256": "cf3371c1ee41b80727762173afc7c23c718c9af7efeb03a93f9f8202cd73a7ca",
       "source_authority_class": "EVIDENCE_CENSUS",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -96,9 +96,9 @@
     },
     {
       "law_id": "CAP22-PRODUCTIVE-RANKING-V1",
-      "canonical_source": "docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md",
-      "canonical_anchor": "MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
-      "source_sha256": "64148629a14e432420440a007948ff6ad2c8ec5dc8ab784cf7950e126c2f2438",
+      "canonical_source": "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+      "canonical_anchor": "produce_productive_futures_ranking_v1",
+      "source_sha256": "1cdb79bc23b2e1d343fd5ae88729488c98d8d860416d6175b934f78e39d058b9",
       "source_authority_class": "CANONICAL_SPEC",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -107,6 +107,7 @@
         "sobj_cap22_ranking"
       ],
       "evidence_refs": [
+        "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
         "docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md",
         "src/ops/productive_futures_ranking_producer_v1/constants_v1.py",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
@@ -152,7 +153,7 @@
       "law_id": "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1",
       "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
       "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1",
-      "source_sha256": "33138122c4f050948f2de0d667b6bac8773b6468887f93ad5513f104ebd51845",
+      "source_sha256": "2bdb638062648a6f45bdcb9a3fa56745545c85299a4c27a9e2dfe12980cd2dd8",
       "source_authority_class": "CANONICAL_SPEC",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -169,7 +170,7 @@
       "law_id": "G17-TYPED-VOL-CMC-BIND-V1",
       "canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
       "canonical_anchor": "apply_current_productive_g17_typed_vol_cmc_bind_v1",
-      "source_sha256": "e7e5b04308197a10fd90ed5bc9aac581c212681c3ae4896f0e6ee8c0b302d7a4",
+      "source_sha256": "32c3210e3f6596a82c070df90a56313b8789800fa91d71ba618e6f2f1905eb0f",
       "source_authority_class": "EVIDENCE_CENSUS",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -186,7 +187,7 @@
     {
       "law_id": "M9-VOL-MAX-AGE-DECISION-V1",
       "canonical_source": "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json",
-      "canonical_anchor": "m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1",
+      "canonical_anchor": "productive_target_id",
       "source_sha256": "7eeb4e818bc447921aa3178c6c3a894f36479b6dba360962831a40ebe102df43",
       "source_authority_class": "CANONICAL_SPEC",
       "index_status": "INDEXED",
@@ -473,18 +474,19 @@
       ]
     },
     {
-      "law_id": "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
-      "canonical_source": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-      "canonical_anchor": "CURRENT Venue-Plan tdMode and Order-Environment Authority",
-      "source_sha256": "b942bdd5ecf46d66f0cdface1d5c7a1687a0cf24384f8f59738ef2308b9c9162",
-      "source_authority_class": "RUNBOOK",
+      "law_id": "VENUE-PLAN-TDMODE-CODE-CONTRACT-V1",
+      "canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py",
+      "canonical_anchor": "resolve_current_productive_venue_plan_td_mode_v1",
+      "source_sha256": "03bb0295b8f4aa617737a91c0b56f13e22d8ba32733bd48a5a935b4e90aeb086",
+      "source_authority_class": "CANONICAL_SPEC",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
-      "display_label": "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
+      "display_label": "Venue-plan tdMode code contract",
       "semantic_object_ids": [
         "sobj_nav_full_core_composition_joins"
       ],
       "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
@@ -493,7 +495,7 @@
       "law_id": "SEM-DIV-00001",
       "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
       "canonical_anchor": "test_natural_enter_rejects_candle_close_only_mark_without_payload",
-      "source_sha256": "ad5e8c07e6584c0f480b5b6de8ac8186ffcb319e6049f38d232851539a38494b",
+      "source_sha256": "cc56042ebbe05f8a49aaaab7c1842cbdf6c3c702f228dace5ffdd245e75bf083",
       "source_authority_class": "ENFORCEMENT_TEST",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -511,7 +513,7 @@
       "law_id": "SEM-DIV-00002",
       "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
       "canonical_anchor": "test_cycle_rejects_forbidden_candle_close_mark_source",
-      "source_sha256": "ad5e8c07e6584c0f480b5b6de8ac8186ffcb319e6049f38d232851539a38494b",
+      "source_sha256": "cc56042ebbe05f8a49aaaab7c1842cbdf6c3c702f228dace5ffdd245e75bf083",
       "source_authority_class": "ENFORCEMENT_TEST",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -529,7 +531,7 @@
       "law_id": "SEM-DIV-00006",
       "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
       "canonical_anchor": "test_observation_sidestate_seed_class_rejected_on_bind",
-      "source_sha256": "ad5e8c07e6584c0f480b5b6de8ac8186ffcb319e6049f38d232851539a38494b",
+      "source_sha256": "cc56042ebbe05f8a49aaaab7c1842cbdf6c3c702f228dace5ffdd245e75bf083",
       "source_authority_class": "ENFORCEMENT_TEST",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -735,7 +737,7 @@
     {
       "id": "sobj_canonical_price_provenance",
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
-      "current_status": "PROVEN_CURRENT",
+      "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
         "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
@@ -759,7 +761,7 @@
     {
       "id": "sobj_double_play_old_effective_host_contract",
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
-      "current_status": "PROVEN_CURRENT",
+      "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
         "src/trading/master_v2/double_play_old_effective_host_contract_v1.py",
         "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
@@ -1045,7 +1047,7 @@
     {
       "id": "sobj_mv2_layer_l5_nullline",
       "semantic_class": "CANONICAL_MODEL_SEMANTIC",
-      "current_status": "PROVEN_CURRENT",
+      "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
         "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py"
       ],
@@ -1252,7 +1254,7 @@
     {
       "id": "sobj_p5_authority_bind",
       "semantic_class": "ENFORCEMENT_CONTRACT",
-      "current_status": "PROVEN_CURRENT",
+      "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
         "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
       ],
@@ -1268,7 +1270,7 @@
     {
       "id": "sobj_persistent_natural_enter_convergence",
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
-      "current_status": "PROVEN_CURRENT",
+      "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py"
       ],
@@ -1317,7 +1319,7 @@
     {
       "id": "sobj_ranking_ssf_handoff",
       "semantic_class": "ENFORCEMENT_CONTRACT",
-      "current_status": "PROVEN_CURRENT",
+      "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
         "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
       ],
@@ -1335,7 +1337,7 @@
     {
       "id": "sobj_sem_div_enforcement_chain",
       "semantic_class": "ENFORCEMENT_CONTRACT",
-      "current_status": "PROVEN_CURRENT",
+      "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
@@ -1597,16 +1599,6 @@
         "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
         "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l2_market_observation_v1.py"
       ]
-    },
-    {
-      "id": "edge_sem_div_reproof",
-      "edge_class": "REQUIRES_REPROOF",
-      "from_id": "sobj_sem_div_enforcement_chain",
-      "to_id": "reproof_sem_div_6955",
-      "propagate_impact": false,
-      "evidence_refs": [
-        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
-      ]
     }
   ],
   "unknown_relations": [
@@ -1624,7 +1616,7 @@
     {
       "id": "unk_double_play_slot_crs_handoff",
       "unknown_class": "EVIDENCE_DISCOVERY_UNKNOWN",
-      "statement": "Double Play slot CRS handoff semantics remain open (CSIA UNKNOWN pin).",
+      "statement": "Die fachliche CRS-Uebergabe zwischen Double Play und Slot braucht einen an ihren Originalownern belegten Zustands- und Einheitenvertrag.",
       "left_ref": "csia:double_play_slot_crs_handoff",
       "right_ref": "sobj_sem_div_enforcement_chain",
       "evidence_refs": [
@@ -1633,8 +1625,8 @@
     },
     {
       "id": "unk_mt_l5_nullline_identity",
-      "unknown_class": "UNKNOWN_RELATION",
-      "statement": "Whether composition-root M_t/mark_px input is semantically identical to L5 nullline initialization_mark is OPEN; PR #6955 did not establish identity.",
+      "unknown_class": "NORMATIVE_BOUND_UNKNOWN",
+      "statement": "Der Code unterscheidet den Beobachtungsmark M_t von der initialen L5-Preisbasis und der laufenden L8-Referenz. Eine zusätzliche normative Identitätsgleichsetzung dieser Rollen ist nicht aus einem gleichen Zahlenwert ableitbar.",
       "left_ref": "sobj_mv2_runtime_cycle_host:mark_px/M_t",
       "right_ref": "sobj_mv2_layer_l5_nullline:nullline_price_basis",
       "evidence_refs": [
@@ -1645,186 +1637,7 @@
     }
   ],
   "conflicting_relations": [],
-  "reproof_index": [
-    {
-      "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
-      "law_ref_ids": [
-        "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
-        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
-      "head_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
-      "law_ref_ids": [
-        "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
-        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "6268fab255353ceed84384051de1c045232f3a4c",
-      "head_sha": "6268fab255353ceed84384051de1c045232f3a4c",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
-      "law_ref_ids": [
-        "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
-        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
-      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_29p_normative_pack_v1",
-      "law_ref_ids": [
-        "OD-29P-NORMATIVE-PACK-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_29p_normative_pack_v1_semantic_enforcement_v1.py",
-        "config/governance/od_29p_normative_pack_v1.json"
-      ],
-      "base_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
-      "head_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_account_equity_sizing_source",
-      "law_ref_ids": [
-        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
-        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
-      "head_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_account_equity_sizing_source",
-      "law_ref_ids": [
-        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
-        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
-      "head_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_account_equity_sizing_source",
-      "law_ref_ids": [
-        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
-        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "6268fab255353ceed84384051de1c045232f3a4c",
-      "head_sha": "6268fab255353ceed84384051de1c045232f3a4c",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_account_equity_sizing_source",
-      "law_ref_ids": [
-        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
-        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
-      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_u01_p01_29p_sizing_mint",
-      "law_ref_ids": [
-        "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
-        "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
-      "head_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_od_u01_p01_29p_sizing_mint",
-      "law_ref_ids": [
-        "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "proof_refs": [
-        "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
-        "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
-      ],
-      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
-      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
-      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
-    },
-    {
-      "id": "reproof_sem_div_6955",
-      "law_ref_ids": [
-        "SEM-DIV-00001",
-        "SEM-DIV-00002",
-        "SEM-DIV-00006"
-      ],
-      "affected_semantic_object_ids": [
-        "sobj_sem_div_enforcement_chain"
-      ],
-      "proof_refs": [
-        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
-      ],
-      "base_sha": "4e84cbf7385c37e89a1a55bbfd978685ffe3e575",
-      "head_sha": "ce6c06a22155cafb53cc19df3d71fd2dbba0c768",
-      "adjudication_status": "INDEXED_EVIDENCE_ONLY"
-    }
-  ],
+  "reproof_index": [],
   "semantic_divergence_index": [
     {
       "id": "SEM-SURF-DIV-00001",
@@ -1857,10 +1670,10 @@
     },
     {
       "id": "SEM-SURF-DIV-00003",
-      "adjudication": "PROVEN_CURRENT",
+      "adjudication": "UNKNOWN_CURRENT",
       "producer_ref": "csia:account_equity_mapping_unbound",
       "consumer_ref": "sobj_nav_b05_account_equity_productive_chain",
-      "statement": "OD_ACCOUNT_EQUITY_SIZING_SOURCE adjudicated: CSIA PARTIAL numeric venue bind scope reconciled with B05 Full-Core authority-owner + producer-wrap + DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01 transform binding; unk_account_equity_sizing_source resolved.",
+      "statement": "Account-Equity-Quellen und ihre Transformation sind als getrennte Code-/Configvertraege referenziert. Eine erneute finanzielle oder produktive Gesamtpruefung ist durch den Index nicht erbracht.",
       "expected_canonical_source": "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
       "evidence_refs": [
         "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
@@ -1868,15 +1681,15 @@
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
       ],
-      "reproof_required": false,
+      "reproof_required": true,
       "unknown_relation_id": null
     },
     {
       "id": "SEM-SURF-DIV-00004",
-      "adjudication": "PROVEN_CURRENT",
+      "adjudication": "UNKNOWN_CURRENT",
       "producer_ref": "sobj_canonical_price_provenance",
       "consumer_ref": "current_productive_native_full_cycle_host_v1",
-      "statement": "L019/DIV-001 closed: governed synthetic close-chain mark_px uses EXPLICIT_SYNTHETIC_FIXTURE mark_source; OKX public mark_source with EXPLICIT_TEST_FIXTURE index collapse forbidden at builder.",
+      "statement": "Mark-/Indexprovenienz und synthetische Eingaben haben getrennte Quellvertraege. Ein vorhandener Testbezug ist kein neu ausgefuehrter Nachweis fuer den vollstaendigen aktuellen Hostpfad.",
       "expected_canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
@@ -1885,7 +1698,37 @@
         "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
         "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
       ],
-      "reproof_required": false,
+      "reproof_required": true,
+      "unknown_relation_id": null
+    },
+    {
+      "id": "SEM-SURF-DIV-00005",
+      "adjudication": "CONFLICTING_CURRENT",
+      "producer_ref": "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+      "consumer_ref": "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
+      "statement": "BTC_EXCLUDED=True ist als Metadatenliteral vorhanden; das am Eligibilityconsumer konsumierte gemeinsame Asset-Ausschlussset ist leer. Das Label und die konsumierte Regel muessen getrennt gelesen werden.",
+      "expected_canonical_source": "src/trading/master_v2/double_play_futures_input.py",
+      "evidence_refs": [
+        "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+        "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
+        "src/trading/master_v2/double_play_futures_input.py"
+      ],
+      "reproof_required": true,
+      "unknown_relation_id": null
+    },
+    {
+      "id": "SEM-SURF-DIV-00006",
+      "adjudication": "UNKNOWN_CURRENT",
+      "producer_ref": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+      "consumer_ref": "src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/evidence_gate_v1.py",
+      "statement": "Mehrere bestehende Evidence-Gates lesen Marker aus einem Dokument mit einer frueheren Runtime-Beschreibung. Die Markerpruefung bindet sich selbst nicht an die Quellrevision dieses Dokuments und belegt keine aktuelle systemweite Laufzeitwirkung. Die Datei bleibt unveraenderter Eingabevertrag; die aktuelle Systemsicht liegt im Master Runbook und Atlas.",
+      "expected_canonical_source": "src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/evidence_gate_v1.py",
+      "evidence_refs": [
+        "src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/evidence_gate_v1.py",
+        "src/ops/single_future_canonical_runtime_deterministic_offline_evidence_v1/evidence_gate_v1.py",
+        "src/ops/single_future_canonical_runtime_pre_activation_closure_v1/pre_activation_gate_v1.py"
+      ],
+      "reproof_required": true,
       "unknown_relation_id": null
     }
   ],
@@ -1942,8 +1785,119 @@
     "bootstrap_exhaustive": false,
     "census_method": "UCS_FROZEN_WORKSET_EVIDENCE_BINDING_V1",
     "unclassified_sample_cap": 120,
-    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json. PR #7070 simple owner run evidence retention: representation-only law-map adjudication for owner-home P/S/T durable copy + navigation index; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0. PR #7073 Natural-Enter cross-session pending outcome harness: representation-only law-map adjudication for lane_state persistence and PRE_EXTERNAL launcher wiring; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0. PR #7077 monetary normalization implementation: representation-only law-map adjudication for productive USDT→USDC normalization wiring; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.",
+    "notes": "Frozen file and policy inventory plus explicit source references; functional claims require their original consumer proof. The census_id names the retained record format.",
     "frozen_workset_sha256": "1faa5ad603886a2d77f4c11465cb989a9b7ddd0d3aae758378287a6739a5b8c3",
     "frozen_workset_count": 78
-  }
+  },
+  "source_tag": "freeze/clean-system-2026-11-06-v1",
+  "policy_inventory": {
+    "path": "docs/system_atlas/source/current-policies.jsonl.gz",
+    "sha256": "d3ce063bf1a3c3531095bf25a77cb3dfdeb173bc3cb450b1394425d6d5e93006",
+    "count": 780,
+    "schema": "peaktrade.frozen_policy_inventory.v1"
+  },
+  "consumed_documents": [
+    {
+      "path": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "role": "MODEL_REGISTRY_VALIDATOR_INPUT",
+      "sha256": "16fd49184d3873d7d5d9036069aca9484f2f26b1e9ada19d58e47a7fba1b2ecd",
+      "git_blob_oid": "ddc86ee5d3b38f87e90d1bd41a15d88f85371fa1",
+      "static_references": [
+        {
+          "path": "src/governance/validate_ai_matrix_vs_registry.py",
+          "line": 49,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "tests/governance/test_matrix_canonical_path_exists.py",
+          "line": 4,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "TEST"
+        },
+        {
+          "path": "tests/governance/test_validate_ai_matrix_vs_registry.py",
+          "line": 11,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "TEST"
+        },
+        {
+          "path": "tests/governance/test_validate_ai_matrix_vs_registry.py",
+          "line": 23,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "TEST"
+        }
+      ]
+    },
+    {
+      "path": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+      "role": "EVIDENCE_GATE_MARKER_INPUT_NOT_CURRENT_SYSTEM_VIEW",
+      "sha256": "83df4dcc41cfcc9bc962847caefc2299b026a0e3a8a7e1625b551e77da13ea55",
+      "git_blob_oid": "34163cc7cfe88b3f46efdae072f214049ff0bc9b",
+      "static_references": [
+        {
+          "path": "src/ops/config_truth_alignment_contract_v1.py",
+          "line": 715,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "src/ops/single_future_canonical_runtime_deterministic_offline_evidence_v1/evidence_gate_v1.py",
+          "line": 240,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "src/ops/single_future_canonical_runtime_pre_activation_closure_v1/pre_activation_gate_v1.py",
+          "line": 256,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/evidence_gate_v1.py",
+          "line": 219,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "tests/governance/test_deferred_work_recovery_register_v1.py",
+          "line": 34,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "TEST"
+        },
+        {
+          "path": "tests/ops/test_post_capability_7_2_cybersecurity_review_v1.py",
+          "line": 23,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "TEST"
+        }
+      ]
+    },
+    {
+      "path": "docs/mindmap/INFOSTREAM_LEARNING_LOG.md",
+      "role": "LEARNING_LOG_WRITE_TARGET",
+      "sha256": "61828c052d24558e243bc8fbc58ea78c7486759dcd87807f615a8dbfad215bbe",
+      "git_blob_oid": "7784b1e08449ffb76009efafe036dbeff58a9cd5",
+      "static_references": [
+        {
+          "path": "src/meta/infostream/run_cycle.py",
+          "line": 64,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "tests/meta/test_infostream_basic.py",
+          "line": 654,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "TEST"
+        },
+        {
+          "path": "tests/meta/test_infostream_basic.py",
+          "line": 727,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "TEST"
+        }
+      ]
+    }
+  ]
 }

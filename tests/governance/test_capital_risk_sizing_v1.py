@@ -461,13 +461,13 @@ def test_h01_futures_metadata_required() -> None:
     assert sizing.REASON_NON_FUTURES_INSTRUMENT in result.reason_codes
 
 
-def test_h02_bitcoin_instrument_blocked() -> None:
+def test_h02_bitcoin_uses_common_risk_checks() -> None:
     result = _evaluate_chain(
         instrument_id="XBT-USD-PERP",
         instrument=_instrument(instrument_id="XBT-USD-PERP"),
     )
-    assert result.outcome is sizing.CapitalRiskSizingOutcome.BLOCKED
-    assert sizing.REASON_BITCOIN_SPECIFIC_DIRECTION in result.reason_codes
+    assert result.outcome is sizing.CapitalRiskSizingOutcome.PASS
+    assert sizing.REASON_BITCOIN_SPECIFIC_DIRECTION not in result.reason_codes
 
 
 def test_h03_inverse_contract_blocked() -> None:

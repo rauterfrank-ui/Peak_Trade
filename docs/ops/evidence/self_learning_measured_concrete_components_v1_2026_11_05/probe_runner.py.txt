@@ -1,0 +1,95 @@
+"""Controlled measured-reference composition of existing canonical components."""
+from pathlib import Path
+import json
+import socket
+import pytest
+from src.evaluation.golden_vectors.constraints.matrix_loader_v1 import load_canonical_constraint_matrix_v1
+from src.evaluation.golden_vectors.constraints.pre_constraint_gate_v1 import ConstraintMatrixPreGateV1
+from src.evaluation.golden_vectors.constraints.post_constraint_gate_v1 import ConstraintMatrixPostGateV1
+from src.evaluation.golden_vectors.corpus.gate_v1 import VectorCorpusIntegrityGateV1
+from src.evaluation.golden_vectors.digest.comparator_v1 import ProtectedSemanticComparatorV1
+from src.evaluation.golden_vectors.registry.evidence_registry_v1 import GvefEvidenceRegistryV1
+from src.evaluation.golden_vectors.promotion.promotion_evidence_adapter_v1 import PromotionEvidenceAdapterV1, evidence_bundle_semantic_digest
+from src.evaluation.golden_vectors.evaluators.self_learning_v1 import SelfLearningEvaluatorV1
+from src.evaluation.golden_vectors.contracts.validation import parse_domain_evaluation_context_v1
+from src.evaluation.golden_vectors.contracts.enums import FailureClassification
+from src.evaluation.golden_vectors.runner.generic_runner_v1 import GenericRunnerV1,GvefRunRequestV1,evidence_complete
+from src.evaluation.golden_vectors.runner.states import RunnerState
+from src.experiments.canonical_research_result_to_meta_input_v1 import build_meta_learning_from_research_results_v1
+from src.experiments.canonical_meta_learning_v1 import canonical_meta_learning_policy_v1
+from src.experiments.canonical_advanced_search_v1 import canonical_record_payload_v1
+from tests.evaluation.golden_vectors.test_gvef_domain_evaluators_bwp456_v1 import _deps
+from tests.evaluation.golden_vectors.test_measured_learning_reference_v1 import _bound,RESEARCH
+
+OUT=Path(__file__).resolve().parent/'observations';OUT.mkdir(exist_ok=True)
+ROOT=Path.cwd()
+
+@pytest.fixture(autouse=True)
+def offline_only(monkeypatch):
+    def deny(*args,**kwargs):raise AssertionError('NETWORK_FORBIDDEN_IN_OFFLINE_PROBE')
+    monkeypatch.setattr(socket.socket,'connect',deny)
+    monkeypatch.setattr(socket,'create_connection',deny)
+
+def emit(ident,status,observed):
+    (OUT/(ident+'.json')).write_text(json.dumps(dict(id=ident,status=status,observed=observed,source_class='TEST_ONLY_SYNTHETIC',productive_authority=False,implementation_changed=False),indent=2,default=str)+'\n')
+
+def prepare(evaluator=None,bad_matrix=False):
+    corpus,context,loaded,_,_=_bound()
+    matrix=load_canonical_constraint_matrix_v1(repo_root=ROOT)
+    raw=context.model_dump(mode='json',by_alias=True)
+    raw['run_manifest']['constraint_matrix_version']=matrix.matrix_version
+    raw['run_manifest']['constraint_matrix_digest']='0'*64 if bad_matrix else matrix.matrix_digest
+    raw['constraint_identity']=matrix.model_dump(mode='json',by_alias=True)
+    context=parse_domain_evaluation_context_v1(raw)
+    deps=_deps(evaluator or SelfLearningEvaluatorV1())
+    deps.pre_gate=ConstraintMatrixPreGateV1(repo_root=ROOT)
+    deps.post_gate=ConstraintMatrixPostGateV1(repo_root=ROOT)
+    deps.corpus_gate=VectorCorpusIntegrityGateV1(registry=corpus)
+    deps.comparator=ProtectedSemanticComparatorV1()
+    deps.registry=GvefEvidenceRegistryV1()
+    deps.promotion_adapter=PromotionEvidenceAdapterV1()
+    return context,loaded,deps,matrix
+
+@pytest.fixture(scope='module')
+def coherent_run():
+    context,loaded,deps,matrix=prepare()
+    result=GenericRunnerV1().execute(GvefRunRequestV1(context),deps)
+    assert result.state is RunnerState.REGISTERED and evidence_complete(result)
+    return context,loaded,deps,matrix,result
+
+def test_concrete_components_preserve_numeric_meta(coherent_run):
+    context,loaded,deps,matrix,result=coherent_run
+    assert result.promotion_envelope is not None
+    stored=deps.registry.get(context.run_manifest.run_id)
+    assert stored is not None and evidence_bundle_semantic_digest(stored)==stored.evidence_digest
+    later=build_meta_learning_from_research_results_v1([loaded.executed.next_meta_input],created_at='2026-08-18T22:00:00Z',policy=canonical_meta_learning_policy_v1())
+    assert canonical_record_payload_v1(later)==json.loads((RESEARCH/'later_meta_fresh_process.json').read_text())
+    emit('SL-COMP01','CONTROLLED_COMPOSITION_CONFIRMED',dict(state=result.state,evidence_complete=True,canonical_matrix_version=matrix.matrix_version,canonical_matrix_digest=matrix.matrix_digest,matrix_rows_checked=len(matrix.rows),concrete_pre_post_corpus_comparator_registry_handoff=True,registry_digest_valid=True,envelope_created=True,exact_later_meta_preserved=True,remaining_fixtures=['ReplayAdapter passthrough','DeltaBuilder passthrough','EvidenceBuilder fixture'],matrix_labels_are_not_new_productive_observations=True))
+
+def test_real_pre_gate_blocks_wrong_matrix_before_registry():
+    context,_,deps,_=prepare(bad_matrix=True)
+    result=GenericRunnerV1().execute(GvefRunRequestV1(context),deps)
+    assert result.state is RunnerState.FAILED and result.failure_classification is FailureClassification.CONSTRAINT_FAILURE
+    assert result.replay_trace is None and deps.registry.registry_manifest()['entry_count']==0
+    assert result.promotion_envelope is None
+    emit('SL-COMP02','EXISTING_MATRIX_BINDING_GUARD_CONFIRMED',dict(state=result.state,failure=result.failure_classification,replay_reached=False,registry_entries=0,envelope_created=False))
+
+def test_real_comparator_blocks_reported_protected_digest_drift():
+    class Drift(SelfLearningEvaluatorV1):
+        def protected_digests_candidate(self,*,context):
+            original=context.protected_digest_baseline
+            changed=original.ranking_universe.model_copy(update={'digest_hex':'c'*64})
+            return original.model_copy(update={'ranking_universe':changed})
+    context,_,deps,_=prepare(evaluator=Drift())
+    result=GenericRunnerV1().execute(GvefRunRequestV1(context),deps)
+    assert result.state is RunnerState.FAILED and result.failure_classification is FailureClassification.PROTECTED_DIGEST_DRIFT
+    assert deps.registry.registry_manifest()['entry_count']==0 and result.promotion_envelope is None
+    emit('SL-COMP03','EXISTING_PROTECTED_COMPARATOR_GUARD_CONFIRMED',dict(state=result.state,failure=result.failure_classification,registry_entries=0,envelope_created=False,changed_domain='RANKING_UNIVERSE',scope_calculation_changed=False))
+
+def test_fixture_projection_limit_remains_with_concrete_other_components(coherent_run):
+    context,_,_,_,result=coherent_run
+    assert result.evidence_bundle.vector_corpus_digest==context.run_manifest.seed_set_digest
+    assert result.evidence_bundle.vector_corpus_digest!=context.corpus_identity.corpus_digest
+    expected={i.invariant_id for i in result.candidate_result.invariants};stored={i.invariant_id for i in result.evidence_bundle.invariant_results}
+    assert expected!=stored and result.promotion_envelope is not None
+    emit('SL-COMP04','FIXTURE_PROJECTION_LIMIT_CONFIRMED',dict(state=result.state,concrete_handoff_created=True,bound_corpus_digest=context.corpus_identity.corpus_digest,bundle_corpus_digest=result.evidence_bundle.vector_corpus_digest,domain_invariants=sorted(expected),bundle_invariants=sorted(stored),registry_and_handoff_hashes_bind_fixture_payload_not_full_domain_meaning=True,numeric_quality_accepted=False))

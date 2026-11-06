@@ -1,0 +1,150 @@
+{
+  "scope": "Exact existing nondelegated replay helper chain plus actual trailing function; injected synthetic data; not a full runtime invocation and not a test of the delegated P5 branch",
+  "rows": [
+    {
+      "mark": 1e-05,
+      "sigma": 0.02,
+      "gge": 2.0000000000000002e-07,
+      "legacy_50_500_band": 50.0,
+      "current_initialization_band": 2.0000000000000002e-07,
+      "rules_min": 0.0,
+      "rules_max": 2.0000000000000002e-07,
+      "envelope_min": 1.0,
+      "effective_trailing": {
+        "long": {
+          "band": 1.0,
+          "matches_gge": false
+        },
+        "short": {
+          "band": 1.0,
+          "matches_gge": false
+        },
+        "neutral": {
+          "band": 2.0000000000000002e-07,
+          "matches_gge": true
+        }
+      }
+    },
+    {
+      "mark": 0.02,
+      "sigma": 0.02,
+      "gge": 0.0004,
+      "legacy_50_500_band": 50.0,
+      "current_initialization_band": 0.0004,
+      "rules_min": 0.0,
+      "rules_max": 0.0004,
+      "envelope_min": 1.0,
+      "effective_trailing": {
+        "long": {
+          "band": 1.0,
+          "matches_gge": false
+        },
+        "short": {
+          "band": 1.0,
+          "matches_gge": false
+        },
+        "neutral": {
+          "band": 0.0004,
+          "matches_gge": true
+        }
+      }
+    },
+    {
+      "mark": 1.0,
+      "sigma": 0.02,
+      "gge": 0.02,
+      "legacy_50_500_band": 50.0,
+      "current_initialization_band": 0.02,
+      "rules_min": 0.0,
+      "rules_max": 0.02,
+      "envelope_min": 1.0,
+      "effective_trailing": {
+        "long": {
+          "band": 1.0,
+          "matches_gge": false
+        },
+        "short": {
+          "band": 1.0,
+          "matches_gge": false
+        },
+        "neutral": {
+          "band": 0.02,
+          "matches_gge": true
+        }
+      }
+    },
+    {
+      "mark": 100.0,
+      "sigma": 0.02,
+      "gge": 2.0,
+      "legacy_50_500_band": 50.0,
+      "current_initialization_band": 2.0,
+      "rules_min": 0.0,
+      "rules_max": 2.0,
+      "envelope_min": 1.0,
+      "effective_trailing": {
+        "long": {
+          "band": 2.0,
+          "matches_gge": true
+        },
+        "short": {
+          "band": 2.0,
+          "matches_gge": true
+        },
+        "neutral": {
+          "band": 2.0,
+          "matches_gge": true
+        }
+      }
+    },
+    {
+      "mark": 50000.0,
+      "sigma": 0.02,
+      "gge": 1000.0,
+      "legacy_50_500_band": 500.0,
+      "current_initialization_band": 1000.0,
+      "rules_min": 0.0,
+      "rules_max": 1000.0,
+      "envelope_min": 1.0,
+      "effective_trailing": {
+        "long": {
+          "band": 1000.0,
+          "matches_gge": true
+        },
+        "short": {
+          "band": 1000.0,
+          "matches_gge": true
+        },
+        "neutral": {
+          "band": 1000.0,
+          "matches_gge": true
+        }
+      }
+    },
+    {
+      "mark": 100000.0,
+      "sigma": 0.02,
+      "gge": 2000.0,
+      "legacy_50_500_band": 500.0,
+      "current_initialization_band": 2000.0,
+      "rules_min": 0.0,
+      "rules_max": 2000.0,
+      "envelope_min": 1.0,
+      "effective_trailing": {
+        "long": {
+          "band": 2000.0,
+          "matches_gge": true
+        },
+        "short": {
+          "band": 2000.0,
+          "matches_gge": true
+        },
+        "neutral": {
+          "band": 2000.0,
+          "matches_gge": true
+        }
+      }
+    }
+  ],
+  "runtime_logic_modified": false
+}

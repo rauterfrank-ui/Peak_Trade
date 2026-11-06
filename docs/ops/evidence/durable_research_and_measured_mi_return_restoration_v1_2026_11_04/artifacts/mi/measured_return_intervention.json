@@ -1,0 +1,172 @@
+[
+  {
+    "schema_version": "measured_return_calibration_binding_v1",
+    "forecast_evidence_id": "mi.forecast.35de2a04a579956809064c5e7a1c17be300c6ca8b56929b7",
+    "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+    "target": {
+      "schema_version": "measured_return_forecast_target_v1",
+      "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+      "outcome_scalar_kind": "LOG_RETURN",
+      "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+      "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+      "n_bars": 2,
+      "horizon_start_time_utc": "2026-09-01T12:00:00Z",
+      "return_start_close_time_utc": "2026-09-01T13:00:00Z",
+      "return_end_close_time_utc": "2026-09-01T14:00:00Z"
+    },
+    "calibration_evidence": {
+      "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+      "schema_version": "calibration_evidence_v1",
+      "forecast_evidence_id": "mi.forecast.35de2a04a579956809064c5e7a1c17be300c6ca8b56929b7",
+      "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+      "n_bars": 2,
+      "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+      "forecast_kind": "RETURN_DISTRIBUTION_SUMMARY",
+      "evaluability": "SUFFICIENT_EVIDENCE",
+      "calibration_method": "RETURN_ERROR_V1",
+      "calibration_result": {
+        "method": "RETURN_ERROR_V1",
+        "error": 0.07531017980432493,
+        "realized_return": 0.09531017980432493
+      },
+      "provenance": {
+        "measurement_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "target": {
+          "schema_version": "measured_return_forecast_target_v1",
+          "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+          "outcome_scalar_kind": "LOG_RETURN",
+          "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+          "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+          "n_bars": 2,
+          "horizon_start_time_utc": "2026-09-01T12:00:00Z",
+          "return_start_close_time_utc": "2026-09-01T13:00:00Z",
+          "return_end_close_time_utc": "2026-09-01T14:00:00Z"
+        }
+      },
+      "calibration_evidence_id": "mi.calib.4b7526d5181207f009907c4f0f72bad2e7a4bdb38feb9f54",
+      "calibration_evidence_authority": "NONE",
+      "evidence_class": "CALIBRATION_EVIDENCE",
+      "content_digest": "44471049e40f44695054823f2c8cfe3178e09726f22a4866ec4dc882f59e101a"
+    },
+    "research_evidence": {
+      "schema_version": "market_intelligence_research_evidence_v1",
+      "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+      "forecast_evidence_id": "mi.forecast.35de2a04a579956809064c5e7a1c17be300c6ca8b56929b7",
+      "calibration_evidence_id": "mi.calib.4b7526d5181207f009907c4f0f72bad2e7a4bdb38feb9f54",
+      "n_bars": 2,
+      "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+      "forecast_kind": "RETURN_DISTRIBUTION_SUMMARY",
+      "evaluability": "SUFFICIENT_EVIDENCE",
+      "drift_assessment_refs": [],
+      "legacy_learning_evidence_ref": null,
+      "market_intelligence_research_authority": "NONE",
+      "evidence_class": "MARKET_INTELLIGENCE_RESEARCH_EVIDENCE",
+      "productive_authority": "NONE",
+      "runtime_reachability": false,
+      "can_auto_promote": false,
+      "research_evidence_id": "mi.research.192ccefb95c49deec76c97930ec5b944598e4f57dd79d4df",
+      "content_digest": "192ccefb95c49deec76c97930ec5b944598e4f57dd79d4df2cde23f20b39560a"
+    },
+    "persistence": {
+      "persist_id": "peak_trade.learning.market_intelligence_mi_offline_durable_evidence_persist_v1",
+      "persist_status": "APPENDED",
+      "durable_evidence_id": "mi.offline.durable.0210dd67241220ba50de2c1c2d07288344216242da37f7e6",
+      "forecast_evidence_id": "mi.forecast.35de2a04a579956809064c5e7a1c17be300c6ca8b56929b7",
+      "research_evidence_id": "mi.research.192ccefb95c49deec76c97930ec5b944598e4f57dd79d4df",
+      "content_digest": "0210dd67241220ba50de2c1c2d07288344216242da37f7e60bc4ba11d4f7db00",
+      "store_record_count": 1,
+      "deterministic_replay_equal": true,
+      "external_effect_authorized": false,
+      "productive_authority": "NONE"
+    },
+    "source_authenticated": false,
+    "productive_apply_authorized": false,
+    "model_training_performed": false,
+    "content_digest": "99405e228904edacb659841a2ab57a4f2e255b323a050b3f29501729067fd236"
+  },
+  {
+    "schema_version": "measured_return_calibration_binding_v1",
+    "forecast_evidence_id": "mi.forecast.35de2a04a579956809064c5e7a1c17be300c6ca8b56929b7",
+    "actual_outcome_ref": "ddo.outcome.measure.36fe3b2b5cecff7b5493763b0891ed47e59607b0c7ee8c2082586f825495c531",
+    "target": {
+      "schema_version": "measured_return_forecast_target_v1",
+      "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+      "outcome_scalar_kind": "LOG_RETURN",
+      "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+      "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+      "n_bars": 2,
+      "horizon_start_time_utc": "2026-09-01T12:00:00Z",
+      "return_start_close_time_utc": "2026-09-01T13:00:00Z",
+      "return_end_close_time_utc": "2026-09-01T14:00:00Z"
+    },
+    "calibration_evidence": {
+      "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+      "schema_version": "calibration_evidence_v1",
+      "forecast_evidence_id": "mi.forecast.35de2a04a579956809064c5e7a1c17be300c6ca8b56929b7",
+      "actual_outcome_ref": "ddo.outcome.measure.36fe3b2b5cecff7b5493763b0891ed47e59607b0c7ee8c2082586f825495c531",
+      "n_bars": 2,
+      "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+      "forecast_kind": "RETURN_DISTRIBUTION_SUMMARY",
+      "evaluability": "SUFFICIENT_EVIDENCE",
+      "calibration_method": "RETURN_ERROR_V1",
+      "calibration_result": {
+        "method": "RETURN_ERROR_V1",
+        "error": -0.12536051565782627,
+        "realized_return": -0.10536051565782628
+      },
+      "provenance": {
+        "measurement_ref": "ddo.outcome.measure.36fe3b2b5cecff7b5493763b0891ed47e59607b0c7ee8c2082586f825495c531",
+        "target": {
+          "schema_version": "measured_return_forecast_target_v1",
+          "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+          "outcome_scalar_kind": "LOG_RETURN",
+          "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+          "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+          "n_bars": 2,
+          "horizon_start_time_utc": "2026-09-01T12:00:00Z",
+          "return_start_close_time_utc": "2026-09-01T13:00:00Z",
+          "return_end_close_time_utc": "2026-09-01T14:00:00Z"
+        }
+      },
+      "calibration_evidence_id": "mi.calib.ee17e506f6b8391806aabe9a8883426eaca7a8039181fc93",
+      "calibration_evidence_authority": "NONE",
+      "evidence_class": "CALIBRATION_EVIDENCE",
+      "content_digest": "c8092542025fb518213aabfc18b9a7a478a82519a503103c4b39c03b81444ed6"
+    },
+    "research_evidence": {
+      "schema_version": "market_intelligence_research_evidence_v1",
+      "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+      "forecast_evidence_id": "mi.forecast.35de2a04a579956809064c5e7a1c17be300c6ca8b56929b7",
+      "calibration_evidence_id": "mi.calib.ee17e506f6b8391806aabe9a8883426eaca7a8039181fc93",
+      "n_bars": 2,
+      "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+      "forecast_kind": "RETURN_DISTRIBUTION_SUMMARY",
+      "evaluability": "SUFFICIENT_EVIDENCE",
+      "drift_assessment_refs": [],
+      "legacy_learning_evidence_ref": null,
+      "market_intelligence_research_authority": "NONE",
+      "evidence_class": "MARKET_INTELLIGENCE_RESEARCH_EVIDENCE",
+      "productive_authority": "NONE",
+      "runtime_reachability": false,
+      "can_auto_promote": false,
+      "research_evidence_id": "mi.research.516566237f7a13bffa2799bc6a01073f5f3d86dc138cb1dd",
+      "content_digest": "516566237f7a13bffa2799bc6a01073f5f3d86dc138cb1dd9a60d7c39c2fa7db"
+    },
+    "persistence": {
+      "persist_id": "peak_trade.learning.market_intelligence_mi_offline_durable_evidence_persist_v1",
+      "persist_status": "APPENDED",
+      "durable_evidence_id": "mi.offline.durable.e51e6409253b9f90d7fd0717b3258288e886bf4512e22c93",
+      "forecast_evidence_id": "mi.forecast.35de2a04a579956809064c5e7a1c17be300c6ca8b56929b7",
+      "research_evidence_id": "mi.research.516566237f7a13bffa2799bc6a01073f5f3d86dc138cb1dd",
+      "content_digest": "e51e6409253b9f90d7fd0717b3258288e886bf4512e22c93d075ca9422abd720",
+      "store_record_count": 1,
+      "deterministic_replay_equal": true,
+      "external_effect_authorized": false,
+      "productive_authority": "NONE"
+    },
+    "source_authenticated": false,
+    "productive_apply_authorized": false,
+    "model_training_performed": false,
+    "content_digest": "abbf38723c5e04790fdfe108fa59d46946463d1527dfc5ad35f2b62cb6a6e352"
+  }
+]

@@ -1,0 +1,9 @@
+### CON-2092 — Frühe Research- und Parameterwege
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Fachliche Optimierung existiert vor der September-Universumsbenennung: Train→Test mit optimierten Parametern, April-Sweep→Preset→Walk-Forward→konkreter Strategie-Consumer. InfoStream/TestHealth, Triggertraining, ML und textuelle Learning-Snippets sind weitere eigenständige Wege. Die Sperrentscheidung vom 17.08. trennt Legacy-Config-Schreiber ab; sie setzt keinen zuvor vollständigen Lernkreislauf voraus.
+
+**Grenze:** Diese bewiesenen älteren Funktionen nicht wegen späterer fehlender Meta-Anbindung verwerfen. Ebenso keine automatische Wiederanbindung gesperrter Writer oder Gleichsetzung textueller Lernnotizen mit DDO-Forschung.
+
+Quellen: EVI-2244, EVI-2255, EVI-2252, EVI-2250, EVI-2248, EVI-2254, EVI-2280.

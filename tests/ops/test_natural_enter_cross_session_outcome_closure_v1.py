@@ -62,7 +62,6 @@ def _reporting_enter(**overrides: Any) -> NaturalEnterReportingResultV1:
         "selected_side": "long",
         "trading_epoch": "5",
         "s5_cycle_index": "4",
-        "instrument_id": CANON,
     }
     dpo.update(overrides.get("dpo") or {})
     return NaturalEnterReportingResultV1(
@@ -217,7 +216,7 @@ def test_T04_T06_session_boundary_persistence(tmp_path: Path) -> None:
     assert open_b[0].decision_event_ref == DECISION_REF
 
 
-def test_T07_T11_horizon_advance_and_closure(tmp_path: Path) -> None:
+def test_T07_T11_fixture_horizon_matures_without_productive_closure(tmp_path: Path) -> None:
     lane_root = Path(_create_pending(tmp_path))
     pending = load_pending_outcome_by_decision_ref_v1(lane_root, DECISION_REF)
     assert pending is not None
@@ -235,7 +234,7 @@ def test_T07_T11_horizon_advance_and_closure(tmp_path: Path) -> None:
     assert r1.closed is False
     pending2 = load_pending_outcome_by_decision_ref_v1(lane_root, DECISION_REF)
     assert pending2 is not None
-    assert pending2.bars_observed >= 1
+    assert pending2.bars_observed == 0
     r_dup = ingest_pending_outcome_mark_observation_v1(
         lane_state_root=lane_root,
         pending=pending2,
@@ -254,11 +253,19 @@ def test_T07_T11_horizon_advance_and_closure(tmp_path: Path) -> None:
         evidence_class=EVIDENCE_CLASS_TEST_FIXTURE,
         allow_test_fixture=True,
     )
-    assert r2.closed is True
-    closed = load_pending_outcome_by_decision_ref_v1(lane_root, DECISION_REF)
-    assert closed is not None
-    assert closed.status == STATUS_CLOSED
-    assert closed.closure_refs.get("learning_state_record_ref")
+    assert r2.closed is False
+    assert r2.record.bars_observed == 1
+    completed = ingest_pending_outcome_mark_observation_v1(
+        lane_state_root=lane_root,
+        pending=r2.record,
+        normalized=_norm(mark=3520.0, event_ts=(int(T_BAR2) // 3600 + 1) * 3600),
+        repository_sha=REPO_SHA,
+        evidence_class=EVIDENCE_CLASS_TEST_FIXTURE,
+        allow_test_fixture=True,
+    )
+    assert completed.record.bars_observed == 2
+    assert completed.reason == "PENDING_OUTCOME_PROVENANCE_NOT_BOUND"
+    assert not completed.closed and not completed.record.closure_refs
 
 
 def test_T09_wrong_instrument_rejected(tmp_path: Path) -> None:
@@ -298,6 +305,7 @@ def test_T18_T19_idempotent_resolver(tmp_path: Path) -> None:
             native_id=NATIVE,
             mark_px=px,
             event_ts_unix=ts,
+            receive_ts_unix=ts + 1.0,
             repository_sha=REPO_SHA,
             evidence_root=tmp_path / "ev",
             evidence_class=EVIDENCE_CLASS_TEST_FIXTURE,
@@ -305,22 +313,26 @@ def test_T18_T19_idempotent_resolver(tmp_path: Path) -> None:
         )
     closed = load_pending_outcome_by_decision_ref_v1(lane_root, DECISION_REF)
     assert closed is not None
-    assert closed.status == STATUS_CLOSED
+    assert closed.status == "IN_PROGRESS"
+    assert closed.bars_observed == 1
     ledger = AppendOnlyDdoLedgerV0(lane_root / "LANE_1/ddo_learning_capture_v1.jsonl")
     ls_ids = [
         str(r.get("record_id"))
         for r in ledger.read_all()
         if str(r.get("schema_name") or "") == "learning_state_record" and DECISION_REF in str(r)
     ]
-    assert len(set(ls_ids)) <= len(ls_ids)
+    assert ls_ids == []
 
 
 def test_T21_closed_immutable(tmp_path: Path) -> None:
-    test_T07_T11_horizon_advance_and_closure(tmp_path)
+    # Explicit terminal-state unit input; this does not claim a measured outcome.
+    from dataclasses import replace
+
+    _create_pending(tmp_path)
     lane_root = tmp_path / "lane_state"
     pending = load_pending_outcome_by_decision_ref_v1(lane_root, DECISION_REF)
     assert pending is not None
-    assert pending.status == STATUS_CLOSED
+    pending = replace(pending, status=STATUS_CLOSED)
     again = ingest_pending_outcome_mark_observation_v1(
         lane_state_root=lane_root,
         pending=pending,
@@ -345,26 +357,12 @@ def test_T27_productive_caps_unchanged() -> None:
     assert MAX_CYCLES_PER_RUN_CAP <= 12
 
 
-def test_T30_bootstrap_handoff_still_runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    from tests.ops._current_productive_pre_external_shared_process_state_v1 import (
-        reset_current_productive_pre_external_shared_test_process_state_v1,
-    )
-    from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
-        establish_current_productive_pre_external_test_process_isolation_v1,
-    )
+def test_T30_bootstrap_handoff_requires_verified_source(tmp_path: Path) -> None:
     from tests.ops.test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1 import (
-        test_mv2_cycle_offline_export_handoff_accepted,
+        test_mv2_cycle_blocks_unverified_outcome_source,
     )
 
-    establish_current_productive_pre_external_test_process_isolation_v1(
-        monkeypatch=monkeypatch,
-        f1_root=tmp_path / "f1-m9-canonical-isolation",
-        reseed_workspace_f1_m9=False,
-    )
-    try:
-        test_mv2_cycle_offline_export_handoff_accepted(tmp_path)  # noqa: SLF001
-    finally:
-        reset_current_productive_pre_external_shared_test_process_state_v1()
+    test_mv2_cycle_blocks_unverified_outcome_source(tmp_path)
 
 
 def test_T25_T26_trading_surfaces_untouched() -> None:

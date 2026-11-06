@@ -1,0 +1,9 @@
+### CON-2080 — Sizing, Einheiten und Scope-Kopplung
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Fixed-fraction-Notional, Verlustbudget mit Stop-Abstand und kontraktbezogene CRS-Menge sind unterschiedliche Modelle. CRS nimmt Minimum aus Risiko-/Kapital-/Exposure-/Mengenlimits, multipliziert mit Contract-Größe und rundet auf Lot ab. Ein veränderter Stop-/Scope-Abstand beeinflusst die finale Menge nur, wenn das entsprechende Limit bindet; Kosten, Funding, Margin und Währung bleiben eigene Operanden.
+
+**Grenze:** Keine Gleichsetzung von risk_pct in Prozent und Dezimalbruch. Doppelte Kapitalsubtraktion, Hebelwirkung, Null-Fallbacks, Rundung und Reduce/Exit-Vorbedingungen sind pfadbezogen offen; keine pauschal bestätigte Verlustobergrenze.
+
+Quellen: EVI-2235, EVI-2234, EVI-2240, EVI-2217.

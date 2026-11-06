@@ -139,7 +139,7 @@ def test_sufficient_marks_produce_estimate_and_mv2_accepts(tmp_path: Path) -> No
     assert join.estimate_present is True
     port = join.producer.output_port_v1()
     assert port.outcome == TypedRuntimeProducerOutcomeV1.PRODUCED
-    closes = tuple(100.0 + i * 0.01 for i in range(80))
+    closes = tuple(100.0 + i * 0.01 for i in range(100))
     last = float(closes[-1])
     index_px = last * 0.995
     bound = _bound()

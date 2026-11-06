@@ -1,0 +1,90 @@
+# Echte Daten am Consumer: ausgeführter Offline-Nachweis
+
+Prüfung am 02.11.2026. Gegenstand ist eine heute ausgeführte, isolierte Daten- und Berechnungsprüfung. Sie behauptet keinen früher existierenden Gesamtanschluss und keine Betriebsfreigabe.
+
+## Ergebnis
+
+Die erhaltene Juli-Equity wurde in 2.952 stündliche Netto-Returns umgerechnet und an vorhandene numerische Empfänger der August-Robustheitssuite übergeben. Während der echten Berechnungsaufrufe wurden Anzahl, Reihenfolge und binärer Float-Fingerabdruck der empfangenen Werte geprüft. Monte-Carlo, Block-Bootstrap und Stress-Rechner erhielten genau diese Werte und lieferten numerische Ergebnisse. Eine Wiederholung mit identischen Eingaben/Seed war identisch. Fehlende weitere Eingaben wurden nicht ergänzt und nicht als PASS behandelt.
+
+Der Nachweis betrifft den numerischen Abschnitt der Verbindung. Die vollständige öffentliche Experiment-/Robustness-API und die Universen-Orchestrierung wurden nicht durchlaufen. Für deren vollständigen Identitäts-/Vergleichsrahmen wurden keine historischen Tatsachen erfunden.
+
+## Quelle und Laufzeitbindung
+
+Quelle: Commit 891044056537a4033e6136ba01652a0a2c6e76b7, docs/evidence/canonical_economic_reevaluation_post_5348_v1/portfolio_equity.csv. Eine bytegebundene Kopie liegt als source-equity.csv vor. Git-Revision, Originalpfad und SHA-256 stehen in proof-config.json sowie im Ergebnisrecord.
+
+Marktzeit der Daten: 01.05.2024 00:00 bis einschließlich 01.09.2024 00:00 UTC. Das ist nicht die Juli-2026-Laufzeit und nicht die heutige Prüfzeit. Kapitalmodell: gespeichertes gemeinsames Forschungsbuch, Anfangskapital 10.000, Normierung der ursprünglichen Sleeves mit 1/118. Die Prüfung startet bei dessen Netto-Equity; ursprüngliche Marktpreise, Trades oder Kosten werden nicht erneut simuliert.
+
+Die kanonische Python-Laufzeit wurde zuvor über scripts/pt runtime-check erfolgreich validiert: CPython 3.11.14, repositoryeigene .venv, HEAD 242b7974fc93f0bdb47706556101bd6f0c497414. Der Prüfcode wurde ausschließlich über diesen Launcher ausgeführt. Kein PATH-Python, keine Paketinstallation und keine Importpfad-Umschreibung.
+
+Die tatsächlich importierten Dateien canonical_robustness_suite_v1.py, monte_carlo.py und stress_tests.py sind bytegleich zu den Dateien am ursprünglichen Robustness-Commit 2cd8f6b6e1c8051decb3506abc3a2250b4f228c5 vom 17.08.2026. Importorte und Dateihashes wurden geprüft; die Quellen blieben unverändert.
+
+## Welche Daten tatsächlich ankamen
+
+Aus 2.953 strikt stündlichen Equity-Punkten entstehen 2.952 einfache Netto-Returns über r[t]=E[t]/E[t-1]-1. Jeder Wert ist endlich; Quelle, Punktzahl, UTC-Bezug und strikte Stundenfolge werden vor der Übergabe geprüft. Die unabhängig in der vorigen Untersuchung mit JavaScript abgeleitete Liste stimmt wertgenau mit der Python-Ableitung überein.
+
+Der vorhandene _optional_returns-Empfänger nahm die echte Liste an. Anschließend wurden die tatsächlichen Abhängigkeitsaufrufe der Suite beobachtet und an ihre unveränderten Originalfunktionen weitergeleitet. Diese Instrumentierung ersetzt weder Rechner noch deren Resultate. An beiden Monte-Carlo-Aufrufen und am Stress-Aufruf stimmen alle Werte und ihre Reihenfolge mit der Quellableitung überein.
+
+Float64-Fingerabdruck vor und bei den Empfängern:
+
+de9b3adb1458c89e5d0a109771595cc8ea2dd6abe2d2f51b28667114787a3818
+
+Dieser Fingerabdruck bindet die geordnete Zahlenliste. Er ersetzt keinen Hash des ursprünglichen Marktpreis-Datasets. Zeit und wirtschaftliche Bedeutung werden im separaten Herkunftsrecord erhalten; die nackte Returnliste trägt diese Angaben nicht selbst.
+
+## Welche Berechnungen tatsächlich ausgeführt wurden
+
+Verwendet wurden die vorhandenen numerischen Unterfunktionen _suite_stats, _eval_monte_carlo und _eval_crash_scenarios. Keine neue Backtest-Engine, kein neuer Strategieversuch, kein Experiment-Memory-Append, kein vollständiger Meta-/Search-Loop.
+
+Die Baseline-Berechnung ergibt:
+- Mittelwert der Stundenreturns: 8,779536209449332e-7.
+- Sharpe ohne Annualisierung: 0,002040460157128249.
+- Sharpe mit sqrt(8760): 0,19097660652229598; unabhängig passend zur gespeicherten korrigierten Juli-Baseline.
+- Drawdown als positiver Verlustbetrag: 0,020480218347394885; ebenfalls passend zur gespeicherten negativen Drawdown-Konvention nach Vorzeichenumrechnung.
+
+Die Suite wurde mit ihrer bestehenden Referenzpolicy und Seed 42 verwendet: 16 Wiederholungen pro Bootstrap-Methode, Blockgröße 5 Returns, also bei dieser Datenfrequenz fünf Stunden. Das ist nicht das Juli-Attributionsaudit mit 1.000 Wiederholungen und 24-Stunden-Blöcken. Die Ergebnisse dieser verschiedenen Verfahren werden nicht als identisch erwartet.
+
+Ausgeführte numerische Unterprüfungen:
+- Einfaches Bootstrap: 16 berechnete Runs; p5-Sharpe -0,1808479319726486.
+- Block-Bootstrap: 16 berechnete Runs; p5-Sharpe -0,20081419678938725.
+- Drei Stress-Szenarien: schlechtester gestresster Drawdown 0,21638417467791582.
+
+Die drei lokalen Gates liefern unter dieser historischen Referenzpolicy PASS. Das belegt hier erfolgreiche Verarbeitung und das Ergebnis dieser konkreten Regeln. Es ist keine neue Freigabe, keine Aussage ausreichender statistischer Belastbarkeit und kein Gesamt-PASS. Die Policy wurde nicht nach den Ergebnissen angepasst.
+
+Stress-Szenarien transformieren die echten Baseline-Returns absichtlich nach dem vorhandenen Modell (Crash, Volatilitätsspitze, Gap). Diese erzeugten Szenariowerte sind simulierte Belastungen und keine historischen Beobachtungen. Es wurden keine fehlenden Quelldaten durch synthetische Daten ersetzt.
+
+Identischer zweiter Durchlauf: gleiche Gate-Resultate und gleiche quantitativen Abhängigkeitsresultate. Zusätzlich wurden zwei echte, disjunkte chronologische Hälften der Returnserie durch _suite_stats verarbeitet. Ihre numerischen Resultate unterscheiden sich. Das belegt Werteabhängigkeit der Berechnung; diese Aufteilung wird nicht als neuer Out-of-sample-Backtest oder Strategievergleich ausgegeben.
+
+## Gegenproben und fehlende Eingaben
+
+Sechs Gegenproben wurden abgewiesen:
+1. Geänderte Quelldateibytes bei unverändert erwartetem Hash.
+2. Umgekehrte Marktzeitfolge.
+3. Fehlende Stunde/Punktzahl.
+4. Doppelter Zeitstempel.
+5. Nichtendliche Equity.
+6. Nichtendlicher Return direkt am vorhandenen _optional_returns-Consumer.
+
+Die ersten fünf Kontrollen gehören zur isolierten Testübergabe in run_consumer_proof.py. Sie sind damit nicht automatisch im produktiven oder allgemeinen Forschungseingang installiert. Die sechste ist eine bereits vorhandene Prüfung des eigentlichen Suite-Consumers. Diese Unterscheidung ist für eine spätere dauerhafte Anbindung wesentlich.
+
+Für fehlende Walk-Forward-, Parameter-Sensitivitäts-, Gebührenstress-, Slippage-Stress- und Funding-Stress-Beobachtungen wurden die entsprechenden vorhandenen Eingangsprüfer ausdrücklich mit fehlendem Input aufgerufen. Alle fünf liefern BLOCKED_MISSING_CAPABILITY statt PASS. Vorhandene Baseline-Gebührenbeträge ersetzen beispielsweise keine gemessene Kostenstress-Serie.
+
+Von den 14 Evidenzdimensionen wurden nur die drei hier direkt berechneten Größen übergeben: nichtannualisierter Sharpe, positiver Drawdown-Betrag und Anzahl der Return-Beobachtungen. 2.952 Return-Beobachtungen sind keine 2.952 Experimente und keine Tradezahl. Die übrigen elf Dimensionen bleiben MISSING.
+
+Der Partial-Aggregator liefert BLOCKED. Die restlichen Katalogtests wurden nicht insgesamt ausgeführt; es gibt keinen Complete-Record einer öffentlichen Gesamtsuite. Return-basierte Fallback-Aufteilungen wurden nicht dazu benutzt, echte Trainings-/OOS-Versuche zu behaupten.
+
+## Was jetzt sichergestellt ist – und was für den Gesamtanschluss noch fehlt
+
+Für genau diesen Prüfpfad ist heute nachgewiesen: erhaltene Ergebnisdaten → kontrollierte Return-Ableitung → unveränderte tatsächliche numerische Consumer → reproduzierbare Ergebnisse, bei erhaltener Herkunft und erkennbar fehlenden weiteren Inputs.
+
+Für einen dauerhaften Gesamtanschluss wären zusätzlich zu schließen:
+- Die geprüfte Quellen-/Zeit-/Einheitenbindung muss am regulären Producer→Consumer-Eingang verbindlich erhalten werden. Die hier verwendete Analyseübergabe ist noch keine installierte Schnittstelle.
+- Die vollständige Experimentidentität samt Dataset-, Kosten-, Risiko-, Portfolio- und Split-Lineage muss aus belegten Quellen kommen. Ein heute erzeugter Hash darf keinen fehlenden historischen Sachverhalt ersetzen.
+- Weitere benötigte Beobachtungen müssen aus echten Verfahren stammen und semantisch zum gleichen Versuch passen. Keine Default-Returns oder vorgegebenen Scores als Ersatz.
+- Danach sind echte Vergleichseingaben, vergleichbare Experimentserien für Meta und die tatsächliche Nutzung bei der nächsten Forschungswahl gesondert durchgängig zu prüfen.
+
+Franks Vermutung, dass ein Gesamtanschluss möglicherweise nie existierte, muss dafür nicht zuerst abschließend historisch bewiesen werden. Die entscheidende neue Aussage ist die ausgeführte Daten- und Rechenverifikation dieses konkreten Abschnitts.
+
+## Artefakte und Schutz des Bestands
+
+consumer-proof-result.json enthält vollständige Quellenbindung, Empfangsnachweise, Monte-Carlo-Verteilungen/Stress-Kennzahlen, Gate-Ergebnisse, Gegenproben und offene Anforderungen. run_consumer_proof.py ist der reproduzierbare Analyseprüfcode außerhalb des Repositorys. execution-verification.json hält Nachprüfungen fest.
+
+Ein Audit-Hook blockierte Netzwerk-/Prozessstarts und Schreibzugriffe außerhalb dieses Analyseordners. Im Prüfprozess trat kein solcher Zugriffsversuch auf. Bytecode-Schreiben war ausgeschaltet. Repository-Status vor/nach bytegleich; Quelldateien und kopierte Equity unverändert. Keine Aktivierung, keine Order-/Kapitalbewegung und kein Schreiben auf Recovery-Medien. Nur neue Analyseartefakte und die bestehende Übersicht ergänzt.

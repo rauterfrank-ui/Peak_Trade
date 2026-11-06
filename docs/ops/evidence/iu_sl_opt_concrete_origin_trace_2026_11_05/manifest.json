@@ -1,0 +1,58 @@
+{
+  "schema": "peaktrade.concrete_origin_trace_manifest.v1",
+  "source_head": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+  "files": [
+    {
+      "path": "collection_and_consumer_probe.py.txt",
+      "sha256": "d9eb2c663ee2b15ec4cb9a909532e76bed7e4561535f6c1736f0d9db33cb2af3"
+    },
+    {
+      "path": "originals/ddo_original_optimization_input.json",
+      "sha256": "5f3bf92286a5372953f39e53d8c860572a4b8426d84cf88b5c13381b2ae6f7b2"
+    },
+    {
+      "path": "originals/e6_first_original_packet.json",
+      "sha256": "999ea6ce4dc15f3f724dc726046993a996e3ac76389b80620272ea56de77226a"
+    },
+    {
+      "path": "originals/e6_research_witness.json",
+      "sha256": "66df5362d0e29304a4ee247353f420a12e06b8b05701820e900e7d3fc5e542bd"
+    },
+    {
+      "path": "originals/e6_second_original_packet.json",
+      "sha256": "32b265cf7d06059b8ad34f2ed091ccfb2e9e47a632b2a12125b8d4cafc8ea94b"
+    },
+    {
+      "path": "originals/e6_second_original_started.json",
+      "sha256": "a4f8fff2e482f6d1e6d81189684c3058d802b8b3b1db97871e09bbd83b3ede2f"
+    },
+    {
+      "path": "originals/meta_three_original_controls.json",
+      "sha256": "60e73918d00d4f7c70c96db177ea980a4b72d15764066783ec66d3a7293b9609"
+    },
+    {
+      "path": "originals/mi_original_ack.json",
+      "sha256": "b561bc131079d5a63404651f9aa74540ae3bc89824b3edc132981b97a0bfd1ec"
+    },
+    {
+      "path": "originals/mi_original_durable_triad.json",
+      "sha256": "28a6f47f618280c7b471afe0e659ab7a5cbb6a38281303cc3cbcc292f37f59db"
+    },
+    {
+      "path": "originals/mi_original_measurement.json",
+      "sha256": "ed209dcb25977d012863385b6968f72e7cb4bbb5420e42a5cbc71525d5489995"
+    },
+    {
+      "path": "sources.json",
+      "sha256": "cedde36f78cd042ec6e012ea75801a04c49a970d01ec32edd331a828b712bf9e"
+    },
+    {
+      "path": "trace.json",
+      "sha256": "8e28cd5c4e39097fd7d1ef645691c0100777f5c3b2a27c6f8e29469f6ef6489b"
+    },
+    {
+      "path": "verify_trace.py",
+      "sha256": "01ff42c52b61f7ea65f3257397cadb40815b6cf275c6a4f255a426a41317d935"
+    }
+  ]
+}

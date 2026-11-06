@@ -31,7 +31,6 @@ _RUNTIME_EFFECT_NONE = "NONE"
 _ORDER_EFFECT_NONE = "NONE"
 _RISK_EFFECT_NONE = "NONE"
 
-_FORBIDDEN_INSTRUMENT_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "spot", "synthetic_spot"})
 
 _REQUIRED_SUBCHECK_NAMES = (
     "data_completeness_check",
@@ -216,8 +215,9 @@ def _positive_int(value: object) -> bool:
 
 
 def _instrument_id_allowed(instrument_id: str) -> bool:
-    lowered = instrument_id.lower()
-    return not any(token in lowered for token in _FORBIDDEN_INSTRUMENT_SUBSTRINGS)
+    from trading.master_v2.double_play_futures_input import futures_instrument_identity_allowed_v1
+
+    return futures_instrument_identity_allowed_v1(instrument_id)
 
 
 def directional_assessment_ref_from_assessment(

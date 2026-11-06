@@ -8,7 +8,13 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        PositionManagementCloseIntentHandoffV1,
+    )
+
 
 from src.ops.full_core_live_path_composition_root_v1.composition_root_v1 import (
     compose_core_live_execution_intent_v1,
@@ -47,6 +53,7 @@ def try_bind_current_productive_venue_plan_v1(
     conformance_required: bool = False,
     observed_td_mode: str | None = None,
     observed_mgn_mode: str | None = None,
+    full_close_handoff: PositionManagementCloseIntentHandoffV1 | None = None,
 ) -> tuple[CompositionStatusV1, tuple[str, ...], VenuePlanCandidateV1 | None]:
     """Bind the venue plan. td_mode and environment come only from the authority.
 
@@ -82,6 +89,7 @@ def try_bind_current_productive_venue_plan_v1(
         mode=MODE_LIVE,
         composed_epoch=composed_epoch,
         predicate_trace_collector=predicate_traces,
+        full_close_handoff=full_close_handoff,
     )
     recorder = active_ghv_pre_external_runtime_flight_recorder_session_v1()
     parent_gen = "gen_venue_plan_root"

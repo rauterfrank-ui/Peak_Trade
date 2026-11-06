@@ -1,0 +1,9 @@
+### CON-2088 — Owner-Run-Evidence und maschinelle Lernversorgung
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+PR7070 beschreibt einfache Owner-Ablage unter Peak_Trade_Run_Evidence für abgeschlossene Paper-/Shadow-/Testnet-Bündel; Canary nur lesende Entdeckung. Der G2-Projektor erwartet dagegen repo-relative Pfade. Drei gespeicherte COMPLETE-Indexziele waren in den geprüften lokalen/Backup-Orten nicht auflösbar.
+
+**Grenze:** Owner-Komfortablage ist kein automatischer G2-/Learning-Ingress. Nicht gefundene Ziele sind kein globaler Datenverlust. Aufbewahrung, Pfadvertrag und Consumer-Leserecht sind getrennte Aufgaben.
+
+Quellen: EVI-2218, EVI-2263, EVI-2284, EVI-2209.

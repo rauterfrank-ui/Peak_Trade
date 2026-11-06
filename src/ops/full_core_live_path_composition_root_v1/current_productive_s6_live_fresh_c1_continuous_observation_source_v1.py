@@ -59,6 +59,34 @@ OWNER = (
 DISPOSITION_PRESENT = "PRESENT"
 
 
+def _raise_known_get_failure_v1(result: Any) -> None:
+    """Connect structured transport outcomes to the existing bounded recovery.
+
+    A successful public GET is not a successful processing cycle. No payload is
+    synthesized and no request, cache, credential or authorization budget resets.
+    Legacy injected results without error metadata keep their old no-data path.
+    """
+    if bool(getattr(result, "get_performed", False)):
+        return
+    error = str(getattr(result, "error_class", "") or "")
+    status = int(getattr(result, "http_status", 0) or 0)
+    if error in {"TIMEOUT", "TimeoutError", "timeout"}:
+        raise TimeoutError("FRESH_C1_PUBLIC_GET_TIMEOUT")
+    if error in {
+        "URLError",
+        "ConnectionError",
+        "ConnectionResetError",
+        "ConnectionAbortedError",
+        "ConnectionRefusedError",
+        "BrokenPipeError",
+    } or status in {502, 503, 504}:
+        raise ConnectionError("FRESH_C1_PUBLIC_GET_UNAVAILABLE")
+    if error or status >= 400:
+        # Auth, rate-limit, malformed data and other unproven failures are not
+        # relabelled as network recovery or hidden as an ordinary empty poll.
+        raise ValueError(f"FRESH_C1_PUBLIC_GET_REJECTED:status={status}")
+
+
 class LiveFreshC1GetTransportV1(Protocol):
     def get(
         self,
@@ -107,6 +135,7 @@ class LiveFreshC1ContinuousObservationSourceV1:
             pretrade_decision_id=f"continuous-run-{self.run_id}-mark-{poll_index}",
             get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
         )
+        _raise_known_get_failure_v1(mark_result)
         if not bool(getattr(mark_result, "get_performed", False)):
             return None
         mark_payload = getattr(mark_result, "payload", None)
@@ -125,7 +154,9 @@ class LiveFreshC1ContinuousObservationSourceV1:
                 endpoint=index_endpoint,
                 auth_required=False,
                 pretrade_decision_id=f"continuous-run-{self.run_id}-index-{poll_index}",
+                get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
             )
+            _raise_known_get_failure_v1(index_result)
             if bool(getattr(index_result, "get_performed", False)):
                 candidate = getattr(index_result, "payload", None)
                 if isinstance(candidate, dict):
@@ -171,6 +202,7 @@ class LiveFreshC1ContinuousObservationSourceV1:
             endpoint=endpoint.split("?", 1)[0],
             get_performed=get_performed,
         )
+        _raise_known_get_failure_v1(result)
         if not get_performed:
             return None
         payload = getattr(result, "payload", None)

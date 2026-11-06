@@ -1,0 +1,133 @@
+{
+  "source": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/2fd5ccb8-0d19-4e91-b2b5-038b0b9c894b/2fd5ccb8-0d19-4e91-b2b5-038b0b9c894b.jsonl",
+  "source_sha256": "61511351eda4dccdfbeb104ef807d6e91c23f41a1eeda5023a98a362ba72998f",
+  "reconstruction": "Ordered retained Write/StrReplace inputs only; syntax checked, never executed; historical outputs not restored",
+  "steps": [
+    {
+      "line": 95,
+      "tool": "Write",
+      "matched_count": null,
+      "sha256": "94a364a1c4804ed9555cbf26af905d9da34022179d6352f86ec45f0bb5101f21"
+    },
+    {
+      "line": 98,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "795ea9eefb5483895ea84a6056f3c35f05b7dd678a4034f091714a5856ad79f5"
+    },
+    {
+      "line": 98,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "301b697e7507440551dcfbdad4936bf2352e13b1e6123f0993e3b591502a6172"
+    },
+    {
+      "line": 98,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "c3b8d08a2ef97b53383ae40f7a57f8a5bbab13417e5095043ac37725f1532b64"
+    },
+    {
+      "line": 98,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "8897d2eefe6fa95971a2e34cf7fad5c17f68f2fea35c8746443da9c85fe15dd2"
+    },
+    {
+      "line": 98,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "9ab2c2f242349136527283a1dbe2cde25542cad695cea01c24084df3f5077387"
+    },
+    {
+      "line": 98,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "b975770cd2e39e473ea6ea00209bed77f517d334ad39f0e542bfb012bc848ca1"
+    },
+    {
+      "line": 98,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "df4e708f69afade11f4c283f7df748e22b36d6fe065ac5fc5652e73c8592bb4d"
+    },
+    {
+      "line": 101,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "9c5cce349b52fb0a4be661efa9f27f2f63eec6cd4ef4a4a6120b2a65bfc738ca"
+    },
+    {
+      "line": 105,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "88661b457ff24c9e795db46a2a4b57d2f379e691ab874d1afeb6ac68cae38eab"
+    },
+    {
+      "line": 107,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "f5d7c599570b68af5cabc5ab0e74515141066c26bdc30bf1a4b32b7e392158c7"
+    },
+    {
+      "line": 107,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "95e0019db48cc5037d3843934366f3b9ac2d91aa73608e25ccf03fe605a9a7e1"
+    },
+    {
+      "line": 107,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "0a7b3747c17dab9f4f3f9ea088e7a9b05c892ed18115709ad11a5d8e6e9b8af8"
+    },
+    {
+      "line": 107,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "7353621a0fd8b77707c9c3364869b0d7016aaae8b6fadfc1d6cba50774e37708"
+    },
+    {
+      "line": 107,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "5661df3433750231a63325605d0974bd46111749ee103a2bd210f99c09c57adb"
+    },
+    {
+      "line": 107,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "d5c6e182337e25a0a70af49b27c25f036ccd4e05f22bd54f3e7f115580dc7e41"
+    },
+    {
+      "line": 113,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "649602be9f09a90dd18bf0bd977948d2a77fbaba30f58946706c6b701bfe595a"
+    },
+    {
+      "line": 113,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "fa3b43c63596e42b0f7daed58ce01db8802667230357176b09e6b0e72f011bff"
+    },
+    {
+      "line": 113,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "6126911a82f2827016e6926037a634b5e6af66b199dc7460e06802fbe4a9679c"
+    },
+    {
+      "line": 113,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "86fb495d8be68971e4ce28bc9c11e6998570bc61f134a37be9bbb168687e33ff"
+    },
+    {
+      "line": 113,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "5fac8aaa3cdb1936bfb78bd600ec241abb0e32c3e9f54a9072c07595093a710c"
+    }
+  ]
+}

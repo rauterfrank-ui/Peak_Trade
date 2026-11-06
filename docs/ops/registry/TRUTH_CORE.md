@@ -1,5 +1,7 @@
 # Truth Core — gemeinsame Schicht (Slice B)
 
+Aktueller Systemeinstieg: [Map of Truth](../../governance/PEAK_TRADE_MAP_OF_TRUTH.md) und [System Atlas](../../system_atlas/generated/SYSTEM_ATLAS.md).
+
 **Status:** Slice B — gemeinsames Python-Modul für deterministische Checks  
 **Modul:** `src/ops/truth/`  
 **Konfigurationen:**
@@ -45,7 +47,6 @@ Vor Drift-Checks: `git fetch origin`, damit die Basis-Ref (z. B. `origin&#47;mai
 Workflow: `.github/workflows/truth_gates_pr.yml`.  
 Stabile Check-Namen für Branch-Protection / Required Contexts: **`docs-drift-guard`**, **`repo-truth-claims`**.
 
-Änderungen an **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** lösen über `docs_truth_map` die Kaskade **`truth-branch-protection-canonical`** aus: im selben Diff muss **`docs/ops/registry/DOCS_TRUTH_MAP.md`** mitgeändert werden (siehe [`DOCS_TRUTH_MAP.md`](DOCS_TRUTH_MAP.md)).
 
 ## Nicht in Scope (Slice B)
 

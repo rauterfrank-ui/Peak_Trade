@@ -1,5 +1,7 @@
 # Governance & AI Autonomy
 
+Aktueller Systemeinstieg: [Map of Truth](PEAK_TRADE_MAP_OF_TRUTH.md) und [System Atlas](../system_atlas/generated/SYSTEM_ATLAS.md).
+
 Governance-Dokumentation für AI-Autonomie, Policy Enforcement und Compliance im Peak_Trade Repository.
 
 ---
@@ -15,7 +17,6 @@ Governance-Dokumentation für AI-Autonomie, Policy Enforcement und Compliance im
 ## 📋 Core Governance
 
 - **[Map of Truth (Navigations-Einstieg)](PEAK_TRADE_MAP_OF_TRUTH.md)** — Zentraler Einstieg; **keine** Semantik; verweist auf kanonische Owner; aktuelle Autorität = Canonical Master Runbook
-- **[Feature State Map v1](feature_state_map_v1.md)** — Kanonische Feature-Klassifikation A–D und NON-OPERATIONAL-Regel (read-only map)
 - **[Drift Cleanup Plan v1](drift_cleanup_plan_v1.md)** — Safe documentation fixes und flagged structural/authority items
 - **[Runbook Execution Governance v1](PEAK_TRADE_RUNBOOK_EXECUTION_GOVERNANCE_V1.md)** — Verbindliche strategische SSOT-Steuerung, Package-Sequenzierung und Ranking-Ausnahmeregel (non-authorizing)
 - **[Autonomy Runbook Progress Registry v1](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md)** — Kanonische Progress-Registry: Runbook-Soll ↔ Repo-Ist (non-authorizing)

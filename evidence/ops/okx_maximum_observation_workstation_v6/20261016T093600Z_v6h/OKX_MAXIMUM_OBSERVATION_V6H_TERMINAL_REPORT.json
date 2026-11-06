@@ -1,0 +1,118 @@
+{
+  "mission": "OKX_MAXIMUM_OBSERVATION_V6H",
+  "mode": "READ_ONLY_FORENSIC",
+  "timestamp_utc": "2026-10-16T07:40:00Z",
+  "evidence_path": "evidence/ops/okx_maximum_observation_workstation_v6/20261016T093600Z_v6h",
+  "browser_actions_v6h": "NONE",
+  "architecture_decision_artifact": "OKX_MAXIMUM_OBSERVATION_V6H_ARCHITECTURE_DECISION.json",
+  "PHASE_1_EVIDENCE_ANALYSIS": {
+    "1_visual_changes_actually_achieved": {
+      "ws1_multi_chart_3A": {
+        "status": "ACHIEVED_IN_STORAGE_AND_SCREENSHOTS",
+        "evidence": ["V6C WS1_final_verify", "V6B WS1_final.png"],
+        "owner_perception": "Chart overview, not integrated market ranking/screener"
+      },
+      "ws2_live_futures_terminal": {
+        "status": "ACHIEVED",
+        "evidence": ["V6B FINAL_owner_ws2_live", "V6C WS2_futures_restored2", "V6D WS2_post_v6d_verify"],
+        "includes": "Orderbuch, Letzte Trades (tabbed), positions/orders tabs, PnL sidebar, funding/OI header"
+      },
+      "ws2_order_form_hidden": {
+        "status": "TRANSIENT_ONLY",
+        "evidence": ["V6F OPT_expand_icon_click / AFTER_WS2_primary_evidence"],
+        "not_owner_steady_state": true
+      },
+      "ws3_futures_analysis_layout": {
+        "status": "NOT_ACHIEVED",
+        "evidence": ["V6C slot3 → spot-strategy; only 2 ok_comb_trade workspace IDs"]
+      }
+    },
+    "2_changes_surviving_reload": {
+      "persists": [
+        "workspaceId 100641 / 103121 binding to slots 1–2 (V6C)",
+        "klineLayout 3A (WS1) and 1A (WS2) in ok_comb_trade (V6C, V6D, V6F)",
+        "layout JSON components include PlaceOrder, Market, KLine, Account (V6C forensic)"
+      ],
+      "does_not_persist": [
+        "Collapsed right Handeln column / hidden Kaufen-Verkaufen (V6F after location.reload → orderForm true)",
+        "Observation-optimized visual state (V6F STEP4_after_reload vs BEFORE baseline — functionally same trading chrome)"
+      ],
+      "unknown": [
+        "Full Safari quit/restart with clean profile (not evidenced)"
+      ]
+    },
+    "3_why_order_column_reappears": {
+      "proven": [
+        "WS2 persisted layout explicitly encodes PlaceOrder component (V6C)",
+        "OKX Pro terminal default flexlayout restores trading tabsets after reload (V6F persistence_check)",
+        "Flexlayout close on Handeln tabset did not remove Kaufen/Verkaufen reliably (V6F STEP1/STEP4 logs)",
+        "expand-left collapse is session/UI-state dependent; expand icon absent after reload (V6F reapply failures)"
+      ],
+      "hypothesis_not_proven": [
+        "Server-side forced restore on every session independent of localStorage"
+      ]
+    },
+    "4_persistent_layout_states": {
+      "proven": [
+        "Two workspace records in ok_comb_trade.workspaceList",
+        "Per-workspace layout.lg JSON and klineLayout (3A vs 1A)",
+        "insts[] instrument list co-migrated with spot/futures route drift (V6C)"
+      ]
+    },
+    "5_proven_limitations": [
+      "Market panel: Orderbuch | Letzte Trades mutually exclusive (V6F UI_CAPABILITY UNSUPPORTED)",
+      "No third persistent futures workspace; slot 3 → trade-spot-strategy (V6C)",
+      "Slot cycling without futures nav → spot shell with same hash (V6C)",
+      "EEA report-center/fee deep links redirect (V6D)",
+      "No liquidation feed in probed UI (V6D matrix NOT_AVAILABLE)",
+      "Bottom Limit|Market order chrome remains when right column hidden (V6F)"
+    ],
+    "6_hypotheses_only": [
+      "Vorlage Erweitert (rechts) yields stable observation layout (V6F clicked wrong control Erweitertes Limit; template not validated)",
+      "Widget toggle Order und Positionen cleanly removes all order UI (V6F mis-click; not proven)",
+      "Native pure observation preset exists (V6F UNKNOWN)",
+      "15m WS2 chart interval persistently set (V6C/V6D note 1T/1d display vs selector)"
+    ]
+  },
+  "PHASE_2_NATIVE_OKX_FEASIBILITY": {
+    "note": "Judgments evidence-only from V6B–V6F corpus",
+    "requirements": "See ARCHITECTURE_DECISION.json requirements_feasibility_native_okx_only"
+  },
+  "PHASE_3_ARCHITECTURE_COMPARISON": {
+    "winner_operational": "HYBRID",
+    "winner_strategic": "LOCAL_READ_ONLY_WORKSTATION",
+    "option_a_verdict": "Insufficient for owner visual goal — stop layout experiments",
+    "detail": "See ARCHITECTURE_DECISION.json options_comparison"
+  },
+  "PHASE_4_SECURITY": {
+    "v6_missions_trading_actions": "ZERO across V6B–V6F reports",
+    "residual_risk_native_ui": "Order/trade/deposit controls remain visible and clickable — mitigation is operator policy only",
+    "agent_storage_writes": "ZERO claimed in V6C–V6F",
+    "unknowns": [
+      "Future LOCAL workstation credential handling",
+      "Authenticated read-only API scope boundaries (not inventoried in V6H)"
+    ]
+  },
+  "PHASE_5_DECISION": {
+    "recommendation": "HYBRID",
+    "stop_work": "OKX native layout optimization (V6G+ style experiments)",
+    "interim": "Bookmarks: WS1 hash 100641 multi-chart; WS2 hash 103121 futures; supplemental tabs markets/futures + account/users; manual tab discipline for Handelsdaten",
+    "strategic": "Plan LOCAL_READ_ONLY_WORKSTATION after READ_ONLY_DATA_SOURCE_CHARTER OWNER_GO"
+  },
+  "COMPACT_ANSWERS": {
+    "1_why_little_visible_improvement": "PASS-Berichte maßen Panel-Verfügbarkeit und gespeicherte Layout-JSON, nicht dauerhaft trading-freie UI; einzige visuelle Entlastung (V6F) war session-transient und ging mit Reload verloren; Owner sieht wieder Standard-Pro-Trading.",
+    "2_what_okx_native_can_do": "Live TradingView chart; tabbed orderbook OR trades; account positions/orders/history; header funding/OI; Handelsdaten analytics tab; WS1 multi-chart; separate markets listing page; two persisted workspace layouts.",
+    "3_what_okx_cannot_do": "Persistent hide of order form/buttons; parallel OB+T&S; integrated screener inside WS2; third isolated futures workspace; EEA full report center; proven observation-only preset.",
+    "4_architecture_fulfilling_owner_goal": "Long-term: LOCAL_READ_ONLY_WORKSTATION. Interim: HYBRID without further layout hacks.",
+    "5_required_data_sources_if_local": "UNKNOWN until charter — categories: public OKX market feeds, optional read-only account feeds; Peak Trade sources not assumed.",
+    "6_security_risks": "Native UI always exposes trade actions; hybrid/local policy reduces mis-click risk but does not remove OKX write capability from browser; API keys for local feeds would be new trust boundary (UNKNOWN).",
+    "7_smallest_next_step": "OWNER_GO_READ_ONLY_DATA_SOURCE_CHARTER_V1 — freeze Safari layout experiments; document bookmark runbook only."
+  },
+  "SECURITY_INVARIANTS_V6H": {
+    "browser_actions": 0,
+    "peak_trade_mutations": 0,
+    "commits_prs": 0,
+    "implementation": "NONE"
+  },
+  "V6H_VERDICT": "ARCHITECTURE_DECISION_COMPLETE — NATIVE LAYOUT TRACK CLOSED"
+}

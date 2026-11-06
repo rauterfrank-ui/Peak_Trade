@@ -14,6 +14,9 @@ CANONICAL_SUBCOMMANDS: tuple[str, ...] = (
     "start",
     "status",
     "health",
+    "watch",
+    "mail-service",
+    "host-service",
     "logs",
     "stop",
     "restart",
@@ -42,11 +45,6 @@ REQUIRED_CONTRACT_KEYS: tuple[str, ...] = (
     "read_model_authority_effect",
     "master_runbook_is_only_ssot",
     "second_ssot_allowed",
-    "o6_productive_recovery_o2_supervisor_coupling",
-    "canonical_operator_entry_productive_full_core_dependency",
-    "presentation_operator_entry_retired",
-    "presentation_operator_entry_fail_closed",
-    "o2_dashboard_supervisor_retired",
 )
 FORBIDDEN_TOKEN_BASENAMES: frozenset[str] = frozenset(
     {

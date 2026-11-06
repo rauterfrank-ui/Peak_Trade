@@ -34,3 +34,36 @@ hard-facts closure; selection lineage fields are copied from `BoundInstrumentV1`
 ## Evidence
 
 `evidence/ops/n5_instrument_runtime_identity_closure_v1/IMPLEMENTATION_EVIDENCE_V1.md`
+
+Local position-feedback correction, 2026-11-02: a supplied positions response
+takes precedence over global position kwargs even for N1. Malformed/error responses
+are rejected rather than converted to FLAT. N1 global fallback is retained only
+when no positions response is supplied. Order completion does not release the
+Future/slot or stop Double Play. Bounded filled-order/open-position/scope tests
+do not prove automatic feedback through the outer OCCUPANCY_PRESENT host gate.
+
+Subsequent local repair on 2026-11-02 wires a separate management callback
+through that gate for one validated bound open position with no pending orders.
+Full lane-consumer offline tests now reach the existing durable Double Play
+cycle while retaining the scope. Entry sizing/envelopes and live execution
+remain outside this management evaluation path.
+
+Local quantity handoff, 2026-11-03: one matching open position row also carries
+its exact Decimal quantity, source-snapshot digest and lane/instrument-generation
+identity. Quantity observation alone does not establish contract units or execution
+authority. The management join binds the existing instrument-metadata producer
+and any existing canonical reducing intent, preserving explicit missing-input
+statuses. No inferred size/fraction or automatic slot release is introduced.
+
+Owner clarification, 2026-11-03: after a confirmed reconciled full close, Ranking
+reviews the assignment and may retain or replace the Future. A partial reduction
+retains custody. The local full-close builder adds no automatic slot-release or
+ranking invocation; these downstream runtime feedback connections remain open.
+
+Subsequent local execution handoff, 2026-11-03: a full-close receipt now carries
+the close assessment into the existing execution composer and venue translator.
+The governed host admits only an exact snapshot-matched net-mode reducing EXIT
+envelope to PRE_EXTERNAL_EFFECT; ordinary management cannot introduce an entry
+envelope. Permit/send admission is unchanged. Offline simulated lifecycle and
+observed-position feedback do not establish automatic productive reconciliation,
+capital-budget updates or Ranking invocation. Hedge-mode closing remains pending.

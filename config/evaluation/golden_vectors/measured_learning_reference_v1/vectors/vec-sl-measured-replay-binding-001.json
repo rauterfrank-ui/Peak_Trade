@@ -1,0 +1,20 @@
+{
+  "vector_id": "vec-sl-measured-replay-binding-001",
+  "vector_class": "GoldenHappy",
+  "schema_version": "1.0.0",
+  "population_selector": {
+    "selector_id": "measured_native_research_execution_v1",
+    "binding_digest": "9ae46f1ef10b79e30ffc40886d3a9d0f7ff4530d944df218230ff3b1977007e5"
+  },
+  "invariant_ids": [
+    "sl.no_productive_writeback",
+    "sl.baseline_candidate_bound"
+  ],
+  "expected_dispositions": [
+    "REFERENCE_BINDING_VALID_NOT_RESEARCH_ACCEPTANCE"
+  ],
+  "provenance": {
+    "source": "TEST_ONLY_SYNTHETIC",
+    "ref": "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/artifacts/research/archive/7735bcf778627c8628ecfad83416fcc986c0a5ba944b75346a6966ab77b3523a.json"
+  }
+}

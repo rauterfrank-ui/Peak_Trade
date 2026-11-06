@@ -1,0 +1,9 @@
+### CON-2069 — Preisrollen und Nulllinie
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Fachlich laufender Preis M_t, feste L5-Initialbasis, laufendes R_t und Gegenbewegung CM_t sind getrennt. P5.10 initialisiert aus gewöhnlichen finalisierten Closes; der mechanische Folgepreis kommt aus CMC-Mark. Ein Feld namens nullline_frozen erfüllt allein nicht die Owner-Anforderung einer laufenden aktuellen Preislinie.
+
+**Grenze:** Mark, letzter Handel und Bid/Ask sowie zulässige Latenz sind noch nicht als ein allgemeiner Preisvertrag entschieden. Initialbasis oder Trailing-Zustand deshalb nicht blind überschreiben.
+
+Quellen: EVI-2207, EVI-2212, EVI-2219, EVI-2214, EVI-2297, EVI-2275.

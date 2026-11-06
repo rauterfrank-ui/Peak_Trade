@@ -218,3 +218,62 @@ def test_foreign_malformed_evidence() -> None:
         )
     )
     assert result["status"] == JOIN_STATUS_REJECTED_FOREIGN
+
+
+@pytest.mark.parametrize(
+    "expected_version", ["obsolete", "", "optimization_experiment_evidence_v999"]
+)
+def test_m6_federated_ingest_enforces_expected_evidence_version(expected_version: str) -> None:
+    from src.experiments.canonical_meta_learning_ingest_v1 import INGEST_STATUS_REJECTED_STALE
+
+    evidence = _federated_m5()
+    join = perform_federated_m5_m6_return_join_v1(
+        FederatedM5M6ReturnJoinRequestV1(optimization_experiment_evidence=evidence)
+    )
+    result = ingest_meta_learning_evidence_from_federated_return_join_v1(
+        FederatedMetaLearningIngestRequestV1(
+            federated_return_join=join,
+            optimization_experiment_evidence=evidence,
+            expected_optimization_evidence_schema_version=expected_version,
+        )
+    )
+    assert result["status"] == INGEST_STATUS_REJECTED_STALE
+    assert result["reason"] == "OPTIMIZATION_EXPERIMENT_EVIDENCE_SCHEMA_VERSION_MISMATCH"
+    assert result["meta_learning_evidence"] is None
+
+
+def test_m6_federated_optional_version_does_not_skip_payload_validation() -> None:
+    from src.experiments.canonical_meta_learning_ingest_v1 import INGEST_STATUS_REJECTED_MALFORMED
+
+    evidence = _federated_m5()
+    join = perform_federated_m5_m6_return_join_v1(
+        FederatedM5M6ReturnJoinRequestV1(optimization_experiment_evidence=evidence)
+    )
+    result = ingest_meta_learning_evidence_from_federated_return_join_v1(
+        FederatedMetaLearningIngestRequestV1(
+            federated_return_join=join,
+            optimization_experiment_evidence={"schema_version": "invalid"},
+            expected_optimization_evidence_schema_version=None,
+        )
+    )
+    assert result["status"] == INGEST_STATUS_REJECTED_MALFORMED
+
+
+def test_m6_federated_optional_expected_version_preserves_full_valid_result() -> None:
+    evidence = _federated_m5()
+    join = perform_federated_m5_m6_return_join_v1(
+        FederatedM5M6ReturnJoinRequestV1(optimization_experiment_evidence=evidence)
+    )
+    default = ingest_meta_learning_evidence_from_federated_return_join_v1(
+        FederatedMetaLearningIngestRequestV1(
+            federated_return_join=join, optimization_experiment_evidence=evidence
+        )
+    )
+    optional = ingest_meta_learning_evidence_from_federated_return_join_v1(
+        FederatedMetaLearningIngestRequestV1(
+            federated_return_join=join,
+            optimization_experiment_evidence=evidence,
+            expected_optimization_evidence_schema_version=None,
+        )
+    )
+    assert default == optional

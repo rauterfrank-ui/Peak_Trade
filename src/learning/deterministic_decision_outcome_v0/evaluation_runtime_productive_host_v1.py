@@ -7,6 +7,7 @@ event and explicit evaluation identity. Does not recompute supplier outcomes.
 from __future__ import annotations
 
 import hashlib
+from copy import deepcopy
 from typing import Any, Final, Mapping
 
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
@@ -18,6 +19,9 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidati
 from src.learning.deterministic_decision_outcome_v0.evaluation_engine_v0 import (
     EVALUATION_ENGINE_ID,
     evaluate_offline_bundle_v0,
+)
+from src.learning.deterministic_decision_outcome_v0.n_bars_bar_evidence_supplier_v1 import (
+    validate_n_bars_measurement_artifacts_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
     EVALUATION_RUNTIME_WIRING,
@@ -46,6 +50,8 @@ def derive_productive_n_bars_evaluation_identity_v1(
     decision_record_id: str,
     evaluation_time_utc: str,
     correlation_id: str,
+    code_sha: str = UNKNOWN,
+    config_hash: str = UNKNOWN,
 ) -> dict[str, Any]:
     """Deterministic evaluation record ids for productive N_BARS runtime joins."""
     base = f"{decision_record_id}|{evaluation_time_utc}|{correlation_id}"
@@ -56,8 +62,8 @@ def derive_productive_n_bars_evaluation_identity_v1(
         "counterfactual_record_id": f"cf.nbars.{digest[:48]}",
         "correlation_id": correlation_id,
         "event_time_utc": evaluation_time_utc,
-        "code_sha": UNKNOWN,
-        "config_hash": UNKNOWN,
+        "code_sha": code_sha,
+        "config_hash": config_hash,
     }
 
 
@@ -76,8 +82,21 @@ def produce_n_bars_evaluation_runtime_bundle_v1(
     if not isinstance(observation, Mapping):
         raise DdoValidationError("EVALUATION_RUNTIME_HORIZON_OBSERVATION_MISSING")
     decision = validate_decision_event_v0(decision_event)
+    identity = dict(identity)
+    for field in ("code_sha", "config_hash"):
+        if identity.get(field) == UNKNOWN and decision[field] != UNKNOWN:
+            identity[field] = decision[field]
+        if decision[field] != UNKNOWN and identity.get(field) != decision[field]:
+            raise DdoValidationError("EVALUATION_RUNTIME_DECISION_CONFIGURATION_MISMATCH")
     if str(observation.get("decision_event_ref")) != str(decision["record_id"]):
         raise DdoValidationError("EVALUATION_RUNTIME_DECISION_REF_MISMATCH")
+    measurement = horizon_producer_result.get("measurement_evidence_artifact")
+    information_set = horizon_producer_result.get("evaluation_time_information_set_artifact")
+    artifacts_present = measurement is not None or information_set is not None
+    if artifacts_present:
+        if not isinstance(measurement, Mapping) or not isinstance(information_set, Mapping):
+            raise DdoValidationError("EVALUATION_RUNTIME_MEASUREMENT_ARTIFACTS_INCOMPLETE")
+        validate_n_bars_measurement_artifacts_v1(observation, measurement, information_set)
     records_by_id = ledger_records_index_v1(ledger) if ledger is not None else None
     bundle = evaluate_offline_bundle_v0(
         decision,
@@ -104,4 +123,11 @@ def produce_n_bars_evaluation_runtime_bundle_v1(
         "durable_persist": durable_persist,
         "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
         "producer_host_id": PRODUCTIVE_EVALUATION_HOST_ID,
+        "measurement_artifacts_retained": artifacts_present,
+        "measurement_evidence_artifact": (
+            deepcopy(dict(measurement)) if isinstance(measurement, Mapping) else None
+        ),
+        "evaluation_time_information_set_artifact": (
+            deepcopy(dict(information_set)) if isinstance(information_set, Mapping) else None
+        ),
     }

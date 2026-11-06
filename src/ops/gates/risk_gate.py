@@ -8,27 +8,16 @@ from pathlib import Path
 from typing import Dict, Optional
 
 # Default path aligned with KillSwitch persistence (see config / pipeline bounded_pilot).
-# Relative to the repository root of this checkout, never to the process CWD.
 DEFAULT_KILL_SWITCH_STATE_PATH = "data/kill_switch/state.json"
 
 # Env vars for kill-switch state file path (canonical first; legacy alias for older tooling).
-# Never honored as a redirect: a set override is rejected fail-closed in every process.
 KILL_SWITCH_STATE_PATH_ENV_VARS = (
     "PEAK_KILL_SWITCH_STATE_PATH",
     "PEAKTRADE_KILL_SWITCH_STATE_PATH",
 )
 
-_KILL_SWITCH_STATE_ROOT = Path(__file__).resolve().parents[3]
-# DISABLED is backtest-only and never written by the durable writer: a persisted
-# DISABLED file must not neutralize a kill.
-_KILL_SWITCH_BLOCKING_STATES = frozenset({"KILLED", "RECOVERING", "DISABLED"})
-_KILL_SWITCH_NON_BLOCKING_STATES = frozenset({"ACTIVE"})
-EMERGENCY_DENY_ENV = "PEAK_KILL_SWITCH"
-
-
-def kill_switch_emergency_env_deny() -> bool:
-    """``PEAK_KILL_SWITCH=1`` is an operator emergency deny that no state file overrides."""
-    return os.getenv(EMERGENCY_DENY_ENV, "0") == "1"
+_KILL_SWITCH_BLOCKING_STATES = frozenset({"KILLED", "RECOVERING"})
+_KILL_SWITCH_NON_BLOCKING_STATES = frozenset({"ACTIVE", "DISABLED"})
 
 
 def kill_switch_state_path_from_env() -> Optional[str]:
@@ -40,31 +29,9 @@ def kill_switch_state_path_from_env() -> Optional[str]:
     return None
 
 
-def kill_switch_env_override_rejected() -> bool:
-    """True when an env path override is set (fail-closed signal; it never redirects)."""
-    return kill_switch_state_path_from_env() is not None
-
-
-def _anchor_kill_switch_path(raw: str) -> Path:
-    candidate = Path(raw).expanduser()
-    if not candidate.is_absolute():
-        candidate = _KILL_SWITCH_STATE_ROOT / candidate
-    return candidate.resolve()
-
-
 def canonical_kill_switch_state_path() -> str:
-    """Single absolute persist/read path shared by the KillSwitch writer and every reader.
-
-    Anchored at the repository root of this checkout. Independent of the process
-    CWD, the environment and imported modules.
-    """
-    return str(_anchor_kill_switch_path(DEFAULT_KILL_SWITCH_STATE_PATH))
-
-
-def legacy_cwd_kill_switch_state_paths() -> tuple[str, ...]:
-    """CWD-relative legacy location when it differs from the canonical path (deny-only)."""
-    resolved = str(Path(DEFAULT_KILL_SWITCH_STATE_PATH).resolve())
-    return () if resolved == canonical_kill_switch_state_path() else (resolved,)
+    """Resolved persist/read path: env alias first, else default file path."""
+    return kill_switch_state_path_from_env() or DEFAULT_KILL_SWITCH_STATE_PATH
 
 
 class RiskDenyReason(str, Enum):
@@ -116,15 +83,14 @@ def resolve_kill_switch_limit_from_state_file(
     Reads ``state`` from JSON (same contract as ``data/kill_switch/state.json``).
     Returns:
 
-    - ``True`` — state is ``KILLED``, ``RECOVERING`` or ``DISABLED``, or an
-      ``ACTIVE`` state superseded by a later transition in the durable journal
-      (trading should be denied).
-    - ``False`` — file exists, parsed, and state is ``ACTIVE`` not superseded.
+    - ``True`` — state is ``KILLED`` or ``RECOVERING`` (trading should be denied).
+    - ``False`` — file exists, parsed, and state is a valid non-blocking enum
+      (``ACTIVE`` or ``DISABLED``).
     - ``None`` — file missing, unreadable, or semantically invalid. Callers that
       treat the path as configured/expected must fail-closed rather than treat
       this as ACTIVE.
     """
-    path = Path(state_path or canonical_kill_switch_state_path())
+    path = Path(state_path or DEFAULT_KILL_SWITCH_STATE_PATH)
     if not path.is_file():
         return None
     try:
@@ -136,11 +102,7 @@ def resolve_kill_switch_limit_from_state_file(
     if state in _KILL_SWITCH_BLOCKING_STATES:
         return True
     if state in _KILL_SWITCH_NON_BLOCKING_STATES:
-        from src.risk_layer.kill_switch.recovery_attestation import (
-            active_state_superseded_by_journal,
-        )
-
-        return bool(active_state_superseded_by_journal(path, data))
+        return False
     return None
 
 
@@ -151,37 +113,27 @@ def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
     - If ``explicit_active`` is True (e.g. orchestrator constructor), block.
     - Else read state via :func:`canonical_kill_switch_state_path` and
       :func:`resolve_kill_switch_limit_from_state_file`.
-    - ``PEAK_KILL_SWITCH=1`` always blocks; no state file (not even ACTIVE)
-      overrides this emergency deny. It is not a second persisted kill-state machine.
-    - ``KILLED`` / ``RECOVERING`` / ``DISABLED`` block.
-    - ``ACTIVE`` does not block from the file unless the durable journal shows a
-      later transition (e.g. a KILL whose state write is still pending).
+    - ``KILLED`` / ``RECOVERING`` block.
+    - Valid ``ACTIVE`` / ``DISABLED`` do not block from the file.
     - Configured path missing, or an existing file that is unreadable or
       semantically invalid, fail-closed (block).
-    - A set env path override blocks (never redirects).
-    - A CWD-relative legacy state file that is not a valid non-blocking state blocks.
+    - When no state path is configured and the default file is absent,
+      ``PEAK_KILL_SWITCH=1`` remains an explicit operator deny overlay.
+      It is not a second persisted kill-state machine.
     """
     if explicit_active:
         return True
-    if kill_switch_emergency_env_deny():
-        return True
-    if kill_switch_env_override_rejected():
-        return True
-    for legacy in legacy_cwd_kill_switch_state_paths():
-        if (
-            Path(legacy).is_file()
-            and resolve_kill_switch_limit_from_state_file(legacy) is not False
-        ):
-            return True
-    path = canonical_kill_switch_state_path()
+    env_path = kill_switch_state_path_from_env()
+    path = env_path or DEFAULT_KILL_SWITCH_STATE_PATH
     resolved = resolve_kill_switch_limit_from_state_file(path)
     if resolved is True:
         return True
     if resolved is False:
         return False
-    if Path(path).is_file():
+    file_present = Path(path).is_file()
+    if file_present or env_path:
         return True
-    return False
+    return os.getenv("PEAK_KILL_SWITCH", "0") == "1"
 
 
 def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:

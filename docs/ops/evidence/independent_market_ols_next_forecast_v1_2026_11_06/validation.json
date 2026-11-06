@@ -1,0 +1,14 @@
+{
+  "result": "PASS",
+  "package_files": 97,
+  "unchanged_bound_source_test_config_files": 11360,
+  "distinct_passed_testcases": 798,
+  "new_testcases": 11,
+  "cold_model_versions": 2,
+  "cold_provider_receipts": 2,
+  "active_vault_views": 8,
+  "preserved_historical_bindings_with_scoped_overlay": 3,
+  "checked_added_local_links": 29,
+  "quality_or_whole_system_readiness_proven": false,
+  "runtime_authorization_effect": "NONE"
+}

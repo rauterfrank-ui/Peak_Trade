@@ -1,0 +1,16 @@
+[
+  {
+    "stages": [
+      "B0",
+      "B1"
+    ],
+    "result": "IDENTICAL_FULL_CLOSURE_OUTPUT_AND_DIGEST"
+  },
+  {
+    "stages": [
+      "B0",
+      "B5"
+    ],
+    "result": "IDENTICAL_FULL_CLOSURE_OUTPUT_AND_DIGEST"
+  }
+]

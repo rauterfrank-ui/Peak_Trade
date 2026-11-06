@@ -32,7 +32,7 @@ def test_run_bounded_pilot_readiness_green(monkeypatch: pytest.MonkeyPatch) -> N
         lambda **kw: _passing_readiness_report(),
     )
     monkeypatch.setattr(
-        "src.ops.presentation_retirement_fail_closed_v1.build_presentation_retired_cockpit_payload_v1",
+        "src.webui.ops_cockpit.build_ops_cockpit_payload",
         lambda **kw: {"repo_root": str(ROOT)},
     )
 
@@ -89,7 +89,7 @@ def test_run_bounded_pilot_readiness_blocks_on_go_no_go(monkeypatch: pytest.Monk
         lambda **kw: _passing_readiness_report(),
     )
     monkeypatch.setattr(
-        "src.ops.presentation_retirement_fail_closed_v1.build_presentation_retired_cockpit_payload_v1",
+        "src.webui.ops_cockpit.build_ops_cockpit_payload",
         lambda **kw: {},
     )
     monkeypatch.setattr(
@@ -144,10 +144,7 @@ def test_run_bounded_pilot_readiness_blocks_on_cockpit_payload_error(
     def _no_cockpit(**kw: object) -> object:
         raise OSError("cockpit down")
 
-    monkeypatch.setattr(
-        "src.ops.presentation_retirement_fail_closed_v1.build_presentation_retired_cockpit_payload_v1",
-        _no_cockpit,
-    )
+    monkeypatch.setattr("src.webui.ops_cockpit.build_ops_cockpit_payload", _no_cockpit)
     ok, bundle = mod.run_bounded_pilot_readiness(
         ROOT, ROOT / "config" / "config.toml", run_tests=False
     )
@@ -177,7 +174,7 @@ def test_main_json_exit_codes(
         lambda **kw: _passing_readiness_report(),
     )
     monkeypatch.setattr(
-        "src.ops.presentation_retirement_fail_closed_v1.build_presentation_retired_cockpit_payload_v1",
+        "src.webui.ops_cockpit.build_ops_cockpit_payload",
         lambda **kw: {},
     )
     monkeypatch.setattr(
@@ -784,7 +781,7 @@ def test_existing_valid_preflight_cases_remain_valid_without_lifecycle_proof(
         lambda **kw: _passing_readiness_report(),
     )
     monkeypatch.setattr(
-        "src.ops.presentation_retirement_fail_closed_v1.build_presentation_retired_cockpit_payload_v1",
+        "src.webui.ops_cockpit.build_ops_cockpit_payload",
         lambda **kw: {"repo_root": str(ROOT)},
     )
     monkeypatch.setattr(
@@ -818,7 +815,7 @@ def test_run_bounded_pilot_readiness_blocks_on_invalid_lifecycle_proof(
         lambda **kw: _passing_readiness_report(),
     )
     monkeypatch.setattr(
-        "src.ops.presentation_retirement_fail_closed_v1.build_presentation_retired_cockpit_payload_v1",
+        "src.webui.ops_cockpit.build_ops_cockpit_payload",
         lambda **kw: {"repo_root": str(ROOT)},
     )
     monkeypatch.setattr(
@@ -853,7 +850,7 @@ def test_run_bounded_pilot_readiness_with_valid_lifecycle_proof(
         lambda **kw: _passing_readiness_report(),
     )
     monkeypatch.setattr(
-        "src.ops.presentation_retirement_fail_closed_v1.build_presentation_retired_cockpit_payload_v1",
+        "src.webui.ops_cockpit.build_ops_cockpit_payload",
         lambda **kw: {"repo_root": str(ROOT)},
     )
     monkeypatch.setattr(

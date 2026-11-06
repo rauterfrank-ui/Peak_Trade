@@ -1,0 +1,12 @@
+{
+  "source_commit": "e64049fbf5b82a1c1bfa6fd094a64dc141ebdc8a",
+  "files": {
+    ".gitattributes": "5b60419c62f19a3968f2f34fe299083b36d6ed878e16c8c6b6c6380800357746",
+    "README.md": "11cd957bdb6b6736c0e23b0e7414e6b59389eb11417454fe0dda3608bc9a4372",
+    "canonical_advanced_search_v1.py.before.txt": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad",
+    "canonical_meta_learning_v1.py.before.txt": "b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331",
+    "receipt.json": "7e2c2f0406b1966ac5480a1410bbec02cebd740c230bff01994eddd4224d3761",
+    "source_changes.patch.txt": "73cfff889707e6f9cbdf05a1f39d6a6ec85305862b097dc58eaff9e610f0b32c",
+    "tests.xml": "d96dac76ebacc48fb3e0ebd3ac03ca8ddd9b7b0c0028778c5cdf2dedb471e11c"
+  }
+}

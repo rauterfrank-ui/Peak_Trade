@@ -1,0 +1,10 @@
+{
+  "schema": "entry_budget_policy.v1",
+  "policy_id": "initial-small-entry-budget",
+  "revision": 1,
+  "currency": "USDC",
+  "per_entry_notional_limit": "25",
+  "aggregate_reserved_notional_limit": "25",
+  "automatic_increase_allowed": false,
+  "expiry": "UNTIL_EXPLICIT_POLICY_CHANGE"
+}

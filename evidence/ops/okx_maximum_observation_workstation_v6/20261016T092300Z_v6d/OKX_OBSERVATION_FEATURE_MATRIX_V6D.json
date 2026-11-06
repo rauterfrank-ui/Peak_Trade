@@ -1,0 +1,204 @@
+{
+  "schema": "OKX_OBSERVATION_FEATURE_MATRIX_V6D",
+  "timestamp_utc": "2026-10-16T07:28:00Z",
+  "region_surface": "OKX_Europe_my.okx.com",
+  "baseline_protected": {
+    "WS1_id": "1006418239457071104",
+    "WS2_id": "1031216400532770816",
+    "layout_mutations_during_v6d": "NONE — deep-link verification only; WS2 tab probes (Handelsdaten, bottom tabs) reverted to Diagramm/Orderbuch"
+  },
+  "features": [
+    {
+      "FEATURE": "Marktdaten / Marktübersicht (Multi-Chart)",
+      "UI_LOCATION": "WS1: trade-futures#workspaceId=1006418239457071104 → 3-pane klineLayout 3A",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE — streaming quotes on active session",
+      "INSTRUMENT_CONTEXT": "FUTURES BTC-USD_UM_XPERP 1D + 2× SPOT BTC/USDC 15m (stored insts[])",
+      "LIMITATIONS": "Requires futures route; slot-only navigation can drift to spot without hash+route discipline (V6C)"
+    },
+    {
+      "FEATURE": "Marktübersicht (Listing / Screener)",
+      "UI_LOCATION": "Top nav → Märkte → /de/markets/futures",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE — list refresh on page",
+      "INSTRUMENT_CONTEXT": "Cross-instrument futures universe",
+      "LIMITATIONS": "Separate page; not embedded in WS1/WS2 layouts"
+    },
+    {
+      "FEATURE": "Orderbuch",
+      "UI_LOCATION": "WS2: Market panel tab „Orderbuch“; Spot: trade-spot/btc-usdc",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE",
+      "INSTRUMENT_CONTEXT": "FUTURES: active contract (BTC USD UM XPERP on WS2); SPOT: selected spot pair",
+      "LIMITATIONS": "Depth aggregation only; no internal API access"
+    },
+    {
+      "FEATURE": "Markttiefe (Depth chart)",
+      "UI_LOCATION": "Chart mode toggle „Tiefe“ (Spot terminal); Futures WS2 primary mode TradingView/Diagramm",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE",
+      "INSTRUMENT_CONTEXT": "Instrument of active terminal route",
+      "LIMITATIONS": "Futures LIVE layout optimized for Orderbuch column, not full-screen depth"
+    },
+    {
+      "FEATURE": "Time & Sales (Letzte Trades)",
+      "UI_LOCATION": "WS2: Market panel tab „Letzte Trades“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE — tick updates while panel visible",
+      "INSTRUMENT_CONTEXT": "Active futures contract on WS2",
+      "LIMITATIONS": "Scrollback limited by UI; no export probed"
+    },
+    {
+      "FEATURE": "Funding Rate (+ Countdown)",
+      "UI_LOCATION": "WS2: contract header strip; WS2 center tab „Handelsdaten“ → Finanzierungsrate charts",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE header + periodic chart buckets on Handelsdaten",
+      "INSTRUMENT_CONTEXT": "Perpetual futures contract (XPERP)",
+      "LIMITATIONS": "Historical funding series in Handelsdaten; dedicated „Funding history“ account URL redirects on EEA"
+    },
+    {
+      "FEATURE": "Open Interest",
+      "UI_LOCATION": "WS2: Handelsdaten tab — „Open Interest“, „Open Int. (USD)“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE / near-real-time chart refresh",
+      "INSTRUMENT_CONTEXT": "Active futures contract",
+      "LIMITATIONS": "Not always visible on Diagramm-only view; open Handelsdaten tab for full OI analytics"
+    },
+    {
+      "FEATURE": "Mark Price / Index Price",
+      "UI_LOCATION": "WS2: header fields „Index“, „Richtpreis“ (Mark)",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE",
+      "INSTRUMENT_CONTEXT": "Active futures contract",
+      "LIMITATIONS": "Labeling EEA German UI (Richtpreis vs Markpreis)"
+    },
+    {
+      "FEATURE": "Liquidationsdaten",
+      "UI_LOCATION": "Searched: Handelsdaten tab, account report URLs, markets",
+      "AVAILABILITY": "NOT_AVAILABLE",
+      "DATA_FRESHNESS": "N/A",
+      "INSTRUMENT_CONTEXT": "N/A",
+      "LIMITATIONS": "No liquidation feed surfaced in probed EEA futures UI during V6D"
+    },
+    {
+      "FEATURE": "Long/Short-Verhältnis",
+      "UI_LOCATION": "WS2: Handelsdaten → „BTC Long/Short-Verhältnis“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE / chart refresh",
+      "INSTRUMENT_CONTEXT": "BTC-centric aggregates on XPERP Handelsdaten",
+      "LIMITATIONS": "Contract-specific labeling may vary by instrument"
+    },
+    {
+      "FEATURE": "Taker Buy/Sell Flow",
+      "UI_LOCATION": "WS2: Handelsdaten → „BTC Taker-Kauf/-Verkauf“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE / chart refresh",
+      "INSTRUMENT_CONTEXT": "BTC futures flow metrics",
+      "LIMITATIONS": "Shown on Handelsdaten tab, not on default LIVE layout"
+    },
+    {
+      "FEATURE": "Volumen (24h)",
+      "UI_LOCATION": "WS2 header „24-Std.-Volumen“; Handelsdaten volume charts; WS1 panes",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE",
+      "INSTRUMENT_CONTEXT": "Per pane / per contract",
+      "LIMITATIONS": "Units switch BTC vs USD depending on panel"
+    },
+    {
+      "FEATURE": "Volatilitätsanzeigen",
+      "UI_LOCATION": "Marketing copy + implied vol on options funnels; chart indicators (Indikatoren menu)",
+      "AVAILABILITY": "RESTRICTED",
+      "DATA_FRESHNESS": "N/A unless indicator added to chart",
+      "INSTRUMENT_CONTEXT": "Chart-config dependent",
+      "LIMITATIONS": "No standalone vol surface on futures LIVE layout without adding indicators (layout change avoided in V6D)"
+    },
+    {
+      "FEATURE": "Offene Positionen",
+      "UI_LOCATION": "WS2 bottom tab „Offene Positionen“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE on session",
+      "INSTRUMENT_CONTEXT": "Account futures positions",
+      "LIMITATIONS": "Empty when flat; no positions simulated"
+    },
+    {
+      "FEATURE": "Offene Orders",
+      "UI_LOCATION": "WS2 bottom tab „Offene Orders“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE",
+      "INSTRUMENT_CONTEXT": "Account open orders",
+      "LIMITATIONS": "Empty when no working orders"
+    },
+    {
+      "FEATURE": "Positionshistorie",
+      "UI_LOCATION": "WS2 bottom tab „Positionsverlauf“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "ACCOUNT_HISTORY — updates after fills/closes",
+      "INSTRUMENT_CONTEXT": "Account-level futures history",
+      "LIMITATIONS": "Empty UI when no historical rows; filter/export not probed"
+    },
+    {
+      "FEATURE": "Orderhistorie",
+      "UI_LOCATION": "WS2 bottom tab „Order-Verlauf“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "ACCOUNT_HISTORY",
+      "INSTRUMENT_CONTEXT": "Account-level order history",
+      "LIMITATIONS": "Per-order fees appear when rows exist; empty when no history"
+    },
+    {
+      "FEATURE": "Unrealisierter PnL (Variabler PnL)",
+      "UI_LOCATION": "WS2: Handeln sidebar „Variabler PnL“ / AccountRisk panel",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE mark-to-market",
+      "INSTRUMENT_CONTEXT": "Account USDC equity display on futures terminal",
+      "LIMITATIONS": "0 when flat"
+    },
+    {
+      "FEATURE": "Realisierter PnL / Tages-PnL",
+      "UI_LOCATION": "Account → /de/account/users („Heutiger PnL“, Gesamtwert chart)",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "NEAR_LIVE — account rollup",
+      "INSTRUMENT_CONTEXT": "Whole-account EEA view",
+      "LIMITATIONS": "Not embedded in WS2 layout; Positionsverlauf shows per-trade realized when history exists"
+    },
+    {
+      "FEATURE": "Konto-Performance / Vermögensüberblick",
+      "UI_LOCATION": "/de/account/users (Überblick)",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "NEAR_LIVE",
+      "INSTRUMENT_CONTEXT": "Multi-product account aggregate",
+      "LIMITATIONS": "report-center/trading-data redirects to Überblick on EEA (RESTRICTED dedicated report)"
+    },
+    {
+      "FEATURE": "Gebührenhistorie",
+      "UI_LOCATION": "Order-Verlauf row detail (when orders exist); account fee URLs probed",
+      "AVAILABILITY": "RESTRICTED",
+      "DATA_FRESHNESS": "N/A",
+      "INSTRUMENT_CONTEXT": "Account",
+      "LIMITATIONS": "/de/account/report-center/* and fee deep links redirect to Überblick — no standalone fee ledger found in V6D probes"
+    },
+    {
+      "FEATURE": "Funding-Historie (Account ledger)",
+      "UI_LOCATION": "Probed account funding-history paths",
+      "AVAILABILITY": "RESTRICTED",
+      "DATA_FRESHNESS": "N/A",
+      "INSTRUMENT_CONTEXT": "Account",
+      "LIMITATIONS": "Use Handelsdaten funding charts for contract funding series; account ledger URLs redirect on EEA"
+    },
+    {
+      "FEATURE": "Assets / Wallet breakdown",
+      "UI_LOCATION": "WS2 bottom „Assets“; Top nav „Assets“",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "NEAR_LIVE",
+      "INSTRUMENT_CONTEXT": "Account balances",
+      "LIMITATIONS": "Terminal Assets tab empty when no margin assets displayed"
+    },
+    {
+      "FEATURE": "Spot-Grid / Smart-Strategien (Beobachtung)",
+      "UI_LOCATION": "Sidebar slot 3 → /de/trade-spot-strategy/btc-usdc",
+      "AVAILABILITY": "AVAILABLE",
+      "DATA_FRESHNESS": "LIVE",
+      "INSTRUMENT_CONTEXT": "SPOT BTC/USDC grid strategies",
+      "LIMITATIONS": "Not a third futures workspace; Kopieren/activation buttons present — do not click (observation only)"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+AKTUELLE FACHLICHE KLARSTELLUNGEN AUS DIESEM CHAT
+Erfasst am 02.11.2026. Quelle: direkte Nachrichten von Frank im laufenden Chat.
+Diese Sammlung ist ein Untersuchungsanker, keine neue operative Autorität.
+
+1. Preisversorgung:
+„Wir brauchen zu jeder Zeit den tatsächlichen Marktpreis von dem Future, mit dem wir handeln.“
+Die genaue Preisfamilie (Mark, letzter Handel, Bid/Ask) und zulässige Latenz sind dadurch noch nicht spezifiziert.
+
+2. Fachliche Nulllinie:
+„die sogenannte Nulllinie eigentlich dazu gedacht ist, dass immer der aktuelle Marktpreis von dem Future dort angezeigt wird, weil nämlich von der Nulllinie aus der Scope berechnet wird in beiden Richtungen.“
+Das ist nicht ohne Weiteres identisch mit dem eingefrorenen L5-Codefeld.
+
+3. L1–L10:
+Frank hat ausdrücklich klargestellt, dass die zehn Ebenen zur ursprünglichen Double-Play-Konstruktion und ihren Einstiegsvoraussetzungen gehören. Sie werden nicht als Fehler an sich behandelt.
+
+4. Naked MV2:
+Die historische Konfiguration ist ein fachlicher Anker. Ein vollständiger damaliger Code-/Config-/Host-Pin ist noch zu rekonstruieren.
+
+5. Horizont:
+Frank hat ausdrücklich zurückgewiesen, dass ein fester Zwei-Stunden-Horizont als ursprüngliche Anforderung unterstellt wird. N_BARS-Auswertung, Volatilitätsfenster, Laufzeitbeobachtung und Handels-/Anzeigedauer sind gesonderte Zeitbegriffe.
+
+6. Gesamtfunktionsstand:
+„noch nie einen belegten Stand haben, wo alles miteinander korrekt zusammengearbeitet konnte. Das konnten wir nie belegen.“
+Ein historischer Known-Good-Gesamtstand wird deshalb nicht vorausgesetzt.
+
+7. Aktueller Auftrag:
+Nach der lesenden Quellenprüfung und dem neuen ChatGPT-Zugang soll ein gesamtes quellenübergreifendes Konstrukt erarbeitet werden. Keine automatische Wiederherstellung, Produktintegration oder Aktivierung aus diesem Auftrag.
+
+8. Autoritätsgrenze aus der bereitgestellten Übergabe:
+Selbstlern- und Optimierungsuniversum sollen keine eigenständige Autorität besitzen, in den produktiven Fluss einzugreifen. Diese Grenze beseitigt nicht ihren gewünschten fachlichen Nutzen.

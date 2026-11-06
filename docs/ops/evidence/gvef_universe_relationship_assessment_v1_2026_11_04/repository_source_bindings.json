@@ -1,0 +1,99 @@
+{
+  "files": [
+    {
+      "path": "src/evaluation/golden_vectors/contracts/enums.py",
+      "sha256": "695dad88d422315d5843b211cd23679d7a8f6f5cf8b7bae0f2b7c86749d47791"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/contracts/models.py",
+      "sha256": "c9fd96c72aadeec712f7e2644db2a25875659413cd1ce8b4a7a6ddc868599005"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+      "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+      "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/integration/whole_system_v1.py",
+      "sha256": "b19050d5e8eb7780043a729fb30cd3bb77b45f536deb1c1bfd63d0a4b508ab70"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/registry/evidence_registry_v1.py",
+      "sha256": "d5625dfd0b6a9a155589fd999a86b862656dfdfe2dd435f314724efabc1c5d59"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/promotion/promotion_evidence_adapter_v1.py",
+      "sha256": "f7141779fee3f4d5f6322e3992064fbbe4a0d498924f87c194f4709c5a70eb11"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+      "sha256": "dfbe208f04a828e4d61a9213a45d4f298c6af8bed850c0ec3cd8f1cb26d70f54"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/evaluators/ptp_owners_v1.py",
+      "sha256": "beaf43ab09349eb30891d784be2b4dec03b6098c4269fb51e9d672a41ad1a226"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
+      "sha256": "a626a52690826d23f8899404e9bb08a741370cbd75f820f9b35cce04b2980aba"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/evaluators/optimization_universe_v1.py",
+      "sha256": "6928359eacbc3c10a45853f1fc33c8d9416916661bb34e6b76a3c05a97d7a9dd"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+      "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d"
+    },
+    {
+      "path": "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "sha256": "1735837499fa504a6661f37f213c31526d8caf0c0b3b83facd801efc3cdffd3b"
+    },
+    {
+      "path": "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+      "sha256": "65cf41ad9d70753c08b6dc83a49567ce9ba149dd295003da29273252212037a9"
+    },
+    {
+      "path": "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
+      "sha256": "641f4b763b39328c2ea78f7932f7194e4300e8433c1cb7f7fbac787229e05db0"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/handoff_join_v1.py",
+      "sha256": "4dceb2ee56f6054a8bcf03920a9b97127b9504f1b878ec710afdc70aa193d8c9"
+    },
+    {
+      "path": "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_RUNTIME_N5_COMPLETION_CONTRACT_V1.md",
+      "sha256": "f21605b6a3ead7320768498697106682221e7fc013fc6fc577178ce41531baf0"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1"
+    },
+    {
+      "path": "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+      "sha256": "1cdb79bc23b2e1d343fd5ae88729488c98d8d860416d6175b934f78e39d058b9"
+    },
+    {
+      "path": "src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py",
+      "sha256": "6e2f27bf3c70c0b917095b8261759a15b69afe9d18a8a254d1a2fe5223d1070b"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+      "sha256": "19abf38618000e12a8d81a3b9c5db2ccd78f4c490a6b36fd80f49aac379099bb"
+    },
+    {
+      "path": "src/meta/learning_loop/trading_logic_semantic_diff_evidence_v1.py",
+      "sha256": "aa47289f1ba3bd640ffa69cf7c8835ab8c79ab56c0e873ecfdf21db43c5cd5eb"
+    },
+    {
+      "path": "src/experiments/canonical_research_result_to_meta_input_v1.py",
+      "sha256": "26e183dbb85a23a9e93077c828a4913240df4cb9ce50693082bcfc9ed13da67b"
+    }
+  ],
+  "git_shallow": true,
+  "local_history_limit": "Some introduction histories terminate at imported/shallow baseline 2dba1355c; GitHub PR merge records are separate historical sources, not a global origin proof.",
+  "source_commit": "3a01199438acfe9050e5f3a6a1eafd032b6abaa5"
+}

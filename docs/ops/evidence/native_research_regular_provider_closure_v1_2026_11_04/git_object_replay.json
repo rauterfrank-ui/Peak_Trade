@@ -1,0 +1,13 @@
+{
+  "source_commit": "e78d41d43411be03dbdf124e88f329e65cce428d",
+  "artifact_source": "Only git show commit:path blobs; no /tmp or working-tree evidence reads",
+  "artifact_manifest_count": 17,
+  "all_artifact_hashes_match": true,
+  "current_source_hashes_match": true,
+  "existing_reader_contracts": "PASS",
+  "complete_later_meta_equal_to_both_committed_results": true,
+  "payload_sha256": "f9b079ebb7e882882fa0f5b3b4a8f59afe14bf6c97857f923668115539edfa78",
+  "current_meta_owner_source_matches_pinned_git": true,
+  "runtime_activation": false,
+  "limits": "Committed controlled synthetic proof only; not natural learning, full economic funding, source authentication or whole-system reconstruction."
+}

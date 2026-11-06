@@ -1,0 +1,9 @@
+### CON-2072 — Instrumentidentität an der unteren Volatilitätsübergabe
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Der dokumentierte Offline-Gegenfall nahm BTC-G17-Historie bei ETH-BoundInstrument an und änderte dadurch den Scope. Passend gebundene ETH-Kontrollen lieferten Long-/Short-Entries. Ein oberer Caller bindet den Producer ausdrücklich an BoundInstrument; die schwächere untere Übergabe bleibt dadurch eine eigene Vertragsfrage. Der historische Canary-Wechsel BTC→SUI in PR6051 ist ein anderer Sachverhalt.
+
+**Grenze:** Kein Beleg, dass ein beobachteter Live-Lauf BTC an ETH band. Kein automatischer Rückbau zu BTC, keine Verallgemeinerung des Gegenfalls auf jeden Caller.
+
+Quellen: EVI-2295, EVI-2296, EVI-2203.

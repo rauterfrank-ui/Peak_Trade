@@ -1,0 +1,9 @@
+### CON-2098 — Golden, Vector, Happy und beobachtende Nebenpfade
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Die 275 PR-Treffer und 63 analytischen Verwendungen umfassen u.a. Rechenwerte, Testvektoren, Bytevergleiche, Replay, Prüfer und Werkzeugideen. GVEF prüft Artefakte; Learning-Producer/State/Export liegen anderswo. Cap6.3-Vektoren sind bewusst begrenzte Prüfpfade; ähnliche Golden-/Happy-/Vector-Namen schaffen keine universenübergreifende Kante.
+
+**Grenze:** Keine künstliche gemeinsame Pipeline, keine automatische Irrelevanz unklassifizierter Infrastruktur oder Beobachter. Telemetrie-/Dashboard-Erfolg belegt nicht den beeinflussten Entscheidungsconsumer.
+
+Quellen: EVI-2241, EVI-2242, EVI-2243, EVI-2270, EVI-2232, EVI-2294.

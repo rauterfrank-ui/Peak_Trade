@@ -1,0 +1,34 @@
+{
+  "source_commit": "31bc249c0d7956d4d555d5d79db0135030fb596e",
+  "sources": [
+    {
+      "path": "src/experiments/canonical_automated_offline_research_loop_v1.py",
+      "sha256": "1dafec3663f29753e518ed1c7120c8d1fc523e108845617e971d55182f601c1c"
+    },
+    {
+      "path": "src/experiments/canonical_failure_memory_store_v1.py",
+      "sha256": "29322fad370c12d4cfcf538875e48bae9be2a22aeb6f6e136c3851a85ca0d067"
+    },
+    {
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "sha256": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e"
+    },
+    {
+      "path": "docs/ops/specs/CANONICAL_ADVANCED_SEARCH_V1.md",
+      "sha256": "3d624a9f72e5e0038c0017a3ebd17ce94851e233a8138c5f1f98a043fe989451"
+    },
+    {
+      "path": "tests/experiments/test_canonical_automated_offline_research_loop_v1.py",
+      "sha256": "b6ce6029645a34697b56141830c35b7338827cda3f01f555a333e5490c184ad0"
+    },
+    {
+      "path": "tests/experiments/test_canonical_advanced_search_v1.py",
+      "sha256": "4f1761da529d0f98ed3fb8f18e4301f8886de2fe3187c025f56fe268bd73d9b2"
+    }
+  ],
+  "coverage": "focused memory reader/consumer/caller and test-body review; no new test execution"
+}

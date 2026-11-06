@@ -1,0 +1,250 @@
+DOUBLE PLAY: HISTORISCHE KONSTRUKTION, ORIGINALQUELLEN UND OFFENE VERBINDUNGEN
+02.11.2026 · Rekonstruktion · keine neue System-SSOT oder Umsetzung
+
+AUFTRAG
+Gesamte Double-Play-Logik untersuchen, nicht nur Dynamic Scope. Classic-Verlauf,
+rekonstruierte Unterlagen, externe Backups und Recovery einbeziehen. Die fachliche
+Konstruktion einschließlich innerer Instanzen und Übergaben rekonstruieren; frühere
+Definition, spätere Fassungen, Implementierung und Funktionsbeweise unterscheiden.
+
+HAUPTERGEBNIS
+Die ausführliche fachliche Ausarbeitung ist anhand mehrerer Primärdokumente und
+direkt gelesener Classic-Nachrichten nachweisbar. Der historische Bestand umfasst
+wesentlich mehr als eine Scope-Formel. Er beschreibt Auswahl-/Input-Voraussetzungen,
+gegenseitig exklusive Bull-/Bear-Seiten, dynamische Grenzen, Bestätigung, Wechsel,
+Survival, Eignung, Kapital, Schutz, Kontinuität und Zuständigkeitsgrenzen.
+Das beweist weder die damalige vollständige Implementierung noch einen damals oder
+heute korrekt zusammenarbeitenden Gesamtstand. Die Originaldefinition darf nicht
+allein anhand eines heutigen Consumer-Namens oder einer jüngeren Konfiguration
+ersetzt werden. Umgekehrt sind frühere Beispiele keine heutige Parameterfreigabe.
+
+1. CLASSIC-ZUGRIFF UND VOLLSTÄNDIGKEIT
+Direkt über source=chatgpt vollständig paginiert:2928aktive und440archivierte Chats,
+insgesamt3368 im zurückgegebenen Verzeichnis. Letzte aktive Listing-Seite und letzte
+Archivseite liefern keinen weiteren Cursor. Das belegt diese Verzeichnisabdeckung,
+nicht alle jemals existierenden Konten, gelöschte Chats oder alternativen Zweige.
+
+220Chats /220Nachrichtenseiten direkt gelesen und lokal gesichert;1692Nachrichten.
+24Nachrichten sind ausdrücklich vom Werkzeug gekürzt. Maximum20000Zeichen je Item;
+diese Texte dürfen nicht als vollständig behandelt werden.158Anhangverweise wurden
+zurückgegeben; die Anhänge sind hier nicht pauschal vollständig eingelesen.
+3148Chats sind noch nicht inhaltlich gesichtet. Massive Abrufe lösten HTTP429 bzw.
+„ChatGPT conversation history was rate limited“ aus. Auch ein gedrosselter Nachlauf
+stoppte beim ersten erneuten Rate-Limit. Fehlerhafte Abrufe zählen NICHT als gelesen;
+ihre Aufgaben sind erhalten. Es läuft kein automatischer Hintergrundabruf weiter.
+Owner hat mitgeteilt: kein vollständiger lokaler ChatGPT-Datenexport vorhanden.
+
+Die native Classic-App ist über die bereitgestellte UI-Schnittstelle nicht separat
+zugänglich; die App-Auswahl unter dem Anzeigenamen führt zum dort gesperrten Codex-
+Fenster. Die konkrete Classic-Bundle-ID ist nicht verfügbar. Der zusätzlich geprüfte
+Webzugang war nicht angemeldet und wurde wieder geschlossen. Keine Anmeldung,
+Zugangsdatenextraktion oder Umgehung einer Zugriffssperre vorgenommen. Lokale Classic-
+Cache-Dateien waren keine direkt lesbaren JSON-Exporte; sie wurden nicht entschlüsselt.
+Der funktionierende direkte Nachrichtenabruf bleibt die hier verwendete Chatquelle.
+
+classic-matching-messages.jsonl enthält alle Treffer der dokumentierten breiten
+Begriffssuche in den tatsächlich gelesenen Nachrichten. Sie erfasst Double Play,
+Master V2, Naked MV2, Dynamic Scope, Nulllinie, Bull/Bear, Switch, GGE/G17 und verwandte
+Begriffe. Der Index ist ein Suchwerkzeug, keine automatische semantische Abnahme.
+Nutzernachricht bedeutet nicht automatisch eigene fachliche Definition: viele
+Nutzernachrichten enthalten kopierte Cursor-Berichte oder frühere ChatGPT-Aufträge.
+Das wird bei der Bewertung getrennt. Historische Aufträge werden nicht ausgeführt.
+
+2. RECOVERY UND EXTERNE BACKUPS
+Vorhandenes Recovery-Inventar:6196passende Dateieinträge,58verschiedene SHA256-Inhalte.
+Alle58Originaldateien gezielt gelesen und unveränderte Arbeitskopien unter sources/
+gesichert. Alle58Hashes stimmen mit dem datierten Inventar überein. Doppelte Namen
+oder Kopien sind keine zusätzlichen Konzepte und keine unabhängigen Beweise.
+47Inhalte haben einen namensgleichen Dokumentgegenpart im Hauptcheckout; bei zwei
+Inhalten (Indices52,54) stimmt der aktuelle Gegenpart nicht bytegleich überein.
+Die11anderen Inhalte sind nicht automatisch verloren oder wiederherzustellen; ihre
+anderen Ablagen und historischen Rollen bleiben gesondert zu prüfen.
+
+M2DATA:zehn zentrale Vertragsoriginale aus dem Backupordner mit Namensbestandteil
+Stand2026_10_07_CURRENT_922167f1 gelesen. Alle zehn stimmen mit dem jeweiligen
+Recovery-Inhalt überein. Tatsächlich ausgelesener Backup-Git-HEAD:
+14323f12b9bdd64723f84daba3f04355f69e7756.
+Der Ordnername ist also KEIN ausreichender Commit-Pin.
+Mounts erneut geprüft: M2DATA HFS+, PeakDATARecovery APFS, auf OS-Ebene beschreibbar.
+Nur gelesen; kein Recovery-Scan, keine Reparatur, Bereinigung oder Wiederherstellung.
+Das lokale Architecture Archive, dessen Double-Play-Ledger und der M2-Gesamtbericht
+vom31.10. dienen als datierte Querverweise. Ihre PROVEN-/CURRENT-Labels werden nicht
+als neue Funktionsbeweise übernommen. Obsidian-Register blieben unverändert.
+
+3. FRÜHER PRIMÄRANKER UND FASSUNGEN
+25.04.2026 21:06:20UTC /23:06:20Berlin:
+1972c706ae8b962f1f23fc9b5c71886b40100e9e, PR#3034, Einführung von
+MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md.
+Originaldatei an diesem konkreten GitHub-Commit erneut lesend geladen:
+sources/1972c706-original-manifest.md, SHA256
+2f769e7145cb74a9e955deadd4c3fa76bf7e51c07436d70ed98a4d7c2e3c711b.
+Das ist ein belegter früher schriftlicher Anker, kein Beweis des allerersten
+Gesprächs oder der erstmaligen fachlichen Idee.
+
+26.04.2026: Arithmetic/Sequence-Survival- und Capital-Slot-Verträge tragen dieses
+Dokumentdatum; Teile beschreiben spätere Implementierungen und offene Zahlen.
+Der Classic-Chat „Operator-Runplan Bash-Befehl“ vom26.04. enthält Rückmeldungen zu
+Producer-Packet-Tests #3057 und zum reinen Futures-Input-Producer-Adapter. Er belegt
+die damalige Kommunikation über diese Arbeit, nicht eine aktuelle Testausführung.
+„Sequence of Returns im Futures“ vom25.04. enthält die vorgelagerte Research-
+Diskussion und einen Markdown-Downloadverweis. Zwei lange Antworten sind gekürzt;
+der damalige Sandbox-Anhang ist nicht allein durch den Verweis vollständig verfügbar.
+
+24.05.2026: Datum des Dynamic-Scope-Envelope-Vertrags. Er präzisiert bereits im
+Manifest angelegte Regeln; er beschreibt dabei ausdrücklich noch keinen laufenden
+vollständigen State-Switch- oder Ausführungspfad.
+
+23.06.2026: Referenzdokument DOUBLE_PLAY_BULL_BEAR_REFERENCE_V0 beschreibt den
+damaligen Offline-Replay mit State, Survival, Suitability, Capital und Composition.
+Sein ETH-PERP ist als synthetisches Replay-Instrument bezeichnet; daraus keine
+damalige reale Instrumentwahl oder BTC→ETH-Fehlleitung ableiten.
+
+18.07.2026: Im direkt gelesenen Classic-Chat „Dynamic Scope Analyse“ stellt der Owner
+klar, das System sei aufgrund dieser Double-Play-Logik gebaut: Bull/Bear-Bereich,
+Dynamic Scope und zustandsabhängiger Wechsel; konkurrierende Strategielogiken sollen
+diese Funktionen nicht überstimmen. Die Nachricht enthält davor einen eingefügten
+PR#5323-Rücklauf. Dessen grüne Test-/Merge-Labels bleiben historische Rückmeldungen.
+Der damalige Continuity-Vertrag trennt immutable Scope-Identität vom beweglichen
+RuntimeScopeState und verlangt Rückführung des Zustands in den nächsten Zyklus.
+
+September: spätere Naked-MV2-Spezifikation trennt aktuelle Nulllinie M_t von interner
+Gegenbewegungsreferenz R_t und beschreibt eine einzelne relevante Grenze. Die Quelle
+beansprucht keine ausgewählte produktive D_t-Kalibrierung. Das ist eine spätere
+Fassung, nicht stillschweigend identisch mit dem frühen Envelope-Modell.
+Die V3.2-Baseline-Bindung vom23.09. unterscheidet integrated replay als Entscheidungs-
+Owner vom expliziten L1–L10-Kern als mechanischer Artikulation. Ein Layerkatalog
+beweist deshalb keinen produktiven Cutover.
+
+4. REKONSTRUIERTER FACHLICHER KERN
+Die folgenden14Bereiche sind unser Untersuchungsregister, KEINE neue kanonische
+Layer-Anzahl. Konkrete Recovery-Indices und Prüfgrenzen:mechanism-register.json.
+
+A. Auswahl und Eingang
+Ein ausgewähltes Future pro Double-Play-Instanz; eindeutige Bindung an Instrument
+und Marktart. Instrumentmetadaten, Datenherkunft, Frische, Volatilitäts-, Liquiditäts-
+und Derivateprofile werden vor der jeweils zuständigen Verwendung geprüft.
+Der vorhandene ältere Pure-Model-Prüfer evaluate_futures_input_snapshot erzeugt
+separate Flags:ready_for_downstream_model_use,ready_for_dynamic_scope,
+ready_for_capital_slot,ready_for_suitability,ready_for_survival_envelope.
+Das ist ein konkreter weiterer historischer Qualifizierungskandidat. Es ist weder
+eine Entry-Freigabe noch automatisch der erinnerte Vor-Natural-Enter-Mechanismus.
+Der Prüfer konsumiert bereits gelieferte Vollständigkeits-/Frischeangaben; er
+beweist nicht selbst eine durchgängig gemessene aktuelle Versorgung.
+
+B. Preis, Richtung und Initialisierung
+Aktueller Marktpreis/Nulllinie, erste Direction, erste Bull-/Bear-Zustandsübernahme,
+gespeicherte Initialbasis und laufende Referenz sind fachlich zu unterscheiden.
+Ein Neutralstart ist kein regulärer bereits laufender Gegenseitenwechsel.
+Aktuelle Preisgröße, Einheiten, Instrument- und Zeitbindung müssen zum Consumer
+erhalten bleiben. Die zuletzt geprüften Preis-/Anzeige-Gegenbeispiele bleiben offen.
+
+C. Geometrie und Scope
+GGE/Volatilität liefern eine geometrische Größe; daraus folgt noch keine Richtung,
+kein bestätigter Switch und keine Orderberechtigung. Frühe Manifestformeln sind
+Beispiele. Spätere Narrow-/Research-Spezifikationen halten eine produktive Kalibrierung
+ausdrücklich offen. Heutiges D=σ×Markpreis ist eine Implementierungsbeobachtung,
+kein alleiniger Beweis, dass alle historischen Fassungen genau das verbindlich wollten.
+Günstige Trendbewegungen sollen fortlaufen können. Die relevante Gegengrenze zieht
+gemäß der jeweils gültigen Fassung nach; große günstige Bewegung allein ist kein
+Exit oder Kill-All. Laufende Referenz, aktuelle Nulllinie und Scope-Distanz dürfen
+dabei nicht vermischt werden.
+
+D. Bestätigung und Wechsel
+Candidate und Confirmed sind verschiedene Zustände. Hysterese, Mindeststabilität,
+Bestätigungszählung, Cooldown und maximale Switch-Häufigkeit haben verschiedene
+Aufgaben; daraus keine pauschale Zwei-Stunden-Wartepflicht ableiten.
+Höchstens eine Seite darf aktiv sein. Normaler Wechsel enthält Pending/Blockierung
+der bisherigen Seite und kontrollierte Freigabe der Gegenseite. Ein bestätigter
+Scope-Event allein ersetzt nicht alle weiteren Voraussetzungen. Neutral-Start-Armed,
+Switch-Terminal-Armed und ältere allgemeine Armed-Tokens sind historische Varianten.
+
+E. Wirtschaftliche Tragfähigkeit und Eignung
+Futures-Arithmetik muss Kontraktmultiplikator, Notional, Gebühren, Slippage, Funding,
+Margin, Liquidationsnähe und Rundungs-/Venue-Grenzen berücksichtigen. Survival umfasst
+auch die Reihenfolge von Verlusten und Wechselclustern; isolierte Gewinne einer
+Seite genügen nicht. Long und Short brauchen vergleichbare Annahmen und Paar-Stress.
+Eignungsprojektion, Survival, bestätigte Zulässigkeit und Composition sind verschiedene
+Funktionen. Frühere vorab berechnete Suitability-Metadaten, Pure-Input-Readiness und
+heutiges Core-Suitability nach C3 nicht wegen des Namens gleichsetzen.
+
+F. Entscheidung, Kapital und Schutz
+Entry, Hold, Exit, Reduce, Reversal-Vorbereitung und State-Switch getrennt behandeln.
+Seitenentscheidung ist keine bereits ausgeführte Gegenorder. Position, SideState,
+Composition und Executionzustand haben verschiedene Eigentümer und Zeitbezüge.
+Long und Short derselben Instanz teilen einen Kapital-Slot. Ratchet basiert auf
+realisierten/abgerechneten Ergebnissen; kein stilles Nachfüllen aus Reserve. Freigabe
+eines Slots bewirkt weder automatisch neue Instrumentwahl noch neuen Trade.
+Normales Switching und Kill-All sind verschieden. Systemische Unsicherheit kann
+neue riskante Aktivität blockieren, auch bei günstiger Preisrichtung; eine große
+Preisbewegung allein ersetzt diese Prüfung nicht.
+
+G. Kontinuität und äußere Zuständigkeiten
+SCOPE(t+1) muss wieder Eingang des nächsten Zyklus sein. Confirmation, Cooldown,
+Pending und instrumentbezogene Zustände dürfen nicht beiläufig zurückgesetzt werden.
+Reset/Instrumentwechsel/Restore benötigen einen expliziten Vertrag.
+Strategien, KI, Learning, Optimization, Dashboard und Execution dürfen keine
+konkurrierende Trading-Decision-/SideState-/Switch-Wahrheit bilden. Das schließt
+ihre jeweiligen Daten-, Darstellungs-, Übersetzungs- und Vetorollen nicht aus.
+Fachliche Zuständigkeit ist dabei von realer Order-/Betriebserlaubnis zu unterscheiden.
+
+5. KONKRETE FASSUNGSUNTERSCHIEDE — NICHT ZU EINEM MODELL GLÄTTEN
+V1. Originalmanifest #3034: Short→Long als normale Upscope-Transition bezeichnet.
+Recovery-Fassung: Short-orientierter Generator liefert für den Reversal-Schritt
+DOWNSCOPE_CONFIRMED; Long-Armed-Abschluss bleibt UPSCOPE_CONFIRMED. Der Textdiff ist
+gespeichert. Identische Eventnamen müssen im Richtungs-/Consumer-Kontext interpretiert
+werden. Aus dem Wort DOWNSCOPE allein folgt hier nicht zwingend Short-Aktivierung.
+
+V2. Historischer #5323-Snapshot:CHOP bleibt NOT_BOUND_FAIL_CLOSED_GAP.
+Spätere Recovery-Fassung mit gleichem last_updated-Datum:BOUND_AS_SCOPE_POLICY,
+aber weiterhin keine natürliche CHOP-Emissionsheuristik. Gleicher Dokumenttitel und
+gleiches Datumsfeld bedeuten also nicht gleiche Semantik. Beide Fassungen erhalten.
+
+V3. Frühes Envelope-Modell: zwei nachgeführte Grenzen, bounded Formeln, Hysterese.
+Spätere Naked-Fassung: einzelne relevante Gegengrenze, M_t als aktuelle Nulllinie,
+R_t als interne Gegenbewegungsreferenz; historische50/500 sowie80/120/200 dort ohne
+produktive Zahlenautorität. Parameter nicht aus einer Fassung in die andere tragen.
+
+V4. Heutiger GGE-Code multipliziert Volatilität und Markpreis. Narrow-Naked- und
+Research-Dokumente beanspruchen zugleich keine gewählte produktive D_t-Kalibrierung;
+eine Quelle lehnt DIRECT_VOL als produktive Kalibrierung ausdrücklich ab. Ob dies
+getrennte Versuchs-/Produktivpfade, eine spätere Entscheidung oder ungelöste Drift
+betrifft, ist mit dem derzeitigen Stand NICHT abschließend geklärt.
+
+V5. Juli-Continuity: RuntimeScopeState und immutable CanonicalScopeSnapshot getrennt.
+Späterer L1–L10-Durable-State: native Felder, eigener Snapshot, andere Legacy-Keys
+werden abgelehnt, Cutover im Vertrag nicht autorisiert. Kein austauschbarer Restore.
+
+V6. Ältere Pool-/Qualifizierungsberichte müssen an ihre Revision gebunden bleiben.
+Dass heutiger Code mehr Stufen hat oder keinen namensgleichen Pool besitzt, widerlegt
+nicht die historische Idee eines früheren Qualifizierungsmechanismus. Der frühere
+Report, der CURRENT gegen eine Zwei-Pool-Erinnerung stellt, ist kein Ursprungsbeweis.
+
+6. WAS DIE UNTERSUCHUNG NICHT BEHAUPTET
+Keine vollständige Classic-Nachrichtenprüfung:3148Chats und gekürzte Texte offen.
+Keine vollständige semantische Einzelprüfung aller58Dokumente:alle58 sind inhaltlich
+erfasst, gehasht und suchbar; zentrale Verträge und Varianten wurden gezielt gelesen.
+Keine Gewissheit über alle historischen Konfigurationen, Originalanhänge oder Zweige.
+Kein neuer Gesamtfunktionslauf, keine neue Komplettsimulation der Double-Play-Logik.
+Die32Preisversorgungs-Szenarien plus2Browser-Pollfälle aus der vorherigen Untersuchung
+bleiben begrenzte Teilprüfungen. Sie beweisen weder ein komplettes historisches
+Versagen noch eine vollständige Double-Play-Abnahme.
+Kein Beleg eines einzigen historischen Gesamtstands, der alle diese Fassungen und
+alle äußeren Universen korrekt verband. Das ist fehlender Beweis, keine Behauptung,
+dass die Arbeit nie definiert oder einzelne Teile nie erfolgreich geprüft wurden.
+
+7. ARBEITSERGEBNIS UND VERBLEIBENDE ARBEIT
+Jetzt vorhanden:quellengebundener Bestand mit14Mechanismen, frühen/späteren Fassungen,
+Originalnachrichten,58Recovery-Inhalten,10Backup-Gegenprüfungen und frühem Git-Original.
+Suchindex:double-play-source-search.sqlite; Herkunft stets in sources.source und
+source_sha256. FTS dient Navigation, nicht automatisch autoritativer Modellbildung.
+Classic-Suchtreffer:classic-matching-messages.jsonl; Abdeckung:coverage.json;
+Dateihashes:classic-source-page-manifest.json und recovery-source-manifest.json.
+Der gespeicherte Arbeitsvorrat benennt fehlende Chats/Seiten; keine unsichtbare
+Fortsetzung, Automation oder neue Subagenten gestartet.
+
+Verbleibend:Classic-Abruflücken nach Ende der Ratenbegrenzung schließen; Anhänge und
+gekürzte Texte nach verfügbarer Quelle abgleichen; pro historischem Mechanismus
+konkrete Revision, Producer, Consumer und beobachtete Wirkung verbinden. Erst danach
+einen fachlich konsistenten Zielstand und dessen Änderungsvorschlag ableiten.
+Vorhandene Quellen, Checkouts und externe Originale bleiben erhalten. Keine
+Wiederherstellung, Änderung an Double Play oder Aktivierung durchgeführt.

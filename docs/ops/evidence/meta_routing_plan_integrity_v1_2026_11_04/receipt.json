@@ -1,0 +1,41 @@
+{
+  "schema": "meta_routing_and_plan_integrity_v1",
+  "source_commit": "688d0a6536bf7bcb74b6b7dfbee335866f7e7ea6",
+  "changes": [
+    {
+      "path": "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+      "before_revision": "688d0a6536bf7bcb74b6b7dfbee335866f7e7ea6",
+      "before_sha256": "a858aaf9e6595aa1693ee0bb929af05a00791d8b71d9752a2dad5651b8c17c2d",
+      "before_snapshot": "canonical_meta_evidence_dual_router_v1.py.before.txt",
+      "after_sha256": "6dd605a16f200d7af30bbedeb252d21692d86d723e0af8f0f697e5cab48272d9"
+    },
+    {
+      "path": "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py",
+      "before_revision": "688d0a6536bf7bcb74b6b7dfbee335866f7e7ea6",
+      "before_sha256": "2e33a957266df883479cb863c49dc3b75859dbbbe3d4a12e5688751fc5ebe1e9",
+      "before_snapshot": "canonical_learning_representation_research_adaptation_plan_v1.py.before.txt",
+      "after_sha256": "45ca79094199db61544b7b2fff2f86d6a732db14b92ec0ba6892b5c8aeab1f35"
+    }
+  ],
+  "issues": [
+    {
+      "id": "MR01",
+      "purpose": "Explicit single-consumer routing, reject a mismatching requested recipient before any research consumer call.",
+      "observed_before": "Top-level request accepted requested_consumer_override but did not forward it. Two new high-level negative tests reached consumer stubs and failed before fix. Lower-level route validation was already implemented.",
+      "fix": "Forward existing request field to existing requested_consumer gate; do not change routing-class authority or invoke both consumers.",
+      "proof": "Two reproduced failures before; six additional high-level routing cases pass after; default and explicit matching routes identical."
+    },
+    {
+      "id": "MP01",
+      "purpose": "Preserve the identity and content of the representation plan used by offline evaluation.",
+      "observed_before": "Same plan_identity and stale result_digest accepted after changing fixture label; output changed from REJECTED_REDUNDANCY to RESEARCH_EVIDENCE_SUPPORTED.",
+      "fix": "Recompute the existing plan identity and complete result digest; require existing no-authority flags. Factory and fixture evaluator are unchanged.",
+      "proof": "Seven new evaluator-front-door rejection tests cover label, parent, nonidentity lineage and four forbidden authority fields; valid plans still work."
+    }
+  ],
+  "plan_factory_function_text_unchanged": true,
+  "tests": "40 passed (current combined routing/plan/Loop-C/governance scope); before_router_tests.xml contains the two expected pre-fix failures, not current failures.",
+  "remaining": "Loop-C evaluation remains fixture-label dispatch, not numerical feature research. next_learning_evidence is a typed record, not evidence of a later consumer changing representation. Parent claims, full measurement, next-cycle use and all earlier G2 questions remain separate.",
+  "authority": "OFFLINE_BOUNDARY_REPAIR_ONLY_NO_NEW_TRADING_OR_PROMOTION_AUTHORITY",
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b"
+}

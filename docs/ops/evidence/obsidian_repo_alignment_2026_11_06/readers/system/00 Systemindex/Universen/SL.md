@@ -1,0 +1,79 @@
+---
+title: "Selbstlern-Universum"
+stand: "2026-11-05"
+rolle: "Architektonische Aussengrenze SL/OPT; keine Integrationsfreigabe"
+authoritaet: "NONE"
+---
+
+# Selbstlern-Universum
+
+> [!info] Vertiefung vom 06.11.2026
+> [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/10 Innere Ebenen der aktuellen Anschlussmodule|Typisierte MI-Learningevidence, eigener Store und getrennte Folgeconsumer]]. [[00 Systemindex/Repoabgleich/Standabgleich mit dem Repository|Standbindung und Reichweite des Abgleichs]].
+
+Diese Definition bestimmt die **architektonische Hülle** beider Universen aus konkreten Verarbeitungspunkten, Records, Writern und Annahmeentscheidungen. Semantische Ebenen, historische Phasennummern, Paketzugehörigkeit und Kartenfarben sind keine Außenkanten. Die Payloadbedeutung wird je Anschluss dokumentiert, entscheidet aber nicht allein den Architekturzuschnitt.
+
+Zwei Dinge bleiben unterscheidbar: Die rekonstruierte ursprüngliche Aufgabe kann weiter reichen als die heute belegte Aufnahme-/Verarbeitungskette. Die hier benannten vorhandenen Ports sind kein endgültiges Zielbild und keine Freigabe der lokalen Integrationskandidaten. Ein fehlender Anschluss wird als fehlend benannt, weder durch einen Pfeil geschlossen noch als grundsätzlich unerwünscht ausgeschlossen.
+
+## Zusammenhängende Grenzdefinition
+
+SL verantwortet die Aufnahme und nachvollziehbare Verarbeitung von Entscheidungs-, Outcome-, Markt-/Forecast- und Systembeobachtungen sowie die eigene Aufnahme von Optimierungsergebnissen. Die Hülle umfasst die vorhandenen **getrennten** Aufnahme-/Evidencezweige: DDO/Pending/Outcome/LearningState, typisierte MI-Learningaufnahme, Runtime-Learninginput und Return/M6/Representationresearch. Sie setzt keinen gemeinsamen neuen Zustand und keinen Zwang voraus, jede Marktbeobachtung erst in eine Coreentscheidung umzuwandeln.
+
+Architektonisch beginnt SL je Eingangsvertrag an seiner ersten eigenen Admission: beim DDO-Producerobserver, beim gebundenen Outcome-Supplier, beim MI→Learning-Composer, beim Runtime-Learninginputvalidator und bei generischer Returnadmission bzw. föderiertem Returnjoin. Das ist kein einzelner globaler Start bei DDO. Der fremde Producer bleibt für die Quellwahrheit verantwortlich; SL prüft die Eignung für seinen eigenen Zustand.
+
+Die eigenen Writer bleiben getrennt: Original-DDO-Ledger und LearningState-Reducer; originales Pendingjournal/Retention mit Consumer-ACK; MiLearningEvidenceStore für den eigenen typisierten MI-Learningrecord; Runtimeinput-Bundlewriter; M5-ACK-/M6-/Representation-Recordbuilder. Ein Recordbuilder ohne Append/Store beweist keinen dauerhaften Writer. M5/M6 und LoopC mutieren in den gelesenen Verträgen den DDO-LearningState nicht. Die MI-Forecast/Calibration/Research-Triade hat einen anderen Originalstore und bleibt an P17/P20 auf der jeweils beschriebenen Seite.
+
+SL endet für die nach außen führenden Datenwege am eigenen LearningEvidence-Export zu OPT-M1, an unveränderten Messartefakten für den MI-Targetjoin, an eigener MetaLearningEvidence für OPT-M7 und an M6 vor der EIP-P5-Bridge. Ein geschlossener Pending-/Consumerzustand kann im expliziten E6-Harness Research zulassen; dieser Kontrollanschluss ist keine automatische Search und übergibt keinen Researchscore. Der Runtime-Learninginput kann gesondert die fremde nicht ausführende Planaufnahme speisen.
+
+Returnjoin→M6, M6→Learning-Representationinput→Plan→Fixtureevaluation→nächste eigene Representation-Evidence bleiben **innen**. Insbesondere ist P24 kein SL→INT-Port: Die Phase24-Komposition ruft diese Learningfunktionen auf und erhält eigene Forschungsrecords; sie besitzt an diesem Übergang weder separaten Forecast-/Calibrationwrite noch eine fremde INT-Annahmeentscheidung. Der MI-Paketpfad begründet keinen Universumswechsel. Für next_learning_evidence ist kein fremder dauerhafter Lernconsumer nachgewiesen; daher wird am offenen Ende kein Ausgang erfunden.
+
+Jenseits liegen die originalen Core-/DP-Entscheider, Datenquellen, eigenständige MI-Target-/Forecast-/Triadenowner, die tatsächliche OPT-Search-/Experiment-/Archivverwaltung, EIP-Adapter/Adjudikation, Governance, externe Evaluation und technische Persistenzdienste. Historisch im Self-Learning-Master genannte Forschungsfunktionen sind deshalb nicht automatisch jede heutige SL-Instanz; die wiederverwendete Ausführungsrolle und ihr Stateowner sind einzeln zu prüfen.
+
+## Markt-/Forecastlernen und noch nicht ausgefüllter Verantwortungsraum
+
+Der ursprüngliche Auftrag umfasste auch Markt-/System-/Forecastqualität und bounded interne Modelle. Daher wäre eine Definition „SL ist nur DDO und Export“ zu eng. Die vorhandene typisierte MI-Learningaufnahme bildet dafür einen konkreten separaten Eintritt. Fehlend bleiben ein regulärer natürlicher Gesamtpfad und ein belegter nachfolgender Modell-/Representationconsumer. Nicht jede Anwendung verlangt eine Coreentscheidung; die strenge Decision-/Lane-/Jobbindung des lokalen IU-Kandidaten darf nicht zum allgemeinen SL-Grenzgesetz werden.
+
+Dieser Raum wird hier **architektonisch abgegrenzt**, aber weder mit einem neuen Modell gefüllt noch als bereits implementierte Lernwirkung ausgegeben. Die Trennung der Datenaufnahme, eigener Lernzustände und fremder Apply-/Authority bleibt bei einer späteren Verbindung erforderlich.
+
+## Datenanschlüsse
+
+- [[00 Systemindex/Grenzen/P15|P15 · Core-/DP-Produktergebnis in DDO-Capture]] — **Eingang: CORE → SL**. `STATISCH_KONKRET`. [run_integrated_offline_replay_with_productive_ddo_capture_v1](/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py:105) → [observe_producer_result_v0](/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/capture_v0.py:759).
+- [[00 Systemindex/Grenzen/P16|P16 · O4-Bar-Snapshot in den eigenen Outcome-Supplier]] — **Eingang: DATA → SL**. `STATISCH_KONKRET`. [outcome_snapshot_v1](/Users/frnkhrz/Peak_Trade/src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py:237) → [materialize_real_outcome_horizon_supplier_input_v1](/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py:199).
+- [[00 Systemindex/Grenzen/P17|P17 · SL-Messartefakte in MI-Targetjoin/Kalibrierung]] — **Ausgang: SL → INT**. `STATISCH_KONKRET`. [materialize_real_outcome_horizon_supplier_input_v1](/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py:199) → [prepare_explicit_measured_return_v1](/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py:49).
+- [[00 Systemindex/Grenzen/P18|P18 · LearningState-Export in M1]] — **Ausgang: SL → OPT**. `STATISCH_KONKRET`. [export_learning_evidence_from_state_v1](/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py:40) → [validate_canonical_optimization_universe_learning_input_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimization_universe_learning_input_v1.py:76).
+- [[00 Systemindex/Grenzen/P20|P20 · MI-Originaltriade in gesonderte Learningaufnahme]] — **Eingang: INT → SL**. `ORIGINALPORT_MIT_LOKALEM_INTEGRATIONSKANDIDATEN`. [_readback](/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py:330) → [compose_mi_to_learning_evidence_v1](/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py:95).
+- [[00 Systemindex/Grenzen/P22|P22 · Generische OPT-ExperimentEvidence in SL-Returnadmission]] — **Eingang: OPT → SL**. `STATISCH_KONKRET`. [build_optimization_experiment_evidence_from_plane_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimization_experiment_evidence_v1.py:93) → [validate_self_learning_optimization_return_input_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_self_learning_optimization_return_input_v1.py:62).
+- [[00 Systemindex/Grenzen/P25|P25 · Föderierte OPT-Projektion in SL-Returnjoin]] — **Eingang: OPT → SL**. `STATISCH_KONKRET`. [build_federated_surface_optimization_experiment_evidence_projection_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_federated_surface_optimization_experiment_evidence_projection_v1.py:255) → [perform_federated_m5_m6_return_join_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_federated_m5_m6_return_join_v1.py:86).
+- [[00 Systemindex/Grenzen/P23|P23 · SL-MetaLearningEvidence in OPT-M7]] — **Ausgang: SL → OPT**. `STATISCH_KONKRET`. [build_meta_learning_evidence_from_optimization_experiment_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_learning_ingest_v1.py:184) → [validate_meta_to_optimization_feedback_input_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_to_optimization_feedback_v1.py:98).
+- [[00 Systemindex/Grenzen/P47-SL|P47-SL · SL-M6 in EIP-P5-Metaadapter]] — **Ausgang: SL → EIP**. `STATISCH_KONKRET`. [build_meta_learning_evidence_from_optimization_experiment_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_learning_ingest_v1.py:184) → [bridge_m6_to_meta_learning_routed_evidence_v1](/Users/frnkhrz/Peak_Trade/src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py:71).
+- [[00 Systemindex/Grenzen/RUNTIME-SL|RUNTIME-SL · Runtime-Beobachtungsbundle in Learninginputadmission]] — **Eingang: HOST → SL**. `STATISCH_KONKRET`. [evaluate_runtime_observation_bundle_v1](/Users/frnkhrz/Peak_Trade/src/meta/learning_loop/runtime_observation_feedback_v1.py:610) → [evaluate_runtime_to_learning_input_v1](/Users/frnkhrz/Peak_Trade/src/meta/learning_loop/runtime_observation_feedback_v1.py:712).
+
+## Kontroll- und Zulässigkeitsanschlüsse
+
+- [[00 Systemindex/Grenzen/P19|P19 · Geschlossener Consumer-ACK als Researchvorbedingung]] — **Ausgang: SL → OPT**. `HARNESSGEBUNDENER_KONTROLLINPUT`. [_consume](/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py:632) → [research_episode](/Users/frnkhrz/Peak_Trade/tests/ops/_bounded_system_episode_fixture_v1.py:438).
+- [[00 Systemindex/Grenzen/SL-HOST|SL-HOST · Learninginputbundle an nicht ausführenden Orchestrierungsplan]] — **Ausgang: SL → HOST**. `STATISCH_KONKRET`. [produce_runtime_to_learning_input_v1](/Users/frnkhrz/Peak_Trade/src/meta/learning_loop/runtime_observation_feedback_v1.py:1216) → [build_orchestration_input_request_from_learning_input_bundle](/Users/frnkhrz/Peak_Trade/src/meta/learning_loop/autonomous_non_live_orchestration_plan_v1.py:1289).
+
+## Prüfbezüge
+
+- [[00 Systemindex/Grenzen/P35|P35 · SL-Domainprüfung ist Prüfbezug, kein bewiesener SL-Exportport]] — **Ausgang: SL → EVAL**. `PRUEFBEZUG_KEIN_DIREKTER_SL_PRODUCER`. [evaluate_current_episode_numbers](/Users/frnkhrz/Peak_Trade/tests/ops/_bounded_system_episode_fixture_v1.py:620) → [evaluate_baseline](/Users/frnkhrz/Peak_Trade/src/evaluation/golden_vectors/evaluators/self_learning_v1.py:40).
+
+## Technische Speicheranschlüsse
+
+- [[00 Systemindex/Grenzen/P42|P42 · DDO-Fachledger an technische Dateisystempersistenz]] — **Ausgang: SL → STORE**. `TECHNISCHER_ANSCHLUSS`. [_append_line](/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/ledger_v0.py:634) → `Dateisystem-&#47;OS-API: write, flush, fsync, flock` (native technische API; kein Repository-Fachconsumer).
+
+## Entfallene Außenkante / innere Verbindung
+
+- [[00 Systemindex/Grenzen/P24|P24 · Meta→Lernrepräsentation bleibt SL-intern]] — **innen: SL → SL**. `KEINE_AUSSENKANTE`. [route_meta_evidence_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_evidence_dual_router_v1.py:79) → [validate_meta_to_learning_research_adaptation_input_v1](/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py:68).
+
+## Belegstand und Einordnung der bisherigen Karten
+
+[[00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT|Architektonische Außengrenzen SL und OPT]] beschreibt Herleitung, Autoritätskriterien, ursprüngliche Aufgabe und konkrete Änderungen. Die vorhandenen Innenebenen, Komponentenlisten und Karten bleiben als Inventar erhalten; ihre frühere Owner-/Außenkanteneinfärbung ist für die hier korrigierten Ports überholt. Es wurden keine inneren Ebenen umgebaut.
+
+[[00 Systemindex/Zustaende/SL|Vorhandenes Zustandsinventar]] · [[00 Systemindex/Zuordnung/SL|Vorhandene Datei-/Reuseaufschlüsselung]] · [[00 Systemindex/SL OPT Trennung/Gesamtpfade/Routenregister Selbstlernen und Optimierung|Vorhandene Detailrouten]]
+
+Die Quellenbasis ist der lokale HEAD `10d899b16356974bdd1f3c90f13681825cc09afe` mit erhaltenen lokalen Änderungen. Historische E3–E6- und PROVEN-Aussagen bleiben an ihre damaligen Belege gebunden. Hier wurden nur Quellen/Anschlüsse gelesen und Dokumente geprüft; kein Research-, Trading-, Aktivierungs- oder Produkt-Testlauf.
+
+## Konstrukt nach den geklaerten Aussenkanten
+
+[[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT|Ursprung, innere Verarbeitung, Lernzustände, Rückkopplungen und Prüfung der drei Integrationscommits]]. Quellgebundener Verständnisstand; die Commits sind abgegrenzte Prüfkandidaten. Die fachliche Gesamtklärung bleibt offen; keine weitere Implementierung folgt daraus.
+
+<!-- Vollständige Leserprojektion; Original: system:00 Systemindex/Universen/SL.md; SHA256: 24e3b2f30c0de379490e927682b51b8113c721971216d6154e3f4a31277a3503. Native Wikilinks beziehen sich auf den ursprünglichen Vault. -->

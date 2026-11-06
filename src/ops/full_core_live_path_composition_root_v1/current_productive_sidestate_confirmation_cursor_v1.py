@@ -5,7 +5,9 @@ Cap-6.2 ScopeConfirmation / CanonicalScopeSnapshot contracts into the
 CURRENT_PRODUCTIVE one-shot host. Does not redesign Master-V2, Double Play,
 confirmation thresholds, Bull/Bear, or entry/exit rules.
 
-Missing cursor defaults to Cap-6.2 NEUTRAL_OBSERVE. Invalid SideState
+Missing cursor while flat defaults to Cap-6.2 NEUTRAL_OBSERVE. Occupied
+cycles retain a validated scope cursor; the host rejects missing scope state.
+Invalid SideState
 fails closed like Cap-7.2. Instrument/lineage/schema mismatch refuses
 restore and never leaks foreign state. Restore never invents ARMED/ENTER.
 
@@ -15,6 +17,9 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import json
+import hashlib
+import os
+import tempfile
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -409,13 +414,49 @@ def persist_current_productive_sidestate_confirmation_cursor_v1(
     cursor: CurrentProductiveSideStateConfirmationCursorV1,
     *,
     store_root: Path,
+    expected_prior_digest: str | None = None,
 ) -> Path:
     root = Path(store_root)
     root.mkdir(parents=True, exist_ok=True)
     path = root / CURSOR_FILENAME
     payload = cursor.to_dict()
-    path.write_text(_canonical_json(payload) + "\n", encoding="utf-8")
+    import fcntl
+
+    lock_fd = os.open(str(root / (CURSOR_FILENAME + ".lock")), os.O_CREAT | os.O_RDWR, 0o600)
+    tmp_name = None
+    try:
+        try:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as exc:
+            raise CurrentProductiveCursorError("CURSOR_WRITER_CONFLICT") from exc
+        if expected_prior_digest is not None:
+            prior = load_current_productive_sidestate_confirmation_cursor_v1(root)
+            if current_productive_cursor_digest_v1(prior) != expected_prior_digest:
+                raise CurrentProductiveCursorError("CURSOR_PUBLICATION_CONFLICT")
+        fd, tmp_name = tempfile.mkstemp(prefix=CURSOR_FILENAME + ".", dir=root)
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            stream.write(_canonical_json(payload) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(tmp_name, path)
+        if load_current_productive_sidestate_confirmation_cursor_v1(root) != payload:
+            raise CurrentProductiveCursorError("CURSOR_PUBLICATION_READBACK_MISMATCH")
+    finally:
+        if tmp_name is not None and os.path.exists(tmp_name):
+            os.unlink(tmp_name)
+        os.close(lock_fd)
     return path
+
+
+def current_productive_cursor_digest_v1(payload) -> str:
+    """Exact canonical payload binding; absence is distinct from any cursor."""
+    if payload is None:
+        return "MISSING"
+    if isinstance(payload, CurrentProductiveSideStateConfirmationCursorV1):
+        payload = payload.to_dict()
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    ).hexdigest()
 
 
 def load_current_productive_sidestate_confirmation_cursor_v1(

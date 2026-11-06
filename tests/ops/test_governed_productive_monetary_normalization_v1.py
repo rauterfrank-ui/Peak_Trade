@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.ops._entry_budget_join_fixture_v1 import join_with_portfolio_fixture_v1
+
 from decimal import Decimal
 
 import pytest
@@ -667,7 +669,7 @@ def test_ghv_api3_productive_normalization_join_venue_plan_v1() -> None:
     )
     _, cycle_b, _path = _host_enter_cycle()
     replay = _enter_replay(cycle_b)
-    join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+    join = join_with_portfolio_fixture_v1(
         replay=replay,
         injected=injected,
         bound_instrument=_bound(),

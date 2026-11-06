@@ -9,6 +9,8 @@ last_updated: 2026-09-16
 
 # Full Core Current Productive Host Enter 29P Invalid Stop Price Repair V1
 
+Current GGE-only correction, 2026-11-03: the historical fixed-distance/pricing examples below describe their original revision. The assembled system's ENTER join consumes evaluated GGE-based adverse distance, not a fixed 80-unit fallback. Tests observe the actual native protective stop passed into monetary normalization, keep invalid-stop rejection and traverse shared-reservation/account-bound sizing. [Current evidence](../evidence/ENTER_29P_CURRENT_CONFIGURATION_ALIGNMENT_2026_11_03.md). This alignment changes no production formula or runtime authority.
+
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.DS.
 Consumes Owner-GO
 `OWNER_GO_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR_V1`.

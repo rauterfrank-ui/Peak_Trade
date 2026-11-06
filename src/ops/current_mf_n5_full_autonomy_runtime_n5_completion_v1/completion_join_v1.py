@@ -15,6 +15,7 @@ from typing import Any, Mapping, NoReturn
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.readiness_join_v1 import (
     OccupiedLaneN1HostJoinReadinessProjectionV1,
+    address_occupied_lane_n1_consumer_to_host_join_seam_v1,
     compose_occupied_lane_n1_host_join_readiness_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_runtime_n5_completion_v1.constants_v1 import (
@@ -417,17 +418,13 @@ def join_occupied_lane_host_activation_v1(
     return joined
 
 
-def run_occupied_lane_runtime_n5_completion_v1(
+def _validate_completion_inputs_v1(
     composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
     *,
     target_cardinality: int,
-    **kwargs: Any,
-) -> OccupiedLaneRuntimeN5CompletionResultV1:
-    """Readiness compose + canonical host join for exactly target_cardinality lanes."""
+    origin_main_sha: str,
+) -> tuple[int, list[str]]:
     _assert_completion_authority()
-    forbidden = sorted(set(kwargs) & FORBIDDEN_COMPOSE_KWARGS)
-    if forbidden:
-        _fail(FAILURE_FORBIDDEN_KWARG, ",".join(forbidden))
     target = int(target_cardinality)
     if target < 1 or target > MAX_PRODUCTIVE_OCCUPIED_LANES:
         _fail(FAILURE_CARDINALITY, str(target))
@@ -449,12 +446,39 @@ def run_occupied_lane_runtime_n5_completion_v1(
         occupied_ids.append(lane_id)
     if len(occupied_ids) != target:
         _fail(FAILURE_CARDINALITY, f"{len(occupied_ids)}!={target}")
-    origin_main_sha = str(kwargs.get("origin_main_sha") or "").strip()
-    if not origin_main_sha:
+    if not str(origin_main_sha or "").strip():
         _fail(FAILURE_ORIGIN_MAIN_SHA, OWNER)
-    projections = compose_occupied_lane_n1_host_join_readiness_v1(composed_pairs, **kwargs)
+    return target, occupied_ids
+
+
+def complete_occupied_lane_runtime_n5_from_readiness_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    projections: Mapping[str, OccupiedLaneN1HostJoinReadinessProjectionV1],
+    *,
+    target_cardinality: int,
+    origin_main_sha: str,
+    cycle_id_prefix: str,
+) -> OccupiedLaneRuntimeN5CompletionResultV1:
+    """Join the already evaluated lanes; never consume another governed cycle."""
+    target, occupied_ids = _validate_completion_inputs_v1(
+        composed_pairs, target_cardinality=target_cardinality, origin_main_sha=origin_main_sha
+    )
     if set(projections) != set(occupied_ids):
         _fail(FAILURE_CARDINALITY, ",".join(sorted(projections)))
+    if any(
+        not isinstance(p, OccupiedLaneN1HostJoinReadinessProjectionV1) for p in projections.values()
+    ):
+        _fail(FAILURE_RESULT_MISSING, OWNER)
+    # Reuse the existing pure addressing owner to bind the supplied projection to
+    # its original consumer result and exact selected pairs. This performs no cycle.
+    addressed = address_occupied_lane_n1_consumer_to_host_join_seam_v1(
+        composed_pairs,
+        {lane: p.n1_consumer_result for lane, p in projections.items()},
+        origin_main_sha=origin_main_sha,
+        cycle_id_prefix=cycle_id_prefix,
+    )
+    if dict(projections) != addressed:
+        _fail(FAILURE_IDENTITY_MISMATCH, "readiness_consumer_binding")
     joined = join_occupied_lane_host_activation_v1(projections)
     if set(joined) != set(occupied_ids):
         _fail(FAILURE_CARDINALITY, ",".join(sorted(joined)))
@@ -484,4 +508,29 @@ def run_occupied_lane_runtime_n5_completion_v1(
         post_count=0,
         permit_created=False,
         runtime_n5_architecture_complete=bool(target == MAX_PRODUCTIVE_OCCUPIED_LANES),
+    )
+
+
+def run_occupied_lane_runtime_n5_completion_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    *,
+    target_cardinality: int,
+    **kwargs: Any,
+) -> OccupiedLaneRuntimeN5CompletionResultV1:
+    """Standalone readiness compose followed by completion of those same results."""
+    _assert_completion_authority()
+    forbidden = sorted(set(kwargs) & FORBIDDEN_COMPOSE_KWARGS)
+    if forbidden:
+        _fail(FAILURE_FORBIDDEN_KWARG, ",".join(forbidden))
+    origin_main_sha = str(kwargs.get("origin_main_sha") or "").strip()
+    _validate_completion_inputs_v1(
+        composed_pairs, target_cardinality=target_cardinality, origin_main_sha=origin_main_sha
+    )
+    projections = compose_occupied_lane_n1_host_join_readiness_v1(composed_pairs, **kwargs)
+    return complete_occupied_lane_runtime_n5_from_readiness_v1(
+        composed_pairs,
+        projections,
+        target_cardinality=target_cardinality,
+        origin_main_sha=origin_main_sha,
+        cycle_id_prefix=str(kwargs.get("cycle_id_prefix") or ""),
     )

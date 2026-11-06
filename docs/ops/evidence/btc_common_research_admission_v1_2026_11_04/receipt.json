@@ -1,0 +1,30 @@
+{
+  "schema": "btc_common_research_admission_v1",
+  "source_commit": "aee605835cd90b722118c3b74487e4b880c021c1",
+  "sources": {
+    "src/research/pit_futures_universe_manifest_validator_v1.py": {
+      "before_sha256": "b337ad12e5ee1facf626654d9241eca2150b5a10fa86396fdbaa2a300e7cd493",
+      "after_sha256": "05631434d2e8bd2388d771debae872dcc4130fb6aae2db4ec7e021fd47555f58"
+    },
+    "src/research/pit_futures_instrument_lifecycle_registry_validator_v1.py": {
+      "before_sha256": "bf5e8a0ee0e6ee941b59eced02a2b01f2554ae236d05071778d3521ec3599b2c",
+      "after_sha256": "a37584e95be2b73c5b74a9dfdd499aae0b11a53e5ccf21e46cf59a422478ed44"
+    },
+    "src/research/pit_futures_universe_manifest_production_materialization_v1.py": {
+      "before_sha256": "c7e6518e2ab51a9b03f5e152ea7e12f088fd4b5868decc58e3da1e1a18b446a6",
+      "after_sha256": "298e897231bcdc0a00c2f45b11ff74f7746d0ced3041da7d48f50e73a5dc59e9"
+    }
+  },
+  "resolution": "Both generic research validators consume the existing sole common asset policy. Explicitly fixed legacy materializer preserves original non-BTC source/cohort constraint at assembly and input validation. No new global exclusion set.",
+  "tests": "282 pass, including 13 new actual registry→binding→manifest and negative/cohort cases. Three previous generator failure expectations updated to authorized common admission only after source fix; negative structural/time/history/digest gates retained.",
+  "fixture_corrections": "BTC-positive fixtures use consistent symbols and explicit common-research IDs. Existing XBT/WBTC manual manifest list sorted after old rejection no longer masks sort error.",
+  "default_legacy_materializer_fixture_identical": true,
+  "legacy_false_direction_flag": "Retained existing non-authorizing contract marker, not interpreted as a BTC instrument ban.",
+  "limits": [
+    "Synthetic chain proof only, no actual BTC venue metadata, market outcome, training or risk execution evidence",
+    "Fixed historical source, dataset and period cohort is not the new BTC-inclusive research configuration",
+    "Full repository-wide BTC policy/configuration alignment and full causal reconstruction not established"
+  ],
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "runtime_authorization_effect": "NONE"
+}

@@ -126,9 +126,9 @@ def _pair(tmp_path: Path, lane_id: str, *, native: str | None = None):
 
 def _candles(*, inst_id: str, last_ts_ms: int, close: float) -> dict:
     rows = []
-    for index in range(8):
-        ts = str(last_ts_ms - (7 - index) * 60_000)
-        px = f"{close - (7 - index) * 0.5:.4f}"
+    for index in range(100):
+        ts = str(last_ts_ms - (99 - index) * 60_000)
+        px = f"{close - (99 - index) * 3.5 / 99:.4f}"
         rows.append([ts, px, px, px, px, "10", "100", "USDT", "1"])
     return {"code": "0", "instId": inst_id, "data": rows}
 
@@ -474,5 +474,4 @@ def test_n1_regression_single_lane_shared_c1(tmp_path: Path) -> None:
             venue_native_id="VENUE-LANE_1", mark_px=mark, index_px=99.5
         ),
         g17_typed_vol_producers={"LANE_1": _g17("INST-LANE_1", "VENUE-LANE_1")},
-        occupancy_payloads=_occupancy_absent(),
     )

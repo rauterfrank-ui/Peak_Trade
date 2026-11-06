@@ -249,6 +249,33 @@ def translate_o4_snapshot_to_ddo_n_bars_bindings_v1(
 ) -> DdoNbarsBridgeTranslationV1:
     """Translate validated O4 snapshot into DDO field bindings (no REAL minting)."""
     validated = validate_o4_n_bars_bar_evidence_snapshot_v1(snapshot)
+    return DdoNbarsBridgeTranslationV1(
+        schema_name=BRIDGE_TRANSLATION_SCHEMA_NAME,
+        schema_version=BRIDGE_TRANSLATION_SCHEMA_VERSION,
+        decision_event_ref=str(validated["decision_event_ref"]),
+        **_translate_o4_bar_chain_v1(validated),
+    )
+
+
+def translate_o4_market_bar_chain_v1(*, horizon_start_time_utc, n_bars, o4_interval_id, o4_bars):
+    """Versioned translate-only market entry; no DecisionEvent or outcome minting."""
+    horizon = require_event_time_utc(horizon_start_time_utc, "horizon_start_time_utc")
+    count = _require_positive_int(n_bars, "n_bars")
+    interval, _ = _normalize_o4_interval_id(o4_interval_id)
+    if not isinstance(o4_bars, (list, tuple)) or len(o4_bars) != count:
+        raise DdoValidationError("O4_BARS_COUNT_MISMATCH")
+    bars = tuple(validate_o4_bar_snapshot_element_v1(bar, i) for i, bar in enumerate(o4_bars))
+    return _translate_o4_bar_chain_v1(
+        {
+            "horizon_start_time_utc": horizon,
+            "n_bars": count,
+            "o4_interval_id": interval,
+            "o4_bars": bars,
+        }
+    )
+
+
+def _translate_o4_bar_chain_v1(validated):
     bars_list = sorted(
         validated["o4_bars"],
         key=lambda item: float(item["bar_open_time"]),
@@ -258,18 +285,12 @@ def translate_o4_snapshot_to_ddo_n_bars_bindings_v1(
     horizon_start = validated["horizon_start_time_utc"]
 
     first_bar = bars_list[0]
-    instrument_ref = mint_ddo_content_ref_v1(
-        prefix="ddo.o4.inst.",
-        payload={
-            "canonical_instrument_id": str(first_bar["canonical_instrument_id"]),
-            "venue": str(first_bar["venue"]),
-            "venue_instrument_id": str(first_bar["venue_instrument_id"]),
-        },
+    instrument_ref = derive_o4_instrument_ref_v1(
+        str(first_bar["canonical_instrument_id"]),
+        str(first_bar["venue"]),
+        str(first_bar["venue_instrument_id"]),
     )
-    bar_spec_ref = mint_ddo_content_ref_v1(
-        prefix="ddo.o4.barspec.",
-        payload={"o4_interval_id": interval_token},
-    )
+    bar_spec_ref = derive_o4_bar_spec_ref_v1(interval_token)
 
     for bar in bars_list:
         expected_inst = str(first_bar["canonical_instrument_id"])
@@ -345,10 +366,7 @@ def translate_o4_snapshot_to_ddo_n_bars_bindings_v1(
 
     provenance = _provenance_from_bars(bars_list)
 
-    return DdoNbarsBridgeTranslationV1(
-        schema_name=BRIDGE_TRANSLATION_SCHEMA_NAME,
-        schema_version=BRIDGE_TRANSLATION_SCHEMA_VERSION,
-        decision_event_ref=str(validated["decision_event_ref"]),
+    return dict(
         horizon_start_time_utc=horizon_start,
         n_bars=n_bars,
         instrument_ref=instrument_ref,
@@ -360,3 +378,20 @@ def translate_o4_snapshot_to_ddo_n_bars_bindings_v1(
         horizon_observation_reason=reason,
         o4_provenance=MappingProxyType(provenance),
     )
+
+
+def derive_o4_instrument_ref_v1(canonical_instrument_id, venue, venue_instrument_id):
+    """Existing governed opaque mapping, shared before and after horizon completion."""
+    return mint_ddo_content_ref_v1(
+        prefix="ddo.o4.inst.",
+        payload={
+            "canonical_instrument_id": canonical_instrument_id,
+            "venue": venue,
+            "venue_instrument_id": venue_instrument_id,
+        },
+    )
+
+
+def derive_o4_bar_spec_ref_v1(o4_interval_id):
+    token, _ = _normalize_o4_interval_id(o4_interval_id)
+    return mint_ddo_content_ref_v1(prefix="ddo.o4.barspec.", payload={"o4_interval_id": token})

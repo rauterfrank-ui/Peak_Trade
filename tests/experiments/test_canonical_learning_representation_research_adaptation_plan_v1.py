@@ -20,21 +20,20 @@ from src.experiments.canonical_meta_to_learning_research_adaptation_input_v1 imp
 
 
 def _applicable_decision(*, pattern: str = "FIXTURE_FEATURE_USEFULNESS") -> dict:
-    return {
-        "schema_version": SCHEMA_VERSION,
-        "overall_disposition": DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT,
-        "source_meta_evidence_id": "a" * 64,
-        "adaptation_decision_identity": "b" * 64,
-        "adaptation_items": [
-            {
-                "payload": {
-                    "pattern_ref": pattern,
-                    "learning_representation_lineage_ref": "mi.lineage.test",
-                }
-            }
-        ],
-        "result_digest": "c" * 64,
-    }
+    from src.experiments.canonical_meta_to_learning_research_adaptation_input_v1 import (
+        _adaptation_item, _decision_payload, OUTCOME_APPLICABLE,
+    )
+    return dict(_decision_payload(
+        meta_evidence={"meta_evidence_id": "a" * 64, "reproducibility_digest": "c" * 64},
+        adaptation_items=(_adaptation_item(
+            disposition=DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT,
+            outcome=OUTCOME_APPLICABLE, reason="REPRESENTATION_RESEARCH_CONTEXT_ONLY",
+            payload={"pattern_ref": pattern, "learning_representation_lineage_ref": "mi.lineage.test",
+                     "learning_state_mutation_authorized": False, "productive_apply_authorized": False},
+        ),),
+        overall_disposition=DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT,
+        overall_reason="BOUNDED_LEARNING_RESEARCH_ADAPTATION_INPUT_ONLY",
+    ))
 
 
 def test_plan_separate_from_productive_apply() -> None:
@@ -63,14 +62,12 @@ def test_purpose_classification_deterministic() -> None:
 
 
 def test_fail_closed_input_yields_no_action_plan() -> None:
-    decision = {
-        "schema_version": SCHEMA_VERSION,
-        "overall_disposition": DISPOSITION_NO_ACTION_FAIL_CLOSED,
-        "source_meta_evidence_id": "a" * 64,
-        "adaptation_decision_identity": "b" * 64,
-        "adaptation_items": [],
-        "result_digest": "c" * 64,
-    }
+    from src.experiments.canonical_meta_to_learning_research_adaptation_input_v1 import (
+        MetaToLearningResearchAdaptationInputRequestV1, validate_meta_to_learning_research_adaptation_input_v1,
+    )
+    decision = validate_meta_to_learning_research_adaptation_input_v1(
+        MetaToLearningResearchAdaptationInputRequestV1(meta_learning_evidence=None),
+    )
     plan = build_learning_representation_research_adaptation_plan_v1(
         LearningRepresentationResearchAdaptationPlanRequestV1(adaptation_input_decision=decision)
     )

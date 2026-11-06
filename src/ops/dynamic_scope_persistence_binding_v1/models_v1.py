@@ -50,6 +50,7 @@ def runtime_scope_state_from_dict(payload: Mapping[str, Any]) -> RuntimeScopeSta
             payload.get("last_completed_side_switch_tick") or -1_000_000
         ),
         chop_latched=bool(payload.get("chop_latched")),
+        scope_distance_mode=str(payload.get("scope_distance_mode") or "legacy_bounded_v1"),
     )
 
 

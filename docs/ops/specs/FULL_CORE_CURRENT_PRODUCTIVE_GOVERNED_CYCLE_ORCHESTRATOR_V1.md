@@ -4,7 +4,7 @@ status: active
 scope: Full-Core CURRENT_PRODUCTIVE governed one-cycle orchestrator offline bind; co-presents existing subordinate one-shots; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-17
+last_updated: 2026-11-02
 ---
 
 # Full Core Current Productive Governed Cycle Orchestrator V1
@@ -28,6 +28,52 @@ Offline cycle execution requires injected C1 candles and occupancy
 payloads. Network GET and `execute_network=true` remain unauthorized.
 HOLD is a valid terminal market outcome. PRE_EXTERNAL_EFFECT is the
 absolute cycle boundary. A partial cycle is not silently resumable.
+
+Local occupied-position repair, 2026-11-02: a separately bound management
+callback may evaluate one validated open position on the authorized instrument
+with no pending orders. This does not open the entry callback. The N1 consumer
+uses its existing durable MV2/Double-Play cycle and stops before entry sizing,
+reservations, overlays and envelope creation. Entry or executable-envelope
+results from management fail closed. POSITION_MANAGEMENT_EVALUATED ends this
+evaluation cycle, not the position or the assigned Future/slot. Reported
+reduce/exit decisions do not gain a new execution path from this repair.
+
+Subsequent local correction, 2026-11-02: a REDUCE/EXIT decision ends evaluation
+with POSITION_MANAGEMENT_ACTION_PENDING and the explicit blocker
+POSITION_MANAGEMENT_EXECUTION_HANDOFF_REQUIRED. COMPLETED refers to evaluation,
+not completed execution. No quantity, venue plan or order is inferred.
+
+Local quantity transport, 2026-11-03: the management callback includes a structured
+position-quantity receipt in the existing cycle ledger and result. It binds the
+position observation to lane/generation, decision and metadata, and validates a
+supplied canonical reducing intent against its sizing provenance and open amount.
+Missing metadata/intent remain visible; a bound quantity is not a venue plan or
+execution authorization. Existing source-authentication/freshness limits remain.
+
+Owner decision and local extension, 2026-11-03: EXIT requests the full reconciled
+rest quantity. The existing quantity/intent owners supply a separate close-only
+assessment and canonical EXIT intent without entry-budget substitution. The lane
+callback persists these as plan-only evidence and leaves the source replay intact.
+Reduce remains pending an explicit risk rule. Pending/unknown custody is not
+admitted by this path, and no order/permit/fill or capital release is added.
+After confirmed reconciled flat, the Ranking owner may retain or replace the
+Future; the automatic fill-to-budget-to-ranking feedback is still not proven.
+
+Further local extension, 2026-11-03: a typed full-close receipt now binds the
+existing close assessment and canonical intent through the existing execution
+composer/venue translator to a final order envelope. The host rechecks the original
+position snapshot, exact native identity, quantity, opposite side and reduceOnly;
+only this validated net-mode EXIT reaches POSITION_MANAGEMENT_PRE_EXTERNAL_EFFECT.
+Entry-envelope leakage remains forbidden. This state grants no permit or POST.
+Hedge mode and REDUCE remain pending. Offline simulated ACK/reconciliation/position
+tests are not an automatic productive fill-to-capital-to-Ranking feedback loop.
+
+Local post-close follow-up, 2026-11-03: successful entry results now carry their
+existing portfolio reservation ID into the cycle ledger/transitions/result for
+later explicit correlation. The lifecycle reconciliation owner offers a separate
+offline/injected position → canonical-capital refresh → membership-review handoff.
+No cycle automatically submits, polls, commits the membership proposal or starts
+the next trade. Historical missing reservation references are not inferred.
 
 ```text
 OWNER_GO=OWNER_GO_EH_S5_GOVERNED_CYCLE_ORCHESTRATOR_OFFLINE_BIND_V1

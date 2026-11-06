@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "portable fixture without original external paths PASS",
+    "changed archive denied",
+    "current source drift requires review"
+  ],
+  "credential_pattern_scan": "No selected private-key/token/API-secret assignment patterns found; not a universal private-data classification proof.",
+  "pytest": "core research/export: 204 passed; intermediate/G2 tests: 38 passed, 9 failed; combined 242 passed, 9 failed",
+  "runtime_or_config_changed": false,
+  "causal_reconstruction": "INCOMPLETE",
+  "all_relevant_tests_pass": false
+}

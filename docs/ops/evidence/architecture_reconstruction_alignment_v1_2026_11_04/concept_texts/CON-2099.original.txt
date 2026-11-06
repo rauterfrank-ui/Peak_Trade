@@ -1,0 +1,9 @@
+### CON-2099 — Nachweise, historische Labels und Quellenzugang
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Direkter Classic-Zugriff und zurückgewonnene Originale präzisieren frühere Zugangsaussagen. Paginierte Chatlisten, vollständig durchsuchte Cursor-Dateien und gelesenes Fachmaterial haben verschiedene Abdeckung. Die Phase-26-Abschlussfunktion bestätigte ihr gespeichertes PROVEN_COMPLETE im dokumentierten Arbeitskopie-Lauf wegen nicht passender Baseline-Bindungen nicht. Frühere positive Teiltests bleiben dennoch gültige Teilbelege.
+
+**Grenze:** Neue Dokumentation ist kein neuer Testlauf. Alte Fertigmeldungen nicht löschen, aber an Revision/Methode binden. Keine globale Erfassung sämtlicher Gespräche, Anhänge, Codepfade oder Systemsemantik behauptet.
+
+Quellen: EVI-2201, EVI-2202, EVI-2205, EVI-2204, EVI-2290, EVI-2291, EVI-2295, EVI-2269, EVI-2270, EVI-2299, EVI-2278.

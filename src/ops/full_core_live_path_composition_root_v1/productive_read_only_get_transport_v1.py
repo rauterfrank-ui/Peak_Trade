@@ -2,10 +2,6 @@
 
 GET only. No POST. Does not construct LiveExecutionPort. Does not import
 canary instrument authority. Auth headers use the K1 venue-auth contract.
-
-Phase-8 session deadline: optional ``session_deadline`` clamps connect/read
-timeouts to remaining monotonic budget. Single attempt per ``get`` call (no
-retry). ``HARD_TIMEOUT_GUARANTEE`` for HTTP only — not Keychain in-flight.
 """
 
 from __future__ import annotations
@@ -16,7 +12,7 @@ import socket
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
-from urllib.request import ProxyHandler, Request, build_opener
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
 from src.data.safety import DataSourceKind
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
@@ -29,10 +25,6 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
     FreshPretradeGetTransportResultV1,
 )
-from src.ops.owner_scoped_get_budget_enforcement_v1.enforcer_v1 import (
-    OwnerScopedGetBudgetEnforcerV1,
-)
-from src.ops.owner_scoped_get_budget_enforcement_v1.errors_v1 import OwnerScopedGetBudgetError
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     parse_json_object_v1,
 )
@@ -56,6 +48,13 @@ class FullCoreProductiveReadOnlyGetError(RuntimeError):
     """Fail-closed productive GET-only transport violation."""
 
 
+class _RejectAuthenticatedRedirectsV1(HTTPRedirectHandler):
+    """Stop before urllib can forward signed request headers to another URL."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise FullCoreProductiveReadOnlyGetError("GET_REDIRECT_FORBIDDEN")
+
+
 class FullCoreProductiveReadOnlyGetTransportV1:
     """GET-only Full-Core venue transport. Never POST. No wire-send of orders."""
 
@@ -65,18 +64,19 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         handle: Any | None = None,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         max_request_count: int = 16,
-        owner_scoped_get_budget_enforcer: OwnerScopedGetBudgetEnforcerV1 | None = None,
     ) -> None:
         self._handle = handle
         self.timeout_seconds = float(timeout_seconds)
         self.max_request_count = int(max_request_count)
-        self._owner_scoped_get_budget_enforcer = owner_scoped_get_budget_enforcer
         self.request_count = 0
         self.methods_used: list[str] = []
         self.venue_live_contact = False
         self.transport_class = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
         self._cache: dict[str, FreshPretradeGetTransportResultV1] = {}
         self.payloads_by_path: dict[str, Any] = {}
+        # Explicit private evidence consumer only. Never enabled by default;
+        # request headers/signing material are not supplied to this callback.
+        self.raw_response_sink_v1 = None
 
     def get(
         self,
@@ -85,11 +85,8 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         auth_required: bool,
         pretrade_decision_id: str,
         get_cache_policy: str = GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
-        session_deadline: Any | None = None,
     ) -> FreshPretradeGetTransportResultV1:
         del pretrade_decision_id
-        if session_deadline is not None:
-            session_deadline.assert_within_budget_v1()
         cacheable = get_cache_policy == GET_CACHE_POLICY_CACHEABLE_SNAPSHOT
         if get_cache_policy not in (
             GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
@@ -120,36 +117,18 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             )
             headers["User-Agent"] = USER_AGENT
             auth_sent = True
-        read_timeout = self.timeout_seconds
-        connect_timeout = CONNECT_TIMEOUT_SECONDS
-        if session_deadline is not None:
-            read_timeout = session_deadline.bounded_read_timeout_seconds_v1(
-                default_read_seconds=self.timeout_seconds
-            )
-            connect_timeout = session_deadline.bounded_connect_timeout_seconds_v1(
-                default_connect_seconds=CONNECT_TIMEOUT_SECONDS
-            )
-        budget_reservation = None
-        if self._owner_scoped_get_budget_enforcer is not None:
-            try:
-                budget_reservation = self._owner_scoped_get_budget_enforcer.begin_get_v1(
-                    endpoint_path=path
-                )
-            except OwnerScopedGetBudgetError as exc:
-                raise FullCoreProductiveReadOnlyGetError(f"OWNER_SCOPED_GET_BUDGET:{exc}") from exc
-
         req = Request(url, method=METHOD_GET, headers=headers)
-        opener = build_opener(ProxyHandler({}))
+        opener = build_opener(ProxyHandler({}), _RejectAuthenticatedRedirectsV1())
         body = b""
         status = 0
         error_class = ""
         payload: Any = None
-        wire_attempted = False
-        uncertain_wire = False
+        # The quota bounds attempts, including redirects/errors that re-raise.
+        self.request_count += 1
+        self.methods_used.append(METHOD_GET)
         try:
-            socket.setdefaulttimeout(connect_timeout)
-            wire_attempted = True
-            with opener.open(req, timeout=read_timeout) as resp:  # noqa: S310
+            socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
+            with opener.open(req, timeout=self.timeout_seconds) as resp:  # noqa: S310
                 status = int(getattr(resp, "status", 200))
                 body = bytes(resp.read() or b"")
                 loc_host = str(urlparse(str(getattr(resp, "url", url) or url)).hostname or "")
@@ -160,37 +139,14 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             raise
         except TimeoutError:
             error_class = "TIMEOUT"
-            uncertain_wire = True
         except HTTPError as exc:
             status = int(getattr(exc, "code", 0) or 0)
             body = bytes(exc.read() or b"") if hasattr(exc, "read") else b""
             error_class = "AUTH_FAILURE" if status in {401, 403} else "HTTP_ERROR"
         except (URLError, OSError, socket.timeout) as exc:
             error_class = type(exc).__name__[:80]
-            uncertain_wire = True
         finally:
             socket.setdefaulttimeout(None)
-            if (
-                budget_reservation is not None
-                and self._owner_scoped_get_budget_enforcer is not None
-            ):
-                try:
-                    if not wire_attempted:
-                        self._owner_scoped_get_budget_enforcer.release_unsent_v1(budget_reservation)
-                    elif uncertain_wire:
-                        self._owner_scoped_get_budget_enforcer.mark_uncertain_wire_v1(
-                            budget_reservation
-                        )
-                    else:
-                        self._owner_scoped_get_budget_enforcer.mark_completed_v1(budget_reservation)
-                except OwnerScopedGetBudgetError as exc:
-                    raise FullCoreProductiveReadOnlyGetError(
-                        f"OWNER_SCOPED_GET_BUDGET_FINALIZE:{exc}"
-                    ) from exc
-        if uncertain_wire and self._owner_scoped_get_budget_enforcer is not None:
-            raise FullCoreProductiveReadOnlyGetError("OWNER_SCOPED_GET_UNCERTAIN_WIRE_FAIL_CLOSED")
-        self.request_count += 1
-        self.methods_used.append(METHOD_GET)
         if any(method in FORBIDDEN_METHODS for method in self.methods_used):
             raise FullCoreProductiveReadOnlyGetError("NON_GET_FORBIDDEN")
         if body:
@@ -220,6 +176,8 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             body_sha256=hashlib.sha256(body).hexdigest() if body else "",
             data_safety_source_kind=data_safety_source_kind,
         )
+        if self.raw_response_sink_v1 is not None:
+            self.raw_response_sink_v1(result=result, body=body)
         if cacheable:
             self._cache[str(endpoint)] = result
         path_only = str(endpoint).split("?", 1)[0]

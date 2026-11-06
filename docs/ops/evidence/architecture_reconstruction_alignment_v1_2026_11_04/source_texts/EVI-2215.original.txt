@@ -1,0 +1,195 @@
+MASTER V2, KILL SWITCH UND ÜBERGANG ZUM ÄUSSEREN RING
+Quellenbefund vom 02.11.2026
+
+Ergänzende historische Vertiefung vom selben Tag:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/safety-blueprint-history-2026-11-02/Bauplaene_Runbooks_Safety_Quellenabgleich.txt
+Sie präzisiert die geplante globale Safety, Kill-Modi und Recovery-Grenzen und
+lokalisiert den weiterhin sichtbaren incoming/next-State-Unterschied der Binder.
+
+AUFTRAG UND GRENZE
+Fachlichen Aufbau, ursprüngliche Sicherheitsabsicht und konkrete Schnittstellen
+rekonstruieren. Ein vollständiger Laufzeitbeweis erfolgt nach dem Umbau, wie vom
+Owner festgelegt. Keine Aktivierung, Orders, Recovery, Zustandsänderung oder
+Credential-Abfrage. Dieser Bericht ist ein Untersuchungsbefund, keine neue SSOT.
+
+KURZBEFUND
+Der Außenring lässt sich an mehreren konkreten Sicherheitsgrenzen erschließen.
+Es gibt keinen hier belegten einzelnen Baustein, der alle Sicherheitsaufgaben
+zentral und vollständig erledigt. Zu unterscheiden sind fachliches Kill-All,
+persistenter Kill-Switch, Sicherheitsbewertung im Entscheidungskern, unabhängige
+Versandschranken und kontrollierter Wiederanlauf. Ihr Vorhandensein ist belegt;
+die vollständige Wirkung im später umgebauten Gesamtsystem ist damit nicht belegt.
+
+1. QUELLENSTÄNDE
+GitHub main, bei dieser Untersuchung abgefragt:
+5d1c838c15369507c5247834db4dd0df25592169.
+Ältere Arbeitskopie /Users/frnkhrz/Peak_Trade:
+242b7974fc93f0bdb47706556101bd6f0c497414, mit lokalen Änderungen.
+Weitere Arbeitskopie /Users/frnkhrz/Peak_Trade_M1_5_CURRENT:
+fffb95ef41f7e78c145f022144947911cce27279, ebenfalls lokale Änderungen.
+Ordnernamen bestimmen keine Betriebsautorität. Insbesondere ist der Kill-Switch
+in der älteren Hauptarbeitskopie nicht der heutige gehärtete GitHub-Stand.
+Der Vergleich der sieben ausgewählten Kernquellen ist in
+main-source-comparison.json festgehalten. Beispielsweise stimmen KillSwitch-Core,
+risk_gate und Host-Zyklus in der weiteren Arbeitskopie mit dem abgefragten main
+überein. Daraus folgt keine Gleichheit der vollständigen Checkouts.
+
+Git-Quellkopien mit Revision und SHA256 liegen unter sources/; zugeordnet durch
+main-source-comparison.json, pinned-source-manifest.json und
+context-source-manifest.json. recovery-source-manifest.json dokumentiert fünf
+gezielt gelesene historische Recovery-Dokumente und ihre Hashes. Recovery und
+Obsidian sind zusätzliche Provenienz, nicht automatisch unabhängige Bestätigung.
+
+2. WIE MASTER V2 FACHLICH AUFGEBAUT IST
+Die Spezifikationen beschreiben Double Play für ein bereits ausgewähltes Future:
+Long/Bull und Short/Bear sind gegensätzliche, gegenseitig ausschließende Seiten.
+Ein normaler Richtungswechsel ist eine Handelsentscheidung, kein Kill-Switch.
+Ranking/Instrumentenauswahl sind vorgelagert. Master V2 besteht aus mehreren
+Komponenten; ein einzelner Dateiname bildet das System nicht vollständig ab.
+
+Die gepinnte integrierte Orchestrierung zeigt folgende fachliche Verarbeitung:
+Marktkontext und Scope/GGE → Richtungsbeobachtung und Bestätigungsfortschritt →
+Survival/Suitability → Double-Play-Komposition und Seitenzustand → Entry/Exit →
+Kapital-/Risikobindung und kanonische Orderabsicht → Sicherheitsprojektionen.
+Die Komposition ist dabei die maßgebliche Zulässigkeitsprüfung für CONFIRMED;
+Survival und Suitability bestätigen die Richtung nicht selbst.
+Das Modul integrated_offline_trading_logic_replay_v1.py ist ein reiner
+Orchestrator ohne eigenen Venue-I/O. Seine statische Verwendung durch Host und
+Composition Root ist von einem beobachteten vollständigen Betrieb zu trennen.
+
+Das Manifest unterscheidet statische harte Grenzen und dynamische Scope-Regeln
+innerhalb eines freigegebenen Rahmens. Seine Pre-Arm-/Runtime-Envelope-Absicht
+belegt noch keinen vollständig angeschlossenen globalen Sicherheitsrahmen.
+
+3. FÜNF UNTERSCHIEDLICHE SICHERHEITSWIRKUNGEN
+
+A. Fachliches KILL_ALL in Double Play
+double_play_state.py verarbeitet KILL_ALL_REQUIRED zu SideState.KILL_ALL.
+Innerhalb dieser Zustandsfunktion ist der Zustand absorbierend; gewöhnliche
+Ereignisse setzen ihn nicht zurück. Die Funktion selbst führt keine Orders aus.
+CHOP sperrt bestimmte Arm-/Aktivierungs-/Wechselbestätigungen, ohne deshalb
+automatisch Kill-All zu setzen. Unknown-Scope ist ebenfalls nicht gleich Kill-All.
+
+Die kanonische Akzeptanzspezifikation sagt ausdrücklich:
+extreme_price_move != automatic_kill_all.
+Eine starke günstige Bewegung kann Hold/Trail bedeuten, eine ungünstige Bewegung
+einen gewöhnlichen Exit oder State-Switch. Datenabweichung, Venue-Probleme,
+Margin-, Reconciliation- oder Governance-Probleme sind eigene Sicherheitsfälle.
+Das ursprüngliche Modell-Kill-All sperrt Eligibility; es definiert nicht selbst
+eine reale Cancel-/Close-/Flatten-Operation an der Börse.
+
+B. Persistenter Kill-Switch mit kontrolliertem Wiederanlauf
+Der aktuelle Core hält ACTIVE, KILLED und RECOVERING auseinander. ACTIVE bedeutet
+nur: kein Kill in Kraft; es ist keine Handelsfreigabe. Der dauerhafte Modus liest
+unter Prozesssperre erneut, journalisiert KILL vor der Sperre und bindet Recovery
+an Identität, Request-ID, Zeit/Cooldown und signierte Nachweise. Fehlender oder
+nicht vertrauenswürdiger dauerhafter Zustand wird vom Core blockierend behandelt.
+Ein gespeichertes DISABLED wird dort nicht als sichere Freigabe übernommen.
+Keine tatsächlichen Zustandsdateien, Journale oder Freigabegeheimnisse gelesen.
+
+Wichtige Grenze: Nicht jeder boolesche Leser hat exakt dieselbe Missing-Semantik.
+Der generische risk_gate-Helfer kann bei fehlender Standarddatei ohne weitere
+Sperrsignale False liefern. Core und produktive POST-Schranke sind strenger.
+Deshalb ist die Fail-Closed-Aussage stets an den konkreten Consumer zu binden.
+
+C. Sicherheitsstatus als Eingang in Master V2
+durable_kill_switch_mv2_binding_v1.py → Host-Zyklus → Exit-Policy-Producer ist
+eine konkret vorhandene Verbindung. Der dauerhafte Kill-Status wird in
+SafetyMode, TradingGate und Safety-Exit-Signale übersetzt. Die Entry/Exit-Policy
+priorisiert Safety-Exit vor normalen Handelsentscheidungen; sie erzeugt einen
+reduce-only EXIT-Entscheid. Das ist noch keine ausgeführte Positionsschließung.
+Diese Verbindung setzt nicht automatisch das State-Machine-Ereignis
+KILL_ALL_REQUIRED. Dauerhafter Kill und fachlicher Kill-All bleiben getrennt.
+
+D. Sicherheitsprojektion an der Grenze des Entscheidungskerns
+Der Safety-Binding-Adapter blockiert neue ENTER-Absichten bei passenden
+Sicherheits-/Reconciliation-Zuständen. Der KillSwitch-Boundary-Adapter bildet
+unter anderem BLOCK_NEW, REDUCE_TO_FLAT und EMERGENCY_FLATTEN ab.
+Das sind zunächst Bedeutungen/Flags, keine eigenen Venue-Aktionen.
+replay_execution_safety_contract_v1.py transportiert die Einschränkungen typisiert
+nach außen; composition_root_v1.py wertet sie aus und kann ENTER verweigern,
+ohne den ursprünglichen Kernentscheid umzuschreiben.
+
+Der ähnlich benannte independent_pre_trade_safety_kernel_v1.py beschreibt einen
+eigenen Offline-Vertrag mit Authority-, Clock-, Reconciliation-, Venue- und
+Idempotency-Nachweisen. Der lokale Replay-Adapter ist kein Beleg, dass dieser
+gesamte unabhängige Kernel produktiv ausgeführt wird. Ein solcher globaler
+Live-Aufruf wurde hier nicht nachgewiesen.
+
+E. Eigene Schranke unmittelbar vor externer Wirkung
+durable_filegate_join_v1.py erstellt einen typisierten Dateinachweis. Die aktuelle
+POST-Kill-Switch-Schranke verweigert bei fehlendem/unvertrautem Nachweis,
+unzulässigem Override oder Notfall-Veto. ACTIVE braucht den passenden kanonischen
+Nachweis und verifizierte Recovery-Attestierung. KILLED/RECOVERING können eng
+gebundene, frische Risikoreduktionsnachweise für den exakten finalen Orderinhalt
+zulassen; sie sind kein pauschales Verbot jeder risikosenkenden Handlung.
+Ein ausdrückliches Notfall-Veto bleibt auch dafür sperrend.
+PreSendSafetyGateV1.assert_admits_send_v1 prüft finalen Inhalt, zugehörigen
+Venue-Effect-Ledger-Eintrag und die Kill-Switch-Zulässigkeit erneut.
+full_core_productive_http_post_transport_v1.py verlangt diese Schranke vor dem
+HTTP POST. Auch ihr ALLOW ersetzt keine sonstigen Owner-/Permit-Freigaben.
+Diese statische Aufrufverbindung wurde gelesen, kein POST ausgeführt.
+
+4. URSPRÜNGLICHE ABSICHT UND SPÄTERE ENTWICKLUNG
+25.06.2026, PR4552, Merge 6dee4df9896e1cc5d5ed4726ee151d99e758ff49:
+Kill-All, normaler State-Switch und günstige/ungünstige Extrembewegungen werden
+fachlich auseinandergezogen.
+https://github.com/rauterfrank-ui/Peak_Trade/pull/4552
+
+05.09.2026, PR6278, Merge da3932853ec10f8024a8e32a9a5c43d24a7a27b8:
+Die unverdrahtete automatische Triggerbibliothek einschließlich Threshold- und
+Watchdog-Bausteinen wurde entfernt. Historischer Code zeigt eine Idee, keinen
+damals produktiv angeschlossenen Auslöser. Manual-CLI, Persistenz und Leser
+blieben erhalten. Der vorherige Threshold-Code liegt als historische Kopie bei.
+https://github.com/rauterfrank-ui/Peak_Trade/pull/6278
+
+30.09.2026, PR6982, Merge f1288b2a289b0cf21c85c746e92e62ee74bc871e:
+Dauerhafter Kill-Status wird konkret mit MV2-Host-/Exit-Policy verbunden.
+https://github.com/rauterfrank-ui/Peak_Trade/pull/6982
+
+17.10.2026, PR7139, Merge eef9d9cd3d7dbce0740a21e41b84bd17edb1c779:
+Recovery-Abschluss, Journal, Prozesskonkurrenz, Replay-Schutz und Vertrauen in
+ACTIVE werden gehärtet. Das PR-Wort „Closure“ ersetzt keinen eigenen Beweis
+des später umgebauten Gesamtsystems. Vorhandene Tests wurden gelesen, nicht
+erneut ausgeführt. PR-Metadaten stehen unverändert in sources/github-pr-*.json.
+https://github.com/rauterfrank-ui/Peak_Trade/pull/7139
+
+5. KONKRETER ÜBERGANG ZUM ÄUSSEREN RING
+Als analytische Einordnung, nicht als nachträglich erfundene Ursprungsarchitektur:
+- Eingang: externer/dauerhafter Sicherheitszustand begrenzt Master-V2-Entscheide.
+- Ausgang: typisierte Sicherheitsprojektion begrenzt die Ausführungsplanung.
+- Externe Wirkung: Dateinachweis, Permit-/Ledger-Bindung und erneute Prüfung
+  unmittelbar vor Versand begrenzen die tatsächliche Handlung.
+- Rückführung: Reconciliation-/Unknown-Outcome-Zustände wirken als Eingänge;
+  ihr vollständiger Rückweg und die Positionstruth müssen nach Umbau bewiesen werden.
+- Wiederanlauf: eigener kontrollierter Zustandsübergang; weder normales
+  Handelssignal noch bloßes Aufheben einer einzelnen Eintrittssperre.
+
+Frühere Außenring-Analysen sind eine Navigationshilfe. Ihre Gruppen oder
+PROVEN-Labels werden hier nicht als ursprüngliches universelles Ringmodell oder
+als Gesamtbeweis übernommen. Die Zustands-/Authority-Owner bleiben getrennt.
+
+6. OFFENE PUNKTE FÜR DEN UMBAU
+1) Auslöser: Welche realen Producer liefern Daten-/Venue-/Margin-/Drawdown- oder
+   Reconciliation-Probleme an welchen Sicherheitsvertrag? Im gelesenen aktuellen
+   Host-Aufruf wird max_drawdown nicht übergeben; ein Default und eine vorhandene
+   Schwellwertregel belegen keine angeschlossene echte Drawdown-Quelle.
+2) Reichweite: Was sperrt nur ein Instrument/eine Lane, was alle fünf Slots,
+   was den gemeinsamen Venue-Zugang? Ein globales Kill-All über alle fünf Lanes
+   ist durch den einzelnen DP-Zustand nicht nachgewiesen.
+3) Aktionen: Für jeden Fall zwischen neuen Entries sperren, Pending Orders
+   canceln, reduzieren und flatten unterscheiden; Venue-Bestätigung und tatsächliche
+   Position als Nachweis verwenden, nicht allein ein EMERGENCY_FLATTEN-Label.
+4) Zustandsübergabe: Den tatsächlichen Producer von KILL_ALL_REQUIRED und dessen
+   Zusammenspiel mit dauerhafter Sperre und Recovery vollständig nachweisen.
+5) Unabhängigkeit: Offline-Kernelvertrag, Replay-Projektion und produktive
+   Versandschranke einschließlich ihrer Fehlerfälle jeweils konkret zuordnen.
+6) Nach Umbau: Übergaben einschließlich veralteter/fehlender Nachweise,
+   konkurrierendem Kill/Recovery und Risikoreduktionsausnahmen in der endgültigen
+   Kette beweisen. Der heutige Befund ist Vorbereitung, keine Betriebsabnahme.
+
+ERSTELLTE ÄNDERUNGEN UND PRÜFUNG
+Nur diesen Quellenbefund, Quellkopien/Manifeste und die ergänzende Canvas-Datei
+außerhalb der Repositories erstellt. Keine Änderungen am Obsidian-Register,
+Originalarchiven oder Produktivcode. Quellen durch Git-Revision und SHA256
+zugeordnet, PR-Metadaten separat gesichert. Keine Produktlaufzeit gestartet.

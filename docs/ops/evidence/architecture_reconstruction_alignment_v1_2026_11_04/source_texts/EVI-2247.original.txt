@@ -1,0 +1,356 @@
+# Zusammenspiel: Bedeutung, Verarbeitung und Rückkopplung
+
+Stand: 02.11.2026. Präzisierung des laufenden Rekonstruktionsauftrags: Ein globaler Erstbeginn ist kein vorrangiges Ziel. Im Mittelpunkt stehen die gewollte Zusammenarbeit, die innere Verarbeitung und die tatsächliche Bedeutung/Wirkung an den Übergaben. Git-/PR-Historie erklärt, warum Varianten entstanden oder Grenzen verändert wurden.
+
+## Gesamtlogik
+
+Die bisherige Rekonstruktion zeigt ein Netz aus zusammenhängenden Teilwegen. Es ist weder eine einzige lineare Pipeline noch allein durch die Namen Intelligence, Learning und Optimization vollständig beschrieben. Gemeinsame Daten, Zustände, Identitäten und Consumer verbinden Bereiche. Einige Verbindungen sind Entwurf, andere codierte Aufrufe, andere begrenzte numerische Wirkungen. Eine lückenlos beobachtete Gesamtschleife ist damit nicht behauptet.
+
+Die folgenden fünf Sichten sind ein analytisches Raster, keine neue globale Ebenenhierarchie oder feste Anzahl von Universumsebenen:
+
+- **Markt-/Instrumentkontext:** Welche Instrumente und Bewegungen liegen vor? Ergebnis: Messwerte, Rohfeatures, relative Bewertung, ausgewähltes/gebundenes Instrument; separater Scope-Wert.
+- **Entscheidung und Folgen:** Was wurde entschieden, was geschah danach und unter welchen Bedingungen? Ergebnis: Decision, Outcome, Attribution, Counterfactual und wirtschaftliche Evidenz nach jeweiligem Vertrag.
+- **Lernen / Forschungsbewertung:** Was sagt die Erfahrung über Versuch, Erwartung, Robustheit und Vergleichbarkeit? Ergebnis: Gebundene Erinnerung, Gap-/Failure-/Vergleichsurteil und Lernzustand.
+- **Meta / Optimization:** Welche Muster tragen, und welche Untersuchung sollte als Nächstes stattfinden? Ergebnis: Meta-Befund, Suchpriorität, Kandidaten, Forschungsrequest und Proposal.
+- **Owner / Governance / konkrete Consumer:** Welche konkrete Änderung ist zulässig und wird tatsächlich verwendet? Ergebnis: Getrennte Admission, Autorisierung, Bindung und beobachtbare Anwendung.
+
+Wesentlich ist die Bedeutungsänderung: Marktpreise werden zu Streuung; Streuung wird entweder zur relativen Instrumentbewertung oder über den Preis zur Scope-Distanz. Eine Entscheidung wird zunächst beobachtet, später gegen Folgen ausgewertet. Das Ergebnis wird zur gebundenen Erfahrung, gegebenenfalls zum Mehrversuchsbefund und anschließend zu einer begrenzten Forschungspriorität oder einem Vorschlag. Ein Vorschlag ist keine angewandte Handelsregel.
+
+## Übergaben gleichzeitig von beiden Seiten lesen
+
+Für jeden Weg werden Eingangsgröße, Transformation, Empfängerwirkung, Einheit, Zeit, Identität, Herkunft und erlaubte Autorität gemeinsam festgehalten. Die 13 folgenden Vergleichskennungen sind nur lokale Navigations-IDs dieses Berichts.
+
+### Z01 — Marktbeobachtung → messbares Instrumentprofil
+
+Producer: Mark-/Metadatenversorgung und Feature-Producer.
+
+Eingang: Finalisierte Markfenster, Metadaten und Quellen-/Zeitbezüge.
+
+Verarbeitung: Gültige Fenster wählen; unter anderem 60 Log-Returns aus 61 Marks und deren Populationssigma berechnen.
+
+Consumer: Ranking-Feature-Consumer; separater G17-/Scope-Strang.. Lokale Wirkung: Rohfeatures oder typisiertes Estimate verfügbar.
+
+Bedeutung: Sigma ist dimensionslose Return-Streuung, keine Preisdistanz und kein Rank.
+
+Zeit-/Identitätsbindung: Instrument, Venue, 61er-Fenster, Eventzeit/Finalität, Source-/Config-Digest.
+
+Autoritätsgrenze: Mess-/Featurewert, keine Auswahl- oder Handelsentscheidung.
+
+Belege: IU: #5148/#5149, #5611, #6835 an getrennten Revisionen.
+
+Offen/Grenze: Vergleichbare Rechnung beweist keine identischen gelieferten Fenster oder gemeinsame Runtime-Versorgung.
+
+### Z02 — Instrumentprofil → relative Kandidatenordnung
+
+Producer: Ranking-Feature-Produktion.
+
+Eingang: Sigma/Amplitude mehrerer zulässiger Instrumente.
+
+Verarbeitung: Vergleichsmenge bilden, Perzentile bestimmen und Score berechnen.
+
+Consumer: Economic-Rank / Cap 2.2.. Lokale Wirkung: Instrumente erhalten Reihenfolge und Top20-Kontext.
+
+Bedeutung: Ein Score ist eine relative Bewertung innerhalb einer bestimmten Menge.
+
+Zeit-/Identitätsbindung: Vergleichsmenge, Feature-Zeitfenster, Policyversion und Instrument-IDs.
+
+Autoritätsgrenze: Ranking-Kontext; keine Scope-, Selection- oder Entry-Autorität.
+
+Belege: IU: #6835/#6836; August #5641 hatte andere strukturelle Semantik.
+
+Offen/Grenze: Rank-/Perzentilwerte dürfen nicht als Scope-Sigma eingesetzt werden.
+
+### Z03 — Kandidatenordnung → Auswahl → Instrumentbindung
+
+Producer: Cap 2.2 / Cap 2.3 / Cap 2.4 als getrennte Owner.
+
+Eingang: Ranking-Snapshot, Previous-Selection soweit geliefert, Selection-Record.
+
+Verarbeitung: Eligibility/Alter/Previous-Regeln prüfen; auswählen; Selection unverändert validieren/binden.
+
+Consumer: Runtime mit BoundInstrument.. Lokale Wirkung: Ein konkretes Instrument ist ausgewählt und identifiziert.
+
+Bedeutung: Auswahl und Binding sind Zustands-/Identitätsentscheidungen, keine Richtung oder Positionsöffnung.
+
+Zeit-/Identitätsbindung: Ranking-Digest, Selection-Epoche/-ID, canonical/native Instrument-ID.
+
+Autoritätsgrenze: Selection bei Cap 2.3, bind-only bei Cap 2.4.
+
+Belege: IU: #5640–#5643 und spätere Varianten.
+
+Offen/Grenze: Vorhandene Producer bedeuten noch keine vollständige hostübergreifende Versorgung oder wirksame Anti-Churn-Vorgeschichte.
+
+### Z04 — Volatilität → Preismagnitude → Scope-Verhalten
+
+Producer: Zulässiges Volatilitätsestimate und Markpreis.
+
+Eingang: Sigma des gebundenen Instruments und passender Markpreis.
+
+Verarbeitung: Sigma × Mark → Preismagnitude; je Variante Clamp, Trailing oder Layer-C-Distanzableitung.
+
+Consumer: Double-Play-Scope-/Event-/Confirmation-Pfad.. Lokale Wirkung: Abstände/Grenzen ändern den Marktbereich, in dem Kandidaten entstehen können.
+
+Bedeutung: Dimensionslose Streuung wird zur Preisdistanz; Candidate, Confirmation und Switch sind nachgelagerte andere Bedeutungen.
+
+Zeit-/Identitätsbindung: Instrument, Preisart, Eventzeit, Schätzer-/Policyversion und Zustandsbezug.
+
+Autoritätsgrenze: Begrenzter Wert-/Berechnungsbeitrag; State-/Switch-Owner bleiben gesondert.
+
+Belege: IU: #3035, #4678, #6993, GGE-Einführung; Varianten nicht zusammenziehen.
+
+Offen/Grenze: Ein numerischer Input kann Verhalten beeinflussen, ohne dem Producer Entry-/Switch-Recht zu geben. Tatsächliche Wirkung hängt vom erreichten Zweig ab.
+
+### Z05 — Entscheidung / Ranking → Beobachtungsrecord
+
+Producer: Eigentlicher Decision- oder Ranking-Producer.
+
+Eingang: Originales Producer-Ergebnis.
+
+Verarbeitung: Nachgelagerte Capture-Beobachtung; Session-/Ledger-Bindung.
+
+Consumer: DDO-Erfassung und ggf. persistenter Ledger.. Lokale Wirkung: Ein Beobachtungsrecord entsteht; das eigentliche Producer-Ergebnis bleibt erhalten.
+
+Bedeutung: Eine protokollierte Entscheidung ist noch kein späteres Outcome.
+
+Zeit-/Identitätsbindung: Decision-ID, Seam, Session, Instrument, Beobachtungszeit und Scope.
+
+Autoritätsgrenze: Beobachtung ohne zweite Entscheidungsautorität.
+
+Belege: IU: #6206 selection.ranking; INTEGRATION: Cycle/Capture-Join am Pin 5d1c838c.
+
+Offen/Grenze: Aktive Session, Ledger und tatsächliche gespeicherte Records separat belegen.
+
+### Z06 — Entscheidung + spätere Daten → Outcome
+
+Producer: Decision-Beobachtung und zeitlich nachfolgender Datenproducer.
+
+Eingang: Gebundene Entscheidung plus tatsächliche Folgebeobachtungen; je Outcome-Familie Markt/Execution/Risk/Ökonomie.
+
+Verarbeitung: Horizont und Identität binden, Verlauf messen, Attribution/Counterfactual getrennt auswerten.
+
+Consumer: EvaluationBundle / Learning-Ingest.. Lokale Wirkung: Eine messbare Folge und deren Auswertung entstehen.
+
+Bedeutung: N-Bars-Preisänderung ist weder automatisch Netto-Trade-PnL noch die Ursache des Erfolgs.
+
+Zeit-/Identitätsbindung: Decisionzeit vor Folgebeobachtungen; Instrument, Horizont, Kosten-/Kapitalbasis, Herkunftsklasse.
+
+Autoritätsgrenze: Auswertungs-Evidence; kein neuer Trade.
+
+Belege: DDO: breiter Entwurf und enger N-Bars-Vertrag; INTEGRATION: Seed-/Zeitproblem.
+
+Offen/Grenze: Eine vorhandene Export-Verkettung kann alte Werte auf Zukunftszeiten setzen. Dann ist keine tatsächliche Zukunftsbeobachtung bewiesen; Varianten getrennt halten.
+
+### Z07 — Outcome-Evidence → Lernzustand
+
+Producer: Outcome-/Attribution-/Counterfactual-Evaluation.
+
+Eingang: Zueinander passende Bundle-Records.
+
+Verarbeitung: Referenzen/Herkunft prüfen, Fingerprint bilden, Scopezustand versioniert fortschreiben.
+
+Consumer: Learning-State und enger Folgezyklus-Bezug.. Lokale Wirkung: Zustand/Sequenz und gegebenenfalls ein opakes Folge-Label ändern sich.
+
+Bedeutung: Gespeicherte Erfahrung ist noch keine kalibrierte numerische Regel.
+
+Zeit-/Identitätsbindung: Session/Account-Scope, Bundle-Fingerprint, Eventreihenfolge und Version.
+
+Autoritätsgrenze: Learning-Zustand schreiben; keine Tradingregel ändern.
+
+Belege: JOINT: #6634, J05/J06; spätere Herkunftsanforderungen #6988.
+
+Offen/Grenze: Belegte State-Fortschreibung und enges Label-Feedback sind kein vollständiger lernender Policy-Algorithmus.
+
+### Z08 — Experimentmesswerte → Forschungsbefund
+
+Producer: Messwertlieferant / Experiment-Request.
+
+Eingang: Gebundene Experimentwerte, Robustheitsbeobachtungen, Champion-/Challenger-Scores, expected/observed.
+
+Verarbeitung: Memory binden, Robustheit beurteilen, Vergleich und Reality-Gap bewerten, Fehler-Evidence bilden.
+
+Consumer: Research-Memory / Failure-/Gap-/Comparison-Records.. Lokale Wirkung: Neue Urteile entstehen aus gelieferten Werten.
+
+Bedeutung: Messwert, Schwellenüberschreitung und Forschungsurteil sind verschiedene Aussagen.
+
+Zeit-/Identitätsbindung: Experimentidentität, Dataset, Kostenmodell, Zeitraum, Metrikdefinition und Einheiten.
+
+Autoritätsgrenze: Offline-Forschungsbewertung, keine automatische Runtime-Sperre.
+
+Belege: SEM-01/02; FLOW F01–F07, August-Varianten.
+
+Offen/Grenze: Der Loop erhält viele Werte bereits fertig. Er beweist nicht deren ursprüngliche Messung oder eine direkte DDO-Anbindung.
+
+### Z09 — Lernzustand → Optimization-Eingang
+
+Producer: Learning-Evidence-Export.
+
+Eingang: State-Referenzen, Outcome-/Horizontbezug und opake Economic-/Decision-/Safety-Labels samt Herkunft.
+
+Verarbeitung: Versionierten Record projizieren und als zulässigen Offline-Input validieren.
+
+Consumer: Optimization-M1-Admission.. Lokale Wirkung: ACK/Reject mit Bezug auf genau diese Evidence.
+
+Bedeutung: Economic-Label ist keine Renditeserie und ACK ist kein ausgeführter Suchlauf.
+
+Zeit-/Identitätsbindung: Stateversion, Bundle/Decision, Outcome-Klasse, Provenienz und Evidence-Pool.
+
+Autoritätsgrenze: Research-Input-Annahme; kein produktiver Writeback.
+
+Belege: JOINT: #6635/#6988, M1 sowie G2-Vertragsinkompatibilität am Pin.
+
+Offen/Grenze: Zusätzlicher M4-Forschungsrequest braucht eigenen Suchraum, Identität, Budget und Messdaten.
+
+### Z10 — Mehrere Versuche → Meta-Befund
+
+Producer: Forschungsserien und deren Failure-/Gap-Records.
+
+Eingang: Vergleichbare Meta-Einheiten und optional später bekannte Outcomes.
+
+Verarbeitung: Kohorten/Vergleichbarkeit bilden; Muster, Evidenzmenge und begrenzte Assoziationen auswerten.
+
+Consumer: Meta-Findings und Forschungsproposals.. Lokale Wirkung: Eine Aussage über mehrere Versuche entsteht.
+
+Bedeutung: Muster/Assoziation ist kein bewiesener Kausalmechanismus und keine automatische neue Messwahrheit.
+
+Zeit-/Identitätsbindung: Experimentübergreifende Vergleichbarkeit, Modelldigests, Evidence-/Analysezeit.
+
+Autoritätsgrenze: Forschungsaussage oder Empfehlung.
+
+Belege: SEM-05/06: August canonical_meta_learning_v1.
+
+Offen/Grenze: Memory→Meta-Units werden nicht automatisch erzeugt; September-M6-Projektion ist eine eigene Variante.
+
+### Z11 — Meta-Befund → nächste Forschungswahl
+
+Producer: Meta-/Failure-/Gap-Signale.
+
+Eingang: Übergebene Signale plus eigener Search-/Plane-Request.
+
+Verarbeitung: Targets abgleichen; Prioritäten, zulässige Methoden oder Forschungsbudget begrenzt bestimmen.
+
+Consumer: Advanced Search / Optimization-Forschungsplanung.. Lokale Wirkung: Kandidatenreihenfolge oder Forschungsanfragen können sich ändern.
+
+Bedeutung: Forschungspriorität und Budgeteinheiten sind weder Rendite noch Kapitalallokation.
+
+Zeit-/Identitätsbindung: Proposal-Target, Hypothese, Suchraum, Methodenvertrag, Identität und Zyklus.
+
+Autoritätsgrenze: Offline-Forschungsentscheidung.
+
+Belege: SEM-07; JOINT M7/M8.
+
+Offen/Grenze: Nicht jeder Targettyp hat einen passenden Consumer. Der nächste Request bleibt teilweise caller-supplied; ausgegebene Anfrage ist noch nicht ausgeführt.
+
+### Z12 — Optimization-Ergebnis → neue Learning-/Meta-Evidence
+
+Producer: Begrenzte Experiment-Plane / Auswertung.
+
+Eingang: Kandidaten, gelieferte/berechnete Resultate und Dispositionen.
+
+Verarbeitung: Ergebnis-/Meta-Evidence projizieren, Referenzen und Status weitergeben.
+
+Consumer: Learning-/Meta-Input und spätere Forschungszyklen.. Lokale Wirkung: Weitere Evidence und priorisierbare Hinweise stehen bereit.
+
+Bedeutung: Ein zurückgegebener Record ist nicht automatisch eine neue Datenerhebung oder wirksame Änderung des Folgeversuchs.
+
+Zeit-/Identitätsbindung: Kandidat/Experiment, Envelope, Resultat, Evidence und Zykluslineage.
+
+Autoritätsgrenze: Offline-Rückgabe, kein Self-Authorization-Recht.
+
+Belege: JOINT: M4/M6/M7/M8 und frühe Forschungsvarianten.
+
+Offen/Grenze: Reale Resultatproduzenten, Loader und tatsächliche Änderung des nächsten Forschungsrequests bleiben je Variante nachzuweisen.
+
+### Z13 — Vorschlag → geregelter Parameter-Consumer
+
+Producer: Optimization-Proposal und zuständiger Owner.
+
+Eingang: Konkretes Delta mit Surface, Target, Einheit, Kandidat und Forschungs-/Risk-Evidence.
+
+Verarbeitung: Review-Admission, gesonderter Owner-Input, Materialisierung und typisierte Consumer-Bindung.
+
+Consumer: Explizit benannter Konfigurations-/Parameter-Consumer.. Lokale Wirkung: Im geprüften frühen M9-Fall wird ein Max-Age-Wert in Sekunden sichtbar, ohne daraus Apply/Enforcement abzuleiten.
+
+Bedeutung: Vorschlag, zugelassener Wert, sichtbarer Wert und angewandte Regel sind getrennte Wirkungen.
+
+Zeit-/Identitätsbindung: Surface/Targetversion, Ingress-/Owner-/Kandidaten-Digests, Einheit und Lebensdauer.
+
+Autoritätsgrenze: Nur die konkret separat belegte Owner-/Consumer-Autorität; Learning/Optimization erhalten dadurch kein produktives Handelsrecht.
+
+Belege: JOINT: J09–J15, früher F1/M9-Transport.
+
+Offen/Grenze: Datierte Begrenzung nicht pauschal auf alle späteren Parameterpfade übertragen. Keine automatische Aktivierung aus dieser Übersicht.
+
+
+## Rückkopplungen haben verschiedene Bedeutung
+
+### Markt-/Entscheidungszyklus
+
+Neue Marktbeobachtung → Profil/Scope → Kandidat/Confirmation/Decision → nächste Marktbeobachtung.
+
+Reagiert auf den Markt; ist nicht schon Lernen.
+
+Beleggrenze: Mehrere konkrete Funktionen/Zweige belegt, vollständige historische Hostversorgung separat.
+
+### Erfahrungszyklus
+
+Decision → Folgebeobachtung → Outcome → Learning-State → enger Folgebezug.
+
+Erfahrung wird gebunden/fortgeschrieben; numerische Regeländerung ist eine weitere Stufe.
+
+Beleggrenze: State- und Capture-/Export-Teilwege vorhanden; echte Outcome-Zeitsemantik und einzelne Caller offen.
+
+### Forschungszyklus
+
+Hypothese/Parameter → Experimentresultat → Robustheit/Vergleich/Gap → neuer Forschungsrequest.
+
+Bewertet Experimente und erzeugt weitere Forschungsfragen.
+
+Beleggrenze: August-Teilfolge codiert; Messwerte und Wiedereintritt teilweise caller-supplied.
+
+### Meta-/Optimierungszyklus
+
+Mehrere Versuche → Muster/Meta-Evidence → Priorität/Budget/Methode → weitere Versuche.
+
+Die Ebene der Bewertung oder Suche wird selbst bewertet.
+
+Beleggrenze: Eigene Varianten mit teilweise realer Prioritätswirkung; kein allgemeiner autonom geschlossener Loop bewiesen.
+
+### Geregelter Änderungsweg
+
+Research-Proposal → Owner/Governance → konkreter Parameter-Consumer.
+
+Begründete Vorschläge können eine gesonderte Änderungsprüfung informieren.
+
+Beleggrenze: Kein automatisches produktives Änderungsrecht der Lern-/Optimierungsbereiche.
+
+
+Diese Unterscheidung hilft auch bei vermeintlich fehlenden Loops: Fehlender produktiver Writeback von Learning/Optimization kann eine gewollte Grenze sein. Dagegen kann eine fehlende Verwendung eines Meta-Befunds bei der nächsten Forschungswahl den gewünschten Erkenntnisgewinn begrenzen, ohne die Trading-Autorität zu berühren. Beides ist getrennt zu beurteilen.
+
+## Konkrete semantische Prüfstellen
+
+Erstens können gleiche Rohdaten verschiedene legitime Bedeutungen erzeugen. Eine gemeinsame Markquelle muss nicht aufgeteilt werden, nur weil Ranking und Scope andere Ausgänge brauchen. Entscheidend sind passende Fenster, Zeit-/Instrumentbindung und die Transformation beim Consumer.
+
+Zweitens ist ein technisch verbundener Weg nicht automatisch bedeutungstreu. Der bereits untersuchte Export-Seed kann vorhandene Schlusskurse auf spätere Zeitpunkte setzen; das erfüllt keine tatsächliche Zukunftsbeobachtung. Der Vergleich bezieht sich auf genau diese Variante, nicht auf jeden DDO-Pfad.
+
+Drittens ist eine vollständige Record-Struktur kein Beweis vollständiger Berechnung. Memory kann angelieferte Messwerte binden; ein Paritätsweg kann korrekte Owner aufrufen und dennoch Stub-Metriken erhalten. Die Frage ist dann, wer die benötigten Werte unter den richtigen Definitionen erzeugt.
+
+Viertens sind Meta-Ebenen nicht bloß weitere Speicherstufen: Sie verändern den Gegenstand der Aussage. Ein Einzelversuch wird beurteilt; mehrere vergleichbare Versuche können ein Muster tragen; ein Suchverfahren kann anhand solcher Befunde priorisiert werden. Welche zusätzliche Ebene ursprünglich gewollt war, muss aus ihren konkreten Fragen, Eingängen und Consumern rekonstruiert werden, nicht aus einer vorgegebenen Layerzahl.
+
+## Fortsetzung der Untersuchung
+
+Die weitere Arbeit folgt zusammenhängenden Bedeutungswegen: zuerst den fachlichen Zweck und die historischen Varianten erfassen; dann Producer und Consumer an passenden Revisionen lesen; anschließend prüfen, was am Übergang erhalten, verdichtet, verändert oder verworfen wird. Für einen behaupteten Rückfluss muss gezeigt werden, welche nächste Berechnung oder Forschungsentscheidung sich dadurch tatsächlich verändert. Primärquellen und Git-/PR-Historie bleiben nötig, ein globales Ursprungsdatum ist keine Voraussetzung mehr.
+
+Ein brauchbarer Kausalnachweis muss über den Empfang eines Records hinausgehen: Eine Veränderung des fachlich relevanten Inputs muss die vertraglich erwartete Consumer-Reaktion erklären. Das ist hier ein Prüfziel, kein neu ausgeführter Test. Nicht jeder Bereich muss produktiv verbunden werden, damit seine Offline-Aufgabe sinnvoll erfüllt ist.
+
+## Quellen und Geltung
+
+Dieser Durchgang synthetisiert bereits revisionsgebundene Untersuchungen; er ist kein neuer globaler Code-Audit oder Laufzeitnachweis. Die historische August-Forschung, September-DDO-/M1–M8-Verträge und spätere Host-/Parameterpfade werden nicht als ein gleichzeitig vollständig implementierter Stand ausgegeben. Die Einzelberichte erhalten ihre konkreten Commits, Unterschiede und offenen Fragen.
+
+- **IU:** [Intelligentes_Universum_Code_Urspruenge_und_Drei_Bereiche.md](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/intelligent-universe-functional-origins/Intelligentes_Universum_Code_Urspruenge_und_Drei_Bereiche.md) · SHA256 69c8ddd17a15fb7fb3425d4b1d77a44c901625e13958fbb6bb0feaaca4b7d0a2
+- **JOINT:** [Gemeinsame_Entwicklung_Datenuebergaben_und_Autoritaeten.md](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/learning-optimization-history/joint-handoffs-authority/Gemeinsame_Entwicklung_Datenuebergaben_und_Autoritaeten.md) · SHA256 227b1d28ebbe4fd022b56183e7b77d5ad95a10ed8dfbd3bffec652a2dbcc955f
+- **SEM:** [Self_Learning_Semantik_an_Datenuebergaengen.md](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/semantic-transitions/Self_Learning_Semantik_an_Datenuebergaengen.md) · SHA256 4d6e7657428ef4c29a7faf3adcc75f10a87d016ce7d6ad58b2de019f5787445a
+- **FLOW:** [Self_Learning_Verarbeitungsfolge_und_Nachspeisung.md](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/processing-sequence/Self_Learning_Verarbeitungsfolge_und_Nachspeisung.md) · SHA256 d9fbd08ceee5a717390ce108c126b8aba7430cb566cf19e6145c5fd3831714bb
+- **INTEGRATION:** [Gesamtbericht_Wert_und_semantische_Verbindbarkeit.md](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/semantic-integration-assessment-2026-11-02/Gesamtbericht_Wert_und_semantische_Verbindbarkeit.md) · SHA256 96b25e2b8b08b9d5797e8021b8726070459007dab77784ac2b3f8f433b8ab7d5
+- **DDO:** [Historischer_Entwurf_O4_NBars_und_spaeterer_Export_Seed.md](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/ddo-historical-intent-2026-11-02/Historischer_Entwurf_O4_NBars_und_spaeterer_Export_Seed.md) · SHA256 c2eacbbf03fcc8c4a201816e55bfe45b7fd03fda2235c8814b07e2bf147346fc
+
+[Strukturiertes Modell mit allen Übergaben](./semantic-interplay.json). Keine Repo-/Vault-Änderung, kein neuer Obsidian-RUN, keine Integration, Kalibrierung oder Handelsausführung. Nur diese externe Synthese und die vorhandene abgeleitete Übersicht werden ergänzt. [Verifikation](./verification.json).

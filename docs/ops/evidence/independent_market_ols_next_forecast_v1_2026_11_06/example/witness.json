@@ -1,0 +1,685 @@
+{
+  "source_class": "TEST_ONLY_SYNTHETIC_ORIGINAL_OWNERS",
+  "model_v1_ref": "mi.market.ols.8bb95db2cad4898c132d83d8170e9682650d5bb767d7d1d440860bdf2145f89d",
+  "model_v2_ref": "mi.market.ols.48387d2737d05f6c41333b3499f1ee53aa75f96aee6b6dcf6b489bfbaa2cfdbc",
+  "v1_coefficients": {
+    "intercept": -0.009878571428569127,
+    "mark": 0.0001085714285714058
+  },
+  "v2_coefficients": {
+    "intercept": -0.17521333333333206,
+    "mark": 0.0017224242424242304
+  },
+  "v1_validation": {
+    "heldout_mae": 4.5714285714358615e-05,
+    "heldout_residual_mean": -3.428571428562663e-05,
+    "heldout_residual_population_std": 4.5714285714358615e-05,
+    "heldout_rmse": 5.7142857142862874e-05,
+    "historical_supplied_forecasts_rmse": 0.01835027247754107,
+    "independent_quality_proven": false,
+    "training_rows": 6,
+    "validation_rows": 2
+  },
+  "v2_validation": {
+    "heldout_mae": 0.008773030303030298,
+    "heldout_residual_mean": -0.0015924242424242493,
+    "heldout_residual_population_std": 0.009872617057008296,
+    "heldout_rmse": 0.01000021912370882,
+    "historical_supplied_forecasts_rmse": 0.0005823153410846228,
+    "independent_quality_proven": false,
+    "training_rows": 10,
+    "validation_rows": 3
+  },
+  "first_computed_forecast": {
+    "provider": {
+      "schema_version": "independent_market_ols_forecast_provider_v1",
+      "authority": "NONE",
+      "model_ref": "mi.market.ols.8bb95db2cad4898c132d83d8170e9682650d5bb767d7d1d440860bdf2145f89d",
+      "model_exact_digest": "abae269df9b6163142383486c506f9bfd92cfbd86ac4ec5f24c6c3372deabcb8",
+      "job_key": {
+        "dataset_generation": "market.synthetic.1",
+        "venue": "okx",
+        "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+        "native_instrument_ref": "ETH-USDT-SWAP",
+        "information_set_ref": "mi.info_set.43656935a460b62e09fbac37688ba25c3dab202bd932b28b",
+        "target_spec_digest": "8eb7ddbdcc2e2dee892558f173aaee0e719b1192259fcbbbda739503d320b5ec",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_model_ref": "mi.market.ols.8bb95db2cad4898c132d83d8170e9682650d5bb767d7d1d440860bdf2145f89d",
+        "attempt_generation": "market.ols.inference.1205f6af64e1bc8b7ca20467f131686dd1889fd8c429c15c967adb079e0689d1",
+        "identity_kind": "MARKET_ONLY_V1"
+      },
+      "frozen_digest": "0ca21435643720f2f0962359b879d42dc6803d1603d700e1853f6c39ccfa3d20",
+      "feature_values": {
+        "mark": 112.0
+      },
+      "computed_payload": {
+        "mean_return": 0.0022814285714283216,
+        "std_return": 4.5714285714358615e-05
+      },
+      "computation": {
+        "model_ref": "mi.market.ols.8bb95db2cad4898c132d83d8170e9682650d5bb767d7d1d440860bdf2145f89d",
+        "model_exact_digest": "abae269df9b6163142383486c506f9bfd92cfbd86ac4ec5f24c6c3372deabcb8",
+        "context_digest": "79c6ecbaa3758ace19fdd8c96a177eb010a5e5b63e635f0afdf9bf86f7b1ee94",
+        "forecast_created_at": "2026-09-29T06:59:00Z",
+        "target_spec_digest": "8eb7ddbdcc2e2dee892558f173aaee0e719b1192259fcbbbda739503d320b5ec",
+        "feature_values": {
+          "mark": 112.0
+        },
+        "computed_payload": {
+          "mean_return": 0.0022814285714283216,
+          "std_return": 4.5714285714358615e-05
+        },
+        "requested_attempt_generation": "next.1"
+      },
+      "model_inference_performed": true,
+      "numeric_feature_consumption_proven": true,
+      "independent_quality_proven": false,
+      "productive_apply_authorized": false,
+      "exact_content_digest": "5dd1f2b12e97dddea4d0f003ccbdba22be44129698eb828f005139939ac5d2f3"
+    },
+    "frozen": {
+      "schema_version": "exact_independent_market_forecast_binding_v1",
+      "authority": "NONE",
+      "job_key": {
+        "dataset_generation": "market.synthetic.1",
+        "venue": "okx",
+        "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+        "native_instrument_ref": "ETH-USDT-SWAP",
+        "information_set_ref": "mi.info_set.43656935a460b62e09fbac37688ba25c3dab202bd932b28b",
+        "target_spec_digest": "8eb7ddbdcc2e2dee892558f173aaee0e719b1192259fcbbbda739503d320b5ec",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_model_ref": "mi.market.ols.8bb95db2cad4898c132d83d8170e9682650d5bb767d7d1d440860bdf2145f89d",
+        "attempt_generation": "market.ols.inference.1205f6af64e1bc8b7ca20467f131686dd1889fd8c429c15c967adb079e0689d1",
+        "identity_kind": "MARKET_ONLY_V1"
+      },
+      "context_package": {
+        "schema_version": "admitted_independent_market_context_v1",
+        "authority": "NONE",
+        "identity": {
+          "dataset_generation": "market.synthetic.1",
+          "venue": "okx",
+          "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+          "native_instrument_ref": "ETH-USDT-SWAP"
+        },
+        "as_of": "2026-09-29T06:59:00Z",
+        "admission_policy": {
+          "policy_ref": "explicit.synthetic.policy",
+          "max_age_seconds_by_role": {
+            "price_mark": 120,
+            "volatility": 120
+          },
+          "required_families": [
+            "price_state_ref"
+          ]
+        },
+        "market_context": {
+          "schema_version": "market_context_v1",
+          "contract_id": "normative_non_price_market_context_v1",
+          "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+          "context_id": "mi.market_context.060b8ae88a9ee5c46db5b40d01eb2f3cb9feafd1729551e0",
+          "observed_at": "2026-09-29T06:59:00Z",
+          "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+          "information_set_ref": "mi.info_set.43656935a460b62e09fbac37688ba25c3dab202bd932b28b",
+          "price_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "PRESENT",
+            "state_ref": "mi.ctx.price_state.691170338fbd59692836297d81db85d5f06b5777",
+            "pit_observed_at_utc": "2026-09-29T06:57:00Z",
+            "producer_owner": "ops.peak_trade_public_market_data_runtime_v1",
+            "producer_ownership": "GOVERNED",
+            "feature_version": "wp_a_finalized_mark_or_o4_bar_v1"
+          },
+          "flow_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_FLOW_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "liquidity_microstructure_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_MICROSTRUCTURE_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "derivatives_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_DERIVATIVES_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "volatility_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_VOLATILITY_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "cross_market_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_CROSS_MARKET_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "quality_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_QUALITY_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "provenance_refs": [
+            "prov.original"
+          ],
+          "feature_versions": {
+            "market_context_v1": "v1",
+            "market_context_existing_fact_materialization_v1": "market_context_existing_fact_materialization_v1",
+            "price_state": "wp_a_finalized_mark_or_o4_bar_v1",
+            "flow_state": "wp_a_trade_signed_notional_v1",
+            "liquidity_microstructure": "bouchaud_ohlcv_proxy_snapshot_v1",
+            "volatility_state": "canonical_volatility_estimate_feature_contract/v1"
+          },
+          "market_context_authority": "NONE",
+          "n_bars_backbone_semantics": "N_BARS_REALIZED_OUTCOME_BACKBONE_UNCHANGED",
+          "content_digest": "060b8ae88a9ee5c46db5b40d01eb2f3cb9feafd1729551e0d1a1ec11fecb360a"
+        },
+        "materialization_parameters": {
+          "information_set_identity_body": null,
+          "phase_19_present": false,
+          "cross_market_horizon_id": null,
+          "cross_market_lookback_bars": null
+        },
+        "derivations": {
+          "mi.ctx.price_state.691170338fbd59692836297d81db85d5f06b5777": {
+            "family": "price_state",
+            "fact_kind": "FinalizedPt1mMarkFactV1",
+            "fact_digest": "99311cf110e5cf31b19992039470cecd3cc14ae8c489fe101effac5931a279e3",
+            "mark_px": "112",
+            "interval_start_ms": 1790665020000
+          }
+        },
+        "source_bindings": [
+          {
+            "role": "price_mark",
+            "ordinal": 0,
+            "fact_kind": "FinalizedPt1mMarkFactV1",
+            "fact_digest": "99311cf110e5cf31b19992039470cecd3cc14ae8c489fe101effac5931a279e3",
+            "source_ref": "original.f491492ac47bd9787c82a994551e3ccc8ad0f951cb273e911c192e3e6ddd865b",
+            "producer_owner": "ops.peak_trade_public_market_data_runtime_v1",
+            "dataset_generation": "market.synthetic.1",
+            "original_bytes_sha256": "99311cf110e5cf31b19992039470cecd3cc14ae8c489fe101effac5931a279e3",
+            "original_payload_json": "{\"fact_kind\":\"FinalizedPt1mMarkFactV1\",\"instrument\":{\"canonical_instrument_id\":\"okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap\",\"venue\":\"okx\",\"venue_native_id\":\"ETH-USDT-SWAP\"},\"interval_start_ms\":1790665020000,\"mark_px\":\"112\",\"quality\":{\"finalized\":true,\"missing\":false},\"timestamps\":{\"captured_at\":\"2026-09-29T06:58:01Z\",\"effective_at\":\"2026-09-29T06:57:00Z\"}}",
+            "payload": {
+              "fact_kind": "FinalizedPt1mMarkFactV1",
+              "instrument": {
+                "canonical_instrument_id": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+                "venue": "okx",
+                "venue_native_id": "ETH-USDT-SWAP"
+              },
+              "interval_start_ms": 1790665020000,
+              "mark_px": "112",
+              "quality": {
+                "finalized": true,
+                "missing": false
+              },
+              "timestamps": {
+                "captured_at": "2026-09-29T06:58:01Z",
+                "effective_at": "2026-09-29T06:57:00Z"
+              }
+            },
+            "event_time": "2026-09-29T06:57:00+00:00",
+            "captured_at": "2026-09-29T06:58:01+00:00",
+            "known_at": "2026-09-29T06:58:01+00:00",
+            "available_at": "2026-09-29T06:58:01+00:00",
+            "units": {
+              "price": "USDT_PER_ETH"
+            }
+          }
+        ],
+        "context_status": "VALID",
+        "missing_families": [],
+        "forecast_disposition": "ABSTAIN",
+        "forecast_reason": "NO_ADMITTED_FORECAST_PROVIDER",
+        "source_authenticated": false,
+        "productive_apply_authorized": false,
+        "exact_content_digest": "79c6ecbaa3758ace19fdd8c96a177eb010a5e5b63e635f0afdf9bf86f7b1ee94"
+      },
+      "forecast_evidence": {
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "schema_version": "forecast_evidence_v1",
+        "information_set_ref": "mi.info_set.43656935a460b62e09fbac37688ba25c3dab202bd932b28b",
+        "forecast_created_at_utc": "2026-09-29T06:59:00Z",
+        "outcome_horizon_end_utc": "2026-09-29T09:00:00Z",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_kind": "RETURN_DISTRIBUTION_SUMMARY",
+        "probabilistic_payload_digest": "ca819c7c41bf73f77dfb4bf55a5e375bb8aba254eece546dd08e8f1e7c045e1d",
+        "market_state_refs": [
+          "mi.market_context.060b8ae88a9ee5c46db5b40d01eb2f3cb9feafd1729551e0"
+        ],
+        "forecast_model_ref": "mi.market.ols.8bb95db2cad4898c132d83d8170e9682650d5bb767d7d1d440860bdf2145f89d",
+        "support_disposition": "SUFFICIENT_EVIDENCE",
+        "outcome_binding_mode": "ACTUAL",
+        "forecast_evidence_id": "mi.forecast.5f5689db638de3c00186502edbbd5cc3ed9f767a6de225ff",
+        "probabilistic_payload": {
+          "mean_return": 0.0022814285714283216,
+          "std_return": 4.5714285714358615e-05
+        },
+        "provenance": {
+          "TEST_ONLY_SYNTHETIC": true,
+          "measured_return_target_v1": {
+            "schema_version": "independent_market_return_target_v1",
+            "market_request": {
+              "expected_price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+              "horizon_start_time_utc": "2026-09-29T07:00:00Z",
+              "market_identity": {
+                "dataset_generation": "market.synthetic.1",
+                "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+                "native_instrument_ref": "ETH-USDT-SWAP",
+                "venue": "okx"
+              },
+              "max_end_age_seconds": 1800,
+              "n_bars": 2,
+              "o4_interval_id": "PT1H",
+              "price_family": "MARK_PRICE",
+              "price_unit": "USDT_PER_ETH",
+              "schema_version": "independent_market_n_bars_request_v1",
+              "source_kind": "SYNTHETIC_OFFLINE"
+            },
+            "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+            "measurement_instrument_ref": "ddo.o4.inst.4ea511543c5a2e71fbebb0f52bf2473a3a231884bd5947017d6ac742b0971ded",
+            "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+            "n_bars": 2,
+            "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+            "outcome_scalar_kind": "LOG_RETURN",
+            "horizon_start_time_utc": "2026-09-29T07:00:00Z",
+            "return_start_close_time_utc": "2026-09-29T08:00:00Z",
+            "return_end_close_time_utc": "2026-09-29T09:00:00Z"
+          },
+          "numerical_provider_ref": "offline.independent_market_ols_next_forecast_v1",
+          "model_exact_digest": "abae269df9b6163142383486c506f9bfd92cfbd86ac4ec5f24c6c3372deabcb8",
+          "feature_values_exact_digest": "997f9d0916971a86b99cc2fd0e9a6c4a97794c19c63e6df75fb985e78c580d41",
+          "model_computation_digest": "1205f6af64e1bc8b7ca20467f131686dd1889fd8c429c15c967adb079e0689d1",
+          "distribution_calibration_proven": false
+        },
+        "content_digest": "7facff6151c55682f3bd81b29b6ca1ebc5cef9996193f6b575883dd4aecec83b",
+        "evidence_class": "FORECAST_EVIDENCE",
+        "universe_class": "MARKET_INTELLIGENCE_UNIVERSE",
+        "forecast_evidence_authority": "NONE",
+        "decision_event_ref": null,
+        "selected_instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+        "drift_assessment_refs": []
+      },
+      "provider_admission": {
+        "provider_ref": "offline.independent_market_ols_next_forecast_v1",
+        "model_ref": "mi.market.ols.8bb95db2cad4898c132d83d8170e9682650d5bb767d7d1d440860bdf2145f89d",
+        "feature_schema_ref": "2ea333c377fcedea257e8d09afdf4baa66b701efeb5e8a0ced9a1dc99c9f3fa8",
+        "training_dataset_ref": "0b453bfc922429ad293b7d38e5e18f3d0849c0b28512d69ac73a830eb36ff113",
+        "validation_ref": "60edfc65d45c73c2bd4dfac5ebff83219258cc4ed4727b0fc0b9f8ebcbdf0410",
+        "admitted_by_ref": "EXPLICIT_OFFLINE_OLS_BASELINE_POLICY_V1",
+        "model_artifact_sha256": "906e61e54d65a1392ea87c738c5c72b1a1cc5eb56fc91d1ad5c9da893318d64f",
+        "training_end": "2026-09-24T09:00:12Z",
+        "available_at": "2026-09-24T09:00:12Z",
+        "context_package_digest": "79c6ecbaa3758ace19fdd8c96a177eb010a5e5b63e635f0afdf9bf86f7b1ee94",
+        "max_context_age_seconds": 0,
+        "target_spec_digest": "8eb7ddbdcc2e2dee892558f173aaee0e719b1192259fcbbbda739503d320b5ec"
+      },
+      "original_probabilistic_payload_json": "{\"mean_return\":0.0022814285714283216,\"std_return\":4.5714285714358615e-05}",
+      "original_probabilistic_payload_sha256": "3a4def23da7bcf8ae312acfd4bf5ad0b89070a281239a9cc6cad0a328a2678e7",
+      "model_inference_performed": false,
+      "numeric_feature_consumption_proven": false,
+      "source_authenticated": false,
+      "productive_apply_authorized": false,
+      "exact_content_digest": "0ca21435643720f2f0962359b879d42dc6803d1603d700e1853f6c39ccfa3d20"
+    }
+  },
+  "later_original_calibration": {
+    "error": -0.00013142857142839273,
+    "method": "RETURN_ERROR_V1",
+    "realized_return": 0.002149999999999929
+  },
+  "computed_forecast_outcome_consumed_by_child": true,
+  "same_future_context": {
+    "features": {
+      "mark": 114.0
+    },
+    "parent_payload": {
+      "mean_return": 0.0024985714285711332,
+      "std_return": 4.5714285714358615e-05
+    },
+    "child_payload": {
+      "mean_return": 0.02114303030303022,
+      "std_return": 0.009872617057008296
+    }
+  },
+  "child_forecast": {
+    "provider": {
+      "schema_version": "independent_market_ols_forecast_provider_v1",
+      "authority": "NONE",
+      "model_ref": "mi.market.ols.48387d2737d05f6c41333b3499f1ee53aa75f96aee6b6dcf6b489bfbaa2cfdbc",
+      "model_exact_digest": "0ae331834bb5a6a15040435f5fdd63c2d18e584940aa4730c0158bd083dcd262",
+      "job_key": {
+        "dataset_generation": "market.synthetic.1",
+        "venue": "okx",
+        "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+        "native_instrument_ref": "ETH-USDT-SWAP",
+        "information_set_ref": "mi.info_set.b44f65370b414f6a610b3dc00bf92b1e4d754391315543ed",
+        "target_spec_digest": "0708ea75a5457b50a6cdb0a51fcf62bac8ea27fbd4b594b04dddb405419b5f56",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_model_ref": "mi.market.ols.48387d2737d05f6c41333b3499f1ee53aa75f96aee6b6dcf6b489bfbaa2cfdbc",
+        "attempt_generation": "market.ols.inference.1adb43cd63dd443f327e0697ea7cd3297b2d24e12840bab9cabbe12d8f7452ed",
+        "identity_kind": "MARKET_ONLY_V1"
+      },
+      "frozen_digest": "5a95d4c68399680c7ab9806232f885116ba2b59ecd8674253ccab88effb50af0",
+      "feature_values": {
+        "mark": 114.0
+      },
+      "computed_payload": {
+        "mean_return": 0.02114303030303022,
+        "std_return": 0.009872617057008296
+      },
+      "computation": {
+        "model_ref": "mi.market.ols.48387d2737d05f6c41333b3499f1ee53aa75f96aee6b6dcf6b489bfbaa2cfdbc",
+        "model_exact_digest": "0ae331834bb5a6a15040435f5fdd63c2d18e584940aa4730c0158bd083dcd262",
+        "context_digest": "b4e978c7759997b022716004fab46c2264e339747a1cda04a989bbafc7587af4",
+        "forecast_created_at": "2026-10-01T06:59:00Z",
+        "target_spec_digest": "0708ea75a5457b50a6cdb0a51fcf62bac8ea27fbd4b594b04dddb405419b5f56",
+        "feature_values": {
+          "mark": 114.0
+        },
+        "computed_payload": {
+          "mean_return": 0.02114303030303022,
+          "std_return": 0.009872617057008296
+        },
+        "requested_attempt_generation": "next.1"
+      },
+      "model_inference_performed": true,
+      "numeric_feature_consumption_proven": true,
+      "independent_quality_proven": false,
+      "productive_apply_authorized": false,
+      "exact_content_digest": "fd504edd7df7d0c7775d17a6e84fb9e28ff3831dd1a4b47eb693df425944f724"
+    },
+    "frozen": {
+      "schema_version": "exact_independent_market_forecast_binding_v1",
+      "authority": "NONE",
+      "job_key": {
+        "dataset_generation": "market.synthetic.1",
+        "venue": "okx",
+        "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+        "native_instrument_ref": "ETH-USDT-SWAP",
+        "information_set_ref": "mi.info_set.b44f65370b414f6a610b3dc00bf92b1e4d754391315543ed",
+        "target_spec_digest": "0708ea75a5457b50a6cdb0a51fcf62bac8ea27fbd4b594b04dddb405419b5f56",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_model_ref": "mi.market.ols.48387d2737d05f6c41333b3499f1ee53aa75f96aee6b6dcf6b489bfbaa2cfdbc",
+        "attempt_generation": "market.ols.inference.1adb43cd63dd443f327e0697ea7cd3297b2d24e12840bab9cabbe12d8f7452ed",
+        "identity_kind": "MARKET_ONLY_V1"
+      },
+      "context_package": {
+        "schema_version": "admitted_independent_market_context_v1",
+        "authority": "NONE",
+        "identity": {
+          "dataset_generation": "market.synthetic.1",
+          "venue": "okx",
+          "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+          "native_instrument_ref": "ETH-USDT-SWAP"
+        },
+        "as_of": "2026-10-01T06:59:00Z",
+        "admission_policy": {
+          "policy_ref": "explicit.synthetic.policy",
+          "max_age_seconds_by_role": {
+            "price_mark": 120,
+            "volatility": 120
+          },
+          "required_families": [
+            "price_state_ref"
+          ]
+        },
+        "market_context": {
+          "schema_version": "market_context_v1",
+          "contract_id": "normative_non_price_market_context_v1",
+          "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+          "context_id": "mi.market_context.a6541d764619d00aa3f3accd3aa55e43b031ebba74c2735f",
+          "observed_at": "2026-10-01T06:59:00Z",
+          "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+          "information_set_ref": "mi.info_set.b44f65370b414f6a610b3dc00bf92b1e4d754391315543ed",
+          "price_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "PRESENT",
+            "state_ref": "mi.ctx.price_state.9ebfc30eb7aea6e0a18a4e56ba8d9569dbd196b5",
+            "pit_observed_at_utc": "2026-10-01T06:57:00Z",
+            "producer_owner": "ops.peak_trade_public_market_data_runtime_v1",
+            "producer_ownership": "GOVERNED",
+            "feature_version": "wp_a_finalized_mark_or_o4_bar_v1"
+          },
+          "flow_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_FLOW_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "liquidity_microstructure_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_MICROSTRUCTURE_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "derivatives_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_DERIVATIVES_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "volatility_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_VOLATILITY_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "cross_market_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_CROSS_MARKET_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "quality_state_ref": {
+            "schema_version": "context_family_slot_v1",
+            "presence": "MISSING",
+            "state_ref": null,
+            "missing_reason": "NO_GOVERNED_QUALITY_FACT_REF_SUPPLIED",
+            "producer_owner": null,
+            "producer_ownership": "GOVERNED_MISSING"
+          },
+          "provenance_refs": [
+            "prov.original"
+          ],
+          "feature_versions": {
+            "market_context_v1": "v1",
+            "market_context_existing_fact_materialization_v1": "market_context_existing_fact_materialization_v1",
+            "price_state": "wp_a_finalized_mark_or_o4_bar_v1",
+            "flow_state": "wp_a_trade_signed_notional_v1",
+            "liquidity_microstructure": "bouchaud_ohlcv_proxy_snapshot_v1",
+            "volatility_state": "canonical_volatility_estimate_feature_contract/v1"
+          },
+          "market_context_authority": "NONE",
+          "n_bars_backbone_semantics": "N_BARS_REALIZED_OUTCOME_BACKBONE_UNCHANGED",
+          "content_digest": "a6541d764619d00aa3f3accd3aa55e43b031ebba74c2735f0881ed413de2a118"
+        },
+        "materialization_parameters": {
+          "information_set_identity_body": null,
+          "phase_19_present": false,
+          "cross_market_horizon_id": null,
+          "cross_market_lookback_bars": null
+        },
+        "derivations": {
+          "mi.ctx.price_state.9ebfc30eb7aea6e0a18a4e56ba8d9569dbd196b5": {
+            "family": "price_state",
+            "fact_kind": "FinalizedPt1mMarkFactV1",
+            "fact_digest": "dd6713e828f2468f1e207c40f338558e3d8c70344be2fbeb377c13ea00486295",
+            "mark_px": "114",
+            "interval_start_ms": 1790837820000
+          }
+        },
+        "source_bindings": [
+          {
+            "role": "price_mark",
+            "ordinal": 0,
+            "fact_kind": "FinalizedPt1mMarkFactV1",
+            "fact_digest": "dd6713e828f2468f1e207c40f338558e3d8c70344be2fbeb377c13ea00486295",
+            "source_ref": "original.f491492ac47bd9787c82a994551e3ccc8ad0f951cb273e911c192e3e6ddd865b",
+            "producer_owner": "ops.peak_trade_public_market_data_runtime_v1",
+            "dataset_generation": "market.synthetic.1",
+            "original_bytes_sha256": "dd6713e828f2468f1e207c40f338558e3d8c70344be2fbeb377c13ea00486295",
+            "original_payload_json": "{\"fact_kind\":\"FinalizedPt1mMarkFactV1\",\"instrument\":{\"canonical_instrument_id\":\"okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap\",\"venue\":\"okx\",\"venue_native_id\":\"ETH-USDT-SWAP\"},\"interval_start_ms\":1790837820000,\"mark_px\":\"114\",\"quality\":{\"finalized\":true,\"missing\":false},\"timestamps\":{\"captured_at\":\"2026-10-01T06:58:01Z\",\"effective_at\":\"2026-10-01T06:57:00Z\"}}",
+            "payload": {
+              "fact_kind": "FinalizedPt1mMarkFactV1",
+              "instrument": {
+                "canonical_instrument_id": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+                "venue": "okx",
+                "venue_native_id": "ETH-USDT-SWAP"
+              },
+              "interval_start_ms": 1790837820000,
+              "mark_px": "114",
+              "quality": {
+                "finalized": true,
+                "missing": false
+              },
+              "timestamps": {
+                "captured_at": "2026-10-01T06:58:01Z",
+                "effective_at": "2026-10-01T06:57:00Z"
+              }
+            },
+            "event_time": "2026-10-01T06:57:00+00:00",
+            "captured_at": "2026-10-01T06:58:01+00:00",
+            "known_at": "2026-10-01T06:58:01+00:00",
+            "available_at": "2026-10-01T06:58:01+00:00",
+            "units": {
+              "price": "USDT_PER_ETH"
+            }
+          }
+        ],
+        "context_status": "VALID",
+        "missing_families": [],
+        "forecast_disposition": "ABSTAIN",
+        "forecast_reason": "NO_ADMITTED_FORECAST_PROVIDER",
+        "source_authenticated": false,
+        "productive_apply_authorized": false,
+        "exact_content_digest": "b4e978c7759997b022716004fab46c2264e339747a1cda04a989bbafc7587af4"
+      },
+      "forecast_evidence": {
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "schema_version": "forecast_evidence_v1",
+        "information_set_ref": "mi.info_set.b44f65370b414f6a610b3dc00bf92b1e4d754391315543ed",
+        "forecast_created_at_utc": "2026-10-01T06:59:00Z",
+        "outcome_horizon_end_utc": "2026-10-01T09:00:00Z",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_kind": "RETURN_DISTRIBUTION_SUMMARY",
+        "probabilistic_payload_digest": "10f1e18a3e51bc59b20fb9bd2e20093653828a3034f68afaed85ba065a3d9fab",
+        "market_state_refs": [
+          "mi.market_context.a6541d764619d00aa3f3accd3aa55e43b031ebba74c2735f"
+        ],
+        "forecast_model_ref": "mi.market.ols.48387d2737d05f6c41333b3499f1ee53aa75f96aee6b6dcf6b489bfbaa2cfdbc",
+        "support_disposition": "SUFFICIENT_EVIDENCE",
+        "outcome_binding_mode": "ACTUAL",
+        "forecast_evidence_id": "mi.forecast.dbec86fc54a76cd54d948c1388a578c37a345ff7cce08266",
+        "probabilistic_payload": {
+          "mean_return": 0.02114303030303022,
+          "std_return": 0.009872617057008296
+        },
+        "provenance": {
+          "TEST_ONLY_SYNTHETIC": true,
+          "measured_return_target_v1": {
+            "schema_version": "independent_market_return_target_v1",
+            "market_request": {
+              "expected_price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+              "horizon_start_time_utc": "2026-10-01T07:00:00Z",
+              "market_identity": {
+                "dataset_generation": "market.synthetic.1",
+                "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+                "native_instrument_ref": "ETH-USDT-SWAP",
+                "venue": "okx"
+              },
+              "max_end_age_seconds": 1800,
+              "n_bars": 2,
+              "o4_interval_id": "PT1H",
+              "price_family": "MARK_PRICE",
+              "price_unit": "USDT_PER_ETH",
+              "schema_version": "independent_market_n_bars_request_v1",
+              "source_kind": "SYNTHETIC_OFFLINE"
+            },
+            "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+            "measurement_instrument_ref": "ddo.o4.inst.4ea511543c5a2e71fbebb0f52bf2473a3a231884bd5947017d6ac742b0971ded",
+            "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+            "n_bars": 2,
+            "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+            "outcome_scalar_kind": "LOG_RETURN",
+            "horizon_start_time_utc": "2026-10-01T07:00:00Z",
+            "return_start_close_time_utc": "2026-10-01T08:00:00Z",
+            "return_end_close_time_utc": "2026-10-01T09:00:00Z"
+          },
+          "numerical_provider_ref": "offline.independent_market_ols_next_forecast_v1",
+          "model_exact_digest": "0ae331834bb5a6a15040435f5fdd63c2d18e584940aa4730c0158bd083dcd262",
+          "feature_values_exact_digest": "6b57ed419b0870be79f84faa4b8c5c2e2592a11739e82324a31935deada2e0cb",
+          "model_computation_digest": "1adb43cd63dd443f327e0697ea7cd3297b2d24e12840bab9cabbe12d8f7452ed",
+          "distribution_calibration_proven": false
+        },
+        "content_digest": "e7c37d7a99303bd7b1ec9cad16a26667193dcc911e86b6fe9c49841356b721cd",
+        "evidence_class": "FORECAST_EVIDENCE",
+        "universe_class": "MARKET_INTELLIGENCE_UNIVERSE",
+        "forecast_evidence_authority": "NONE",
+        "decision_event_ref": null,
+        "selected_instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+        "drift_assessment_refs": []
+      },
+      "provider_admission": {
+        "provider_ref": "offline.independent_market_ols_next_forecast_v1",
+        "model_ref": "mi.market.ols.48387d2737d05f6c41333b3499f1ee53aa75f96aee6b6dcf6b489bfbaa2cfdbc",
+        "feature_schema_ref": "2ea333c377fcedea257e8d09afdf4baa66b701efeb5e8a0ced9a1dc99c9f3fa8",
+        "training_dataset_ref": "ff8a8f14f939cc5d96d6497acc62a1e8971686fa19a3752fdfe45c29e1532f9c",
+        "validation_ref": "17eb0049b04ff5470898ba23be5a95fbdc05cbb3676600bc465edb78bf83a43d",
+        "admitted_by_ref": "EXPLICIT_OFFLINE_OLS_BASELINE_POLICY_V1",
+        "model_artifact_sha256": "6b82af795fe831e9c4e89adb8263f553824be8095adcc2a48b8fab02b28e67ae",
+        "training_end": "2026-09-29T09:00:12Z",
+        "available_at": "2026-09-29T09:00:12Z",
+        "context_package_digest": "b4e978c7759997b022716004fab46c2264e339747a1cda04a989bbafc7587af4",
+        "max_context_age_seconds": 0,
+        "target_spec_digest": "0708ea75a5457b50a6cdb0a51fcf62bac8ea27fbd4b594b04dddb405419b5f56"
+      },
+      "original_probabilistic_payload_json": "{\"mean_return\":0.02114303030303022,\"std_return\":0.009872617057008296}",
+      "original_probabilistic_payload_sha256": "2a3e236f451a67724cee78c646c542ec042626a5bea623ae72d846fce432720a",
+      "model_inference_performed": false,
+      "numeric_feature_consumption_proven": false,
+      "source_authenticated": false,
+      "productive_apply_authorized": false,
+      "exact_content_digest": "5a95d4c68399680c7ab9806232f885116ba2b59ecd8674253ccab88effb50af0"
+    }
+  },
+  "cold_provider_exactly_equal": true,
+  "model_training_and_next_inference_performed": true,
+  "natural_source_quality_proven": false,
+  "double_play_benefit_proven": false,
+  "continuous_host_or_five_lane_runtime_activated": false
+}

@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-06",
+  "source": "user follow-up while the learning task was active",
+  "destination": "/Volumes/M2DATA",
+  "destination_folder": "NEW_FOLDER_TO_BE_CHOSEN_FOR_ARCHIVE",
+  "scope": "PeakTrade historical documentation/maps/graphs plus later Git history, worktrees and local legacy copies",
+  "target": "freeze a clean current visible repository layer and create one source-checked system graph",
+  "timing": "after current task; hard archive/history cut explicitly later",
+  "archive_check": "only newly copied PeakTrade files, automatically; no whole-drive audit",
+  "existing_external_archives_preserved": true,
+  "archive_or_git_history_mutation_executed": false
+}

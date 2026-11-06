@@ -214,7 +214,6 @@ INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER = (
     "trading.master_v2.integrated_offline_trading_logic_replay_v1"
 )
 
-_FORBIDDEN_INSTRUMENT_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "spot", "synthetic_spot"})
 
 _DEFAULT_STATIC_LIMITS = StaticHardLimits(
     min_band_width=1.0,
@@ -407,6 +406,8 @@ class IntegratedOfflineReplayIntermediateV1:
     # Pure-Stack display passthrough: identical TransitionDecision from transition_state.
     # Not reconstructed from StateSwitchEvidenceV1. Optional for additive V1 compatibility.
     transition_decision: Optional[TransitionDecision] = None
+    # Distance actually consumed to derive this cycle's Layer-C thresholds.
+    effective_scope_magnitude: Optional[float] = None
     capital_risk_mode: str = "OFFLINE_ALGEBRA"
 
 
@@ -852,8 +853,9 @@ def build_integrated_offline_replay_input_v1(
 
 
 def _instrument_allowed(instrument_id: str) -> bool:
-    lowered = instrument_id.lower()
-    return not any(token in lowered for token in _FORBIDDEN_INSTRUMENT_SUBSTRINGS)
+    from trading.master_v2.double_play_futures_input import futures_instrument_identity_allowed_v1
+
+    return futures_instrument_identity_allowed_v1(instrument_id)
 
 
 def _canonical_scope_event_to_scope_event(
@@ -924,10 +926,9 @@ def _seed_runtime_scope_from_snapshot_v1(
 ) -> RuntimeScopeState:
     """Initialize trailing envelope from identity snapshot — first cycle / reset only."""
     anchor = float(snapshot.trailing_anchor)
-    if snapshot_uses_instrument_relative_scope_magnitude_v1(snapshot):
-        band = float(snapshot.scope_band)
-    else:
-        band = max(float(snapshot.scope_band), float(snapshot.min_scope_band), 1.0)
+    if not snapshot_uses_instrument_relative_scope_magnitude_v1(snapshot):
+        raise ValueError("fixed_scope_policy_retired")
+    band = float(snapshot.scope_band)
     return RuntimeScopeState(
         anchor_price=anchor,
         current_upscope_boundary=float(snapshot.neutral_upper_boundary),
@@ -940,6 +941,7 @@ def _seed_runtime_scope_from_snapshot_v1(
         now_tick=now_tick,
         last_completed_side_switch_tick=-1_000_000,
         scope_stability_ticks=0,
+        scope_distance_mode="gge_raw_v2",
     )
 
 
@@ -971,44 +973,20 @@ def _runtime_envelope_containing_scope_v1(
     *,
     rules: Optional[DynamicScopeRules] = None,
 ) -> RuntimeEnvelope:
-    """Static envelope that contains the snapshot window; does not invent a ceiling.
-
-    Legacy clamp hosts use ``min_scope_band``/``max_scope_band`` (50/500). Instrument-relative
-    magnitude uses σ×P on the snapshot without that economic window. ``live_authorization`` False.
-    """
-    if snapshot_uses_instrument_relative_scope_magnitude_v1(snapshot):
-        snap_lo = float(_DEFAULT_STATIC_LIMITS.min_band_width)
-        rules_hi = float(rules.max_band_width) if rules is not None else 0.0
-        snap_hi = max(
-            float(_DEFAULT_STATIC_LIMITS.max_band_width),
-            float(snapshot.scope_band),
-            rules_hi,
-        )
-    else:
-        snap_lo = float(snapshot.min_scope_band)
-        snap_hi = float(snapshot.max_scope_band)
-    static_lo = min(float(_DEFAULT_STATIC_LIMITS.min_band_width), snap_lo)
-    static_hi = max(float(_DEFAULT_STATIC_LIMITS.max_band_width), snap_hi)
+    """Risk/transition envelope; its historical band fields cannot alter GGE."""
+    if not snapshot_uses_instrument_relative_scope_magnitude_v1(snapshot):
+        raise ValueError("fixed_scope_policy_retired")
     return RuntimeEnvelope(
         static=StaticHardLimits(
             max_notional=_DEFAULT_STATIC_LIMITS.max_notional,
             max_leverage=_DEFAULT_STATIC_LIMITS.max_leverage,
             max_switches_per_window=_DEFAULT_STATIC_LIMITS.max_switches_per_window,
-            min_band_width=static_lo,
-            max_band_width=static_hi,
+            min_band_width=_DEFAULT_STATIC_LIMITS.min_band_width,
+            max_band_width=_DEFAULT_STATIC_LIMITS.max_band_width,
         ),
         live_authorization=_DEFAULT_RUNTIME_ENVELOPE.live_authorization,
+        scope_distance_mode="gge_raw_v2",
     )
-
-
-def _effective_dynamic_scope_band_window_v1(
-    *,
-    rules: DynamicScopeRules,
-    env: RuntimeEnvelope,
-) -> tuple[float, float]:
-    lo = max(float(rules.min_band_width), float(env.static.min_band_width))
-    hi = min(float(rules.max_band_width), float(env.static.max_band_width))
-    return lo, hi
 
 
 def _rules_for_cycle_v1(
@@ -1020,6 +998,10 @@ def _rules_for_cycle_v1(
     if provided is not None:
         if provided.volatility_estimate is None:
             raise ValueError("dynamic_scope_rules_volatility_estimate_missing")
+        if bound_context is not None and float(provided.volatility_estimate) != float(
+            resolve_legacy_volatility_float_for_consumer_v1(bound_context)
+        ):
+            raise ValueError("dynamic_scope_rules_volatility_mismatch")
         return provided
     # Typed CMC present → sole adapter (resolve_legacy_volatility_float_for_consumer_v1).
     # Typed absent → existing CMC/snapshot float. Never max(..., 1e-9). Never invent 1.0.
@@ -1058,10 +1040,7 @@ def _rules_for_cycle_v1(
         max_band_width = max(live_raw_band, float(snapshot.scope_band), 0.0)
         min_band_width = 0.0
     else:
-        # Snapshot window is the allowed band identity. Do not min() against the
-        # quarantined constructor default (50.0), which collapsed productive 50/500.
-        min_band_width = max(float(snapshot.min_scope_band), _DEFAULT_SCOPE_RULES.min_band_width)
-        max_band_width = float(snapshot.max_scope_band)
+        raise ValueError("fixed_scope_policy_retired")
     return DynamicScopeRules(
         downscope_band_multiplier=_DEFAULT_SCOPE_RULES.downscope_band_multiplier,
         upscope_band_multiplier=_DEFAULT_SCOPE_RULES.upscope_band_multiplier,
@@ -1422,6 +1401,14 @@ def run_integrated_offline_trading_logic_replay_v1(
     """Execute the canonical STEP 29B–29H offline replay chain fail-closed."""
     fail_reasons: list[str] = []
     regime_bull_bear_switch_evidence_readmodel: Optional[object] = None
+    from trading.master_v2.canonical_scope_initialization_v1 import (
+        scope_initialization_policy_uses_instrument_relative_magnitude_v1,
+    )
+
+    if not scope_initialization_policy_uses_instrument_relative_magnitude_v1(
+        inp.policies.scope_initialization
+    ) or inp.policies.scope_event_generator.legacy_distance_limits:
+        fail_reasons.append("fixed_scope_policy_retired")
 
     if inp.strategy_identity_enforcement == STRATEGY_IDENTITY_ENFORCEMENT_REGISTRY_DERIVED:
         fail_reasons.extend(collect_suitability_identity_failures_v1(inp.strategy_registry))
@@ -1701,7 +1688,7 @@ def run_integrated_offline_trading_logic_replay_v1(
                 snapshot=current_scope,
                 bound_context=bound_context,
             )
-        except (CanonicalVolatilityBindingError, CanonicalVolatilityQuarantineError) as exc:
+        except (CanonicalVolatilityBindingError, CanonicalVolatilityQuarantineError, ValueError) as exc:
             reasons = (f"dynamic_scope_volatility_fail_closed:{type(exc).__name__}",)
             evidence = _blocked_evidence(inp, fail_reasons=reasons)
             return _annotated_replay_result(
@@ -1722,6 +1709,16 @@ def run_integrated_offline_trading_logic_replay_v1(
             )
         )
         active_for_trail = derive_active_side(inp.side_state)
+        if (
+            runtime_envelope.scope_distance_mode == "gge_raw_v2"
+            and runtime_scope_before.chop_latched
+            and runtime_scope_before.scope_distance_mode != "gge_raw_v2"
+        ):
+            reasons = ("legacy_chop_scope_requires_explicit_policy_migration",)
+            return _annotated_replay_result(
+                inp, replay_pass=False, fail_reasons=reasons,
+                evidence=_blocked_evidence(inp, fail_reasons=reasons),
+            )
         runtime_scope_pre = update_dynamic_boundaries(
             mark_price=float(inp.current_price),
             side=active_for_trail,
@@ -2256,6 +2253,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         next_scope_ref=next_scope_ref,
         runtime_scope_state_before=runtime_scope_before,
         runtime_scope_state_after=runtime_scope_after,
+        effective_scope_magnitude=float(runtime_scope_pre.current_hysteresis_band),
         runtime_scope_reinitialized=runtime_scope_reinitialized,
         trailing_anchor_used=trailing_anchor_used,
         directional_confirmation_progress_after=confirmation_progress_after,

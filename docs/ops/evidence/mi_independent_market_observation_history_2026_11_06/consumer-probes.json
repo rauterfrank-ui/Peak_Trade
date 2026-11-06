@@ -1,0 +1,53 @@
+{
+  "schema": "peaktrade.independent_market_history_contract_probes.v1",
+  "source_class": "PRESERVED_TEST_ONLY_SYNTHETIC_INPUTS",
+  "historical_runtime_reexecuted": false,
+  "product_writes_performed": false,
+  "new_training_or_inference": false,
+  "cases": {
+    "base_context_without_decision": {
+      "context_id": "mi.market_context.fd8806bd2c79faa072f67a66ac0e4cbb601989de000eef47",
+      "decision_field_present": false
+    },
+    "base_forecast_without_decision": {
+      "forecast_evidence_id": "mi.forecast.c4e94a2fcefa37a398e93fc00b6b3b81e2dbd005001a814d",
+      "decision_event_ref": null,
+      "same_identity_as_original_attributed_forecast": true
+    },
+    "no_observation": {
+      "evaluability": "NOT_EVALUABLE",
+      "actual_outcome_ref": null
+    },
+    "generic_join_of_unattributed_forecast_to_existing_decision_bound_outcome": {
+      "join_status": "JOINED",
+      "measurement_still_decision_bound": "ddo.dec:c60ad8237c334d252a548d52",
+      "calibration_result": {
+        "method": "RETURN_ERROR_V1",
+        "error": 0.0670113769896297,
+        "realized_return": 0.0870113769896297
+      },
+      "is_independent_measurement_proof": false
+    },
+    "typed_measured_join_rejects_absent_forecast_decision": {
+      "exception": "MeasuredReturnCalibrationError",
+      "reason": "FORECAST_MEASUREMENT_ENTITY_MISMATCH"
+    },
+    "observation_rejects_no_decision": {
+      "exception": "DdoValidationError",
+      "reason": "INVALID_RECORD_ID:decision_event_ref"
+    },
+    "new_integration_identity_rejects_no_decision": {
+      "exception": "IntelligenceIntegrationError",
+      "reason": "decision_event_ref_REQUIRED"
+    },
+    "original_measurement_record": {
+      "schema": "ddo_n_bars_outcome_measurement_evidence_v1",
+      "decision_field_present": false,
+      "actual_outcome_ref": "ddo.outcome.measure.fd96f5cdef02498808226425483d0ba794ec7022caacca4c930efd597beab33d",
+      "evaluation_information_set_still_has_decision": "ddo.dec:c60ad8237c334d252a548d52",
+      "original_content_validator": "PASS",
+      "probe_executed_decision_free_measurement_producer": false
+    }
+  },
+  "original_capsule_unchanged": true
+}

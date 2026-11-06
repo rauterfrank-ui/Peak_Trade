@@ -1,0 +1,91 @@
+# Vom Meta-Befund zur nächsten Suche: Bedeutung und tatsächliche Auswahlwirkung
+
+Stand: 02.11.2026. Fortsetzung der gemeinsamen Semantikrekonstruktion. Schwerpunkt ist nicht erneut die schon geprüfte September-M6/M7/M8-Evidence-Schleife, sondern die Frage, ob ein Forschungsbefund im älteren Meta-/Advanced-Search-Pfad tatsächlich einen anderen nächsten Versuch bewirkt.
+
+## Ergebnis
+
+Es gibt eine numerische Prioritätsfunktion und einen konkreten Budget-Consumer. Der belegte M4-Aufrufer versorgt die optionalen Meta-Eingänge jedoch nicht. Selbst bei direkter Übergabe sind Zieladressierung, Scoreänderung, Budgetaufnahme, Ausgabeordnung und ausgeführter Folgeversuch verschiedene Wirkungen.
+
+Neu präzisiert sind insbesondere eine inkompatible Parameterbereichsadresse und ein einheitlicher Zuschlag ohne relative Auswahlwirkung. Diese Befunde erklären das Zusammenspiel konkreter vorhandener Bausteine. Sie beweisen weder eine global fehlende Lernfähigkeit noch einen automatisch geschuldeten produktiven Writeback.
+
+## Quellen und Abgrenzung
+
+Fünf Dateien wurden direkt aus Git-Pin 5d1c838c15369507c5247834db4dd0df25592169 gesichert: Meta-Analysator, Advanced Search, M4-Experiment-Plane sowie ihre Meta-/Search-Tests. [Manifest](./sources.json). Alle fünf sind aktuell bytegleich zur betreffenden Arbeitskopiedatei; die vorhandenen sonstigen lokalen Änderungen wurden nicht verändert.
+
+Meta-Analysator und Advanced Search stimmen außerdem bytegenau mit den bereits gesicherten ursprünglichen August-Snapshots überein. Die M4-Datei unterscheidet sich vom früheren Snapshot nur durch Import/Nutzung des Governancestatus zero_authorized_productive_targets_v1; der hier betrachtete Request und Search-Aufruf sind unverändert. [Quellenvergleich](./previous-source-comparison.json).
+
+Der [vorherige September-Rückweg](../learning-optimization-history/meta-return-causal-use/Meta_Rueckweg_und_Wirkung_auf_den_Folgezyklus.md) bleibt erhalten: Evidence-Fortschreibung und Meta-Metadaten ändern dort nicht die caller-supplied plane_request. Dieser Durchgang untersucht die nächste fachliche Grenze, nicht denselben Befund ein weiteres Mal als neu.
+
+## 1. Der tatsächlich gefundene Search-Caller lässt die Meta-Eingänge leer
+
+[Advanced Search](./src__experiments__canonical_advanced_search_v1.py), Zeilen 284–306, besitzt meta_learning_signals, meta_learning_identity, failure_records und reality_gap_records als optionale Requestfelder.
+
+Die gepinnte namentliche Caller-Suche in src und scripts findet als externen direkten Aufrufer [M4](./src__experiments__canonical_optimization_universe_experiment_plane_v1.py), Zeilen 194–216. Dessen Requestklasse besitzt keine entsprechenden Meta-/Failure-/Gap-Felder; der Aufruf setzt sie auch nicht. Deshalb erhält Advanced Search hier seine leeren Defaultfolgen und meta_learning_identity=None. Die Tatsache, dass das Paket den Meta-Analysator als registrierte Capability kennt, ist kein Datenfluss in diesen Aufruf.
+
+Der Suchraum ist explizit auf diesen Git-Pin und die genannten Verzeichnisse beschränkt. Namentliche Builder-/Request-Suche ist kein Ausschluss externer oder dynamischer Aufrufer. Die Aussage über diesen M4-Pfad beruht zusätzlich auf seinen tatsächlichen Requestfeldern und Aufrufargumenten. [Gesicherter Caller-Schnitt](./calls-build_canonical_advanced_search_v1.txt).
+
+## 2. Parameterbereich bedeutet beim Producer und Consumer nicht dieselbe Adresse
+
+Der [Meta-Analysator](./src__experiments__canonical_meta_learning_v1.py), Zeilen 741–782, erkennt wiederholtes Overfit je vollständigem Parameterbereich. Er bildet einen Hash über das Parameter-Mapping mit eigener Digest-Domain und schreibt sowohl parameter_region als auch parameter_region_digest in den Befund. _overfit_proposals, Zeilen 1270–1284, macht daraus:
+
+- kind=DEPRIORITIZE_RESEARCH;
+- target_kind=parameter_region;
+- target=parameter_region_digest.
+
+Der [Search-Matcher](./src__experiments__canonical_advanced_search_v1.py), Zeilen 1260–1280, berechnet diesen Digest nicht. Bei parameter_region vergleicht er target mit den Texten einzelner Werte oder key=value. Für den gewöhnlichen numerischen Bereich {fast:10, slow:50} sind die Vergleichswerte beispielsweise 10, 50, fast=10 und slow=50. Keiner ist der 64-stellige Hash des ganzen Bereichs. Das ist eine direkte logische Ableitung aus den gelesenen Vergleichsformen, kein neu ausgeführtes Experiment.
+
+Der Befund kann also auf genau den richtigen Bereich zielen und dennoch keinen Prioritätsbeitrag erhalten. Ein zusätzlicher Mapper, der diese Adressen bedeutungstreu übersetzt, wurde im betrachteten Pfad nicht gefunden. Die Hypothesen-ID der Suche verwendet ebenfalls einen Hash, aber mit anderer Domain und anschließendem 12-Zeichen-Suffix; auch das ist keine implizite gemeinsame Adresse.
+
+Zusätzlich ist der Vergleich mit key=value an der regulären Signalgrenze selbst eingeschränkt: _require_token verlangt _TOKEN_RE mit Buchstaben/Ziffern/._:-; das Gleichheitszeichen ist darin nicht erlaubt. Die numerische Einzelwertvariante kann dagegen ein zulässiger Token sein. Auch hieraus folgt kein allgemeiner Ersatz für die Producer-Digest-Semantik.
+
+## 3. Ein höherer Score muss keine andere Forschungswahl bedeuten
+
+Eine einzelne Advanced-Search-Anfrage hat genau eine strategy_family, einen hypothesis_kind und eine search_space_id. Diese Requestwerte werden allen Kombinationen desselben Suchraums übergeben. Ein passender Family-/Kind-/Space-Hinweis verschiebt deshalb die Werte aller danach geeigneten Kandidaten gleich:
+
+Für zwei Kandidaten bleiben die Scoreunterschiede gleich, weil (s_i+c)−(s_j+c)=s_i−s_j. Bei unverändertem Budget, Eligibility und stabilen Hypothesen-IDs bleibt somit auch deren Budgetaufnahme unverändert. Das ist kein empirischer Wirksamkeitsversuch, sondern eine auf den codierten Matcher und Sortierschlüssel beschränkte algebraische Folgerung.
+
+Der [vorhandene Test](./tests__experiments__test_canonical_advanced_search_v1.py), Zeilen 373–386, bestätigt genau diese engere Absicht: Ein manuell gebauter Family-Hinweis bewirkt bei sämtlichen Kandidaten search_priority_score=20 und bindet die Proposal-IDs; die Autorität bleibt unverändert. Der Test prüft dort keine geänderte Kandidatenmenge durch Meta-Ergebnisse. Er wurde hier nur gelesen, nicht neu ausgeführt.
+
+Ein höherer Score könnte für einen äußeren Planer, der mehrere Familien-/Search-Requests gegeneinander abwägt, sinnvoll sein. Ein solcher Consumer ist durch die untersuchten Funktionen nicht belegt. Der vorhandene Einzelrequest-Algorithmus allein trifft diesen Vergleich nicht.
+
+## 4. Budgetaufnahme und ausgegebene Reihenfolge sind zwei weitere Stufen
+
+_assign_proposal_budget erzeugt aus candidates eine neue Liste eligible und sortiert diese nach absteigendem Score und Hypothesen-ID. Überzählige Kandidaten werden in den referenzierten Dictionaries als BUDGET_EXCLUDED markiert und verlieren ihren offline_experiment_request. Die ursprüngliche candidates-Liste wird dadurch nicht umsortiert.
+
+Anschließend entsteht proposed durch Filtern der ursprünglichen Kandidatenfolge. Auch [M4](./src__experiments__canonical_optimization_universe_experiment_plane_v1.py), Zeilen 219–238, filtert so und nimmt selected=proposed[0]. Bei mehreren budgetzulässigen Kandidaten ist das kein eigener Max-Score-Selektor, sondern der erste verbliebene Kandidat der ursprünglichen Kombinationsfolge. Bei Budget 1 kann ein tatsächlich differenzierendes Signal dagegen die Aufnahme dieses einen Kandidaten bestimmen. Das ist eine bedingte Fähigkeit des Suchmoduls, kein hier beobachteter automatisch erzeugter Meta-Folgeversuch.
+
+Die ausgegebenen Offline-Anfragen tragen executed=False und loop_started=False, Zeilen 1283–1301. Selbst eine geänderte Requestmenge beweist daher noch keine neue tatsächliche Messung oder einen automatisch ausgeführten Research-Zyklus.
+
+## 5. Welche Meta-Ziele der Search-Consumer tatsächlich versteht
+
+Neun Producer-Zielarten wurden gegen denselben Consumer verglichen. Alle Aussagen beziehen sich auf diesen Matcher, nicht auf sämtliche möglichen Empfänger des Systems:
+
+- **strategy_family:** Producer liefert Strategiefamilienname. Consumer: Expliziter Vergleich mit request.strategy_family. Wirkung/Grenze: Bei Treffer einheitlicher Zuschlag für die geeigneten Kandidaten derselben Anfrage; kein Familienvergleich über mehrere Requests.
+- **hypothesis_kind:** Producer liefert Hypothesentyp. Consumer: Expliziter Vergleich mit request.hypothesis_kind. Wirkung/Grenze: Einheitlicher Zuschlag innerhalb dieser Anfrage.
+- **search_space:** Producer liefert Search-Space-ID. Consumer: Kein expliziter search_space-Zweig, aber Fallback vergleicht auch search_space_id. Wirkung/Grenze: Kann passen, ebenfalls einheitlicher Zuschlag für den aktuellen Suchraum.
+- **parameter_region:** Producer liefert Digest des vollständigen Parameter-Mappings. Consumer: Vergleich mit einzelnen Wertstrings oder key=value-Strings; kein Digest des Mappings. Wirkung/Grenze: Bei numerischem Bereich wie fast=10/slow=50 kein fachlich passender Treffer des Producer-Digests.
+- **cost_model:** Producer liefert Kostenmodell-Digest. Consumer: Nur generischer Fallback auf Family/Space/Hypothesentyp. Wirkung/Grenze: Kein Kostenmodell-Digest-Vergleich; dieser Consumer setzt die fachliche Kostenuntersuchung nicht spezifisch um.
+- **robustness_test:** Producer liefert Test-ID. Consumer: Nur generischer Fallback auf Family/Space/Hypothesentyp. Wirkung/Grenze: Kein Test-ID-Consumer in diesem Matcher.
+- **backtest_metric:** Producer liefert Metrikname. Consumer: Nur generischer Fallback auf Family/Space/Hypothesentyp. Wirkung/Grenze: Kein spezifischer Metrik-Consumer.
+- **regime:** Producer liefert Research-Regimename. Consumer: Nur generischer Fallback; request.regime wird dem Matcher nicht übergeben. Wirkung/Grenze: Kein spezifischer Regimevergleich an dieser Grenze.
+- **research_path:** Producer liefert Forschungspfad-ID. Consumer: Nur generischer Fallback auf Family/Space/Hypothesentyp. Wirkung/Grenze: Kein spezifischer Forschungsweg-Consumer.
+
+Kosten-, Test-, Metrik-, Regime- und Forschungsweg-Targets können für andere Forschungsconsumer sinnvoll sein. Ihr fehlender spezifischer Handler in Advanced Search ist deshalb nicht automatisch ein Auftrag, alle Bedeutungen in diesen einen Algorithmus zu pressen. Ein zufälliger Textgleichstand mit Family-/Space-/Kind-Namen wäre kein fachlich sauberer Ersatz.
+
+## 6. Wissenschaftlicher Befund und Suchsignal sind verschiedene Ebenen
+
+Der Meta-Analysator prüft Vergleichbarkeit und begrenzte Aussagekraft und kann unter anderem claim_type ausgeben. Sein Ergebnis ist ein Befund über eine Forschungsserie. Die Suchprojektion übernimmt dagegen ein kleineres Proposal-Schema: kind, target_kind, target, reason und Identitätsreferenzen. Findings und claim_type werden an dieser Grenze nicht als eigene Felder in das Signal übernommen und von der Prioritätsfunktion nicht ausgewertet.
+
+Diese Verdichtung kann beabsichtigt sein: Eine Suchanweisung muss nicht selbst die statistische Auswertung wiederholen. Dann muss aber ihre Herkunft zur wissenschaftlichen Aussage nachvollziehbar bleiben, und der konkrete Zieltyp muss beim Empfänger die gewünschte Wirkung besitzen. Eine COMPLETE-Record-Struktur, ein gebundener Hash oder ein geänderter Score beantwortet diese Frage nicht allein.
+
+## Konsequenz für das Zusammenspiel der Bereiche
+
+Der Informationsweg hat mehrere eigenständige Bedeutungsstufen: Instrument-/Marktbeobachtung → Experimentresultat → vergleichbarer Forschungsbefund → Meta-Target → zulässiges Suchsignal → relative Priorität → Budgetaufnahme → konkrete nächste Anfrage → tatsächliche Ausführung → neues Resultat.
+
+Die bislang gefundenen Markt-/Instrumentprofile erzeugen nicht automatisch die Meta-Units oder Forschungsmetriken dieses Pfads. M4 bekommt Suchraum und Scores vom Caller. Die Rückgabe von Learning-Evidence und September-M7-Metadaten füllt die hier leeren Meta-Felder nicht von selbst. Der Intelligent-/Marktbereich, Learning und Optimization sind damit über konkrete Teilverträge erklärbar; der vollständige Daten- und Wirkungszusammenhang bleibt an diesen Übergängen gezielt zu prüfen.
+
+Der nächste sinnvolle Anschluss ist ein belegter Request-Planer beziehungsweise Mapper: Welche Proposal-Typen soll er welchen Forschungsconsumern zuführen, mit welcher Targetidentität und welcher beobachtbaren Wirkung? Ein existierender externer oder anderer historischer Pfad ist nicht ausgeschlossen. Eine neue Brücke wird hier nicht implementiert oder als automatisch erforderlich ratifiziert.
+
+## Prüfstatus
+
+Nur gepinnte Quelltexte, existierende Tests und vorhandene historische Quellen verglichen. Kein Produktcode, Test, Training oder Research-Lauf ausgeführt; keine simulierte Demonstration als Laufzeitbeweis ausgegeben. Vorhandene Dateien und Evidence erhalten. [Verifikation](./verification.json) · [strukturierte Befunde und Zielmatrix](./semantic-findings.json).

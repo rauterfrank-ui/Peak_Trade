@@ -1,0 +1,18 @@
+{
+  "schema": "peaktrade.approved_reconfiguration_core.v1",
+  "approved_revision": "c17ffa3f9",
+  "rationale": "Owner-directed GGE-only and common BTC admission replaces the old origin/main source comparison. All listed core, ranking, selection, sizing and config files remain frozen at the approved revision; no glob exclusions.",
+  "decision_contract": "docs/ops/specs/GGE_ONLY_FUTURES_AND_COMMON_ASSET_ADMISSION_V3.md",
+  "sha256": {
+    "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py": "667748e8964c126c724d8f6594f64d4ae0b30a8f5d46c56c350d6cd27f7be042",
+    "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py": "3945064900517d5895079726a163bc29fa538a6fd4ed2b2c11b4ac9b3beba2fd",
+    "src/ops/productive_futures_ranking_producer_v1/policy_v1.py": "cbb2f49e5f18bc7f13df6cd2b15f6e9a84f6162829526c3fd175f46f0ae4538a",
+    "src/ops/single_selected_future_policy_v1/selection_v1.py": "059b877032955079a3d84d46cd55113cd510c1e7922cc24953fabd284245f5ad",
+    "src/ops/single_selected_future_policy_v1/policy_v1.py": "e5a30f8b5410401827c1d42c7aaf99f468b13f52cc67ca8e2796d60d46b6d750",
+    "src/trading/master_v2/double_play_state.py": "a4946a56874db5ed86c66cc0bac16f7a6b4b5d7e71eab04ed016f5933209569e",
+    "src/trading/master_v2/double_play_entry_exit_policy_v0.py": "15fb8967ac153cdbc85ea1e4f3d09a9cf315f2fa97b2742e9d427df5938d1150",
+    "src/trading/master_v2/deterministic_scope_event_generator_v1.py": "ac4ef2dacee28101b5c5f324836390c34b8e7d4a6682e44f61933f131fb09c2f",
+    "src/governance/capital_risk_sizing_v1.py": "5beb463291672c5058724953b61c86d1ddbbbad8f2657f138bb0ffd2ac4ffce8",
+    "config/ops/canonical_decision_runtime_config_v1.toml": "1258f3bcf9d70502d35ccd4d404f497f9e9caf58796b4d0f6d835f64a842b9ef"
+  }
+}

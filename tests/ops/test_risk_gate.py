@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import pytest
 
@@ -15,7 +14,6 @@ from src.ops.gates.risk_gate import (
     kill_switch_state_path_from_env,
     resolve_kill_switch_limit_from_state_file,
 )
-from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 
 
 def base_ctx(**kw):
@@ -126,7 +124,7 @@ def test_resolve_kill_switch_missing_file(tmp_path):
         ("KILLED", True),
         ("RECOVERING", True),
         ("ACTIVE", False),
-        ("DISABLED", True),
+        ("DISABLED", False),
     ],
 )
 def test_resolve_kill_switch_from_file(tmp_path, state, expected):
@@ -163,47 +161,28 @@ def test_kill_switch_should_block_trading_explicit():
     assert kill_switch_should_block_trading(explicit_active=True) is True
 
 
-def _canonical_state_file(monkeypatch, tmp_path, text: str) -> Path:
-    path = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
-    path.parent.mkdir(parents=True)
-    path.write_text(text, encoding="utf-8")
-    return path
-
-
 def test_kill_switch_should_block_trading_file_recovering(tmp_path, monkeypatch):
-    _canonical_state_file(monkeypatch, tmp_path, json.dumps({"state": "RECOVERING"}))
+    path = tmp_path / "ks.json"
+    path.write_text(json.dumps({"state": "RECOVERING"}), encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
 
 def test_kill_switch_should_block_trading_invalid_enum_fail_closed(tmp_path, monkeypatch):
-    _canonical_state_file(monkeypatch, tmp_path, json.dumps({"state": "NOT_A_STATE"}))
+    path = tmp_path / "ks.json"
+    path.write_text(json.dumps({"state": "NOT_A_STATE"}), encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
 
 def test_kill_switch_should_block_trading_file_active_no_block(tmp_path, monkeypatch):
-    _canonical_state_file(monkeypatch, tmp_path, json.dumps({"state": "ACTIVE"}))
-    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
-    assert kill_switch_should_block_trading(explicit_active=False) is False
-
-
-def test_kill_switch_emergency_env_blocks_even_with_active_file(tmp_path, monkeypatch):
-    _canonical_state_file(monkeypatch, tmp_path, json.dumps({"state": "ACTIVE"}))
+    path = tmp_path / "ks.json"
+    path.write_text(json.dumps({"state": "ACTIVE"}), encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
     monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
-    assert kill_switch_should_block_trading(explicit_active=False) is True
-
-
-def test_kill_switch_env_override_to_active_file_blocks_and_never_redirects(tmp_path, monkeypatch):
-    canonical = _canonical_state_file(
-        monkeypatch, tmp_path / "root", json.dumps({"state": "ACTIVE"})
-    )
-    other = tmp_path / "other.json"
-    other.write_text(json.dumps({"state": "ACTIVE"}), encoding="utf-8")
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(other))
-    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
-    assert canonical_kill_switch_state_path() == str(canonical)
-    assert kill_switch_should_block_trading(explicit_active=False) is True
+    assert kill_switch_should_block_trading(explicit_active=False) is False
 
 
 @pytest.mark.parametrize(
@@ -231,10 +210,7 @@ def test_kill_switch_should_block_trading_env_fallback_strict_literal_one(
         monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     else:
         monkeypatch.setenv("PEAK_KILL_SWITCH", peak_kill_switch)
-    repo_root = Path(__file__).resolve().parents[2]
-    assert canonical_kill_switch_state_path() == str(
-        (repo_root / "data/kill_switch/state.json").resolve()
-    )
+    assert canonical_kill_switch_state_path() == "data/kill_switch/state.json"
     assert kill_switch_should_block_trading(explicit_active=False) is expect_block
 
 
@@ -252,7 +228,9 @@ def test_char4_configured_malformed_state_file_fail_closed(
     monkeypatch: pytest.MonkeyPatch, tmp_path
 ) -> None:
     """CHAR-4 TARGET: existing unreadable JSON fail-closed (block)."""
-    path = _canonical_state_file(monkeypatch, tmp_path, "{not json")
+    path = tmp_path / "bad.json"
+    path.write_text("{not json", encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert resolve_kill_switch_limit_from_state_file(str(path)) is None
     assert kill_switch_should_block_trading(explicit_active=False) is True

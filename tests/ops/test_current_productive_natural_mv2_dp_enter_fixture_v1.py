@@ -82,7 +82,8 @@ def test_current_mv2_dp_natural_long_entry_v1() -> None:
     assert intermediate.composition_result.composition_status is CompositionStatus.LONG_SELECTED
     assert intermediate.bull_assessment is not None
     assert intermediate.bull_assessment.status is DirectionalAssessmentStatus.CONFIRMED
-    assert float(mark_px) == 1635.0
+    assert float(mark_px) == float(_closes[-1])
+    assert float(mark_px) == float(intermediate.market_context.mark_price)
     assert "first-class opposing layers" in CANONICAL_BULL_BEAR_SYMMETRY_INVARIANT_V1
 
 
@@ -219,19 +220,19 @@ def test_layered_short_arm_persist_restore_then_enter_short(tmp_path: Path) -> N
 
 
 def test_bilateral_natural_enter_crs_binds_only_at_enter_live_29p_join_v1() -> None:
-    """Same CRS owner/bind for Long and Short: pre-join None → join LIVE_ACCOUNT_BOUND PASS."""
+    """Both sides replace host offline algebra with account-bound reserved sizing."""
     from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
         DECISION_ENTER,
         STATUS_PASS,
-        join_current_productive_enter_live_29p_before_venue_plan_v1,
     )
     from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
-        EPOCH,
         _balance_payload,
         _injected,
+        _join,
     )
     from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
         CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+        CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
     )
 
     g17 = _produced_g17_producer(instrument_id=_INSTRUMENT)
@@ -240,13 +241,12 @@ def test_bilateral_natural_enter_crs_binds_only_at_enter_live_29p_join_v1() -> N
     def _assert_join_crs(enter_cycle: object) -> None:
         replay = getattr(enter_cycle, "replay", None)
         assert replay is not None
-        assert replay.intermediate.capital_risk_sizing_decision is None
-        assert replay.intermediate.canonical_order_intent is None
-        join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        assert replay.intermediate.capital_risk_sizing_decision is not None
+        assert replay.intermediate.capital_risk_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
+        join = _join(
             replay=replay,
-            bound_instrument=bound,
+            bound=bound,
             injected=_injected(payload=_balance_payload()),
-            decision_epoch=EPOCH,
         )
         assert join.decision_class == DECISION_ENTER
         assert join.status == STATUS_PASS

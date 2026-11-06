@@ -1,0 +1,30 @@
+[
+  {
+    "pattern": "FIXTURE_FEATURE_USEFULNESS",
+    "result": "IDENTICAL_FULL_PLAN_AND_DIGEST"
+  },
+  {
+    "pattern": "FIXTURE_REGIME_CONDITIONALITY",
+    "result": "IDENTICAL_FULL_PLAN_AND_DIGEST"
+  },
+  {
+    "pattern": "FIXTURE_CONTEXT_FAMILY_USEFULNESS",
+    "result": "IDENTICAL_FULL_PLAN_AND_DIGEST"
+  },
+  {
+    "pattern": "FIXTURE_REPRESENTATION_REDUNDANCY",
+    "result": "IDENTICAL_FULL_PLAN_AND_DIGEST"
+  },
+  {
+    "pattern": "FIXTURE_COVERAGE_WEAKNESS",
+    "result": "IDENTICAL_FULL_PLAN_AND_DIGEST"
+  },
+  {
+    "pattern": "FIXTURE_REPRESENTATION_DRIFT",
+    "result": "IDENTICAL_FULL_PLAN_AND_DIGEST"
+  },
+  {
+    "pattern": "FIXTURE_FAILED_REPRESENTATION_HYPOTHESIS",
+    "result": "IDENTICAL_FULL_PLAN_AND_DIGEST"
+  }
+]

@@ -249,9 +249,9 @@ def _mv2_aligned_candles(*, last_ts_ms: int, mark_px: float) -> dict[str, object
     """C1 payload whose last close matches S7 mark_px; prior bars differ for P5 init."""
     rows: list[list[str]] = []
     base = float(mark_px)
-    for index in range(8):
-        ts = str(last_ts_ms - (7 - index) * 60_000)
-        close = base - (7 - index) * 0.5
+    for index in range(100):
+        ts = str(last_ts_ms - (99 - index) * 60_000)
+        close = base - (99 - index) * 0.5
         px = f"{close:.4f}"
         rows.append([ts, px, px, px, px, "10", "100", "USDT", "1"])
     return {"code": "0", "data": rows}
@@ -286,7 +286,7 @@ def _market_kwargs(
         "volume": 10.0,
         "open_interest": 20.0,
         "funding_rate": 0.0001,
-        "finalized_closes": (98.0, 99.0, 100.0),
+        "finalized_closes": tuple(100.0 - (99 - i) * 0.5 for i in range(100)),
         "last_finalized_event_ts_unix": float(PREVIOUS_C1_VENUE_EVENT_TIME),
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,

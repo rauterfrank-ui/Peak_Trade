@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     carry_occupied_lane_mv2_dp_decision_state_in_memory_v1,
     invoke_occupied_lane_mv2_dp_decision_state_consumer_v1,
@@ -12,13 +14,13 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     run_current_productive_master_v2_runtime_cycle_v1,
 )
 from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+    governed_c1_aligned_g17_dk_producer_v1,
     strong_uptrend_closes_v1,
 )
 from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
     non_productive_test_master_v2_reconciliation_admission_v1,
 )
 from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
-    _lane_g17,
     _pair,
 )
 from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1 import (
@@ -52,7 +54,7 @@ def test_resolve_host_market_sample_prefers_accepted_c1() -> None:
 
 def test_mv2_host_c1_uses_accepted_c1_not_last_finalized_grid_anchor() -> None:
     bound = _bound()
-    closes = strong_uptrend_closes_v1(count=8)
+    closes = strong_uptrend_closes_v1()
     grid_anchor = 1_700_000_000.0
     accepted_c1 = grid_anchor + 120.0
     mark = float(closes[-1])
@@ -96,7 +98,7 @@ def test_mv2_host_c1_uses_accepted_c1_not_last_finalized_grid_anchor() -> None:
 
 def test_mv2_duplicate_does_not_advance_identity_on_accepted_c1() -> None:
     bound = _bound()
-    closes = strong_uptrend_closes_v1(count=8)
+    closes = strong_uptrend_closes_v1()
     accepted_c1 = 1_700_000_200.0
     mark = float(closes[-1])
     from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
@@ -145,16 +147,23 @@ def test_mv2_duplicate_does_not_advance_identity_on_accepted_c1() -> None:
 
 def test_rc_ord_cursor_carry_advances_cap61_across_two_mv2_cycles(tmp_path: Path) -> None:
     pair = _pair(tmp_path, "LANE_1")
+    pair = (pair[0], replace(pair[1], venue_native_id="ETH-USDT-SWAP"))
     prov = build_provenance_from_governed_synthetic_close_mark_and_index_v1(
         venue_native_id=str(pair[1].venue_native_id),
         mark_px=100.0,
         index_px=99.5,
     )
-    g17 = {"LANE_1": _lane_g17({"LANE_1": pair})["LANE_1"]}
-    base = {**_carry_kwargs(cycle_id_prefix="rc-ord-carry-1"), "g17_typed_vol_producers": g17}
-    base["canonical_price_provenance"] = prov
     first_ts = 1_700_000_200.0
     second_ts = first_ts + 60.0
+    g17 = {"LANE_1": governed_c1_aligned_g17_dk_producer_v1(
+        bound=pair[1], anchor_event_ts_unix=first_ts - 60,
+        evidence_store_root=tmp_path / "g17",
+    )}
+    base = {**_carry_kwargs(cycle_id_prefix="rc-ord-carry-1"), "g17_typed_vol_producers": g17}
+    base["canonical_price_provenance"] = prov
+    base["finalized_closes"] = tuple(100.0 - (99 - i) * 0.5 for i in range(100))
+    base["last_finalized_event_ts_unix"] = first_ts - 60
+    base["observed_unix"] = first_ts + 1
     first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
         {"LANE_1": pair},
         **base,
@@ -163,7 +172,7 @@ def test_rc_ord_cursor_carry_advances_cap61_across_two_mv2_cycles(tmp_path: Path
     second = carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
         {"LANE_1": pair},
         {"LANE_1": first},
-        **{**base, "cycle_id_prefix": "rc-ord-carry-2"},
+        **{**base, "cycle_id_prefix": "rc-ord-carry-2", "observed_unix": second_ts + 1},
         accepted_c1_venue_event_time_unix=second_ts,
     )["LANE_1"]
     assert second.incoming_cursor is not None

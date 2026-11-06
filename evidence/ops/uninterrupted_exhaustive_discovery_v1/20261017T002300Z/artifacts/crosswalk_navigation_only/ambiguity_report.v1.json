@@ -1,0 +1,305 @@
+{
+  "ambiguous": [],
+  "collisions": [],
+  "unresolved_edges": [
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "mv2_to_sizing",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "safety_signals_into_integrated_replay",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "integrated_replay_safety_gate_before_intent",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "intent_to_execution",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "portfolio_to_enter",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "authorization_to_seam",
+      "reason": "UNRESOLVED_FLOW_TYPE:PROMOTION_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "dashboard_read",
+      "reason": "UNRESOLVED_FLOW_TYPE:PRESENTATION_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "fa_compose_governed_cycle_n1",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "fa_compose_portfolio_budget",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "c1_injected_governed_cycle",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "k1_bind_governed_cycle_occupancy",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "mv2_valid_no_trade_terminal",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "mv2_executable_pre_external_terminal",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "reconciliation_startup_before_cap24_bind",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT_FLOW",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-001",
+      "reason": "UNRESOLVED_FLOW_TYPE:DATA",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-002",
+      "reason": "UNRESOLVED_FLOW_TYPE:DATA",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-003",
+      "reason": "UNRESOLVED_FLOW_TYPE:CONSTRAINT",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-004",
+      "reason": "UNRESOLVED_FLOW_TYPE:EVIDENCE",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-005",
+      "reason": "UNRESOLVED_FLOW_TYPE:PRESENTATION",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-006",
+      "reason": "UNRESOLVED_FLOW_TYPE:DATA",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-007",
+      "reason": "UNRESOLVED_FLOW_TYPE:DATA",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-008",
+      "reason": "UNRESOLVED_FLOW_TYPE:DECISION",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    },
+    {
+      "current_relevance": {
+        "ACTIVATION_CONDITION": null,
+        "CURRENT_RELEVANCE_EVIDENCE": "census_semantic_edge_with_current_endpoints",
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "EVIDENCE_REVISION": "0578d813db4f2881082077338636e2a634e77869",
+        "EVIDENCE_SOURCE": "config/governance/current_system_census_graph_v1/source_v1.json",
+        "VALIDATION_STATUS": "PASS"
+      },
+      "edge_id": "CE-009",
+      "reason": "UNRESOLVED_FLOW_TYPE:DATA",
+      "source_system": "CURRENT_SYSTEM_CENSUS"
+    }
+  ]
+}

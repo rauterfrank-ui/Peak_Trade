@@ -1,0 +1,51 @@
+{
+  "backtest": {
+    "initial_cash": 10000.0,
+    "cost_model_version": "backtest_cost_v0",
+    "fee_bps": 10.0,
+    "slippage_bps": 5.0,
+    "parameter_sensitivity": {
+      "bind": true,
+      "grid_version": "v1",
+      "grid": {
+        "grid_id": "explicit_native_name_synthetic_probe_v1",
+        "parameter_names": [
+          "strategy.fast_window",
+          "strategy.slow_window"
+        ],
+        "parameter_values": [
+          [
+            10
+          ],
+          [
+            50,
+            100
+          ]
+        ],
+        "search_space_bounds": {
+          "strategy.fast_window": {
+            "min": 2,
+            "max": 200
+          },
+          "strategy.slow_window": {
+            "min": 3,
+            "max": 500
+          }
+        },
+        "seed": 12
+      }
+    }
+  },
+  "risk": {
+    "risk_per_trade": 0.002,
+    "max_position_size": 0.25,
+    "min_position_value": 10.0,
+    "min_stop_distance": 0.0001
+  },
+  "economic_evaluation_v1": {
+    "strategy_params": {
+      "fast_window": 10,
+      "slow_window": 50
+    }
+  }
+}

@@ -1,0 +1,57 @@
+diff --git a/src/experiments/canonical_meta_learning_v1.py b/src/experiments/canonical_meta_learning_v1.py
+index 0ead73170..60cc794d7 100644
+--- a/src/experiments/canonical_meta_learning_v1.py
++++ b/src/experiments/canonical_meta_learning_v1.py
+@@ -12,6 +12,7 @@ import logging
+ import math
+ import re
+ from dataclasses import dataclass
++from datetime import datetime, timezone
+ from types import MappingProxyType
+ from typing import Any, Final, Mapping, Sequence
+ 
+@@ -499,7 +500,7 @@ def _canonicalize_units(
+             robustness_suite_version,
+         )
+         evidence_created_at = _require_created_at(unit.evidence_created_at)
+-        if evidence_created_at > created_at:
++        if _utc_order_key(evidence_created_at) > _utc_order_key(created_at):
+             raise MetaLearningValidationError("evidence_created_at lookahead is forbidden")
+         later = _canonicalize_later_outcome(unit.later_outcome, evidence_created_at, created_at)
+         bound.append(
+@@ -543,7 +544,11 @@ def _canonicalize_later_outcome(
+     if outcome is None:
+         return None
+     observed_at = _require_created_at(outcome.observed_at)
+-    if observed_at < evidence_created_at or observed_at > created_at:
++    if not (
++        _utc_order_key(evidence_created_at)
++        <= _utc_order_key(observed_at)
++        <= _utc_order_key(created_at)
++    ):
+         raise MetaLearningValidationError("later_outcome lookahead is forbidden")
+     return {
+         "metric_name": _require_token("later_outcome.metric_name", outcome.metric_name),
+@@ -1546,11 +1551,22 @@ def _require_phase4_token(field_name: str, value: Any, expected: str) -> str:
+     return token
+ 
+ 
++def _utc_order_key(value: str) -> tuple[datetime, int]:
++    """Compare validated UTC instants without losing the supported nanoseconds."""
++    try:
++        whole_second = datetime.fromisoformat(value[:19]).replace(tzinfo=timezone.utc)
++    except ValueError as exc:
++        raise MetaLearningValidationError("created_at must be a valid UTC calendar instant") from exc
++    fraction = value[20:-1] if value[19:20] == "." else ""
++    return whole_second, int(fraction.ljust(9, "0"))
++
++
+ def _require_created_at(value: Any) -> str:
+     if not isinstance(value, str) or not _CREATED_AT_RE.fullmatch(value):
+         raise MetaLearningValidationError(
+             "created_at must be an explicit UTC timestamp ending with Z"
+         )
++    _utc_order_key(value)
+     return value
+ 
+ 

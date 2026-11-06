@@ -1,0 +1,1375 @@
+{
+  "acceptance_state": {
+    "bound_instrument_key": {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    "last_accepted_observation_identity": {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "mark_price": 0.3099,
+      "venue": "OKX",
+      "venue_event_time": 1791831960.0,
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    "last_accepted_transport": null,
+    "market_observation_epoch": {
+      "value": 61
+    }
+  },
+  "bar_interval_seconds": 60,
+  "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+  "capability_id": "MASTER_V2_CANONICAL_VOLATILITY_TYPED_RUNTIME_PRODUCER_SCAFFOLD_V1",
+  "history_digest": "8d6da4a6068a42488fdfd654c825ead96f3edeece5677ca24ea4e361d68a70f6",
+  "last_accepted_event_time": {
+    "unix_seconds": 1791831960.0
+  },
+  "owner": "trading.master_v2.canonical_volatility_runtime_mark_history_v1",
+  "records": [
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828360.0
+      },
+      "is_final": true,
+      "mark_price": 0.2898,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828360.0
+        },
+        "mark_price": 0.2898,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "8c965bcef8370b3ce5495bd939d05965422811282084b07871f79169e200b678",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828420.0
+      },
+      "is_final": true,
+      "mark_price": 0.2893,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828420.0
+        },
+        "mark_price": 0.2893,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "deccb990913ebfd4fa74bc53a515c747a0248e8173701d6c13213bf968c8cf5e",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828480.0
+      },
+      "is_final": true,
+      "mark_price": 0.2897,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828480.0
+        },
+        "mark_price": 0.2897,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6ac3f6a04dc2997e345b83231ba4703658366326e0c3c2d47c64d6a2751f1c19",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828540.0
+      },
+      "is_final": true,
+      "mark_price": 0.2893,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828540.0
+        },
+        "mark_price": 0.2893,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a3dff6e1dcb7fcb35febcb8ca06278766c9eb530233bcefb56f5f491ed3f81fd",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828600.0
+      },
+      "is_final": true,
+      "mark_price": 0.2891,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828600.0
+        },
+        "mark_price": 0.2891,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "35f17d05b6244d96284cc3df654ba70f756907e955637c9c090cf4939f8803e8",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828660.0
+      },
+      "is_final": true,
+      "mark_price": 0.2895,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828660.0
+        },
+        "mark_price": 0.2895,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "587f2589683b2858ae65d09947f76569af383dce23eb26b0f7543ad7357f8f92",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828720.0
+      },
+      "is_final": true,
+      "mark_price": 0.2899,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828720.0
+        },
+        "mark_price": 0.2899,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "57d21f6dd20069e48b4c28c0c5808131ae40afe35faf65eee99fe8a267fd6bc8",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828780.0
+      },
+      "is_final": true,
+      "mark_price": 0.2895,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828780.0
+        },
+        "mark_price": 0.2895,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0170501747e2e7b7178993b298b4ff9ccff9066ba2ae57b2e754ba7b6538dde3",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828840.0
+      },
+      "is_final": true,
+      "mark_price": 0.2892,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828840.0
+        },
+        "mark_price": 0.2892,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6c93972c42750de80a00f409301353e1534c632573cc8c42dcdc723f8bd26613",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828900.0
+      },
+      "is_final": true,
+      "mark_price": 0.2893,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828900.0
+        },
+        "mark_price": 0.2893,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "9af89eb5250908721df83d25b116c5f6e5ad8a97397337615de0cef8b3684343",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791828960.0
+      },
+      "is_final": true,
+      "mark_price": 0.2886,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791828960.0
+        },
+        "mark_price": 0.2886,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "ab8528ee90c7075e767df4c62b9bbdd8de8ce027fa04486746a7da228de4777f",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829020.0
+      },
+      "is_final": true,
+      "mark_price": 0.2897,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829020.0
+        },
+        "mark_price": 0.2897,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "c07440fe3b153f337a29cde8220f1b0cf7ee2529bb0fdf66b3d03c91579967dd",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829080.0
+      },
+      "is_final": true,
+      "mark_price": 0.2906,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829080.0
+        },
+        "mark_price": 0.2906,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "8c457a3fb7bde7fdd4c92f4b64b5a01c8fbeb76262fc1bdcd14863e3a0d2fdb2",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829140.0
+      },
+      "is_final": true,
+      "mark_price": 0.2898,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829140.0
+        },
+        "mark_price": 0.2898,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d390d86fbef4d0b58722681f69c3b24b1957f84959c9932d6a9c96ed207dc3df",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829200.0
+      },
+      "is_final": true,
+      "mark_price": 0.2898,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829200.0
+        },
+        "mark_price": 0.2898,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0726db9968117045cc628565f2c3c50a9b83f5d3858206309d9a8a47edb6efff",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829260.0
+      },
+      "is_final": true,
+      "mark_price": 0.2898,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829260.0
+        },
+        "mark_price": 0.2898,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "31f7ee4463bd5cb0e981a17c85bca6c71943b8e2110c7676a1a53476a240ae56",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829320.0
+      },
+      "is_final": true,
+      "mark_price": 0.2886,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829320.0
+        },
+        "mark_price": 0.2886,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "624841ee67a564da510b36d609c4534baab1e75c87b720bbe3d0a94534312733",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829380.0
+      },
+      "is_final": true,
+      "mark_price": 0.2896,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829380.0
+        },
+        "mark_price": 0.2896,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "4102a94af2b779589634402fe8d2273e8b55910fd086e2ea0dc34356be58299e",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829440.0
+      },
+      "is_final": true,
+      "mark_price": 0.2889,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829440.0
+        },
+        "mark_price": 0.2889,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "bcf3a14f683f1fc43d6c77b5d33e263e0ea9ec2764c6bb90b43fe03ebc7e4980",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829500.0
+      },
+      "is_final": true,
+      "mark_price": 0.2877,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829500.0
+        },
+        "mark_price": 0.2877,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "3f9e9d7c91caa0f6e7047e2a3e1b1403eaadabcc6829a4d22e8060ca6224422a",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829560.0
+      },
+      "is_final": true,
+      "mark_price": 0.2876,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829560.0
+        },
+        "mark_price": 0.2876,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "85814411cb2b64d127ceccf5bd60c2992a06e226cd63f8dca10766bcf05e15f3",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829620.0
+      },
+      "is_final": true,
+      "mark_price": 0.2901,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829620.0
+        },
+        "mark_price": 0.2901,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a16a2d88b0d7370de72a79bac893df1b1beef3611d2444f42852f42c483cd8c4",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829680.0
+      },
+      "is_final": true,
+      "mark_price": 0.2904,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829680.0
+        },
+        "mark_price": 0.2904,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "4be879c6d80bd46c9ca3454db4a9dfaa0e2f1e11606fa3c549c83fda899f7666",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829740.0
+      },
+      "is_final": true,
+      "mark_price": 0.2903,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829740.0
+        },
+        "mark_price": 0.2903,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d64df08fc19edad32109f28ead42cd76c2e4b62b38441e43c182fd55394aaf61",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829800.0
+      },
+      "is_final": true,
+      "mark_price": 0.2899,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829800.0
+        },
+        "mark_price": 0.2899,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "e42c1bf2d0271e3b44999f019de9d0c9779e2d3800301b5d030ac3c1de75e427",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829860.0
+      },
+      "is_final": true,
+      "mark_price": 0.2898,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829860.0
+        },
+        "mark_price": 0.2898,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0da0e5fe5f91f4b8f99e1bb26c2ffcb47cf6510e826f6e34583284fe4d529d02",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829920.0
+      },
+      "is_final": true,
+      "mark_price": 0.2891,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829920.0
+        },
+        "mark_price": 0.2891,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "4255248dae90520badcbbe2e6bf6806d5af29c6fa290ddb4e14787086cc80341",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791829980.0
+      },
+      "is_final": true,
+      "mark_price": 0.2895,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791829980.0
+        },
+        "mark_price": 0.2895,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "7e59a3cbba98b0a6e7e7ebe5d13d554a932ff56f1f0b9596d096bc4bb43a99e7",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830040.0
+      },
+      "is_final": true,
+      "mark_price": 0.2895,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830040.0
+        },
+        "mark_price": 0.2895,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "23713dd2af7e2d40b3e2713bff9a4213db1774b1779979f2574fb2c5d7c1d122",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830100.0
+      },
+      "is_final": true,
+      "mark_price": 0.2895,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830100.0
+        },
+        "mark_price": 0.2895,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "13bdd89c3af7cc51193029f1f70bc6527a3d953e49ad500c05d7a7bff54226bc",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830160.0
+      },
+      "is_final": true,
+      "mark_price": 0.2917,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830160.0
+        },
+        "mark_price": 0.2917,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "bc21fce394d3516f7629ddb08b676440d2cac592dd444816dd87550509beb648",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830220.0
+      },
+      "is_final": true,
+      "mark_price": 0.2926,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830220.0
+        },
+        "mark_price": 0.2926,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0d282a47edecb57d9b284d6ec3bda354af43d8d5b7b00fd2bdc47a0bf218bdc8",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830280.0
+      },
+      "is_final": true,
+      "mark_price": 0.2924,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830280.0
+        },
+        "mark_price": 0.2924,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "fc18cf116d09f6d9596b01322916e1ec41d4a7ddd1d2f595053db66235a79e50",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830340.0
+      },
+      "is_final": true,
+      "mark_price": 0.2924,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830340.0
+        },
+        "mark_price": 0.2924,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d89d8c2c0867d36a1461e05b3f304aca62a322828568fcc680c58fe8eafd83a8",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830400.0
+      },
+      "is_final": true,
+      "mark_price": 0.2933,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830400.0
+        },
+        "mark_price": 0.2933,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a80bb2943c3c0f3063c704e3dbfbb9401643b60e6e7035854d81000d5d9c7045",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830460.0
+      },
+      "is_final": true,
+      "mark_price": 0.2944,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830460.0
+        },
+        "mark_price": 0.2944,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "10f7f066ebc6228e3797fb810797d846dfaafbe034133a4bc8ecf8b382ff0fb3",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830520.0
+      },
+      "is_final": true,
+      "mark_price": 0.2976,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830520.0
+        },
+        "mark_price": 0.2976,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a7a4f60fe2d1e0721973deb9045fe6b728252170ad15ec553898eafbdd67dcf2",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830580.0
+      },
+      "is_final": true,
+      "mark_price": 0.2991,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830580.0
+        },
+        "mark_price": 0.2991,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "4bb12bebc2a2de66b1e5c61c057cad08de974afd1d3c1119aa960171afeeb529",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830640.0
+      },
+      "is_final": true,
+      "mark_price": 0.2993,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830640.0
+        },
+        "mark_price": 0.2993,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "8f1011cfad804bfe903169556ce0aa57d53819ea9d4bd8d4a4260ed5e749a7fe",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830700.0
+      },
+      "is_final": true,
+      "mark_price": 0.3004,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830700.0
+        },
+        "mark_price": 0.3004,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "4a4f3940401d0c969e2b257e8e36b2a21be07b02509ff3a1a3c4f290f5f94563",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830760.0
+      },
+      "is_final": true,
+      "mark_price": 0.3009,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830760.0
+        },
+        "mark_price": 0.3009,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "02e9942029c6cd262a6f4ff9124ca29860efd424e6816d223094e2e6ef25bceb",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830820.0
+      },
+      "is_final": true,
+      "mark_price": 0.3013,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830820.0
+        },
+        "mark_price": 0.3013,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "adae32e5411735888e4397a3005dcf38747b9fe750664cc337f9b1c7f2d55638",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830880.0
+      },
+      "is_final": true,
+      "mark_price": 0.3007,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830880.0
+        },
+        "mark_price": 0.3007,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "bdffd4370aff96ecb41ff800ed886f527ff7c4baa0a4dcb089beb041f8137556",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791830940.0
+      },
+      "is_final": true,
+      "mark_price": 0.3024,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791830940.0
+        },
+        "mark_price": 0.3024,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "e6fc0baa63514a2142b4953926caa6aa50c51cad5c7dc22ba7fecbd5b6b87b48",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831000.0
+      },
+      "is_final": true,
+      "mark_price": 0.3019,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831000.0
+        },
+        "mark_price": 0.3019,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6866269fb2f5e7f7aaba799a483164c9298753daf52c51a965841991fe9efb55",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831060.0
+      },
+      "is_final": true,
+      "mark_price": 0.3017,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831060.0
+        },
+        "mark_price": 0.3017,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "30d5998a3107b837434d516df74cc009a587c5b3120fefa0717629eac0cdb32d",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831120.0
+      },
+      "is_final": true,
+      "mark_price": 0.3013,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831120.0
+        },
+        "mark_price": 0.3013,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "ed1ff86f4d92061b0b2e33b4b9be73df7245a2c3b53d37527444d0cfc31540d5",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831180.0
+      },
+      "is_final": true,
+      "mark_price": 0.3011,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831180.0
+        },
+        "mark_price": 0.3011,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "5d0cf4235c9da525d0fc99aff900fe49ee65f529b1a079bc91fea7f6f63782f3",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831240.0
+      },
+      "is_final": true,
+      "mark_price": 0.3007,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831240.0
+        },
+        "mark_price": 0.3007,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "f08ea4275c293a3a04aa0d8a20379c173103308b1072fa2982e39b7e8b41b975",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831300.0
+      },
+      "is_final": true,
+      "mark_price": 0.3074,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831300.0
+        },
+        "mark_price": 0.3074,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "c243f822f28a60661281e6db70aeb2a5bbcf443b8c8d4f16b4a8607b5d45b068",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831360.0
+      },
+      "is_final": true,
+      "mark_price": 0.3081,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831360.0
+        },
+        "mark_price": 0.3081,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0bc32f2593090d87135646acb9f1c7d65c670d23ef431ac675e7d68c2ba7291f",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831420.0
+      },
+      "is_final": true,
+      "mark_price": 0.309,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831420.0
+        },
+        "mark_price": 0.309,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "1a1235f2691e2897373d7b2c26c3759c54c30f2551ff99cf61b7008c946a22f0",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831480.0
+      },
+      "is_final": true,
+      "mark_price": 0.3084,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831480.0
+        },
+        "mark_price": 0.3084,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "c7d60c5dbad950bb8ce194a2a22909f03e7ac052ea708d7c4e170a9dad50d4d9",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831540.0
+      },
+      "is_final": true,
+      "mark_price": 0.3074,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831540.0
+        },
+        "mark_price": 0.3074,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "3cdd44284b49c08f19a573203a4275739d9523d8de9900963a8b0e7bf5503c0b",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831600.0
+      },
+      "is_final": true,
+      "mark_price": 0.3085,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831600.0
+        },
+        "mark_price": 0.3085,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "c7046dc2abb72d930be08027f309dc2c7869143130123e2842b12ab6f596dd59",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831660.0
+      },
+      "is_final": true,
+      "mark_price": 0.3087,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831660.0
+        },
+        "mark_price": 0.3087,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a61950055671feee6dde89a04aa83ff1405d00090ab5d6b071c9bc3311fcdc00",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831720.0
+      },
+      "is_final": true,
+      "mark_price": 0.3094,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831720.0
+        },
+        "mark_price": 0.3094,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "c659cc764013f86168763333780eaf5ed8e87e0d7f85e1deb6414fc554778fe2",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831780.0
+      },
+      "is_final": true,
+      "mark_price": 0.3094,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831780.0
+        },
+        "mark_price": 0.3094,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "40d26d1a405ed00daab8a9841a82d65c4d019e2aa18d1af9e15325fd271a4412",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831840.0
+      },
+      "is_final": true,
+      "mark_price": 0.3089,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831840.0
+        },
+        "mark_price": 0.3089,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "59602e3c6c4b4ba6f847065d65e6f546eaa926e6edc818dd59ceda942978892f",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831900.0
+      },
+      "is_final": true,
+      "mark_price": 0.31,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831900.0
+        },
+        "mark_price": 0.31,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "eea897f1561021f4d48734c51ef6cad4f3e8493929562aa5fd983f2464600efc",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1791831960.0
+      },
+      "is_final": true,
+      "mark_price": 0.3099,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DOS:USDT:USDT:dos-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1791831960.0
+        },
+        "mark_price": 0.3099,
+        "venue": "OKX",
+        "venue_instrument_id": "DOS-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "81491a3b1de0beb231963c2302a03590a68e0280c515c333cba3f13f11c2dfd9",
+      "venue": "OKX",
+      "venue_instrument_id": "DOS-USDT-SWAP"
+    }
+  ],
+  "schema_version": "canonical_volatility_runtime_mark_history/v1",
+  "venue": "OKX",
+  "venue_instrument_id": "DOS-USDT-SWAP"
+}

@@ -1,0 +1,72 @@
+{
+  "BASELINE_SHA": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+  "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": "false",
+  "CYCLE_COUNT": 4,
+  "DPO": {
+    "cycle_id": "persistent-natural-enter-live-c1:s5:LANE_1:LANE_1:cycle:3",
+    "decision_event_ref": "ddo.dec:5cf8711e9b53648fbe44268e",
+    "decision_outcome": "observe",
+    "dpo_ref": "ddo.dpo:34365bc8a1108d7c06ce5433",
+    "execution_eligible": "",
+    "s5_cycle_index": "4",
+    "selected_side": "none",
+    "trading_epoch": "3"
+  },
+  "EFFECTIVE_MAX_CYCLES": 4,
+  "EFFECTIVE_MAX_RUN_DURATION_SECONDS": 180.0,
+  "ENTER_SIDE": "",
+  "EVIDENCE_ROOT": "runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T165842Z_ghv_first_integrated_v1",
+  "EXECUTION_HEAD_SHA": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+  "EXTERNAL_EFFECT_COUNT": 0,
+  "FINALIZATION_ELAPSED_SECONDS": 0.002458,
+  "FIRST_GENUINE_BLOCKER": "MAX_CYCLES_PER_RUN",
+  "GET_REQUEST_COUNT": 71,
+  "LIVE_PUBLIC_C1_GET_EXECUTED": "true",
+  "MAX_RUN_DURATION_SECONDS_SCOPE": "S6_OBSERVATION_SEQUENCER_ONLY",
+  "NATIVE_ID": "W-USDT-SWAP",
+  "NATURAL_ENTER_OBSERVED": "false",
+  "NATURAL_PRE_EXTERNAL_REACHED": "false",
+  "OWNER_GO_FRESH_C1_GET_CONSUMPTION_COUNT": 30,
+  "PENDING_OUTCOME_CREATED": "false",
+  "PENDING_OUTCOME_CREATION_REASON": "NOT_GENUINE_NATURAL_ENTER",
+  "PENDING_OUTCOME_ID": "",
+  "PERMIT_CREATED": "false",
+  "POST_COUNT": 0,
+  "PREFLIGHT_ELAPSED_SECONDS": 305.537599,
+  "PRE_EXTERNAL_REACHED": "false",
+  "REPORTING_S5_CYCLE_INDEX": "4",
+  "REPORTING_S5_DISPOSITION": "HOLD_CLOSED",
+  "REQUESTED_MAX_CYCLES": 4,
+  "REQUESTED_MAX_RUN_DURATION_SECONDS": 180.0,
+  "RUNTIME_DURATION_CLOCK": "monotonic",
+  "RUNTIME_DURATION_TRANSPARENCY_SCHEMA_VERSION": "v1",
+  "RUN_ID": "a6fe591ff63bd722",
+  "S5_CYCLE_SUMMARIES": [
+    {
+      "c1_venue_event_time": 1791824520.0,
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791824580.0,
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791824640.0,
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "c1_venue_event_time": 1791824700.0,
+      "cycle_index": 4,
+      "s5_disposition": "HOLD_CLOSED"
+    }
+  ],
+  "S5_TERMINAL_CLASS": "MAX_CYCLES_BOUND",
+  "SEQUENCER_ELAPSED_SECONDS": 137.488953,
+  "SYNTHETIC_ENTER_COUNT": 0,
+  "SYNTHETIC_ENTER_OBSERVED": "false",
+  "TERMINAL_DISPOSITION": "MAX_CYCLES_BOUND_STOP",
+  "TOTAL_WALLCLOCK_SECONDS": 444.029888
+}

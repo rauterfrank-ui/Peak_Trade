@@ -1,0 +1,281 @@
+{
+  "bound_commit": "1151994dd982ff761e33b1150dc8bbaa9b2bd55b",
+  "previous_register": "docs/ops/evidence/self_learning_reconstruction_resolution_v1_2026_11_04/resolution_ledger.json",
+  "previous_register_sha256": "344ac44e4dfb20c9eb3370c98becf3217906ca2b2f17299e4eeea48e79e2fcd2",
+  "row_count": 24,
+  "rows": [
+    {
+      "id": "SLR-01",
+      "question": "Was ist das ursprüngliche selbstlernende Universum?",
+      "historical_resolution": "SOURCE_AND_MEANING_RESOLVED",
+      "current_reconstruction_status": "ORIGINAL_CONSTRUCTION_RESTORED",
+      "current_evidence": "Beide vollständigen Master, Phase0 und alle zwölf Phasenverträge sind mit Herkunft restauriert; heutige Owner je Revision zugeordnet.",
+      "remaining_evidence_limit": "Keine Behauptung der allerersten Ideengeschichte oder natürlichen ökonomischen Wirkung.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-02",
+      "question": "Wie viele innere Ebenen gibt es?",
+      "historical_resolution": "AXES_DISTINGUISHED",
+      "current_reconstruction_status": "ORIGINAL_AXES_AND_BOUND_CORPUS_RESTORED",
+      "current_evidence": "SL0–12, M, A, B und interne DDO-Schritte bleiben getrennte Achsen. Alle116 Dateien des konkret benannten historischen DDO-/Learning-Corpus einschließlich578 Testfunktionen liegen bytegenau vor.",
+      "remaining_evidence_limit": "Andere nie spezifizierte Erinnerungsvarianten und historische ursprüngliche Ausgabebytes sind dadurch nicht bewiesen.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-03",
+      "question": "Was gelangt in den Lerner?",
+      "historical_resolution": "CONTROLLED_MECHANISM_PROVEN",
+      "current_reconstruction_status": "CURRENT_CAPTURE_CONTRACTS_VERIFIED",
+      "current_evidence": "Gesamtes heutiges Learning-Verzeichnis und aktuelle produktive Capture-Join-Tests:650PASS; keine Aktivierung.",
+      "remaining_evidence_limit": "Authentizität und Vollständigkeit natürlicher Daten bleiben Gegenstand eines gesonderten beobachteten Betriebsnachweises.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-04",
+      "question": "Was bedeutet späteres Outcome?",
+      "historical_resolution": "SEMANTIC_BOUNDARY_RESOLVED",
+      "current_reconstruction_status": "EXPLICIT_MEASURED_TARGET_HANDOFF_IMPLEMENTED",
+      "current_evidence": "Der neue measured-return-Anschluss bindet ACTUAL N_BARS-Log-Return, vorbestehenden Forecast-Target-Digest, Bar-Close-Fenster, Entität und Knowledge-Time vor dem RETURN_ERROR_V1-Consumer.",
+      "remaining_evidence_limit": "Diese kontrollierte Verbindung authentifiziert keine Naturdaten und deutet keine alten Forecast-Ziele still um.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-05",
+      "question": "Lernt der DDO-Closed-Loop unmittelbar aus dem Zahlenwert des Returns?",
+      "historical_resolution": "CONTROLLED_CAUSAL_SCOPE_PROVEN",
+      "current_reconstruction_status": "ORIGINAL_LABEL_SEMANTICS_PRESERVED",
+      "current_evidence": "Der DDO-Labelpfad bleibt Label-Feedback; der zusätzlich gebundene numerische MI-Pfad ist ein eigener Consumer, keine Änderung der ursprünglichen DDO-Semantik.",
+      "remaining_evidence_limit": "Keine erfundene Gleichsetzung von Label, numerischer Kalibrierung und Training.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-06",
+      "question": "Sind Labels, State-Versionen und Memory bereits Verbesserung?",
+      "historical_resolution": "MECHANISMS_SEPARATED",
+      "current_reconstruction_status": "MEMORY_TO_NEXT_MEASURED_SEARCH_VERIFIED",
+      "current_evidence": "Ein persistierter Failure-/Gap-Eingang verändert die nächste tatsächliche Search; der nächste native Kandidat wird gemessen. Reines Versions-/Digestwechseln bleibt kein Verbesserungsmaß.",
+      "remaining_evidence_limit": "Kontrollierte synthetische Daten; allgemeine Verbesserung nicht behauptet.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-07",
+      "question": "Ist Validation gleich Ausführen aller Robustheitsverfahren?",
+      "historical_resolution": "CONTRACT_BOUNDARY_RESOLVED",
+      "current_reconstruction_status": "MEASUREMENT_AND_VALIDATION_OWNERS_BOUND",
+      "current_evidence": "Nativer Provider misst Full/Train/Validation/Holdout tatsächlich; der neue Champion-Helper führt Phase4 aus. Fehlende Robustheitslieferanten bleiben BLOCKED.",
+      "remaining_evidence_limit": "Kein Beweis, dass alle denkbaren WF-/MC-/Stress-Engines in jeder Session laufen müssten oder liefen.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md",
+        "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-08",
+      "question": "Sind Challenger und Reality Gap gemessene Fakten?",
+      "historical_resolution": "MECHANISM_PRESENT_SOURCE_LIMITED",
+      "current_reconstruction_status": "MEASURED_COMPARABLE_CHAMPION_AND_CHALLENGER_VERIFIED",
+      "current_evidence": "Beide Scores sind nativ gemessen, alle elf Vergleichsdimensionen stimmen und die drei gespeicherten Vergleiche sind COMPARABLE. Gap-Beobachtung ist ausdrücklich synthetisch.",
+      "remaining_evidence_limit": "Reale Shadow-/Venue-Beobachtungen fehlen als Naturdatenbeleg; nicht durch synthetischen Gap ersetzt.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-09",
+      "question": "Wo liegen die benannten Übergabepunkte?",
+      "historical_resolution": "NAMED_HANDOFFS_RESOLVED",
+      "current_reconstruction_status": "FIVE_ORIGINAL_NAMED_HANDOFFS_RESOLVED",
+      "current_evidence": "Die fünf ursprünglichen EDGE-IDs, Owner und kontrollierten Übergaben bleiben erhalten. Zusätzlicher expliziter numerischer Pfad ist gesondert belegt.",
+      "remaining_evidence_limit": "Keine gleichnamige neue Runtimekante oder Zwangsverbindung hinzugefügt.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md",
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-10",
+      "question": "Ist Learning zwingend für jede Foundation?",
+      "historical_resolution": "OPTIONALITY_PROVEN",
+      "current_reconstruction_status": "ORIGINAL_OPTIONALITY_PRESERVED",
+      "current_evidence": "Foundation ohne Learning bleibt zulässig; der gezielte Learning-Pfad verlangt gebundene Evidence.",
+      "remaining_evidence_limit": "Keine universelle Pflichtverbindung restauriert, für die der Ursprung keinen Vertrag enthält.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-11",
+      "question": "Bewirkt A/B-Economic-Label bereits andere Forschung?",
+      "historical_resolution": "CONTROLLED_NON_EFFECT_PROVEN_FOR_THIS_PATH",
+      "current_reconstruction_status": "LABEL_AND_NUMERIC_EFFECTS_DISTINGUISHED",
+      "current_evidence": "A/B-Label allein verändert im geprüften Standardpfad keine numerische Forschungswahl. Der separate gemessene Failure-/Meta-Pfad beeinflusst sie und misst den Folgekandidaten.",
+      "remaining_evidence_limit": "Lokale Nichtwirkung ist keine globale Wirkungslosigkeit; Einfluss ist noch kein ökonomischer Nutzen.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md",
+        "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-12",
+      "question": "Sind Return-ACK, M6 und Analyzer derselbe Schritt?",
+      "historical_resolution": "OWNER_RESPONSIBILITIES_RESOLVED",
+      "current_reconstruction_status": "ACK_PROJECTION_AND_ANALYZER_DISTINGUISHED",
+      "current_evidence": "ACK und M6-Projektion bleiben getrennt; der explizite Ergebnis-zu-Meta-Consumer wird aus gespeicherten tatsächlichen Zahlen ausgeführt.",
+      "remaining_evidence_limit": "Kein impliziter Analyzer-Aufruf aus ACK oder M6 abgeleitet.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-13",
+      "question": "Gibt es überhaupt numerisch wirksames Meta-Learning?",
+      "historical_resolution": "CONTROLLED_NUMERIC_CAUSAL_EFFECT_PROVEN",
+      "current_reconstruction_status": "NUMERIC_FEEDBACK_TO_ACTUAL_EXECUTION_VERIFIED",
+      "current_evidence": "OOS-/Failure-Evidence beeinflusst die nächste begrenzte Suche; nativ benannte Kandidaten werden mit exakter Identität ausgeführt, archiviert und erneut in Meta gelesen.",
+      "remaining_evidence_limit": "Synthetische Mechanik; keine Garantien einer Verbesserung oder universeller Stabilität.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md",
+        "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-14",
+      "question": "Sind parameter_stability und later_outcome überall Pflicht?",
+      "historical_resolution": "MINIMUM_VS_EXTENSION_RESOLVED",
+      "current_reconstruction_status": "OPTIONAL_METRICS_REMAIN_EXPLICIT",
+      "current_evidence": "Nicht gelieferte parameter_stability/later_outcome bleiben fehlend. Kein Alias zu Portfolio-, CRS- oder anderen Maßzahlen erfunden.",
+      "remaining_evidence_limit": "Eine zusätzliche spezifische Stabilitätsaussage benötigt ihre eigene fachliche Messdefinition.",
+      "evidence_refs": [
+        "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-15",
+      "question": "Führt nächste Search den nächsten Versuch aus?",
+      "historical_resolution": "EXECUTION_BOUNDARY_IDENTIFIED",
+      "current_reconstruction_status": "NATIVE_NEXT_CANDIDATE_EXECUTION_RESTORED",
+      "current_evidence": "Expliziter nativer Search-/Provider-/Phase10-/späterer-Meta-Anschluss führt denselben gewählten Kandidaten mit passenden Parametern tatsächlich aus. Alte generische fast/slow-Evidence bleibt unverändert.",
+      "remaining_evidence_limit": "Keine stille Identitätsumschreibung alter Versuche und kein automatischer produktiver Scheduler.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md",
+        "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-16",
+      "question": "Existieren brauchbare numerische Versuchslieferanten?",
+      "historical_resolution": "CONTROLLED_SUPPLIER_EFFECT_PROVEN",
+      "current_reconstruction_status": "REGULAR_NUMERIC_SUPPLIER_AND_ARCHIVE_VERIFIED",
+      "current_evidence": "Vollständige native Split-Messungen, gemessener Vergleich, exakte numeric payload und contentadressiertes Archiv sind angeschlossen.",
+      "remaining_evidence_limit": "Funding wird historisch vom Research-Engine-Pfad nicht als vollständiger Cashflow angewandt; das ist eine Wirtschaftsmodellgrenze, kein wiederhergestelltes PnL. Keine zweite Accounting-Wahrheit.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md",
+        "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-17",
+      "question": "Was lernt Loop A/MI numerisch?",
+      "historical_resolution": "LOCAL_NUMERIC_EFFECT_AND_STORAGE_PROVEN",
+      "current_reconstruction_status": "MEASURED_MI_RETURN_AND_DURABLE_NUMERIC_READER_VERIFIED",
+      "current_evidence": "Supplier-Log-Return speist bestehenden RETURN_ERROR_V1; vorhandener Triad-Store und neuer numerischer Reader bewahren vollständiges Resultat. UP/DOWN/FLAT- und BRIER-Altsemantik unverändert.",
+      "remaining_evidence_limit": "Kein Training und kein verbesserter späterer Forecast aus bloßer Kalibrierung behauptet.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-18",
+      "question": "Bewirkt MI-Export automatisch eine andere M4-Entscheidung?",
+      "historical_resolution": "CONDITIONED_PATH_BOUNDARY_PROVEN",
+      "current_reconstruction_status": "ORIGINAL_CONDITIONED_M4_BOUNDARY_PRESERVED",
+      "current_evidence": "Bedingter MI-Intake bleibt explizit. Neues numerisches MI-Lesen erzwingt keine automatische M4-/Parameteränderung.",
+      "remaining_evidence_limit": "ADMIT ist weder Training noch produktiver Apply; kein unautorisierter Zwangsanschluss.",
+      "evidence_refs": [
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md",
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-19",
+      "question": "Ist Loop C schon numerische Feature-Forschung?",
+      "historical_resolution": "ROUTING_MECHANISM_PROVEN",
+      "current_reconstruction_status": "ORIGINAL_PHASE22_AND_PHASE24_SCOPES_RECONCILED",
+      "current_evidence": "Original-Phase24 erlaubt ausdrücklich Fixture-/Replay-Closure. Numerischer inkrementeller Nutzen gehört zu separater Phase22, ohne universell erfundene Schwellen; B5 darf ohne admissible True-L2 deferred sein.",
+      "remaining_evidence_limit": "Numerischer Feature-/Modellnutzen nicht nachgewiesen; keine verlorene vollständige Phase24-Numeric-Engine belegt.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-20",
+      "question": "Wie gehört GVEF zum selbstlernenden Universum?",
+      "historical_resolution": "ARCHITECTURAL_ROLE_AND_NARROW_ACCEPTANCE_RESOLVED",
+      "current_reconstruction_status": "SOURCE_DERIVED_GVEF_CONTRACT_AND_MEASURED_REFERENCE_RESTORED",
+      "current_evidence": "16 unabhängige Originalverträge/111 Felder sowie neuer registrierter gemessener SL-Referenzvektor speisen bestehenden Runner/Evaluator. Zahlen bleiben für späteres Meta unverändert.",
+      "remaining_evidence_limit": "sl.artifact_digest prüft Artefaktbindung. Breiter V1.4-Outcome-/Stability-Anspruch ist keine implementierte Qualitätsformel und wird nicht als erfüllt etikettiert.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-21",
+      "question": "Was beweist der damalige BWP-5-Abschluss wirklich?",
+      "historical_resolution": "SOURCE_REQUIREMENT_PROVENANCE_RESOLVED",
+      "current_reconstruction_status": "BWP5_METHOD_RECONSTRUCTED_HISTORICAL_OUTPUT_UNRECOVERED",
+      "current_evidence": "Erhaltene BWP5-Programme,31Anforderungen und exakter enger Prüfmaßstab sind lesbar rekonstruiert. Neue vollständige GVEF-Suite254PASS.",
+      "remaining_evidence_limit": "Originale31historische Ausgabebytes und vollständiger Original-Lauf nicht wiedergefunden; neue Läufe ersetzen diese Vergangenheit nicht.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-22",
+      "question": "Sind die Golden Vectors je innerer Ebene vollständig belegt?",
+      "historical_resolution": "HISTORICAL_REPORTS_AND_CURRENT_SCOPES_RESOLVED",
+      "current_reconstruction_status": "COMPLETE_PINNED_DDO_TEST_CORPUS_RECOVERED",
+      "current_evidence": "Alle59DDO- und57Learning-Testdateien am Originalpin sind gehasht restauriert; alle damaligen Assertions bleiben im Original lesbar. Heutiger Learning-/GVEF-Lauf ist separat belegt.",
+      "remaining_evidence_limit": "Nicht jeder Berichtstitel ist ein eigener registrierter Vektor. Ursprüngliche Runtime-Ergebnisse nicht aus Quelltextzahlen abgeleitet.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-23",
+      "question": "Ist produktive Rückwirkung bereits geschlossen oder implizit erlaubt?",
+      "historical_resolution": "AUTHORITY_AND_HANDOFF_BOUNDARY_RESOLVED",
+      "current_reconstruction_status": "NON_AUTHORIZING_RESEARCH_BOUNDARY_PRESERVED",
+      "current_evidence": "Governance/Risk/Authorization und jeweiliger produktiver Consumer bleiben eigene Übergaben. GVEF und Forschungsarchiv erteilen keine Authority.",
+      "remaining_evidence_limit": "Kein Live-Apply oder beobachteter produktiver Parameterwechsel ausgeführt; keine fehlende Freigabe erfunden.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md",
+        "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md"
+      ]
+    },
+    {
+      "id": "SLR-24",
+      "question": "Wie gehören N5, IU, Ranking und Scope dazu?",
+      "historical_resolution": "IDENTITY_VARIANTS_DISTINGUISHED",
+      "current_reconstruction_status": "UNIVERSE_IDENTITIES_AND_SCOPE_PRESERVED",
+      "current_evidence": "N5 Full Core bezeichnet fünf Slots; Autonomievarianten, IU-Entwürfe und MI bleiben getrennt. Ranking/Instrumentidentität und Scope behalten ihre Owner.",
+      "remaining_evidence_limit": "Eine unbekannte exakte historische Eigenbezeichnung des vollautomatischen Universe wird nicht erfunden. Scope-Dateien und Originalledger unverändert.",
+      "evidence_refs": [
+        "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md"
+      ]
+    }
+  ],
+  "global_runtime_or_quality_completion_claim": false
+}

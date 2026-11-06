@@ -8,6 +8,9 @@ submission, runtime authority, or venue effect.
 
 from __future__ import annotations
 
+from trading.master_v2.double_play_futures_input import FORBIDDEN_FUTURES_BASE_ASSETS
+
+
 import hashlib
 import json
 from dataclasses import dataclass, fields, replace
@@ -23,6 +26,8 @@ from src.governance.capital_risk_sizing_v1 import (
     CapitalRiskSizingInputV1,
     CapitalRiskSizingOutcome,
     QuantityProvenanceV1,
+    CloseOnlyQuantityDecisionV1,
+    compute_close_only_quantity_digest_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
     observe_after_producer_v0,
@@ -46,7 +51,7 @@ RUNTIME_EFFECT_NONE = "NONE"
 NETWORK_EFFECT_NONE = "NONE"
 CREDENTIAL_EFFECT_NONE = "NONE"
 
-_FORBIDDEN_INSTRUMENT_MARKERS = frozenset({"btc", "xbt", "bitcoin"})
+_FORBIDDEN_INSTRUMENT_MARKERS = frozenset(v.lower() for v in FORBIDDEN_FUTURES_BASE_ASSETS)
 _FORBIDDEN_MARKET_TYPES = frozenset({"spot", "synthetic_spot", "synthetic-spot"})
 _FORBIDDEN_ADAPTER_TYPE_NAMES = frozenset(
     {
@@ -631,6 +636,69 @@ class CanonicalOrderIntentValidationResultV1:
     reason_codes: tuple[str, ...]
 
 
+def build_canonical_full_close_intent_v1(
+    *,
+    close: CloseOnlyQuantityDecisionV1,
+    intent_id: str,
+    canonical_trading_logic_version: str,
+) -> CanonicalOrderIntentBuildResultV1:
+    """Build a plan-only EXIT from the quantity owner's full-close assessment."""
+    provenance = close.quantity_provenance
+    if (
+        close.outcome is not CapitalRiskSizingOutcome.PASS
+        or provenance is None
+        or close.semantic_digest != compute_close_only_quantity_digest_v1(close)
+        or close.final_quantity != close.open_quantity
+        or provenance.final_quantity != close.final_quantity
+        or close.authority_effect != SIZING_AUTHORITY_EFFECT_NONE
+        or close.runtime_effect != "NONE"
+        or close.execution_eligible
+        or not close.final_quantity.is_finite()
+        or close.final_quantity <= 0
+        or not intent_id
+        or not canonical_trading_logic_version
+    ):
+        return _blocked_result(("FULL_CLOSE_QUANTITY_ASSESSMENT_INVALID",))
+    intent = CanonicalOrderIntentV1(
+        intent_id=intent_id,
+        intent_version=INTENT_VERSION,
+        decision_id=close.decision_id,
+        instrument_id=close.instrument_id,
+        trading_epoch=close.trading_epoch,
+        canonical_trading_logic_version=canonical_trading_logic_version,
+        capital_envelope_ref=provenance.capital_envelope_ref,
+        pre_sizing_risk_ref=provenance.pre_sizing_risk_ref,
+        sizing_result_ref=provenance.sizing_ref,
+        post_sizing_risk_ref=provenance.post_sizing_risk_ref,
+        policy_digest=_sha256_hex({"close_policy": close.policy_version}),
+        config_digest=provenance.config_digest,
+        implementation_digest=IMPLEMENTATION_DIGEST,
+        provenance_digest=close.semantic_digest,
+        side=close.position_side,
+        intent_action=IntentAction.EXIT.value,
+        quantity=close.final_quantity,
+        quantity_unit="CONTRACTS",
+        quantity_provenance=compute_quantity_provenance_ref(provenance),
+        reduce_only=True,
+        position_effect=PositionEffect.CLOSE_ONLY.value,
+        order_type_policy="MARKET_ONLY",
+        price_policy="EXPLICIT_NONE",
+        time_in_force_policy="GTC",
+        max_slippage_policy="NONE",
+        expected_position_side=close.position_side,
+        instrument_metadata_ref=close.instrument_metadata_ref,
+    )
+    intent = replace(intent, semantic_digest=compute_semantic_digest(intent))
+    validation = validate_canonical_order_intent_v1(intent)
+    if validation.validation_status != ValidationStatus.VALID.value:
+        return _blocked_result(validation.reason_codes)
+    return CanonicalOrderIntentBuildResultV1(
+        outcome=CanonicalOrderIntentBuildOutcome.PASS,
+        intent=intent,
+        reason_codes=(REASON_PASS,),
+    )
+
+
 def validate_canonical_order_intent_v1(
     intent: CanonicalOrderIntentV1,
 ) -> CanonicalOrderIntentValidationResultV1:
@@ -1174,6 +1242,7 @@ def canonical_order_intent_schema_v1() -> dict[str, Any]:
         "schema_version": SCHEMA_VERSION,
         "package_marker": PACKAGE_MARKER,
         "implementation_digest": IMPLEMENTATION_DIGEST,
+        "full_close_builder": "build_canonical_full_close_intent_v1",
         "deterministic_serialization_version": DETERMINISTIC_SERIALIZATION_VERSION,
         "invariants": {
             "futures_only": FUTURES_ONLY,

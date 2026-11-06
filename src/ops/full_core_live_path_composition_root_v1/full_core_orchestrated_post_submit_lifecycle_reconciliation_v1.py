@@ -98,6 +98,7 @@ class PostSubmitLifecycleReconciliationOrchestrationRequestV1:
     state_dir: Path | None = None
     apply_durable_atomic_state: bool = False
     proven_never_submitted: bool = False
+    post_close_feedback_request: Any = None
 
 
 def _assert_standing_pins_v1() -> None:
@@ -171,6 +172,7 @@ def orchestrate_post_submit_lifecycle_reconciliation_v1(
             state_dir=request.state_dir,
             apply_durable_state=request.apply_durable_atomic_state,
             proven_never_submitted=request.proven_never_submitted,
+            post_close_feedback_request=request.post_close_feedback_request,
         )
 
     if request.mode is LifecycleReconciliationOrchestrationMode.INJECTED_OKX_TRANSPORT:
@@ -194,10 +196,14 @@ def orchestrate_post_submit_lifecycle_reconciliation_v1(
             state_dir=request.state_dir,
             apply_durable_state=request.apply_durable_atomic_state,
             proven_never_submitted=request.proven_never_submitted,
-            okx_read_only_forensic_profile="INJECTED",
+            post_close_feedback_request=request.post_close_feedback_request,
         )
 
     if request.mode is LifecycleReconciliationOrchestrationMode.PRODUCTIVE_OKX_SCOPED_READ_ONLY:
+        if request.post_close_feedback_request is not None:
+            raise FullCoreOrchestratedLifecycleReconciliationError(
+                "PRODUCTIVE_READ_ONLY_FEEDBACK_MUTATION_FORBIDDEN"
+            )
         if request.read_only_get_transport is None:
             raise FullCoreOrchestratedLifecycleReconciliationError(
                 "PRODUCTIVE_TRANSPORT_MUST_BE_CALLER_BOUND"
@@ -226,7 +232,6 @@ def orchestrate_post_submit_lifecycle_reconciliation_v1(
             state_dir=None,
             apply_durable_state=False,
             proven_never_submitted=request.proven_never_submitted,
-            okx_read_only_forensic_profile="PRODUCTIVE_SCOPED",
         )
 
     raise FullCoreOrchestratedLifecycleReconciliationError("UNKNOWN_ORCHESTRATION_MODE")

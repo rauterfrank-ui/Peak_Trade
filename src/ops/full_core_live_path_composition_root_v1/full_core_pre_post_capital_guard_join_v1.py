@@ -38,9 +38,6 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     FinalOrderEnvelopeV1,
     assert_envelope_unmodified_v1,
 )
-from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
-    FULL_CORE_ATOMIC_CONSUMPTION_KEY,
-)
 from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1 import (
     FullCoreAuthorizationBindingV1,
     FullCoreAtomicOneShotError,
@@ -50,10 +47,6 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_ato
     full_core_atomic_mark_submit_boundary_v1,
     full_core_atomic_reserve_owner_go_authorization_v1,
     full_core_durable_entry_state_for_guard_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.full_core_recovery_guard_exposure_signals_v1 import (
-    compose_capital_guard_exposure_evidence_v1,
-    derive_full_core_recovery_guard_exposure_signals_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.ghv_full_core_capital_guard_observability_v1 import (
     STAGE_CURRENT_DECISION_BOUND,
@@ -88,7 +81,6 @@ class FullCoreCapitalGuardJoinMode(str, Enum):
     OFFLINE_STUB = "OFFLINE_STUB"
     OBSERVE_ONLY = "OBSERVE_ONLY"
     LIVE_POST = "LIVE_POST"
-    PRODUCTIVE_PILOT_ENFORCE = "PRODUCTIVE_PILOT_ENFORCE"
 
 
 class FullCorePrePostCapitalGuardJoinError(RuntimeError):
@@ -187,8 +179,6 @@ def resolve_full_core_capital_guard_join_mode_v1(
         return FullCoreCapitalGuardJoinMode.DISABLED
     if mode is FullCoreCapitalGuardJoinMode.LIVE_POST:
         return FullCoreCapitalGuardJoinMode.DISABLED
-    if mode is FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE:
-        return FullCoreCapitalGuardJoinMode.DISABLED
     return mode
 
 
@@ -237,7 +227,6 @@ def run_full_core_pre_post_capital_guard_join_v1(
     authoritative_environment: str | None = None,
     authoritative_venue_plan_digest: str | None = None,
     pretrade_reference_mark_px: str | None = None,
-    pilot_enforce_owner_go: str | None = None,
 ) -> FullCorePrePostCapitalGuardJoinResultV1:
     mode = resolve_full_core_capital_guard_join_mode_v1(explicit_mode=join_mode)
     if mode is FullCoreCapitalGuardJoinMode.DISABLED:
@@ -255,13 +244,6 @@ def run_full_core_pre_post_capital_guard_join_v1(
 
     reasons: list[str] = []
     ghv_stages: list[dict[str, Any]] = []
-
-    if mode is FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE:
-        if (
-            str(pilot_enforce_owner_go or "").strip()
-            != "OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1"
-        ):
-            reasons.append("PILOT_ENFORCE_OWNER_GO_DENIED")
 
     if binding.owner_go == CANARY_OWNER_GO_EXECUTE:
         reasons.append("CANARY_OWNER_GO_FORBIDDEN")
@@ -401,14 +383,6 @@ def run_full_core_pre_post_capital_guard_join_v1(
         if observed_leverage is None or not str(observed_leverage).strip():
             observed_leverage = "5"
 
-    if mode is FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE:
-        if margin_evidence is None:
-            reasons.append("PILOT_MARGIN_EVIDENCE_REQUIRED")
-        if exposure_evidence is None:
-            reasons.append("PILOT_EXPOSURE_EVIDENCE_REQUIRED")
-        if guard_config is None:
-            reasons.append("PILOT_GUARD_CONFIG_REQUIRED")
-
     cfg = guard_config or load_full_core_capital_guard_config_v1()
     if not skip_config_digest_mismatch and cfg.config_digest != binding.guard_config_digest:
         reasons.append("GUARD_CONFIG_DIGEST_MISMATCH")
@@ -439,16 +413,12 @@ def run_full_core_pre_post_capital_guard_join_v1(
         imr_rate=None,
         imr_source_class=None,
     )
-    auth_binding = _authorization_binding_v1(binding, session_id=session_id)
-    state_dir = atomic_state_dir or default_full_core_atomic_state_dir_v1()
-    atomic_recovery_signals = derive_full_core_recovery_guard_exposure_signals_v1(
-        state_dir=state_dir,
-        consumption_key=auth_binding.consumption_key(),
-        expected_binding_digest=auth_binding.to_canary_atomic_binding_v1().binding_digest(),
-    )
-    exposure = compose_capital_guard_exposure_evidence_v1(
-        exposure_evidence=exposure_evidence,
-        atomic_signals=atomic_recovery_signals,
+    exposure = exposure_evidence or CanaryCapitalGuardExposureEvidenceV1(
+        open_order_count=0,
+        open_position_count=0,
+        unknown_submit_active=False,
+        recovery_state_clear=True,
+        transport_retry_count=0,
     )
     session = guard_session or build_default_guard_session_v1(
         session_id=session_id,
@@ -457,6 +427,8 @@ def run_full_core_pre_post_capital_guard_join_v1(
         owner_go=binding.owner_go,
         guard_config=adapt_full_core_guard_config_to_canary_v1(cfg),
     )
+    auth_binding = _authorization_binding_v1(binding, session_id=session_id)
+    state_dir = atomic_state_dir or default_full_core_atomic_state_dir_v1()
     durable_state = full_core_durable_entry_state_for_guard_v1(
         state_dir=state_dir,
         consumption_key=auth_binding.consumption_key(),
@@ -586,10 +558,7 @@ def run_full_core_pre_post_capital_guard_join_v1(
             reservation_created=reservation_created,
         )
 
-    if mode in (
-        FullCoreCapitalGuardJoinMode.OFFLINE_STUB,
-        FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE,
-    ):
+    if mode is FullCoreCapitalGuardJoinMode.OFFLINE_STUB:
         try:
             refuse_full_core_capital_guard_entry_unless_pass_v1(evaluation)
         except FullCoreCapitalGuardError as exc:
@@ -633,8 +602,6 @@ def maybe_record_full_core_capital_guard_join_at_pre_external_v1(
         fields["FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST"] = result.binding_digest
     if result.reasons:
         fields["FULL_CORE_CAPITAL_GUARD_REASONS"] = ",".join(result.reasons)
-    auth_binding = _authorization_binding_v1(binding, session_id="full-core-capital-guard-join")
-    fields[FULL_CORE_ATOMIC_CONSUMPTION_KEY] = auth_binding.consumption_key()
     return fields
 
 

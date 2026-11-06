@@ -1,0 +1,8 @@
+{
+  "number": 6491,
+  "title": "feat(full-core): ratify current-productive account-equity source architecture",
+  "html_url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/6491",
+  "merged_at": "2026-09-15T08:58:45Z",
+  "merge_commit_sha": "4a71bfda358e64d0c136c2ea18b22e08424106b6",
+  "body": "## Summary\n- Ratifies `CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_MODEL_V1` as a four-layer architecture: account-equity stock, venue `eq` as reconciliation target only, `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` as the STEP-29P consumer input, and sealed legacy reconstruction off the live-critical path.\n- Binds today's 29P/pre-wire consumer graph without selecting a source, minting values, uplifting `eq`, or reopening the sealed CQ census. U04 remains available-for-sizing, not equity stock.\n- Names the current live-critical blocker `CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_UNBOUND`. No Live/Canary/POST, no enable/arm, no merge.\n\n## Test plan\n- [x] Owner tests: `tests/ops/test_full_core_current_productive_account_equity_source_architecture_v1.py` plus CQ non-regression\n- [x] PR_BOUNDED_FULL selector targets plus 29P/U04 related tests (769 passed, ~41s)\n- [x] Docs token policy, docs-reference-targets `--changed`, docs-drift-guard\n- [x] Canonical evidence manifest verify `RC=0`\n- [ ] GitHub required checks on this PR (confirmation only; do not merge)\n\n\nMade with [Cursor](https://cursor.com)"
+}

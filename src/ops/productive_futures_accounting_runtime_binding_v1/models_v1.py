@@ -48,6 +48,7 @@ class ContractMetadataV1:
     initial_margin_rate: Decimal
     maintenance_margin_rate: Decimal
     max_leverage: Decimal
+    contract_type: str = "linear"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -59,6 +60,7 @@ class ContractMetadataV1:
             "initial_margin_rate": str(self.initial_margin_rate),
             "maintenance_margin_rate": str(self.maintenance_margin_rate),
             "max_leverage": str(self.max_leverage),
+            "contract_type": self.contract_type,
         }
 
     def digest(self) -> str:
@@ -135,6 +137,7 @@ class AccountingPortfolioStateV1:
     positions: tuple[AccountingPositionStateV1, ...]
     fill_count: int
     applied_fill_ids: tuple[str, ...]
+    funding_pnl: Decimal = Decimal("0")
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -144,6 +147,7 @@ class AccountingPortfolioStateV1:
             "unrealized_pnl": str(self.unrealized_pnl),
             "cumulative_fees": str(self.cumulative_fees),
             "cumulative_slippage": str(self.cumulative_slippage),
+            "funding_pnl": str(self.funding_pnl),
             "fill_count": int(self.fill_count),
             "applied_fill_ids": list(self.applied_fill_ids),
             "positions": [p.to_dict() for p in self.positions],

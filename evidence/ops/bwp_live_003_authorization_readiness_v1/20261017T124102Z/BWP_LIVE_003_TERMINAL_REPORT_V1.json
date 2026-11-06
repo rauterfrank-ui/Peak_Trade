@@ -1,0 +1,55 @@
+{
+  "ACTIVE_CURRENT_BLOCKERS": [],
+  "B1_CAPITAL_SOURCE": "USDC details.availEq via CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1; fresh value not attested",
+  "B1_CLASSIFICATION": "B",
+  "B2_CAPS": "canonical owner_caps_ratified=false join_disabled numeric_caps_null currency=USDC",
+  "B2_CLASSIFICATION": "B",
+  "B3_CLASSIFICATION": "B",
+  "B3_K1": "identity bound okx-eea.productive; real keychain access unauthorized",
+  "B4_CLASSIFICATION": "B",
+  "B4_POST": "EXTERNAL_EFFECT_AUTHORIZED=false POST_ALLOWED=false REAL_VENUE_POST_ALLOWED=false POST_GO_UNCONSUMED",
+  "B5_AUTHORIZATION": "kill switch fail-closed on KILLED RECOVERING DISABLED missing file and PEAK_KILL_SWITCH=1; ACTIVE does not block",
+  "B5_RR_STATUS": "venue proof required; not exercised; unsigned-digest residual not found in current proof module",
+  "B6_REPLAY": "GLOBAL_REPLAY_DENIED on consumed owner token, permit, envelope, and client order id",
+  "B7_AUTONOMOUS_POST": "NOT_CONNECTED",
+  "BASELINE_SHA": "769d13663badb8daed64b32a0e3047cd198da900",
+  "BWP_LIVE_003_STATUS": "COMPLETE_READ_ONLY_DECISION_PREPARATION",
+  "CAPITAL_AUTHORIZATION": false,
+  "CURRENT_GRAPH_STATUS": "STALE_REFERENCE_ONLY",
+  "ECO_CLASSIFICATION": "E",
+  "ECO_STATUS": "NOT_QUALIFIED_1_OF_50_OFFLINE_ONLY",
+  "EVIDENCE_GAPS": [
+    "fresh USDC availEq not read",
+    "production kill-switch file not observed",
+    "ECO pack not rebound to 769d13663",
+    "GHV snapshot stale at 6261c8f9e"
+  ],
+  "EVIDENCE_MANIFEST": "evidence/ops/bwp_live_003_authorization_readiness_v1/20261017T124102Z",
+  "FORWARD_REVERSE_TRANSITIVE_STATUS": "TRAVERSED_ON_STALE_GRAPH_THEN_VERIFIED_ON_ORIGIN_MAIN_CODE",
+  "GHV_STATUS": "STALE_NOT_A_LIVE_BLOCKER",
+  "HISTORICAL_NON_BLOCKERS": [
+    "stale GHV census mismatch",
+    "11.2.1.CR unbound-source narrative superseded by current producer constants",
+    "STEP29N promotion gate is not execution authority"
+  ],
+  "LIVE_TRADING_AUTHORIZATION": false,
+  "NEXT_SAFE_ACTION": "STOP",
+  "OWNER_DECISIONS_REQUIRED": [
+    "OD-B1",
+    "OD-B2",
+    "OD-B3",
+    "OD-B4"
+  ],
+  "POST_AUTHORIZATION": false,
+  "PRODUCTION_LIVE_AUTHORIZATION": false,
+  "SECURITY_INVARIANTS": "FAIL_CLOSED on the adversarial cases in SECURITY_INVARIANTS_MATRIX_V1.json; no new defect",
+  "TECHNICAL_LIVE_READINESS": "ONE_SHOT_MECHANISMS_PRESENT_AND_HELD_CLOSED_BY_STANDING_PINS_AND_UNRATIFIED_CAPS",
+  "authority": "NONE",
+  "financial_guarantee": "NONE",
+  "local_checkout_drift": {
+    "local_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+    "used_as_current": false,
+    "working_model_drift": "LOCAL_CHECKOUT_NOT_ORIGIN_MAIN"
+  },
+  "schema_version": "bwp_live_003_terminal_report.v1"
+}

@@ -158,6 +158,83 @@ def test_wrong_consumer_rejected(tmp_path: Path) -> None:
     assert routed["status"] == ROUTING_STATUS_REJECTED_WRONG_CONSUMER
 
 
+@pytest.mark.parametrize(
+    ("routing_class", "wrong_consumer"),
+    [
+        (SemanticRoutingClass.RESEARCH_CHOICE.value, "LEARNING_RESEARCH"),
+        (SemanticRoutingClass.LEARNING_REPRESENTATION.value, "OPTIMIZATION_RESEARCH"),
+    ],
+)
+def test_cycle_honors_wrong_consumer_request_before_invoking_either_consumer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, routing_class: str, wrong_consumer: str
+) -> None:
+    meta = _learning_representation_meta(tmp_path)
+
+    def must_not_run(*args, **kwargs):
+        raise AssertionError("wrong-consumer request reached a research consumer")
+
+    monkeypatch.setattr(
+        "src.experiments.canonical_meta_evidence_dual_router_v1."
+        "validate_meta_to_optimization_feedback_input_v1",
+        must_not_run,
+    )
+    monkeypatch.setattr(
+        "src.experiments.canonical_meta_evidence_dual_router_v1."
+        "validate_meta_to_learning_research_adaptation_input_v1",
+        must_not_run,
+    )
+    result = run_meta_evidence_dual_routing_cycle_v1(
+        MetaEvidenceDualRouterRequestV1(
+            meta_learning_evidence=meta,
+            semantic_routing_class=routing_class,
+            requested_consumer_override=wrong_consumer,
+        )
+    )["routing_result"]
+    assert result["status"] == ROUTING_STATUS_REJECTED_WRONG_CONSUMER
+    assert result["optimization_consumer_invoked"] is False
+    assert result["learning_consumer_invoked"] is False
+
+
+@pytest.mark.parametrize(
+    ("routing_class", "consumer"),
+    [
+        (SemanticRoutingClass.RESEARCH_CHOICE.value, "OPTIMIZATION_RESEARCH"),
+        (SemanticRoutingClass.LEARNING_REPRESENTATION.value, "LEARNING_RESEARCH"),
+    ],
+)
+def test_cycle_explicit_matching_consumer_preserves_the_default_result(
+    tmp_path: Path, routing_class: str, consumer: str
+) -> None:
+    meta = _learning_representation_meta(tmp_path)
+    default = run_meta_evidence_dual_routing_cycle_v1(
+        MetaEvidenceDualRouterRequestV1(meta_learning_evidence=meta, semantic_routing_class=routing_class)
+    )
+    explicit = run_meta_evidence_dual_routing_cycle_v1(
+        MetaEvidenceDualRouterRequestV1(
+            meta_learning_evidence=meta,
+            semantic_routing_class=routing_class,
+            requested_consumer_override=consumer,
+        )
+    )
+    assert dict(default) == dict(explicit)
+
+
+@pytest.mark.parametrize("routing_class", ["UNKNOWN", "MIXED"])
+def test_cycle_explicit_fail_closed_consumer_does_not_open_feedback(
+    tmp_path: Path, routing_class: str
+) -> None:
+    result = run_meta_evidence_dual_routing_cycle_v1(
+        MetaEvidenceDualRouterRequestV1(
+            meta_learning_evidence=_optimization_meta(tmp_path),
+            semantic_routing_class=routing_class,
+            requested_consumer_override="NONE_FAIL_CLOSED",
+        )
+    )["routing_result"]
+    assert result["status"] == ROUTING_STATUS_FAIL_CLOSED
+    assert result["optimization_consumer_invoked"] is False
+    assert result["learning_consumer_invoked"] is False
+
+
 def test_deterministic_routing_replay(tmp_path: Path) -> None:
     meta = _optimization_meta(tmp_path)
     req = MetaEvidenceDualRouterRequestV1(

@@ -101,7 +101,9 @@ def build_intelligence_lineage_observability_record_v1(
             "source_learning_state_record_ref": str(
                 ddo_offline_export_handoff.get("learning_state_record_ref") or ""
             ),
-            "outcome_semantic_class": "OBSERVED_PRODUCTIVE_PRE_EXTERNAL",
+            "outcome_semantic_class": str(
+                ddo_offline_export_handoff.get("outcome_semantic_class") or "UNKNOWN"
+            ),
             "outcome_evidence_provenance": {"fill_source_type": "NO_FILL"},
         }
 
@@ -188,6 +190,13 @@ def build_intelligence_lineage_observability_record_v1(
         ),
         "replay_decision_outcome": outcome,
         "ddo_capture_ok": bool((ddo_capture_summary or {}).get("ok")),
+        "ddo_handoff_status": str(
+            (ddo_offline_export_handoff or {}).get("status") or "NOT_REACHED"
+        ),
+        "ddo_handoff_reason_codes": list(
+            (ddo_offline_export_handoff or {}).get("reason_codes") or ()
+        ),
+        "pending_outcome_created_by_handoff": False,
         "decision_unchanged": True,
         "capture_failure_changes_decision": False,
     }

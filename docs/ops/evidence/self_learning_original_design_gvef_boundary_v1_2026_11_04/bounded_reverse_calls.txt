@@ -1,0 +1,8 @@
+src/evaluation/golden_vectors/contracts/enums.py:17:    SELF_LEARNING = "self_learning_evaluator_v1"
+src/evaluation/golden_vectors/evaluators/self_learning_v1.py:25:SELF_LEARNING_EVALUATOR_ID = "self_learning_evaluator_v1"
+src/evaluation/golden_vectors/evaluators/self_learning_v1.py:33:class SelfLearningEvaluatorV1:
+src/evaluation/golden_vectors/evaluators/self_learning_v1.py:124:            raw = entry.get("learning_artifact")
+src/evaluation/golden_vectors/evaluators/self_learning_v1.py:156:                "learning_artifact": artifact,
+src/evaluation/golden_vectors/evaluators/self_learning_v1.py:157:                "learning_artifact_digest": digest,
+src/evaluation/golden_vectors/evaluators/__init__.py:23:    SelfLearningEvaluatorV1,
+src/evaluation/golden_vectors/evaluators/__init__.py:34:    "SelfLearningEvaluatorV1",

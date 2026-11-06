@@ -221,7 +221,7 @@ def test_rw_e23_pre_external_admission_bundle(tmp_path: Path) -> None:
     summary = summarize_backlog_v1(rows)
     assert summary["BACKLOG_CLOSED"] == BACKLOG_TOTAL
     path = write_admission_evidence_v1(
-        repo_root=REPO,
+        repo_root=tmp_path,
         admission=admission,
         backlog_matrix=summary,
     )

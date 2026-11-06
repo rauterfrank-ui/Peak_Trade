@@ -68,6 +68,34 @@ This join does **not** rewire `MF_SINGLE_EGRESS_V1`, does **not** join
 MF runtime, does **not** create five isolated executing lanes, does
 **not** call Cap 2.4, and does **not** change Master V2 or Double Play.
 
+## Local checked-publication extension (2026-11-03)
+
+The local working implementation on HEAD242b7974 now uses
+`checked_publication_v1.py` through the existing `produce_join_v1.py` facade.
+This section supersedes the historical sequencing/result behavior in sections
+1–5 below for this caller: proposal/pin construction is pure, all occupied Cap23
+owners are locked and assessed before any canonical bundle publication, and a
+Cap23 deny does not publish a partial result map or a mismatching assignment.
+The original sections remain as the dated creation contract. Up to five prepared
+N1 selections still grant no multi-position or runtime activation authority.
+
+Both prior MF membership policy and existing per-lane Cap23 holding/hysteresis
+apply. Changed occupied lanes require current validated position truth plus the
+existing rotation owner's explicit COMMIT_OK/custody clearance; pure removal is
+not implemented through this replacement API. Missing or corrupt prior selections
+are explicit continuity errors, never automatic bootstrap.
+
+A checksummed pending receipt fences public topology recovery until recorded owner
+bundles and topology agree. The next checked invocation can resume the recorded
+publication from known old/new states, rechecking current replacement clearance.
+The two affected local writer owners preserve and reclaim provably dead-process
+lock receipts under a kernel acquisition guard; unknown/alive owners stay blocked.
+Join denies expose a recovery action. No blind unlock, retry daemon, host scheduler,
+notification delivery or uninterrupted management guarantee is introduced.
+See the master runbook's 2026-11-03 checked slot-publication extension for recovery
+conditions, limits and verification. Regression source:
+`tests/ops/test_checked_lane_selection_publication_v1.py`.
+
 ## 1. Purpose
 
 Close the Ranking-domain occupied-lane Cap 2.3 N=1 produce/persist seam

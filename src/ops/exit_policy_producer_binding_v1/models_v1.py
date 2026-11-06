@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from dataclasses import asdict, dataclass, field
 from typing import Any, Mapping, Optional
 
@@ -54,9 +55,12 @@ class CanonicalExitPolicyStateV1:
     last_evaluated_event_time: Optional[float]
     commit_sequence: int
     owner: str
+    current_cursor_publication: Optional[dict[str, Any]] = None
+    simulated_accounting_progress: Optional[dict[str, Any]] = None
+    simulated_accounting_close: Optional[dict[str, Any]] = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "state_version": self.state_version,
             "instrument_id": self.instrument_id,
             "repository_sha": self.repository_sha,
@@ -76,6 +80,13 @@ class CanonicalExitPolicyStateV1:
             "commit_sequence": int(self.commit_sequence),
             "owner": self.owner,
         }
+        if self.current_cursor_publication is not None:
+            payload["current_cursor_publication"] = deepcopy(self.current_cursor_publication)
+        if self.simulated_accounting_progress is not None:
+            payload["simulated_accounting_progress"] = deepcopy(self.simulated_accounting_progress)
+        if self.simulated_accounting_close is not None:
+            payload["simulated_accounting_close"] = deepcopy(self.simulated_accounting_close)
+        return payload
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> "CanonicalExitPolicyStateV1":
@@ -112,6 +123,9 @@ class CanonicalExitPolicyStateV1:
             ),
             commit_sequence=int(payload.get("commit_sequence") or 0),
             owner=str(payload["owner"]),
+            current_cursor_publication=deepcopy(payload.get("current_cursor_publication")),
+            simulated_accounting_progress=deepcopy(payload.get("simulated_accounting_progress")),
+            simulated_accounting_close=deepcopy(payload.get("simulated_accounting_close")),
         )
 
     def digest(self) -> str:

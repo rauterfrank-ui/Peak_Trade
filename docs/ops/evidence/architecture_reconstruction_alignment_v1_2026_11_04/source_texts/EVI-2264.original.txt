@@ -1,0 +1,89 @@
+# Nach dem Observation Pack vom 5 August
+
+Untersuchungsstand 02.11.2026. Datenpfad vor der Sperre und gezielte spätere Weiterentwicklung.
+
+Die nachgewiesene historische Verarbeitung reicht bis zum Coverage-Ergebnis. Ein ausführbarer Shadow-Anschluss war codiert; ein anschließender Kalibrierungs-/Meta-Lauf mit genau diesem Pack wurde im untersuchten Bestand nicht gefunden.
+
+August-Schnitt 899e154d und gezielter Verlauf von vier Pfaden bis main-Pin 5d1c838c. Die gewollte fehlende produktive Eingriffsautorität bleibt von fachlichen Eingangs- und Evidenzlücken getrennt.
+
+## Was tatsächlich weitergereicht wurde
+
+**Pack → Coverage — GESPEICHERTER TEILWEG BELEGT:** Derselbe Pack-Digest wird vom Executor gelesen; Ergebnis {missing:299,unknown:0}. Beleg/Grenze: Voriger Rohdatenabgleich plus B10/B12; zusätzliche Recovery-Coverage-Datei bytegleich mit Git.
+
+**Coverage → Dashboard — KEINE DARAUS FOLGENDE DASHBOARD-SCHLIESSUNG:** Originaler Topic-Closeout: Pack-Input-Gap CLOSED; Dashboard-Regime/Bull-Bear/Switch REMAINS_BLOCKED_OUT_OF_SCOPE. Beleg/Grenze: B10/B11; MISSING_SOURCE bleibt 50, NOT_BOUND bleibt 18, Delta 0.
+
+**Pack → Campaign-Request — ADAPTER CODIERT; LAUF FÜR DIESEN PACK NICHT BELEGT:** Binder übernimmt Bars und Pack-Digest in ShadowCampaignRequestV1. Beleg/Grenze: B02:46–129.
+
+**CLI → Export → optionaler Start — KEIN AUTOMATISCHER START AUS DEM GESPEICHERTEN PACK:** CLI verlangt Candle-/Mark-JSONs, Campaign-ID, Grenzen/Folds/Seeds/Coverage und optional --start-evidence-collection. Der Export baut einen neuen Pack. Beleg/Grenze: B03/B04/B09; kein Argument zum direkten Laden des gesiegelten observation_pack.json.
+
+**Runner → Forschungsevidenz — FUNKTION CODIERT; PASSENDER HISTORISCHER OUTPUT NICHT GEFUNDEN:** Formelbeobachtungen und Metadaten können als Campaign-Ergebnis gespeichert werden. Beleg/Grenze: B01/B13; begrenzte Output- und Recovery-Suche.
+
+**Campaign-Ergebnis → Meta/Suche — FÜR DIESEN STRANG WEITER OFFEN:** Benötigt konkreten Resultat-Export, Experimentidentität und tatsächlichen nächsten Consumer. Beleg/Grenze: Keine neue implizite Universe-Zuordnung oder Integration aus den Namen.
+
+Der tatsächliche Coverage-Consumer ist zusätzlich materiell abgesichert: `regime_coverage_instance.json` aus `/Volumes/PeakDATARecovery/PeakTradeCodeRecovery01/$$$Ordner4295109098` ist bytegleich mit der commitgebundenen Instanzdatei. Der bereits unabhängig geprüfte 299-Bar-Pack wird dort per identischem Digest referenziert. Die Ausführung des nachgelagerten Campaign-Runners ist dadurch noch nicht belegt. B12; Quellenregister.
+
+Der Originalauftrag vom 05.08., 16:04 Berlin, verlangt die Coverage-Ausführung und konkrete Ergebnisartefakte, setzt aber ausdrücklich `CAMPAIGN_START=false`. Der Abschlussbericht hält den Unterschied fest: Pack-Input-Gap geschlossen, Dashboard-Präsentations-Gap unverändert. Die dazu gespeicherten JSONs nennen MISSING_SOURCE=50 und NOT_BOUND=18 vor und nach dem Schritt, jeweils Delta 0. Das historische CLOSED betrifft also einen einzelnen Eingangsschritt, keine Gesamtintegration. [Originalauftrag](cursor-122207.md), [Originalabschluss](cursor-122215.md), B10/B11.
+
+## Welche weiteren Daten der Shadow Runner erwartete
+
+**Realisierte Volatilität:** Eingang: Mindestens 61 finalisierte, zusammenhängende Minuten-Bars mit Mark-Preisen. Verarbeitung: Population-Standardabweichung der letzten 60 Mark-Logreturns; pro Bar, ohne Annualisierung. Grenze: Der 299-Bar-Pack enthält diese Eingangsart; historische Ausführung der Formel mit diesem Pack ist nicht belegt. Quelle: B06.
+
+**ATR:** Eingang: Mindestens 15 finale OHLC-Bars. Verarbeitung: Mittel der letzten 14 True Ranges als Wilder-Startwert; Einheit Preis-/Quote-Währung. Grenze: Keine automatische Auswahl einer späteren ATR-Schwelle. Quelle: B07.
+
+**Opportunity Score:** Eingang: Expliziter recent_abs_log_return sowie fee_bps und slippage_bps. Verarbeitung: 1-exp(-movement/breakeven), breakeven=(fee+slippage)/10000. Grenze: Der Standardexport reicht diese Zusatzwerte nicht an den Binder weiter; dort bleiben sie None. Kein Default aus dem Preis-Pack. Quelle: B08; B02/B03.
+
+**Survival-/Sequenzgrößen:** Eingang: Bereitgestellter Barrier-Pfad sowie explizite Sequenz-/Layer-Metriken. Verarbeitung: Runner ruft spezielle Producer/Assembler mit diesen Eingaben auf. Grenze: Die benötigten Pfad-/Layer-Werte werden nicht aus dem Observation-Pack allein erzeugt. Quelle: B01:165–187; B02.
+
+**Train/Folds/Bootstrap/Stress:** Eingang: Explizite Grenzen, Fold-IDs, Seeds und erlaubte Familien. Verarbeitung: Builder erzeugt strukturelle Manifeste. Grenze: Keine hier nachgewiesene Durchführung von Walk-Forward, Resampling oder Stress anhand der 299 Bars. Quelle: B05.
+
+Der Binder besitzt einen echten Übergang von einem ObservationPackV1 zu einem ShadowCampaignRequestV1 und übernimmt den Pack-Digest in die Reproduzierbarkeitsangaben. Er verlangt aber zusätzlich Campaign-/Kontextangaben und Manifeste. Der CLI-Einstieg lädt normalisierte Candle-/Mark-Eingaben aus separaten JSONs, lässt den Export einen neuen Pack erstellen und startet nur bei expliziter Wahl den Collector. Der CLI lädt nicht automatisch die gesiegelte 299-Bar-Pack-Datei. Derselbe Typname ist daher kein Nachweis, dass genau der historische Pack weiterverwendet wurde. B02/B03/B04/B09.
+
+Der Export reicht außerdem nur die strukturellen Eingänge an den Binder weiter. Die dort optionalen Felder für Opportunity-/Pfad-/Sequenz-/Layer-Metriken bleiben in diesem Standardaufruf unbefüllt. Der Runner kann mit genügend Bars zwar bestimmte Beobachtungen berechnen; fehlende Zusatzdaten sind damit nicht durch einen gemeinsamen Candle-Pack ersetzt. Es wurde hier kein neuer Campaign-Lauf und keine nachträgliche Formelberechnung gestartet.
+
+## Was COMPLETE bei den Manifesten bedeutete
+
+**Dataset-Manifest:** Identität, Provenance, Baranzahl und Pack-Digest. Bedeutung: Strukturelle COMPLETE-Angabe, keine Modell-/Strategiebewertung.
+
+**Partition-Manifest:** Zeitliche Segmente; purge_seconds und embargo_seconds bleiben None. Bedeutung: Keine numerisch vollständig festgelegte Leakage-/Trennpolicy.
+
+**Walk-Forward-Manifest:** Fold-IDs und Modus; fold_sizes/cadence_numbers bleiben None. Bedeutung: Beschreibt Folds; führt keine Fold-Auswertungen aus.
+
+**Bootstrap-Manifest:** Seeds und Methodenname; block_length/path_count/resampling_unit_choice bleiben None. Bedeutung: Kein Beleg erzeugter oder ausgewerteter Bootstrap-Pfade.
+
+**Stress-Manifest:** Erlaubte Stressfamilien; numeric_magnitude bleibt None. Bedeutung: Kein Beleg numerischer Stressläufe.
+
+**Runner-Gesamtstatus:** evidence_requirements_met wird in dieser Fassung fest auf False gesetzt. Bedeutung: Gesamte Evidenzvollständigkeit wird hier auch durch COMPLETE-Manifeste nicht hergestellt.
+
+Die Manifest-Builder nennen ihre Ausgaben selbst „Structural COMPLETE“. Das ist ein Schema-/Vertragszustand. Der Collector akzeptiert diese Manifeste als Voraussetzung für die Evidence-Collection; er misst dadurch keine OOS-Leistung und erzeugt keine Bootstrap-Ergebnisse. Der Runner berechnet separat einzelne Formel-Beobachtungen und schreibt sie in `shadow_observations`, setzt aber `evidence_requirements_met=False`. Diese begrenzte Fassung darf daher nicht als vollständige Kalibrierung der späteren Parameter oder als erfolgreicher Meta-Learning-Zyklus gelesen werden. B01:238–321; B04/B05.
+
+Die Ausgabe produktiver Parameterwerte bleibt absichtlich getrennt und leer. Diese gewünschte Autoritätsgrenze ist nicht der Grund, fehlende fachliche Zahlen, ausgeführte Versuche oder wiederverwendete Ergebnisse als bereits vorhanden anzusehen.
+
+## Gezielte spätere Entwicklung
+
+**05.08.2026:** Runner und Binder werden vor dem gesiegelten 299-Bar-Pack eingeführt. Quelle: 55922609 (#5728), a5b57d52 (#5729).
+
+**05.08.2026:** Pack entsteht; Coverage-Ergebnis wird erzeugt. Originalauftrag und Abschluss begrenzen dies auf Input-Gap, ohne Campaign-Start. Quelle: 13d9a12e / 216c6aa5; Originalnachrichten 122207/122215.
+
+**24.09.2026:** Runner erhält F5-FRESH-/SURV-/CAP-Test-Entry-Lifecycle-Checks. Quelle: 0ef17b66 / aaea8eb2 (#6771); Diff enthält keine neue Regimeklassifikation oder Kalibrierung.
+
+**Am Vergleichspin 5d1c838c:** Binder, Label-Semantik und ursprünglicher Pack besitzen noch die jeweiligen August-Blobs. Quelle: Vier gepinnte GitHub-Pfadhistorien und Git-Blob-Abgleich; keine Aussage über alle Branches oder dynamischen Consumer.
+
+Der August-Runner am Cut `899e154d…` und der Runner am Pin `5d1c838c…` wurden direkt verglichen. Die Änderungen fügen Zulassungsprüfungen für die drei F5-Gruppen und die Prüfung ihrer Manifest-/Protocol-Bindung hinzu. Die Formelstrecke und das feste `evidence_requirements_met=False` bleiben in diesem Diff bestehen. Das ist eine technische Weiterentwicklung der Eingangsbedingungen, kein hier belegter neuer Klassifikationsalgorithmus. [Diff](runner-august-to-pin.diff).
+
+GitHub-Primärquellen: [Runner-Einführung #5728](https://github.com/rauterfrank-ui/Peak_Trade/commit/55922609182a3166320c0a66a3a0b7cda5c13090), [Binder-Einführung #5729](https://github.com/rauterfrank-ui/Peak_Trade/commit/a5b57d5211a0ffb691df65eb3d6cd62b5ff09363), [Lifecycle-Erweiterung #6771](https://github.com/rauterfrank-ui/Peak_Trade/commit/aaea8eb2a65528db818de5b7e750197f00afbfa3). Die vier Pfadhistorien sind auf den konkret gepinnten main-Verlauf beschränkt. Aus lokalen Branch-Lösch-/Wiederaufnahmeereignissen wird kein ungeprüfter Verbleib auf main abgeleitet.
+
+## Ergebnis der Suche nach einer tatsächlichen Kampagne
+
+Die bereits angelegten acht Pfadinventare wurden auf typische Campaign-Ergebnisnamen und -pfade geprüft. Gefunden wurden dabei nur eingebettete Dokumentations-/Sourcekopien, keine identifizierten Campaign-Outputs. Eine zusätzliche Inhaltssuche im vorhandenen Code-Recovery-Bestand nach dem konkreten Pack-Digest, `shadow_observations` und `pack_campaign_status` findet nur Observation-Pack, Materialisierungsnachweis und die Coverage-Instanz. Es ist kein zugehöriges Resultat des Campaign-Runners in diesem Suchraum aufgetaucht. [Suchraum](recovery-search.json), [Treffer](recovery-campaign-hits.txt).
+
+Das ist kein Nachweis, dass nie irgendwo eine Kampagne ausgeführt wurde. Nicht überlieferte temporäre Ausgaben, andere Speicherorte, Varianten oder dynamische Aufrufe bleiben offen. Belastbar ist derzeit: Der Pack erreicht den Coverage-Schritt; die weitere Campaign-/Meta-Verwertung ist als Codeanschluss vorhanden beziehungsweise fachlich vorausgesetzt, aber für diesen konkreten Datenbestand nicht materiell nachgewiesen.
+
+## Nächste konkrete Nachweise
+
+- Historischen Campaign-Ergebnisordner mit genauem Pack-/Dataset-/Request-Bezug finden; keine neuen Resultate als Ersatz erzeugen.
+- Für fehlende Score-/Survival-Eingänge tatsächliche Producer und ihre damals verwendeten Daten finden.
+- Weitere belegte Ergebnisstränge über ihre IDs in Experiment Memory, Meta-Learning und die nächste Suchiteration verfolgen.
+
+## Quellen und Abschlussgrenze
+
+13 revisionsgebundene Dateien, zwei textgleich mit Original-JSONL abgeglichene Nachrichten, eine zusätzliche Recovery-Datei, vier gepinnte GitHub-Pfadhistorien und zwei direkte GitHub-Datei-Blob-Abgleiche. [Quellenregister](sources.json), [Prüfung](verification.json). Remote-main wurde beim Lesen separat erfasst. Keine Produktimporte, Tests, Lern-/Kalibrierungsläufe, Wiederherstellungen oder Originaländerungen. Die bestehende Übersicht wird ergänzt; Repository und Obsidian-Ledger bleiben unverändert.

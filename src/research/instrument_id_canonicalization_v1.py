@@ -6,6 +6,9 @@ No network access, no venue metadata queries, no heuristic runtime symbol resolu
 
 from __future__ import annotations
 
+from trading.master_v2.double_play_futures_input import FORBIDDEN_FUTURES_BASE_ASSETS
+
+
 import re
 from dataclasses import dataclass
 from enum import Enum
@@ -17,8 +20,8 @@ INSTRUMENT_ID_CANONICALIZATION_VERSION = "instrument_id_canonicalization.v1"
 # Alias for manifest root field compatibility.
 INSTRUMENT_ID_CANONICALIZATION_VERSION_TOKEN = INSTRUMENT_ID_CANONICALIZATION_VERSION
 
-_FORBIDDEN_BASE_ASSETS = frozenset({"BTC", "XBT", "WBTC", "TBTC", "RBTC", "BTCB", "BITCOIN"})
-_FORBIDDEN_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "wbtc", "tbtc", "rbtc", "btcb"})
+_FORBIDDEN_BASE_ASSETS = FORBIDDEN_FUTURES_BASE_ASSETS
+_FORBIDDEN_SUBSTRINGS = frozenset(v.lower() for v in FORBIDDEN_FUTURES_BASE_ASSETS)
 _FUTURES_CONTRACT_TYPES = frozenset(
     {
         "linear_perpetual",

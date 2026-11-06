@@ -1,0 +1,105 @@
+diff --git a/src/backtest/parameter_sensitivity_v1.py b/src/backtest/parameter_sensitivity_v1.py
+index 54106aa10..556ae5cb0 100644
+--- a/src/backtest/parameter_sensitivity_v1.py
++++ b/src/backtest/parameter_sensitivity_v1.py
+@@ -15,7 +15,8 @@ import json
+ import math
+ from dataclasses import dataclass, field
+ from enum import Enum
+-from typing import Any, Mapping, Optional, Sequence
++from types import MappingProxyType
++from typing import Any, Callable, Mapping, Optional, Sequence
+ 
+ import pandas as pd
+ 
+@@ -588,6 +589,7 @@ def _evaluate_split(
+     parameter_set_id: str,
+     explicit_zero_cost_non_economic: bool,
+     mv2_wiring_extra_kwargs: Mapping[str, Any] | None = None,
++    split_result_observer: Callable[[Mapping[str, Any]], None] | None = None,
+ ) -> tuple[str, Mapping[str, float], str, str]:
+     ref = f"{parameter_set_id}:{split_name}"
+     if bars.empty or len(bars) < MIN_BARS_PER_SPLIT:
+@@ -603,6 +605,27 @@ def _evaluate_split(
+     stats = mv2_wiring.compute_mv2_backtest_metrics_v1(wiring.backtest_result)
+     cost_ref = wiring.effective_cost_config.cost_model_version
+     funding_ref = wiring.effective_cost_config.funding_model_version
++    if split_result_observer is not None:
++        # Transport computed owner output, without changing metric semantics or
++        # the existing versioned result. Later splits can still fail: callers
++        # must join observations to the final point status before treating a
++        # complete experiment as evaluated. Observer errors follow the existing
++        # failed-point path and must never silently erase collection failure.
++        split_result_observer(
++            MappingProxyType(
++                {
++                    "parameter_set_id": parameter_set_id,
++                    "split_name": split_name,
++                    "result_ref": ref,
++                    "bar_count": len(bars),
++                    "period_start": str(bars.index[0]),
++                    "period_end": str(bars.index[-1]),
++                    "metrics": MappingProxyType(dict(stats)),
++                    "cost_model_ref": cost_ref,
++                    "funding_model_ref": funding_ref,
++                }
++            )
++        )
+     return ref, stats, cost_ref, funding_ref
+ 
+ 
+@@ -617,6 +640,7 @@ def _evaluate_parameter_point_v1(
+     data_digest: str,
+     explicit_zero_cost_non_economic: bool,
+     mv2_wiring_extra_kwargs: Mapping[str, Any] | None = None,
++    split_result_observer: Callable[[Mapping[str, Any]], None] | None = None,
+ ) -> ParameterSensitivityPointV1:
+     parameter_set_id = _stable_digest(
+         {"grid_digest": grid.grid_digest, "parameter_values": dict(parameter_values)}
+@@ -636,6 +660,7 @@ def _evaluate_parameter_point_v1(
+             parameter_set_id=parameter_set_id,
+             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+             mv2_wiring_extra_kwargs=mv2_wiring_extra_kwargs,
++            split_result_observer=split_result_observer,
+         )
+         val_ref, val_stats, _, _ = _evaluate_split(
+             bars=validation,
+@@ -646,6 +671,7 @@ def _evaluate_parameter_point_v1(
+             parameter_set_id=parameter_set_id,
+             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+             mv2_wiring_extra_kwargs=mv2_wiring_extra_kwargs,
++            split_result_observer=split_result_observer,
+         )
+         oos_ref, oos_stats, _, _ = _evaluate_split(
+             bars=oos,
+@@ -656,6 +682,7 @@ def _evaluate_parameter_point_v1(
+             parameter_set_id=parameter_set_id,
+             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+             mv2_wiring_extra_kwargs=mv2_wiring_extra_kwargs,
++            split_result_observer=split_result_observer,
+         )
+         evaluation_status = EvaluationStatus.EVALUATED
+         metric_stats = oos_stats
+@@ -731,7 +758,14 @@ def run_parameter_sensitivity_v1(
+     explicit_zero_cost_non_economic: bool = False,
+     policy: EconomicValidityPolicyV1 | None = None,
+     mv2_wiring_extra_kwargs: Mapping[str, Any] | None = None,
++    split_result_observer: Callable[[Mapping[str, Any]], None] | None = None,
+ ) -> ParameterSensitivityResultV1:
++    """Evaluate the full grid; optionally expose computed split metrics.
++
++    Observations are read-only transport, not persisted experiment identities or
++    successful-point declarations. Existing metric definitions/missingness and
++    the final point status remain authoritative; observer failure fails a point.
++    """
+     _reject_forbidden_instrument(instrument_id)
+     if bars.empty:
+         raise ParameterSensitivityError("bars_empty")
+@@ -772,6 +806,7 @@ def run_parameter_sensitivity_v1(
+             data_digest=data_digest,
+             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+             mv2_wiring_extra_kwargs=mv2_wiring_extra_kwargs,
++            split_result_observer=split_result_observer,
+         )
+         points.append(point)
+         if point.evaluation_status is EvaluationStatus.FAILED:

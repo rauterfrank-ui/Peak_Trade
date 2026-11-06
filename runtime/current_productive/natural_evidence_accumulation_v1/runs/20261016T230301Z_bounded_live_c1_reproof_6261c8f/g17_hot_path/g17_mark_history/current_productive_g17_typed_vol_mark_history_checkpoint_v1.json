@@ -1,0 +1,1375 @@
+{
+  "acceptance_state": {
+    "bound_instrument_key": {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    "last_accepted_observation_identity": {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "mark_price": 0.2851,
+      "venue": "OKX",
+      "venue_event_time": 1792192080.0,
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    "last_accepted_transport": null,
+    "market_observation_epoch": {
+      "value": 61
+    }
+  },
+  "bar_interval_seconds": 60,
+  "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+  "capability_id": "MASTER_V2_CANONICAL_VOLATILITY_TYPED_RUNTIME_PRODUCER_SCAFFOLD_V1",
+  "history_digest": "5466adb3218d8610341162e632405faaf541fcca8d6e4ee8a9a5eccef8cf5fc8",
+  "last_accepted_event_time": {
+    "unix_seconds": 1792192080.0
+  },
+  "owner": "trading.master_v2.canonical_volatility_runtime_mark_history_v1",
+  "records": [
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188480.0
+      },
+      "is_final": true,
+      "mark_price": 0.2588,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188480.0
+        },
+        "mark_price": 0.2588,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0bd19699dd0d886473de0e6bd817a07d6c9af9764cffe4506dea77c275b225fa",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188540.0
+      },
+      "is_final": true,
+      "mark_price": 0.2584,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188540.0
+        },
+        "mark_price": 0.2584,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "8a9eae02ee15ef0355e6ead3159a3872c4c3608d2de6fd00c5ff384e59d75616",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188600.0
+      },
+      "is_final": true,
+      "mark_price": 0.2597,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188600.0
+        },
+        "mark_price": 0.2597,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "03d71cbc6bc6d097d8e1eadb6313fbaa5274ff6639aef517fc066fe5031b5a6f",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188660.0
+      },
+      "is_final": true,
+      "mark_price": 0.2579,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188660.0
+        },
+        "mark_price": 0.2579,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a964ebdd69770ec7888ef25e7a37d0fc459268c83a0b05e1f743189525c5385c",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188720.0
+      },
+      "is_final": true,
+      "mark_price": 0.258,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188720.0
+        },
+        "mark_price": 0.258,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a3d86c2893a574c4f2d6891dcc3be251e47791f868929156051e9a464a9ac11e",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188780.0
+      },
+      "is_final": true,
+      "mark_price": 0.2614,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188780.0
+        },
+        "mark_price": 0.2614,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6b4e0695cd75a00aa9d64d966f9b0d923b985075392f184a5b368dd4074421b2",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188840.0
+      },
+      "is_final": true,
+      "mark_price": 0.2656,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188840.0
+        },
+        "mark_price": 0.2656,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "5422256fbe48bbf277dc6ef2c696cce08473d4b323bc93c063df4d2e68bce9aa",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188900.0
+      },
+      "is_final": true,
+      "mark_price": 0.2631,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188900.0
+        },
+        "mark_price": 0.2631,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "02944eeae9974c36406c61d38dad4e3f5bf6d94e713898a7e1d27f8d7b638850",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792188960.0
+      },
+      "is_final": true,
+      "mark_price": 0.2628,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792188960.0
+        },
+        "mark_price": 0.2628,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "2743124c51c93f20fe062e05dfa6ad43b13994a8bbfaed986e71c2f3f616fd54",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189020.0
+      },
+      "is_final": true,
+      "mark_price": 0.2617,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189020.0
+        },
+        "mark_price": 0.2617,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d92630b41aaf85902d47cdbee7806a9f0d729cdf1cd518cbd7f60a3049eab061",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189080.0
+      },
+      "is_final": true,
+      "mark_price": 0.2616,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189080.0
+        },
+        "mark_price": 0.2616,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "cf3e9bbaac45205ed765f591e4b0072c64102d813bec515529d678f1405a1137",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189140.0
+      },
+      "is_final": true,
+      "mark_price": 0.2612,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189140.0
+        },
+        "mark_price": 0.2612,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "5776e710a4c628f71ff2ca0ba96204a2323f66f1aa42ebe47d90532f6f8fa720",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189200.0
+      },
+      "is_final": true,
+      "mark_price": 0.2597,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189200.0
+        },
+        "mark_price": 0.2597,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "f4a09462e61b3d7424576fc7e3fc63b098b488df0e80b312c8ca127949a69b7f",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189260.0
+      },
+      "is_final": true,
+      "mark_price": 0.2609,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189260.0
+        },
+        "mark_price": 0.2609,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0f0575764aac2e2e22f0ce8b5f72aa8fdf4cfbec09f5968acdc23156b8724953",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189320.0
+      },
+      "is_final": true,
+      "mark_price": 0.2618,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189320.0
+        },
+        "mark_price": 0.2618,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "14aa5f16be3e333013d98ccf6f59df3fd2f80bec0a477467e95c722c85e93df7",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189380.0
+      },
+      "is_final": true,
+      "mark_price": 0.2622,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189380.0
+        },
+        "mark_price": 0.2622,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "3a74c5c025771194e4ef10c8fee7ac54466c756af448929c802d9ff35ec16c5b",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189440.0
+      },
+      "is_final": true,
+      "mark_price": 0.2613,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189440.0
+        },
+        "mark_price": 0.2613,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "53000379133a6e6fb8bf53fe214d5480ce97c9cc584c9060cb6124c26fb80700",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189500.0
+      },
+      "is_final": true,
+      "mark_price": 0.262,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189500.0
+        },
+        "mark_price": 0.262,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "0afe8fdc384bb9c8175659a684c33b68489093c48b41e2076ec84c5b74a770ed",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189560.0
+      },
+      "is_final": true,
+      "mark_price": 0.261,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189560.0
+        },
+        "mark_price": 0.261,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "ef592d2c30aa88d22ec2411127a32ec05ce04c444385104609a57a519a7cd2dc",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189620.0
+      },
+      "is_final": true,
+      "mark_price": 0.2598,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189620.0
+        },
+        "mark_price": 0.2598,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "d9c5cc0f43504a4f8e4f246ceb9f5d47a7887f29455262d264da2bff926fa9e1",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189680.0
+      },
+      "is_final": true,
+      "mark_price": 0.2595,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189680.0
+        },
+        "mark_price": 0.2595,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "18f3edad3413ce45b6d708c160fb23384126e84fb667476153b376e135303934",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189740.0
+      },
+      "is_final": true,
+      "mark_price": 0.2609,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189740.0
+        },
+        "mark_price": 0.2609,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "68c6296e502537792b591fb1aac9da2a56c883a292cee98b8c4fba79277f4057",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189800.0
+      },
+      "is_final": true,
+      "mark_price": 0.26,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189800.0
+        },
+        "mark_price": 0.26,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "2b84b09f5294fa0be53ea812b492450d400851a1aa1ec1975c0a21ee8d0456ff",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189860.0
+      },
+      "is_final": true,
+      "mark_price": 0.2593,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189860.0
+        },
+        "mark_price": 0.2593,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "84cd650737899c89b5c9afb788752cbb62719474fbf9d82c6e03e5f10d7e4fd7",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189920.0
+      },
+      "is_final": true,
+      "mark_price": 0.2612,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189920.0
+        },
+        "mark_price": 0.2612,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "56bea3153723cc22acbf98f2689016f0e2b1c7adf6bdd28f4ff4994cef38fb8e",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792189980.0
+      },
+      "is_final": true,
+      "mark_price": 0.2628,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792189980.0
+        },
+        "mark_price": 0.2628,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "e6e8794c035b3fa3d375da9ad919aa23481633a7fe2c40fd437914cc4358e2bd",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190040.0
+      },
+      "is_final": true,
+      "mark_price": 0.2682,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190040.0
+        },
+        "mark_price": 0.2682,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "a8c4618a170044f1005b30a55b0e872f0e5607bdd28bfb4d3100c233cc498b84",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190100.0
+      },
+      "is_final": true,
+      "mark_price": 0.2673,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190100.0
+        },
+        "mark_price": 0.2673,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "52128c0deb23cd242c6b6dbd2e08584060024baedb7fe158097102a89d29a316",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190160.0
+      },
+      "is_final": true,
+      "mark_price": 0.2672,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190160.0
+        },
+        "mark_price": 0.2672,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "7a097b8fe64ac07e90d8accbcec4f15fba4935e537d8c29fad1a56dfaf3fbc19",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190220.0
+      },
+      "is_final": true,
+      "mark_price": 0.2673,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190220.0
+        },
+        "mark_price": 0.2673,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "3495665c3de948e413bf0c65b0ab51d86f19caa06551cde9ccf33d28594874de",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190280.0
+      },
+      "is_final": true,
+      "mark_price": 0.2683,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190280.0
+        },
+        "mark_price": 0.2683,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "aabaad55f7f8ad5b6a40aa157df00c36d1fb20eb9039d2c9435cfb835ec1de6b",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190340.0
+      },
+      "is_final": true,
+      "mark_price": 0.2668,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190340.0
+        },
+        "mark_price": 0.2668,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "fb9e5427460dff9b23bbc55b4b83e523be86f50a0fe4abf6a68e56c1b2445e3a",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190400.0
+      },
+      "is_final": true,
+      "mark_price": 0.2658,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190400.0
+        },
+        "mark_price": 0.2658,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "37ce842e9d9bacb32b8e18400a8b5a4849b4ad23edfd041c4f2d43c969e1ff87",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190460.0
+      },
+      "is_final": true,
+      "mark_price": 0.2669,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190460.0
+        },
+        "mark_price": 0.2669,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "85bdcb7b730293b536318291c6eed38cb267e38b7f1093c1d79015538311c006",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190520.0
+      },
+      "is_final": true,
+      "mark_price": 0.2649,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190520.0
+        },
+        "mark_price": 0.2649,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "f2d02d79934fc0d57082b7ac33d820bfbad486f542a968c38f65ad79442f69aa",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190580.0
+      },
+      "is_final": true,
+      "mark_price": 0.2631,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190580.0
+        },
+        "mark_price": 0.2631,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "5bf04c4528673d8b9abd9d177f773020d2a03b28c7ee7287d619a554932bb561",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190640.0
+      },
+      "is_final": true,
+      "mark_price": 0.2633,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190640.0
+        },
+        "mark_price": 0.2633,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "5395e126ce60f6eff116e5ffc17f80b74e8bb10ee64770e09590f97cb8a9c784",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190700.0
+      },
+      "is_final": true,
+      "mark_price": 0.2635,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190700.0
+        },
+        "mark_price": 0.2635,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "20769edeed00f8c6aa4188a8e4f67cf0fd67301f73e5f142a2a121275d226e49",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190760.0
+      },
+      "is_final": true,
+      "mark_price": 0.2639,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190760.0
+        },
+        "mark_price": 0.2639,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "b13ac4334cf01bcd0efe645ac31f0ca4809c8783180b7879eb7f2ebbe11db959",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190820.0
+      },
+      "is_final": true,
+      "mark_price": 0.2664,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190820.0
+        },
+        "mark_price": 0.2664,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "c378b8d45a069b252fdd6c889607ed14ea4c7efe4eec6324f71ad81afbdded89",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190880.0
+      },
+      "is_final": true,
+      "mark_price": 0.2674,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190880.0
+        },
+        "mark_price": 0.2674,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "9458486e8ccf591c9c1fa25bd335c3decd7bc8aee397b69f0234939c4b53356f",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792190940.0
+      },
+      "is_final": true,
+      "mark_price": 0.2679,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792190940.0
+        },
+        "mark_price": 0.2679,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "dbd773cf28d8d4c647061e7eed93039f1602c71b10134bcacc074f13c25a791c",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191000.0
+      },
+      "is_final": true,
+      "mark_price": 0.2682,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191000.0
+        },
+        "mark_price": 0.2682,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "e3aad7014dac2ee1ef79427924bd08be5b04345da69f131d48f7f65a3d4de1bc",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191060.0
+      },
+      "is_final": true,
+      "mark_price": 0.267,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191060.0
+        },
+        "mark_price": 0.267,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "615ea421d448b11a27f096dcfef9ab9b28292703ab5e0f6c285de9b5885dbe41",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191120.0
+      },
+      "is_final": true,
+      "mark_price": 0.2657,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191120.0
+        },
+        "mark_price": 0.2657,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "fe50380fc7b2b6c010424ddc10549502865c55cb97e1b8ead93f94da41b40042",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191180.0
+      },
+      "is_final": true,
+      "mark_price": 0.2664,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191180.0
+        },
+        "mark_price": 0.2664,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "6480c701ad6bc139f676d7720f49a6fdb0474a86c677bd0f99448ebf4fdc5ccc",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191240.0
+      },
+      "is_final": true,
+      "mark_price": 0.2667,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191240.0
+        },
+        "mark_price": 0.2667,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "f71e50e663ea4d0de81dcfbd1e41b839fd5867fb485de35965152f25606b84cf",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191300.0
+      },
+      "is_final": true,
+      "mark_price": 0.2659,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191300.0
+        },
+        "mark_price": 0.2659,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "004ee0ecddedc1dc7828624aeae13f1eb2f9359fecbd90e27c8333ce8c5db1b9",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191360.0
+      },
+      "is_final": true,
+      "mark_price": 0.2657,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191360.0
+        },
+        "mark_price": 0.2657,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "8c696fa6c142d3e9f7bf3d057705e768675b21bc9a1b2d2c5616af067793ee94",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191420.0
+      },
+      "is_final": true,
+      "mark_price": 0.2663,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191420.0
+        },
+        "mark_price": 0.2663,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "1c98ad3c2b9bc9700c9e9cb5244ebd74bf3d19dcda5014e8ce2a6938e39969f2",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191480.0
+      },
+      "is_final": true,
+      "mark_price": 0.2664,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191480.0
+        },
+        "mark_price": 0.2664,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "ae06993d1e7930ce084863f60ac617a7783b65c2d1ca4131ce0878aa8dfe2326",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191540.0
+      },
+      "is_final": true,
+      "mark_price": 0.2755,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191540.0
+        },
+        "mark_price": 0.2755,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "2c5a46c0aa5cd5de8aeb6713edb0d021bc1876c72a2bf8ff01de496b4a1dca4f",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191600.0
+      },
+      "is_final": true,
+      "mark_price": 0.2746,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191600.0
+        },
+        "mark_price": 0.2746,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "43dd9e992cc90dd011c5f8b9d6d33dbe0218c6c4065d7f090161ec1e8b6f7c9f",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191660.0
+      },
+      "is_final": true,
+      "mark_price": 0.2854,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191660.0
+        },
+        "mark_price": 0.2854,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "1ee6c4c61475eb2207cf927ad6ba67687e3e8673d7641fdf9b8d5f67be7a8b48",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191720.0
+      },
+      "is_final": true,
+      "mark_price": 0.2876,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191720.0
+        },
+        "mark_price": 0.2876,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "847a7b089a88e7a5f4be80da3e455dc2811b3b1e2e06667cc4925be996f552c1",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191780.0
+      },
+      "is_final": true,
+      "mark_price": 0.2865,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191780.0
+        },
+        "mark_price": 0.2865,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "110ba9d41edaf706a3127c638a9001e77dbd30abb8dc03d89e8523fcca5105f8",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191840.0
+      },
+      "is_final": true,
+      "mark_price": 0.2864,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191840.0
+        },
+        "mark_price": 0.2864,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "28de7ab858f75105c0382e184fbc8ea1d40aff83e4799319770408dd83611ef4",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191900.0
+      },
+      "is_final": true,
+      "mark_price": 0.2852,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191900.0
+        },
+        "mark_price": 0.2852,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "37b1f9a2fd5b5feab9cdf41bf6e43bc3b7bee499dc258d37c90e8640f9915845",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792191960.0
+      },
+      "is_final": true,
+      "mark_price": 0.2841,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792191960.0
+        },
+        "mark_price": 0.2841,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "9b724585822505617445a79230ed75705969b6c5b441b9443111a43e87d1f063",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792192020.0
+      },
+      "is_final": true,
+      "mark_price": 0.2844,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792192020.0
+        },
+        "mark_price": 0.2844,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "ce4f17946fc7bf50e210603a6166be0ad7778a346ddb1d0b79d90bb50b6a2366",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "event_time": {
+        "unix_seconds": 1792192080.0
+      },
+      "is_final": true,
+      "mark_price": 0.2851,
+      "market_sample_identity": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "event_time": {
+          "unix_seconds": 1792192080.0
+        },
+        "mark_price": 0.2851,
+        "venue": "OKX",
+        "venue_instrument_id": "DNA-USDT-SWAP",
+        "version": "v1"
+      },
+      "receive_time": null,
+      "sample_digest": "1fe3c8e054df62324362cf22a46f346df4b8d786b0e2fae4d166a3619b91c5c5",
+      "venue": "OKX",
+      "venue_instrument_id": "DNA-USDT-SWAP"
+    }
+  ],
+  "schema_version": "canonical_volatility_runtime_mark_history/v1",
+  "venue": "OKX",
+  "venue_instrument_id": "DNA-USDT-SWAP"
+}

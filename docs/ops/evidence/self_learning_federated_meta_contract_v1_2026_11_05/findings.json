@@ -1,0 +1,132 @@
+{
+  "schema": "self_learning_federated_meta_contract_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "date": "2026-11-05",
+  "evidence_class": "STATIC_SOURCE_REVIEW_ONLY",
+  "product_code_changed": false,
+  "product_tests_executed": false,
+  "runtime_authorization_effect": "NONE",
+  "findings": [
+    {
+      "id": "FMC01",
+      "title": "Föderierter M5–M8-Rückweg bleibt Evidence-Replay; prior Feedback wird weitergetragen, keine neue Search ausgeführt",
+      "source_observed_effect": "Der föderierte Zyklus erzeugt einen M5→M6-Join, projiziert M6-Evidence und ruft M7-Feedbackvalidierung auf. Er verlangt ausdrücklich FAIL_CLOSED für die Searchmethodenauswahl. Multi-Cycle erhält caller-gelieferte M5-Evidence je Zyklus; vorheriges Feedback wird als cycle_n_plus_1_input_semantics weitergetragen. M6 baut Muster, Referenzen und Digests; canonical_analyzer_invoked bleibt False.",
+      "semantics": "Ein abgeschlossener föderierter Evidence-Replay ist ein eigener Anschluss neben dem nativen numerischen Research→Phase11→Search-Pfad. Vorheriges Feedback im Output ist hier kein Nachweis einer dadurch veränderten nächsten Kandidatenmessung. Surface-Ausführungsidentität, Plane-Identität, Experimentidentität und N5-Slots bleiben verschiedene Achsen. Der aktuelle Zyklus ruft den Join-Producer selbst vor dem M6-Consumer auf.",
+      "limit": "Begrenzte Quellenanalyse dieser konkreten föderierten Variante, nicht aller M4–M8- oder Governed-Continuations. Andere Pfade dürfen reale Runtimeprovenienz besitzen, ohne daraus Search-/Produktivautorität abzuleiten. Kein Zyklus oder Meta-Analyzer neu ausgeführt; keine Aktivierungs-/Implementierungsentscheidung.",
+      "source_bindings": [
+        {
+          "path": "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "b26f83ad53ab53d663c5131012ee1734391bf574966c6915d339f618ba7acfc1",
+          "line_start": 97,
+          "line_end": 178,
+          "snippet_sha256": "61239da674688442a89f3cf3613ff70d117f466ed39da52f8e053f2a81af7d9b"
+        },
+        {
+          "path": "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "b26f83ad53ab53d663c5131012ee1734391bf574966c6915d339f618ba7acfc1",
+          "line_start": 181,
+          "line_end": 268,
+          "snippet_sha256": "6840923aa4dc45564853e9b8df1dff77029e2c6eb677ab3bdb8259d76b3d3ba0"
+        },
+        {
+          "path": "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "b26f83ad53ab53d663c5131012ee1734391bf574966c6915d339f618ba7acfc1",
+          "line_start": 285,
+          "line_end": 307,
+          "snippet_sha256": "92ce7860b4666e06bdfcecbf37e0db3280e391ab5fe062519edd79e244062414"
+        },
+        {
+          "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16",
+          "line_start": 399,
+          "line_end": 523,
+          "snippet_sha256": "85b769b211702ea9891d3532f3dd53000e1a5900e68845f72d87f6a28affbd25"
+        }
+      ],
+      "evidence_class": "BOUNDED_PINNED_SOURCE_REVIEW_NOT_OBSERVED_RUNTIME",
+      "product_change": false
+    },
+    {
+      "id": "FMC02",
+      "title": "Deklarierte erwartete Optimization-Schemaversion wird im föderierten M6-Consumer nicht gelesen",
+      "source_observed_effect": "FederatedMetaLearningIngestRequestV1 deklariert expected_optimization_evidence_schema_version. Der föderierte Ingest liest erwartete Join-/Meta-Schemaversionen, aber nicht dieses Feld. Der nichtföderierte Ingest prüft dasselbe erwartete Optimization-Schemafeld ausdrücklich gegen None oder die gebundene Konstante. Der föderierte Payload-Validator delegiert unabhängig davon an den M5-Validator, der die tatsächliche Payload-Schemaversion prüft.",
+      "semantics": "Eine abweichende Erwartung des föderierten Aufrufers erhält keine eigene Vergleichswirkung, auch wenn die tatsächliche Payload weiterhin validiert wird. Erwartete Consumer-Vertragsversion und tatsächlich zulässiges Payload-Schema sind getrennte Bedingungen. Für einen verlässlichen Requestvertrag muss der erwartete Wert entweder wirksam geprüft oder seine Nichtverwendung ausdrücklich aufgelöst werden.",
+      "limit": "Statisch per AST bestätigte Nichtverwendung in genau diesem Funktionskörper; kein ausgeführter Negativtest und kein beobachteter veralteter Payloaddurchlass. Aktuelle lokale M8-Caller verwenden die Defaults und erstellen den Join selbst; daraus wird keine dort beobachtete Versionsdrift abgeleitet. Die vorhandene tatsächliche Payload-Prüfung bleibt als Gegenbeleg erhalten.",
+      "source_bindings": [
+        {
+          "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16",
+          "line_start": 290,
+          "line_end": 301,
+          "snippet_sha256": "c1563026c6b558dd03740739136a4c7df1733f0e447f9ba0de3e8b9b0cac30c1"
+        },
+        {
+          "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16",
+          "line_start": 304,
+          "line_end": 396,
+          "snippet_sha256": "bb4c4bd5397633a7f009f808a437d31235904e92506a5e1aba1b7fbc6cb6d626"
+        },
+        {
+          "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16",
+          "line_start": 88,
+          "line_end": 181,
+          "snippet_sha256": "161ef865c00f6c529a519f29a3b21aa36ac2ad3fb286d46ddfa000b4ccd39410"
+        },
+        {
+          "path": "src/experiments/canonical_federated_surface_optimization_experiment_evidence_projection_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "49540737496833b0a0f86d0d89c5d8f51fff9f3ce4b2b71ce3f74f48450d754e",
+          "line_start": 387,
+          "line_end": 412,
+          "snippet_sha256": "55244c782dc43e5d382f7c8ee90a46d37b27cf0e82d84183ebbe33c0640bc35d"
+        },
+        {
+          "path": "src/experiments/canonical_optimization_experiment_evidence_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "f0cd43a0e3c83f81096de0c75ff1dde20061a2a7e5845545bd1a58a60fc7b301",
+          "line_start": 261,
+          "line_end": 285,
+          "snippet_sha256": "448edfaea50eaadb6285639aa36c83d6a37f130e34ccba1324e11ca68b28ba3a"
+        }
+      ],
+      "evidence_class": "BOUNDED_PINNED_SOURCE_REVIEW_NOT_OBSERVED_RUNTIME",
+      "product_change": false
+    }
+  ],
+  "future_acceptance_criteria": [
+    {
+      "id": "FMC-T01",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Gültige föderierte Payload und abweichende erwartete Optimization-Schemaversion: dokumentierten Erwartungsvertrag am M6-Consumer wirksam prüfen."
+    },
+    {
+      "id": "FMC-T02",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Falsche tatsächliche Payload-Schemaversion trotz passender Requesterwartung weiterhin durch den M5-Validator abweisen."
+    },
+    {
+      "id": "FMC-T03",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Join-/Meta-Schemaversion, Surfaceidentität, Evidence-Digest und fehlende Planeidentität getrennt erhalten."
+    },
+    {
+      "id": "FMC-T04",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Zwei Evidence-Zyklen: Feedback-Weitergabe nachweisen, ohne Search oder M4-Neumessung als ausgeführt auszuweisen."
+    },
+    {
+      "id": "FMC-T05",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Föderierte M6-Referenzprojektion und tatsächlichen Phase11-Analyzer getrennt klassifizieren; unbekannte Felder nicht als gemessene Werte ergänzen."
+    }
+  ]
+}

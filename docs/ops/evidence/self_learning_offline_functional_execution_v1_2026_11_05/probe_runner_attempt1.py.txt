@@ -1,0 +1,325 @@
+"""Owner-authorized offline probes. Product implementation stays frozen.
+
+PASS of a probe means its stated observation was reproduced. criterion_status
+separately records whether the desired criterion passed, exposed a gap, or has
+an unresolved requirement. No productive source, network, activation or order.
+"""
+from copy import deepcopy
+from dataclasses import replace
+import json
+from pathlib import Path
+import socket
+import xml.etree.ElementTree as ET
+
+import pytest
+
+from src.evaluation.golden_vectors.contracts.enums import DomainVerdict, FailureClassification
+from src.evaluation.golden_vectors.contracts.models import MetricResultV1, ReplayTraceV1
+from src.evaluation.golden_vectors.contracts.validation import parse_domain_evaluation_context_v1
+from src.evaluation.golden_vectors.runner.generic_runner_v1 import GenericRunnerV1, GvefRunRequestV1, evidence_complete
+from src.evaluation.golden_vectors.runner.states import RunnerState
+from src.evaluation.golden_vectors.runner.deterministic_stubs_v1 import DeterministicDomainEvaluatorV1, DeterministicReplayAdapterV1
+from src.evaluation.golden_vectors.evaluators.self_learning_v1 import SelfLearningEvaluatorV1
+from src.evaluation.golden_vectors.integration.whole_system_v1 import whole_system_runner_v1
+from src.evaluation.golden_vectors.corpus.gate_v1 import VectorCorpusIntegrityGateV1
+from src.evaluation.golden_vectors.registry.evidence_registry_v1 import GvefEvidenceRegistryV1
+from src.evaluation.golden_vectors.promotion.promotion_evidence_adapter_v1 import PromotionEvidenceAdapterV1
+from src.evaluation.golden_vectors.promotion.errors import GvefPromotionAuthorityError
+from tests.evaluation.golden_vectors.test_gvef_generic_runner_v1 import _deps
+from tests.evaluation.golden_vectors.runner_fixtures_v1 import parsed_context
+from tests.evaluation.golden_vectors.evaluator_fixtures_v1 import sl_context, replay_trace
+from tests.evaluation.golden_vectors.test_gvef_domain_evaluators_bwp456_v1 import _deps as sl_deps
+from tests.evaluation.golden_vectors.test_measured_learning_reference_v1 import _bound, RESEARCH
+from tests.experiments.test_canonical_native_research_session_v1 import measured_session, _step
+from tests.experiments.test_canonical_federated_m5_m6_return_join_v1 import _federated_m5
+from tests.experiments.test_canonical_federated_bounded_multi_cycle_offline_replay_v1 import _two_cycle_request
+from src.experiments.canonical_native_research_session_v1 import NativeResearchExecutionArchiveV1
+import src.experiments.canonical_native_research_measurements_v1 as native_measurements
+from src.experiments.canonical_failure_memory_store_v1 import CanonicalFailureMemoryStoreV1
+from src.experiments.canonical_experiment_memory_store_v1 import CanonicalExperimentMemoryStoreV1
+from src.experiments.canonical_experiment_memory_v1 import ExperimentRecordConflictError
+from src.experiments.canonical_reality_gap_store_persist_v1 import CanonicalRealityGapStoreV1
+from src.experiments.canonical_advanced_search_v1 import SearchSpaceV1, SearchAxisV1, build_canonical_advanced_search_v1, canonical_record_payload_v1
+from src.experiments.canonical_research_result_to_meta_input_v1 import build_meta_learning_from_research_results_v1
+from src.experiments.canonical_meta_learning_v1 import canonical_meta_learning_policy_v1
+from src.experiments.canonical_federated_m5_m6_return_join_v1 import FederatedM5M6ReturnJoinRequestV1, perform_federated_m5_m6_return_join_v1
+from src.experiments.canonical_meta_learning_ingest_v1 import FederatedMetaLearningIngestRequestV1, ingest_meta_learning_evidence_from_federated_return_join_v1, MetaLearningIngestRequestV1, ingest_meta_learning_evidence_from_return_input_v1, INGEST_STATUS_COMPLETE
+from src.experiments.canonical_federated_bounded_multi_cycle_offline_replay_v1 import run_federated_deterministic_multi_cycle_offline_replay_v1
+
+OUT=Path(__file__).resolve().parent
+OBS=OUT/'observations';OBS.mkdir(exist_ok=True)
+
+@pytest.fixture(autouse=True)
+def offline_only(monkeypatch):
+    def denied(*args, **kwargs):
+        raise AssertionError('NETWORK_FORBIDDEN_IN_OFFLINE_PROBE')
+    monkeypatch.setattr(socket.socket,'connect',denied)
+    monkeypatch.setattr(socket,'create_connection',denied)
+
+def record(ident,status,observed,limitation=None):
+    (OBS/(ident+'.json')).write_text(json.dumps(dict(criterion_id=ident,criterion_status=status,observed=observed,limitation=limitation),indent=2,ensure_ascii=False,default=str)+'\n')
+
+def baseline_case(fragment):
+    cases=[c for c in ET.parse(OUT/'baseline.xml').getroot().iter('testcase') if fragment in c.attrib['name']]
+    assert cases and all(c.find('failure') is None and c.find('error') is None and c.find('skipped') is None for c in cases)
+    return [dict(c.attrib) for c in cases]
+
+class SecondCandidateChange(DeterministicDomainEvaluatorV1):
+    mode='verdict'
+    second=None
+    def evaluate_candidate(self,*,context,replay):
+        result=super().evaluate_candidate(context=context,replay=replay)
+        if self.candidate_calls==2:
+            if self.mode=='verdict':
+                result=result.model_copy(update={'verdict':DomainVerdict.FAIL,'failure_classification':FailureClassification.INVARIANT_FAILURE})
+            elif self.mode=='metric':
+                result=result.model_copy(update={'metrics':[MetricResultV1(metric_id='m.candidate',value=999)]})
+            else:
+                result=result.model_copy(update={'semantic_digest_deltas':{'probe':'second-candidate-changed'}})
+            self.second=result
+        return result
+
+class BaselineDigestDrift(DeterministicDomainEvaluatorV1):
+    def evaluate_baseline(self,*,context,replay):
+        result=super().evaluate_baseline(context=context,replay=replay)
+        return result.model_copy(update={'metrics':[MetricResultV1(metric_id='m.baseline',value=777)]}) if self.baseline_calls==2 else result
+
+class ChangingReplay(DeterministicReplayAdapterV1):
+    calls=0
+    def replay(self,*,run,context):
+        self.calls+=1
+        if self.calls==1:return context.replay_trace
+        return ReplayTraceV1.model_validate(replay_trace([*context.replay_trace.entries,{'offline_probe_generation':self.calls}]))
+
+@pytest.fixture(scope='module')
+def bound_run():
+    registry,context,loaded,_,_=_bound()
+    deps=sl_deps(SelfLearningEvaluatorV1());deps.corpus_gate=VectorCorpusIntegrityGateV1(registry=registry)
+    result=GenericRunnerV1().execute(GvefRunRequestV1(context),deps)
+    assert result.state is RunnerState.REGISTERED
+    return context,loaded,deps,result
+
+@pytest.fixture(scope='module')
+def candidate_pair():
+    outputs=[]
+    for epoch in (2,3):
+        ctx=sl_context(candidate={'TEST_ONLY_SYNTHETIC':True,'model_id':'m1','epoch':epoch})
+        r=GenericRunnerV1().execute(GvefRunRequestV1(ctx),sl_deps(SelfLearningEvaluatorV1()))
+        assert r.state is RunnerState.REGISTERED
+        outputs.append(r)
+    return outputs
+
+def test_GF_T01_candidate_second_fail():
+    ev=SecondCandidateChange();r=GenericRunnerV1().execute(GvefRunRequestV1(parsed_context()),_deps(evaluator=ev))
+    assert ev.second.verdict is DomainVerdict.FAIL and r.state is RunnerState.REGISTERED
+    record('GF-T01','GAP_REPRODUCED',dict(second_candidate_verdict=ev.second.verdict,final_state=r.state,retained_candidate_verdict=r.candidate_result.verdict))
+
+def test_GF_T02_candidate_second_result_drift():
+    observations=[]
+    for mode in ('metric','semantic_digest'):
+        ev=SecondCandidateChange();ev.mode=mode;r=GenericRunnerV1().execute(GvefRunRequestV1(parsed_context()),_deps(evaluator=ev))
+        assert r.state is RunnerState.REGISTERED and ev.second!=r.candidate_result
+        observations.append(dict(change=mode,final_state=r.state,second=ev.second.model_dump(mode='json'),retained=r.candidate_result.model_dump(mode='json')))
+    record('GF-T02','GAP_REPRODUCED',observations)
+
+def test_GF_T03_baseline_digest_drift():
+    r=GenericRunnerV1().execute(GvefRunRequestV1(parsed_context()),_deps(evaluator=BaselineDigestDrift()))
+    assert r.state is RunnerState.FAILED and r.failure_classification is FailureClassification.NON_DETERMINISM
+    record('GF-T03','PASS',dict(state=r.state,failure=r.failure_classification))
+
+def test_GF_T04_independent_replay_boundary():
+    deps=_deps();adapter=ChangingReplay();deps.replay_adapter=adapter;ctx=parsed_context()
+    r=GenericRunnerV1().execute(GvefRunRequestV1(ctx),deps);runner_calls=adapter.calls
+    second=adapter.replay(run=ctx.run_manifest,context=ctx)
+    assert runner_calls==1 and second.trace_digest!=r.replay_trace.trace_digest
+    record('GF-T04','CONDITIONAL_GAP_REPRODUCED',dict(runner_adapter_calls=runner_calls,independent_second_trace_differs=True,final_state=r.state),'Runner reevaluates one trace; independent reproduction requirement is not ratified by this probe.')
+
+def test_GF_T05_identical_inputs():
+    records=[GenericRunnerV1().execute(GvefRunRequestV1(parsed_context()),_deps()) for _ in range(2)]
+    assert all(r.state is RunnerState.REGISTERED and r.promotion_envelope is None for r in records)
+    assert records[0].protected_output_digest==records[1].protected_output_digest
+    record('GF-T05','PASS',dict(output_digest=records[0].protected_output_digest,states=[r.state for r in records],promotion_envelopes=[r.promotion_envelope for r in records]))
+
+def test_GF_T06_measured_binding_rejections():
+    cases=baseline_case('test_measured_reference_mismatch_rejected')
+    corpus=baseline_case('test_fail_matrix_corpus_drift')
+    record('GF-T06','PASS',dict(reused_exact_run_cases=cases,corpus_cases=corpus))
+
+def test_GF_T07_numeric_meta_preserved():
+    record('GF-T07','PASS',dict(reused_exact_run_cases=baseline_case('test_bound_measured_vector_runs_existing_gvef_and_preserves_exact_later_meta')+baseline_case('test_archive_idempotence_and_exact_meta_in_new_process')))
+
+def test_GF_T08_artifact_pass_is_not_quality():
+    ctx=sl_context(candidate={'TEST_ONLY_SYNTHETIC':True,'economic_loss':'-1000000','quality':'UNASSESSED'})
+    r=GenericRunnerV1().execute(GvefRunRequestV1(ctx),sl_deps(SelfLearningEvaluatorV1()))
+    assert r.state is RunnerState.REGISTERED and r.candidate_result.verdict is DomainVerdict.PASS
+    assert [m.metric_id for m in r.candidate_result.metrics]==['sl.artifact_digest']
+    record('GF-T08','BOUNDARY_CONFIRMED',dict(state=r.state,metrics=[m.model_dump(mode='json') for m in r.candidate_result.metrics],synthetic_bad_quality_declaration_not_evaluated=True),'This evaluator has no numerical-quality acceptance contract; the probe does not infer real loss or profitability.')
+
+def test_GF_T09_whole_system_wrapper_scope():
+    ev=DeterministicDomainEvaluatorV1();r=whole_system_runner_v1().execute(GvefRunRequestV1(parsed_context()),_deps(evaluator=ev))
+    domains={r.baseline_result.domain,r.candidate_result.domain}
+    assert r.state is RunnerState.REGISTERED and len(domains)==1
+    record('GF-T09','REQUIREMENT_OPEN',dict(state=r.state,distinct_evaluated_domains=list(domains),baseline_calls=ev.baseline_calls,candidate_calls=ev.candidate_calls),'No all-domain acceptance aggregator is specified by this single-wrapper contract.')
+
+def test_GF_T10_registry_identity_and_restart():
+    registry=GvefEvidenceRegistryV1();ctx=parsed_context()
+    first=GenericRunnerV1().execute(GvefRunRequestV1(ctx),_deps(registry=registry))
+    second=GenericRunnerV1().execute(GvefRunRequestV1(ctx),_deps(registry=registry))
+    assert first.state is RunnerState.REGISTERED and second.state is RunnerState.FAILED
+    assert registry.get(ctx.run_manifest.run_id) is not None and GvefEvidenceRegistryV1().get(ctx.run_manifest.run_id) is None
+    record('GF-T10','PARTIAL_REQUIREMENT_OPEN',dict(first=first.state,duplicate=second.state,new_instance_has_record=False),'Duplicate protection passes; persistence across process restart is not provided by this in-memory registry. Required persistence contract remains open.')
+
+def test_GF_T11_failure_after_registration():
+    class Reject(PromotionEvidenceAdapterV1):
+        def adapt(self,**kwargs):raise GvefPromotionAuthorityError('offline probe',field='claims_promotion_authority')
+    registry=GvefEvidenceRegistryV1();deps=_deps(registry=registry);deps.promotion_adapter=Reject();ctx=parsed_context()
+    r=GenericRunnerV1().execute(GvefRunRequestV1(ctx),deps)
+    assert r.state is RunnerState.FAILED and not evidence_complete(r) and r.promotion_envelope is None
+    assert registry.get(ctx.run_manifest.run_id) is not None
+    record('GF-T11','PASS',dict(state=r.state,evidence_complete=evidence_complete(r),registered_bundle_retained=True,envelope=None))
+
+def test_GF_T12_optional_and_explicit_handoff():
+    optional=GenericRunnerV1().execute(GvefRunRequestV1(parsed_context()),_deps())
+    deps=_deps();deps.promotion_adapter=PromotionEvidenceAdapterV1();explicit=GenericRunnerV1().execute(GvefRunRequestV1(parsed_context()),deps)
+    assert optional.state is RunnerState.REGISTERED and optional.promotion_envelope is None
+    assert explicit.state is RunnerState.REGISTERED and explicit.promotion_envelope is not None
+    record('GF-T12','PARTIAL_REQUIREMENT_OPEN',dict(optional_none_accepted=True,explicit_envelope_created=True,envelope=explicit.promotion_envelope.model_dump(mode='json')),'No required external consumer/ACK contract exists in this probe. Envelope creation is not consumer acceptance or productive authority.')
+
+def test_GF_T13_registered_domain_projection(bound_run):
+    _,_,_,r=bound_run
+    actual={i.invariant_id for i in r.candidate_result.invariants};stored={i.invariant_id for i in r.evidence_bundle.invariant_results}
+    payload=r.evidence_bundle.model_dump(mode='json')
+    assert actual!=stored and 'sl.artifact_digest' not in json.dumps(payload)
+    record('GF-T13','CONDITIONAL_GAP_REPRODUCED',dict(domain_invariants=sorted(actual),registered_invariants=sorted(stored),domain_metric_ids=[m.metric_id for m in r.candidate_result.metrics],registered_self_learning_metric=False),'Fixture bundle is not a full-domain result archive; requirement applies only if that preservation is demanded.')
+
+def test_GF_T14_registered_corpus_projection(bound_run):
+    ctx,_,_,r=bound_run
+    assert r.evidence_bundle.vector_corpus_digest!=ctx.corpus_identity.corpus_digest
+    assert r.evidence_bundle.vector_corpus_digest==ctx.run_manifest.seed_set_digest
+    record('GF-T14','CONDITIONAL_GAP_REPRODUCED',dict(bound_corpus_digest=ctx.corpus_identity.corpus_digest,registered_corpus_digest=r.evidence_bundle.vector_corpus_digest,seed_set_digest=ctx.run_manifest.seed_set_digest),'Concrete corpus gate passed; the injected fixture builder writes the seed digest into its corpus-digest field.')
+
+def test_GF_T15_candidate_output_binding(candidate_pair):
+    a,b=candidate_pair
+    candidate_digests=[r.candidate_result.metrics[0].value for r in candidate_pair]
+    assert candidate_digests[0]!=candidate_digests[1] and a.protected_output_digest==b.protected_output_digest
+    record('GF-T15','CONDITIONAL_GAP_REPRODUCED',dict(candidate_artifact_digests=candidate_digests,protected_output_digests=[r.protected_output_digest for r in candidate_pair],trace_digests=[r.replay_trace.trace_digest for r in candidate_pair]),'Distinct projected inputs, not a SHA256 collision; applies to the tested injected builder/comparator.')
+
+def test_GF_T16_measured_reference_class_preserved(bound_run):
+    _,loaded,_,r=bound_run
+    assert loaded.learning_artifact['declared_evidence_source_class']=='TEST_ONLY_SYNTHETIC'
+    assert r.candidate_result.semantic_digest_deltas['evidence_source_class']=='MECHANISM_TEST_EVIDENCE'
+    record('GF-T16','PASS',dict(numeric_binding_baseline=baseline_case('test_bound_measured_vector_runs_existing_gvef_and_preserves_exact_later_meta'),source_class=loaded.learning_artifact['declared_evidence_source_class'],evaluator_class=r.candidate_result.semantic_digest_deltas['evidence_source_class']))
+
+def test_GF_T17_meta_uses_archive_not_registry(bound_run,monkeypatch):
+    _,loaded,deps,_=bound_run
+    monkeypatch.setattr(deps.registry,'register',lambda *args: (_ for _ in ()).throw(AssertionError('Registry must not be called by Meta')))
+    deps.registry._entries.clear()
+    later=build_meta_learning_from_research_results_v1([loaded.executed.next_meta_input],created_at='2026-08-18T22:00:00Z',policy=canonical_meta_learning_policy_v1())
+    assert canonical_record_payload_v1(later)==json.loads((RESEARCH/'later_meta_fresh_process.json').read_text())
+    record('GF-T17','BOUNDARY_CONFIRMED',dict(meta_exact_after_registry_cleared=True,registry_empty=True,meta_source='loaded.executed.next_meta_input'),'A direct numerical Meta call; not an internal runner promotion or registered-bundle consumer.')
+
+def test_GF_T18_digest_domains(candidate_pair):
+    a,b=candidate_pair
+    assert a.replay_trace.trace_digest!=b.replay_trace.trace_digest
+    assert a.baseline_result_digest==b.baseline_result_digest
+    assert a.evidence_bundle.evidence_digest==b.evidence_bundle.evidence_digest
+    record('GF-T18','BOUNDARY_CONFIRMED',dict(trace_changed=True,candidate_artifact_changed=True,baseline_equal=True,evidence_equal=True,protected_output_equal=a.protected_output_digest==b.protected_output_digest))
+
+def test_NRC_T01_read_only_archive_replay(measured_session,monkeypatch):
+    _,_,archive,result,_,_,_=measured_session
+    def forbidden(**kwargs):raise AssertionError('Archive read must not invoke measurements')
+    monkeypatch.setattr(native_measurements,'measure_native_research_candidate_v1',forbidden)
+    loaded=archive.get(result.artifact_id)
+    assert canonical_record_payload_v1(loaded.evidence)==canonical_record_payload_v1(result.execution.evidence)
+    record('NRC-T01','PASS',dict(artifact_id=result.artifact_id,exact_execution_readback=True,measurement_invocations_on_read=0))
+
+def _repeat_context(measured_session,tmp_path,*,reason=None):
+    provider,request,archive,_,_,_,_=measured_session
+    receipts=[]
+    ctx=replace(provider.context,created_at='2026-08-18T20:00:00Z',failure_memory_store=CanonicalFailureMemoryStoreV1(tmp_path/'fresh-failures'),reality_gap_store=CanonicalRealityGapStoreV1(tmp_path/'fresh-gaps'),existing_failure_records=(),retest_reason=reason)
+    p=replace(provider,context=ctx,measurement_observer=receipts.append)
+    req=replace(request,created_at='2026-08-18T19:00:00Z',retest_reason=reason,search_space=SearchSpaceV1('native.session.v1',(SearchAxisV1('fast_window',(10,)),SearchAxisV1('slow_window',(50,)))))
+    return p,req,archive,receipts
+
+def test_NRC_T02_same_identity_new_time(measured_session,tmp_path):
+    p,req,archive,receipts=_repeat_context(measured_session,tmp_path)
+    with pytest.raises(ExperimentRecordConflictError) as error:_step(p,req,archive)
+    assert len(receipts)==1 and receipts[0]['engine_invocations']==4
+    record('NRC-T02','GAP_REPRODUCED',dict(error_type=type(error.value).__name__,measurement_receipts_before_rejection=len(receipts),engine_invocations_before_rejection=receipts[0]['engine_invocations']),'Temporary empty Failure/Gap stores isolate the no-blocking-context case; this does not establish a successful prior numerical research outcome. Existing original temporary experiment memory was preserved.')
+
+def test_NRC_T03_retest_reason_does_not_override_memory(measured_session,tmp_path):
+    p,req,archive,receipts=_repeat_context(measured_session,tmp_path,reason='EXPLICIT_OFFLINE_RETEST_PROBE')
+    with pytest.raises(ExperimentRecordConflictError):_step(p,req,archive)
+    assert len(receipts)==1
+    record('NRC-T03','PASS',dict(explicit_retest_reason_supplied=True,divergent_memory_write_rejected=True,measurement_receipts_before_rejection=1))
+
+def test_NRC_T04_distinct_canonical_seed_identity(measured_session):
+    _,request,_,initial,_,_,_=measured_session
+    template=replace(request.identity_template,seed=56)
+    changed=build_canonical_advanced_search_v1(replace(request,identity_template=template,seed=56))
+    candidate=next(c for c in changed['candidates'] if c['status']=='PROPOSED')
+    assert candidate['experiment_id']!=initial.execution.next_meta_input.research_loop_record['selected_experiment_id']
+    record('NRC-T04','PASS',dict(declared_seed_changed_from=55,declared_seed_changed_to=56,canonical_experiment_identity_changed=True),'Explicit fixture identity comparison only; no arbitrary seed change is used to bypass a duplicate block.')
+
+def test_NRC_T05_late_archive_failure_preserves_owner_records(measured_session,tmp_path,monkeypatch):
+    provider,request,_,_,_,_,_=measured_session
+    template=replace(provider.context.identity_template,seed=61)
+    context=replace(provider.context,identity_template=template,created_at='2026-08-19T01:00:00Z',experiment_memory_store=CanonicalExperimentMemoryStoreV1(tmp_path/'memory'),failure_memory_store=CanonicalFailureMemoryStoreV1(tmp_path/'failures'),reality_gap_store=CanonicalRealityGapStoreV1(tmp_path/'gaps'),existing_failure_records=())
+    p=replace(provider,context=context,measurement_observer=None);archive=NativeResearchExecutionArchiveV1(tmp_path/'archive')
+    def failed(*args):raise OSError('INJECTED_OFFLINE_ARCHIVE_FAILURE')
+    monkeypatch.setattr(archive,'append',failed)
+    req=replace(request,identity_template=template,seed=61,created_at='2026-08-19T00:00:00Z')
+    with pytest.raises(OSError,match='INJECTED_OFFLINE_ARCHIVE_FAILURE'):_step(p,req,archive)
+    counts=dict(memory=len(context.experiment_memory_store.list_records()),failures=len(context.failure_memory_store.list_records()),gaps=len(context.reality_gap_store.list_records()))
+    assert counts['memory']>0 and counts['gaps']>0 and not archive.root.exists()
+    record('NRC-T05','PARTIAL_REQUIREMENT_OPEN',dict(owner_records_retained=counts,archive_packet_created=False,successful_session_returned=False),'Existing partial-write limitation reproduced safely in temporary stores; no automatic reconciliation/classification record is supplied by the current Session API.')
+
+def test_NRC_T06_exhausted_region_no_forced_execution(measured_session):
+    provider,request,archive,_,_,_,_=measured_session;receipts=[]
+    req=replace(request,search_space=SearchSpaceV1('native.session.v1',(SearchAxisV1('fast_window',(10,)),SearchAxisV1('slow_window',(50,)))))
+    result=_step(replace(provider,measurement_observer=receipts.append),req,archive)
+    assert result.status=='NO_PROPOSED_CANDIDATE' and not receipts and result.execution is None
+    record('NRC-T06','PASS',dict(status=result.status,measurement_receipts=0,artifact_id=result.artifact_id))
+
+@pytest.fixture(scope='module')
+def federated():
+    evidence=_federated_m5(execution_id='offline.functional.probe')
+    join=perform_federated_m5_m6_return_join_v1(FederatedM5M6ReturnJoinRequestV1(optimization_experiment_evidence=evidence))
+    return evidence,join
+
+def test_FMC_T01_expected_version_is_not_consumed(federated):
+    evidence,join=federated
+    fed=ingest_meta_learning_evidence_from_federated_return_join_v1(FederatedMetaLearningIngestRequestV1(federated_return_join=join,optimization_experiment_evidence=evidence,expected_optimization_evidence_schema_version='OFFLINE_INCOMPATIBLE_VERSION'))
+    ordinary=ingest_meta_learning_evidence_from_return_input_v1(MetaLearningIngestRequestV1(return_input_ack=None,optimization_experiment_evidence=evidence,expected_optimization_evidence_schema_version='OFFLINE_INCOMPATIBLE_VERSION'))
+    assert fed['status']==INGEST_STATUS_COMPLETE and ordinary['reason']=='OPTIMIZATION_EXPERIMENT_EVIDENCE_SCHEMA_VERSION_MISMATCH'
+    record('FMC-T01','GAP_REPRODUCED',dict(federated_status=fed['status'],non_federated_status=ordinary['status'],non_federated_reason=ordinary['reason'],expected_version='OFFLINE_INCOMPATIBLE_VERSION'))
+
+def test_FMC_T02_actual_payload_schema_rejected(federated):
+    evidence,join=federated;bad=deepcopy(evidence);bad['schema_version']='OFFLINE_BAD_PAYLOAD_SCHEMA'
+    r=ingest_meta_learning_evidence_from_federated_return_join_v1(FederatedMetaLearningIngestRequestV1(federated_return_join=join,optimization_experiment_evidence=bad))
+    assert r['status']!=INGEST_STATUS_COMPLETE and r['reason']=='FEDERATED_OPTIMIZATION_EXPERIMENT_EVIDENCE_INVALID'
+    record('FMC-T02','PASS',dict(status=r['status'],reason=r['reason']))
+
+def test_FMC_T03_join_bindings(federated):
+    evidence,join=federated;observations=[]
+    for field,value in [('schema_version','STALE'),('surface_execution_identity','f'*64),('optimization_experiment_evidence_digest','0'*64),('plane_identity','FORBIDDEN_PLANE')]:
+        bad=deepcopy(dict(join));bad[field]=value
+        r=ingest_meta_learning_evidence_from_federated_return_join_v1(FederatedMetaLearningIngestRequestV1(federated_return_join=bad,optimization_experiment_evidence=evidence))
+        assert r['status']!=INGEST_STATUS_COMPLETE;observations.append(dict(field=field,status=r['status'],reason=r['reason']))
+    r=ingest_meta_learning_evidence_from_federated_return_join_v1(FederatedMetaLearningIngestRequestV1(federated_return_join=join,optimization_experiment_evidence=evidence,expected_meta_evidence_schema_version='STALE'))
+    assert r['status']!=INGEST_STATUS_COMPLETE;observations.append(dict(field='expected_meta_evidence_schema_version',status=r['status'],reason=r['reason']))
+    record('FMC-T03','PASS',observations)
+
+def test_FMC_T04_federated_two_cycles_carry_feedback():
+    r=run_federated_deterministic_multi_cycle_offline_replay_v1(_two_cycle_request())
+    assert r['cycle_count']==2 and r['m4_plane_execution'] is False
+    cycles=r['cycles'];semantics=cycles[1]['cycle_body']['cycle_n_plus_1_input_semantics']
+    assert semantics is not None and semantics['search_execution_authorized'] is False
+    assert all(c['search_executed'] is False and c['m4_plane_execution'] is False for c in cycles)
+    record('FMC-T04','BOUNDARY_CONFIRMED',dict(cycle_count=2,next_cycle_semantics=semantics,search_executed=False,m4_executed=False),'Actual evidence orchestration with fixtures, not new research measurement or autonomous Search.')
+
+def test_FMC_T05_federated_projection_not_phase11(federated):
+    evidence,join=federated;r=ingest_meta_learning_evidence_from_federated_return_join_v1(FederatedMetaLearningIngestRequestV1(federated_return_join=join,optimization_experiment_evidence=evidence))
+    assert r['status']==INGEST_STATUS_COMPLETE and r['canonical_meta_learning_analyzer_invoked'] is False
+    meta=r['meta_learning_evidence'];assert meta['provenance']['canonical_analyzer_invoked'] is False
+    record('FMC-T05','BOUNDARY_CONFIRMED',dict(analyzer_invoked=False,predictive_evidence_features=meta['predictive_evidence_features'],uncertainty=meta['uncertainty'],optimization_family=meta['optimization_family']))

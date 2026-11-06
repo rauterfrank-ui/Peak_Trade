@@ -1,0 +1,53 @@
+{
+  "contract": "ghv_execution_full_lifecycle_proof_terminal.v1",
+  "directive": "GO_FOR_FULL_CURRENT_EXECUTION_LIFECYCLE_OFFLINE_PROOF",
+  "mode": "BOUNDED_READ_ONLY_OFFLINE",
+  "generated_at": "2026-10-15T22:45:00+00:00",
+  "CURRENT_MAIN_SHA": "f5f76a4d4480089110f47078a56eb53dcd59ac2c",
+  "POST_MERGE_REPROOF": "PASS",
+  "EVIDENCE_CONSISTENCY": "PASS",
+  "GHOSV_TRAFFIC_LIGHT": "YELLOW",
+  "EXECUTION_LIFECYCLE_COMPLETENESS": "PRE_EXTERNAL_ONLY",
+  "EXECUTION_PREPARATION": "MISSING_IN_REPROOF_SELECTION",
+  "EXECUTION_INTENT": "NOT_SELECTED",
+  "VENUE_SUBMISSION": "NOT_OBSERVED",
+  "VENUE_ACK": "MISSING",
+  "VENUE_REJECT": "MISSING",
+  "PARTIAL_FILL": "MISSING",
+  "FULL_FILL": "MISSING",
+  "VENUE_CANCEL": "MISSING",
+  "RECONCILIATION": "OBSERVED_MATCH",
+  "POSITION_EVIDENCE": "PERSISTED_EMPTY",
+  "INCIDENT": "NONE",
+  "SAFETY_RESPONSE": "NOT_OBSERVED",
+  "GLOBAL_EXECUTION_LIFECYCLE_PROVEN": false,
+  "GHV_GLOBAL_CAUSAL_CLOSURE_PROVEN": false,
+  "GLOBAL_NON_INTERFERENCE_PROVEN": true,
+  "CONFIRMED_DEFECT_COUNT": 1,
+  "MISSING_EVIDENCE_CLASSES": [
+    "EXECUTION_PREPARATION",
+    "VENUE_ACK",
+    "FILL",
+    "FULL_FILL",
+    "PARTIAL_FILL",
+    "POSITION",
+    "POST_SUBMISSION_VENUE_WITNESS",
+    "G004_DISPOSITION",
+    "SAFETY_RESPONSE"
+  ],
+  "NEXT_REQUIRED_ACTION": "Adjudicate observer lifecycle label POST_SUBMISSION_WITNESSED vs post_occurred=false; extend offline proof only when CURRENT run contains venue POST store + G004 or explicit post-submit join artifacts.",
+  "observer_report_path": "evidence/ops/ghosv_execution_full_lifecycle_proof_v1/20261016T003800Z_post_merge_reproof/GHOSV_EXECUTION_BOUNDED_OFFLINE_OBSERVER_REPORT_V1.json",
+  "source_hash_verification": {
+    "before_after_identical": true,
+    "manifest": "evidence/ops/ghosv_execution_full_lifecycle_proof_v1/20261016T003800Z_post_merge_reproof/SOURCE_HASHES_BEFORE.sha256"
+  },
+  "reproof_run": {
+    "run_folder": "20261012T190205Z_ghv_l10_integrated_natural_enter_pre_external_v1",
+    "run_id": "e0ac0f0955d15a0b",
+    "repository_root": "/Users/frnkhrz/Peak_Trade",
+    "pre_external_post_count": 0,
+    "observer_reported_lifecycle": "POST_SUBMISSION_WITNESSED",
+    "forensic_lifecycle_adjudication": "PRE_EXTERNAL_ONLY",
+    "lifecycle_label_drift_reason": "Observer treats governed_cycle_orchestrator_post_count_witness post_submission_witness=true as venue submission; payload post_occurred=false for all cycle witnesses."
+  }
+}

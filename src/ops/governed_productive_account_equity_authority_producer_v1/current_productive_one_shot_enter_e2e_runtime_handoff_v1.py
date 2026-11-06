@@ -13,7 +13,16 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping
+
+if TYPE_CHECKING:
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+
+from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+    require_startup_portfolio_v1,
+)
 
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
     OsNativeStoreLookupBackendV1,
@@ -195,6 +204,8 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
     post_durable_store_root: Path,
     origin_main_sha: str | None = None,
     binding_epoch: str | None = None,
+    observed_portfolio=None,
+    observation_now_unix: float | None = None,
     execute_network: bool = False,
     vault_file: Path | str | None = None,
     evidence_root: Path | None = None,
@@ -207,6 +218,7 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
     candles_payload: Mapping[str, Any] | None = None,
     market_kwargs: Mapping[str, Any] | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
 ) -> CurrentProductiveOneShotEnterE2ERuntimeHandoffResultV1:
     """Prepare governed Enter one-shot through PRE_EXTERNAL + handoff (no POST)."""
 
@@ -231,6 +243,11 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
         integrity_backend=execution_integrity_backend,
     )
 
+    if bound_instrument_override is None:
+        try:
+            require_startup_portfolio_v1(observed_portfolio)
+        except ValueError as exc:
+            raise CurrentProductiveOneShotEnterE2ERuntimeHandoffError(str(exc)) from exc
     post_root = Path(post_durable_store_root)
     post_root.mkdir(parents=True, exist_ok=True)
     _assert_post_store_fresh_v1(post_root)
@@ -256,6 +273,8 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
                 productivity_root=prod_root,
                 repository_sha=repo_sha,
                 binding_epoch=epoch,
+                observed_portfolio=observed_portfolio,
+                observation_now_unix=observation_now_unix,
             )
         except CurrentProductive29PCap24ProvenanceHandoffError as exc:
             raise CurrentProductiveOneShotEnterE2ERuntimeHandoffError(str(exc)) from exc
@@ -279,6 +298,7 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
                 candles_payload=candles_payload,
                 market_kwargs=market_kwargs,
                 g17_typed_vol_producers=g17_typed_vol_producers,
+                portfolio_budget_owner=portfolio_budget_owner,
                 execution_integrity_backend=execution_integrity_backend,
                 cap24_productivity_root=cap24_prod_root,
             )

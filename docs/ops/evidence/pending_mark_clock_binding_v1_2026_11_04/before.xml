@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="16" skipped="0" tests="18" time="0.248" timestamp="2026-11-04T01:51:53.788904+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_wrapper_forwards_mark_row_time_and_measured_poll_receipt" time="0.002"><failure message="assert 1756731000.0 == (1756732800.0 + 0.125)">tests/ops/test_pending_outcome_mark_clock_v1.py:58: in test_wrapper_forwards_mark_row_time_and_measured_poll_receipt
+    assert calls[0]["event_ts_unix"] == T_BAR1 + 0.125
+E   assert 1756731000.0 == (1756732800.0 + 0.125)</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row0]" time="0.001"><failure message="AssertionError: assert [{'allow_test...VATION', ...}] == []&#10;  &#10;  Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}&#10;  Use -v to get more diff">tests/ops/test_pending_outcome_mark_clock_v1.py:74: in test_invalid_mark_identity_or_time_does_not_advance
+    assert calls == []
+E   AssertionError: assert [{'allow_test...VATION', ...}] == []
+E     
+E     Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row1]" time="0.001"><failure message="AssertionError: assert [{'allow_test...VATION', ...}] == []&#10;  &#10;  Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}&#10;  Use -v to get more diff">tests/ops/test_pending_outcome_mark_clock_v1.py:74: in test_invalid_mark_identity_or_time_does_not_advance
+    assert calls == []
+E   AssertionError: assert [{'allow_test...VATION', ...}] == []
+E     
+E     Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row2]" time="0.001"><failure message="AssertionError: assert [{'allow_test...VATION', ...}] == []&#10;  &#10;  Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}&#10;  Use -v to get more diff">tests/ops/test_pending_outcome_mark_clock_v1.py:74: in test_invalid_mark_identity_or_time_does_not_advance
+    assert calls == []
+E   AssertionError: assert [{'allow_test...VATION', ...}] == []
+E     
+E     Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row3]" time="0.001"><failure message="AssertionError: assert [{'allow_test...VATION', ...}] == []&#10;  &#10;  Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}&#10;  Use -v to get more diff">tests/ops/test_pending_outcome_mark_clock_v1.py:74: in test_invalid_mark_identity_or_time_does_not_advance
+    assert calls == []
+E   AssertionError: assert [{'allow_test...VATION', ...}] == []
+E     
+E     Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row4]" time="0.001"><failure message="AssertionError: assert [{'allow_test...VATION', ...}] == []&#10;  &#10;  Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}&#10;  Use -v to get more diff">tests/ops/test_pending_outcome_mark_clock_v1.py:74: in test_invalid_mark_identity_or_time_does_not_advance
+    assert calls == []
+E   AssertionError: assert [{'allow_test...VATION', ...}] == []
+E     
+E     Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row5]" time="0.001"><failure message="AssertionError: assert [{'allow_test...VATION', ...}] == []&#10;  &#10;  Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}&#10;  Use -v to get more diff">tests/ops/test_pending_outcome_mark_clock_v1.py:74: in test_invalid_mark_identity_or_time_does_not_advance
+    assert calls == []
+E   AssertionError: assert [{'allow_test...VATION', ...}] == []
+E     
+E     Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row6]" time="0.001"><failure message="AssertionError: assert [{'allow_test...VATION', ...}] == []&#10;  &#10;  Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}&#10;  Use -v to get more diff">tests/ops/test_pending_outcome_mark_clock_v1.py:74: in test_invalid_mark_identity_or_time_does_not_advance
+    assert calls == []
+E   AssertionError: assert [{'allow_test...VATION', ...}] == []
+E     
+E     Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row7]" time="0.001"><failure message="AssertionError: assert [{'allow_test...VATION', ...}] == []&#10;  &#10;  Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}&#10;  Use -v to get more diff">tests/ops/test_pending_outcome_mark_clock_v1.py:74: in test_invalid_mark_identity_or_time_does_not_advance
+    assert calls == []
+E   AssertionError: assert [{'allow_test...VATION', ...}] == []
+E     
+E     Left contains one more item: {'allow_test_fixture': False, 'canonical_instrument_id': 'ETH-USDT-SWAP', 'event_ts_unix': 1756731000.0, 'evidence_class': 'REAL_PUBLIC_OBSERVATION', ...}
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row8]" time="0.000" /><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_mark_identity_or_time_does_not_advance[row9]" time="0.001" /><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_mark_time_does_not_require_a_candle_timestamp" time="0.001"><failure message="assert 0 == 1&#10; +  where 0 = len([])">tests/ops/test_pending_outcome_mark_clock_v1.py:84: in test_mark_time_does_not_require_a_candle_timestamp
+    assert len(calls) == 1
+E   assert 0 == 1
+E    +  where 0 = len([])</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_explicit_receipt_reaches_stored_event_and_replay" time="0.002"><failure message="TypeError: advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'">tests/ops/test_pending_outcome_mark_clock_v1.py:89: in test_explicit_receipt_reaches_stored_event_and_replay
+    result = advance_all_open_pending_from_mark_v1(
+E   TypeError: advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_explicit_receipt_rejects_before_state_access[None]" time="0.001"><failure message="AssertionError: Regex pattern did not match.&#10;  Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'&#10;  Actual message: &quot;advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'&quot;">tests/ops/test_pending_outcome_mark_clock_v1.py:114: in test_invalid_explicit_receipt_rejects_before_state_access
+    advance_all_open_pending_from_mark_v1(
+E   TypeError: advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'
+
+During handling of the above exception, another exception occurred:
+tests/ops/test_pending_outcome_mark_clock_v1.py:113: in test_invalid_explicit_receipt_rejects_before_state_access
+    with pytest.raises((ValueError, TypeError), match="PENDING_MARK_TIMESTAMPS_INVALID"):
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'
+E     Actual message: "advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'"</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_explicit_receipt_rejects_before_state_access[True]" time="0.001"><failure message="AssertionError: Regex pattern did not match.&#10;  Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'&#10;  Actual message: &quot;advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'&quot;">tests/ops/test_pending_outcome_mark_clock_v1.py:114: in test_invalid_explicit_receipt_rejects_before_state_access
+    advance_all_open_pending_from_mark_v1(
+E   TypeError: advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'
+
+During handling of the above exception, another exception occurred:
+tests/ops/test_pending_outcome_mark_clock_v1.py:113: in test_invalid_explicit_receipt_rejects_before_state_access
+    with pytest.raises((ValueError, TypeError), match="PENDING_MARK_TIMESTAMPS_INVALID"):
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'
+E     Actual message: "advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'"</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_explicit_receipt_rejects_before_state_access[nan]" time="0.001"><failure message="AssertionError: Regex pattern did not match.&#10;  Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'&#10;  Actual message: &quot;advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'&quot;">tests/ops/test_pending_outcome_mark_clock_v1.py:114: in test_invalid_explicit_receipt_rejects_before_state_access
+    advance_all_open_pending_from_mark_v1(
+E   TypeError: advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'
+
+During handling of the above exception, another exception occurred:
+tests/ops/test_pending_outcome_mark_clock_v1.py:113: in test_invalid_explicit_receipt_rejects_before_state_access
+    with pytest.raises((ValueError, TypeError), match="PENDING_MARK_TIMESTAMPS_INVALID"):
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'
+E     Actual message: "advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'"</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_explicit_receipt_rejects_before_state_access[inf]" time="0.001"><failure message="AssertionError: Regex pattern did not match.&#10;  Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'&#10;  Actual message: &quot;advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'&quot;">tests/ops/test_pending_outcome_mark_clock_v1.py:114: in test_invalid_explicit_receipt_rejects_before_state_access
+    advance_all_open_pending_from_mark_v1(
+E   TypeError: advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'
+
+During handling of the above exception, another exception occurred:
+tests/ops/test_pending_outcome_mark_clock_v1.py:113: in test_invalid_explicit_receipt_rejects_before_state_access
+    with pytest.raises((ValueError, TypeError), match="PENDING_MARK_TIMESTAMPS_INVALID"):
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'
+E     Actual message: "advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'"</failure></testcase><testcase classname="tests.ops.test_pending_outcome_mark_clock_v1" name="test_invalid_explicit_receipt_rejects_before_state_access[1756732799.0]" time="0.001"><failure message="AssertionError: Regex pattern did not match.&#10;  Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'&#10;  Actual message: &quot;advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'&quot;">tests/ops/test_pending_outcome_mark_clock_v1.py:114: in test_invalid_explicit_receipt_rejects_before_state_access
+    advance_all_open_pending_from_mark_v1(
+E   TypeError: advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'
+
+During handling of the above exception, another exception occurred:
+tests/ops/test_pending_outcome_mark_clock_v1.py:113: in test_invalid_explicit_receipt_rejects_before_state_access
+    with pytest.raises((ValueError, TypeError), match="PENDING_MARK_TIMESTAMPS_INVALID"):
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'PENDING_MARK_TIMESTAMPS_INVALID'
+E     Actual message: "advance_all_open_pending_from_mark_v1() got an unexpected keyword argument 'receive_ts_unix'"</failure></testcase></testsuite></testsuites>

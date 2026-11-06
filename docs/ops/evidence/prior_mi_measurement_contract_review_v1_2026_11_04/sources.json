@@ -1,0 +1,26 @@
+{
+  "source_commit": "e3edad28226cbd764af973a4e6632590eeb01725",
+  "sources": [
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "sha256": "886607ce405fd19f7233fb83d2b68cac524b6cba9d77f763a59838cfe0872b21"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+      "sha256": "90c0c3c58b613b67fd696182a930c0ab2e1d4c1ff266894044b7a4e07861d2f0"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+      "sha256": "68a01235a03fb60e55eebf04a1e917c6e1d5725fc210623f467710627671d682"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
+      "sha256": "ca74b2f8361ae527d409ae3037452c845c580ce3ae12044f003cab5ee3e71d49"
+    },
+    {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
+      "sha256": "2965ca75496f1d71254d53d0a4019e47a66de73fcafefe6e24abdfaa917b50fe"
+    }
+  ],
+  "coverage": "focused source validation and target/path joins; complete original Phase20 user request, attachment PDF not newly inspected"
+}

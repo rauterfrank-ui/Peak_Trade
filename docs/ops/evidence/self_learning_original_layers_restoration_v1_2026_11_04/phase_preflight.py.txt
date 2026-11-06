@@ -1,0 +1,30 @@
+from pathlib import Path
+import json,ast,subprocess,hashlib
+r=Path.cwd();base=r/'docs/ops/evidence/architecture_reconstruction_alignment_v1_2026_11_04';hist=json.loads((base/'historical_git_verification.json').read_text())['results'];modules={x['path'][:-3].replace('/','.') for x in hist}
+def calls(text):
+ tree=ast.parse(text);imports={}
+ for n in ast.walk(tree):
+  if isinstance(n,ast.ImportFrom) and n.module:
+   for x in n.names:imports[x.asname or x.name]=n.module+'.'+x.name
+  if isinstance(n,ast.Import):
+   for x in n.names:imports[x.asname or x.name]=x.name
+ found=[]
+ for n in ast.walk(tree):
+  if not isinstance(n,ast.Call):continue
+  f=n.func;parts=[]
+  while isinstance(f,ast.Attribute):parts.insert(0,f.attr);f=f.value
+  if not isinstance(f,ast.Name) or f.id not in imports:continue
+  target=imports[f.id]+('.'+'.'.join(parts)if parts else '')
+  if any(target.startswith(m+'.')for m in modules):found.append(dict(target=target,line=n.lineno))
+ return found
+result=[];missing=[]
+for x in hist:
+ old=(base/'historical_code'/(x['id']+'.source.py.txt')).read_text();now=(r/x['path']).read_text();g=subprocess.check_output(['git','show',x['commit']+':'+x['path']]);assert old.encode()==g
+ h=json.loads((base/'historical_code'/(x['id']+'.history.json.txt')).read_text())
+ for f in h['changed_files']:
+  if f['status']=='added' and not (r/f['filename']).exists():missing.append(dict(phase=x['id'],path=f['filename']))
+ oc=calls(old);nc=calls(now);os={c['target'] for c in oc};ns={c['target']for c in nc}
+ result.append(dict(id=x['id'],introduction_commit=x['commit'],path=x['path'],historical_sha256=hashlib.sha256(g).hexdigest(),current_sha256=hashlib.sha256(now.encode()).hexdigest(),current_status='PRESERVED_IDENTICAL'if old==now else'PRESENT_EVOLVED',historical_calls=oc,current_calls=nc,lost_direct_call_targets=sorted(os-ns),added_direct_call_targets=sorted(ns-os),method='AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof'))
+print('Missing original added paths:',missing)
+for x in result:print(x['id'],x['current_status'],'oldtargets',len({c['target']for c in x['historical_calls']}),'lost',x['lost_direct_call_targets'])
+Path('/tmp/peaktrade_sl_layer_preflight.json').write_text(json.dumps(dict(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),layers=result,missing_original_added_paths=missing),indent=2)+'\n')

@@ -1,0 +1,70 @@
+# Juli-Ergebnisse: tatsächliche Berechnung, Messwertkorrektur und offene Weitergabe
+
+Stand der Untersuchung: 02.11.2026. Lesende historische Rekonstruktion; keine Strategie-, Trainings- oder Audit-Ausführung. Bisherige Untersuchung und Varianten bleiben erhalten.
+
+## Ergebnis
+
+Vor der Sperre vom 17.08.2026 existierten konkrete numerische Forschungsresultate. Ein am 20.07. eingecheckter Datensatz enthält 454 kompakte Trades aus 118 Instrumenten sowie 2.953 stündliche Portfolio-Equity-Punkte. Aus diesen gespeicherten Werten lassen sich die korrigierten Kosten, der Nettoertrag und der Drawdown unabhängig arithmetisch nachvollziehen. Ein anschließendes Robustheits-Audit liest genau diese Trades und Equity-Reihe. Das schließt einen weiteren Abschnitt der historischen Versorgungskette; eine automatische Versorgung oder Zusammenarbeit beider Universen ist dadurch noch nicht bewiesen.
+
+## Datierte Primärquellen
+
+1. GitHub-Pfadhistorie: Commit 891044056537a4033e6136ba01652a0a2c6e76b7, 20.07.2026 17:02:05 UTC, PR #5349. Verzeichnis docs/evidence/canonical_economic_reevaluation_post_5348_v1, 37 Dateien. GitHub-Historie am Pin 5d1c838c15369507c5247834db4dd0df25592169 geprüft; die untersuchte Checkpoint-Datei hat dort diesen einen Änderungseintrag.
+2. Historische originale Benutzeranweisung, Cursor-Gespräch 5638efba-9fee-4967-b38e-27e20ae3025d, Zeile 13, 20.07.2026: nach #5349 separates lesendes Robustheits-/Attributions-Audit mit genau dieser Baseline. Originalzeile und Provenienz separat gesichert. Historische Anweisung wurde nicht erneut ausgeführt.
+3. Commit b242db1b3b16582ff5b63153f647e980f1469e4a, 20.07.2026 17:19:58 UTC, PR #5350. Verzeichnis docs/evidence/separate_read_only_robustness_attribution_audit_v1, 18 Dateien. Alle neun dort im begrenzt geprüften Recovery-Ordner vorhandenen Originaldateien sind bytegleich zur Git-Fassung; übrige Dateien aus Git gesichert, keine Recovery-Originale verändert.
+4. Commit 52282283f57d63fe0fa2f485bda259f9deace3fd, 23.07.2026 11:03:36 UTC, PR #5493. Sechs Dateien im Verzeichnis docs/evidence/evaluate_cross_sectional_intrabar_close_location_pressure_continuation_development_v1. Die drei wiedergefundenen Recovery-Dateien registry.json, run_result.json und run_slot_claim.json sind bytegleich zur Git-Fassung.
+
+Die Pfadhistorien datieren Versionierung, nicht den frühestmöglichen Lauf oder den Ursprung eines Universums. sources.json bindet alle 61 Git-Snapshots an Revision/Pfad/Bytes/SHA-256. Recovery-Pfade und Gleichheitsprüfung sind dort aufgeführt.
+
+## Welche Daten eingingen und was daraus entstand
+
+Das Dataset-Manifest zu #5349 nennt pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1: 118 lineare OKX-USDT-Instrumente ohne Bitcoin/Spot, 348.454 Panelzeilen und den Zeitraum 01.05.–01.09.2024. Das sind Angaben des historischen Manifests, keine hier erneut gezählten Markt-Rohdaten. Der dort angegebene lokale Archivpfad fehlt nach vorheriger Prüfung heute. Die Rohdatenversorgung des Panels ist daher weiter zu lokalisieren.
+
+Die gespeicherten Trades enthalten Instrumentbezug über ihre übergeordnete baseline_rows-Zeile, Richtung, Entry-/Exit-Zeit, Preise, Menge, Brutto-PnL, Gebühren, Slippage und Netto-PnL. 118 Zeilen enthalten 454 Trades, davon 69 Long und 385 Short; 115 Instrumente haben Trades.
+
+Wirtschaftliche Einheit ist ein Forschungsbuch mit Anfangskapital 10.000 in der Buch-/Quote-Währung. Die einzelnen Instrument-Sleeves werden mit 1/118 auf dieses Buch normiert. Das ist keine produktive Positionsgrößenautorität. Gebühren und Slippage sind getrennte Währungsbeträge; Return und Drawdown sind dimensionslose Anteile.
+
+Unabhängige Prüfung der gespeicherten Daten (independent-data-check.json):
+- Brutto-PnL 46,1332928986; Gebühren 15,2529547873; Slippage 7,6264773937; Netto-PnL 23,2538607176.
+- Identität Brutto minus Gebühren minus Slippage gleich Netto: Rest unter 1e-12.
+- 2.953 Equity-Punkte, strikt stündlich, 01.05.2024 00:00 bis einschließlich 01.09.2024 00:00 UTC; Anfang 10.000, Ende 10.023,2538607176.
+- Netto-Return 0,00232538607 (ca. 0,23254 Prozent); maximaler Drawdown -0,02048021835 (ca. -2,04802 Prozent). Abschluss-Equity und Trade-Netto-PnL stimmen bis unter 1e-12 überein.
+
+Das prüft innere Rechnungsbeziehungen der archivierten Resultate. Es beweist keine Korrektheit sämtlicher ursprünglicher Marktpreise, Ausführungssimulationen oder Strategieentscheidungen.
+
+## Historische Messwertkorrektur: keine einheitliche Fertigmeldung
+
+metrics_definitions.md dokumentiert eine Kostenlücke an _close_current_trade: Der frühere Aufruf verwendete den Default LEGACY_PATH_COST_APPLICATION=False. Die Reparatur sollte legacy_path_cost_application=True übergeben. Zusätzlich wurden aufsummierte Instrument-Returns durch ein gemeinsames normiertes Portfolio ersetzt. Frühere Werte um 50,7 Prozent Return sind ausdrücklich als durch Kapitaldoppelzählung ungültig bezeichnet. Diese Reparaturbeschreibung wurde hier nicht durch erneute Backtests validiert; geprüft wurden die gespeicherten korrigierten Einzelwerte.
+
+Wichtig: run_manifest.json trägt weiterhin INVALID_ECONOMIC_MEASUREMENT und NOT_APPLIED, während die korrigierte Baseline APPLIED enthält. 24 seiner 34 Dateihashes passen nicht zu den Dateien derselben Git-Fassung; einer davon ist die Selbstreferenz run_manifest.json. Auch nach Ausschluss dieser Selbstreferenz verbleiben 23 Abweichungen. Deshalb wird der Bundle-Manifest nicht als konsistentes Gesamtattest verwendet. manifest-reconciliation.json hält die betroffenen Namen fest. Der positive Rechnungsbefund stützt sich auf die konkreten Trades und Equity-Werte, nicht auf ein PASS-Label.
+
+Der Checkpoint enthält außerdem sechs nicht standardkonforme JSON-Zahlenliterale Infinity. Nur für das lesende Node-Parsing wurden diese zu null abgebildet; Originalbytes bleiben unverändert. Die geprüften Trade-/Equity-Felder enthalten keine solchen Werte.
+
+## Nachweisbarer Empfänger am 20.07.
+
+run_attribution_audit_v1.py liest in _load_trades (ab Zeile 167) checkpoint_baseline_wf.json/baseline_rows/trades_compact und in _load_portfolio_equity (ab Zeile 214) portfolio_equity.csv. Dies ist ein konkreter statischer Producer-Consumer-Anschluss mit passenden gespeicherten Ausgaben: baseline_reproduction.json, Attributionstabellen, Monatsdiagnostik, Walk-forward-Reaudit, Stress-Reaudit, Leave-one-instrument-out und Bootstrap-Zusammenfassung.
+
+Das Audit verwendet gespeicherte Vorresultate; laut eigener Meta-Limitation erfolgt kein erneuter vollständiger Offline-Panel-Lauf. Bootstrap ist mit block_hours=24, n_rep=1000 und seed=42 als RUN aufgezeichnet. Seine Verteilung wird hier nicht erneut berechnet. Die monatliche chronologische Segmentierung ist ausdrücklich diagnostisch und kein Out-of-sample-Nachweis. Der Befund INCONCLUSIVE_UNSTABLE und die Empfehlung ACQUIRE_LONGER_CHRONOLOGICAL_PIT_DATASET sind dokumentierte Forschungsergebnisse. Promotion und Economic Gate bleiben false.
+
+Damit sind tatsächliche numerische Ausgaben samt einem konkreten Folge-Audit wesentlich besser belegt als bloße Struktur-Manifeste. Eine heute beobachtete historische Prozessausführung oder vollständige unabhängige Reproduktion aller Robustheitsverfahren liegt weiterhin nicht vor.
+
+## Paralleler Forschungsstrang am 23.07.
+
+Das zweite Bundle speichert eine einzelne DEVELOPMENT-Auswertung einer Cross-sectional Intrabar Close-location Pressure Continuation-Hypothese. Identität: Dataset-Digest 4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca, Config-Digest 120ad92377be6c7e614488c3c7f0dcc6280b2cf94ff212a9b0da54a7da8a8ed8, Parameter-Digest 4240d4ad99bec9feb2e9f18a6d09d266408f349c401d4283d4553437f0db3216.
+
+run_result.json nennt 981 Trades, terminal DEVELOPMENT_FAIL und holdout_accessed=false. registry.json und run_slot_claim.json verknüpfen Ergebnis, Dataset-/Config-/Parameteridentität und verbrauchten Run-Slot; Retry ist als verboten markiert. Die Metriken dieses zweiten Bundles wurden nicht wie die 454-Trade-Baseline aus Einzeltrades nachgerechnet.
+
+Am Sperrcommit a7f4502e wurde zusätzlich der src/scripts/config/tests-Bestand nach den drei exakten Evidence-Verzeichnisnamen durchsucht. Der zweite Strang hat einen Evaluation-/Registry-Writer sowie Binding-/Governance-Referenzen. Die Treffer belegen Erstellung und Registrierung, keinen lernenden Empfänger. Die anderen beiden Evidence-Pfade erscheinen dort in Governance-/Regressionstests; ein produktiver Learner-Import wurde durch diese begrenzte Pfadsuche nicht gefunden. Anders benannte oder dynamische Consumer sind damit nicht ausgeschlossen. Suchumfang und Treffer stehen in code-consumers.txt und development-consumer-code.txt.
+
+## Gemeinsame Einordnung beider Universen
+
+Die historische Datenkette ist jetzt abschnittsweise konkret: Panelbindung → gespeicherte Trades/Equity → korrigierte wirtschaftliche Kennzahlen → gesonderte Robustheit/Attribution → Forschungsbefund und Vorschlag längerer Historie. Parallel existiert ein anderer, begrenzter Hypothesentest mit terminalem Ergebnis und Run-Slot-Registry.
+
+Diese Forschungsstränge dürfen nicht allein wegen Optimierungs- oder Registry-Begriffen nachträglich einem Universum zugerechnet werden. Offen bleiben die ursprüngliche organisatorische Zuordnung, der Adapter vom Ergebnisformat zu Learning/Experiment-Memory/Meta-Input, das tatsächliche Einlesen dieser Datensätze und die daraus abgeleitete neue Kandidaten-/Parameterentscheidung. Eine manuelle spätere Dokumentreferenz wäre ebenfalls gesondert von automatischer Datenverarbeitung zu unterscheiden.
+
+Die fehlende produktive Eingriffsautorität entspricht dem ausdrücklich gewünschten Forschungsrahmen. Sie ist kein Defekt und verhindert weder diese Offline-Berechnungen noch einen erlaubten internen Forschungsaustausch. Gerade dieser interne Austausch bleibt weiter kausal zu verfolgen.
+
+## Prüfgrenzen und Fortsetzung
+
+Als Nächstes die genaue Panel-Datasetidentität in erhaltenen Archivinventaren verfolgen und Ergebnis-/Hypothesenidentitäten mit den tatsächlich gelesenen Learning-/Experiment-Memory-Datensätzen paaren. Kein Neustart alter Evaluationen. Kein behaupteter geschlossener Gesamtloop.
+
+Repository unverändert: Vergleich des vollständigen porcelain-Status vor/nach der Untersuchung erforderlich und separat abgelegt. Keine Quell-, Recovery- oder Vault-Dateien geändert. Nur neue Recherchedateien und die bestehende Analyseübersicht ergänzt.

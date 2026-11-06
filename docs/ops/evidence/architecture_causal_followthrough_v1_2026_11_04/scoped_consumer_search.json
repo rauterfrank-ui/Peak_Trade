@@ -1,0 +1,62 @@
+{
+  "meta_builder_callers": {
+    "pattern": "build_canonical_meta_learning_v1\\(",
+    "scope": [
+      "src",
+      "scripts"
+    ],
+    "matches": [
+      "src/experiments/canonical_meta_learning_v1.py:250:def build_canonical_meta_learning_v1("
+    ],
+    "limit": "Lexical navigation only: aliases, dynamic access and external callers may escape this query. Concrete conclusions rely on read function bodies."
+  },
+  "search_builder_callers": {
+    "pattern": "build_canonical_advanced_search_v1\\(",
+    "scope": [
+      "src",
+      "scripts"
+    ],
+    "matches": [
+      "src/experiments/canonical_advanced_search_v1.py:337:def build_canonical_advanced_search_v1(",
+      "src/experiments/canonical_optimization_universe_experiment_plane_v1.py:194:    search_record = build_canonical_advanced_search_v1("
+    ],
+    "limit": "Lexical navigation only: aliases, dynamic access and external callers may escape this query. Concrete conclusions rely on read function bodies."
+  },
+  "feedback_budget_consumers": {
+    "pattern": "research_budget_units|hypothesis_pattern_ref",
+    "scope": [
+      "src",
+      "scripts"
+    ],
+    "matches": [
+      "src/experiments/canonical_meta_to_optimization_feedback_v1.py:253:                \"research_budget_units\": budget_units,",
+      "src/experiments/canonical_meta_to_optimization_feedback_v1.py:290:                    \"hypothesis_pattern_ref\": pattern,"
+    ],
+    "limit": "Lexical navigation only: aliases, dynamic access and external callers may escape this query. Concrete conclusions rely on read function bodies."
+  },
+  "mi_bridge_callers": {
+    "pattern": "compose_mi_to_learning_evidence_v1\\(",
+    "scope": [
+      "src",
+      "scripts"
+    ],
+    "matches": [
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py:182:        mi_learning = compose_mi_to_learning_evidence_v1(",
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py:60:        record = compose_mi_to_learning_evidence_v1(",
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py:95:def compose_mi_to_learning_evidence_v1(",
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py:140:        base = compose_mi_to_learning_evidence_v1("
+    ],
+    "limit": "Lexical navigation only: aliases, dynamic access and external callers may escape this query. Concrete conclusions rely on read function bodies."
+  },
+  "supplied_realized_scalar": {
+    "pattern": "realized_scalar=",
+    "scope": [
+      "src",
+      "scripts"
+    ],
+    "matches": [
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py:181:        realized_scalar=realized_scalar,"
+    ],
+    "limit": "Lexical navigation only: aliases, dynamic access and external callers may escape this query. Concrete conclusions rely on read function bodies."
+  }
+}

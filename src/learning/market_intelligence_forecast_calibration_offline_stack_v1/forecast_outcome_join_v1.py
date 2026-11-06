@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
@@ -19,6 +20,7 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.cons
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_evidence_v1 import (
     validate_forecast_evidence_v1,
+    derive_outcome_horizon_end_utc_v1,
 )
 
 JOIN_SCHEMA_VERSION: Final[str] = "forecast_outcome_join_v1"
@@ -57,6 +59,15 @@ def join_forecast_to_n_bars_outcome_v1(
     actual_outcome_ref = observation.get("actual_outcome_ref")
     if actual_outcome_ref is None:
         raise ForecastOutcomeJoinError("N_BARS_ACTUAL_OUTCOME_REF_MISSING")
+
+    outcome_end = derive_outcome_horizon_end_utc_v1(
+        horizon_start_time_utc=observation["horizon_start_time_utc"],
+        bar_close_times_utc=observation["bar_close_times_utc"],
+    )
+    forecast_end_instant = datetime.fromisoformat(forecast["outcome_horizon_end_utc"].replace("Z", "+00:00"))
+    outcome_end_instant = datetime.fromisoformat(outcome_end.replace("Z", "+00:00"))
+    if forecast_end_instant != outcome_end_instant:
+        raise ForecastOutcomeJoinError("FORECAST_OUTCOME_HORIZON_END_MISMATCH")
 
     join_body = {
         "schema_version": JOIN_SCHEMA_VERSION,

@@ -1,0 +1,138 @@
+{
+  "B1": {
+    "account_binding": "K1 keychain identity okx-eea.productive on service peak-trade.full-core.venue-credentials; identity is not possession",
+    "algebra": "BASE_MINUS_U04_MINUS_CONDITIONAL_P01_USDC_V1",
+    "authority_owner": "ops.governed_productive_account_equity_authority_producer_v1",
+    "capital_source": "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1",
+    "classification": "B",
+    "currency": "USDC",
+    "current_path": [
+      "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py",
+      "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py"
+    ],
+    "dimension": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING",
+    "eq_role": "RECONCILIATION_TARGET_ONLY_NOT_SIZING_SOURCE",
+    "fail_closed": "missing, non-decimal, or insufficient availEq denies the guard; contradictory pretrade id appends STALE_MARGIN_EVIDENCE_PRETRADE_MISMATCH",
+    "fresh_get_executed_constant": false,
+    "fresh_get_methods_forbidden": [
+      "POST",
+      "PUT",
+      "DELETE",
+      "PATCH"
+    ],
+    "guard_dependency": "CanaryCapitalGuardMarginEvidenceV1.avail_eq_usdc; missing value appends MISSING_AVAILABLE_MARGIN_EVIDENCE",
+    "mapping_proven_constant": true,
+    "owner_decision_required": true,
+    "producer_mint_authorized": false,
+    "source_input": "details[ccy=USDC].availEq",
+    "source_selected": true,
+    "transform": "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1",
+    "venue_host_for_fresh_get_contract": "eea.okx.com"
+  },
+  "B2": {
+    "admission": "resolve_mandatory_new_risk_enter_post_admission_v1 raises NEW_RISK_POST_GUARD_JOIN_DISABLED and NEW_RISK_POST_OWNER_CAPS_UNRATIFIED",
+    "canary_config": "config/ops/current_live_canary_capital_guard_v1.json owner_caps_ratified=false live_canary_allowed=false",
+    "canonical_config": "config/ops/current_full_core_capital_guard_v1.json",
+    "classification": "B",
+    "currency": "USDC",
+    "finite_decimal": "non-finite and bool numeric values rejected",
+    "full_core_guard_join_enabled": false,
+    "missing_caps": "_assert_caps_present appends MISSING_NUMERIC_CAP and evaluation sets guard_allowed false",
+    "negative_decimal_residual": "finite negative decimals parse; evaluation denies a positive notional because requested > cap; canonical null caps already deny via MISSING_NUMERIC_CAP",
+    "numeric_caps": "all null on canonical config",
+    "offline_e2e_fixture": "config/ops/current_full_core_capital_guard_offline_e2e_natural_enter_v1.json is fixture-only and is not the canonical productive config",
+    "over_allocation": "unratified flag, disabled join, missing caps, open order, open position, scale-in forbidden, and margin greater than availEq each deny entry",
+    "owner_caps_ratified": false,
+    "owner_decision_required": true,
+    "reservation": "full_core_pre_post_capital_guard_join creates a reservation only after guard_allowed; canonical config never reaches that branch",
+    "strict_bool": "_parse_strict_flag accepts only JSON bool; other types raise INVALID_BOOL_FLAG; absent flags default owner_caps_ratified false and join disabled"
+  },
+  "B3": {
+    "account": "okx-eea.productive",
+    "binding": "identifier-only macOS Keychain tuple",
+    "classification": "B",
+    "identity_implies_possession": false,
+    "k1_write_authorization_default": false,
+    "owner_decision_required": true,
+    "possession_implies_post": false,
+    "productive_provider_active": false,
+    "provider_ref": "okx-eea-productive",
+    "public_vs_private": "fresh margin and risk-reduction proofs are read-only GET contracts; trade POST is a separate one-shot seam",
+    "real_keychain_access_authorized": false,
+    "real_keychain_access_implemented": false,
+    "service": "peak-trade.full-core.venue-credentials",
+    "this_pass": "no keychain read, no secret emitted"
+  },
+  "B4": {
+    "EXTERNAL_EFFECT_AUTHORIZED": false,
+    "POST_ALLOWED": false,
+    "POST_GO_STATUS": "UNCONSUMED",
+    "POST_OWNER_GO": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+    "REAL_VENUE_POST_ALLOWED": false,
+    "classification": "B",
+    "one_shot_module": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+    "send_capable_transport_sites": [
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
+    ],
+    "single_use": "permit.single_use required, max_post_count must be 1, retry and second submit forbidden",
+    "standing_pin_guard": "POST_STANDING_MUST_REMAIN_FALSE if any standing POST pin is true"
+  },
+  "B5": {
+    "blocking_states": [
+      "KILLED",
+      "RECOVERING",
+      "DISABLED"
+    ],
+    "classification": "E",
+    "emergency_env": "PEAK_KILL_SWITCH=1 blocks and is not overridden by the state file",
+    "env_path_override": "rejected fail-closed, never redirects",
+    "local_checkout_state_file": "data/kill_switch/state.json ABSENT",
+    "local_emergency_env": "unset",
+    "missing_or_invalid_file": "fail-closed block",
+    "new_defect": false,
+    "non_blocking_state": "ACTIVE",
+    "post_path_gate": "evaluate_post_path_kill_switch_v1 before mint in the one-shot join",
+    "production_host_state": "NOT_OBSERVED"
+  },
+  "B5_RR": {
+    "classification": "E",
+    "contract": "CURRENT_PRODUCTIVE_RISK_REDUCTION_VENUE_PROOF_V1",
+    "evidence_required": "fresh authenticated read-only account config, positions, and pending orders, max age 15 seconds",
+    "failure": "RISK_REDUCTION_NOT_PROVEN yields NO_POST",
+    "rule": "SELF_DECLARED_RISK_REDUCING is not PROVEN_RISK_REDUCING",
+    "this_pass_proof": "NOT_EXERCISED_NO_PRIVATE_GET",
+    "unsigned_digest_residual_in_current_module": "NOT_FOUND"
+  },
+  "B6": {
+    "claim_lifecycle": "CLAIMED -> SENT_INITIATED -> COMPLETED_RESPONSE_RECEIVED | UNKNOWN_OUTCOME | ABORTED_BEFORE_TRANSPORT",
+    "classification": "E",
+    "contract": "CURRENT_PRODUCTIVE_GLOBAL_VENUE_EFFECT_AUTHORITY_LEDGER_V1",
+    "identities": [
+      "OWNER_AUTHORIZATION_IDENTITY",
+      "PERMIT_ID",
+      "ENVELOPE_DIGEST",
+      "VENUE_CLIENT_ORDER_ID"
+    ],
+    "replay": "existing marker raises GLOBAL_REPLAY_DENIED",
+    "restart": "restarted process cannot reuse the in-memory claim token; unresolved claims block a new-risk claim on the same account and environment",
+    "store_root_independence": "ledger root is not derived from operator store-root",
+    "unknown_outcome": "UNKNOWN_SUBMISSION_OUTCOME is not SAFE_TO_RETRY"
+  },
+  "B7": {
+    "autonomous_post_path": "NOT_CONNECTED",
+    "classification": "E",
+    "lifecycle_wiring_transport_import": "FullCoreTradeOrderPostResultV1 only",
+    "runner_surfaces_forbidden_from_post": [
+      "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+      "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+      "current_productive_governed_cycle_orchestrator_v1.py",
+      "current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "current_productive_persistent_natural_enter_convergence_v1.py",
+      "full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py"
+    ]
+  },
+  "authority": "NONE",
+  "code_revision": "769d13663badb8daed64b32a0e3047cd198da900",
+  "schema_version": "bwp_live_003_contract_matrix.v1"
+}

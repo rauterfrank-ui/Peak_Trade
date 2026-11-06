@@ -203,13 +203,13 @@ def governed_productive_c1_event_ts_unix_v1(*, offset_seconds: float = 120.0) ->
 
 
 def strong_uptrend_closes_v1(
-    *, count: int = 64, base: float = 1000.0, step: float = 10.0
+    *, count: int = 100, base: float = 1000.0, step: float = 10.0
 ) -> tuple[float, ...]:
     return tuple(base + float(index) * step for index in range(count))
 
 
 def strong_downtrend_closes_v1(
-    *, count: int = 64, base: float = 1630.0, step: float = 10.0
+    *, count: int = 100, base: float = 1630.0, step: float = 10.0
 ) -> tuple[float, ...]:
     return tuple(base - float(index) * step for index in range(count))
 
@@ -514,17 +514,7 @@ def _compose_layered_lane_cycle_v1(
     cycle_id_prefix: str,
 ) -> Any:
     index_px = float(mark_px) * 0.995
-    slot, bound = pair
-    from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
-        build_productive_lane_reconciliation_admission_v1,
-    )
-
-    admission = build_productive_lane_reconciliation_admission_v1(
-        bound=bound,
-        occupancy_payloads={"POSITIONS": {"code": "0", "data": []}},
-        state_root=Path(slot.lane_state_root),
-        repository_sha="fixture-natural-enter-productive-flat-v1",
-    )
+    bound = pair[1]
     return compose_occupied_lane_mv2_dp_durable_cycle_v1(
         {"LANE_1": pair},
         cycle_id_prefix=cycle_id_prefix,
@@ -546,7 +536,6 @@ def _compose_layered_lane_cycle_v1(
             mark_px=float(mark_px),
             index_px=index_px,
         ),
-        master_v2_reconciliation_admission=admission,
     )["LANE_1"].cycle_result
 
 
@@ -712,7 +701,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     path = strong_uptrend_closes_v1()
     aligned_g17 = governed_c1_aligned_g17_dk_producer_v1(
         bound=bound,
-        anchor_event_ts_unix=enter_ts,
+        anchor_event_ts_unix=enter_ts - 120.0,
         evidence_store_root=Path(lane_state_root) / "g17-seed",
         mark_closes=path,
     )
@@ -737,6 +726,10 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
         mark_px=float(path[-1]),
         event_ts_unix=enter_ts - 60.0,
         closes=path,
+    )
+    assert origin.replay is not None and origin.outgoing_cursor is not None, origin.input_blocker
+    assert upscope_candidate.replay is not None and upscope_candidate.outgoing_cursor is not None, (
+        upscope_candidate.input_blocker
     )
     arm_closes = natural_enter_long_closes_v1(path)
     arm_mark = float(arm_closes[-1])
@@ -796,7 +789,7 @@ def prepare_layered_short_armed_seed_for_pre_external_invoke_v1(
     path = strong_downtrend_closes_v1()
     aligned_g17 = governed_c1_aligned_g17_dk_producer_v1(
         bound=bound,
-        anchor_event_ts_unix=enter_ts,
+        anchor_event_ts_unix=enter_ts - 120.0,
         evidence_store_root=Path(lane_state_root) / "g17-seed-short",
         mark_closes=path,
     )
@@ -822,6 +815,10 @@ def prepare_layered_short_armed_seed_for_pre_external_invoke_v1(
         event_ts_unix=enter_ts - 60.0,
         closes=path,
     )
+    assert origin.replay is not None and origin.outgoing_cursor is not None, origin.input_blocker
+    assert (
+        downscope_candidate.replay is not None and downscope_candidate.outgoing_cursor is not None
+    ), downscope_candidate.input_blocker
     arm_closes = natural_enter_short_arm_closes_v1(path)
     arm_mark = float(arm_closes[-1])
     arm_ts = enter_ts

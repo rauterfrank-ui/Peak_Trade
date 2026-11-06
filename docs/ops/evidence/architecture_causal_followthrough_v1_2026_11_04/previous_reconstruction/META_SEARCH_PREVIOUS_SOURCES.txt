@@ -1,0 +1,37 @@
+[
+  {
+    "path": "src/experiments/canonical_meta_learning_v1.py",
+    "revision": "5d1c838c15369507c5247834db4dd0df25592169",
+    "file": "src__experiments__canonical_meta_learning_v1.py",
+    "sha256": "b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331",
+    "working_copy_identical": true
+  },
+  {
+    "path": "src/experiments/canonical_advanced_search_v1.py",
+    "revision": "5d1c838c15369507c5247834db4dd0df25592169",
+    "file": "src__experiments__canonical_advanced_search_v1.py",
+    "sha256": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad",
+    "working_copy_identical": true
+  },
+  {
+    "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+    "revision": "5d1c838c15369507c5247834db4dd0df25592169",
+    "file": "src__experiments__canonical_optimization_universe_experiment_plane_v1.py",
+    "sha256": "468bd79c771bdd1cea3e8e81c99b197285c2b71cedea3da93ffb5e49e853114c",
+    "working_copy_identical": true
+  },
+  {
+    "path": "tests/experiments/test_canonical_advanced_search_v1.py",
+    "revision": "5d1c838c15369507c5247834db4dd0df25592169",
+    "file": "tests__experiments__test_canonical_advanced_search_v1.py",
+    "sha256": "4f1761da529d0f98ed3fb8f18e4301f8886de2fe3187c025f56fe268bd73d9b2",
+    "working_copy_identical": true
+  },
+  {
+    "path": "tests/experiments/test_canonical_meta_learning_v1.py",
+    "revision": "5d1c838c15369507c5247834db4dd0df25592169",
+    "file": "tests__experiments__test_canonical_meta_learning_v1.py",
+    "sha256": "d9653b48eb8dfc2a57ffe26bd70ac77bd7429b33f3f79ef82594c5de19d5fda2",
+    "working_copy_identical": true
+  }
+]

@@ -1,0 +1,9 @@
+### CON-2090 — N-Bars: entdeckter Seed, lokale Sperre und Ersatzteilweg
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Der frühere direkte Export setzte bereits bekannte Closes auf spätere Zeiten. Spätere isolierte Reparatur-/Quellenproben und lokale P1-Änderung müssen mit aufgenommen werden: der direkte Arbeitskopie-Handoff meldet BLOCKED_UNVERIFIED_OUTCOME_SOURCE / VERIFIED_N_BARS_SOURCE_NOT_BOUND und erzeugt weder Lernexport noch Pending-Job. Gespeicherte echte Markdaten erreichten separat für explizite N=2/N=3 den bestehenden Learning-/Optimization-Intake.
+
+**Grenze:** Der ältere Git-Pin enthält nicht automatisch diese lokale Sperre. Separater Pending-Resolver funktioniert im Test mit injiziertem Entry-Report; kein natürlicher Gesamtanschluss derselben Sitzung. N=2 und stündliche Pilotaggregate sind keine ursprüngliche Systemvorgabe.
+
+Quellen: EVI-2271, EVI-2272, EVI-2266, EVI-2267, EVI-2268, EVI-2295, EVI-2237.
